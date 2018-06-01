@@ -41,13 +41,14 @@ class Node extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $casts = [
-        'public' => 'integer',
         'location_id' => 'integer',
         'memory' => 'integer',
         'disk' => 'integer',
         'daemonListen' => 'integer',
         'daemonSFTP' => 'integer',
         'behind_proxy' => 'boolean',
+        'public' => 'boolean',
+        'maintenance_mode' => 'boolean',
     ];
 
     /**
@@ -62,6 +63,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'disk_overallocate', 'upload_size',
         'daemonSecret', 'daemonBase',
         'daemonSFTP', 'daemonListen',
+        'description', 'maintenance_mode',
     ];
 
     /**
@@ -98,6 +100,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
      */
     protected static $dataIntegrityRules = [
         'name' => 'regex:/^([\w .-]{1,100})$/',
+        'description' => 'string',
         'location_id' => 'exists:locations,id',
         'public' => 'boolean',
         'fqdn' => 'string',
@@ -109,6 +112,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
         'daemonSFTP' => 'numeric|between:1024,65535',
         'daemonListen' => 'numeric|between:1024,65535',
+        'maintenance_mode' => 'boolean',
     ];
 
     /**
@@ -124,6 +128,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonBase' => '/srv/daemon-data',
         'daemonSFTP' => 2022,
         'daemonListen' => 8080,
+        'maintenance_mode' => false,
     ];
 
     /**

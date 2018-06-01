@@ -9,7 +9,6 @@
 
 namespace Tests\Unit\Services\Nodes;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;

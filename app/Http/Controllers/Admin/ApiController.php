@@ -65,6 +65,7 @@ class ApiController extends Controller
      * Render view allowing an admin to create a new application API key.
      *
      * @return \Illuminate\View\View
+     * @throws \ReflectionException
      */
     public function create(): View
     {

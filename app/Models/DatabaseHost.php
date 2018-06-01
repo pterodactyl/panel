@@ -90,7 +90,7 @@ class DatabaseHost extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
-     * Gets the databases assocaited with this host.
+     * Gets the databases associated with this host.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */

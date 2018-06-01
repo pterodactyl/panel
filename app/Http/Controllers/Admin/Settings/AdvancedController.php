@@ -76,6 +76,8 @@ class AdvancedController extends Controller
     /**
      * @param \Pterodactyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(AdvancedSettingsFormRequest $request): RedirectResponse
     {

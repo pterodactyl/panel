@@ -9,8 +9,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Log\Writer;
-use Pterodactyl\Models\Server;
+use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
@@ -52,7 +51,7 @@ class ServerDeletionService
     protected $repository;
 
     /**
-     * @var \Illuminate\Log\Writer
+     * @var \Psr\Log\LoggerInterface
      */
     protected $writer;
 
@@ -64,7 +63,7 @@ class ServerDeletionService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface      $databaseRepository
      * @param \Pterodactyl\Services\Databases\DatabaseManagementService          $databaseManagementService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
-     * @param \Illuminate\Log\Writer                                             $writer
+     * @param \Psr\Log\LoggerInterface                                           $writer
      */
     public function __construct(
         ConnectionInterface $connection,

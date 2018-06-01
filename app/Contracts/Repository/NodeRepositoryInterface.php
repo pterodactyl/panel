@@ -22,6 +22,14 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     public function getUsageStats(Node $node): array;
 
     /**
+     * Return the usage stats for a single node.
+     *
+     * @param \Pterodactyl\Models\Node $node
+     * @return array
+     */
+    public function getUsageStatsRaw(Node $node): array;
+
+    /**
      * Return all available nodes with a searchable interface.
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator

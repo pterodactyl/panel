@@ -43,6 +43,28 @@ return [
             'prefix' => env('DB_PREFIX', ''),
             'strict' => env('DB_STRICT_MODE', false),
         ],
+
+        /*
+        | -------------------------------------------------------------------------
+        | Test Database Connection
+        | -------------------------------------------------------------------------
+        |
+        | This connection is used by the integration and HTTP tests for Pterodactyl
+        | development. Normal users of the Panel do not need to adjust any settings
+        | in here.
+        */
+        'testing' => [
+            'driver' => 'mysql',
+            'host' => env('TESTING_DB_HOST', '127.0.0.1'),
+            'port' => env('TESTING_DB_PORT', '3306'),
+            'database' => env('TESTING_DB_DATABASE', 'panel_test'),
+            'username' => env('TESTING_DB_USERNAME', 'pterodactyl_test'),
+            'password' => env('TESTING_DB_PASSWORD', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+        ],
     ],
 
     /*
@@ -76,14 +98,14 @@ return [
             'host' => env('REDIS_HOST', 'localhost'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => env('REDIS_DATBASE', 0),
+            'database' => env('REDIS_DATABASE', 0),
         ],
 
         'sessions' => [
             'host' => env('REDIS_HOST', 'localhost'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
-            'database' => env('REDIS_DATBASE_SESSIONS', 1),
+            'database' => env('REDIS_DATABASE_SESSIONS', 1),
         ],
     ],
 ];

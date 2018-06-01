@@ -4,7 +4,9 @@ namespace Tests\Unit\Services\Eggs\Variables;
 
 use Mockery as m;
 use Tests\TestCase;
+use BadMethodCallException;
 use Pterodactyl\Models\EggVariable;
+use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Services\Eggs\Variables\VariableCreationService;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
@@ -13,12 +15,12 @@ class VariableCreationServiceTest extends TestCase
     /**
      * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
+    private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Variables\VariableCreationService
+     * @var \Illuminate\Contracts\Validation\Factory|\Mockery\Mock
      */
-    protected $service;
+    private $validator;
 
     /**
      * Setup tests.
@@ -28,8 +30,7 @@ class VariableCreationServiceTest extends TestCase
         parent::setUp();
 
         $this->repository = m::mock(EggVariableRepositoryInterface::class);
-
-        $this->service = new VariableCreationService($this->repository);
+        $this->validator = m::mock(Factory::class);
     }
 
     /**
@@ -46,7 +47,7 @@ class VariableCreationServiceTest extends TestCase
             'env_variable' => 'TEST_VAR_123',
         ]))->once()->andReturn(new EggVariable);
 
-        $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
+        $this->assertInstanceOf(EggVariable::class, $this->getService()->handle(1, $data));
     }
 
     /**
@@ -62,12 +63,12 @@ class VariableCreationServiceTest extends TestCase
             'env_variable' => 'TEST_VAR_123',
         ]))->once()->andReturn(new EggVariable);
 
-        $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
+        $this->assertInstanceOf(EggVariable::class, $this->getService()->handle(1, $data));
     }
 
     /**
      * Test that an empty (null) value passed in the option key is handled
-     * properly as an array. Also tests the same case aganist the default_value.
+     * properly as an array. Also tests the same case against the default_value.
      *
      * @see https://github.com/Pterodactyl/Panel/issues/841
      * @see https://github.com/Pterodactyl/Panel/issues/943
@@ -81,18 +82,20 @@ class VariableCreationServiceTest extends TestCase
             'user_editable' => false,
         ]))->once()->andReturn(new EggVariable);
 
-        $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
+        $this->assertInstanceOf(EggVariable::class, $this->getService()->handle(1, $data));
     }
 
     /**
      * Test that all of the reserved variables defined in the model trigger an exception.
+     *
+     * @param string $variable
      *
      * @dataProvider reservedNamesProvider
      * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames(string $variable)
     {
-        $this->service->handle(1, ['env_variable' => $variable]);
+        $this->getService()->handle(1, ['env_variable' => $variable]);
     }
 
     /**
@@ -106,7 +109,49 @@ class VariableCreationServiceTest extends TestCase
             'egg_id' => 1,
         ]))->once()->andReturn(new EggVariable);
 
-        $this->assertInstanceOf(EggVariable::class, $this->service->handle(1, $data));
+        $this->assertInstanceOf(EggVariable::class, $this->getService()->handle(1, $data));
+    }
+
+    /**
+     * Test that validation errors due to invalid rules are caught and handled properly.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
+     * @expectedExceptionMessage The validation rule "hodor_door" is not a valid rule for this application.
+     */
+    public function testInvalidValidationRulesResultInException()
+    {
+        $data = ['env_variable' => 'TEST_VAR_123', 'rules' => 'string|hodorDoor'];
+
+        $this->validator->shouldReceive('make')->once()
+            ->with(['__TEST' => 'test'], ['__TEST' => 'string|hodorDoor'])
+            ->andReturnSelf();
+
+        $this->validator->shouldReceive('fails')->once()
+            ->withNoArgs()
+            ->andThrow(new BadMethodCallException('Method [validateHodorDoor] does not exist.'));
+
+        $this->getService()->handle(1, $data);
+    }
+
+    /**
+     * Test that an exception not stemming from a bad rule is not caught.
+     *
+     * @expectedException \BadMethodCallException
+     * @expectedExceptionMessage Received something, but no expectations were specified.
+     */
+    public function testExceptionNotCausedByBadRuleIsNotCaught()
+    {
+        $data = ['env_variable' => 'TEST_VAR_123', 'rules' => 'string'];
+
+        $this->validator->shouldReceive('make')->once()
+            ->with(['__TEST' => 'test'], ['__TEST' => 'string'])
+            ->andReturnSelf();
+
+        $this->validator->shouldReceive('fails')->once()
+            ->withNoArgs()
+            ->andThrow(new BadMethodCallException('Received something, but no expectations were specified.'));
+
+        $this->getService()->handle(1, $data);
     }
 
     /**
@@ -123,5 +168,15 @@ class VariableCreationServiceTest extends TestCase
         }
 
         return $data;
+    }
+
+    /**
+     * Return an instance of the service with mocked dependencies for testing.
+     *
+     * @return \Pterodactyl\Services\Eggs\Variables\VariableCreationService
+     */
+    private function getService(): VariableCreationService
+    {
+        return new VariableCreationService($this->repository, $this->validator);
     }
 }

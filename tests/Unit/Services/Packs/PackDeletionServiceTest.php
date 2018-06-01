@@ -9,7 +9,6 @@
 
 namespace Tests\Unit\Services\Packs;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Pack;

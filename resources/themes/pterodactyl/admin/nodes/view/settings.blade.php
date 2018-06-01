@@ -49,6 +49,12 @@
                         </div>
                     </div>
                     <div class="form-group col-xs-12">
+                        <label for="description" class="control-label">Description</label>
+                        <div>
+                            <textarea name="description" id="description" rows="4" class="form-control">{{ $node->description }}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-12">
                         <label for="name" class="control-label">Location</label>
                         <div>
                             <select name="location_id" class="form-control">
@@ -71,8 +77,8 @@
                             <input type="text" autocomplete="off" name="fqdn" class="form-control" value="{{ old('fqdn', $node->fqdn) }}" />
                         </div>
                         <p class="text-muted"><small>Please enter domain name (e.g <code>node.example.com</code>) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.
-                            <a tabindex="0" data-toggle="popover" data-trigger="focus" title="Why do I need a FQDN?" data-content="In order to secure communications between your server and this node we use SSL. We cannot generate a SSL certificate for IP Addresses, and as such you will need to provide a FQDN.">Why?</a>
-                        </small></p>
+                                <a tabindex="0" data-toggle="popover" data-trigger="focus" title="Why do I need a FQDN?" data-content="In order to secure communications between your server and this node we use SSL. We cannot generate a SSL certificate for IP Addresses, and as such you will need to provide a FQDN.">Why?</a>
+                            </small></p>
                     </div>
                     <div class="form-group col-xs-12">
                         <label class="form-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Communicate Over SSL</label>
@@ -101,6 +107,20 @@
                             </div>
                         </div>
                         <p class="text-muted small">If you are running the daemon behind a proxy such as Cloudflare, select this to have the daemon skip looking for certificates on boot.</p>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <label class="form-label"><span class="label label-warning"><i class="fa fa-wrench"></i></span> Maintenance Mode</label>
+                        <div>
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" id="pMaintenanceFalse" value="0" name="maintenance_mode" {{ (old('behind_proxy', $node->maintenance_mode) == false) ? 'checked' : '' }}>
+                                <label for="pMaintenanceFalse"> Disabled</label>
+                            </div>
+                            <div class="radio radio-warning radio-inline">
+                                <input type="radio" id="pMaintenanceTrue" value="1" name="maintenance_mode" {{ (old('behind_proxy', $node->maintenance_mode) == true) ? 'checked' : '' }}>
+                                <label for="pMaintenanceTrue"> Enabled</label>
+                            </div>
+                        </div>
+                        <p class="text-muted small">If the node is marked as 'Under Maintenance' users won't be able to access servers that are on this node.</p>
                     </div>
                 </div>
             </div>
@@ -183,7 +203,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <p class="text-muted"><small>The daemon runs its own SFTP management container and does not use the SSHd process on the main physical server. <Strong>Do not use the same port that you have assigned for your physcial server's SSH process.</strong></small></p>
+                                <p class="text-muted"><small>The daemon runs its own SFTP management container and does not use the SSHd process on the main physical server. <Strong>Do not use the same port that you have assigned for your physical server's SSH process.</strong></small></p>
                             </div>
                         </div>
                     </div>

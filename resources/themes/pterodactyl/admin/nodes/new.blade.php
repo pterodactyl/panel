@@ -33,14 +33,14 @@
                         <p class="text-muted small">Character limits: <code>a-zA-Z0-9_.-</code> and <code>[Space]</code> (min 1, max 100 characters).</p>
                     </div>
                     <div class="form-group">
+                        <label for="pDescription" class="form-label">Description</label>
+                        <textarea name="description" id="pDescription" rows="4" class="form-control">{{ old('description') }}</textarea>
+                    </div>
+                    <div class="form-group">
                         <label for="pLocationId" class="form-label">Location</label>
                         <select name="location_id" id="pLocationId">
                             @foreach($locations as $location)
-                                @if($location->id == old('location_id'))
-                                    <option value="{{ $location->id }}" selected>{{ $location->short }}</option>
-                                @else
-                                    <option value="{{ $location->id }}">{{ $location->short }}</option>
-                                @endif
+                                <option value="{{ $location->id }}" {{ $location->id != old('location_id') ?: 'selected' }}>{{ $location->short }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -126,7 +126,7 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <p class="text-muted small">Enter the total amount of memory avaliable for new servers. If you would like to allow overallocation of memory enter the percentage that you want to allow. To disable checking for overallocation enter <code>-1</code> into the field. Entering <code>0</code> will prevent creating new servers if it would put the node over the limit.</p>
+                            <p class="text-muted small">Enter the total amount of memory available for new servers. If you would like to allow overallocation of memory enter the percentage that you want to allow. To disable checking for overallocation enter <code>-1</code> into the field. Entering <code>0</code> will prevent creating new servers if it would put the node over the limit.</p>
                         </div>
                     </div>
                     <div class="row">
@@ -145,7 +145,7 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <p class="text-muted small">Enter the total amount of disk space avaliable for new servers. If you would like to allow overallocation of disk space enter the percentage that you want to allow. To disable checking for overallocation enter <code>-1</code> into the field. Entering <code>0</code> will prevent creating new servers if it would put the node over the limit.</p>
+                            <p class="text-muted small">Enter the total amount of disk space available for new servers. If you would like to allow overallocation of disk space enter the percentage that you want to allow. To disable checking for overallocation enter <code>-1</code> into the field. Entering <code>0</code> will prevent creating new servers if it would put the node over the limit.</p>
                         </div>
                     </div>
                     <div class="row">
@@ -158,7 +158,7 @@
                             <input type="text" name="daemonSFTP" class="form-control" id="pDaemonSFTP" value="2022" />
                         </div>
                         <div class="col-md-12">
-                            <p class="text-muted small">The daemon runs its own SFTP management container and does not use the SSHd process on the main physical server. <Strong>Do not use the same port that you have assigned for your physcial server's SSH process.</strong> If you will be running the daemon behind CloudFlare&reg; you should set the daemon port to <code>8443</code> to allow websocket proxying over SSL.</p>
+                            <p class="text-muted small">The daemon runs its own SFTP management container and does not use the SSHd process on the main physical server. <Strong>Do not use the same port that you have assigned for your physical server's SSH process.</strong> If you will be running the daemon behind CloudFlare&reg; you should set the daemon port to <code>8443</code> to allow websocket proxying over SSL.</p>
                         </div>
                     </div>
                 </div>

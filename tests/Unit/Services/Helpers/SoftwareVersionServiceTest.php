@@ -153,7 +153,7 @@ class SoftwareVersionServiceTest extends TestCase
     }
 
     /**
-     * Provide data for testing booklean response for daemon version.
+     * Provide data for testing boolean response for daemon version.
      *
      * @return array
      */

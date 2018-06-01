@@ -14,7 +14,8 @@ class PowerRepository extends BaseRepository implements PowerRepositoryInterface
      * @param string $signal
      * @return \Psr\Http\Message\ResponseInterface
      *
-     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
+     * @throws InvalidPowerSignalException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function sendSignal(string $signal): ResponseInterface
     {

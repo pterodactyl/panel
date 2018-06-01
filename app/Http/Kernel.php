@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http;
 
+use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
@@ -108,10 +109,11 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
+        'node.maintenance' => MaintenanceMiddleware::class,
 
         // Server specific middleware (used for authenticating access to resources)
         //
-        // These are only used for individual server authentication, and not gloabl
+        // These are only used for individual server authentication, and not global
         // actions from other resources. They are defined in the route files.
         'server..database' => DatabaseBelongsToServer::class,
         'server..subuser' => SubuserBelongsToServer::class,

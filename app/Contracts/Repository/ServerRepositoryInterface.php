@@ -119,7 +119,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     public function getByUuid(string $uuid): Server;
 
     /**
-     * Return all of the servers that should have a power action performed aganist them.
+     * Return all of the servers that should have a power action performed against them.
      *
      * @param int[] $servers
      * @param int[] $nodes
@@ -145,4 +145,11 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return bool
      */
     public function isUniqueUuidCombo(string $uuid, string $short): bool;
+
+    /**
+     * Get the amount of servers that are suspended
+     *
+     * @return int
+     */
+    public function getSuspendedServersCount(): int;
 }

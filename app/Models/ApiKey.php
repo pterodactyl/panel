@@ -95,7 +95,7 @@ class ApiKey extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
-     * Rules to protect aganist invalid data entry to DB.
+     * Rules to protect against invalid data entry to DB.
      *
      * @var array
      */

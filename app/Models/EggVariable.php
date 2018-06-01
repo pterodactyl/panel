@@ -82,6 +82,7 @@ class EggVariable extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
+     * @param $value
      * @return bool
      */
     public function getRequiredAttribute($value)

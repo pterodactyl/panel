@@ -23,7 +23,7 @@ Route::group(['middleware' => 'guest'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| Routes Accessable only when logged in
+| Routes Accessible only when logged in
 |--------------------------------------------------------------------------
 |
 | Endpoint: /auth

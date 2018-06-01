@@ -13,10 +13,14 @@ use Mockery as m;
 use Pterodactyl\Models\User;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
+use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
 use Pterodactyl\Http\Controllers\Base\IndexController;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
@@ -133,5 +137,45 @@ class IndexControllerTest extends ControllerTestCase
         $this->assertIsJsonResponse($response);
         $this->assertResponseCodeEquals(200, $response);
         $this->assertResponseJsonEquals(['status' => 30], $response);
+    }
+
+    /**
+     * Test the status controller with a ServerConnectionException.
+     */
+    public function testStatusControllerWithServerConnectionException()
+    {
+        $user = factory(User::class)->make();
+        $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 1]);
+
+        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($user);
+        $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
+        $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('test123');
+
+        $this->daemonRepository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('test123')->once()->andReturnSelf()
+            ->shouldReceive('details')->withNoArgs()->once()->andThrow(new ConnectException('bad connection', new ServerRequest('', '')));
+
+        $this->expectExceptionObject(new HttpException(500, 'bad connection'));
+        $this->controller->status($this->request, $server->uuidShort);
+    }
+
+    /**
+     * Test the status controller with a RequestException.
+     */
+    public function testStatusControllerWithRequestException()
+    {
+        $user = factory(User::class)->make();
+        $server = factory(Server::class)->make(['suspended' => 0, 'installed' => 1]);
+
+        $this->request->shouldReceive('user')->withNoArgs()->once()->andReturn($user);
+        $this->repository->shouldReceive('findFirstWhere')->with([['uuidShort', '=', $server->uuidShort]])->once()->andReturn($server);
+        $this->keyProviderService->shouldReceive('handle')->with($server, $user)->once()->andReturn('test123');
+
+        $this->daemonRepository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
+            ->shouldReceive('setToken')->with('test123')->once()->andReturnSelf()
+            ->shouldReceive('details')->withNoArgs()->once()->andThrow(new RequestException('bad request', new ServerRequest('', '')));
+
+        $this->expectExceptionObject(new HttpException(500, 'bad request'));
+        $this->controller->status($this->request, $server->uuidShort);
     }
 }
