@@ -200,4 +200,11 @@ interface RepositoryInterface
      * @return bool
      */
     public function insertIgnore(array $values): bool;
+
+    /**
+     * Get the amount of entries in the database
+     *
+     * @return int
+     */
+    public function count(): int;
 }

@@ -57,6 +57,33 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     }
 
     /**
+     * Return the usage stats for a single node.
+     *
+     * @param \Pterodactyl\Models\Node $node
+     * @return array
+     */
+    public function getUsageStatsRaw(Node $node): array
+    {
+        $stats = $this->getBuilder()->select(
+            $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+        )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
+
+        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($node) {
+            $maxUsage = $node->{$key};
+            if ($node->{$key . '_overallocate'} > 0) {
+                $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
+            }
+
+            return [
+                $key => [
+                    'value' => $value,
+                    'max' => $maxUsage,
+                ],
+            ];
+        })->toArray();
+    }
+
+    /**
      * Return all available nodes with a searchable interface.
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
