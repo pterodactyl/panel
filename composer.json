@@ -47,6 +47,7 @@
         "filp/whoops": "^2.1",
         "friendsofphp/php-cs-fixer": "^2.11.1",
         "fzaninotto/faker": "^1.6",
+        "laravel/dusk": "^3.0",
         "martinlindhe/laravel-vue-i18n-generator": "^0.1.28",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
@@ -67,6 +68,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Pterodactyl\\Tests\\Browser\\": "tests/Browser",
             "Pterodactyl\\Tests\\Integration\\": "tests/Integration",
             "Tests\\": "tests/"
         }
