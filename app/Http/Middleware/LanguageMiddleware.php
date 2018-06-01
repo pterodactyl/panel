@@ -48,11 +48,7 @@ class LanguageMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! Auth::check() || $this->config->get('pterodactyl.lang.global')) {
-            $this->app->setLocale($this->config->get('app.locale', 'en'));
-        } else {
-            $this->app->setLocale(Auth::user()->language);
-        }
+        $this->app->setLocale($request->user()->language ?? $this->config->get('app.locale'));
 
         return $next($request);
     }
