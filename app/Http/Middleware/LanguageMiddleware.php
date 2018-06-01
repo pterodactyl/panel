@@ -48,7 +48,7 @@ class LanguageMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $this->app->setLocale($request->user()->language ?? $this->config->get('app.locale'));
+        $this->app->setLocale($request->user()->language ?? $this->config->get('app.locale', 'en'));
 
         return $next($request);
     }

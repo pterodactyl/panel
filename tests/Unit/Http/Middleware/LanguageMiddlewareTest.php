@@ -6,6 +6,7 @@ use Mockery as m;
 use Illuminate\Foundation\Application;
 use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
+use Pterodactyl\Models\User;
 
 class LanguageMiddlewareTest extends MiddlewareTestCase
 {
@@ -31,12 +32,26 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
     }
 
     /**
-     * Test that a language is defined via the middleware.
+     * Test that a language is defined via the middleware for guests.
      */
-    public function testLanguageIsSet()
+    public function testLanguageIsSetForGuest()
     {
+        $this->request->shouldReceive('user')->withNoArgs()->andReturnNull();
+
         $this->config->shouldReceive('get')->with('app.locale', 'en')->once()->andReturn('en');
         $this->appMock->shouldReceive('setLocale')->with('en')->once()->andReturnNull();
+
+        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
+    }
+
+    /**
+     * Test that a language is defined via the middleware for a user.
+     */
+    public function testLanguageIsSetWithAuthenticatedUser() {
+        $user = factory(User::class)->make(['language' => 'de']);
+
+        $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);
+        $this->appMock->shouldReceive('setLocale')->with('de')->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
