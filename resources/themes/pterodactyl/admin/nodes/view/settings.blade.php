@@ -88,12 +88,15 @@
                                 <label for="pSSLTrue"> Use SSL Connection</label>
                             </div>
                             <div class="radio radio-danger radio-inline">
-                                <input type="radio" id="pSSLFalse" value="http" name="scheme" {{ (old('scheme', $node->scheme) !== 'https') ? 'checked' : '' }}>
+                                <input type="radio" id="pSSLFalse" value="http" name="scheme" {{ (old('scheme', $node->scheme) !== 'https') ? 'checked' : '' }}@if(request()->isSecure()) disabled @endif>
                                 <label for="pSSLFalse"> Use HTTP Connection</label>
                             </div>
                         </div>
+                        @if(request()->isSecure())
+                            <p class="text-danger small">Your Panel is currently configured to use a secure connection. In order for browsers to connect to your node it <strong>must</strong> use a SSL connection.</p>
+                        @else
                         <p class="text-muted small">In most cases you should select to use a SSL connection. If using an IP Address or you do not wish to use SSL at all, select a HTTP connection.</p>
-                    </div>
+                        @endif                    </div>
                     <div class="form-group col-xs-12">
                         <label class="form-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Behind Proxy</label>
                         <div>
