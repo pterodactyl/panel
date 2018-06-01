@@ -3,6 +3,18 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.8 (Derelict Dermodactylus)
+### Added
+* Nodes can now be put into maintenance mode to deny access to servers temporarily.
+* Basic statistics about your panel are now available in the Admin CP.
+
+### Fixed
+* Hitting Ctrl+Z when editing a file on the web now works as expected.
+* Logo now links to the correct location on all pages.
+
+### Changed
+* Attempting to upload a folder via the web file manager will now display a warning telling the user to use SFTP.
+
 ## v0.7.7 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with the sidebar logo not working correctly in some browsers due to the CSS being assigned.
