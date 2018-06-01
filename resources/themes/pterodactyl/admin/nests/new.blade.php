@@ -31,7 +31,7 @@
                         <label class="control-label">Name</label>
                         <div>
                             <input type="text" name="name" class="form-control" value="{{ old('name') }}" />
-                            <p class="text-muted"><small>This should be a descriptive category name that emcompasses all of the eggs within the nest.</small></p>
+                            <p class="text-muted"><small>This should be a descriptive category name that encompasses all of the eggs within the nest.</small></p>
                         </div>
                     </div>
                     <div class="form-group">

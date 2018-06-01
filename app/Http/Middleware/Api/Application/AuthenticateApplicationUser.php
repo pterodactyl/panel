@@ -10,7 +10,7 @@ class AuthenticateApplicationUser
 {
     /**
      * Authenticate that the currently authenticated user is an administrator
-     * and should be allowed to proceede through the application API.
+     * and should be allowed to proceed through the application API.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next

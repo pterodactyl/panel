@@ -61,6 +61,18 @@
         event.preventDefault();
     }, false);
 
+    window.foldersDetectedInDrag = function (event) {
+        var folderDetected = false;
+        var files = event.dataTransfer.files;
+        for (var i = 0, f; f = files[i]; i++) {
+            if (!f.type && f.size === 0) {
+                return true;
+            }
+        }
+
+        return folderDetected;
+    };
+
     var dropCounter = 0;
     $('#load_files').bind({
         dragenter: function (event) {
@@ -75,6 +87,15 @@
             }
         },
         drop: function (event) {
+            if (window.foldersDetectedInDrag(event.originalEvent)) {
+                $.notify({
+                    message: 'Folder uploads are not supported. Please use SFTP to upload whole directories.',
+                }, {
+                    type: 'warning',
+                    delay: 0
+                });
+            }
+
             dropCounter = 0;
             $(this).removeClass('hasFileHover');
         }

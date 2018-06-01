@@ -8,7 +8,7 @@ abstract class ClientApiRequest extends ApplicationApiRequest
 {
     /**
      * Determine if the current user is authorized to perform
-     * the requested action aganist the API.
+     * the requested action against the API.
      *
      * @return bool
      */

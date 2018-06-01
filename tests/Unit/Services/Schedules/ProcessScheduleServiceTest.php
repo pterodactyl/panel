@@ -60,7 +60,7 @@ class ProcessScheduleServiceTest extends TestCase
 
         $this->repository->shouldReceive('loadTasks')->with($model)->once()->andReturn($model);
 
-        $formatted = sprintf('%s %s %s * %s *', $model->cron_minute, $model->cron_hour, $model->cron_day_of_month, $model->cron_day_of_week);
+        $formatted = sprintf('%s %s %s * %s', $model->cron_minute, $model->cron_hour, $model->cron_day_of_month, $model->cron_day_of_week);
         $this->repository->shouldReceive('update')->with($model->id, [
             'is_processing' => true,
             'next_run_at' => CronExpression::factory($formatted)->getNextRunDate(),

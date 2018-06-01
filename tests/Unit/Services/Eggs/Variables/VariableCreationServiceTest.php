@@ -68,7 +68,7 @@ class VariableCreationServiceTest extends TestCase
 
     /**
      * Test that an empty (null) value passed in the option key is handled
-     * properly as an array. Also tests the same case aganist the default_value.
+     * properly as an array. Also tests the same case against the default_value.
      *
      * @see https://github.com/Pterodactyl/Panel/issues/841
      * @see https://github.com/Pterodactyl/Panel/issues/943

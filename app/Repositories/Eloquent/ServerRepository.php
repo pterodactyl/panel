@@ -265,7 +265,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Return all of the servers that should have a power action performed aganist them.
+     * Return all of the servers that should have a power action performed against them.
      *
      * @param int[] $servers
      * @param int[] $nodes
@@ -327,5 +327,15 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
         return $this->getBuilder()->select('id')->where('owner_id', $user)->union(
             $this->app->make(SubuserRepository::class)->getBuilder()->select('server_id')->where('user_id', $user)
         )->pluck('id')->all();
+    }
+
+    /**
+     * Get the amount of servers that are suspended
+     *
+     * @return int
+     */
+    public function getSuspendedServersCount(): int
+    {
+        return $this->getBuilder()->where('suspended', true)->count();
     }
 }

@@ -68,7 +68,7 @@
                                 <input type="text" name="default_value" value="{{ $variable->default_value }}" class="form-control" />
                             </div>
                             <div class="col-xs-12">
-                                <p class="text-muted small">This variable can be accessed in the statup command by using <code>{{ $variable->env_variable }}</code>.</p>
+                                <p class="text-muted small">This variable can be accessed in the startup command by using <code>{{ $variable->env_variable }}</code>.</p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -121,7 +121,7 @@
                             <input type="text" name="default_value" class="form-control" value="{{ old('default_value') }}" />
                         </div>
                         <div class="col-xs-12">
-                            <p class="text-muted small">This variable can be accessed in the statup command by entering <code>@{{environment variable value}}</code>.</p>
+                            <p class="text-muted small">This variable can be accessed in the startup command by entering <code>@{{environment variable value}}</code>.</p>
                         </div>
                     </div>
                     <div class="form-group">

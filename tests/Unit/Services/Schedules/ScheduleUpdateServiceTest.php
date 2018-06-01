@@ -64,7 +64,7 @@ class ScheduleUpdateServiceTest extends TestCase
 
         $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs();
         $this->repository->shouldReceive('update')->once()->with($schedule->id, array_merge($data, [
-            'next_run_at' => CronExpression::factory('1 2 3 * 4 *')->getNextRunDate(),
+            'next_run_at' => CronExpression::factory('1 2 3 * 4')->getNextRunDate(),
         ]))->andReturn($schedule);
 
         $this->taskRepository->shouldReceive('deleteWhere')->once()->with([['schedule_id', '=', $schedule->id]]);

@@ -34,7 +34,7 @@ return [
 
     /*
      * Or, to trust ALL proxies, including those that
-     * are in a chain of fowarding, uncomment this:
+     * are in a chain of forwarding, uncomment this:
      */
     // 'proxies' => '**',
 
@@ -50,10 +50,5 @@ return [
      * The following are Symfony defaults, found in
      * \Symfony\Component\HttpFoundation\Request::$trustedHeaders
      */
-    'headers' => [
-        \Illuminate\Http\Request::HEADER_CLIENT_IP => 'X_FORWARDED_FOR',
-        \Illuminate\Http\Request::HEADER_CLIENT_HOST => 'X_FORWARDED_HOST',
-        \Illuminate\Http\Request::HEADER_CLIENT_PROTO => 'X_FORWARDED_PROTO',
-        \Illuminate\Http\Request::HEADER_CLIENT_PORT => 'X_FORWARDED_PORT',
-    ],
+    'headers' => \Illuminate\Http\Request::HEADER_X_FORWARDED_ALL,
 ];

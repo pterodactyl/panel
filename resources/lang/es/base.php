@@ -220,7 +220,7 @@ return [
         'new_email' => 'Nueva Dirección De Correo Electrónico',
         'first_name' => 'Primer Nombre',
         'last_name' => 'Apellido',
-        'update_identitity' => 'Actualización De La Identidad',
+        'update_identity' => 'Actualización De La Identidad',
         'username_help' => 'Su nombre de usuario debe ser único a su cuenta, y sólo pueden contener los siguientes caracteres: :requirements.',
     ],
     'security' => [

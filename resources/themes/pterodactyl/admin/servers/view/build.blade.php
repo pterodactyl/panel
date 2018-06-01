@@ -30,8 +30,8 @@
                     <li class="active"><a href="{{ route('admin.servers.view.build', $server->id) }}">Build Configuration</a></li>
                     <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">Startup</a></li>
                     <li><a href="{{ route('admin.servers.view.database', $server->id) }}">Database</a></li>
+                    <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
                 @endif
-                <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
                 <li class="tab-danger"><a href="{{ route('admin.servers.view.delete', $server->id) }}">Delete</a></li>
                 <li class="tab-success"><a href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-external-link"></i></a></li>
             </ul>
@@ -102,7 +102,7 @@
                                     <div>
                                         <input type="text" name="database_limit" class="form-control" value="{{ old('database_limit', $server->database_limit) }}"/>
                                     </div>
-                                    <p class="text-muted small">The total number of databases a user is allowed to create for this server. Leave blank to allow unlimmited.</p>
+                                    <p class="text-muted small">The total number of databases a user is allowed to create for this server. Leave blank to allow unlimited.</p>
                                 </div>
                                 <div class="form-group col-xs-6">
                                     <label for="cpu" class="control-label">Allocation Limit</label>
