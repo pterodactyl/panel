@@ -74,6 +74,7 @@ return [
     'tasks' => 'Tasks',
     'seconds' => 'Seconds',
     'minutes' => 'Minutes',
+    'under_maintenance' => 'Under Maintenance',
     'days' => [
         'sun' => 'Sunday',
         'mon' => 'Monday',
