@@ -41,6 +41,7 @@ abstract class BrowserTestCase extends TestCase
     {
         $options = (new ChromeOptions)->addArguments([
             '--disable-gpu',
+            '--disable-infobars',
         ]);
 
         return RemoteWebDriver::create(
