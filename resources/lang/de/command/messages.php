@@ -64,7 +64,7 @@ return [
             'password' => 'Datenbank Passwort',
             'connection_error' => 'Die Verbindung zum MySQL-Server kann mit den angegebenen Anmeldeinformationen nicht hergestellt werden. Der zurückgegebene Fehler war ":error".',
             'creds_not_saved' => 'Deine Verbindungsdaten wurden NICHT gespeichert. Du musst gültige Verbindungsinformationen angeben, bevor du fortfahren kannst.',
-            'try_again' => 'Zurückgehen und es nochmal versuchen?',
+            'try_again' => 'Möchtest du es nochmal versuchen?',
         ],
         'app' => [
             'app_url_help' => 'Die Anwendungs URL MUSS mit https:// oder http:// beginnen, je nach dem ob du SSL verwendest oder nicht. Solltest du das Schema nicht beinhalten, werden deine E-Mails und anderer Inhalt an die falsche Stelle verlinken.',
