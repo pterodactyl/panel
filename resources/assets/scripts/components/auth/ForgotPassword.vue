@@ -68,6 +68,10 @@
                     email: this.$props.email,
                 })
                     .then(function (response) {
+                        if (!(response.data instanceof Object)) {
+                            throw new Error('An error was encountered while processing this request.');
+                        }
+
                         self.$data.submitDisabled = false;
                         self.$data.showSpinner = false;
                         self.success(response.data.status);

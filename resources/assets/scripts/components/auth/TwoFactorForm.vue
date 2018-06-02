@@ -49,6 +49,10 @@
                     authentication_code: this.$data.code,
                 })
                     .then(function (response) {
+                        if (!(response.data instanceof Object)) {
+                            throw new Error('An error was encountered while processing this login.');
+                        }
+
                         window.location = response.data.intended;
                     })
                     .catch(function (err) {
