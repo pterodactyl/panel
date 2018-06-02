@@ -5,13 +5,14 @@
         >
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-email" type="email" aria-labelledby="grid-email" ref="email" required
+                    <input class="input" id="grid-email" type="email" aria-labelledby="grid-email-label" required
+                           ref="email"
                            v-bind:class="{ 'has-content': email.length > 0 }"
                            v-bind:readonly="showSpinner"
                            v-bind:value="email"
                            v-on:input="updateEmail($event)"
                     />
-                    <label for="grid-email">{{ $t('strings.email') }}</label>
+                    <label for="grid-email" id="grid-email-label">{{ $t('strings.email') }}</label>
                     <p class="text-grey-darker text-xs">{{ $t('auth.forgot_password.label_help') }}</p>
                 </div>
             </div>
@@ -25,6 +26,7 @@
             </div>
             <div class="pt-6 text-center">
                 <router-link class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark"
+                             aria-label="Go to login"
                              :to="{ name: 'login' }"
                 >
                     {{ $t('auth.go_to_login') }}
