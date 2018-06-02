@@ -2,16 +2,14 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Traits\Controllers\PlainJavascriptInjection;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class StatisticsController extends Controller
 {
@@ -29,15 +27,14 @@ class StatisticsController extends Controller
 
     private $userRepository;
 
-    function __construct(
+    public function __construct(
         AllocationRepositoryInterface $allocationRepository,
         DatabaseRepositoryInterface $databaseRepository,
         EggRepositoryInterface $eggRepository,
         NodeRepositoryInterface $nodeRepository,
         ServerRepositoryInterface $serverRepository,
         UserRepositoryInterface $userRepository
-    )
-    {
+    ) {
         $this->allocationRepository = $allocationRepository;
         $this->databaseRepository = $databaseRepository;
         $this->eggRepository = $eggRepository;
@@ -83,7 +80,7 @@ class StatisticsController extends Controller
             'nodes' => $nodes,
             'tokens' => $tokens,
         ]);
-        
+
         return view('admin.statistics', [
             'servers' => $servers,
             'nodes' => $nodes,
@@ -97,5 +94,4 @@ class StatisticsController extends Controller
             'totalAllocations' => $totalAllocations,
         ]);
     }
-
 }
