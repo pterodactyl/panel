@@ -73,7 +73,7 @@ return [
             'timezone' => 'Anwendungs Zeitzone',
             'cache_driver' => 'Cache Treiber',
             'session_driver' => 'Sitzungstreiber',
-            'using_redis' => 'Du hast für eine oder mehr Optionen den Redis Treiber ausgewählt, bitte stelle gültige Verbindungsinformationen unten zur Verfügung. In den meisten fällen kannst du die Standartwerte verwenden, es sei denn du hast dein Setup modifiziert.',
+            'using_redis' => 'Du hast für eine oder mehrere Optionen den Redis Treiber ausgewählt, bitte stelle gültige Verbindungsinformationen nachfolgend zur Verfügung. In den meisten fällen kannst du die Standartwerte verwenden, es sei denn, du hast dein Setup modifiziert.',
             'redis_host' => 'Redis Host',
             'redis_password' => 'Redis Passwort',
             'redis_pass_help' => 'Normalerweise hat eine Redis Server Instanz kein Passwort, da diese Lokal läuft und von aussen nicht erreichbar ist. Sollte das der Fall sein, drücke einfach Enter ohne etwas einzugeben.',
