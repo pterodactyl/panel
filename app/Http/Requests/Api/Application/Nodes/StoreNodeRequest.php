@@ -75,7 +75,7 @@ class StoreNodeRequest extends ApplicationApiRequest
         $response['daemonListen'] = $response['daemon_listen'];
         $response['daemonSFTP'] = $response['daemon_sftp'];
         $response['daemonBase'] = $response['daemon_base'] ?? (new Node)->getAttribute('daemonBase');
-        
+
         unset($response['daemon_base'], $response['daemon_listen'], $response['daemon_sftp']);
 
         return $response;
