@@ -36,7 +36,7 @@ return [
         'deleting_service_backup' => 'Lösche Service Backup Datei :file.',
     ],
     'server' => [
-        'rebuild_failed' => 'Neubauanforderung für ":name" (#:id) auf Node ":node" ist gescheitert mit Fehler: :message',
+        'rebuild_failed' => 'Rebuild-Aufruf für ":name" (#:id) auf Node ":node" ist gescheitert mit Fehler: :message',
     ],
     'environment' => [
         'mail' => [
