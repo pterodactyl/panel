@@ -54,7 +54,7 @@ return [
             'ask_encryption' => 'Zu verwendende Verschlüsselungsmethode',
         ],
         'database' => [
-            'host_warning' => 'Es wird dringend empfohlen, "localhost" nicht als Datenbank-Host zu verwenden, da wir häufige Socket-Verbindungsprobleme gesehen haben. Wenn du eine lokale Verbindung verwenden willst, solltest du "127.0.0.1" verwenden.',
+            'host_warning' => 'Es wird dringend empfohlen, "localhost" nicht als Datenbank-Host zu verwenden, da wir häufig Socket-Verbindungsprobleme gesehen haben. Wenn du eine lokale Verbindung verwenden willst, solltest du "127.0.0.1" verwenden.',
             'host' => 'Datenbank Host',
             'port' => 'Datenbank Port',
             'database' => 'Datenbank Name',
