@@ -298,7 +298,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
-     * Get the amount of entries in the database
+     * Get the amount of entries in the database.
      *
      * @return int
      */
