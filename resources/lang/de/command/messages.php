@@ -24,7 +24,7 @@ return [
         'ask_password_tip' => 'Wenn du das wirklich tun willst, drücke Strg+C und benutze das `--no-password` Flag.',
         'ask_password_help' => 'Das Passwort muss Zahlen, Groß- und Kleinbuchstaben enthalten und mindestens 8 Zeichen lang sein.',
         '2fa_help_text' => [
-            'Dieser Befehl deaktiviert die 2-Faktor-Authentifizierung für das Konto eines Benutzers, wenn sie aktiviert ist. Dies sollte nur dann als Befehl zur Wiederherstellung eines Kontos verwendet werden, wenn der Benutzer von seinem Konto ausgeschlossen ist.',
+            'Mit diesem Befehl wird die 2-Faktor-Authentifizierung für das Konto eines Benutzers deaktiviert, falls sie aktiviert ist. Der Befehl sollte ausschließlich dann zur Wiederherstellung eines Kontos verwendet werden, wenn der Benutzer nicht anderweitig auf sein Konto zugreifen kann.',
             'Wenn das nicht das ist, was du tun wolltest, drücke Strg+C um den Prozess zu beenden.',
         ],
         '2fa_disabled' => '2-Faktor-Authentifizierung wurde für :email deaktiviert.',
