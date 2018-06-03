@@ -15,42 +15,12 @@
             </div>
         </div>
         <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start" v-else>
-            <div class="server-box animate fadein" :key="index" v-for="(server, index) in servers.models">
-                <router-link :to="{ name: 'server', params: { id: server.identifier }}" class="content">
-                    <div class="float-right">
-                        <div class="indicator"></div>
-                    </div>
-                    <div class="mb-4">
-                        <div class="text-black font-bold text-xl">
-                            {{ server.name }}
-                        </div>
-                    </div>
-                    <div class="mb-0 flex">
-                        <div class="usage">
-                            <div class="indicator-title">{{ $t('dashboard.index.cpu_title') }}</div>
-                        </div>
-                        <div class="usage">
-                            <div class="indicator-title">{{ $t('dashboard.index.memory_title') }}</div>
-                        </div>
-                    </div>
-                    <div class="mb-4 flex text-center">
-                        <div class="inline-block border border-grey-lighter border-l-0 p-4 flex-1">
-                            <span class="font-bold text-xl">---</span>
-                            <span class="font-light text-sm">%</span>
-                        </div>
-                        <div class="inline-block border border-grey-lighter border-l-0 border-r-0 p-4 flex-1">
-                            <span class="font-bold text-xl">---</span>
-                            <span class="font-light text-sm">Mb</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="text-sm">
-                            <p class="text-grey">{{ server.node }}</p>
-                            <p class="text-grey-dark">{{ server.allocation.ip }}:{{ server.allocation.port }}</p>
-                        </div>
-                    </div>
-                </router-link>
-            </div>
+            <server-box
+                    v-for="(server, index) in servers.models"
+                    v-bind:key="index"
+                    v-bind:server="server"
+                    v-bind:resources="resources[server.uuid]"
+            />
         </transition-group>
     </div>
 </template>
@@ -59,15 +29,17 @@
     import { ServerCollection } from '../../models/server';
     import _ from 'lodash';
     import Flash from '../Flash';
+    import ServerBox from './ServerBox';
 
     export default {
         name: 'dashboard',
-        components: { Flash },
+        components: { ServerBox, Flash },
         data: function () {
             return {
                 loading: true,
                 search: '',
                 servers: new ServerCollection,
+                resources: {},
             }
         },
 
@@ -92,6 +64,7 @@
                     .then(response => {
                         this.servers = new ServerCollection;
                         response.data.data.forEach(obj => {
+                            this.resources[obj.attributes.uuid] = { cpu: 0, memory: 0 };
                             this.servers.add(obj.attributes);
                         });
 
