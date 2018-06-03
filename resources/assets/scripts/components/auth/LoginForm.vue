@@ -82,6 +82,12 @@
                     password: this.$props.user.password,
                 })
                     .then(function (response) {
+                        // If there is a 302 redirect or some other odd behavior (basically, response that isnt
+                        // in JSON format) throw an error and don't try to continue with the login.
+                        if (!(response.data instanceof Object)) {
+                            throw new Error('An error was encountered while processing this request.');
+                        }
+
                         if (response.data.complete) {
                             return window.location = '/';
                         }
@@ -93,6 +99,8 @@
                     .catch(function (err) {
                         self.$props.user.password = '';
                         self.$data.showSpinner = false;
+                        self.$refs.password.focus();
+
                         if (!err.response) {
                             return console.error(err);
                         }
@@ -102,7 +110,6 @@
                             response.data.errors.forEach(function (error) {
                                 self.error(error.detail);
                             });
-                            self.$refs.password.focus();
                         }
                     });
             },
