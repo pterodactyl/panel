@@ -1,24 +1,4 @@
 .nav {
-    @apply .flex;
-
-    a {
-        @apply .py-6 .px-6 .text-white .no-underline;
-
-    &:hover {
-         @apply .bg-blue-dark;
-     }
-
-     &.router-link-active {
-        @apply .bg-blue-dark;
-      }
-
-    &:last-child {
-         @apply mr-0;
-     }
-    }
-}
-
-/*.nav {
     @apply .bg-blue;
     height: 48px;
 
@@ -63,7 +43,7 @@
             @apply .float-right .mx-8 .inline-block;
         }
     }
-}*/
+}
 
 .sidenav {
     @apply .mb-2;
