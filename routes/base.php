@@ -7,8 +7,6 @@
  * https://opensource.org/licenses/MIT
  */
 Route::get('/', 'IndexController@index')->name('index');
-Route::get('/dashboard/servers', 'DashboardController@servers')->name('dashboard.servers');
-Route::get('/status/{server}', 'IndexController@status')->name('index.status');
 
 /*
 |--------------------------------------------------------------------------

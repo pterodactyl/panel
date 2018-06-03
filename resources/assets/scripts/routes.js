@@ -17,7 +17,7 @@ import {
 export const routes = [
     { name: 'login', path: '/auth/login', component: Login },
     { name: 'forgot-password', path: '/auth/password', component: Login },
-    { name: 'checkpoint', path: '/checkpoint', component: Login },
+    { name: 'checkpoint', path: '/auth/checkpoint', component: Login },
     {
         name: 'reset-password',
         path: '/auth/password/reset/:token',
@@ -27,7 +27,7 @@ export const routes = [
         }
     },
 
-    { name : 'index', path: '/', component: Dashboard },
+    { name : 'dashboard', path: '/', component: Dashboard },
     { name : 'account', path: '/account', component: Account },
     { name : 'account.api', path: '/account/api', component: Account },
     { name : 'account.security', path: '/account/security', component: Account },

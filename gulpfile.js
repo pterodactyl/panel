@@ -2,6 +2,7 @@ const babel = require('gulp-babel');
 const concat = require('gulp-concat');
 const cssmin = require('gulp-cssmin');
 const del = require('del');
+const exec = require('child_process').exec;
 const gulp = require('gulp');
 const gulpif = require('gulp-if');
 const postcss = require('gulp-postcss');
@@ -86,6 +87,32 @@ function watch() {
 }
 
 /**
+ * Generate the language files to be consumed by front end.
+ *
+ * @returns {Promise<any>}
+ */
+function i18n() {
+    return new Promise((resolve, reject) => {
+        exec('php artisan vue-i18n:generate', {}, (err, stdout, stderr) => {
+            return err ? reject(err) : resolve({ stdout, stderr });
+        })
+    })
+}
+
+/**
+ * Generate the routes file to be used in Vue files.
+ * 
+ * @returns {Promise<any>}
+ */
+function routes() {
+    return new Promise((resolve, reject) => {
+        exec('php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js', {}, (err, stdout, stderr) => {
+            return err ? reject(err) : resolve({ stdout, stderr });
+        });
+    })
+}
+
+/**
  * Cleanup unused versions of hashed assets.
  */
 function clean() {
@@ -93,9 +120,12 @@ function clean() {
 }
 
 exports.clean = clean;
+exports.i18n = i18n;
+exports.routes = routes;
 exports.styles = styles;
 exports.scripts = scripts;
 exports.watch = watch;
 
+gulp.task('components', gulp.parallel(i18n, routes));
 gulp.task('scripts', gulp.series(clean, scripts));
-gulp.task('default', gulp.series(clean, styles, scripts));
+gulp.task('default', gulp.series(clean, i18n, routes, styles, scripts));

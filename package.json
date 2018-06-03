@@ -30,6 +30,7 @@
         "jquery": "^3.3.1",
         "jwt-decode": "^2.2.0",
         "lodash": "^4.17.5",
+        "luxon": "^1.2.1",
         "postcss": "^6.0.21",
         "postcss-import": "^11.1.0",
         "postcss-preset-env": "^3.4.0",
@@ -42,6 +43,7 @@
         "vue": "^2.5.7",
         "vue-axios": "^2.1.1",
         "vue-devtools": "^3.1.9",
+        "vue-feather-icons": "^4.7.1",
         "vue-loader": "^14.2.2",
         "vue-mc": "^0.2.4",
         "vue-router": "^3.0.1",
@@ -58,6 +60,7 @@
         "build:filemanager": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js",
         "watch": "./node_modules/gulp-cli/bin/gulp.js watch",
         "build": "./node_modules/gulp-cli/bin/gulp.js default",
+        "build:components": "./node_modules/gulp-cli/bin/gulp.js components",
         "build:styles": "./node_modules/gulp-cli/bin/gulp.js styles",
         "build:scripts": "./node_modules/gulp-cli/bin/gulp.js scripts"
     }

@@ -26,5 +26,11 @@
  * Assorted Other CSS
  */
 body {
-  @apply .font-sans;
+    @apply .font-sans;
+}
+
+.container {
+    @screen xsx {
+        @apply .px-2;
+    }
 }

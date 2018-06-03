@@ -505,6 +505,10 @@ babel-helper-replace-supers@^6.24.1:
     babel-traverse "^6.24.1"
     babel-types "^6.24.1"
 
+babel-helper-vue-jsx-merge-props@^2.0.2:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-2.0.3.tgz#22aebd3b33902328e513293a8e4992b384f9f1b6"
+
 babel-helpers@^6.24.1:
   version "6.24.1"
   resolved "https://registry.yarnpkg.com/babel-helpers/-/babel-helpers-6.24.1.tgz#3471de9caec388e5c850e597e58a26ddf37602b2"
@@ -3424,6 +3428,10 @@ lru-cache@^4.0.1, lru-cache@^4.1.1:
     pseudomap "^1.0.2"
     yallist "^2.1.2"
 
+luxon@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/luxon/-/luxon-1.2.1.tgz#5c4948d141939c2b2820f0c3a99276932245efb1"
+
 macaddress@^0.2.8:
   version "0.2.8"
   resolved "https://registry.yarnpkg.com/macaddress/-/macaddress-0.2.8.tgz#5904dc537c39ec6dbefeae902327135fa8511f12"
@@ -5984,6 +5992,12 @@ vue-axios@^2.1.1:
 vue-devtools@^3.1.9:
   version "3.1.9"
   resolved "https://registry.yarnpkg.com/vue-devtools/-/vue-devtools-3.1.9.tgz#283b458c6853f569a987da0092e7c52e8243a436"
+
+vue-feather-icons@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.yarnpkg.com/vue-feather-icons/-/vue-feather-icons-4.7.1.tgz#d8c55fbee7c9ad59689ebbaf07ad1e2f1e5c37da"
+  dependencies:
+    babel-helper-vue-jsx-merge-props "^2.0.2"
 
 vue-hot-reload-api@^2.2.0:
   version "2.3.0"

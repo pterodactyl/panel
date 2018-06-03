@@ -24,14 +24,14 @@
 
         @include('layouts.scripts')
     </head>
-    <body class="{{ $css['body'] ?? 'bg-white' }}">
-        <div id="pterodactyl" class="flex flex-col min-h-screen">
+    <body class="{{ $css['body'] ?? 'bg-grey-lighter' }}">
+        @section('content')
             @yield('above-container')
-            <div class="container">
+            <div id="pterodactyl" class="flex flex-col min-h-screen">
                 @yield('container')
             </div>
             @yield('below-container')
-        </div>
+        @show
         @section('scripts')
             {!! $asset->js('assets/scripts/bundle.js') !!}
         @show
