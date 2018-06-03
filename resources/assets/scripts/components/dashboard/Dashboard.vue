@@ -1,26 +1,29 @@
 <template>
     <div>
-        <flash container="mt-4"/>
-        <div class="server-search animate fadein">
-            <input type="text"
-                   :placeholder="$t('dashboard.index.search')"
-                   @input="onChange"
-                   v-model="search"
-                   ref="search"
-            />
-        </div>
-        <div v-if="this.loading" class="my-4 animate fadein">
-            <div class="text-center h-16">
-                <span class="spinner spinner-xl"></span>
+        <navigation/>
+        <div class="container">
+            <flash container="mt-4"/>
+            <div class="server-search animate fadein">
+                <input type="text"
+                       :placeholder="$t('dashboard.index.search')"
+                       @input="onChange"
+                       v-model="search"
+                       ref="search"
+                />
             </div>
+            <div v-if="this.loading" class="my-4 animate fadein">
+                <div class="text-center h-16">
+                    <span class="spinner spinner-xl"></span>
+                </div>
+            </div>
+            <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start" v-else>
+                <server-box
+                        v-for="(server, index) in servers.models"
+                        v-bind:key="index"
+                        v-bind:server="server"
+                />
+            </transition-group>
         </div>
-        <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start" v-else>
-            <server-box
-                    v-for="(server, index) in servers.models"
-                    v-bind:key="index"
-                    v-bind:server="server"
-            />
-        </transition-group>
     </div>
 </template>
 
@@ -30,10 +33,11 @@
     import _ from 'lodash';
     import Flash from '../Flash';
     import ServerBox from './ServerBox';
+    import Navigation from '../core/Navigation';
 
     export default {
         name: 'dashboard',
-        components: { ServerBox, Flash },
+        components: { Navigation, ServerBox, Flash },
         data: function () {
             return {
                 backgroundedAt: DateTime.local(),

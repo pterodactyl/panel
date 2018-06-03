@@ -49,11 +49,7 @@ code {
     @apply .pb-4;
 
     @screen smx {
-        @apply .w-1/2 .pr-4;
-
-        &:nth-of-type(2n) {
-            padding-right: 0;
-        }
+        @apply .w-full;
     }
 
     @screen md {

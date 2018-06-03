@@ -17,7 +17,7 @@ export const routes = [
         }
     },
 
-    { name : 'index', path: '/', component: Dashboard },
+    { name : 'dashboard', path: '/', component: Dashboard },
     { name : 'account', path: '/account', component: Account },
     { name : 'account.api', path: '/account/api', component: Account },
     { name : 'account.security', path: '/account/security', component: Account },

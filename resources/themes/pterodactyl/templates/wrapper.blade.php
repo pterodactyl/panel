@@ -16,11 +16,13 @@
         @include('layouts.scripts')
     </head>
     <body class="{{ $css['body'] ?? 'bg-grey-lighter' }}">
-        @yield('above-container')
-        <div class="container" id="pterodactyl">
-            @yield('container')
-        </div>
-        @yield('below-container')
+        @section('content')
+            @yield('above-container')
+            <div id="pterodactyl">
+                @yield('container')
+            </div>
+            @yield('below-container')
+        @show
         @section('scripts')
             {!! $asset->js('assets/scripts/bundle.js') !!}
         @show

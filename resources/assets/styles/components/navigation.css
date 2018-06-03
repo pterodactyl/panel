@@ -4,11 +4,18 @@
 
     & > .logo {
         @apply .mx-8 .font-sans .font-thin .text-2xl .text-white .inline-block .pt-2;
+
+        & a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        @screen xsx {
+            @apply .hidden
+        }
     }
 
     & > .menu {
-        @apply .float-right .mx-8 .inline-block;
-
         & > ul {
             @apply .list-reset;
             & > li {
@@ -19,10 +26,21 @@
 
                     &:hover {
                         @apply .bg-blue-dark;
+                    }
 
+                    & .feather {
+                        @apply .h-4;
                     }
                 }
             }
+        }
+
+        @screen xsx {
+            @apply .w-full .text-center;
+        }
+
+        @screen sm {
+            @apply .float-right .mx-8 .inline-block;
         }
     }
 }
