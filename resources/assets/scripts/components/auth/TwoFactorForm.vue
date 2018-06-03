@@ -37,6 +37,10 @@
             };
         },
         mounted: function () {
+            if ((this.$route.query.token || '').length < 1) {
+                return this.$router.push({ name: 'login' });
+            }
+
             this.$refs.code.focus();
         },
         methods: {
