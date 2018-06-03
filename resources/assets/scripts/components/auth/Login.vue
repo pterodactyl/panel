@@ -1,6 +1,6 @@
 <template>
     <div>
-        <flash/>
+        <flash container="mb-2"/>
         <login-form
                 v-if="this.$route.name === 'login'"
                 v-bind:user="user"
