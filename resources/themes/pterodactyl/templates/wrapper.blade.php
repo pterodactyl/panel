@@ -27,7 +27,7 @@
     <body class="{{ $css['body'] ?? 'bg-grey-lighter' }}">
         @section('content')
             @yield('above-container')
-            <div id="pterodactyl" class="flex flex-col min-h-screen">
+            <div id="pterodactyl" class="flex flex-col">
                 @yield('container')
             </div>
             @yield('below-container')
