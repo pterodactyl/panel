@@ -19,7 +19,6 @@
                     v-for="(server, index) in servers.models"
                     v-bind:key="index"
                     v-bind:server="server"
-                    v-bind:resources="resources[server.uuid]"
             />
         </transition-group>
     </div>
@@ -39,12 +38,24 @@
                 loading: true,
                 search: '',
                 servers: new ServerCollection,
-                resources: {},
             }
         },
 
-        mounted: function () {
+        /**
+         * Start loading the servers before the DOM $.el is created.
+         */
+        created: function () {
             this.loadServers();
+        },
+
+        /**
+         * Once the page is mounted set a function to run every 5 seconds that will
+         * iterate through the visible servers and fetch their resource usage.
+         */
+        mounted: function () {
+            setInterval(() => {
+                this.servers.each(this.getResourceUse)
+            }, 10000);
         },
 
         methods: {
@@ -64,8 +75,9 @@
                     .then(response => {
                         this.servers = new ServerCollection;
                         response.data.data.forEach(obj => {
-                            this.resources[obj.attributes.uuid] = { cpu: 0, memory: 0 };
-                            this.servers.add(obj.attributes);
+                            this.getResourceUse(
+                                this.servers.add(obj.attributes)
+                            );
                         });
 
                         if (this.servers.models.length === 0) {
@@ -93,6 +105,25 @@
             onChange: _.debounce(function () {
                 this.loadServers(this.$data.search);
             }, 500),
+
+            /**
+             * Get resource usage for an individual server for rendering purposes.
+             *
+             * @param {Server} server
+             */
+            getResourceUse: function (server) {
+                window.axios.get(this.route('api.client.servers.resources', { server: server.identifier }))
+                    .then(response => {
+                        if (!(response.data instanceof Object)) {
+                            throw new Error('Received an invalid response object back from status endpoint.');
+                        }
+
+                        window.events.$emit(`server:${server.uuid}::resources`, response.data.attributes);
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            },
         }
     };
 </script>
