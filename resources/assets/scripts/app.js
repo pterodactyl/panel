@@ -14,20 +14,25 @@ import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
 fontawesome.library.add(faSolid);
 
 import { routes } from './routes';
-import { storeData } from './store';
+import createStore from './store';
 
 window.events = new Vue;
 window.Ziggy = Ziggy;
 
+Vue.use(VueRouter);
+const router = new VueRouter({
+    mode: 'history', routes
+});
+
 Vue.use(Vuex);
-const store = new Vuex.Store(storeData);
+const store = createStore(router);
+
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.config.productionTip = false;
 Vue.mixin({ methods: { route } });
 Vue.mixin(flash);
 
-Vue.use(VueRouter);
 Vue.use(vuexI18n.plugin, store);
 
 Vue.i18n.add('en', Locales.en);
@@ -35,9 +40,6 @@ Vue.i18n.set('en');
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
-const router = new VueRouter({
-    mode: 'history', routes
-});
 
 require('./bootstrap');
 

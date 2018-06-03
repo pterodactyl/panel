@@ -58,16 +58,8 @@ function styles() {
  */
 function scripts() {
     return webpackStream(webpackConfig)
-        .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(through.obj(function (file, enc, cb) { // Remove Souremaps
-            if (!/\.map$/.test(file.path)) this.push(file);
-            cb();
-        }))
-        .pipe(babel())
         .pipe(gulpif(argv.production, uglify()))
-        .pipe(concat('bundle.js'))
         .pipe(rev())
-        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(paths.scripts.dest))
         .pipe(rev.manifest(paths.manifest + '/manifest.json', {merge: true, base: paths.manifest}))
         .pipe(gulp.dest(paths.manifest));
@@ -78,11 +70,11 @@ function scripts() {
  */
 function watch() {
     gulp.watch(['./resources/assets/styles/**/*.css'], gulp.series(function cleanStyles() {
-        return del(['./public/assets/css/**/*.css']);
+        return del(['./public/assets/css/**/*.{css,map}']);
     }, styles));
 
     gulp.watch(paths.scripts.watch, gulp.series(function cleanScripts() {
-        return del(['./public/assets/scripts/**/*.js']);
+        return del(['./public/assets/scripts/**/*.{js,map}']);
     }, scripts));
 }
 

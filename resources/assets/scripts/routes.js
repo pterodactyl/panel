@@ -3,10 +3,10 @@ import Login from './components/auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
 import Account from './components/dashboard/Account';
 import ResetPassword from './components/auth/ResetPassword';
-import { Server, ServerConsole, ServerAllocations, ServerDatabases, ServerFiles, ServerSchedules, ServerSettings, ServerSubusers } from './components/server';
-
 import {
-    Server, ServerAllocations, ServerConsole,
+    Server,
+    ServerAllocations,
+    ServerConsole,
     ServerDatabases,
     ServerFiles,
     ServerSchedules,
@@ -32,7 +32,7 @@ export const routes = [
     { name : 'account.api', path: '/account/api', component: Account },
     { name : 'account.security', path: '/account/security', component: Account },
 
-    { path: '/server/:id', component: Server,
+    { path: '/server/:serverID', component: Server,
         children: [
             { name: 'server', path: '', component: ServerConsole },
             { name: 'server-files', path: 'files', component: ServerFiles },
