@@ -7,7 +7,7 @@ import ResetPassword from './components/auth/ResetPassword';
 export const routes = [
     { name: 'login', path: '/auth/login', component: Login },
     { name: 'forgot-password', path: '/auth/password', component: Login },
-    { name: 'checkpoint', path: '/checkpoint', component: Login },
+    { name: 'checkpoint', path: '/auth/checkpoint', component: Login },
     {
         name: 'reset-password',
         path: '/auth/password/reset/:token',

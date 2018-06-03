@@ -93,6 +93,10 @@
                     token: this.$props.token,
                 })
                     .then(function (response) {
+                        if (!(response.data instanceof Object)) {
+                            throw new Error('An error was encountered while processing this login.');
+                        }
+
                         return window.location = response.data.redirect_to;
                     })
                     .catch(function (err) {
