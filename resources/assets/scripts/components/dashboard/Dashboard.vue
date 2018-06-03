@@ -25,6 +25,7 @@
 </template>
 
 <script>
+    import { DateTime } from 'luxon';
     import { ServerCollection } from '../../models/server';
     import _ from 'lodash';
     import Flash from '../Flash';
@@ -35,6 +36,8 @@
         components: { ServerBox, Flash },
         data: function () {
             return {
+                backgroundedAt: DateTime.local(),
+                documentVisible: true,
                 loading: true,
                 search: '',
                 servers: new ServerCollection,
@@ -46,6 +49,11 @@
          */
         created: function () {
             this.loadServers();
+
+            document.addEventListener('visibilitychange', () => {
+                this.documentVisible = document.visibilityState === 'visible';
+                this._handleDocumentVisibilityChange(this.documentVisible);
+            });
         },
 
         /**
@@ -53,9 +61,7 @@
          * iterate through the visible servers and fetch their resource usage.
          */
         mounted: function () {
-            setInterval(() => {
-                this.servers.each(this.getResourceUse)
-            }, 10000);
+            this._iterateServerResourceUse();
         },
 
         methods: {
@@ -123,6 +129,37 @@
                     .catch(err => {
                         console.error(err);
                     });
+            },
+
+            /**
+             * Iterates over all of the active servers and gets their resource usage.
+             *
+             * @private
+             */
+            _iterateServerResourceUse: function (initialTimeout = 5000) {
+                window.setTimeout(() => {
+                    if (this.documentVisible) {
+                        return window.setTimeout(this._iterateServerResourceUse(), 5000);
+                    }
+                }, initialTimeout);
+            },
+
+            /**
+             * Handle changes to document visibilty to keep server statuses updated properly.
+             *
+             * @param {Boolean} isVisible
+             * @private
+             */
+            _handleDocumentVisibilityChange: function (isVisible) {
+                if (!isVisible) {
+                    this.backgroundedAt = DateTime.local();
+                    return;
+                }
+
+                // If it has been more than 30 seconds since this window was put into the background
+                // lets go ahead and refresh all of the listed servers so that they have fresh stats.
+                const diff = DateTime.local().diff(this.backgroundedAt, 'seconds');
+                this._iterateServerResourceUse(diff.seconds > 30 ? 1 : 5000);
             },
         }
     };

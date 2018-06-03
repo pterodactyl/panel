@@ -24,7 +24,7 @@
                 </div>
                 <div class="inline-block border border-grey-lighter border-l-0 border-r-0 p-4 flex-1">
                     <span class="font-bold text-xl">{{ memory > 0 ? memory : '&mdash;' }}</span>
-                    <span class="font-light text-sm">Mb</span>
+                    <span class="font-light text-sm">MB</span>
                 </div>
             </div>
             <div class="flex items-center">
