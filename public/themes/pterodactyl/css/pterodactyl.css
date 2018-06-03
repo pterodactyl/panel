@@ -473,3 +473,6 @@ label.control-label > span.field-optional:before {
     height: 42px;
     width: auto;
 }
+.search01 {
+    width: 30%;
+}

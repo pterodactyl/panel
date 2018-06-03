@@ -23,7 +23,7 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">@lang('base.index.list')</h3>
-                <div class="box-tools">
+                <div class="box-tools search01">
                     <form action="{{ route('index') }}" method="GET">
                         <div class="input-group input-group-sm">
                             <input type="text" name="query" class="form-control pull-right" value="{{ request()->input('query') }}" placeholder="@lang('strings.search')">
