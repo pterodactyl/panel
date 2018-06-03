@@ -1,6 +1,7 @@
 <?php
 
 Route::get('/', 'BaseController@index')->name('admin.index');
+Route::get('/statistics', 'StatisticsController@index')->name('admin.statistics');
 
 /*
 |--------------------------------------------------------------------------

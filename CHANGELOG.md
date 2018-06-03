@@ -3,20 +3,35 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.8 (Derelict Dermodactylus)
+### Added
+* Nodes can now be put into maintenance mode to deny access to servers temporarily.
+* Basic statistics about your panel are now available in the Admin CP.
+
+### Fixed
+* Hitting Ctrl+Z when editing a file on the web now works as expected.
+* Logo now links to the correct location on all pages.
+
+### Changed
+* Attempting to upload a folder via the web file manager will now display a warning telling the user to use SFTP.
+
 ## v0.7.7 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with the sidebar logo not working correctly in some browsers due to the CSS being assigned.
 * Fixes a bunch of typos through the code base.
 * Fixes a bug when attempting to load the dropdown menu for server owner in some cases.
 * Fixes an exception thrown when the database connection address was not filled out correctly while adding a database to a server.
+* Fixes some mistakes in the German translation of the panel.
 
 ### Added
 * Added a new client API endpoint for gathering the utilization stats for servers including disk, cpu, and memory. `GET /api/client/servers/<id>/utilization`
 * Added validation to variable validation rules to validate that the validation rules are valid because we heard you like validating your validation.
+* Added German translations for many previously untranslated parts of the panel.
 
 ### Changed
 * Updated core framework from Laravel 5.5 to Laravel 5.6.
 * Improved support for Windows based environments.
+* Spigot Egg now builds spigot for you rather than requiring a download location be specified.
 
 ## v0.7.6 (Derelict Dermodactylus)
 ### Fixed

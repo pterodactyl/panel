@@ -376,9 +376,15 @@ class ServersController extends Controller
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function viewManage(Server $server)
     {
+        if ($server->installed > 1) {
+            throw new DisplayException('This server is in a failed installation state and must be deleted and recreated.');
+        }
+
         return view('admin.servers.view.manage', ['server' => $server]);
     }
 

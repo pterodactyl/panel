@@ -328,4 +328,14 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             $this->app->make(SubuserRepository::class)->getBuilder()->select('server_id')->where('user_id', $user)
         )->pluck('id')->all();
     }
+
+    /**
+     * Get the amount of servers that are suspended.
+     *
+     * @return int
+     */
+    public function getSuspendedServersCount(): int
+    {
+        return $this->getBuilder()->where('suspended', true)->count();
+    }
 }

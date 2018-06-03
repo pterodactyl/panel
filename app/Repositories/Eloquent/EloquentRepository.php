@@ -296,4 +296,14 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
         return $this->getBuilder()->getConnection()->statement($statement, $bindings);
     }
+
+    /**
+     * Get the amount of entries in the database.
+     *
+     * @return int
+     */
+    public function count(): int
+    {
+        return $this->getBuilder()->count();
+    }
 }

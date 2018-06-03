@@ -15,5 +15,5 @@ return [
     'reset' => 'Dein Passwort wurde zurückgesetzt!',
     'sent' => 'Dir wurde eine Email mit weiteren Informationen geschickt!',
     'token' => 'Der Token war ungültig',
-    'user' => 'Es gibt keinen User mit dieser Email.',
+    'user' => 'Es gibt keinen Benutzer mit dieser Email.',
 ];
