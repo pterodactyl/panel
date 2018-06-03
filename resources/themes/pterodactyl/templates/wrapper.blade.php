@@ -33,7 +33,7 @@
             @yield('below-container')
         @show
         @section('scripts')
-            {!! $asset->js('assets/scripts/bundle.js') !!}
+            {!! $asset->js('assets/scripts/app.js') !!}
         @show
     </body>
 </html>

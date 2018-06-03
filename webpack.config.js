@@ -1,7 +1,7 @@
 module.exports = {
     entry: './resources/assets/scripts/app.js',
     output: {
-        filename: 'webpack.build.js',
+        filename: 'app.js',
     },
     module: {
         rules: [
@@ -21,8 +21,7 @@ module.exports = {
                 test: /\.js$/,
                 exclude: /(node_modules|vendor)/,
                 use: [{
-                    loader: "babel-loader",
-                    options: { presets: ['es2015'] }
+                    loader: "babel-loader"
                 }]
             },
             {
