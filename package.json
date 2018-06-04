@@ -14,22 +14,27 @@
         "axios": "^0.18.0",
         "babel-cli": "6.18.0",
         "babel-loader": "^8.0.0-beta",
+        "babel-minify": "^0.4.3",
         "babel-minify-webpack-plugin": "^0.3.1",
         "babel-plugin-transform-object-assign": "^6.22.0",
         "babel-plugin-transform-runtime": "^6.23.0",
         "babel-plugin-transform-strict-mode": "^6.18.0",
+        "babel-preset-minify": "^0.4.3",
         "babel-register": "^6.26.0",
         "clean-webpack-plugin": "^0.1.19",
         "css-loader": "^0.28.11",
-        "extract-text-webpack-plugin": "^3.0.2",
+        "extract-text-webpack-plugin": "^4.0.0-beta.0",
+        "glob-all": "^3.1.0",
         "jquery": "^3.3.1",
         "jwt-decode": "^2.2.0",
         "lodash": "^4.17.5",
         "luxon": "^1.2.1",
         "postcss": "^6.0.21",
         "postcss-import": "^11.1.0",
+        "postcss-loader": "^2.1.5",
         "postcss-preset-env": "^3.4.0",
         "purgecss-webpack-plugin": "^1.1.0",
+        "style-loader": "^0.21.0",
         "tailwindcss": "^0.5.1",
         "vue-devtools": "^3.1.9",
         "vue-feather-icons": "^4.7.1",
@@ -48,7 +53,7 @@
     "scripts": {
         "build:filemanager": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js",
         "watch": "APP_ENV=development ./node_modules/.bin/webpack --watch",
-        "build:dev": "APP_ENV=development ./node_modules/.bin/webpack",
-        "build:prod": "APP_ENV=production ./node_modules/.bin/webpack"
+        "build": "APP_ENV=development ./node_modules/.bin/webpack",
+        "build:release": "APP_ENV=production ./node_modules/.bin/webpack"
     }
 }
