@@ -58,8 +58,25 @@ class AssetHashService
     public function url(string $resource): string
     {
         $file = last(explode('/', $resource));
+        $data = array_get($this->manifest(), $file, $file);
 
-        return '/' . ltrim(str_replace($file, array_get($this->manifest(), $file, $file), $resource), '/');
+        return '/' . ltrim(str_replace($file, array_get($data, 'src', $file), $resource), '/');
+    }
+
+    /**
+     * Return the data integrity hash for a resource.
+     *
+     * @param string $resource
+     * @return string
+     *
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function integrity(string $resource): string
+    {
+        $file = last(explode('/', $resource));
+        $data = array_get($this->manifest(), $file, $file);
+
+        return array_get($data, 'integrity', '');
     }
 
     /**
@@ -72,7 +89,11 @@ class AssetHashService
      */
     public function css(string $resource): string
     {
-        return '<link href="' . $this->url($resource) . '" rel="stylesheet preload" crossorigin="anonymous" referrerpolicy="no-referrer">';
+        return '<link href="' . $this->url($resource) . '"
+                    rel="stylesheet preload"
+                    crossorigin="anonymous"
+                    integrity="' . $this->integrity($resource) . '"
+                    referrerpolicy="no-referrer">';
     }
 
     /**
@@ -85,7 +106,9 @@ class AssetHashService
      */
     public function js(string $resource): string
     {
-        return '<script src="' . $this->url($resource) . '" crossorigin="anonymous"></script>';
+        return '<script src="' . $this->url($resource) . '"
+                    integrity="' . $this->integrity($resource) . '"
+                    crossorigin="anonymous"></script>';
     }
 
     /**

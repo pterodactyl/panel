@@ -10,7 +10,7 @@
         @show
 
         @section('assets')
-            {!! $asset->css('assets/bundle.css') !!}
+            {!! $asset->css('main.css') !!}
         @show
 
         @include('layouts.scripts')
@@ -24,7 +24,7 @@
             @yield('below-container')
         @show
         @section('scripts')
-            {!! $asset->js('assets/bundle.js') !!}
+            {!! $asset->js('main.js') !!}
         @show
     </body>
 </html>

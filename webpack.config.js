@@ -1,9 +1,9 @@
 const path = require('path');
+const AssetsManifestPlugin = require('webpack-assets-manifest');
 const CleanPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
 const ShellPlugin = require('webpack-shell-plugin');
-const UglifyJsPLugin = require('uglifyjs-webpack-plugin');
+const MinifyPlugin = require('babel-minify-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -36,19 +36,22 @@ module.exports = {
             {
                 test: /\.js$/,
                 include: [
-                    path.resolve(__dirname, 'resources/assets/scripts'),
+                    path.resolve(__dirname, 'resources'),
                 ],
                 loader: 'babel-loader',
             },
             {
                 test: /\.css$/,
                 include: [
-                    path.resolve(__dirname, 'resources/assets/styles'),
+                    path.resolve(__dirname, 'resources'),
                 ],
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
-                    use: ['css-loader', {
-                        loader:  'postcss-loader',
+                    use: [{
+                        loader: 'css-loader',
+                        options: {importLoaders: 1},
+                    }, {
+                        loader: 'postcss-loader',
                         options: {
                             ident: 'postcss',
                             plugins: [
@@ -80,18 +83,19 @@ module.exports = {
         new ExtractTextPlugin('bundle-[chunkhash].css', {
             allChunks: true,
         }),
-        new UglifyJsPLugin({
+        new MinifyPlugin({
+            mangle: {topLevel: true},
+        }, {
             include: [
-                path.resolve(__dirname, 'resources/assets/scripts'),
+                path.resolve(__dirname, 'resources'),
+                path.resolve(__dirname, 'node_modules'),
             ],
-            parallel: 2,
-            sourceMap: false,
-            uglifyOptions: {
-                ecma: 5,
-                toplevel: true,
-                safari10: true,
-            }
         }),
-        new ManifestPlugin(),
+        new AssetsManifestPlugin({
+            writeToDisk: true,
+            publicPath: true,
+            integrity: true,
+            integrityHashes: ['sha384'],
+        }),
     ]
 };
