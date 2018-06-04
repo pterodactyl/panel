@@ -20,7 +20,7 @@ class TailwindExtractor {
 }
 
 module.exports = {
-    mode: 'development',
+    mode: process.env.APP_ENV,
     devtool: 'source-map',
     performance: {
         hints: false,

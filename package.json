@@ -58,10 +58,8 @@
     },
     "scripts": {
         "build:filemanager": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js",
-        "watch": "./node_modules/gulp-cli/bin/gulp.js watch",
-        "build": "./node_modules/gulp-cli/bin/gulp.js default",
-        "build:components": "./node_modules/gulp-cli/bin/gulp.js components",
-        "build:styles": "./node_modules/gulp-cli/bin/gulp.js styles",
-        "build:scripts": "./node_modules/gulp-cli/bin/gulp.js scripts"
+        "watch": "APP_ENV=development ./node_modules/.bin/webpack --watch",
+        "build:dev": "APP_ENV=development ./node_modules/.bin/webpack",
+        "build:prod": "APP_ENV=production ./node_modules/.bin/webpack"
     }
 }
