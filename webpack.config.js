@@ -6,22 +6,65 @@ const AssetsManifestPlugin = require('webpack-assets-manifest');
 const CleanPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ShellPlugin = require('webpack-shell-plugin');
-const MinifyPlugin = require('babel-minify-webpack-plugin');
 const PurgeCssPlugin = require('purgecss-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 // Custom PurgeCSS extractor for Tailwind that allows special characters in
 // class names.
 //
 // https://github.com/FullHuman/purgecss#extractor
 class TailwindExtractor {
-    static extract(content) {
+    static extract (content) {
         return content.match(/[A-z0-9-:\/]+/g) || [];
     }
 }
 
+const basePlugins = [
+    new CleanPlugin(path.resolve(__dirname, 'public/assets')),
+    new ShellPlugin({
+        onBuildStart: [
+            'php artisan vue-i18n:generate',
+            'php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js',
+        ],
+    }),
+    new ExtractTextPlugin('bundle-[chunkhash].css', {
+        allChunks: true,
+    }),
+    new AssetsManifestPlugin({
+        writeToDisk: true,
+        publicPath: true,
+        integrity: true,
+        integrityHashes: ['sha384'],
+    }),
+];
+
+const productionPlugins = [
+    new PurgeCssPlugin({
+        paths: glob.sync([
+            path.join(__dirname, 'resources/assets/scripts/**/*.vue'),
+            path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
+        ]),
+        extractors: [
+            {
+                extractor: TailwindExtractor,
+                extensions: ['html', 'js', 'php', 'vue'],
+            }
+        ],
+    }),
+    new UglifyJsPlugin({
+        include: [
+            path.join(__dirname, 'resources/assets/scripts'),
+            path.join(__dirname, 'node_modules'),
+            path.join(__dirname, 'vendor/tightenco'),
+        ],
+        cache: true,
+        parallel: 2,
+    }),
+];
+
 module.exports = {
-    mode: process.env.APP_ENV,
-    devtool: 'source-map',
+    mode: process.env.NODE_ENV,
+    devtool: process.env.NODE_ENV === 'production' ? false : 'eval-source-map',
     performance: {
         hints: false,
     },
@@ -38,21 +81,13 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
-                options: {
-                    postcss: [
-                        require('postcss-import'),
-                        require('postcss-preset-env')({stage: 0}),
-                        tailwind('./tailwind.js'),
-                        require('autoprefixer'),
-                    ]
-                }
             },
             {
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'resources'),
                 ],
-                loader: 'babel-loader',
+                loader: 'babel-loader?cacheDirectory',
             },
             {
                 test: /\.css$/,
@@ -73,7 +108,7 @@ module.exports = {
                             ident: 'postcss',
                             plugins: [
                                 require('postcss-import'),
-                                require('tailwindcss')('./tailwind.js'),
+                                tailwind('./tailwind.js'),
                                 require('postcss-preset-env')({stage: 0}),
                                 require('autoprefixer'),
                             ]
@@ -87,44 +122,8 @@ module.exports = {
         alias: {
             'vue$': 'vue/dist/vue.esm.js'
         },
-        extensions: ['*', '.js', '.vue', '.json']
+        extensions: ['.js', '.vue', '.json'],
+        symlinks: false,
     },
-    plugins: [
-        new PurgeCssPlugin({
-            paths: glob.sync([
-                path.join(__dirname, 'resources/assets/scripts/**/*.vue'),
-                path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
-            ]),
-            extractors: [
-                {
-                    extractor: TailwindExtractor,
-                    extensions: ['html', 'js', 'php', 'vue'],
-                }
-            ],
-        }),
-        new CleanPlugin(path.resolve(__dirname, 'public/assets')),
-        new ShellPlugin({
-            onBuildStart: [
-                'php artisan vue-i18n:generate',
-                'php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js',
-            ],
-        }),
-        new ExtractTextPlugin('bundle-[chunkhash].css', {
-            allChunks: true,
-        }),
-        new MinifyPlugin({
-            mangle: {topLevel: true},
-        }, {
-            include: [
-                path.resolve(__dirname, 'resources'),
-                path.resolve(__dirname, 'node_modules'),
-            ],
-        }),
-        new AssetsManifestPlugin({
-            writeToDisk: true,
-            publicPath: true,
-            integrity: true,
-            integrityHashes: ['sha384'],
-        }),
-    ]
+    plugins: process.env.NODE_ENV === 'production' ? basePlugins.concat(productionPlugins) : basePlugins,
 };

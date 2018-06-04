@@ -14,12 +14,9 @@
         "axios": "^0.18.0",
         "babel-cli": "6.18.0",
         "babel-loader": "^8.0.0-beta",
-        "babel-minify": "^0.4.3",
-        "babel-minify-webpack-plugin": "^0.3.1",
         "babel-plugin-transform-object-assign": "^6.22.0",
         "babel-plugin-transform-runtime": "^6.23.0",
         "babel-plugin-transform-strict-mode": "^6.18.0",
-        "babel-preset-minify": "^0.4.3",
         "babel-register": "^6.26.0",
         "clean-webpack-plugin": "^0.1.19",
         "css-loader": "^0.28.11",
@@ -36,6 +33,7 @@
         "purgecss-webpack-plugin": "^1.1.0",
         "style-loader": "^0.21.0",
         "tailwindcss": "^0.5.1",
+        "uglifyjs-webpack-plugin": "^1.2.5",
         "vue-devtools": "^3.1.9",
         "vue-feather-icons": "^4.7.1",
         "vue-loader": "^14.2.2",
@@ -52,8 +50,8 @@
     },
     "scripts": {
         "build:filemanager": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js",
-        "watch": "APP_ENV=development ./node_modules/.bin/webpack --watch",
-        "build": "APP_ENV=development ./node_modules/.bin/webpack",
-        "build:release": "APP_ENV=production ./node_modules/.bin/webpack"
+        "watch": "NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
+        "build": "NODE_ENV=development ./node_modules/.bin/webpack --progress",
+        "build:release": "NODE_ENV=production ./node_modules/.bin/webpack"
     }
 }
