@@ -8,11 +8,13 @@
         "vuex-i18n": "^1.10.5"
     },
     "devDependencies": {
+        "@babel/core": "^7.0.0-beta.49",
+        "@babel/preset-env": "^7.0.0-beta.49",
         "autoprefixer": "^8.2.0",
         "axios": "^0.18.0",
         "babel-cli": "6.18.0",
         "babel-core": "^6.26.0",
-        "babel-loader": "^7.1.4",
+        "babel-loader": "^8.0.0-beta",
         "babel-plugin-transform-object-assign": "^6.22.0",
         "babel-plugin-transform-runtime": "^6.23.0",
         "babel-plugin-transform-strict-mode": "^6.18.0",
@@ -39,6 +41,7 @@
         "postcss-preset-env": "^3.4.0",
         "postcss-scss": "^1.0.4",
         "tailwindcss": "^0.5.1",
+        "uglifyjs-webpack-plugin": "^1.2.5",
         "vee-validate": "^2.0.9",
         "vue-devtools": "^3.1.9",
         "vue-feather-icons": "^4.7.1",
@@ -47,6 +50,8 @@
         "vue-template-compiler": "^2.5.16",
         "vueify-insert-css": "^1.0.0",
         "webpack": "^4.4.1",
+        "webpack-cli": "^3.0.1",
+        "webpack-manifest-plugin": "^2.0.3",
         "webpack-serve": "^1.0.2",
         "webpack-stream": "^4.0.3",
         "yargs": "^11.0.0"

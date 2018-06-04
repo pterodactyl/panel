@@ -1,14 +1,19 @@
+const path = require('path');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const UglifyJsPLugin = require('uglifyjs-webpack-plugin');
+
 module.exports = {
     mode: 'development',
+    devtool: 'source-map',
     performance: {
         hints: false,
     },
     entry: {
-        main: './resources/assets/scripts/app.js',
+        bundle: './resources/assets/scripts/app.js',
     },
     output: {
-        path: '/dist',
-        filename: 'webpack.build.js',
+        path: path.resolve(__dirname, 'public/assets/scripts'),
+        filename: 'bundle-[chunkhash].js',
     },
     module: {
         rules: [
@@ -26,10 +31,12 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                exclude: /(node_modules|vendor)/,
+                include: [
+                    path.resolve(__dirname, 'resources/assets/scripts'),
+                ],
                 use: [{
-                    loader: "babel-loader",
-                    options: { presets: ['es2015'] }
+                    loader: 'babel-loader',
+                    options: {babelrc: true}
                 }]
             },
         ]
@@ -40,4 +47,19 @@ module.exports = {
         },
         extensions: ['*', '.js', '.vue', '.json']
     },
+    plugins: [
+        new UglifyJsPLugin({
+            include: [
+                path.resolve(__dirname, 'resources/assets/scripts'),
+            ],
+            parallel: 2,
+            sourceMap: false,
+            uglifyOptions: {
+                ecma: 5,
+                toplevel: true,
+                safari10: true,
+            }
+        }),
+        new ManifestPlugin(),
+    ]
 };

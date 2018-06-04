@@ -49,30 +49,12 @@ function styles() {
 }
 
 /**
- * Build all of the waiting scripts.
- */
-function scripts() {
-    return webpackStream(webpackConfig)
-        .pipe(babel())
-        .pipe(gulpif(argv.production, uglify()))
-        .pipe(concat('bundle.js'))
-        .pipe(rev())
-        .pipe(gulp.dest(paths.scripts.dest))
-        .pipe(rev.manifest(paths.manifest + '/manifest.json', {merge: true, base: paths.manifest}))
-        .pipe(gulp.dest(paths.manifest));
-}
-
-/**
  * Provides watchers.
  */
 function watch() {
     gulp.watch(['./resources/assets/styles/**/*.css'], gulp.series(function cleanStyles() {
         return del(['./public/assets/css/**/*.css']);
     }, styles));
-
-    gulp.watch(paths.scripts.watch, gulp.series(function cleanScripts() {
-        return del(['./public/assets/scripts/**/*.js']);
-    }, scripts));
 }
 
 /**
@@ -90,7 +72,7 @@ function i18n() {
 
 /**
  * Generate the routes file to be used in Vue files.
- * 
+ *
  * @returns {Promise<any>}
  */
 function routes() {
@@ -112,9 +94,7 @@ exports.clean = clean;
 exports.i18n = i18n;
 exports.routes = routes;
 exports.styles = styles;
-exports.scripts = scripts;
 exports.watch = watch;
 
 gulp.task('components', gulp.parallel(i18n, routes));
-gulp.task('scripts', gulp.series(clean, scripts));
-gulp.task('default', gulp.series(clean, i18n, routes, styles, scripts));
+gulp.task('default', gulp.series(clean, i18n, routes, styles));
