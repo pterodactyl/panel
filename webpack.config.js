@@ -1,5 +1,8 @@
 const path = require('path');
+const CleanPlugin = require('clean-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
+const ShellPlugin = require('webpack-shell-plugin');
 const UglifyJsPLugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
@@ -8,12 +11,13 @@ module.exports = {
     performance: {
         hints: false,
     },
-    entry: {
-        bundle: './resources/assets/scripts/app.js',
-    },
+    // Passing an array loads them all but only exports the last.
+    entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.js'],
     output: {
-        path: path.resolve(__dirname, 'public/assets/scripts'),
-        filename: 'bundle-[chunkhash].js',
+        path: path.resolve(__dirname, 'public/assets'),
+        filename: 'bundle-[chunkhash].min.js',
+        publicPath: '/assets/',
+        crossOriginLoading: 'anonymous',
     },
     module: {
         rules: [
@@ -34,11 +38,29 @@ module.exports = {
                 include: [
                     path.resolve(__dirname, 'resources/assets/scripts'),
                 ],
-                use: [{
-                    loader: 'babel-loader',
-                    options: {babelrc: true}
-                }]
+                loader: 'babel-loader',
             },
+            {
+                test: /\.css$/,
+                include: [
+                    path.resolve(__dirname, 'resources/assets/styles'),
+                ],
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: ['css-loader', {
+                        loader:  'postcss-loader',
+                        options: {
+                            ident: 'postcss',
+                            plugins: [
+                                require('postcss-import'),
+                                require('postcss-preset-env')({stage: 0}),
+                                require('tailwindcss')('./tailwind.js'),
+                                require('autoprefixer'),
+                            ]
+                        },
+                    }],
+                }),
+            }
         ]
     },
     resolve: {
@@ -48,6 +70,16 @@ module.exports = {
         extensions: ['*', '.js', '.vue', '.json']
     },
     plugins: [
+        new CleanPlugin(path.resolve(__dirname, 'public/assets')),
+        new ShellPlugin({
+            onBuildStart: [
+                'php artisan vue-i18n:generate',
+                'php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js',
+            ],
+        }),
+        new ExtractTextPlugin('bundle-[chunkhash].min.css', {
+            allChunks: true,
+        }),
         new UglifyJsPLugin({
             include: [
                 path.resolve(__dirname, 'resources/assets/scripts'),
