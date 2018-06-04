@@ -56,8 +56,8 @@ module.exports = {
                             ident: 'postcss',
                             plugins: [
                                 require('postcss-import'),
-                                require('postcss-preset-env')({stage: 0}),
                                 require('tailwindcss')('./tailwind.js'),
+                                require('postcss-preset-env')({stage: 0}),
                                 require('autoprefixer'),
                             ]
                         },
