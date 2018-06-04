@@ -1,6 +1,13 @@
 module.exports = {
-    entry: './resources/assets/scripts/app.js',
+    mode: 'development',
+    performance: {
+        hints: false,
+    },
+    entry: {
+        main: './resources/assets/scripts/app.js',
+    },
     output: {
+        path: '/dist',
         filename: 'webpack.build.js',
     },
     module: {
@@ -29,10 +36,8 @@ module.exports = {
     },
     resolve: {
         alias: {
-            // 'vue': 'vue/dist/vue.js'
             'vue$': 'vue/dist/vue.esm.js'
         },
         extensions: ['*', '.js', '.vue', '.json']
     },
-    plugins: [],
 };

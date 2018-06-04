@@ -1,5 +1,12 @@
 {
     "name": "pterodactyl-panel",
+    "dependencies": {
+        "vue": "^2.5.7",
+        "vue-axios": "^2.1.1",
+        "vue-router": "^3.0.1",
+        "vuex": "^3.0.1",
+        "vuex-i18n": "^1.10.5"
+    },
     "devDependencies": {
         "autoprefixer": "^8.2.0",
         "axios": "^0.18.0",
@@ -33,18 +40,14 @@
         "postcss-scss": "^1.0.4",
         "tailwindcss": "^0.5.1",
         "vee-validate": "^2.0.9",
-        "vue": "^2.5.7",
-        "vue-axios": "^2.1.1",
         "vue-devtools": "^3.1.9",
         "vue-feather-icons": "^4.7.1",
         "vue-loader": "^14.2.2",
         "vue-mc": "^0.2.4",
-        "vue-router": "^3.0.1",
         "vue-template-compiler": "^2.5.16",
         "vueify-insert-css": "^1.0.0",
-        "vuex": "^3.0.1",
-        "vuex-i18n": "^1.10.5",
         "webpack": "^4.4.1",
+        "webpack-serve": "^1.0.2",
         "webpack-stream": "^4.0.3",
         "yargs": "^11.0.0"
     },
@@ -55,6 +58,5 @@
         "build:components": "./node_modules/gulp-cli/bin/gulp.js components",
         "build:styles": "./node_modules/gulp-cli/bin/gulp.js styles",
         "build:scripts": "./node_modules/gulp-cli/bin/gulp.js scripts"
-    },
-    "dependencies": {}
+    }
 }
