@@ -1,9 +1,23 @@
 const path = require('path');
+const tailwind = require('tailwindcss');
+const glob = require('glob-all');
+
 const AssetsManifestPlugin = require('webpack-assets-manifest');
 const CleanPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ShellPlugin = require('webpack-shell-plugin');
 const MinifyPlugin = require('babel-minify-webpack-plugin');
+const PurgeCssPlugin = require('purgecss-webpack-plugin');
+
+// Custom PurgeCSS extractor for Tailwind that allows special characters in
+// class names.
+//
+// https://github.com/FullHuman/purgecss#extractor
+class TailwindExtractor {
+    static extract(content) {
+        return content.match(/[A-z0-9-:\/]+/g) || [];
+    }
+}
 
 module.exports = {
     mode: 'development',
@@ -28,7 +42,7 @@ module.exports = {
                     postcss: [
                         require('postcss-import'),
                         require('postcss-preset-env')({stage: 0}),
-                        require('tailwindcss')('./tailwind.js'),
+                        tailwind('./tailwind.js'),
                         require('autoprefixer'),
                     ]
                 }
@@ -49,7 +63,10 @@ module.exports = {
                     fallback: 'style-loader',
                     use: [{
                         loader: 'css-loader',
-                        options: {importLoaders: 1},
+                        options: {
+                            importLoaders: 1,
+                            minimize: true,
+                        },
                     }, {
                         loader: 'postcss-loader',
                         options: {
@@ -73,6 +90,18 @@ module.exports = {
         extensions: ['*', '.js', '.vue', '.json']
     },
     plugins: [
+        new PurgeCssPlugin({
+            paths: glob.sync([
+                path.join(__dirname, 'resources/assets/scripts/**/*.vue'),
+                path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
+            ]),
+            extractors: [
+                {
+                    extractor: TailwindExtractor,
+                    extensions: ['html', 'js', 'php', 'vue'],
+                }
+            ],
+        }),
         new CleanPlugin(path.resolve(__dirname, 'public/assets')),
         new ShellPlugin({
             onBuildStart: [
