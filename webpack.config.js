@@ -15,7 +15,7 @@ module.exports = {
     entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.js'],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
-        filename: 'bundle-[chunkhash].min.js',
+        filename: 'bundle-[chunkhash].js',
         publicPath: '/assets/',
         crossOriginLoading: 'anonymous',
     },
@@ -77,7 +77,7 @@ module.exports = {
                 'php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js',
             ],
         }),
-        new ExtractTextPlugin('bundle-[chunkhash].min.css', {
+        new ExtractTextPlugin('bundle-[chunkhash].css', {
             allChunks: true,
         }),
         new UglifyJsPLugin({
