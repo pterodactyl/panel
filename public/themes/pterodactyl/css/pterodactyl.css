@@ -474,6 +474,11 @@ label.control-label > span.field-optional:before {
     width: auto;
 }
 
+.search01 {
+    width: 30%;
+}
+
 .number-info-box-content {
     padding: 15px 10px 0;
 }
+
