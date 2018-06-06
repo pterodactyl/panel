@@ -8,6 +8,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ShellPlugin = require('webpack-shell-plugin');
 const PurgeCssPlugin = require('purgecss-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const WebpackServeWaitpage = require('webpack-serve-waitpage');
 
 // Custom PurgeCSS extractor for Tailwind that allows special characters in
 // class names.
@@ -27,7 +29,7 @@ const basePlugins = [
             'php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js',
         ],
     }),
-    new ExtractTextPlugin('bundle-[chunkhash].css', {
+    new ExtractTextPlugin('assets/bundle.css', {
         allChunks: true,
     }),
     new AssetsManifestPlugin({
@@ -36,6 +38,10 @@ const basePlugins = [
         integrity: true,
         integrityHashes: ['sha384'],
     }),
+    new HTMLWebpackPlugin({
+        template: './resources/assets/index.html',
+        filename: 'index.html',
+    })
 ];
 
 const productionPlugins = [
@@ -71,9 +77,9 @@ module.exports = {
     // Passing an array loads them all but only exports the last.
     entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.js'],
     output: {
-        path: path.resolve(__dirname, 'public/assets'),
-        filename: 'bundle-[chunkhash].js',
-        publicPath: '/assets/',
+        path: path.resolve(__dirname, 'public'),
+        filename: 'assets/bundle.js',
+        publicPath: '/',
         crossOriginLoading: 'anonymous',
     },
     module: {
@@ -126,4 +132,20 @@ module.exports = {
         symlinks: false,
     },
     plugins: process.env.NODE_ENV === 'production' ? basePlugins.concat(productionPlugins) : basePlugins,
+    serve: {
+        host: "0.0.0.0",
+        content: "./public/",
+        dev: {
+            publicPath: "/"
+        },
+        hot: {
+            host: {
+                server: "0.0.0.0",
+                client: "192.168.50.2"
+            }
+        },
+        add (app, middleware, options) {
+            app.use(WebpackServeWaitpage(options, {theme: 'dark'}));
+        }
+    }
 };
