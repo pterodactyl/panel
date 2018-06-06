@@ -4,11 +4,7 @@ const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').de
 export default {
     namespaced: true,
     state: {
-        user: () => {
-            const data = JSON.parse(localStorage.getItem('token'));
-
-            return User.fromCookie(data.value, data.name);
-        }
+        user: null,
     },
     getters: {
         /**

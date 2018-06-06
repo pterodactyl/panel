@@ -3,6 +3,8 @@ import Vuex from 'vuex';
 import vuexI18n from 'vuex-i18n';
 import VueRouter from 'vue-router';
 
+require('./bootstrap');
+
 // Helpers
 import { Ziggy } from './helpers/ziggy';
 import Locales from './../../../resources/lang/locales';
@@ -31,7 +33,5 @@ Vue.i18n.set('en');
 const router = new VueRouter({
     mode: 'history', routes
 });
-
-require('./bootstrap');
 
 const app = new Vue({ store, router }).$mount('#pterodactyl');

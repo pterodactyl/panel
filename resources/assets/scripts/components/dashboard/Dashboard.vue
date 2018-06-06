@@ -18,7 +18,7 @@
             </div>
             <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start" v-else>
                 <server-box
-                        v-for="(server, index) in servers.models"
+                        v-for="(server, index) in servers"
                         v-bind:key="index"
                         v-bind:server="server"
                 />

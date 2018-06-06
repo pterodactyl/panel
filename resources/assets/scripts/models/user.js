@@ -1,25 +1,21 @@
+import axios from './../helpers/axios';
+
 export default class User {
     /**
      * Get a new user model by hitting the Panel API using the authentication token
      * provided. If no user can be retrieved null will be returned.
      *
-     * @param {string} token
-     * @param {string} cookie
      * @return {User|null}
      */
-    static fromCookie(token, cookie = 'pterodactyl_session') {
-        window.axios.get('/api/client/account', {
-            headers: {
-                Cookie: `${cookie}=${token}`,
-            }
-        })
+    static fromCookie() {
+        axios.get('/api/client/account')
             .then(response => {
                 return new User(response.data.attributes);
             })
             .catch(err => {
                 console.error(err);
                 return null;
-            })
+            });
     }
 
     /**
