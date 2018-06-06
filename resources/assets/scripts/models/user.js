@@ -1,48 +1,51 @@
-import { Collection, Model } from 'vue-mc';
-import JwtDecode from 'jwt-decode';
-
-export class User extends Model {
-    static defaults() {
-        return {
-            id: null,
-            uuid: '',
-            username: '',
-            email: '',
-            name_first: '',
-            name_last: '',
-            language: 'en',
-            root_admin: false,
-        }
+export default class User {
+    /**
+     * Get a new user model by hitting the Panel API using the authentication token
+     * provided. If no user can be retrieved null will be returned.
+     *
+     * @param {string} token
+     * @param {string} cookie
+     * @return {User|null}
+     */
+    static fromCookie(token, cookie = 'pterodactyl_session') {
+        window.axios.get('/api/client/account', {
+            headers: {
+                Cookie: `${cookie}=${token}`,
+            }
+        })
+            .then(response => {
+                return new User(response.data.attributes);
+            })
+            .catch(err => {
+                console.error(err);
+                return null;
+            })
     }
 
-    static mutations() {
-        return {
-            id: Number,
-            uuid: String,
-            username: String,
-            email: String,
-            name_first: String,
-            name_last: String,
-            language: String,
-            root_admin: Boolean,
-        }
-    }
-
-    static fromJWT(token) {
-        return new User(JwtDecode(token).user || {});
-    }
-}
-
-export class UserCollection extends Collection {
-    static model() {
-        return User;
-    }
-
-    get todo() {
-        return this.sum('done');
-    }
-
-    get done() {
-        return this.todo === 0;
+    /**
+     * Create a new user model.
+     *
+     * @param {Boolean} admin
+     * @param {String} username
+     * @param {String} email
+     * @param {String} first_name
+     * @param {String} last_name
+     * @param {String} language
+     */
+    constructor({
+        admin,
+        username,
+        email,
+        first_name,
+        last_name,
+        language,
+    }) {
+        this.admin = admin;
+        this.username = username;
+        this.email = email;
+        this.name = `${first_name} ${last_name}`;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.language = language;
     }
 }
