@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Middleware\Api;
 use Closure;
 use Lcobucci\JWT\Parser;
 use Cake\Chronos\Chronos;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
@@ -63,19 +64,24 @@ class AuthenticateKey
     public function handle(Request $request, Closure $next, int $keyType)
     {
         if (is_null($request->bearerToken())) {
-            throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
+            if (! Str::startsWith($request->route()->getName(), ['api.client']) && ! $request->user()) {
+                throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
+            }
         }
 
-        $raw = $request->bearerToken();
+        if (is_null($request->bearerToken())) {
+            $model = (new ApiKey)->forceFill([
+                'user_id' => $request->user()->id,
+                'key_type' => ApiKey::TYPE_ACCOUNT,
+            ]);
+        }
 
-        // This is an internal JWT, treat it differently to get the correct user before passing it along.
-        if (strlen($raw) > ApiKey::IDENTIFIER_LENGTH + ApiKey::KEY_LENGTH) {
-            $model = $this->authenticateJWT($raw);
-        } else {
+        if (! isset($model)) {
+            $raw = $request->bearerToken();
             $model = $this->authenticateApiKey($raw, $keyType);
+            $this->auth->guard()->loginUsingId($model->user_id);
         }
 
-        $this->auth->guard()->loginUsingId($model->user_id);
         $request->attributes->set('api_key', $model);
 
         return $next($request);

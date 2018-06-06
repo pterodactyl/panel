@@ -12,6 +12,10 @@ use Pterodactyl\Http\Middleware\Api\Client\AuthenticateClientAccess;
 */
 Route::get('/', 'ClientController@index')->name('api.client.index');
 
+Route::group(['prefix' => '/account'], function () {
+    Route::get('/', 'AccountController@index')->name('api.client.account');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Client Control API

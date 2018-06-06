@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Cake\Chronos\Chronos;
 use Lcobucci\JWT\Builder;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
@@ -16,6 +15,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Pterodactyl\Traits\Helpers\ProvidesJWTServices;
+use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
@@ -137,24 +137,18 @@ abstract class AbstractLoginController extends Controller
         $request->session()->regenerate();
         $this->clearLoginAttempts($request);
 
-        $token = $this->builder->setIssuer(config('app.url'))
-            ->setAudience(config('app.url'))
-            ->setId(str_random(12), true)
-            ->setIssuedAt(Chronos::now()->getTimestamp())
-            ->setNotBefore(Chronos::now()->getTimestamp())
-            ->setExpiration(Chronos::now()->addSeconds(config('session.lifetime'))->getTimestamp())
-            ->set('user', $user->only([
-                'id', 'uuid', 'username', 'email', 'name_first', 'name_last', 'language', 'root_admin',
-            ]))
-            ->sign($this->getJWTSigner(), $this->getJWTSigningKey())
-            ->getToken();
-
         $this->auth->guard()->login($user, true);
+
+        debug($request->cookies->all());
 
         return response()->json([
             'complete' => true,
             'intended' => $this->redirectPath(),
-            'token' => $token->__toString(),
+            'cookie' => [
+                'name' => config('session.cookie'),
+                'value' => $this->encrypter->encrypt($request->cookie(config('session.cookie'))),
+            ],
+            'user' => (new AccountTransformer())->transform($user),
         ]);
     }
 

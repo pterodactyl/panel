@@ -77,32 +77,21 @@
                 this.$data.showSpinner = true;
 
                 this.clearFlashes();
-                axios.post(this.route('auth.login'), {
-                    user: this.$props.user.email,
-                    password: this.$props.user.password,
-                })
-                    .then(function (response) {
-                        // If there is a 302 redirect or some other odd behavior (basically, response that isnt
-                        // in JSON format) throw an error and don't try to continue with the login.
-                        if (!(response.data instanceof Object)) {
-                            throw new Error('An error was encountered while processing this request.');
+                this.$store.dispatch('auth/login', { user: this.$props.user.email, password: this.$props.user.password })
+                    .then(response => {
+                        if (response.complete) {
+                            return window.location = response.intended;
                         }
 
-                        if (response.data.complete) {
-                            localStorage.setItem('token', response.data.token);
-                            self.$store.dispatch('login');
-                            return window.location = response.data.intended;
-                        }
-
-                        self.$props.user.password = '';
-                        self.$data.showSpinner = false;
-                        self.$router.push({name: 'checkpoint', query: {token: response.data.login_token}});
+                        this.$props.user.password = '';
+                        this.$data.showSpinner = false;
+                        this.$router.push({name: 'checkpoint', query: {token: response.login_token}});
                     })
-                    .catch(function (err) {
-                        self.$props.user.password = '';
-                        self.$data.showSpinner = false;
-                        self.$refs.password.focus();
-                        self.$store.dispatch('logout');
+                    .catch(err => {
+                        this.$props.user.password = '';
+                        this.$data.showSpinner = false;
+                        this.$refs.password.focus();
+                        this.$store.dispatch('auth/logout');
 
                         if (!err.response) {
                             return console.error(err);

@@ -18,7 +18,7 @@
             </div>
             <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start" v-else>
                 <server-box
-                        v-for="(server, index) in servers.models"
+                        v-for="(server, index) in servers"
                         v-bind:key="index"
                         v-bind:server="server"
                 />
@@ -29,7 +29,7 @@
 
 <script>
     import { DateTime } from 'luxon';
-    import { ServerCollection } from '../../models/server';
+    import Server from '../../models/server';
     import _ from 'lodash';
     import Flash from '../Flash';
     import ServerBox from './ServerBox';
@@ -44,7 +44,7 @@
                 documentVisible: true,
                 loading: true,
                 search: '',
-                servers: new ServerCollection,
+                servers: [],
             }
         },
 
@@ -83,14 +83,14 @@
                         this.clearFlashes();
                     })
                     .then(response => {
-                        this.servers = new ServerCollection;
+                        this.servers = [];
                         response.data.data.forEach(obj => {
-                            this.getResourceUse(
-                                this.servers.add(obj.attributes)
-                            );
+                            const s = new Server(obj.attributes);
+                            this.servers.push(s);
+                            this.getResourceUse(s);
                         });
 
-                        if (this.servers.models.length === 0) {
+                        if (this.servers.length === 0) {
                             this.info(this.$t('dashboard.index.no_matches'));
                         }
                     })

@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http;
 
-use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
@@ -21,6 +20,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Pterodactyl\Http\Middleware\AccessingValidServer;
 use Pterodactyl\Http\Middleware\Api\SetSessionDriver;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
@@ -71,7 +71,7 @@ class Kernel extends HttpKernel
             RequireTwoFactorAuthentication::class,
         ],
         'api' => [
-            'throttle:120,1',
+            'throttle:240,1',
             ApiSubstituteBindings::class,
             SetSessionDriver::class,
             'api..key:' . ApiKey::TYPE_APPLICATION,
@@ -79,7 +79,9 @@ class Kernel extends HttpKernel
             AuthenticateIPAccess::class,
         ],
         'client-api' => [
-            'throttle:60,1',
+            'throttle:240,1',
+            EncryptCookies::class,
+            StartSession::class,
             SubstituteClientApiBindings::class,
             SetSessionDriver::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
