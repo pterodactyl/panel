@@ -60,7 +60,7 @@ class AssetHashService
         $file = last(explode('/', $resource));
         $data = array_get($this->manifest(), $file, $file);
 
-        return '/' . ltrim(str_replace($file, array_get($data, 'src', $file), $resource), '/');
+        return str_replace($file, array_get($data, 'src', $file), $resource);
     }
 
     /**

@@ -47,7 +47,6 @@
         "webpack-hot-client": "^4.0.2",
         "webpack-manifest-plugin": "^2.0.3",
         "webpack-serve": "^1.0.2",
-        "webpack-serve-waitpage": "^1.0.0",
         "webpack-shell-plugin": "^0.5.0",
         "webpack-stream": "^4.0.3"
     },
@@ -56,6 +55,6 @@
         "watch": "NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:release": "NODE_ENV=production ./node_modules/.bin/webpack",
-        "serve": "NODE_ENV=development webpack-serve --config ./webpack.config.js"
+        "serve": "NODE_ENV=development webpack-serve --hot --config ./webpack.config.js"
     }
 }

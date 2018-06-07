@@ -30,6 +30,10 @@ Vue.use(vuexI18n.plugin, store);
 Vue.i18n.add('en', Locales.en);
 Vue.i18n.set('en');
 
+if (module.hot) {
+    module.hot.accept();
+}
+
 const router = new VueRouter({
     mode: 'history', routes
 });
