@@ -80,8 +80,6 @@ class Kernel extends HttpKernel
         ],
         'client-api' => [
             'throttle:240,1',
-            EncryptCookies::class,
-            StartSession::class,
             SubstituteClientApiBindings::class,
             SetSessionDriver::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,

@@ -4,7 +4,7 @@ const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').de
 export default {
     namespaced: true,
     state: {
-        user: null,
+        user: User.fromToken(),
     },
     getters: {
         /**
@@ -32,7 +32,7 @@ export default {
                         }
 
                         if (response.data.complete) {
-                            commit('login', {cookie: response.data.cookie, user: response.data.user});
+                            commit('login', {jwt: response.data.jwt});
                             return resolve({
                                 complete: true,
                                 intended: response.data.intended,
@@ -59,12 +59,9 @@ export default {
         },
     },
     mutations: {
-        login: function (state, {cookie, user}) {
-            state.user = new User(user);
-            localStorage.setItem('token', JSON.stringify({
-                name: cookie.name,
-                value: cookie.value,
-            }));
+        login: function (state, {jwt}) {
+            localStorage.setItem('token', jwt);
+            state.user = User.fromToken(jwt);
         },
         logout: function (state) {
             localStorage.removeItem('token');

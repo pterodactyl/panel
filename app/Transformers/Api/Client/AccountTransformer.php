@@ -25,6 +25,7 @@ class AccountTransformer extends BaseClientTransformer
     public function transform(User $model)
     {
         return [
+            'id' => $model->id,
             'admin' => $model->root_admin,
             'username' => $model->username,
             'email' => $model->email,

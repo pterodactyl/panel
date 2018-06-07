@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Cake\Chronos\Chronos;
 use Lcobucci\JWT\Builder;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
@@ -139,17 +140,33 @@ abstract class AbstractLoginController extends Controller
 
         $this->auth->guard()->login($user, true);
 
-        debug($request->cookies->all());
-
         return response()->json([
             'complete' => true,
             'intended' => $this->redirectPath(),
-            'cookie' => [
-                'name' => config('session.cookie'),
-                'value' => $this->encrypter->encrypt($request->cookie(config('session.cookie'))),
-            ],
-            'user' => (new AccountTransformer())->transform($user),
+            'jwt' => $this->createJsonWebToken($user),
         ]);
+    }
+
+    /**
+     * Create a new JWT for the request and sign it using the signing key.
+     *
+     * @param User $user
+     * @return string
+     */
+    protected function createJsonWebToken(User $user): string
+    {
+        $token = $this->builder
+            ->setIssuer('Pterodactyl Panel')
+            ->setAudience(config('app.url'))
+            ->setId(str_random(16), true)
+            ->setIssuedAt(Chronos::now()->getTimestamp())
+            ->setNotBefore(Chronos::now()->getTimestamp())
+            ->setExpiration(Chronos::now()->addSeconds(config('session.lifetime'))->getTimestamp())
+            ->set('user', (new AccountTransformer())->transform($user))
+            ->sign($this->getJWTSigner(), $this->getJWTSigningKey())
+            ->getToken();
+
+        return $token->__toString();
     }
 
     /**
