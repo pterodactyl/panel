@@ -54,7 +54,7 @@
         "build:filemanager": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js",
         "watch": "NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "NODE_ENV=development ./node_modules/.bin/webpack --progress",
-        "build:release": "NODE_ENV=production ./node_modules/.bin/webpack",
+        "build:production": "NODE_ENV=production ./node_modules/.bin/webpack",
         "serve": "NODE_ENV=development webpack-serve --hot --config ./webpack.config.js"
     }
 }
