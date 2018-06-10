@@ -57,6 +57,7 @@
         "watch": "NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "NODE_ENV=production ./node_modules/.bin/webpack",
-        "serve": "NODE_ENV=development webpack-serve --hot --config ./webpack.config.js"
+        "serve": "webpack-serve --hot --config ./webpack.config.js",
+        "v:serve": "PUBLIC_PATH=http://192.168.50.2:8080 NODE_ENV=development webpack-serve --hot --config ./webpack.config.js --host 192.168.50.2 --no-clipboard"
     }
 }

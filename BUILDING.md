@@ -37,6 +37,14 @@ is the `--host` flag, which is required and should point to the machine where th
 The second is the `PUBLIC_PATH` environment variable which is the URL pointing to the HMR server and is appended to all of
 the asset URLs used in Pterodactyl.
 
+#### Vagrant
+If you want to use HMR with our Vagrant image, you can use `yarn run v:serve` as a shortcut for the correct parameters.
+In order to have proper file change detection you can use the [`vagrant-notify-forwarder`](https://github.com/mhallin/vagrant-notify-forwarder) to notify file events from the host to the VM.
+```sh
+vagrant plugin install vagrant-notify-forwarder
+vagrant reload
+```
+
 ### Building for Production
 Once you have your files squared away and ready for the live server, you'll be needing to generate compiled, minified, and
 hashed assets to push live. To do so, run the command below:
