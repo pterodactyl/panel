@@ -100,18 +100,21 @@ module.exports = {
                     use: [{
                         loader: 'css-loader',
                         options: {
+                            sourceMap: true,
                             importLoaders: 1,
-                            minimize: true,
                         },
                     }, {
                         loader: 'postcss-loader',
                         options: {
                             ident: 'postcss',
+                            sourceMap: true,
                             plugins: [
                                 require('postcss-import'),
                                 tailwind('./tailwind.js'),
                                 require('postcss-preset-env')({stage: 0}),
+                                require('precss'),
                                 require('autoprefixer'),
+                                require('cssnano'),
                             ]
                         },
                     }],
@@ -133,7 +136,7 @@ module.exports = {
             publicPath: "/assets/",
             headers: {
                 "Access-Control-Allow-Origin": "*",
-            }
+            },
         },
         hot: {
             hmr: true,
