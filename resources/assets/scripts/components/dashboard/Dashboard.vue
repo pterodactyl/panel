@@ -29,6 +29,7 @@
 
 <script>
     import { DateTime } from 'luxon';
+    import Server from '../../models/server';
     import _ from 'lodash';
     import Flash from '../Flash';
     import ServerBox from './ServerBox';
@@ -75,7 +76,6 @@
         },
 
         methods: {
-
             /**
              * Handle a search for servers but only call the search function every 500ms
              * at the fastest.

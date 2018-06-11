@@ -3,15 +3,12 @@ import Vuex from 'vuex';
 import vuexI18n from 'vuex-i18n';
 import VueRouter from 'vue-router';
 
+require('./bootstrap');
+
 // Helpers
 import { Ziggy } from './helpers/ziggy';
 import Locales from './../../../resources/lang/locales';
 import { flash } from './mixins/flash';
-
-import fontawesome from '@fortawesome/fontawesome';
-import faSolid from '@fortawesome/fontawesome-free-solid';
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome';
-fontawesome.library.add(faSolid);
 
 import { routes } from './routes';
 import createStore from './store';
@@ -27,9 +24,10 @@ const router = new VueRouter({
 Vue.use(Vuex);
 const store = createStore(router);
 
+Vue.config.productionTip = false;
+
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
-Vue.config.productionTip = false;
 Vue.mixin({ methods: { route } });
 Vue.mixin(flash);
 
@@ -38,9 +36,8 @@ Vue.use(vuexI18n.plugin, store);
 Vue.i18n.add('en', Locales.en);
 Vue.i18n.set('en');
 
-Vue.component('font-awesome-icon', FontAwesomeIcon);
-
-
-require('./bootstrap');
+if (module.hot) {
+    module.hot.accept();
+}
 
 const app = new Vue({ store, router }).$mount('#pterodactyl');

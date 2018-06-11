@@ -1,6 +1,6 @@
 <template>
     <div class="server-box animate fadein">
-        <router-link :to="{ name: 'server', params: { id: server.identifier }}" class="content">
+        <router-link :to="{ name: 'server', params: { serverID: server.identifier }}" class="content">
             <div class="float-right">
                 <div class="indicator" :class="status"></div>
             </div>

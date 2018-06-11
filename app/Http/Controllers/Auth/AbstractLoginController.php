@@ -16,6 +16,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Pterodactyl\Traits\Helpers\ProvidesJWTServices;
+use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
@@ -137,25 +138,35 @@ abstract class AbstractLoginController extends Controller
         $request->session()->regenerate();
         $this->clearLoginAttempts($request);
 
-        $token = $this->builder->setIssuer(config('app.url'))
-            ->setAudience(config('app.url'))
-            ->setId(str_random(12), true)
-            ->setIssuedAt(Chronos::now()->getTimestamp())
-            ->setNotBefore(Chronos::now()->getTimestamp())
-            ->setExpiration(Chronos::now()->addSeconds(config('session.lifetime'))->getTimestamp())
-            ->set('user', $user->only([
-                'id', 'uuid', 'username', 'email', 'name_first', 'name_last', 'language', 'root_admin',
-            ]))
-            ->sign($this->getJWTSigner(), $this->getJWTSigningKey())
-            ->getToken();
-
         $this->auth->guard()->login($user, true);
 
         return response()->json([
             'complete' => true,
             'intended' => $this->redirectPath(),
-            'token' => $token->__toString(),
+            'jwt' => $this->createJsonWebToken($user),
         ]);
+    }
+
+    /**
+     * Create a new JWT for the request and sign it using the signing key.
+     *
+     * @param User $user
+     * @return string
+     */
+    protected function createJsonWebToken(User $user): string
+    {
+        $token = $this->builder
+            ->setIssuer('Pterodactyl Panel')
+            ->setAudience(config('app.url'))
+            ->setId(str_random(16), true)
+            ->setIssuedAt(Chronos::now()->getTimestamp())
+            ->setNotBefore(Chronos::now()->getTimestamp())
+            ->setExpiration(Chronos::now()->addSeconds(config('session.lifetime'))->getTimestamp())
+            ->set('user', (new AccountTransformer())->transform($user))
+            ->sign($this->getJWTSigner(), $this->getJWTSigningKey())
+            ->getToken();
+
+        return $token->__toString();
     }
 
     /**

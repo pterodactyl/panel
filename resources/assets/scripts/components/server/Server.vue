@@ -38,32 +38,32 @@
                     </div>
                 </div>
                 <div class="sidenav">
-                    <router-link :to="{ name: 'server' }">
-                        <font-awesome-icon class="mr-2" fixed-with icon="terminal"/>
+                    <router-link :to="{ name: 'server', params: { serverID: this.$route.params.serverID } }">
+                        <terminal-icon style="height: 1em;"></terminal-icon>
                         Console
                     </router-link>
                     <router-link :to="{ name: 'server-files' }">
-                        <font-awesome-icon class="mr-2" fixed-with icon="folder-open"/>
+                        <folder-icon style="height: 1em;"></folder-icon>
                         Files
                     </router-link>
                     <router-link :to="{ name: 'server-subusers' }">
-                        <font-awesome-icon class="mr-2" fixed-with icon="users"/>
+                        <users-icon style="height: 1em;"></users-icon>
                         Subusers
                     </router-link>
                     <router-link :to="{ name: 'server-schedules' }">
-                        <font-awesome-icon class="mr-2" fixed-with icon="calendar-alt"/>
+                        <calendar-icon style="height: 1em;"></calendar-icon>
                         Schedules
                     </router-link>
                     <router-link :to="{ name: 'server-databases' }">
-                        <font-awesome-icon class="mr-2" fixed-with icon="database"/>
+                        <database-icon style="height: 1em;"></database-icon>
                         Databases
                     </router-link>
                     <router-link :to="{ name: 'server-allocations' }">
-                        <font-awesome-icon class="mr-2" fixed-with icon="globe"/>
+                        <globe-icon style="height: 1em;"></globe-icon>
                         Allocations
                     </router-link>
                     <router-link :to="{ name: 'server-settings' }">
-                        <font-awesome-icon class="mr-2" fixed-with icon="cog"/>
+                        <settings-icon style="height: 1em;"></settings-icon>
                         Settings
                     </router-link>
                 </div>
@@ -77,10 +77,14 @@
 </template>
 
 <script>
+    import { TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon } from 'vue-feather-icons'
     import ServerConsole from "./ServerConsole";
     import Navigation from '../core/Navigation';
 
     export default {
-        components: {Navigation, ServerConsole}
+        components: {
+            Navigation, ServerConsole, TerminalIcon, FolderIcon, UsersIcon,
+            CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon
+        }
     }
 </script>

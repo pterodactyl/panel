@@ -97,6 +97,16 @@ class AuthenticateKey
             throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
         }
 
+        // Run through the token validation and throw an exception if the token is not valid.
+        if (
+            $token->getClaim('nbf') > Chronos::now()->getTimestamp()
+            || $token->getClaim('iss') !== 'Pterodactyl Panel'
+            || $token->getClaim('aud') !== config('app.url')
+            || $token->getClaim('exp') <= Chronos::now()->getTimestamp()
+        ) {
+            throw new AccessDeniedHttpException;
+        }
+
         return (new ApiKey)->forceFill([
             'user_id' => object_get($token->getClaim('user'), 'id', 0),
             'key_type' => ApiKey::TYPE_ACCOUNT,
