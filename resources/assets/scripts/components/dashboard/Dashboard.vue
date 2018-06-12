@@ -98,7 +98,7 @@
                         console.error(err);
                         const response = err.response;
                         if (response.data && _.isObject(response.data.errors)) {
-                            response.data.errors.forEach(function (error) {
+                            response.data.errors.forEach(error => {
                                 this.error(error.detail);
                             });
                         }
