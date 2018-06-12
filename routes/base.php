@@ -16,11 +16,11 @@ Route::get('/', 'IndexController@index')->name('index');
 | Endpoint: /account
 |
 */
-Route::group(['prefix' => 'account'], function () {
-    Route::get('/', 'AccountController@index')->name('account');
-
-    Route::post('/', 'AccountController@update');
-});
+//Route::group(['prefix' => 'account'], function () {
+//    Route::get('/', 'AccountController@index')->name('account');
+//
+//    Route::post('/', 'AccountController@update');
+//});
 
 /*
 |--------------------------------------------------------------------------

@@ -30,3 +30,24 @@
     top: 14px;
     transition: transform 200ms ease-out;
 }
+
+.input {
+    @apply .appearance-none .p-3 .rounded .border .text-grey-darker .w-full;
+    transition: all 100ms linear;
+
+    &:focus {
+        @apply .border-blue-light;
+    }
+
+    &:required, &:invalid {
+        box-shadow: none;
+    }
+}
+
+.input-label {
+    @apply .block .uppercase .tracking-wide .text-grey-darkest .text-xs .font-bold .mb-1;
+}
+
+.input-help {
+    @apply .text-xs .text-grey .pt-2;
+}
