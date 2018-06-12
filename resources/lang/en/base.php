@@ -62,7 +62,7 @@ return [
         'new_email' => 'New Email Address',
         'first_name' => 'First Name',
         'last_name' => 'Last Name',
-        'update_identitity' => 'Update Identity',
+        'update_identity' => 'Update Identity',
         'username_help' => 'Your username must be unique to your account, and may only contain the following characters: :requirements.',
     ],
     'security' => [
