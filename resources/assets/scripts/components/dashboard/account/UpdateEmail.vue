@@ -64,7 +64,7 @@
                     })
                     .catch(error => {
                         if (!error.response) {
-                            return console.error(error);
+                            this.error(error.message);
                         }
 
                         const response = error.response;
