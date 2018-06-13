@@ -24,7 +24,7 @@ return [
         'maintenance' => [
             'header' => 'Node Under Maintenance',
             'title' => 'Temporarily Unavailable',
-            'desc' => "This node is under maintenance, therefore you can't access your server at the current time .",
+            'desc' => "This node is currently under maintenance, therefore you may not access your server.",
         ],
     ],
     'index' => [
