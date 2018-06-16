@@ -98,13 +98,17 @@ class AuthenticateKey
         }
 
         // Run through the token validation and throw an exception if the token is not valid.
+        //
+        // The issued_at time is used for verification in order to allow rapid changing of session
+        // length on the Panel without having to wait on existing tokens to first expire.
+        $now = Chronos::now('utc');
         if (
-            $token->getClaim('nbf') > Chronos::now()->getTimestamp()
+            Chronos::createFromTimestampUTC($token->getClaim('nbf'))->gt($now)
             || $token->getClaim('iss') !== 'Pterodactyl Panel'
             || $token->getClaim('aud') !== config('app.url')
-            || $token->getClaim('exp') <= Chronos::now()->getTimestamp()
+            || Chronos::createFromTimestampUTC($token->getClaim('iat'))->addMinutes(config('jwt.lifetime'))->lte($now)
         ) {
-            throw new AccessDeniedHttpException;
+            throw new AccessDeniedHttpException('The authentication parameters provided are not valid for accessing this resource.');
         }
 
         return (new ApiKey)->forceFill([

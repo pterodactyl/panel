@@ -155,13 +155,15 @@ abstract class AbstractLoginController extends Controller
      */
     protected function createJsonWebToken(User $user): string
     {
+        $now = Chronos::now('utc');
+
         $token = $this->builder
             ->setIssuer('Pterodactyl Panel')
             ->setAudience(config('app.url'))
             ->setId(str_random(16), true)
-            ->setIssuedAt(Chronos::now()->getTimestamp())
-            ->setNotBefore(Chronos::now()->getTimestamp())
-            ->setExpiration(Chronos::now()->addSeconds(config('session.lifetime'))->getTimestamp())
+            ->setIssuedAt($now->getTimestamp())
+            ->setNotBefore($now->getTimestamp())
+            ->setExpiration($now->addSeconds(config('jwt.lifetime'))->getTimestamp())
             ->set('user', (new AccountTransformer())->transform($user))
             ->sign($this->getJWTSigner(), $this->getJWTSigningKey())
             ->getToken();

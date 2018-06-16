@@ -9,17 +9,19 @@ export default class User {
      */
     static fromToken(token) {
         if (!isString(token)) {
-            token = localStorage.getItem('token');
+            token = this.getToken();
         }
 
         if (!isString(token) || token.length < 1) {
             return null;
         }
 
-        const data = jwtDecode(token);
-        if (data.user) {
-            return new User(data.user);
-        }
+        try {
+            const data = jwtDecode(token);
+            if (data.user) {
+                return new User(data.user);
+            }
+        } catch (ex) {}
 
         return null;
     }
@@ -29,8 +31,7 @@ export default class User {
      *
      * @returns {string | null}
      */
-    static getToken()
-    {
+    static getToken() {
         return localStorage.getItem('token');
     }
 
@@ -59,5 +60,12 @@ export default class User {
         this.first_name = first_name;
         this.last_name = last_name;
         this.language = language;
+    }
+
+    /**
+     * Returns the JWT belonging to the current user.
+     */
+    getJWT() {
+        return jwtDecode(User.getToken());
     }
 }

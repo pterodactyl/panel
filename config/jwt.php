@@ -12,6 +12,7 @@ return [
     |
     */
     'key' => env('APP_JWT_KEY'),
+    'lifetime' => env('APP_JWT_LIFETIME', 1440),
 
     'signer' => \Lcobucci\JWT\Signer\Hmac\Sha256::class,
 ];
