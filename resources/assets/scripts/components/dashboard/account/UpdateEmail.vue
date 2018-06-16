@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    import _ from 'lodash';
+    import isObject from 'lodash/isObject';
     import { mapState, mapActions } from 'vuex';
 
     export default {
@@ -62,7 +62,7 @@
                         }
 
                         const response = error.response;
-                        if (response.data && _.isObject(response.data.errors)) {
+                        if (response.data && isObject(response.data.errors)) {
                             response.data.errors.forEach(e => {
                                 this.error(e.detail);
                             });

@@ -29,7 +29,7 @@
 
 <script>
     import Server from '../../models/server';
-    import _ from 'lodash';
+    import debounce from 'lodash/debounce';
     import differenceInSeconds from 'date-fns/difference_in_seconds';
     import Flash from '../Flash';
     import ServerBox from './ServerBox';
@@ -112,7 +112,7 @@
              * Handle a search for servers but only call the search function every 500ms
              * at the fastest.
              */
-            onChange: _.debounce(function () {
+            onChange: debounce(function () {
                 this.loadServers(this.$data.search);
             }, 500),
 
