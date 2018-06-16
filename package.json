@@ -1,6 +1,7 @@
 {
     "name": "pterodactyl-panel",
     "dependencies": {
+        "date-fns": "^1.29.0",
         "vue": "^2.5.7",
         "vue-axios": "^2.1.1",
         "vue-router": "^3.0.1",
@@ -27,7 +28,6 @@
         "jquery": "^3.3.1",
         "jwt-decode": "^2.2.0",
         "lodash": "^4.17.5",
-        "luxon": "^1.2.1",
         "postcss": "^6.0.21",
         "postcss-import": "^11.1.0",
         "postcss-loader": "^2.1.5",

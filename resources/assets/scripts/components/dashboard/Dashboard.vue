@@ -28,9 +28,9 @@
 </template>
 
 <script>
-    import { DateTime } from 'luxon';
     import Server from '../../models/server';
     import _ from 'lodash';
+    import differenceInSeconds from 'date-fns/difference_in_seconds';
     import Flash from '../Flash';
     import ServerBox from './ServerBox';
     import Navigation from '../core/Navigation';
@@ -40,7 +40,7 @@
         components: { Navigation, ServerBox, Flash },
         data: function () {
             return {
-                backgroundedAt: DateTime.local(),
+                backgroundedAt: new Date(),
                 documentVisible: true,
                 loading: true,
                 search: '',
@@ -156,14 +156,14 @@
              */
             _handleDocumentVisibilityChange: function (isVisible) {
                 if (!isVisible) {
-                    this.backgroundedAt = DateTime.local();
+                    this.backgroundedAt = new Date();
                     return;
                 }
 
                 // If it has been more than 30 seconds since this window was put into the background
                 // lets go ahead and refresh all of the listed servers so that they have fresh stats.
-                const diff = DateTime.local().diff(this.backgroundedAt, 'seconds');
-                this._iterateServerResourceUse(diff.seconds > 30 ? 1 : 5000);
+                const diff = differenceInSeconds(new Date(), this.backgroundedAt);
+                this._iterateServerResourceUse(diff > 30 ? 1 : 5000);
             },
         }
     };
