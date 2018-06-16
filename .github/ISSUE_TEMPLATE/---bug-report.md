@@ -23,5 +23,5 @@ Steps to reproduce the behavior:
 3. Scroll down to '....'
 4. See error
 
-**Expected behavior**
+**Expected behaviour**
 A clear and concise description of what you expected to happen. If applicable, add screenshots or a recording to help explain your problem.
