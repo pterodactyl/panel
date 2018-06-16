@@ -31,7 +31,7 @@
     transition: transform 200ms ease-out;
 }
 
-.input {
+.input:not(.open-label) {
     @apply .appearance-none .p-3 .rounded .border .text-grey-darker .w-full;
     transition: all 100ms linear;
 

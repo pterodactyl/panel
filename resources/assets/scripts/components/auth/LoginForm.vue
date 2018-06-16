@@ -5,7 +5,7 @@
         >
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-username" type="text" name="user" aria-labelledby="grid-username-label" required
+                    <input class="input open-label" id="grid-username" type="text" name="user" aria-labelledby="grid-username-label" required
                            ref="email"
                            :class="{ 'has-content' : user.email.length > 0 }"
                            :readonly="showSpinner"
@@ -17,7 +17,7 @@
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-password" type="password" name="password" aria-labelledby="grid-password-label" required
+                    <input class="input open-label" id="grid-password" type="password" name="password" aria-labelledby="grid-password-label" required
                            ref="password"
                            :class="{ 'has-content' : user.password && user.password.length > 0 }"
                            :readonly="showSpinner"

@@ -4,7 +4,7 @@
     >
         <div class="flex flex-wrap -mx-3 mb-6">
             <div class="input-open">
-                <input class="input" id="grid-code" type="number" name="token" aria-labelledby="grid-username" required
+                <input class="input open-label" id="grid-code" type="number" name="token" aria-labelledby="grid-username" required
                        ref="code"
                        :class="{ 'has-content' : code.length > 0 }"
                        v-model="code"

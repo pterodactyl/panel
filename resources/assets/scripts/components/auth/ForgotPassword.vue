@@ -5,7 +5,7 @@
         >
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-email" type="email" aria-labelledby="grid-email-label" required
+                    <input class="input open-label" id="grid-email" type="email" aria-labelledby="grid-email-label" required
                            ref="email"
                            v-bind:class="{ 'has-content': email.length > 0 }"
                            v-bind:readonly="showSpinner"
