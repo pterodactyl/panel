@@ -34,3 +34,15 @@
     @apply .bg-red-dark;
   }
 }
+
+/*
+ * transition="modal"
+ */
+.modal-enter, .modal-leave-active {
+  opacity: 0;
+}
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container {
+  animation: opacity 250ms linear;
+}
