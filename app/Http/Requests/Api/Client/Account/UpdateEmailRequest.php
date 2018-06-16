@@ -34,9 +34,6 @@ class UpdateEmailRequest extends ClientApiRequest
     {
         $rules = User::getUpdateRulesForId($this->user()->id);
 
-        return [
-            'email' => $rules['email'],
-            'password' => array_merge($rules['password'], ['confirmed']),
-        ];
+        return ['email' => $rules['email']];
     }
 }

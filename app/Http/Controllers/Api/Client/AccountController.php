@@ -40,7 +40,7 @@ class AccountController extends ClientApiController
     /**
      * Update the authenticated user's email address if their password matches.
      *
-     * @param UpdateEmailRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest $request
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -48,9 +48,7 @@ class AccountController extends ClientApiController
      */
     public function updateEmail(UpdateEmailRequest $request): array
     {
-        $updated = $this->updateService->handle($request->user(), [
-            'email' => $request->input('email'),
-        ]);
+        $updated = $this->updateService->handle($request->user(), $request->validated());
 
         return $this->fractal->item($updated->get('model'))
             ->transformWith($this->getTransformer(AccountTransformer::class))

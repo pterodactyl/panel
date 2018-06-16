@@ -23,7 +23,7 @@
                     </a>
                 </li>
                 <li>
-                    <a :href="this.route('auth.logout')">
+                    <a :href="this.route('auth.logout')" v-on:click.prevent="doLogout">
                         <log-out-icon aria-label="Sign out"/>
                     </a>
                 </li>
@@ -37,6 +37,12 @@
 
     export default {
         name: 'navigation',
-        components: { LogOutIcon, ServerIcon, SettingsIcon, UserIcon }
+        components: { LogOutIcon, ServerIcon, SettingsIcon, UserIcon },
+        methods: {
+            doLogout: function () {
+                this.$store.commit('auth/logout');
+                return window.location = this.route('auth.logout');
+            },
+        }
     };
 </script>

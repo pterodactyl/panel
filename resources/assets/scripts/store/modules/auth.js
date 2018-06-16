@@ -1,4 +1,5 @@
 import User from './../../models/user';
+
 const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').default;
 
 export default {
@@ -57,36 +58,16 @@ export default {
         },
 
         /**
-         * Log a user out of the Panel.
-         *
-         * @param commit
-         * @returns {Promise<any>}
-         */
-        logout: function ({commit}) {
-            return new Promise((resolve, reject) => {
-                window.axios.get(route('auth.logout'))
-                    .then(() => {
-                        commit('logout');
-                        return resolve();
-                    })
-                    .catch(reject);
-            })
-        },
-
-        /**
          * Update a user's email address on the Panel and store the updated result in Vuex.
          *
          * @param commit
          * @param {String} email
          * @param {String} password
-         * @param {String} confirm
          * @return {Promise<any>}
          */
-        updateEmail: function ({commit}, {email, password, confirm}) {
+        updateEmail: function ({commit}, {email, password}) {
             return new Promise((resolve, reject) => {
-                window.axios.put(route('api.client.account.update-email'), {
-                    email, password, password_confirmation: confirm
-                })
+                window.axios.put(route('api.client.account.update-email'), {email, password})
                     .then(response => {
                         // If there is a 302 redirect or some other odd behavior (basically, response that isnt
                         // in JSON format) throw an error and don't try to continue with the login.

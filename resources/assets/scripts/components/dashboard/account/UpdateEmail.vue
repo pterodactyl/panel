@@ -16,12 +16,6 @@
                         v-model="password"
                     >
                 </div>
-                <div class="mt-6">
-                    <label for="grid-password-confirm" class="input-label">Confirm password</label>
-                    <input id="grid-password-confirm" name="password_confirmation" type="password" class="input" required
-                        v-model="confirm"
-                    >
-                </div>
                 <div class="mt-6 text-right">
                     <button class="btn btn-blue btn-sm text-right" type="submit">Save</button>
                 </div>
@@ -31,6 +25,7 @@
 </template>
 
 <script>
+    import _ from 'lodash';
     import { mapState, mapActions } from 'vuex';
 
     export default {
@@ -39,7 +34,6 @@
             return {
                 email: '',
                 password: '',
-                confirm: '',
             };
         },
         computed: {
@@ -56,11 +50,11 @@
                 this.clearFlashes();
                 this.updateEmail({
                     email: this.$data.email,
-                    password: this.$data.password,
-                    confirm: this.$data.confirm,
+                    password: this.$data.password
                 })
                     .then(() => {
                         this.success('Your email address has been updated.');
+                        this.$data.password = '';
                     })
                     .catch(error => {
                         if (!error.response) {
