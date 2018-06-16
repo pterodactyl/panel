@@ -52,16 +52,6 @@ router.beforeEach((to, from, next) => {
 
     const user = store.getters['auth/getUser'];
 
-    // If user is trying to access the authentication endpoints but is already authenticated
-    // don't try to load them, just send the user to the dashboard.
-    if (to.path.startsWith('/auth')) {
-        if (user !== null && compareDate(addHours(dateParse(user.getJWT().iat * 1000), 12), new Date()) >= 0) {
-            return window.location = '/';
-        }
-
-        return next();
-    }
-
     // If user is trying to access any of the non-authentication endpoints ensure that they have
     // a valid, non-expired JWT.
     if (!to.path.startsWith('/auth')) {
