@@ -43,6 +43,13 @@ code {
 }
 
 /**
+ * Styling for elements that contain the core page content.
+ */
+.content-box {
+    @apply .bg-white .p-6 .border .border-grey-light .rounded;
+}
+
+/**
  * Flex boxes for server listing on user dashboard.
  */
 .server-box {

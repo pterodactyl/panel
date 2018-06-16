@@ -6,14 +6,18 @@
                 <TwoFactorAuthentication/>
             </modal>
             <flash container="mt-6 mb-2 mx-4"/>
-            <div class="flex">
-                <div class="flex-1 m-4 ml-0">
-                    <update-email class="mb-8"/>
-                    <div class="bg-white p-6 border border-grey-light rounded rounded-1 text-center">
-                        <button class="btn btn-green btn-sm" type="submit" v-on:click="modalVisible = true">Configure 2-Factor Authentication</button>
+            <div class="flex flex-wrap">
+                <div class="w-full md:w-1/2">
+                    <div class="m-4 md:ml-0">
+                        <update-email class="mb-8"/>
+                        <div class="content-box text-center">
+                            <button class="btn btn-green btn-sm" type="submit" v-on:click="modalVisible = true">Configure 2-Factor Authentication</button>
+                        </div>
                     </div>
                 </div>
-                <change-password class="flex-1 m-4 mr-0"/>
+                <div class="w-full md:w-1/2">
+                    <change-password class="m-4 md:mr-0"/>
+                </div>
             </div>
         </div>
     </div>

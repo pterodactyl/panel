@@ -1,7 +1,7 @@
 <template>
     <div :class>
         <form method="post" v-on:submit.prevent="submitForm">
-            <div class="bg-white p-6 border border-grey-light rounded rounded-1">
+            <div class="content-box">
                 <h2 class="mb-6 text-grey-darkest font-medium">Update your email</h2>
                 <div>
                     <label for="grid-email" class="input-label">Email address</label>

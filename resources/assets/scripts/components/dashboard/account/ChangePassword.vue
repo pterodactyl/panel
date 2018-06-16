@@ -1,7 +1,7 @@
 <template>
     <div>
         <form action="" method="post">
-            <div class="bg-white p-6 border border-grey-light rounded rounded-1">
+            <div class="content-box">
                 <h2 class="mb-6 text-grey-darkest font-medium">Change your password</h2>
                 <div class="mt-6">
                     <label for="grid-password-current" class="input-label">Current password</label>
