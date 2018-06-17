@@ -45,6 +45,10 @@ const productionPlugins = [
             path.join(__dirname, 'resources/assets/scripts/**/*.vue'),
             path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
         ]),
+        // Don't let PurgeCSS remove classes ending with -enter or -leave-active
+        // They're used by Vue transitions and are therefore not specifically defined
+        // in any of the files are are checked by PurgeCSS.
+        whitelistPatterns: [/-enter$/, /-leave-active$/],
         extractors: [
             {
                 extractor: TailwindExtractor,
