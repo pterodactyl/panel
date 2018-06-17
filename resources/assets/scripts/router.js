@@ -60,7 +60,8 @@ router.beforeEach((to, from, next) => {
         // client side without having to wait for older tokens to pass their expiration time if
         // we lower it.
         if (user === null || compareDate(addHours(dateParse(user.getJWT().iat * 1000), 12), new Date()) < 0) {
-            return window.location = route('auth.login');
+            store.commit('auth/logout');
+            return window.location = route('auth.logout');
         }
     }
 
