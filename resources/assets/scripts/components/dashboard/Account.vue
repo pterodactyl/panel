@@ -1,22 +1,22 @@
 <template>
     <div>
         <navigation/>
-        <div class="container animate fadein mt-6">
+        <div class="container animate fadein mt-2 sm:mt-6">
             <modal :show="modalVisible" v-on:close="modalVisible = false">
                 <TwoFactorAuthentication/>
             </modal>
-            <flash container="mt-6 mb-2 mx-4"/>
+            <flash container="mt-2 sm:mt-6 mb-2 sm:mx-4"/>
             <div class="flex flex-wrap">
                 <div class="w-full md:w-1/2">
-                    <div class="m-4 md:ml-0">
-                        <update-email class="mb-8"/>
-                        <div class="content-box text-center">
+                    <div class="sm:m-4 md:ml-0">
+                        <update-email class="mb-4 sm:mb-8"/>
+                        <div class="content-box text-center mb-4 sm:mb-0">
                             <button class="btn btn-green btn-sm" type="submit" v-on:click="modalVisible = true">Configure 2-Factor Authentication</button>
                         </div>
                     </div>
                 </div>
                 <div class="w-full md:w-1/2">
-                    <change-password class="m-4 md:mr-0"/>
+                    <change-password class="sm:m-4 md:mr-0"/>
                 </div>
             </div>
         </div>

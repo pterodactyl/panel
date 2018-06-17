@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form class="bg-white shadow-lg rounded-lg pt-10 px-8 pb-6 mb-4 animate fadein" method="post"
+        <form class="login-box" method="post"
               v-on:submit.prevent="submitForm"
         >
             <div class="flex flex-wrap -mx-3 mb-6">
