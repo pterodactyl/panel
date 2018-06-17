@@ -1,3 +1,7 @@
+textarea, select, input, button {
+    outline: none;
+}
+
 /**
  * Styles for the login form open input boxes. Label floats up above it when content
  * is input and then sinks back down into the field if left empty.
@@ -31,6 +35,9 @@
     transition: transform 200ms ease-out;
 }
 
+/**
+ * Styling for other forms throughout the Panel.
+ */
 .input:not(.open-label) {
     @apply .appearance-none .p-3 .rounded .border .text-grey-darker .w-full;
     transition: all 100ms linear;
