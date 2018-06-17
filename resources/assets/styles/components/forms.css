@@ -49,12 +49,20 @@ textarea, select, input, button {
     &:required, &:invalid {
         box-shadow: none;
     }
+
+    &.error {
+        @apply .text-red-dark .border-red;
+    }
 }
 
 .input-label {
-    @apply .block .uppercase .tracking-wide .text-grey-darkest .text-xs .font-bold .mb-1;
+    @apply .block .uppercase .tracking-wide .text-grey-darkest .text-xs .font-bold .mb-2;
 }
 
 .input-help {
     @apply .text-xs .text-grey .pt-2;
+
+    &.error {
+        @apply .text-red-dark;
+    }
 }

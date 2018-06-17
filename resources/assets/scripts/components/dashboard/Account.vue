@@ -5,7 +5,7 @@
             <modal :show="modalVisible" v-on:close="modalVisible = false">
                 <TwoFactorAuthentication/>
             </modal>
-            <flash container="mt-2 sm:mt-6 mb-2 sm:mx-4"/>
+            <flash container="mt-2 sm:mt-6 mb-2"/>
             <div class="flex flex-wrap">
                 <div class="w-full md:w-1/2">
                     <div class="sm:m-4 md:ml-0">

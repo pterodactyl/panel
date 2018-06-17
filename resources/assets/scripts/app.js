@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import vuexI18n from 'vuex-i18n';
 import VueRouter from 'vue-router';
+import VeeValidate from 'vee-validate';
 
 Vue.config.productionTip = false;
 require('./bootstrap');
@@ -19,6 +20,7 @@ window.Ziggy = Ziggy;
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(vuexI18n.plugin, store);
+Vue.use(VeeValidate);
 
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 

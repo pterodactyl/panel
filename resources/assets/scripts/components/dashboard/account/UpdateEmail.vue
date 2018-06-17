@@ -6,9 +6,11 @@
                 <div>
                     <label for="grid-email" class="input-label">Email address</label>
                     <input id="grid-email" name="email" type="email" class="input" required
-                        v-model="email"
+                           :class="{ error: errors.has('email') }"
+                           v-validate
+                           v-model="email"
                     >
-                    <p class="input-help">If your email is no longer {{ user.email }} enter a new email in the field above.</p>
+                    <p class="input-help error" v-show="errors.has('email')">{{ errors.first('email') }}</p>
                 </div>
                 <div class="mt-6">
                     <label for="grid-password" class="input-label">Password</label>
@@ -25,14 +27,14 @@
 </template>
 
 <script>
-    import isObject from 'lodash/isObject';
+    import { isObject, get } from 'lodash';
     import { mapState, mapActions } from 'vuex';
 
     export default {
         name: 'update-email',
         data: function () {
             return {
-                email: '',
+                email: get(this.$store.state, 'auth.user.email', ''),
                 password: '',
             };
         },
@@ -41,7 +43,6 @@
                 user: state => state.auth.user,
             })
         },
-
         methods: {
             /**
              * Update a user's email address on the Panel.
@@ -52,9 +53,11 @@
                     email: this.$data.email,
                     password: this.$data.password
                 })
+                    .finally(() => {
+                        this.$data.password = '';
+                    })
                     .then(() => {
                         this.success('Your email address has been updated.');
-                        this.$data.password = '';
                     })
                     .catch(error => {
                         if (!error.response) {

@@ -3,9 +3,11 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
+use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 
 class AccountController extends ClientApiController
 {
@@ -38,20 +40,34 @@ class AccountController extends ClientApiController
     }
 
     /**
-     * Update the authenticated user's email address if their password matches.
+     * Update the authenticated user's email address.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest $request
-     * @return array
+     * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updateEmail(UpdateEmailRequest $request): array
+    public function updateEmail(UpdateEmailRequest $request): Response
     {
-        $updated = $this->updateService->handle($request->user(), $request->validated());
+        $this->updateService->handle($request->user(), $request->validated());
 
-        return $this->fractal->item($updated->get('model'))
-            ->transformWith($this->getTransformer(AccountTransformer::class))
-            ->toArray();
+        return response('', Response::HTTP_CREATED);
+    }
+
+    /**
+     * Update the authenticated user's password.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest $request
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function updatePassword(UpdatePasswordRequest $request): Response
+    {
+        $this->updateService->handle($request->user(), $request->validated());
+
+        return response('', Response::HTTP_CREATED);
     }
 }
