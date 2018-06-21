@@ -2,26 +2,26 @@
     <div>
         <form method="post" v-on:submit.prevent="submitForm">
             <div class="content-box">
-                <h2 class="mb-6 text-grey-darkest font-medium">Change your password</h2>
+                <h2 class="mb-6 text-grey-darkest font-medium">{{ $t('dashboard.account.password.title') }}</h2>
                 <div class="mt-6">
-                    <label for="grid-password-current" class="input-label">Current password</label>
+                    <label for="grid-password-current" class="input-label">{{ $t('strings.password') }}</label>
                     <input id="grid-password-current" name="current_password" type="password" class="input" required
                            ref="current"
                            v-model="current"
                     >
                 </div>
                 <div class="mt-6">
-                    <label for="grid-password-new" class="input-label">New password</label>
+                    <label for="grid-password-new" class="input-label">{{ $t('strings.new_password') }}</label>
                     <input id="grid-password-new" name="password" type="password" class="input" required
                            :class="{ error: errors.has('password') }"
                            v-model="newPassword"
                            v-validate="'min:8'"
                     >
                     <p class="input-help error" v-show="errors.has('password')">{{ errors.first('password') }}</p>
-                    <p class="input-help">Your new password should be at least 8 characters in length.</p>
+                    <p class="input-help">{{ $t('dashboard.account.password.requirements') }}</p>
                 </div>
                 <div class="mt-6">
-                    <label for="grid-password-new-confirm" class="input-label">Confirm new password</label>
+                    <label for="grid-password-new-confirm" class="input-label">{{ $t('strings.confirm_password') }}</label>
                     <input id="grid-password-new-confirm" name="password_confirmation" type="password" class="input" required
                            :class="{ error: errors.has('password_confirmation') }"
                            v-model="confirmNew"
@@ -31,7 +31,7 @@
                     <p class="input-help error" v-show="errors.has('password_confirmation')">{{ errors.first('password_confirmation') }}</p>
                 </div>
                 <div class="mt-6 text-right">
-                    <button class="btn btn-blue btn-sm text-right" type="submit">Save</button>
+                    <button class="btn btn-blue btn-sm text-right" type="submit">{{ $t('strings.save') }}</button>
                 </div>
             </div>
         </form>
@@ -68,7 +68,7 @@
                         this.$data.newPassword = '';
                         this.$data.confirmNew = '';
 
-                        this.success('Your password has been updated.');
+                        this.success(this.$t('dashboard.account.password.updated'));
                     })
                     .catch(err => {
                         if (!err.response) {

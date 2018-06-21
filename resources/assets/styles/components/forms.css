@@ -2,6 +2,16 @@ textarea, select, input, button {
     outline: none;
 }
 
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield !important;
+}
+
 /**
  * Styles for the login form open input boxes. Label floats up above it when content
  * is input and then sinks back down into the field if left empty.

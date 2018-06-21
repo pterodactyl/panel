@@ -31,11 +31,11 @@
   /**
    * Spinner Colors
    */
-  &.blue:after {
+  &.blue:after, &.text-blue:after {
     @apply .border-blue;
   }
 
-  &.white:after {
+  &.white:after, &.text-white:after {
     @apply .border-white;
   }
 

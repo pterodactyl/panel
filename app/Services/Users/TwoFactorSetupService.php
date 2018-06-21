@@ -11,17 +11,12 @@ namespace Pterodactyl\Services\Users;
 
 use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class TwoFactorSetupService
 {
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $config;
-
     /**
      * @var \Illuminate\Contracts\Encryption\Encrypter
      */
@@ -40,18 +35,15 @@ class TwoFactorSetupService
     /**
      * TwoFactorSetupService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                   $config
      * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
      * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
-        ConfigRepository $config,
         Encrypter $encrypter,
         Google2FA $google2FA,
         UserRepositoryInterface $repository
     ) {
-        $this->config = $config;
         $this->encrypter = $encrypter;
         $this->google2FA = $google2FA;
         $this->repository = $repository;
@@ -62,20 +54,23 @@ class TwoFactorSetupService
      * QR code image.
      *
      * @param \Pterodactyl\Models\User $user
-     * @return string
+     * @return \Illuminate\Support\Collection
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle(User $user): string
+    public function handle(User $user): Collection
     {
-        $secret = $this->google2FA->generateSecretKey($this->config->get('pterodactyl.auth.2fa.bytes'));
-        $image = $this->google2FA->getQRCodeGoogleUrl($this->config->get('app.name'), $user->email, $secret);
+        $secret = $this->google2FA->generateSecretKey(config('pterodactyl.auth.2fa.bytes'));
+        $image = $this->google2FA->getQRCodeGoogleUrl(config('app.name'), $user->email, $secret);
 
         $this->repository->withoutFreshModel()->update($user->id, [
             'totp_secret' => $this->encrypter->encrypt($secret),
         ]);
 
-        return $image;
+        return new Collection([
+            'image' => $image,
+            'secret' => $secret,
+        ]);
     }
 }

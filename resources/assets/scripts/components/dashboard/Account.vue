@@ -3,7 +3,7 @@
         <navigation/>
         <div class="container animate fadein mt-2 sm:mt-6">
             <modal :show="modalVisible" v-on:close="modalVisible = false">
-                <TwoFactorAuthentication/>
+                <TwoFactorAuthentication v-on:close="modalVisible = false"/>
             </modal>
             <flash container="mt-2 sm:mt-6 mb-2"/>
             <div class="flex flex-wrap">
@@ -11,7 +11,7 @@
                     <div class="sm:m-4 md:ml-0">
                         <update-email class="mb-4 sm:mb-8"/>
                         <div class="content-box text-center mb-4 sm:mb-0">
-                            <button class="btn btn-green btn-sm" type="submit" v-on:click="modalVisible = true">Configure 2-Factor Authentication</button>
+                            <button class="btn btn-green btn-sm" type="submit" v-on:click="openModal">Configure 2-Factor Authentication</button>
                         </div>
                     </div>
                 </div>
@@ -39,5 +39,11 @@
                 modalVisible: false,
             };
         },
+        methods: {
+            openModal: function () {
+                this.$data.modalVisible = true;
+                window.events.$emit('two_factor:open');
+            },
+        }
     };
 </script>

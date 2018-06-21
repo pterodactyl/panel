@@ -2,9 +2,9 @@
     <div :class>
         <form method="post" v-on:submit.prevent="submitForm">
             <div class="content-box">
-                <h2 class="mb-6 text-grey-darkest font-medium">Update your email</h2>
+                <h2 class="mb-6 text-grey-darkest font-medium">{{ $t('dashboard.account.email.title') }}</h2>
                 <div>
-                    <label for="grid-email" class="input-label">Email address</label>
+                    <label for="grid-email" class="input-label">{{ $t('strings.email_address') }}</label>
                     <input id="grid-email" name="email" type="email" class="input" required
                            :class="{ error: errors.has('email') }"
                            v-validate
@@ -13,13 +13,13 @@
                     <p class="input-help error" v-show="errors.has('email')">{{ errors.first('email') }}</p>
                 </div>
                 <div class="mt-6">
-                    <label for="grid-password" class="input-label">Password</label>
+                    <label for="grid-password" class="input-label">{{ $t('strings.password') }}</label>
                     <input id="grid-password" name="password" type="password" class="input" required
                         v-model="password"
                     >
                 </div>
                 <div class="mt-6 text-right">
-                    <button class="btn btn-blue btn-sm text-right" type="submit">Save</button>
+                    <button class="btn btn-blue btn-sm text-right" type="submit">{{ $t('strings.save') }}</button>
                 </div>
             </div>
         </form>
@@ -57,7 +57,7 @@
                         this.$data.password = '';
                     })
                     .then(() => {
-                        this.success('Your email address has been updated.');
+                        this.success(this.$t('dashboard.account.email.updated'));
                     })
                     .catch(error => {
                         if (!error.response) {
@@ -79,7 +79,3 @@
         }
     };
 </script>
-
-<style scoped>
-
-</style>
