@@ -62,7 +62,7 @@
                 <h3 class="box-title">Force Delete Server</h3>
             </div>
             <div class="box-body">
-                <p>This action will attempt to delete the server from both the panel and daemon. The the daemon does not respond, or reports an error the deletion will continue.</p>
+                <p>This action will attempt to delete the server from both the panel and daemon. If the daemon does not respond, or reports an error the deletion will continue.</p>
                 <p class="text-danger small">Deleting a server is an irreversible action. <strong>All server data</strong> (including files and users) will be removed from the system. This method may leave dangling files on your daemon if it reports an error.</p>
             </div>
             <div class="box-footer">
