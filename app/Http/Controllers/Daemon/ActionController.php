@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Daemon;
 
 use Cache;
 use Illuminate\Http\Request;
+use Pterodactyl\Events\Server\Installed;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
@@ -36,6 +37,8 @@ class ActionController extends Controller
 
         $server->installed = ($status === 'installed') ? 1 : 2;
         $server->save();
+
+        event(new Installed($server));
 
         return response()->json([]);
     }

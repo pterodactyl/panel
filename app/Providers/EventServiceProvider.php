@@ -3,6 +3,8 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Pterodactyl\Events\Server\Installed;
+use Pterodactyl\Listeners\Server\SendInstalledEmail;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -11,5 +13,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $listen = [];
+    protected $listen = [
+        Installed::class => [SendInstalledEmail::class],
+    ];
 }
