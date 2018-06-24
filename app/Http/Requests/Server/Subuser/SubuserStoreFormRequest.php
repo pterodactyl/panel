@@ -7,7 +7,7 @@ use Pterodactyl\Http\Requests\Server\ServerFormRequest;
 class SubuserStoreFormRequest extends ServerFormRequest
 {
     /**
-     * Return the user permission to validate this request aganist.
+     * Return the user permission to validate this request against.
      *
      * @return string
      */
@@ -17,7 +17,7 @@ class SubuserStoreFormRequest extends ServerFormRequest
     }
 
     /**
-     * The rules to validate this request submission aganist.
+     * The rules to validate this request submission against.
      *
      * @return array
      */

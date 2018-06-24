@@ -96,7 +96,7 @@ class SecurityController extends Controller
     }
 
     /**
-     * Verifies that 2FA token recieved is valid and will work on the account.
+     * Verifies that 2FA token received is valid and will work on the account.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response

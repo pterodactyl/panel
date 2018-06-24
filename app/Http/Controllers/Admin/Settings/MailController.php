@@ -83,7 +83,9 @@ class MailController extends Controller
      * @param \Pterodactyl\Http\Requests\Admin\Settings\MailSettingsFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(MailSettingsFormRequest $request): RedirectResponse
     {

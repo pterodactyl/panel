@@ -19,7 +19,7 @@ class AdminAclTest extends TestCase
     }
 
     /**
-     * Test that checking aganist a model works as expected.
+     * Test that checking against a model works as expected.
      */
     public function testCheck()
     {

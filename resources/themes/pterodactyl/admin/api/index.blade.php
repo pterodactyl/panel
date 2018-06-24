@@ -93,7 +93,7 @@
                         swal({
                             type: 'error',
                             title: 'Whoops!',
-                            text: 'An error occured while attempting to revoke this key.'
+                            text: 'An error occurred while attempting to revoke this key.'
                         });
                     });
                 });

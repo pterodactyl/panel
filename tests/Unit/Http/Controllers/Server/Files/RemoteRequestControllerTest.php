@@ -79,7 +79,7 @@ class RemoteRequestControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test that the controller properly handles an exception thrown by the daemon conneciton.
+     * Test that the controller properly handles an exception thrown by the daemon connection.
      */
     public function testExceptionThrownByDaemonConnectionIsHandledByDisplayController()
     {
@@ -125,7 +125,7 @@ class RemoteRequestControllerTest extends ControllerTestCase
     }
 
     /**
-     * Test that the controller properly handles an exception thrown by the daemon conneciton.
+     * Test that the controller properly handles an exception thrown by the daemon connection.
      */
     public function testExceptionThrownByDaemonConnectionIsHandledByStoreController()
     {

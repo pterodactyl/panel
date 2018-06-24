@@ -37,10 +37,10 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
     /**
      * Return all matching models for a user in a format that can be used for dropdowns.
      *
-     * @param string $query
+     * @param string|null $query
      * @return \Illuminate\Support\Collection
      */
-    public function filterUsersByQuery(string $query): Collection
+    public function filterUsersByQuery(?string $query): Collection
     {
         $this->setColumns([
             'id', 'email', 'username', 'name_first', 'name_last',

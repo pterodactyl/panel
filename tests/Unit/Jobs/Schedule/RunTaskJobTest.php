@@ -103,7 +103,7 @@ class RunTaskJobTest extends TestCase
     }
 
     /**
-     * Test commmand action passed to job.
+     * Test command action passed to job.
      */
     public function testCommandAction()
     {

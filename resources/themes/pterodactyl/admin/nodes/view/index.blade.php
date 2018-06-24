@@ -76,7 +76,7 @@
                         <h3 class="box-title">Delete Node</h3>
                     </div>
                     <div class="box-body">
-                        <p class="no-margin">Deleting a node is a irreversable action and will immediately remove this node from the panel. There must be no servers associated with this node in order to continue.</p>
+                        <p class="no-margin">Deleting a node is a irreversible action and will immediately remove this node from the panel. There must be no servers associated with this node in order to continue.</p>
                     </div>
                     <div class="box-footer">
                         <form action="{{ route('admin.nodes.view.delete', $node->id) }}" method="POST">
@@ -96,6 +96,17 @@
             </div>
             <div class="box-body">
                 <div class="row">
+                    @if($node->maintenance_mode)
+                    <div class="col-sm-12">
+                        <div class="info-box bg-orange">
+                            <span class="info-box-icon"><i class="ion ion-wrench"></i></span>
+                            <div class="info-box-content" style="padding: 23px 10px 0;">
+                                <span class="info-box-text">This node is under</span>
+                                <span class="info-box-number">Maintenance</span>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
                     <div class="col-sm-12">
                         <div class="info-box bg-{{ $stats['disk']['css'] }}">
                             <span class="info-box-icon"><i class="ion ion-ios-folder-outline"></i></span>

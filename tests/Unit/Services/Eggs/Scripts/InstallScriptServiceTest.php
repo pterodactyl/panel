@@ -65,7 +65,7 @@ class InstallScriptServiceTest extends TestCase
     {
         $this->data['copy_script_from'] = 1;
 
-        $this->repository->shouldReceive('isCopiableScript')->with(1, $this->model->nest_id)->once()->andReturn(true);
+        $this->repository->shouldReceive('isCopyableScript')->with(1, $this->model->nest_id)->once()->andReturn(true);
         $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
             ->shouldReceive('update')->with($this->model->id, $this->data)->andReturnNull();
 
@@ -73,13 +73,13 @@ class InstallScriptServiceTest extends TestCase
     }
 
     /**
-     * Test that an exception gets raised when the script is not copiable.
+     * Test that an exception gets raised when the script is not copyable.
      */
     public function testUpdateWithInvalidCopyScriptFromAttribute()
     {
         $this->data['copy_script_from'] = 1;
 
-        $this->repository->shouldReceive('isCopiableScript')->with(1, $this->model->nest_id)->once()->andReturn(false);
+        $this->repository->shouldReceive('isCopyableScript')->with(1, $this->model->nest_id)->once()->andReturn(false);
         try {
             $this->service->handle($this->model, $this->data);
         } catch (Exception $exception) {

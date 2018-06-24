@@ -20,6 +20,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Pterodactyl\Http\Middleware\AccessingValidServer;
 use Pterodactyl\Http\Middleware\Api\SetSessionDriver;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
@@ -108,10 +109,11 @@ class Kernel extends HttpKernel
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
+        'node.maintenance' => MaintenanceMiddleware::class,
 
         // Server specific middleware (used for authenticating access to resources)
         //
-        // These are only used for individual server authentication, and not gloabl
+        // These are only used for individual server authentication, and not global
         // actions from other resources. They are defined in the route files.
         'server..database' => DatabaseBelongsToServer::class,
         'server..subuser' => SubuserBelongsToServer::class,

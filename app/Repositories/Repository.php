@@ -37,7 +37,7 @@ abstract class Repository implements RepositoryInterface
     {
         $this->app = $application;
 
-        $this->initalizeModel($this->model());
+        $this->initializeModel($this->model());
     }
 
     /**
@@ -103,7 +103,7 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * Set wether or not the repository should return a fresh model
+     * Set whether or not the repository should return a fresh model
      * when changes are committed.
      *
      * @param bool $fresh
@@ -123,7 +123,7 @@ abstract class Repository implements RepositoryInterface
      * @param array $model
      * @return mixed
      */
-    protected function initalizeModel(...$model)
+    protected function initializeModel(...$model)
     {
         switch (count($model)) {
             case 1:
@@ -131,7 +131,7 @@ abstract class Repository implements RepositoryInterface
             case 2:
                 return $this->model = call_user_func([$this->app->make($model[0]), $model[1]]);
             default:
-                throw new InvalidArgumentException('Model must be a FQCN or an array with a count of two.');
+                throw new InvalidArgumentException('Model must be a FQDN or an array with a count of two.');
         }
     }
 }

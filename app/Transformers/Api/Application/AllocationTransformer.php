@@ -46,6 +46,7 @@ class AllocationTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Allocation $allocation
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNode(Allocation $allocation)
     {
@@ -65,6 +66,7 @@ class AllocationTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Allocation $allocation
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServer(Allocation $allocation)
     {

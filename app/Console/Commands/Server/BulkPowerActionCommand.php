@@ -31,8 +31,8 @@ class BulkPowerActionCommand extends Command
      */
     protected $signature = 'p:server:bulk-power
                             {action : The action to perform (start, stop, restart, kill)}
-                            {--servers= : A comma seperated list of servers.}
-                            {--nodes= : A comma seperated list of nodes.}';
+                            {--servers= : A comma separated list of servers.}
+                            {--nodes= : A comma separated list of nodes.}';
 
     /**
      * @var string

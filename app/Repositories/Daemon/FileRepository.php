@@ -14,11 +14,11 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      * @param string $path
      * @return \stdClass
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getFileStat(string $path): stdClass
     {
-        $file = pathinfo($path);
+        $file = str_replace('\\', '/', pathinfo($path));
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
         $response = $this->getHttpClient()->request('GET', sprintf(
@@ -35,11 +35,11 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      * @param string $path
      * @return string
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getContent(string $path): string
     {
-        $file = pathinfo($path);
+        $file = str_replace('\\', '/', pathinfo($path));
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
         $response = $this->getHttpClient()->request('GET', sprintf(
@@ -57,11 +57,11 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      * @param string $content
      * @return \Psr\Http\Message\ResponseInterface
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function putContent(string $path, string $content): ResponseInterface
     {
-        $file = pathinfo($path);
+        $file = str_replace('\\', '/', pathinfo($path));
         $file['dirname'] = in_array($file['dirname'], ['.', './', '/']) ? null : trim($file['dirname'], '/') . '/';
 
         return $this->getHttpClient()->request('POST', 'server/file/save', [
@@ -78,7 +78,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
      * @param string $path
      * @return array
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getDirectory(string $path): array
     {
@@ -100,7 +100,7 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
                 array_push($files, [
                     'entry' => $value->name,
                     'directory' => trim($path, '/'),
-                    'extension' => pathinfo($value->name, PATHINFO_EXTENSION),
+                    'extension' => str_replace('\\', '/', pathinfo($value->name, PATHINFO_EXTENSION)),
                     'size' => human_readable($value->size),
                     'date' => strtotime($value->modified),
                     'mime' => $value->mime,

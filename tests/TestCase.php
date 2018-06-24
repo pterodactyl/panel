@@ -3,7 +3,6 @@
 namespace Tests;
 
 use Cake\Chronos\Chronos;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -17,7 +16,6 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        Hash::setRounds(4);
         $this->setKnownUuidFactory();
     }
 

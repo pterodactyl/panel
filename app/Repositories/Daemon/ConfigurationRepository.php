@@ -12,6 +12,7 @@ class ConfigurationRepository extends BaseRepository implements ConfigurationRep
      *
      * @param array $overrides
      * @return \Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function update(array $overrides = []): ResponseInterface
     {

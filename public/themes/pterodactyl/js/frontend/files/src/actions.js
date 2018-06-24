@@ -72,7 +72,7 @@ class ActionsClass {
                 Files.list();
             }).fail(jqXHR => {
                 console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
+                var error = 'An error occurred while trying to process this request.';
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
@@ -118,7 +118,7 @@ class ActionsClass {
                 swal.close();
             }).fail(jqXHR => {
                 console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
+                var error = 'An error occurred while trying to process this request.';
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
@@ -198,7 +198,7 @@ class ActionsClass {
                 inputField.remove();
             }).fail(jqXHR => {
                 console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
+                var error = 'An error occurred while trying to process this request.';
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
@@ -255,7 +255,7 @@ class ActionsClass {
                 Files.list();
             }).fail(jqXHR => {
                 console.error(jqXHR);
-                var error = 'An error occured while trying to process this request.';
+                var error = 'An error occurred while trying to process this request.';
                 if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                     error = jqXHR.responseJSON.error;
                 }
@@ -315,7 +315,7 @@ class ActionsClass {
                     type: 'error',
                     title: 'Whoops!',
                     html: true,
-                    text: 'An error occured while attempting to delete this file. Please try again.',
+                    text: 'An error occurred while attempting to delete this file. Please try again.',
                 });
             });
         });
@@ -433,7 +433,7 @@ class ActionsClass {
                         type: 'error',
                         title: 'Whoops!',
                         html: true,
-                        text: 'An error occured while attempting to delete these files. Please try again.',
+                        text: 'An error occurred while attempting to delete these files. Please try again.',
                     });
                 });
             });
@@ -476,7 +476,7 @@ class ActionsClass {
             Files.list(compPath);
         }).fail(jqXHR => {
             console.error(jqXHR);
-            var error = 'An error occured while trying to process this request.';
+            var error = 'An error occurred while trying to process this request.';
             if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                 error = jqXHR.responseJSON.error;
             }
@@ -516,7 +516,7 @@ class ActionsClass {
             });
         }).fail(jqXHR => {
             console.error(jqXHR);
-            var error = 'An error occured while trying to process this request.';
+            var error = 'An error occurred while trying to process this request.';
             if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                 error = jqXHR.responseJSON.error;
             }

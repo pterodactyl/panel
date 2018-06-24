@@ -20,7 +20,7 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 class UpdateFileContentsFormRequest extends ServerFormRequest
 {
     /**
-     * Return the permission string to validate this request aganist.
+     * Return the permission string to validate this request against.
      *
      * @return string
      */
