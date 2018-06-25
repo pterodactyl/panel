@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2018-02-27T00:57:04-06:00",
+    "exported_at": "2018-06-25T15:47:07-04:00",
     "name": "Forge Minecraft",
     "author": "support@pterodactyl.io",
     "description": "Minecraft Forge Server. Minecraft Forge is a modding API (Application Programming Interface), which makes it easier to create mods, and also make sure mods are compatible with each other.",
@@ -17,7 +17,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\r\n# Forge Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add curl\r\n\r\nGET_VERSIONS=$(curl -sl http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/ | grep -A1 Latest | grep  -o -e '[1]\\.[0-9][0-9]]\\?\\.\\?[0-9]\\?[0-9] - [0-9][0-9]\\.[0-9][0-9]\\.[0-9]\\?[0-9]\\.[0-9][0-9][0-9][0-9]')\r\nLATEST_VERSION=$(echo $GET_VERSIONS | sed 's\/ \/\/g')\r\n\r\ncd \/mnt\/server\r\n\r\ncurl -sS http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/$LATEST_VERSION\/forge-$LATEST_VERSION-installer.jar -o installer.jar\r\ncurl -sS http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/$LATEST_VERSION\/forge-$LATEST_VERSION-universal.jar -o server.jar\r\n\r\njava -jar installer.jar --installServer\r\nrm -rf installer.jar",
+            "script": "#!\/bin\/ash\r\n# Forge Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add curl\r\n\r\nif [ -z \"$MC_VERSION\" ] || [ \"$MC_VERSION\" == \"latest\" ]; then\r\n  FORGE_VERSION=$(curl -sl http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/ | grep -A1 Latest | grep  -o -e '[1]\\.[0-9][0-9]]\\?\\.\\?[0-9]\\?[0-9] - [0-9][0-9]\\.[0-9][0-9]\\.[0-9]\\?[0-9]\\.[0-9][0-9][0-9][0-9]' | sed 's\/ \/\/g')\r\nelse\r\n  FORGE_VERSION=$(curl -sl http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/index_$MC_VERSION.html | grep -A1 Latest | grep  -o -e '[1]\\.[0-9][0-9]]\\?\\.\\?[0-9]\\?[0-9] - [0-9][0-9]\\.[0-9][0-9]\\.[0-9]\\?[0-9]\\.[0-9][0-9][0-9][0-9]' | sed 's\/ \/\/g')\r\nfi\r\n\r\ncd \/mnt\/server\r\n\r\necho -e \"\\nDownloading Forge Version $FORGE_VERSION\\n\"\r\ncurl -sS http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/$FORGE_VERSION\/forge-$FORGE_VERSION-installer.jar -o installer.jar\r\ncurl -sS http:\/\/files.minecraftforge.net\/maven\/net\/minecraftforge\/forge\/$FORGE_VERSION\/forge-$FORGE_VERSION-universal.jar -o $SERVER_JARFILE\r\n\r\necho -e \"\\nInstalling forge server usint the installer jar file.\\n\"\r\njava -jar installer.jar --installServer\r\n\r\necho -e \"\\nDeleting installer jar file and cleaning up.\\n\"\r\nrm -rf installer.jar",
             "container": "frolvlad\/alpine-oraclejdk8:cleaned",
             "entrypoint": "ash"
         }
@@ -31,6 +31,15 @@
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|regex:\/^([\\w\\d._-]+)(\\.jar)$\/"
+        },
+        {
+            "name": "Minecraft version",
+            "description": "The version of minecraft that you want to run. Example (1.10.2).",
+            "env_variable": "MC_VERSION",
+            "default_value": "latest",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string|max:20"
         }
     ]
 }
