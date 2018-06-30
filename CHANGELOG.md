@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Hitting Ctrl+Z when editing a file on the web now works as expected.
 * Logo now links to the correct location on all pages.
+* Permissions checking to determine if a user can see the task management page now works correctly.
 
 ### Changed
 * Attempting to upload a folder via the web file manager will now display a warning telling the user to use SFTP.
