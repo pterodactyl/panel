@@ -1,5 +1,11 @@
 language: php
 dist: trusty
+git:
+  depth: 3
+  quiet: true
+env:
+  - TEST_SUITE=Unit
+  - TEST_SUITE=Integration
 php:
   - 7.2
 sudo: false
@@ -15,8 +21,8 @@ before_script:
   - cp .env.travis .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 script:
-  - vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover coverage.xml tests/Unit
-  - vendor/bin/phpunit tests/Integration
+  - if [ "$TEST_SUITE" = "Unit" ]; then vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover coverage.xml tests/Unit; fi;
+  - if [ "$TEST_SUITE" = "Integration" ]; then vendor/bin/phpunit tests/Integration; fi;
 notifications:
   email: false
   webhooks:
