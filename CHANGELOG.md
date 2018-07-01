@@ -17,6 +17,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes tokens being sent to users when their account is created to actually work. Implements Laravel's internal token creation mechanisms rather than trying to do it custom.
 * Updates some eggs to ensure they have the correct data and will continue working down the road. Fixes autoupdating on some source servers and MC related download links.
 * Emails should send properly now when a server is marked as installed to let the owner know it is ready for action.
+* Cancelling a file manager operation should cancel correctly across all browsers now.
 
 ### Changed
 * Attempting to upload a folder via the web file manager will now display a warning telling the user to use SFTP.
