@@ -44,7 +44,7 @@
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     {!! Theme::js('vendor/siofu/client.min.js') !!}
     @if(App::environment('production'))
-        {!! Theme::js('js/frontend/files/filemanager.min.js') !!}
+        {!! Theme::js('js/frontend/files/filemanager.min.js?updated-cancel-buttons') !!}
     @else
         {!! Theme::js('js/frontend/files/src/index.js') !!}
         {!! Theme::js('js/frontend/files/src/contextmenu.js') !!}
