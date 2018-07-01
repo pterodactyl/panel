@@ -146,7 +146,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('list-tasks', $server)
+                            @can('list-schedules', $server)
                                 <li
                                     @if(starts_with(Route::currentRouteName(), 'server.schedules'))
                                         class="active"

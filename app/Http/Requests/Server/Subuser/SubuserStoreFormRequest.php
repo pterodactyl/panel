@@ -25,7 +25,7 @@ class SubuserStoreFormRequest extends ServerFormRequest
     {
         return [
             'email' => 'required|email',
-            'permissions' => 'present|array',
+            'permissions' => 'sometimes|array',
         ];
     }
 }

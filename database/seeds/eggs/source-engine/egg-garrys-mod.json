@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2018-01-21T16:59:47-06:00",
+    "exported_at": "2018-06-19T07:46:27-04:00",
     "name": "Garrys Mod",
     "author": "support@pterodactyl.io",
     "description": "Garrys Mod, is a sandbox physics game created by Garry Newman, and developed by his company, Facepunch Studios.",
@@ -40,6 +40,15 @@
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|string|alpha_num|size:32"
+        },
+        {
+            "name": "Source AppID",
+            "description": "Required for game to update on server restart. Do not modify this.",
+            "env_variable": "SRCDS_APPID",
+            "default_value": "4020",
+            "user_viewable": 0,
+            "user_editable": 0,
+            "rules": "required|string|max:20"
         }
     ]
 }
