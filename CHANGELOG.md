@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Logo now links to the correct location on all pages.
 * Permissions checking to determine if a user can see the task management page now works correctly.
 * Fixed `pterodactyl.environment_variables` to be used correctly for global environment variables. The wrong config variable name was being using previously.
+* Fixes tokens being sent to users when their account is created to actually work. Implements Laravel's internal token creation mechanisms rather than trying to do it custom.
 
 ### Changed
 * Attempting to upload a folder via the web file manager will now display a warning telling the user to use SFTP.
