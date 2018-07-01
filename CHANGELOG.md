@@ -16,6 +16,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Attempting to upload a folder via the web file manager will now display a warning telling the user to use SFTP.
+* Changing your account password will now log out all other sessions that currently exist for that user.
 
 ## v0.7.7 (Derelict Dermodactylus)
 ### Fixed
