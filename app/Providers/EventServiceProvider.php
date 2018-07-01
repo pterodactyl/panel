@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Providers;
 
+use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
+use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -11,5 +13,9 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $listen = [];
+    protected $listen = [
+        ServerInstalledEvent::class => [
+            ServerInstalledNotification::class,
+        ],
+    ];
 }
