@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Nodes can now be put into maintenance mode to deny access to servers temporarily.
 * Basic statistics about your panel are now available in the Admin CP.
+* Added support for using a MySQL socket location for connections rather than a TCP connection. Set a `DB_SOCKET` variable in your `.env` file to use this.
 
 ### Fixed
 * Hitting Ctrl+Z when editing a file on the web now works as expected.
