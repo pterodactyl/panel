@@ -12,7 +12,7 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EnvironmentServiceTest extends TestCase
 {
-    const CONFIG_MAPPING = 'pterodactyl.environment_mappings';
+    const CONFIG_MAPPING = 'pterodactyl.environment_variables';
 
     /**
      * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock

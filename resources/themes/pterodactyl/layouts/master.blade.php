@@ -44,7 +44,7 @@
             <header class="main-header">
                 <a href="{{ route('index') }}" class="logo">
                     <span class="logo-lg">{{ config('app.name', 'Pterodactyl') }}</span>
-                    <span class="logo-mini"><img src="favicons/android-chrome-192x192.png"></span>
+                    <span class="logo-mini"><img src="/favicons/android-chrome-192x192.png"></span>
                 </a>
                 <nav class="navbar navbar-static-top">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
@@ -146,7 +146,7 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('list-tasks', $server)
+                            @can('list-schedules', $server)
                                 <li
                                     @if(starts_with(Route::currentRouteName(), 'server.schedules'))
                                         class="active"

@@ -78,7 +78,7 @@ class EnvironmentService
         }
 
         // Process variables set in the configuration file.
-        foreach ($this->config->get('pterodactyl.environment_mappings', []) as $key => $object) {
+        foreach ($this->config->get('pterodactyl.environment_variables', []) as $key => $object) {
             if (is_callable($object)) {
                 $variables[$key] = call_user_func($object, $server);
             } else {

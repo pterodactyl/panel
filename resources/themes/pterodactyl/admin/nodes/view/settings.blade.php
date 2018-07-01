@@ -108,6 +108,20 @@
                         </div>
                         <p class="text-muted small">If you are running the daemon behind a proxy such as Cloudflare, select this to have the daemon skip looking for certificates on boot.</p>
                     </div>
+                    <div class="form-group col-xs-12">
+                        <label class="form-label"><span class="label label-warning"><i class="fa fa-wrench"></i></span> Maintenance Mode</label>
+                        <div>
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" id="pMaintenanceFalse" value="0" name="maintenance_mode" {{ (old('behind_proxy', $node->maintenance_mode) == false) ? 'checked' : '' }}>
+                                <label for="pMaintenanceFalse"> Disabled</label>
+                            </div>
+                            <div class="radio radio-warning radio-inline">
+                                <input type="radio" id="pMaintenanceTrue" value="1" name="maintenance_mode" {{ (old('behind_proxy', $node->maintenance_mode) == true) ? 'checked' : '' }}>
+                                <label for="pMaintenanceTrue"> Enabled</label>
+                            </div>
+                        </div>
+                        <p class="text-muted small">If the node is marked as 'Under Maintenance' users won't be able to access servers that are on this node.</p>
+                    </div>
                 </div>
             </div>
         </div>

@@ -7,9 +7,26 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Events\Server\Installed as ServerInstalled;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 
 class ActionController extends Controller
 {
+    /**
+     * @var \Illuminate\Contracts\Events\Dispatcher
+     */
+    private $eventDispatcher;
+
+    /**
+     * ActionController constructor.
+     *
+     * @param \Illuminate\Contracts\Events\Dispatcher $eventDispatcher
+     */
+    public function __construct(EventDispatcher $eventDispatcher)
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     /**
      * Handles install toggle request from daemon.
      *
@@ -36,6 +53,11 @@ class ActionController extends Controller
 
         $server->installed = ($status === 'installed') ? 1 : 2;
         $server->save();
+
+        // Only fire event if server installed successfully.
+        if ($server->installed === 1) {
+            $this->eventDispatcher->dispatch(new ServerInstalled($server));
+        }
 
         return response()->json([]);
     }
