@@ -43,7 +43,7 @@
         },
         {
             "name": "Source AppID",
-            "description": "required for app to update on restarts",
+            "description": "Required for game to update on server restart. Do not modify this.",
             "env_variable": "SRCDS_APPID",
             "default_value": "740",
             "user_viewable": 0,
