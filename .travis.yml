@@ -3,9 +3,15 @@ dist: trusty
 git:
   depth: 3
   quiet: true
+matrix:
+  fast_finish: true
+  allow_failures:
+    - env: TEST_SUITE=Coverage
 env:
-  - TEST_SUITE=Unit
-  - TEST_SUITE=Integration
+  matrix:
+    - TEST_SUITE=Unit
+    - TEST_SUITE=Coverage
+    - TEST_SUITE=Integration
 php:
   - 7.2
 sudo: false
@@ -21,7 +27,8 @@ before_script:
   - cp .env.travis .env
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 script:
-  - if [ "$TEST_SUITE" = "Unit" ]; then vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover coverage.xml tests/Unit; fi;
+  - if [ "$TEST_SUITE" = "Unit" ]; then vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit; fi;
+  - if [ "$TEST_SUITE" = "Coverage" ]; then vendor/bin/phpunit --bootstrap vendor/autoload.php --coverage-clover coverage.xml tests/Unit; fi;
   - if [ "$TEST_SUITE" = "Integration" ]; then vendor/bin/phpunit tests/Integration; fi;
 notifications:
   email: false
