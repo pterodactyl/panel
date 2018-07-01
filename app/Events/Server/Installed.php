@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Events\Server;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
+use Pterodactyl\Events\Event;
 use Pterodactyl\Models\Server;
+use Illuminate\Queue\SerializesModels;
 
-class Installed
+class Installed extends Event
 {
     use SerializesModels;
 
@@ -24,5 +24,4 @@ class Installed
     {
         $this->server = $server;
     }
-
 }
