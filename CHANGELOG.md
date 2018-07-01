@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Added
 * Nodes can now be put into maintenance mode to deny access to servers temporarily.
 * Basic statistics about your panel are now available in the Admin CP.
+* Added support for using a MySQL socket location for connections rather than a TCP connection. Set a `DB_SOCKET` variable in your `.env` file to use this.
 
 ### Fixed
 * Hitting Ctrl+Z when editing a file on the web now works as expected.
@@ -14,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Permissions checking to determine if a user can see the task management page now works correctly.
 * Fixed `pterodactyl.environment_variables` to be used correctly for global environment variables. The wrong config variable name was being using previously.
 * Fixes tokens being sent to users when their account is created to actually work. Implements Laravel's internal token creation mechanisms rather than trying to do it custom.
+* Updates some eggs to ensure they have the correct data and will continue working down the road. Fixes autoupdating on some source servers and MC related download links.
 
 ### Changed
 * Attempting to upload a folder via the web file manager will now display a warning telling the user to use SFTP.
