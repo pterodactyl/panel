@@ -182,7 +182,7 @@ class SubuserControllerTest extends ControllerTestCase
         $response = $controller->store($this->request);
         $this->assertIsRedirectResponse($response);
         $this->assertRedirectRouteEquals('server.subusers.view', $response, [
-            'uuid' => $server->uuid,
+            'uuid' => $server->uuidShort,
             'id' => $subuser->hashid,
         ]);
     }

@@ -5,8 +5,8 @@ namespace Pterodactyl\Services\Users;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Auth\PasswordBroker;
 use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationService
@@ -22,9 +22,9 @@ class UserCreationService
     private $hasher;
 
     /**
-     * @var \Pterodactyl\Services\Helpers\TemporaryPasswordService
+     * @var \Illuminate\Contracts\Auth\PasswordBroker
      */
-    private $passwordService;
+    private $passwordBroker;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
@@ -36,18 +36,18 @@ class UserCreationService
      *
      * @param \Illuminate\Database\ConnectionInterface                  $connection
      * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
-     * @param \Pterodactyl\Services\Helpers\TemporaryPasswordService    $passwordService
+     * @param \Illuminate\Contracts\Auth\PasswordBroker                 $passwordBroker
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
         Hasher $hasher,
-        TemporaryPasswordService $passwordService,
+        PasswordBroker $passwordBroker,
         UserRepositoryInterface $repository
     ) {
         $this->connection = $connection;
         $this->hasher = $hasher;
-        $this->passwordService = $passwordService;
+        $this->passwordBroker = $passwordBroker;
         $this->repository = $repository;
     }
 
@@ -68,14 +68,18 @@ class UserCreationService
 
         $this->connection->beginTransaction();
         if (! isset($data['password']) || empty($data['password'])) {
+            $generateResetToken = true;
             $data['password'] = $this->hasher->make(str_random(30));
-            $token = $this->passwordService->handle($data['email']);
         }
 
         /** @var \Pterodactyl\Models\User $user */
         $user = $this->repository->create(array_merge($data, [
             'uuid' => Uuid::uuid4()->toString(),
         ]), true, true);
+
+        if (isset($generateResetToken)) {
+            $token = $this->passwordBroker->createToken($user);
+        }
 
         $this->connection->commit();
         $user->notify(new AccountCreated($user, $token ?? null));

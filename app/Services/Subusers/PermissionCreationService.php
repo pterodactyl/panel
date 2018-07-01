@@ -56,6 +56,8 @@ class PermissionCreationService
             }
         }
 
-        $this->repository->withoutFreshModel()->insert($insertPermissions);
+        if (! empty($insertPermissions)) {
+            $this->repository->withoutFreshModel()->insert($insertPermissions);
+        }
     }
 }

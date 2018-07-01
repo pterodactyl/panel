@@ -157,7 +157,6 @@ class SubuserController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
@@ -171,7 +170,7 @@ class SubuserController extends Controller
         $this->alert->success(trans('server.users.user_assigned'))->flash();
 
         return redirect()->route('server.subusers.view', [
-            'uuid' => $server->uuid,
+            'uuid' => $server->uuidShort,
             'id' => $subuser->hashid,
         ]);
     }
