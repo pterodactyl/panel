@@ -4,6 +4,8 @@ namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
 use Pterodactyl\Models\User;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Auth\SessionGuard;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
@@ -16,6 +18,16 @@ class AccountControllerTest extends ControllerTestCase
      * @var \Prologue\Alerts\AlertsMessageBag|\Mockery\Mock
      */
     protected $alert;
+
+    /**
+     * @var \Illuminate\Auth\AuthManager|\Mockery\Mock
+     */
+    protected $authManager;
+
+    /**
+     * @var \Illuminate\Auth\SessionGuard|\Mockery\Mock
+     */
+    protected $sessionGuard;
 
     /**
      * @var \Pterodactyl\Services\Users\UserUpdateService|\Mockery\Mock
@@ -31,6 +43,10 @@ class AccountControllerTest extends ControllerTestCase
 
         $this->alert = m::mock(AlertsMessageBag::class);
         $this->updateService = m::mock(UserUpdateService::class);
+        $this->authManager = m::mock(AuthManager::class);
+        $this->sessionGuard = m::mock(SessionGuard::class);
+
+        $this->authManager->shouldReceive('guard')->once()->andReturn($this->sessionGuard);
     }
 
     /**
@@ -50,13 +66,11 @@ class AccountControllerTest extends ControllerTestCase
     public function testUpdateControllerForPassword()
     {
         $this->setRequestMockClass(AccountDataFormRequest::class);
-        $user = $this->generateRequestUserModel();
 
         $this->request->shouldReceive('input')->with('do_action')->andReturn('password');
         $this->request->shouldReceive('input')->with('new_password')->once()->andReturn('test-password');
+        $this->sessionGuard->shouldReceive('logoutOtherDevices')->once()->with('test-password')->andReturnSelf();
 
-        $this->updateService->shouldReceive('setUserLevel')->with(User::USER_LEVEL_USER)->once()->andReturnNull();
-        $this->updateService->shouldReceive('handle')->with($user, ['password' => 'test-password'])->once()->andReturn(collect());
         $this->alert->shouldReceive('success->flash')->once()->andReturnNull();
 
         $response = $this->getController()->update($this->request);
@@ -113,6 +127,6 @@ class AccountControllerTest extends ControllerTestCase
      */
     private function getController(): AccountController
     {
-        return new AccountController($this->alert, $this->updateService);
+        return new AccountController($this->alert, $this->authManager, $this->updateService);
     }
 }

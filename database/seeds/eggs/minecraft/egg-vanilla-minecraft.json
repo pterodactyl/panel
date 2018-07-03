@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2017-11-03T22:15:07-05:00",
+    "exported_at": "2018-06-19T17:09:18-04:00",
     "name": "Vanilla Minecraft",
     "author": "support@pterodactyl.io",
     "description": "Minecraft is a game about placing blocks and going on adventures. Explore randomly generated worlds and build amazing things from the simplest of homes to the grandest of castles. Play in Creative Mode with unlimited resources or mine deep in Survival Mode, crafting weapons and armor to fend off dangerous mobs. Do all this alone or with friends.",
@@ -17,8 +17,8 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\r\n# Vanilla MC Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add curl\r\n\r\ncd \/mnt\/server\r\n\r\nLATEST_VERSION=`curl -s https:\/\/s3.amazonaws.com\/Minecraft.Download\/versions\/versions.json | grep -o \"[[:digit:]]\\.[0-9]*\\.[0-9]\" | head -n 1`\r\n\r\nif [ -z \"$VANILLA_VERSION\" ] || [ \"$VANILLA_VERSION\" == \"latest\" ]; then\r\n  DL_VERSION=$LATEST_VERSION\r\nelse\r\n  DL_VERSION=$VANILLA_VERSION\r\nfi\r\n\r\ncurl -o ${SERVER_JARFILE} https:\/\/s3.amazonaws.com\/Minecraft.Download\/versions\/${DL_VERSION}\/minecraft_server.${DL_VERSION}.jar",
-            "container": "alpine:3.4",
+            "script": "#!\/bin\/ash\r\n# Vanilla MC Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add curl jq\r\n\r\ncd \/mnt\/server\r\n\r\nLATEST_VERSION=`curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq -r '.latest.release'`\r\n\r\nif [ -z \"$VANILLA_VERSION\" ] || [ \"$VANILLA_VERSION\" == \"latest\" ]; then\r\n  MANIFEST_URL=$(curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq .versions | jq -r '.[] | select(.id == \"'$LATEST_VERSION'\") | .url')\r\nelse\r\n  MANIFEST_URL=$(curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq .versions | jq -r '.[] | select(.id == \"'$VANILLA_VERSION'\") | .url')\r\nfi\r\n\r\nDOWNLOAD_URL=`curl $MANIFEST_URL | jq .downloads.server | jq -r '. | .url'`\r\n\r\ncurl -o ${SERVER_JARFILE} $DOWNLOAD_URL",
+            "container": "alpine:3.7",
             "entrypoint": "ash"
         }
     },
@@ -39,7 +39,7 @@
             "default_value": "latest",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "required|string|between:3,7"
+            "rules": "required|string|between:3,15"
         }
     ]
 }
