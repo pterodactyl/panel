@@ -59,7 +59,7 @@
         "build": "NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "NODE_ENV=production ./node_modules/.bin/webpack",
         "serve": "NODE_ENV=development webpack-serve --hot --config ./webpack.config.js --no-clipboard --progress",
-        "v:serve": "PUBLIC_PATH=http://192.168.50.2:8080 NODE_ENV=development webpack-serve --hot --config ./webpack.config.js --host 192.168.50.2 --no-clipboard",
+        "v:serve": "PUBLIC_PATH=http://pterodactyl.local:8080 NODE_ENV=development webpack-serve --hot --config ./webpack.config.js --host 192.168.10.10 --no-clipboard",
         "compile:assets": "php artisan vue-i18n:generate & php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js"
     }
 }
