@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.9 (Derelict Dermodactylus)
+### Fixed
+* Fixes a two-factor authentication bypass present in the password reset process for an account.
+
 ## v0.7.8 (Derelict Dermodactylus)
 ### Added
 * Nodes can now be put into maintenance mode to deny access to servers temporarily.
