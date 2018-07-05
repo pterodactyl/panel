@@ -30,8 +30,8 @@
             <h2 class="font-medium text-grey-darkest">{{ $t('dashboard.account.two_factor.setup.title') }}</h2>
             <div class="flex mt-6">
                 <div class="flex-none w-full sm:w-1/2 text-center">
-                    <div>
-                        <img :src="response.qr_image" alt="Two-factor qr image" class="w-3/4">
+                    <div class="h-48">
+                        <img :src="response.qr_image" alt="Two-factor qr image" class="h-48">
                     </div>
                     <div>
                         <p class="text-xs text-grey-darker mb-2">{{ $t('dashboard.account.two_factor.setup.help') }}</p>
