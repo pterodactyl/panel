@@ -76,7 +76,7 @@ class IndexControllerTest extends ControllerTestCase
             ->shouldReceive('filterUserAccessServers')->with($model, User::FILTER_LEVEL_ALL)
             ->once()->andReturn($paginator);
 
-        $response = $this->controller->getIndex($this->request);
+        $response = $this->controller->index($this->request);
         $this->assertIsViewResponse($response);
         $this->assertViewNameEquals('base.index', $response);
         $this->assertViewHasKey('servers', $response);
