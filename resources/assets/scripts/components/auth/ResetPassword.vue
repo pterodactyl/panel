@@ -97,6 +97,11 @@
                             throw new Error('An error was encountered while processing this login.');
                         }
 
+                        if (response.data.send_to_login) {
+                            self.success('Your password has been reset, please login to continue.');
+                            return self.$router.push({ name: 'login' });
+                        }
+
                         return window.location = response.data.redirect_to;
                     })
                     .catch(function (err) {
