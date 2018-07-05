@@ -78,7 +78,7 @@ class IndexControllerTest extends ControllerTestCase
 
         $response = $this->controller->index($this->request);
         $this->assertIsViewResponse($response);
-        $this->assertViewNameEquals('base.index', $response);
+        $this->assertViewNameEquals('templates.base.core', $response);
         $this->assertViewHasKey('servers', $response);
         $this->assertViewKeyEquals('servers', $paginator, $response);
     }

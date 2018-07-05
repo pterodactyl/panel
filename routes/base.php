@@ -1,6 +1,7 @@
 <?php
 
 Route::get('/', 'IndexController@index')->name('index');
+Route::get('/account', 'IndexController@index')->name('account');
 
 /*
 |--------------------------------------------------------------------------
