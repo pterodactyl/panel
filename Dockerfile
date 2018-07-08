@@ -12,14 +12,11 @@ COPY . ./
 
 COPY .dev/default.conf /etc/nginx/conf.d/default.conf
 
-RUN cp .env.example .env
-RUN composer install --no-dev
+RUN cp .env.example .env && composer install --no-dev
 
-EXPOSE 80
-EXPOSE 443
+EXPOSE 80 443
 
-RUN chown -R www-data:www-data .
-RUN chmod -R 777 storage/* bootstrap/cache /var/run/php
+RUN chown -R www-data:www-data . && chmod -R 777 storage/* bootstrap/cache /var/run/php
 
 ENTRYPOINT ["ash", ".dev/entrypoint.sh"]
 
