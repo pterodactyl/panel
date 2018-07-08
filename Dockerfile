@@ -10,7 +10,7 @@ RUN apk add --no-cache wget ca-certificates && \
 
 COPY . ./
 
-COPY .dev/default.conf /etc/nginx/conf.d/default.conf
+COPY .dev/docker/default.conf /etc/nginx/conf.d/default.conf
 
 RUN cp .env.example .env && composer install --no-dev
 
