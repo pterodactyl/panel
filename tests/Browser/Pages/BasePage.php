@@ -13,6 +13,7 @@ abstract class BasePage extends Page
     {
         return [
             '@@success' => '.alert.success[role="alert"]',
+            '@@error' => '.alert.error[role="alert"]',
         ];
     }
 }

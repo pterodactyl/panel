@@ -21,7 +21,7 @@ class UpdateEmailRequest extends ClientApiRequest
 
         // Verify password matches when changing password or email.
         if (! password_verify($this->input('password'), $this->user()->password)) {
-            throw new InvalidPasswordProvidedException(trans('base.account.invalid_password'));
+            throw new InvalidPasswordProvidedException(trans('validation.internal.invalid_password'));
         }
 
         return true;
