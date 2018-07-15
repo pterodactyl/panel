@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="change-password-container" :class>
         <form method="post" v-on:submit.prevent="submitForm">
             <div class="content-box">
                 <h2 class="mb-6 text-grey-darkest font-medium">{{ $t('dashboard.account.password.title') }}</h2>

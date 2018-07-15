@@ -1,5 +1,5 @@
 <template>
-    <div :class>
+    <div id="update-email-container" :class>
         <form method="post" v-on:submit.prevent="submitForm">
             <div class="content-box">
                 <h2 class="mb-6 text-grey-darkest font-medium">{{ $t('dashboard.account.email.title') }}</h2>

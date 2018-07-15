@@ -71,11 +71,11 @@ export default {
                     .then(response => {
                         // If there is a 302 redirect or some other odd behavior (basically, response that isnt
                         // in JSON format) throw an error and don't try to continue with the login.
-                        if (!(response.data instanceof Object)) {
+                        if (!(response.data instanceof Object) && response.status !== 201) {
                             return reject(new Error('An error was encountered while processing this request.'));
                         }
 
-                        commit('setEmail', response.data.email);
+                        commit('setEmail', email);
                         return resolve();
                     })
                     .catch(reject);
