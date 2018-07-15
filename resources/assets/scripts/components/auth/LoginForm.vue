@@ -62,7 +62,6 @@
         },
         data: function () {
             return {
-                errors: [],
                 showSpinner: false,
             }
         },
@@ -91,7 +90,7 @@
                         this.$props.user.password = '';
                         this.$data.showSpinner = false;
                         this.$refs.password.focus();
-                        this.$store.dispatch('auth/logout');
+                        this.$store.commit('auth/logout');
 
                         if (!err.response) {
                             return console.error(err);
