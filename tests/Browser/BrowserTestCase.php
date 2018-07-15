@@ -6,16 +6,16 @@ use Laravel\Dusk\TestCase;
 use BadMethodCallException;
 use Pterodactyl\Models\User;
 use Tests\CreatesApplication;
+use Pterodactyl\Console\Kernel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 abstract class BrowserTestCase extends TestCase
 {
-    use CreatesApplication, DatabaseMigrations;
+    use CreatesApplication;
 
     /**
      * The default password to use for new accounts.
@@ -23,6 +23,28 @@ abstract class BrowserTestCase extends TestCase
      * @var string
      */
     protected static $userPassword = 'Password123';
+
+    /**
+     * Create a fresh database instance before each test class is initialized. This is different
+     * than the default DatabaseMigrations as it is only run when the class is setup. The trait
+     * provided by Laravel will run on EACH test function, slowing things down significantly.
+     *
+     * If you need to reset the DB between function runs just include the trait in that specific
+     * test. In most cases you probably wont need to do this, or can modify the test slightly to
+     * avoid the need to do so.
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        $app = require __DIR__ . '/../../bootstrap/app.php';
+
+        /** @var \Pterodactyl\Console\Kernel $kernel */
+        $kernel = $app->make(Kernel::class);
+
+        $kernel->bootstrap();
+        $kernel->call('migrate:fresh');
+    }
 
     /**
      * Setup tests.

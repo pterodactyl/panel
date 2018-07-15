@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Tests\Browser\Processes\Authentication;
 
-use Pterodactyl\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Facebook\WebDriver\WebDriverKeys;
 use Pterodactyl\Tests\Browser\BrowserTestCase;
 use Pterodactyl\Tests\Browser\Pages\LoginPage;
@@ -20,10 +18,7 @@ class LoginProcessTest extends BrowserTestCase
     {
         parent::setUp();
 
-        $this->user = factory(User::class)->create([
-            'email' => 'test@example.com',
-            'password' => Hash::make('Password123'),
-        ]);
+        $this->user = $this->user();
     }
 
     /**
@@ -34,8 +29,8 @@ class LoginProcessTest extends BrowserTestCase
         $this->browse(function (PterodactylBrowser $browser) {
             $browser->visit(new LoginPage)
                 ->waitFor('@username')
-                ->type('@username', 'test@example.com')
-                ->type('@password', 'Password123')
+                ->type('@username', $this->user->email)
+                ->type('@password', self::$userPassword)
                 ->click('@loginButton')
                 ->waitForReload()
                 ->assertPathIs('/')
@@ -52,7 +47,7 @@ class LoginProcessTest extends BrowserTestCase
             $browser->visit(new LoginPage)
                 ->waitFor('@username')
                 ->type('@username', $this->user->username)
-                ->type('@password', 'Password123')
+                ->type('@password', self::$userPassword)
                 ->click('@loginButton')
                 ->waitForReload()
                 ->assertPathIs('/')
@@ -70,15 +65,15 @@ class LoginProcessTest extends BrowserTestCase
             $browser->logout()
                 ->visit(new LoginPage())
                 ->waitFor('@username')
-                ->type('@username', 'test@example.com')
+                ->type('@username', $this->user->email)
                 ->type('@password', 'invalid')
                 ->click('@loginButton')
                 ->waitFor('.alert.error')
                 ->assertSeeIn('.alert.error', trans('auth.failed'))
-                ->assertValue('@username', 'test@example.com')
+                ->assertValue('@username', $this->user->email)
                 ->assertValue('@password', '')
                 ->assertFocused('@password')
-                ->type('@password', 'Password123')
+                ->type('@password', self::$userPassword)
                 ->keys('@password', [WebDriverKeys::ENTER])
                 ->waitForReload()
                 ->assertPathIs('/')
