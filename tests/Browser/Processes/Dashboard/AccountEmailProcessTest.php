@@ -2,27 +2,11 @@
 
 namespace Pterodactyl\Tests\Browser\Processes\Dashboard;
 
-use Pterodactyl\Tests\Browser\BrowserTestCase;
 use Pterodactyl\Tests\Browser\PterodactylBrowser;
 use Pterodactyl\Tests\Browser\Pages\Dashboard\AccountPage;
 
-class AccountEmailProcessTest extends BrowserTestCase
+class AccountEmailProcessTest extends DashboardTestCase
 {
-    /**
-     * @var \Pterodactyl\Models\User
-     */
-    private $user;
-
-    /**
-     * Setup tests.
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->user = $this->user();
-    }
-
     /**
      * Test that an email address can be changed successfully.
      */
@@ -40,6 +24,23 @@ class AccountEmailProcessTest extends BrowserTestCase
                 ->assertValue('@email', 'new.email@example.com');
 
             $this->assertDatabaseHas('users', ['id' => $this->user->id, 'email' => 'new.email@example.com']);
+        });
+    }
+
+    /**
+     * Test that the validation error message shows up when an invalid email is entered.
+     */
+    public function testInvalidEmailShowsErrors()
+    {
+        $this->browse(function (PterodactylBrowser $browser) {
+            $browser->loginAs($this->user)
+                ->visit(new AccountPage)
+                ->assertMissing('@email ~ .input-help.error')
+                ->type('@email', 'admin')
+                ->assertVisible('@email ~ .input-help.error')
+                ->assertSeeIn('@email ~ .input-help.error', 'The email field must be a valid email.')
+                ->type('@email', 'admin@example.com')
+                ->assertMissing('@email ~ .input-help.error');
         });
     }
 

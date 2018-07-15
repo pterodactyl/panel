@@ -2,7 +2,7 @@
     <transition name="modal">
         <div class="modal-mask" v-show="show" v-on:click="close">
             <div class="modal-container" @click.stop>
-                <x-icon class="absolute pin-r pin-t m-2 text-grey cursor-pointer" aria-label="Close modal"
+                <x-icon class="absolute pin-r pin-t m-2 text-grey cursor-pointer" aria-label="Close modal" role="button"
                         v-on:click="close"
                 />
                 <slot/>

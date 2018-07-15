@@ -11,7 +11,9 @@
                     <div class="sm:m-4 md:ml-0">
                         <update-email class="mb-4 sm:mb-8"/>
                         <div class="content-box text-center mb-4 sm:mb-0">
-                            <button class="btn btn-green btn-sm" type="submit" v-on:click="openModal">Configure 2-Factor Authentication</button>
+                            <button class="btn btn-green btn-sm" type="submit" id="grid-open-two-factor-modal"
+                                    v-on:click="openModal"
+                            >Configure 2-Factor Authentication</button>
                         </div>
                     </div>
                 </div>

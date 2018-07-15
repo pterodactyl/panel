@@ -1,9 +1,9 @@
 <template>
-    <div>
+    <div id="configure-two-factor">
         <div class="h-16 text-center" v-show="spinner">
             <span class="spinner spinner-xl text-blue"></span>
         </div>
-        <div v-if="response.enabled" v-show="!spinner">
+        <div id="container-disable-two-factor" v-if="response.enabled" v-show="!spinner">
             <h2 class="font-medium text-grey-darkest">{{ $t('dashboard.account.two_factor.disable.title') }}</h2>
             <div class="mt-6">
                 <label class="input-label" for="grid-two-factor-token-disable">{{ $t('dashboard.account.two_factor.disable.field') }}</label>
@@ -26,12 +26,12 @@
                 >{{ $t('strings.disable') }}</button>
             </div>
         </div>
-        <div v-else v-show="!spinner">
+        <div id="container-enable-two-factor" v-else v-show="!spinner">
             <h2 class="font-medium text-grey-darkest">{{ $t('dashboard.account.two_factor.setup.title') }}</h2>
             <div class="flex mt-6">
                 <div class="flex-none w-full sm:w-1/2 text-center">
                     <div class="h-48">
-                        <img :src="response.qr_image" alt="Two-factor qr image" class="h-48">
+                        <img :src="response.qr_image" id="grid-qr-code" alt="Two-factor qr image" class="h-48">
                     </div>
                     <div>
                         <p class="text-xs text-grey-darker mb-2">{{ $t('dashboard.account.two_factor.setup.help') }}</p>
