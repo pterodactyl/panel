@@ -1,7 +1,7 @@
 import LoadingState from '../../models/loadingStates';
 import route from '../../../../../vendor/tightenco/ziggy/src/js/route';
 
-export const serverModule = {
+export default {
     state: {
         servers: {},
         serverIDs: [],

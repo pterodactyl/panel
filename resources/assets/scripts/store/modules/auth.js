@@ -2,7 +2,7 @@ import User from './../../models/user';
 
 const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').default;
 
-export const authModule = {
+export default {
     namespaced: true,
     state: {
         user: typeof window.PterodactylUser === 'object' ? new User(window.PterodactylUser) : null,
