@@ -68,15 +68,15 @@ class AuthenticateKey
         // This is a request coming through using cookies, we have an authenticated user not using
         // an API key. Make some fake API key models and continue on through the process.
         if (empty($raw) && $request->user() instanceof User) {
-            $model = new ApiKey([
+            $model = (new ApiKey())->forceFill([
                 'user_id' => $request->user()->id,
                 'key_type' => ApiKey::TYPE_ACCOUNT,
             ]);
         } else {
             $model = $this->authenticateApiKey($raw, $keyType);
+            $this->auth->guard()->loginUsingId($model->user_id);
         }
 
-        $this->auth->guard()->loginUsingId($model->user_id);
         $request->attributes->set('api_key', $model);
 
         return $next($request);
