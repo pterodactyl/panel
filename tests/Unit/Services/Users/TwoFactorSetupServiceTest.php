@@ -6,7 +6,7 @@ use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Support\Collection;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -40,7 +40,6 @@ class TwoFactorSetupServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->config = m::mock(Repository::class);
         $this->encrypter = m::mock(Encrypter::class);
         $this->google2FA = m::mock(Google2FA::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
@@ -53,16 +52,19 @@ class TwoFactorSetupServiceTest extends TestCase
     {
         $model = factory(User::class)->make();
 
-        $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.bytes')->once()->andReturn(32);
+        config()->set('pterodactyl.auth.2fa.bytes', 32);
+        config()->set('app.name', 'CompanyName');
+
         $this->google2FA->shouldReceive('generateSecretKey')->with(32)->once()->andReturn('secretKey');
-        $this->config->shouldReceive('get')->with('app.name')->once()->andReturn('CompanyName');
         $this->google2FA->shouldReceive('getQRCodeGoogleUrl')->with('CompanyName', $model->email, 'secretKey')->once()->andReturn('http://url.com');
         $this->encrypter->shouldReceive('encrypt')->with('secretKey')->once()->andReturn('encryptedSecret');
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, ['totp_secret' => 'encryptedSecret'])->once()->andReturnNull();
 
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);
-        $this->assertSame('http://url.com', $response);
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertSame('http://url.com', $response->get('image'));
+        $this->assertSame('secretKey', $response->get('secret'));
     }
 
     /**
@@ -72,6 +74,6 @@ class TwoFactorSetupServiceTest extends TestCase
      */
     private function getService(): TwoFactorSetupService
     {
-        return new TwoFactorSetupService($this->config, $this->encrypter, $this->google2FA, $this->repository);
+        return new TwoFactorSetupService($this->encrypter, $this->google2FA, $this->repository);
     }
 }

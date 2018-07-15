@@ -11,16 +11,16 @@
                        ref="search"
                 />
             </div>
-            <div v-if="this.isServersLoading" class="my-4 animate fadein">
+            <div v-if="this.loading" class="my-4 animate fadein">
                 <div class="text-center h-16">
                     <span class="spinner spinner-xl"></span>
                 </div>
             </div>
-            <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start">
+            <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start" v-else>
                 <server-box
-                        v-for="(server, index) in this.serverList"
-                        :key="index"
-                        :server="server"
+                        v-for="(server, index) in servers"
+                        v-bind:key="index"
+                        v-bind:server="server"
                 />
             </transition-group>
         </div>
@@ -28,38 +28,31 @@
 </template>
 
 <script>
-    import { DateTime } from 'luxon';
     import Server from '../../models/server';
-    import _ from 'lodash';
+    import debounce from 'lodash/debounce';
+    import differenceInSeconds from 'date-fns/difference_in_seconds';
     import Flash from '../Flash';
     import ServerBox from './ServerBox';
     import Navigation from '../core/Navigation';
-    import {mapGetters, mapState} from 'vuex'
 
     export default {
         name: 'dashboard',
         components: { Navigation, ServerBox, Flash },
         data: function () {
             return {
-                backgroundedAt: DateTime.local(),
+                backgroundedAt: new Date(),
+                documentVisible: true,
+                loading: true,
                 search: '',
+                servers: [],
             }
         },
 
-        computed: {
-            ...mapGetters([
-                'isServersLoading',
-                'serverList'
-            ]),
-            ...mapState({
-                servers: 'servers'
-            })
-        },
         /**
          * Start loading the servers before the DOM $.el is created.
          */
         created: function () {
-            this.$store.dispatch('loadServers')
+            this.loadServers();
 
             document.addEventListener('visibilitychange', () => {
                 this.documentVisible = document.visibilityState === 'visible';
@@ -77,10 +70,49 @@
 
         methods: {
             /**
+             * Load the user's servers and render them onto the dashboard.
+             *
+             * @param {string} query
+             */
+            loadServers: function (query = '') {
+                this.loading = true;
+                window.axios.get(this.route('api.client.index'), {
+                    params: { query },
+                })
+                    .finally(() => {
+                        this.clearFlashes();
+                    })
+                    .then(response => {
+                        this.servers = [];
+                        response.data.data.forEach(obj => {
+                            const s = new Server(obj.attributes);
+                            this.servers.push(s);
+                            this.getResourceUse(s);
+                        });
+
+                        if (this.servers.length === 0) {
+                            this.info(this.$t('dashboard.index.no_matches'));
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        const response = err.response;
+                        if (response.data && _.isObject(response.data.errors)) {
+                            response.data.errors.forEach(error => {
+                                this.error(error.detail);
+                            });
+                        }
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
+            },
+
+            /**
              * Handle a search for servers but only call the search function every 500ms
              * at the fastest.
              */
-            onChange: _.debounce(function () {
+            onChange: debounce(function () {
                 this.loadServers(this.$data.search);
             }, 500),
 
@@ -124,14 +156,14 @@
              */
             _handleDocumentVisibilityChange: function (isVisible) {
                 if (!isVisible) {
-                    this.backgroundedAt = DateTime.local();
+                    this.backgroundedAt = new Date();
                     return;
                 }
 
                 // If it has been more than 30 seconds since this window was put into the background
                 // lets go ahead and refresh all of the listed servers so that they have fresh stats.
-                const diff = DateTime.local().diff(this.backgroundedAt, 'seconds');
-                this._iterateServerResourceUse(diff.seconds > 30 ? 1 : 5000);
+                const diff = differenceInSeconds(new Date(), this.backgroundedAt);
+                this._iterateServerResourceUse(diff > 30 ? 1 : 5000);
             },
         }
     };

@@ -11,6 +11,9 @@ abstract class BasePage extends Page
      */
     public static function siteElements()
     {
-        return [];
+        return [
+            '@@success' => '.alert.success[role="alert"]',
+            '@@error' => '.alert.error[role="alert"]',
+        ];
     }
 }

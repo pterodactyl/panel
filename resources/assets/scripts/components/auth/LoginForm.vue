@@ -1,11 +1,11 @@
 <template>
     <div>
-        <form class="bg-white shadow-lg rounded-lg pt-10 px-8 pb-6 mb-4 animate fadein" method="post"
+        <form class="login-box" method="post"
               v-on:submit.prevent="submitForm"
         >
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-username" type="text" name="user" aria-labelledby="grid-username-label" required
+                    <input class="input open-label" id="grid-username" type="text" name="user" aria-labelledby="grid-username-label" required
                            ref="email"
                            :class="{ 'has-content' : user.email.length > 0 }"
                            :readonly="showSpinner"
@@ -17,7 +17,7 @@
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-password" type="password" name="password" aria-labelledby="grid-password-label" required
+                    <input class="input open-label" id="grid-password" type="password" name="password" aria-labelledby="grid-password-label" required
                            ref="password"
                            :class="{ 'has-content' : user.password && user.password.length > 0 }"
                            :readonly="showSpinner"
@@ -62,7 +62,6 @@
         },
         data: function () {
             return {
-                errors: [],
                 showSpinner: false,
             }
         },
@@ -91,7 +90,7 @@
                         this.$props.user.password = '';
                         this.$data.showSpinner = false;
                         this.$refs.password.focus();
-                        this.$store.dispatch('auth/logout');
+                        this.$store.commit('auth/logout');
 
                         if (!err.response) {
                             return console.error(err);

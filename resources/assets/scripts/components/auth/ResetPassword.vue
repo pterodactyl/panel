@@ -5,7 +5,7 @@
         >
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-email" type="email" aria-labelledby="grid-email" required
+                    <input class="input open-label" id="grid-email" type="email" aria-labelledby="grid-email" required
                            ref="email"
                            :class="{ 'has-content': email.length > 0 }"
                            :readonly="showSpinner"
@@ -16,7 +16,7 @@
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-password" type="password" aria-labelledby="grid-password" required
+                    <input class="input open-label" id="grid-password" type="password" aria-labelledby="grid-password" required
                            ref="password"
                            :class="{ 'has-content' : password.length > 0 }"
                            :readonly="showSpinner"
@@ -28,7 +28,7 @@
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
                 <div class="input-open">
-                    <input class="input" id="grid-password-confirmation" type="password" aria-labelledby="grid-password-confirmation" required
+                    <input class="input open-label" id="grid-password-confirmation" type="password" aria-labelledby="grid-password-confirmation" required
                            :class="{ 'has-content' : passwordConfirmation.length > 0 }"
                            :readonly="showSpinner"
                            v-model="passwordConfirmation"
@@ -95,6 +95,11 @@
                     .then(function (response) {
                         if (!(response.data instanceof Object)) {
                             throw new Error('An error was encountered while processing this login.');
+                        }
+
+                        if (response.data.send_to_login) {
+                            self.success('Your password has been reset, please login to continue.');
+                            return self.$router.push({ name: 'login' });
                         }
 
                         return window.location = response.data.redirect_to;

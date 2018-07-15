@@ -1,6 +1,8 @@
 {
     "name": "pterodactyl-panel",
     "dependencies": {
+        "date-fns": "^1.29.0",
+        "vee-validate": "^2.1.0-beta.2",
         "vue": "^2.5.7",
         "vue-axios": "^2.1.1",
         "vue-router": "^3.0.1",
@@ -29,9 +31,7 @@
         "glob-all": "^3.1.0",
         "html-webpack-plugin": "^3.2.0",
         "jquery": "^3.3.1",
-        "jwt-decode": "^2.2.0",
         "lodash": "^4.17.5",
-        "luxon": "^1.2.1",
         "postcss": "^6.0.21",
         "postcss-import": "^11.1.0",
         "postcss-loader": "^2.1.5",
@@ -61,7 +61,8 @@
         "watch": "NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "NODE_ENV=production ./node_modules/.bin/webpack",
-        "serve": "webpack-serve --hot --config ./webpack.config.js",
-        "v:serve": "PUBLIC_PATH=http://192.168.50.2:8080 NODE_ENV=development webpack-serve --hot --config ./webpack.config.js --host 192.168.50.2 --no-clipboard"
+        "serve": "NODE_ENV=development webpack-serve --hot --config ./webpack.config.js --no-clipboard --progress",
+        "v:serve": "PUBLIC_PATH=http://pterodactyl.local:8080 NODE_ENV=development webpack-serve --hot --config ./webpack.config.js --host 0.0.0.0 --no-clipboard",
+        "compile:assets": "php artisan vue-i18n:generate & php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js"
     }
 }

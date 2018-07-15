@@ -27,10 +27,6 @@
                     &:hover {
                         @apply .bg-blue-dark;
                     }
-
-                    & .feather {
-                        @apply .h-4;
-                    }
                 }
             }
         }

@@ -28,7 +28,7 @@ class AccountDataFormRequest extends FrontendUserFormRequest
         // Verify password matches when changing password or email.
         if (in_array($this->input('do_action'), ['password', 'email'])) {
             if (! password_verify($this->input('current_password'), $this->user()->password)) {
-                throw new InvalidPasswordProvidedException(trans('base.account.invalid_password'));
+                throw new InvalidPasswordProvidedException(trans('validation.internal.invalid_password'));
             }
         }
 

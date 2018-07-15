@@ -12,16 +12,39 @@
     }
   }
 
+  &.btn-green {
+    @apply .bg-green .border-green-dark .border .text-white;
+
+    &:hover:enabled {
+      @apply .bg-green-dark .border-green-darker;
+    }
+  }
+
   &.btn-red {
     @apply .bg-red .border-red-dark .border .text-white;
 
     &:hover:enabled {
-        @apply .bg-red-dark .border-red-darker;
-     }
-   }
-  /* Button Sizes */
+      @apply .bg-red-dark .border-red-darker;
+    }
+  }
+
+  &.btn-secondary {
+    @apply .border .border-grey-light .text-grey-dark;
+
+    &:hover:enabled {
+      @apply .border-grey .text-grey-darker;
+    }
+  }
+
+  /**
+   * Button Sizes
+   */
   &.btn-jumbo {
     @apply .p-4 .w-full .uppercase .tracking-wide .text-sm;
+  }
+
+  &.btn-sm {
+    @apply .px-6 .py-3 .uppercase .tracking-wide .text-sm;
   }
 
   &:disabled, &.disabled {

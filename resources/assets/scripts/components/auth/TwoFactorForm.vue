@@ -1,10 +1,10 @@
 <template>
-    <form class="bg-white shadow-lg rounded-lg pt-10 px-8 pb-6 mb-4 animate fadein" method="post"
+    <form class="login-box" method="post"
           v-on:submit.prevent="submitToken"
     >
         <div class="flex flex-wrap -mx-3 mb-6">
             <div class="input-open">
-                <input class="input" id="grid-code" type="number" name="token" aria-labelledby="grid-username" required
+                <input class="input open-label" id="grid-code" type="number" name="token" aria-labelledby="grid-username" required
                        ref="code"
                        :class="{ 'has-content' : code.length > 0 }"
                        v-model="code"

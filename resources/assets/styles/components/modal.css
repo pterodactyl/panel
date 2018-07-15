@@ -1,0 +1,20 @@
+.modal-mask {
+  @apply .fixed .pin .z-50 .overflow-auto .flex;
+  background: rgba(0, 0, 0, 0.7);
+  transition: opacity 250ms ease;
+
+  & > .modal-container {
+    @apply .relative .p-8 .bg-white .w-full .max-w-md .m-auto .flex-col .flex;
+    transition: all 250ms ease;
+    margin-top: 15%;
+
+    /**
+     * On tiny phone screens make sure there is a margin on the sides and also
+     * center the modal rather than putting it towards the top of the screen.
+     */
+    @screen smx {
+      margin-top: auto;
+      width: 90%;
+    }
+  }
+}

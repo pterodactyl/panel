@@ -9,6 +9,20 @@ use PHPUnit\Framework\Assert as PHPUnit;
 class PterodactylBrowser extends Browser
 {
     /**
+     * Move the mouse to a specific location and then perform a left click action.
+     *
+     * @param int $x
+     * @param int $y
+     * @return $this
+     */
+    public function clickPosition(int $x, int $y)
+    {
+        $this->driver->getMouse()->mouseMove(null, $x, $y)->click();
+
+        return $this;
+    }
+
+    /**
      * Perform a case insensitive search for a string in the body.
      *
      * @param string $text

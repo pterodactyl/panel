@@ -18,6 +18,14 @@
             <meta name="theme-color" content="#0e4688">
         @show
 
+        @section('user-data')
+            @if(!is_null(Auth::user()))
+                <script>
+                    window.PterodactylUser = {!! json_encode(Auth::user()->toVueObject()) !!}
+                </script>
+            @endif
+        @show
+
         @section('assets')
             {!! $asset->css('main.css') !!}
         @show

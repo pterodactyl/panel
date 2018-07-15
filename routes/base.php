@@ -1,12 +1,7 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
+
 Route::get('/', 'IndexController@index')->name('index');
+Route::get('/account', 'IndexController@index')->name('account');
 
 /*
 |--------------------------------------------------------------------------
@@ -16,11 +11,6 @@ Route::get('/', 'IndexController@index')->name('index');
 | Endpoint: /account
 |
 */
-Route::group(['prefix' => 'account'], function () {
-    Route::get('/', 'AccountController@index')->name('account');
-
-    Route::post('/', 'AccountController@update');
-});
 
 /*
 |--------------------------------------------------------------------------
@@ -47,15 +37,10 @@ Route::group(['prefix' => 'account/api'], function () {
 | Endpoint: /account/security
 |
 */
-Route::group(['prefix' => 'account/security'], function () {
-    Route::get('/', 'SecurityController@index')->name('account.security');
-    Route::get('/revoke/{id}', 'SecurityController@revoke')->name('account.security.revoke');
-
-    Route::put('/totp', 'SecurityController@generateTotp')->name('account.security.totp');
-
-    Route::post('/totp', 'SecurityController@setTotp')->name('account.security.totp.set');
-
-    Route::delete('/totp', 'SecurityController@disableTotp')->name('account.security.totp.disable');
+Route::group(['prefix' => 'account/two_factor'], function () {
+    Route::get('/', 'SecurityController@index')->name('account.two_factor');
+    Route::post('/totp', 'SecurityController@store')->name('account.two_factor.enable');
+    Route::post('/totp/disable', 'SecurityController@delete')->name('account.two_factor.disable');
 });
 
 // Catch any other combinations of routes and pass them off to the Vuejs component.

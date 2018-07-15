@@ -91,6 +91,7 @@ class AssetHashService
     {
         return '<link href="' . $this->url($resource) . '"
                     rel="stylesheet preload"
+                    as="style"
                     crossorigin="anonymous"
                     integrity="' . $this->integrity($resource) . '"
                     referrerpolicy="no-referrer">';
