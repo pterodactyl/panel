@@ -26,7 +26,6 @@
         "laracasts/utilities": "^3.0",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "^1.0",
-        "lcobucci/jwt": "^3.2",
         "lord/laroute": "^2.4",
         "matriphe/iso-639": "^1.2",
         "nesbot/carbon": "^1.22",

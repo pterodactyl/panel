@@ -13,13 +13,12 @@ use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Pterodactyl\Traits\Helpers\ProvidesJWTServices;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 abstract class AbstractLoginController extends Controller
 {
-    use AuthenticatesUsers, ProvidesJWTServices;
+    use AuthenticatesUsers;
 
     /**
      * @var \Illuminate\Auth\AuthManager
