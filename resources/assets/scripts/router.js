@@ -10,6 +10,7 @@ import Login from './components/auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
 import Account from './components/dashboard/Account';
 import ResetPassword from './components/auth/ResetPassword';
+import User from './models/user';
 
 const routes = [
     { name: 'login', path: '/auth/login', component: Login },
@@ -52,17 +53,10 @@ router.beforeEach((to, from, next) => {
 
     const user = store.getters['auth/getUser'];
 
-    // If user is trying to access any of the non-authentication endpoints ensure that they have
-    // a valid, non-expired JWT.
-    if (!to.path.startsWith('/auth')) {
-        // Check if the JWT has expired. Don't use the exp field, but rather that issued at time
-        // so that we can adjust how long we want to wait for expiration on both server-side and
-        // client side without having to wait for older tokens to pass their expiration time if
-        // we lower it.
-        if (user === null || compareDate(addHours(dateParse(user.getJWT().iat * 1000), 12), new Date()) < 0) {
-            store.commit('auth/logout');
-            return window.location = route('auth.logout');
-        }
+    // Check that if we're accessing a non-auth route that a user exists on the page.
+    if (!to.path.startsWith('/auth') && !(user instanceof User)) {
+        store.commit('auth/logout');
+        return window.location = route('auth.logout');
     }
 
     // Continue on through the pipeline.

@@ -3,9 +3,9 @@
 namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
-use Lcobucci\JWT\Parser;
 use Cake\Chronos\Chronos;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -62,15 +62,19 @@ class AuthenticateKey
      */
     public function handle(Request $request, Closure $next, int $keyType)
     {
-        if (is_null($request->bearerToken())) {
+        if (is_null($request->bearerToken()) && is_null($request->user())) {
             throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
         }
 
         $raw = $request->bearerToken();
 
-        // This is an internal JWT, treat it differently to get the correct user before passing it along.
-        if (strlen($raw) > ApiKey::IDENTIFIER_LENGTH + ApiKey::KEY_LENGTH) {
-            $model = $this->authenticateJWT($raw);
+        // This is a request coming through using cookies, we have an authenticated user not using
+        // an API key. Make some fake API key models and continue on through the process.
+        if (empty($raw) && $request->user() instanceof User) {
+            $model = new ApiKey([
+                'user_id' => $request->user()->id,
+                'key_type' => ApiKey::TYPE_ACCOUNT,
+            ]);
         } else {
             $model = $this->authenticateApiKey($raw, $keyType);
         }
@@ -79,42 +83,6 @@ class AuthenticateKey
         $request->attributes->set('api_key', $model);
 
         return $next($request);
-    }
-
-    /**
-     * Authenticate an API request using a JWT rather than an API key.
-     *
-     * @param string $token
-     * @return \Pterodactyl\Models\ApiKey
-     */
-    protected function authenticateJWT(string $token): ApiKey
-    {
-        $token = (new Parser)->parse($token);
-
-        // If the key cannot be verified throw an exception to indicate that a bad
-        // authorization header was provided.
-        if (! $token->verify($this->getJWTSigner(), $this->getJWTSigningKey())) {
-            throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
-        }
-
-        // Run through the token validation and throw an exception if the token is not valid.
-        //
-        // The issued_at time is used for verification in order to allow rapid changing of session
-        // length on the Panel without having to wait on existing tokens to first expire.
-        $now = Chronos::now('utc');
-        if (
-            Chronos::createFromTimestampUTC($token->getClaim('nbf'))->gt($now)
-            || $token->getClaim('iss') !== 'Pterodactyl Panel'
-            || $token->getClaim('aud') !== config('app.url')
-            || Chronos::createFromTimestampUTC($token->getClaim('iat'))->addMinutes(config('jwt.lifetime'))->lte($now)
-        ) {
-            throw new AccessDeniedHttpException('The authentication parameters provided are not valid for accessing this resource.');
-        }
-
-        return (new ApiKey)->forceFill([
-            'user_id' => object_get($token->getClaim('user'), 'id', 0),
-            'key_type' => ApiKey::TYPE_ACCOUNT,
-        ]);
     }
 
     /**

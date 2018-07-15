@@ -9,6 +9,14 @@
             <meta name="csrf-token" content="{{ csrf_token() }}">
         @show
 
+        @section('user-data')
+            @if(!is_null(Auth::user()))
+                <script>
+                    window.PterodactylUser = {!! json_encode(Auth::user()->toVueObject()) !!}
+                </script>
+            @endif
+        @show
+
         @section('assets')
             {!! $asset->css('main.css') !!}
         @show

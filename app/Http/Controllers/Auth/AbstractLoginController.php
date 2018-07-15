@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Cake\Chronos\Chronos;
-use Lcobucci\JWT\Builder;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
@@ -16,7 +14,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Pterodactyl\Traits\Helpers\ProvidesJWTServices;
-use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
@@ -28,11 +25,6 @@ abstract class AbstractLoginController extends Controller
      * @var \Illuminate\Auth\AuthManager
      */
     protected $auth;
-
-    /**
-     * @var \Lcobucci\JWT\Builder
-     */
-    protected $builder;
 
     /**
      * @var \Illuminate\Contracts\Cache\Repository
@@ -79,7 +71,6 @@ abstract class AbstractLoginController extends Controller
      * LoginController constructor.
      *
      * @param \Illuminate\Auth\AuthManager                              $auth
-     * @param \Lcobucci\JWT\Builder                                     $builder
      * @param \Illuminate\Contracts\Cache\Repository                    $cache
      * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
      * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
@@ -87,14 +78,12 @@ abstract class AbstractLoginController extends Controller
      */
     public function __construct(
         AuthManager $auth,
-        Builder $builder,
         CacheRepository $cache,
         Encrypter $encrypter,
         Google2FA $google2FA,
         UserRepositoryInterface $repository
     ) {
         $this->auth = $auth;
-        $this->builder = $builder;
         $this->cache = $cache;
         $this->encrypter = $encrypter;
         $this->google2FA = $google2FA;
@@ -143,32 +132,8 @@ abstract class AbstractLoginController extends Controller
         return response()->json([
             'complete' => true,
             'intended' => $this->redirectPath(),
-            'jwt' => $this->createJsonWebToken($user),
+            'user' => $user->toVueObject(),
         ]);
-    }
-
-    /**
-     * Create a new JWT for the request and sign it using the signing key.
-     *
-     * @param User $user
-     * @return string
-     */
-    protected function createJsonWebToken(User $user): string
-    {
-        $now = Chronos::now('utc');
-
-        $token = $this->builder
-            ->setIssuer('Pterodactyl Panel')
-            ->setAudience(config('app.url'))
-            ->setId(str_random(16), true)
-            ->setIssuedAt($now->getTimestamp())
-            ->setNotBefore($now->getTimestamp())
-            ->setExpiration($now->addSeconds(config('jwt.lifetime'))->getTimestamp())
-            ->set('user', (new AccountTransformer())->transform($user))
-            ->sign($this->getJWTSigner(), $this->getJWTSigningKey())
-            ->getToken();
-
-        return $token->__toString();
     }
 
     /**

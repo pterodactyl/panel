@@ -49,6 +49,7 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         CheckForMaintenanceMode::class,
+        EncryptCookies::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
@@ -62,7 +63,6 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             AuthenticateSession::class,
@@ -82,8 +82,10 @@ class Kernel extends HttpKernel
         ],
         'client-api' => [
             'throttle:240,1',
-            SubstituteClientApiBindings::class,
+            StartSession::class,
             SetSessionDriver::class,
+            AuthenticateSession::class,
+            SubstituteClientApiBindings::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
             AuthenticateIPAccess::class,
         ],

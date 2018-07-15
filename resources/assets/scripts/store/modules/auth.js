@@ -5,7 +5,7 @@ const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').de
 export default {
     namespaced: true,
     state: {
-        user: User.fromToken(),
+        user: typeof window.PterodactylUser === 'object' ? new User(window.PterodactylUser) : null,
     },
     getters: {
         /**
@@ -41,7 +41,7 @@ export default {
                         }
 
                         if (response.data.complete) {
-                            commit('login', {jwt: response.data.jwt});
+                            commit('login', response.data.user);
                             return resolve({
                                 complete: true,
                                 intended: response.data.intended,
@@ -86,12 +86,10 @@ export default {
         setEmail: function (state, email) {
             state.user.email = email;
         },
-        login: function (state, {jwt}) {
-            localStorage.setItem('token', jwt);
-            state.user = User.fromToken(jwt);
+        login: function (state, data) {
+            state.user = new User(data);
         },
         logout: function (state) {
-            localStorage.removeItem('token');
             state.user = null;
         },
     },
