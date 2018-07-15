@@ -45,7 +45,7 @@ abstract class BrowserTestCase extends TestCase
         ]);
 
         return RemoteWebDriver::create(
-            'http://services.pterodactyl.local:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
+            'http://host.pterodactyl.local:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
                 ChromeOptions::CAPABILITY, $options
             )
         );
