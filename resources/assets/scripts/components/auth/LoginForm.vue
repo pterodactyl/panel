@@ -84,7 +84,7 @@
 
                         this.$props.user.password = '';
                         this.$data.showSpinner = false;
-                        this.$router.push({name: 'checkpoint', query: {token: response.login_token}});
+                        this.$router.push({name: 'checkpoint', query: {token: response.token}});
                     })
                     .catch(err => {
                         this.$props.user.password = '';
