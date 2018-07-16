@@ -39,6 +39,6 @@
 
 <script>
     export default {
-        name: "ServerConsole"
+        name: "ServerConsole",
     }
 </script>
