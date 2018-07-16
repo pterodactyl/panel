@@ -64,11 +64,13 @@
         },
 
         /**
-         * Once the page is mounted set a function to run every 5 seconds that will
+         * Once the page is mounted set a function to run every 10 seconds that will
          * iterate through the visible servers and fetch their resource usage.
          */
         mounted: function () {
-            this._iterateServerResourceUse();
+            window.setTimeout(() => {
+                this._iterateServerResourceUse();
+            }, 5000);
         },
 
         computed: {
@@ -133,9 +135,6 @@
                         }
 
                         window.events.$emit(`server:${server.uuid}::resources`, response.data.attributes);
-                    })
-                    .catch(err => {
-                        console.error(err);
                     });
             },
 
@@ -144,12 +143,23 @@
              *
              * @private
              */
-            _iterateServerResourceUse: function (initialTimeout = 5000) {
-                window.setTimeout(() => {
-                    if (this.documentVisible) {
-                        return window.setTimeout(this._iterateServerResourceUse(), 5000);
-                    }
-                }, initialTimeout);
+            _iterateServerResourceUse: function (loop = true) {
+                // Try again in 10 seconds, window is not in the foreground.
+                if (!this.documentVisible && loop) {
+                    window.setTimeout(() => {
+                        this._iterateServerResourceUse();
+                    }, 10000);
+                }
+
+                this.servers.forEach(server => {
+                    this.getResourceUse(server);
+                });
+
+                if (loop) {
+                    window.setTimeout(() => {
+                        this._iterateServerResourceUse();
+                    }, 10000);
+                }
             },
 
             /**
@@ -167,7 +177,9 @@
                 // If it has been more than 30 seconds since this window was put into the background
                 // lets go ahead and refresh all of the listed servers so that they have fresh stats.
                 const diff = differenceInSeconds(new Date(), this.backgroundedAt);
-                this._iterateServerResourceUse(diff > 30 ? 1 : 5000);
+                if (diff > 30) {
+                    this._iterateServerResourceUse(false);
+                }
             },
         }
     };
