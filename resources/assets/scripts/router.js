@@ -46,7 +46,6 @@ const router = new VueRouter({
 // have no JWT or the JWT is expired and wouldn't be accepted by the Panel.
 router.beforeEach((to, from, next) => {
     if (to.path === route('auth.logout')) {
-        console.log('logging out');
         return window.location = route('auth.logout');
     }
 
@@ -54,13 +53,11 @@ router.beforeEach((to, from, next) => {
 
     // Check that if we're accessing a non-auth route that a user exists on the page.
     if (!to.path.startsWith('/auth') && !(user instanceof User)) {
-        console.log('logging out 2');
         store.commit('auth/logout');
         return window.location = route('auth.logout');
     }
 
     // Continue on through the pipeline.
-    console.log('continuing');
     return next();
 });
 

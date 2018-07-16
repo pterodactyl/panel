@@ -1,22 +1,22 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import server from "./modules/server";
-import auth from "./modules/auth";
+import auth from './modules/auth';
+import dashboard from './modules/dashboard';
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
-    modules: { auth },
+    modules: { auth, dashboard },
 });
 
 if (module.hot) {
     module.hot.accept(['./modules/auth'], () => {
         const newAuthModule = require('./modules/auth').default;
-        // const newServerModule = require('./modules/server').default;
+        const newDashboardModule = require('./modules/dashboard').default;
 
         store.hotUpdate({
-            modules: { newAuthModule },
+            modules: { newAuthModule, newDashboardModule },
         });
     });
 }

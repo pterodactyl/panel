@@ -7,7 +7,7 @@
                 <input type="text"
                        :placeholder="$t('dashboard.index.search')"
                        @input="onChange"
-                       v-model="search"
+                       v-model="searchTerm"
                        ref="search"
                 />
             </div>
@@ -34,6 +34,8 @@
     import Flash from '../Flash';
     import ServerBox from './ServerBox';
     import Navigation from '../core/Navigation';
+    import isObject from 'lodash/isObject';
+    import {mapState} from 'vuex';
 
     export default {
         name: 'dashboard',
@@ -42,17 +44,18 @@
             return {
                 backgroundedAt: new Date(),
                 documentVisible: true,
-                loading: true,
-                search: '',
-                servers: [],
+                loading: false,
             }
         },
 
         /**
-         * Start loading the servers before the DOM $.el is created.
+         * Start loading the servers before the DOM $.el is created. If we already have servers
+         * stored in vuex shows those and don't fire another API call just to load them again.
          */
         created: function () {
-            this.loadServers();
+            if (this.servers.length === 0) {
+                this.loadServers();
+            }
 
             document.addEventListener('visibilitychange', () => {
                 this.documentVisible = document.visibilityState === 'visible';
@@ -68,28 +71,29 @@
             this._iterateServerResourceUse();
         },
 
+        computed: {
+            ...mapState('dashboard', ['servers']),
+            searchTerm: {
+                get: function () {
+                    return this.$store.getters['dashboard/getSearchTerm'];
+                },
+                set: function (value) {
+                    this.$store.dispatch('dashboard/setSearchTerm', value);
+                }
+            }
+        },
+
         methods: {
             /**
              * Load the user's servers and render them onto the dashboard.
-             *
-             * @param {string} query
              */
-            loadServers: function (query = '') {
+            loadServers: function () {
                 this.loading = true;
-                window.axios.get(this.route('api.client.index'), {
-                    params: { query },
-                })
+                this.$store.dispatch('dashboard/loadServers')
                     .finally(() => {
                         this.clearFlashes();
                     })
-                    .then(response => {
-                        this.servers = [];
-                        response.data.data.forEach(obj => {
-                            const s = new Server(obj.attributes);
-                            this.servers.push(s);
-                            this.getResourceUse(s);
-                        });
-
+                    .then(() => {
                         if (this.servers.length === 0) {
                             this.info(this.$t('dashboard.index.no_matches'));
                         }
@@ -97,7 +101,7 @@
                     .catch(err => {
                         console.error(err);
                         const response = err.response;
-                        if (response.data && _.isObject(response.data.errors)) {
+                        if (response.data && isObject(response.data.errors)) {
                             response.data.errors.forEach(error => {
                                 this.error(error.detail);
                             });
@@ -113,7 +117,7 @@
              * at the fastest.
              */
             onChange: debounce(function () {
-                this.loadServers(this.$data.search);
+                this.loadServers();
             }, 500),
 
             /**
