@@ -9,6 +9,15 @@ import Dashboard from './components/dashboard/Dashboard';
 import Account from './components/dashboard/Account';
 import ResetPassword from './components/auth/ResetPassword';
 import User from './models/user';
+import {
+    Server,
+    ServerAllocations,
+    ServerConsole, ServerDatabases,
+    ServerFiles,
+    ServerSchedules,
+    ServerSettings,
+    ServerSubusers
+} from './components/server';
 
 const routes = [
     {name: 'login', path: '/auth/login', component: Login},
@@ -28,13 +37,16 @@ const routes = [
     {name: 'account.api', path: '/account/api', component: Account},
     {name: 'account.security', path: '/account/security', component: Account},
 
-    {
-        name: 'server',
-        path: '/server/:id',
-        // component: Server,
-        // children: [
-        //     { path: 'files', component: ServerFileManager }
-        // ],
+    { path: '/server/:id', component: Server,
+        children: [
+            { name: 'server', path: '', component: ServerConsole },
+            { name: 'server-files', path: 'files', component: ServerFiles },
+            { name: 'server-subusers', path: 'subusers', component: ServerSubusers },
+            { name: 'server-schedules', path: 'schedules', component: ServerSchedules },
+            { name: 'server-databases', path: 'databases', component: ServerDatabases },
+            { name: 'server-allocations', path: 'allocations', component: ServerAllocations },
+            { name: 'server-settings', path: 'settings', component: ServerSettings },
+        ]
     }
 ];
 
