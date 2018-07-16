@@ -7,16 +7,16 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
-    modules: { auth, server },
+    modules: { auth },
 });
 
 if (module.hot) {
     module.hot.accept(['./modules/auth'], () => {
         const newAuthModule = require('./modules/auth').default;
-        const newServerModule = require('./modules/server').default;
+        // const newServerModule = require('./modules/server').default;
 
         store.hotUpdate({
-            modules: { newAuthModule, newServerModule },
+            modules: { newAuthModule },
         });
     });
 }
