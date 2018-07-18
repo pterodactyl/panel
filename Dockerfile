@@ -16,4 +16,4 @@ EXPOSE 80 443
 
 RUN chown -R nginx:nginx . && chmod -R 777 storage/* bootstrap/cache
 
-ENTRYPOINT ["ash", ".dev/entrypoint.sh"]
+ENTRYPOINT ["ash", ".dev/app/entrypoint.sh"]
