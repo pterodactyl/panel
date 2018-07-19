@@ -1,12 +1,17 @@
 <template>
     <div>
         <navigation></navigation>
-        <div class="m-6 flex flex-no-shrink rounded">
+        <div v-if="loadingServerData">
+            <div class="mt-6 h-16">
+                <div class="spinner spinner-xl spinner-thick blue"></div>
+            </div>
+        </div>
+        <div class="m-6 flex flex-no-shrink rounded animate fadein" v-else>
             <div class="sidebar border-grey-lighter flex-no-shrink w-1/3 max-w-xs">
                 <div class="mr-6">
                     <div class="p-6 text-center bg-white border rounded">
-                        <h3 class="mb-2 text-blue font-medium">Pterodactylcraft</h3>
-                        <span class="text-grey-dark text-sm">Minecraft / Vanilla</span>
+                        <h3 class="mb-2 text-blue font-medium">{{server.name}}</h3>
+                        <span class="text-grey-dark text-sm">{{server.node}}</span>
                     </div>
                     <div class="mt-6 p-4 text-center bg-white border rounded">
                         <button class="btn btn-red uppercase text-xs px-4 py-2">Stop</button>
@@ -19,30 +24,8 @@
                         <progress-bar title="Disk" percent="97" class="mt-4"></progress-bar>
                     </div>
                 </div>
-                <div class="pt-6 px-6 pb-4 text-center">
-                    <!--<div class="mt-8 mb-6 text-grey-dark border-t border-grey-light usage">-->
-                        <!--<div class="mt-8 mb-6 text-grey-dark border-t border-grey-light usage">-->
-                            <!--<span class="bg-grey-lighter">CPU - 2 Cores</span>-->
-                            <!--<div class="rounded border-grey-light border mt-3 h-4">-->
-                                <!--<div class="rounded bg-blue h-4 w-1/6"></div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="my-6 text-grey-dark border-t border-grey-light usage">-->
-                            <!--<span class="bg-grey-lighter">RAM - 4 GB</span>-->
-                            <!--<div class="rounded border-grey-light border mt-3 h-4">-->
-                                <!--<div class="rounded bg-blue h-4 w-2/3"></div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                        <!--<div class="my-6 text-grey-dark border-t border-grey-light usage">-->
-                            <!--<span class="bg-grey-lighter">Disk - 20 GB</span>-->
-                            <!--<div class="rounded border-grey-light border mt-3 h-4">-->
-                                <!--<div class="rounded bg-blue h-4 w-1/3"></div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                </div>
                 <div class="sidenav">
-                    <router-link :to="{ name: 'server', params: { serverID: this.$route.params.serverID } }">
+                    <router-link :to="{ name: 'server', params: { id: this.$route.params.id } }">
                         <terminal-icon style="height: 1em;"></terminal-icon>
                         Console
                     </router-link>
@@ -72,25 +55,50 @@
                     </router-link>
                 </div>
             </div>
-                <div class="main bg-white p-6 rounded border border-grey-lighter flex-grow">
-                    <!--h1.text-blue.mb-6 Server Console-->
-                    <router-view></router-view>
-                </div>
+            <div class="main bg-white p-6 rounded border border-grey-lighter flex-grow">
+                <router-view></router-view>
             </div>
+        </div>
     </div>
 </template>
 
 <script>
-    import { TerminalIcon, OctagonIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon } from 'vue-feather-icons'
+    import { TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon } from 'vue-feather-icons'
     import ServerConsole from "./ServerConsole";
     import Navigation from '../core/Navigation';
     import ProgressBar from './components/ProgressBar';
+    import {mapState} from 'vuex';
 
     export default {
         components: {
-            ProgressBar,
-            OctagonIcon, Navigation, ServerConsole, TerminalIcon, FolderIcon, UsersIcon,
+            ProgressBar, Navigation, ServerConsole, TerminalIcon, FolderIcon, UsersIcon,
             CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon
+        },
+
+        computed: {
+            ...mapState('server', ['server']),
+        },
+
+        mounted: function () {
+            this.loadServer();
+        },
+
+        data: function () {
+            return {
+                loadingServerData: true,
+            };
+        },
+
+        methods: {
+            loadServer: function () {
+                this.$store.dispatch('server/getServer', {server: this.$route.params.id})
+                    .then(() => {
+                        this.loadingServerData = false;
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            },
         }
     }
 </script>

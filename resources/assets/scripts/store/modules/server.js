@@ -1,64 +1,43 @@
-import LoadingState from '../../models/loadingStates';
 import route from '../../../../../vendor/tightenco/ziggy/src/js/route';
+import Server from '../../models/server';
 
 export default {
+    namespaced: true,
     state: {
-        servers: {},
-        serverIDs: [],
-        currentServerID: '',
-        serverLoadingState: '',
-    },
-    mutations: {
-        setCurrentServer (state, serverID) {
-            state.currentServerID = serverID;
-        },
-        setServers (state, servers) {
-            servers.forEach(s => {
-                state.servers[s.identifier] = s;
-                if (!!state.serverIDs.indexOf(s.identifier)) {
-                    state.serverIDs.push(s.identifier)
-                }
-            });
-        },
-        removeServer (state, serverID) {
-            delete state.servers[serverID];
-            state.serverIDs.remove(serverID);
-        },
-        setServerLoadingState (state, s) {
-            state.serverLoadingState = s;
-        }
-    },
-    actions: {
-        loadServers({ commit }) {
-            commit('setServerLoadingState', LoadingState.LOADING);
-            window.axios.get(route('api.client.index'))
-                .then(response => {
-                    commit('setServers', response.data.data.map(o => o.attributes));
-                    commit('setServerLoadingState', LoadingState.DONE);
-                })
-                .catch(err => {
-                    console.error(err);
-                    const response = err.response;
-                    if (response.data && _.isObject(response.data.errors)) {
-                        response.data.errors.forEach(function (error) {
-                            this.error(error.detail);
-                        });
-                    }
-                })
-                .finally(() => {
-                    this.loading = false;
-                });
-        },
+        server: {},
     },
     getters: {
-        currentServer (state) {
-            return state.servers[state.route.params.serverID];
+    },
+    actions: {
+        /**
+         *
+         * @param commit
+         * @param {String} server
+         * @returns {Promise<any>}
+         */
+        getServer: ({commit}, {server}) => {
+            return new Promise((resolve, reject) => {
+                window.axios.get(route('api.client.servers.view', { server }))
+                    .then(response => {
+                        // If there is a 302 redirect or some other odd behavior (basically, response that isnt
+                        // in JSON format) throw an error and don't try to continue with the login.
+                        if (!(response.data instanceof Object)) {
+                            return reject(new Error('An error was encountered while processing this request.'));
+                        }
+
+                        if (response.data.object === 'server' && response.data.attributes) {
+                            commit('SERVER_DATA', response.data.attributes)
+                        }
+
+                        return resolve();
+                    })
+                    .catch(reject);
+            });
         },
-        isServersLoading (state) {
-            return state.serverLoadingState === LoadingState.LOADING;
-        },
-        serverList (state) {
-            return state.serverIDs.map(k => state.servers[k]);
+    },
+    mutations: {
+        SERVER_DATA: function (state, data) {
+            state.server = data;
         }
-    }
-};
+    },
+}

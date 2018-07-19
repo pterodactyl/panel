@@ -13,7 +13,7 @@
             </div>
             <div v-if="this.loading" class="my-4 animate fadein">
                 <div class="text-center h-16">
-                    <span class="spinner spinner-xl"></span>
+                    <span class="spinner spinner-xl spinner-thick blue"></span>
                 </div>
             </div>
             <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start" v-else>
