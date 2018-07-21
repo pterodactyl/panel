@@ -61,6 +61,7 @@
 
         methods: {
             sendCommand: function () {
+                this.commandHistoryIndex = -1;
                 this.commandHistory.unshift(this.command);
                 this.$parent.$emit('send-command', this.command);
                 this.command = '';
