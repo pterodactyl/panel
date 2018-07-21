@@ -55,7 +55,7 @@
                     </router-link>
                 </div>
             </div>
-            <div class="main bg-white p-6 rounded border border-grey-lighter flex-grow">
+            <div class="bg-white p-6 rounded border border-grey-light h-full">
                 <router-view></router-view>
             </div>
         </div>

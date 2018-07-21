@@ -48,11 +48,11 @@
         @apply .block .py-3 .px-8 .text-grey-darkest .no-underline;
 
         &:hover {
-             @apply .border-r-4 .border-blue-lightest;
+             @apply .border-l-4 .border-blue-lightest;
          }
 
         &.router-link-exact-active {
-             @apply .text-blue .border-r-4 .border-blue;
+             @apply .text-blue .border-l-4 .border-blue;
          }
     }
 }
