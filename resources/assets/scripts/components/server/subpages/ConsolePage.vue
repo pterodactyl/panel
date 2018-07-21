@@ -42,12 +42,14 @@
             return {
                 terminal: new Terminal({
                     disableStdin: true,
+                    cursorStyle: 'underline',
                     allowTransparency: true,
                     fontSize: 12,
                     fontFamily: 'Menlo,Monaco,Consolas,monospace',
                     rows: 30,
                     theme: {
                         background: 'transparent',
+                        cursor: 'transparent',
                     }
                 }),
                 command: '',
