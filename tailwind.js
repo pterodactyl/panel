@@ -916,4 +916,8 @@ module.exports = {
         separator: ':',
     },
 
+    experiments: {
+        shadowLookup: true,
+    },
+
 };

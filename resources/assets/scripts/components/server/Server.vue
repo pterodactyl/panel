@@ -55,7 +55,7 @@
                     </router-link>
                 </div>
             </div>
-            <div class="bg-white p-6 rounded border border-grey-light h-full">
+            <div class="bg-white p-6 rounded border border-grey-light h-full w-full">
                 <router-view></router-view>
             </div>
         </div>
@@ -83,6 +83,10 @@
 
         mounted: function () {
             this.loadServer();
+
+            this.$on('send-command', data => {
+                this.socket.emit('send command', data);
+            });
         },
 
         data: function () {
@@ -109,7 +113,6 @@
             },
 
             initalizeWebsocket: function () {
-                this.$store.commit('server/CONSOLE_DATA', 'Connecting to ' + this.credentials.node + '...');
                 this.socket = io(this.credentials.node + '/v1/ws/' + this.server.uuid, {
                     query: 'token=' + this.credentials.key,
                 });
@@ -123,34 +126,29 @@
             },
 
             _socket_error: function (err) {
-                this.$store.commit('server/CONSOLE_DATA', 'There was a socket error: ' + err);
                 console.error('there was a socket error:', err);
             },
 
             _socket_connect: function () {
-                this.$store.commit('server/CONSOLE_DATA', 'Connected to socket.');
                 this.socket.emit('send server log');
-                console.log('connected');
             },
 
             _socket_status: function (data) {
-                this.$store.commit('server/CONSOLE_DATA', 'Server state has changed.');
-                console.warn(data);
             },
 
             _socket_serverLog: function (data) {
                 data.split(/\n/g).forEach(item => {
-                    this.$store.commit('server/CONSOLE_DATA', item);
+                    this.$emit('console', item);
                 });
             },
 
             _socket_consoleLine: function (data) {
                 if(data.line) {
-                    data.line.split(/\n/g).forEach((item) => {
-                        this.$store.commit('server/CONSOLE_DATA', item);
+                    data.line.split(/\n/g).forEach(item => {
+                        this.$emit('console', item);
                     });
                 }
-            }
+            },
         },
     }
 </script>
