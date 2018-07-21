@@ -52,7 +52,7 @@
         },
         {
             "name": "Server Map",
-            "description": "Available Maps:\r\n============\r\nTheIsland\r\nTheCenter\r\nRagnarok\r\nScorchedEarth_P\r\nAberration_P",
+            "description": "Available Maps: TheIsland, TheCenter, Ragnarok, ScorchedEarth_P, Aberration_P",
             "env_variable": "SERVER_MAP",
             "default_value": "TheIsland",
             "user_viewable": 1,
