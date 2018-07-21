@@ -68,7 +68,7 @@ const productionPlugins = [
 
 module.exports = {
     mode: process.env.NODE_ENV,
-    devtool: process.env.NODE_ENV === 'production' ? false : 'eval-source-map',
+    devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
     performance: {
         hints: false,
     },

@@ -13,6 +13,7 @@
                            ref="command"
                            v-model="command"
                            v-on:keyup.enter="sendCommand"
+                           v-on:keydown="handleArrowKey"
                     >
                 </div>
             </div>
@@ -53,13 +54,38 @@
                     }
                 }),
                 command: '',
+                commandHistory: [],
+                commandHistoryIndex: -1,
             };
         },
 
         methods: {
             sendCommand: function () {
+                this.commandHistory.unshift(this.command);
                 this.$parent.$emit('send-command', this.command);
                 this.command = '';
+            },
+
+            /**
+             * Handle a user pressing up/down arrows when in the command field to scroll through thier
+             * command history for this server.
+             *
+             * @param {KeyboardEvent} e
+             */
+            handleArrowKey: function (e) {
+                if (['ArrowUp', 'ArrowDown'].indexOf(e.key) < 0 || e.key === 'ArrowDown' && this.commandHistoryIndex < 0) {
+                    return;
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (e.key === 'ArrowUp' && (this.commandHistoryIndex + 1 > (this.commandHistory.length - 1))) {
+                    return;
+                }
+
+                this.commandHistoryIndex += (e.key === 'ArrowUp') ? 1 : -1;
+                this.command = this.commandHistoryIndex < 0 ? '' : this.commandHistory[this.commandHistoryIndex];
             }
         }
     };
