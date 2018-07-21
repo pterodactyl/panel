@@ -2,6 +2,7 @@
     "name": "pterodactyl-panel",
     "dependencies": {
         "date-fns": "^1.29.0",
+        "socket.io-client": "^2.1.1",
         "vee-validate": "^2.1.0-beta.2",
         "vue": "^2.5.7",
         "vue-axios": "^2.1.1",

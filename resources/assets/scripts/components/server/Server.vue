@@ -69,6 +69,8 @@
     import {mapState} from 'vuex';
     import { ConsolePage } from './subpages/ConsolePage';
 
+    import io from 'socket.io-client';
+
     export default {
         components: {
             ProgressBar, Navigation, ConsolePage, TerminalIcon, FolderIcon, UsersIcon,
@@ -76,7 +78,7 @@
         },
 
         computed: {
-            ...mapState('server', ['server']),
+            ...mapState('server', ['server', 'credentials']),
         },
 
         mounted: function () {
@@ -85,20 +87,70 @@
 
         data: function () {
             return {
+                socket: null,
                 loadingServerData: true,
             };
         },
 
         methods: {
+            /**
+             * Load the core server information needed for these pages to be functional.
+             */
             loadServer: function () {
-                this.$store.dispatch('server/getServer', {server: this.$route.params.id})
+                Promise.all([
+                    this.$store.dispatch('server/getServer', {server: this.$route.params.id}),
+                    this.$store.dispatch('server/getCredentials', {server: this.$route.params.id})
+                ])
                     .then(() => {
                         this.loadingServerData = false;
+                        this.initalizeWebsocket();
                     })
-                    .catch(err => {
-                        console.error(err);
-                    });
+                    .catch(console.error);
             },
-        }
+
+            initalizeWebsocket: function () {
+                this.$store.commit('server/CONSOLE_DATA', 'Connecting to ' + this.credentials.node + '...');
+                this.socket = io(this.credentials.node + '/v1/ws/' + this.server.uuid, {
+                    query: 'token=' + this.credentials.key,
+                });
+
+                this.socket.on('error', this._socket_error);
+                this.socket.on('connect', this._socket_connect);
+                this.socket.on('status', this._socket_status);
+                this.socket.on('initial status', this._socket_status);
+                this.socket.on('server log', this._socket_serverLog);
+                this.socket.on('console', this._socket_consoleLine);
+            },
+
+            _socket_error: function (err) {
+                this.$store.commit('server/CONSOLE_DATA', 'There was a socket error: ' + err);
+                console.error('there was a socket error:', err);
+            },
+
+            _socket_connect: function () {
+                this.$store.commit('server/CONSOLE_DATA', 'Connected to socket.');
+                this.socket.emit('send server log');
+                console.log('connected');
+            },
+
+            _socket_status: function (data) {
+                this.$store.commit('server/CONSOLE_DATA', 'Server state has changed.');
+                console.warn(data);
+            },
+
+            _socket_serverLog: function (data) {
+                data.split(/\n/g).forEach(item => {
+                    this.$store.commit('server/CONSOLE_DATA', item);
+                });
+            },
+
+            _socket_consoleLine: function (data) {
+                if(data.line) {
+                    data.line.split(/\n/g).forEach((item) => {
+                        this.$store.commit('server/CONSOLE_DATA', item);
+                    });
+                }
+            }
+        },
     }
 </script>
