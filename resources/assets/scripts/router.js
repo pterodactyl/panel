@@ -12,7 +12,8 @@ import User from './models/user';
 import {
     Server,
     ServerAllocations,
-    ServerConsole, ServerDatabases,
+    ConsolePage,
+    ServerDatabases,
     ServerFiles,
     ServerSchedules,
     ServerSettings,
@@ -39,7 +40,7 @@ const routes = [
 
     { path: '/server/:id', component: Server,
         children: [
-            { name: 'server', path: '', component: ServerConsole },
+            { name: 'server', path: '', component: ConsolePage },
             { name: 'server-files', path: 'files', component: ServerFiles },
             { name: 'server-subusers', path: 'subusers', component: ServerSubusers },
             { name: 'server-schedules', path: 'schedules', component: ServerSchedules },

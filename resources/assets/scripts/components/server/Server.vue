@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="sidenav">
-                    <router-link :to="{ name: 'server', params: { id: this.$route.params.id } }">
+                    <router-link :to="{ name: '', params: { id: this.$route.params.id } }">
                         <terminal-icon style="height: 1em;"></terminal-icon>
                         Console
                     </router-link>
@@ -64,14 +64,14 @@
 
 <script>
     import { TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon } from 'vue-feather-icons'
-    import ServerConsole from "./ServerConsole";
     import Navigation from '../core/Navigation';
     import ProgressBar from './components/ProgressBar';
     import {mapState} from 'vuex';
+    import { ConsolePage } from './subpages/ConsolePage';
 
     export default {
         components: {
-            ProgressBar, Navigation, ServerConsole, TerminalIcon, FolderIcon, UsersIcon,
+            ProgressBar, Navigation, ConsolePage, TerminalIcon, FolderIcon, UsersIcon,
             CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon
         },
 
