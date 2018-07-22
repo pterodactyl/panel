@@ -2,6 +2,9 @@
     <div>
         <div class="text-xs font-mono">
             <div class="rounded-t p-2 bg-black overflow-scroll w-full" style="min-height: 16rem;max-height:64rem;">
+                <div v-if="loadingConsole">
+                    <div class="spinner spinner-xl mt-24"></div>
+                </div>
                 <div class="mb-2 text-grey-light" ref="terminal"></div>
             </div>
             <div class="rounded-b bg-grey-darkest text-white flex">
@@ -24,18 +27,35 @@
 <script>
     import { Terminal } from 'xterm';
     import * as TerminalFit from 'xterm/lib/addons/fit/fit';
+    import Status from './../../../helpers/statuses';
 
     Terminal.applyAddon(TerminalFit);
 
     export default {
         name: 'console-page',
 
+        /**
+         * Mount the component and setup all of the terminal actions. Also fetches the initial
+         * logs from the server to populate into the terminal.
+         */
         mounted: function () {
-            this.terminal.open(this.$refs.terminal);
-            this.terminal.fit();
+            this.$parent.$on('socket-connected', () => {
+                this.terminal.open(this.$refs.terminal);
+                this.terminal.fit();
+                this.terminal.clear();
+
+                this.$parent.$emit('send-initial-log');
+            });
 
             this.$parent.$on('console', data => {
+                this.loadingConsole = false;
                 this.terminal.writeln(data);
+            });
+
+            this.$parent.$on('socket-status', s => {
+                if (s === Status.STATUS_OFF) {
+                    this.loadingConsole = false;
+                }
             });
         },
 
@@ -56,10 +76,14 @@
                 command: '',
                 commandHistory: [],
                 commandHistoryIndex: -1,
+                loadingConsole: true,
             };
         },
 
         methods: {
+            /**
+             * Send a command to the server using the configured websocket.
+             */
             sendCommand: function () {
                 this.commandHistoryIndex = -1;
                 this.commandHistory.unshift(this.command);

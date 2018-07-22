@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="sidenav">
-                    <router-link :to="{ name: '', params: { id: this.$route.params.id } }">
+                    <router-link :to="{ name: 'server', params: { id: this.$route.params.id } }">
                         <terminal-icon style="height: 1em;"></terminal-icon>
                         Console
                     </router-link>
@@ -67,13 +67,12 @@
     import Navigation from '../core/Navigation';
     import ProgressBar from './components/ProgressBar';
     import {mapState} from 'vuex';
-    import { ConsolePage } from './subpages/ConsolePage';
 
     import io from 'socket.io-client';
 
     export default {
         components: {
-            ProgressBar, Navigation, ConsolePage, TerminalIcon, FolderIcon, UsersIcon,
+            ProgressBar, Navigation, TerminalIcon, FolderIcon, UsersIcon,
             CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon
         },
 
@@ -87,6 +86,10 @@
             this.$on('send-command', data => {
                 this.socket.emit('send command', data);
             });
+
+            this.$on('send-initial-log', () => {
+                this.socket.emit('send server log');
+            })
         },
 
         data: function () {
@@ -126,14 +129,15 @@
             },
 
             _socket_error: function (err) {
-                console.error('there was a socket error:', err);
+                this.$emit('socket-error', {err});
             },
 
             _socket_connect: function () {
-                this.socket.emit('send server log');
+                this.$emit('socket-connected');
             },
 
             _socket_status: function (data) {
+                this.$emit('socket-status', {data});
             },
 
             _socket_serverLog: function (data) {
