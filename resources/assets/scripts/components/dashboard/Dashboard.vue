@@ -68,6 +68,8 @@
          * iterate through the visible servers and fetch their resource usage.
          */
         mounted: function () {
+            this.$refs.search.focus();
+            
             window.setTimeout(() => {
                 this._iterateServerResourceUse();
             }, 5000);
