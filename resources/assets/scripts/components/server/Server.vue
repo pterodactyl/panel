@@ -67,34 +67,30 @@
     import Navigation from '../core/Navigation';
     import ProgressBar from './components/ProgressBar';
     import {mapState} from 'vuex';
-
+    import { mapState } from 'vuex';
+    import VueSocketio from 'vue-socket.io-extended';
     import io from 'socket.io-client';
+    import Vue from 'vue';
+
+    import PowerButtons from './components/PowerButtons';
 
     export default {
         components: {
-            ProgressBar, Navigation, TerminalIcon, FolderIcon, UsersIcon,
-            CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon
+            PowerButtons, ProgressBar, Navigation,
+            TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon
         },
 
         computed: {
             ...mapState('server', ['server', 'credentials']),
+            ...mapState('socket', ['connected', 'connectionError']),
         },
 
         mounted: function () {
             this.loadServer();
-
-            this.$on('send-command', data => {
-                this.socket.emit('send command', data);
-            });
-
-            this.$on('send-initial-log', () => {
-                this.socket.emit('send server log');
-            })
         },
 
         data: function () {
             return {
-                socket: null,
                 loadingServerData: true,
             };
         },
@@ -109,49 +105,16 @@
                     this.$store.dispatch('server/getCredentials', {server: this.$route.params.id})
                 ])
                     .then(() => {
+                        // Configure the socket.io implementation. This is a really ghetto way of handling things
+                        // but all of these plugins assume you have some constant connection, which we don't.
+                        const socket = io(`${this.credentials.node}/v1/ws/${this.server.uuid}`, {
+                            query: `token=${this.credentials.key}`,
+                        });
+
+                        Vue.use(VueSocketio, socket, { store: this.$store });
                         this.loadingServerData = false;
-                        this.initalizeWebsocket();
                     })
                     .catch(console.error);
-            },
-
-            initalizeWebsocket: function () {
-                this.socket = io(this.credentials.node + '/v1/ws/' + this.server.uuid, {
-                    query: 'token=' + this.credentials.key,
-                });
-
-                this.socket.on('error', this._socket_error);
-                this.socket.on('connect', this._socket_connect);
-                this.socket.on('status', this._socket_status);
-                this.socket.on('initial status', this._socket_status);
-                this.socket.on('server log', this._socket_serverLog);
-                this.socket.on('console', this._socket_consoleLine);
-            },
-
-            _socket_error: function (err) {
-                this.$emit('socket::error', {err});
-            },
-
-            _socket_connect: function () {
-                this.$emit('socket::connected');
-            },
-
-            _socket_status: function (data) {
-                this.$emit('socket::status', {data});
-            },
-
-            _socket_serverLog: function (data) {
-                data.split(/\n/g).forEach(item => {
-                    this.$emit('console', item);
-                });
-            },
-
-            _socket_consoleLine: function (data) {
-                if(data.line) {
-                    data.line.split(/\n/g).forEach(item => {
-                        this.$emit('console', item);
-                    });
-                }
             },
         },
     }

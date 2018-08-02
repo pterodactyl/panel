@@ -2,7 +2,7 @@
     <div>
         <div class="text-xs font-mono">
             <div class="rounded-t p-2 bg-black overflow-scroll w-full" style="min-height: 16rem;max-height:64rem;">
-                <div v-if="loadingConsole">
+                <div v-if="!connected">
                     <div class="spinner spinner-xl mt-24"></div>
                 </div>
                 <div class="mb-2 text-grey-light" ref="terminal"></div>
@@ -27,36 +27,59 @@
 <script>
     import { Terminal } from 'xterm';
     import * as TerminalFit from 'xterm/lib/addons/fit/fit';
-    import Status from './../../../helpers/statuses';
+    import {mapState} from 'vuex';
 
     Terminal.applyAddon(TerminalFit);
 
     export default {
         name: 'console-page',
+        computed: {
+            ...mapState('socket', ['connected']),
+        },
+
+        watch: {
+            /**
+             * Watch the connected variable and when it becomes true request the server logs.
+             *
+             * @param {Boolean} state
+             */
+            connected: function (state) {
+                if (state) {
+                    this.$socket.emit('send server log');
+                }
+            }
+        },
+
+        /**
+         * Listen for specific socket.io emits from the server.
+         */
+        sockets: {
+            'server log': function (data) {
+                data.split(/\n/g).forEach(line => {
+                    this.terminal.writeln(line);
+                });
+            },
+
+            'console': function (data) {
+                data.line.split(/\n/g).forEach(line => {
+                    this.terminal.writeln(line);
+                });
+            }
+        },
 
         /**
          * Mount the component and setup all of the terminal actions. Also fetches the initial
-         * logs from the server to populate into the terminal.
+         * logs from the server to populate into the terminal if the socket is connected. If the
+         * socket is not connected this will occur automatically when it connects.
          */
         mounted: function () {
-            this.$parent.$on('socket::connected', () => {
-                this.terminal.open(this.$refs.terminal);
-                this.terminal.fit();
-                this.terminal.clear();
+            this.terminal.open(this.$refs.terminal);
+            this.terminal.fit();
+            this.terminal.clear();
 
-                this.$parent.$emit('send-initial-log');
-            });
-
-            this.$parent.$on('console', data => {
-                this.loadingConsole = false;
-                this.terminal.writeln(data);
-            });
-
-            this.$parent.$on('socket::status', s => {
-                if (s === Status.STATUS_OFF) {
-                    this.loadingConsole = false;
-                }
-            });
+            if (this.connected) {
+                this.$socket.emit('send server log');
+            }
         },
 
         data: function () {
@@ -76,7 +99,6 @@
                 command: '',
                 commandHistory: [],
                 commandHistoryIndex: -1,
-                loadingConsole: true,
             };
         },
 
@@ -87,7 +109,7 @@
             sendCommand: function () {
                 this.commandHistoryIndex = -1;
                 this.commandHistory.unshift(this.command);
-                this.$parent.$emit('send-command', this.command);
+                this.$socket.emit('send command', this.command);
                 this.command = '';
             },
 
