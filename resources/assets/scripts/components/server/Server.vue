@@ -129,15 +129,15 @@
             },
 
             _socket_error: function (err) {
-                this.$emit('socket-error', {err});
+                this.$emit('socket::error', {err});
             },
 
             _socket_connect: function () {
-                this.$emit('socket-connected');
+                this.$emit('socket::connected');
             },
 
             _socket_status: function (data) {
-                this.$emit('socket-status', {data});
+                this.$emit('socket::status', {data});
             },
 
             _socket_serverLog: function (data) {

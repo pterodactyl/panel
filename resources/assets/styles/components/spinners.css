@@ -1,8 +1,10 @@
 .spinner {
-  color: transparent;
+  @apply .h-4 .relative .bg-transparent;
   pointer-events: none;
-  position: relative;
-  @apply .h-16;
+
+  &.spinner-xl {
+    @apply .h-16;
+  }
 
   &:after {
     @apply .border-2 .border-grey-light .absolute .block .h-4 .w-4 .rounded-full;

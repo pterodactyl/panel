@@ -39,7 +39,7 @@
          * logs from the server to populate into the terminal.
          */
         mounted: function () {
-            this.$parent.$on('socket-connected', () => {
+            this.$parent.$on('socket::connected', () => {
                 this.terminal.open(this.$refs.terminal);
                 this.terminal.fit();
                 this.terminal.clear();
@@ -52,7 +52,7 @@
                 this.terminal.writeln(data);
             });
 
-            this.$parent.$on('socket-status', s => {
+            this.$parent.$on('socket::status', s => {
                 if (s === Status.STATUS_OFF) {
                     this.loadingConsole = false;
                 }
