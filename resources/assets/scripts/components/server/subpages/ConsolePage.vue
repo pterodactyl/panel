@@ -56,13 +56,13 @@
         sockets: {
             'server log': function (data) {
                 data.split(/\n/g).forEach(line => {
-                    this.terminal.writeln(line);
+                    this.terminal.writeln(line + '\u001b[0m');
                 });
             },
 
             'console': function (data) {
                 data.line.split(/\n/g).forEach(line => {
-                    this.terminal.writeln(line);
+                    this.terminal.writeln(line + '\u001b[0m');
                 });
             }
         },

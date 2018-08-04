@@ -13,11 +13,7 @@
                         <h3 class="mb-2 text-blue font-medium">{{server.name}}</h3>
                         <span class="text-grey-dark text-sm">{{server.node}}</span>
                     </div>
-                    <div class="mt-6 p-4 text-center bg-white border rounded">
-                        <button class="btn btn-red uppercase text-xs px-4 py-2">Stop</button>
-                        <button class="btn btn-secondary uppercase text-xs px-4 py-2">Restart</button>
-                        <button class="btn btn-secondary uppercase text-xs px-4 py-2">Kill</button>
-                    </div>
+                    <power-buttons class="mt-6 p-4 text-center bg-white border rounded"/>
                     <div class="mt-6 p-4 bg-white border rounded">
                         <progress-bar title="Memory" percent="33"></progress-bar>
                         <progress-bar title="CPU" percent="80" class="mt-4"></progress-bar>
@@ -66,7 +62,6 @@
     import { TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon } from 'vue-feather-icons'
     import Navigation from '../core/Navigation';
     import ProgressBar from './components/ProgressBar';
-    import {mapState} from 'vuex';
     import { mapState } from 'vuex';
     import VueSocketio from 'vue-socket.io-extended';
     import io from 'socket.io-client';
