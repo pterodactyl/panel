@@ -4,8 +4,8 @@
 
 <script>
     export default {
-        name: "ServerFiles.vue"
-    }
+        name: 'file-manager-page'
+    };
 </script>
 
 <style scoped>
