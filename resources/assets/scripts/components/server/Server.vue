@@ -6,53 +6,52 @@
                 <div class="spinner spinner-xl spinner-thick blue"></div>
             </div>
         </div>
-        <div class="m-6 flex flex-no-shrink rounded animate fadein" v-else>
-            <div class="sidebar border-grey-lighter flex-no-shrink w-1/3 max-w-xs">
-                <div class="mr-6">
-                    <div class="p-6 text-center bg-white border rounded">
-                        <h3 class="mb-2 text-blue font-medium">{{server.name}}</h3>
-                        <span class="text-grey-dark text-sm">{{server.node}}</span>
+        <div v-else>
+            <div class="m-6 flex flex-no-shrink rounded animate fadein">
+                <div class="sidebar border-grey-lighter flex-no-shrink w-1/3 max-w-xs">
+                    <div class="mr-6">
+                        <div class="p-6 text-center bg-white border rounded">
+                            <h3 class="mb-2 text-blue font-medium">{{server.name}}</h3>
+                            <span class="text-grey-dark text-sm">{{server.node}}</span>
+                            <power-buttons class="mt-6 pt-6 text-center border-t border-grey-lighter"/>
+                        </div>
                     </div>
-                    <power-buttons class="mt-6 p-4 text-center bg-white border rounded"/>
-                    <div class="mt-6 p-4 bg-white border rounded">
-                        <progress-bar title="Memory" percent="33"></progress-bar>
-                        <progress-bar title="CPU" percent="80" class="mt-4"></progress-bar>
-                        <progress-bar title="Disk" percent="97" class="mt-4"></progress-bar>
+                    <div class="mt-6 sidenav mr-6 bg-white border rounded">
+                        <router-link :to="{ name: 'server', params: { id: this.$route.params.id } }">
+                            <terminal-icon class="h-4"></terminal-icon> Console
+                        </router-link>
+                        <router-link :to="{ name: 'server-files' }">
+                            <folder-icon class="h-4"></folder-icon> Files
+                        </router-link>
+                        <router-link :to="{ name: 'server-subusers' }">
+                            <users-icon class="h-4"></users-icon> Subusers
+                        </router-link>
+                        <router-link :to="{ name: 'server-schedules' }">
+                            <calendar-icon class="h-4"></calendar-icon> Schedules
+                        </router-link>
+                        <router-link :to="{ name: 'server-databases' }">
+                            <database-icon class="h-4"></database-icon> Databases
+                        </router-link>
+                        <router-link :to="{ name: 'server-allocations' }">
+                            <globe-icon class="h-4"></globe-icon> Allocations
+                        </router-link>
+                        <router-link :to="{ name: 'server-settings' }">
+                            <settings-icon class="h-4"></settings-icon> Settings
+                        </router-link>
                     </div>
                 </div>
-                <div class="sidenav">
-                    <router-link :to="{ name: 'server', params: { id: this.$route.params.id } }">
-                        <terminal-icon style="height: 1em;"></terminal-icon>
-                        Console
-                    </router-link>
-                    <router-link :to="{ name: 'server-files' }">
-                        <folder-icon style="height: 1em;"></folder-icon>
-                        Files
-                    </router-link>
-                    <router-link :to="{ name: 'server-subusers' }">
-                        <users-icon style="height: 1em;"></users-icon>
-                        Subusers
-                    </router-link>
-                    <router-link :to="{ name: 'server-schedules' }">
-                        <calendar-icon style="height: 1em;"></calendar-icon>
-                        Schedules
-                    </router-link>
-                    <router-link :to="{ name: 'server-databases' }">
-                        <database-icon style="height: 1em;"></database-icon>
-                        Databases
-                    </router-link>
-                    <router-link :to="{ name: 'server-allocations' }">
-                        <globe-icon style="height: 1em;"></globe-icon>
-                        Allocations
-                    </router-link>
-                    <router-link :to="{ name: 'server-settings' }">
-                        <settings-icon style="height: 1em;"></settings-icon>
-                        Settings
-                    </router-link>
+                <div class="h-full w-full">
+                    <div class="mb-6 bg-white border rounded" v-if="$router.currentRoute.name !== 'server'">
+                        <div class="flex">
+                            <progress-bar title="Memory" percent="33" class="flex-1 p-4 pb-6"></progress-bar>
+                            <progress-bar title="CPU" percent="80" class="flex-1 p-4 pb-6"></progress-bar>
+                            <progress-bar title="Disk" percent="97" class="flex-1 p-4 pb-6"></progress-bar>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded border border-grey-light">
+                        <router-view></router-view>
+                    </div>
                 </div>
-            </div>
-            <div class="bg-white p-6 rounded border border-grey-light h-full w-full">
-                <router-view></router-view>
             </div>
         </div>
     </div>

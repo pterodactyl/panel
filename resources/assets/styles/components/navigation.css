@@ -42,17 +42,20 @@
 }
 
 .sidenav {
-    @apply .mb-2;
+    @apply .py-2;
 
     a {
-        @apply .block .py-3 .px-8 .text-grey-darkest .no-underline;
+        @apply .block .py-3 .px-6 .text-grey-darkest .no-underline .border .border-transparent;
 
-        &:hover {
-             @apply .border-l-4 .border-blue-lightest;
-         }
+        &:hover, &.router-link-exact-active {
+            @apply .border-grey-light .bg-grey-lightest;
 
-        &.router-link-exact-active {
-             @apply .text-blue .border-l-4 .border-blue;
-         }
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
+        }
+
+        &.router-link-exact-active + a:hover {
+            border-top: 1px solid transparent;
+        }
     }
 }
