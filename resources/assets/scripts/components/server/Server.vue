@@ -41,6 +41,7 @@
                     </div>
                 </div>
                 <div class="h-full w-full">
+                    <!--
                     <div class="mb-6 bg-white border rounded" v-if="$router.currentRoute.name !== 'server'">
                         <div class="flex">
                             <progress-bar title="Memory" percent="33" class="flex-1 p-4 pb-6"></progress-bar>
@@ -48,6 +49,7 @@
                             <progress-bar title="Disk" percent="97" class="flex-1 p-4 pb-6"></progress-bar>
                         </div>
                     </div>
+                    -->
                     <div class="bg-white p-6 rounded border border-grey-light">
                         <router-view></router-view>
                     </div>

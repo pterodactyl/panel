@@ -16,6 +16,7 @@
 @import "components/navigation.css";
 @import "components/notifications.css";
 @import "components/spinners.css";
+@import "components/filemanager.css";
 
 /**
  * Tailwind Utilities

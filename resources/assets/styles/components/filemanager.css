@@ -1,0 +1,28 @@
+.filemanager {
+  & > .header {
+    @apply .flex .text-sm .pb-4 .font-bold .border-b .border-grey-light .mb-3;
+
+    & > div {
+      @apply .pr-4;
+    }
+  }
+
+  & > .row {
+    @apply .flex .text-sm .py-3 .text-sm .rounded .cursor-pointer .border .border-transparent;
+
+    & > div {
+      @apply .pr-4;
+    }
+
+    &:hover {
+      @apply .bg-grey-lightest .border-blue-light .text-blue-dark;
+    }
+
+    & > .icon {
+      @apply .w-8 .text-center;
+      & > svg {
+        @apply .h-4;
+      }
+    }
+  }
+}
