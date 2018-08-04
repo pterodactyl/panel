@@ -9,11 +9,13 @@ COPY . ./
 
 RUN cp .dev/docker/default.conf /etc/nginx/conf.d/default.conf \
  && cp .dev/docker/www.conf /etc/php7/php-fpm.d/www.conf \
- && cp .env.example .env \
+ && echo "APP_ENVIRONMENT_ONLY=false" > /app/.env \
+ && echo "APP_KEY=" >> /app/.env \
+ && mkdir /var/run/php \
  && composer install --no-dev
 
 EXPOSE 80 443
 
 RUN chown -R nginx:nginx . && chmod -R 777 storage/* bootstrap/cache
 
-ENTRYPOINT ["ash", ".dev/app/entrypoint.sh"]
+ENTRYPOINT ["ash", ".dev/docker/entrypoint.sh"]
