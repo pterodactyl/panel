@@ -7,3 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 Route::get('/credentials', 'CredentialsController@index')->name('server.credentials');
+
+Route::group(['prefix' => '/files'], function () {
+    Route::get('/{directory?}', 'FileController@index')
+        ->name('server.files')
+        ->where('directory', '.*');
+});

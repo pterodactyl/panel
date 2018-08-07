@@ -11,14 +11,14 @@
                 <div class="flex-1 text-right">Modified</div>
                 <div class="flex-none w-1/6">Actions</div>
             </div>
-            <div class="row" v-for="folder in folders">
+            <div class="row clickable" v-for="directory in directories" v-on:click="currentDirectory = directory.name">
                 <div class="flex-none icon"><folder-icon/></div>
-                <div class="flex-1">{{folder.name}}</div>
+                <div class="flex-1">{{directory.name}}</div>
                 <div class="flex-1 text-right text-grey-dark"></div>
-                <div class="flex-1 text-right text-grey-dark">{{formatDate(folder.modified)}}</div>
+                <div class="flex-1 text-right text-grey-dark">{{formatDate(directory.modified)}}</div>
                 <div class="flex-none w-1/6"></div>
             </div>
-            <div class="row" v-for="file in files">
+            <div class="row" v-for="file in files" :class="{ clickable: canEdit(file) }">
                 <div class="flex-none icon">
                     <file-text-icon v-if="!file.symlink"/>
                     <link2-icon v-else/>
@@ -46,13 +46,20 @@
             ...mapState('server', ['server', 'credentials']),
         },
 
+        watch: {
+            currentDirectory: function () {
+                this.listDirectory();
+            },
+        },
+
         data: function () {
             return {
-                directory: '/',
+                currentDirectory: '/',
                 loading: true,
 
+                directories: [],
+                editableFiles: [],
                 files: [],
-                folders: [],
             };
         },
 
@@ -65,25 +72,37 @@
              * List the contents of a directory.
              */
             listDirectory: function () {
-                window.axios.get(`${this.credentials.node}/v1/server/directory/${this.directory}`, {
-                    headers: {
-                        'X-Access-Server': this.server.uuid,
-                        'X-Access-Token': this.credentials.key,
-                    }
-                })
+                this.loading = true;
+
+                window.axios.get(this.route('server.files', {
+                    server: this.$route.params.id,
+                    directory: this.currentDirectory,
+                }))
                     .then((response) => {
-                        this.files = filter(response.data, function (o) {
+                        this.files = filter(response.data.contents, function (o) {
                             return o.file;
                         });
 
-                        this.folders = filter(response.data, function (o) {
+                        this.directories = filter(response.data.contents, function (o) {
                             return o.directory;
                         });
+
+                        this.editableFiles = response.data.editable;
                     })
                     .catch(console.error)
                     .finally(() => {
                         this.loading = false;
                     });
+            },
+
+            /**
+             * Determine if a file can be edited on the Panel.
+             *
+             * @param {Object} file
+             * @return {Boolean}
+             */
+            canEdit: function (file) {
+                return this.editableFiles.indexOf(file.mime) >= 0;
             },
 
             /**

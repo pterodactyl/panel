@@ -8,14 +8,18 @@
   }
 
   & > .row {
-    @apply .flex .text-sm .py-3 .text-sm .rounded .cursor-pointer .border .border-transparent;
+    @apply .flex .text-sm .py-3 .text-sm .border .border-transparent;
 
     & > div {
       @apply .pr-4;
     }
 
-    &:hover {
-      @apply .bg-grey-lightest .border-blue-light .text-blue-dark;
+    &.clickable {
+      @apply .rounded .cursor-pointer;
+
+      &:hover {
+        @apply .bg-grey-lightest .border-blue-light .text-blue-dark;
+      }
     }
 
     & > .icon {

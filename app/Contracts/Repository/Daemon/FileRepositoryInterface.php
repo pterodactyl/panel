@@ -13,7 +13,7 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      * @param string $path
      * @return \stdClass
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\TransferException
      */
     public function getFileStat(string $path): stdClass;
 
@@ -23,7 +23,7 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      * @param string $path
      * @return string
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\TransferException
      */
     public function getContent(string $path): string;
 
@@ -34,7 +34,7 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      * @param string $content
      * @return \Psr\Http\Message\ResponseInterface
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\TransferException
      */
     public function putContent(string $path, string $content): ResponseInterface;
 
@@ -44,7 +44,7 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      * @param string $path
      * @return array
      *
-     * @throws \GuzzleHttp\Exception\RequestException
+     * @throws \GuzzleHttp\Exception\TransferException
      */
     public function getDirectory(string $path): array;
 }
