@@ -2,10 +2,10 @@
     <div>
         <div class="text-xs font-mono">
             <div class="rounded-t p-2 bg-black overflow-scroll w-full" style="min-height: 16rem;max-height:64rem;">
-                <div v-if="!connected">
+                <div class="mb-2 text-grey-light" ref="terminal" v-if="connected"></div>
+                <div v-else>
                     <div class="spinner spinner-xl mt-24"></div>
                 </div>
-                <div class="mb-2 text-grey-light" ref="terminal"></div>
             </div>
             <div class="rounded-b bg-grey-darkest text-white flex">
                 <div class="flex-no-shrink p-2">
@@ -45,13 +45,11 @@
              */
             connected: function (state) {
                 if (state) {
-                    this.terminal.open(this.$refs.terminal);
-                    this.terminal.fit();
-                    this.terminal.clear();
-
-                    this.$socket.emit('send server log');
+                    this.$nextTick(() => {
+                        this.mountTerminal();
+                    });
                 } else {
-                    this.terminal.dispose();
+                    this.terminal.clear();
                 }
             },
         },
@@ -80,41 +78,13 @@
          */
         mounted: function () {
             if (this.connected) {
-                this.$socket.emit('send server log');
+                this.mountTerminal();
             }
         },
 
         data: function () {
             return {
-                terminal: new Terminal({
-                    disableStdin: true,
-                    cursorStyle: 'underline',
-                    allowTransparency: true,
-                    fontSize: 12,
-                    fontFamily: 'Menlo,Monaco,Consolas,monospace',
-                    rows: 30,
-                    theme: {
-                        background: 'transparent',
-                        cursor: 'transparent',
-                        black: '#000000',
-                        red: '#E54B4B',
-                        green: '#9ECE58',
-                        yellow: '#FAED70',
-                        blue: '#396FE2',
-                        magenta: '#BB80B3',
-                        cyan: '#2DDAFD',
-                        white: '#d0d0d0',
-                        brightBlack: 'rgba(255, 255, 255, 0.2)',
-                        brightRed: '#FF5370',
-                        brightGreen: '#C3E88D',
-                        brightYellow: '#FFCB6B',
-                        brightBlue: '#82AAFF',
-                        brightMagenta: '#C792EA',
-                        brightCyan: '#89DDFF',
-                        brightWhite: '#ffffff',
-                    },
-
-                }),
+                terminal: this._terminalInstance(),
                 command: '',
                 commandHistory: [],
                 commandHistoryIndex: -1,
@@ -122,6 +92,20 @@
         },
 
         methods: {
+            /**
+             * Mount the terminal and grab the most recent server logs.
+             */
+            mountTerminal: function () {
+                // Get a new instance of the terminal setup.
+                this.terminal = this._terminalInstance();
+
+                this.terminal.open(this.$refs.terminal);
+                this.terminal.fit();
+                this.terminal.clear();
+
+                this.$socket.emit('send server log');
+            },
+
             /**
              * Send a command to the server using the configured websocket.
              */
@@ -152,6 +136,43 @@
 
                 this.commandHistoryIndex += (e.key === 'ArrowUp') ? 1 : -1;
                 this.command = this.commandHistoryIndex < 0 ? '' : this.commandHistory[this.commandHistoryIndex];
+            },
+
+            /**
+             * Returns a new instance of the terminal to be used.
+             *
+             * @return {module:xterm.Terminal}
+             * @private
+             */
+            _terminalInstance() {
+                return new Terminal({
+                    disableStdin: true,
+                    cursorStyle: 'underline',
+                    allowTransparency: true,
+                    fontSize: 12,
+                    fontFamily: 'Menlo, Monaco, Consolas, monospace',
+                    rows: 30,
+                    theme: {
+                        background: 'transparent',
+                        cursor: 'transparent',
+                        black: '#000000',
+                        red: '#E54B4B',
+                        green: '#9ECE58',
+                        yellow: '#FAED70',
+                        blue: '#396FE2',
+                        magenta: '#BB80B3',
+                        cyan: '#2DDAFD',
+                        white: '#d0d0d0',
+                        brightBlack: 'rgba(255, 255, 255, 0.2)',
+                        brightRed: '#FF5370',
+                        brightGreen: '#C3E88D',
+                        brightYellow: '#FFCB6B',
+                        brightBlue: '#82AAFF',
+                        brightMagenta: '#C792EA',
+                        brightCyan: '#89DDFF',
+                        brightWhite: '#ffffff',
+                    },
+                });
             }
         }
     };
