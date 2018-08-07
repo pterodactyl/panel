@@ -45,9 +45,15 @@
              */
             connected: function (state) {
                 if (state) {
+                    this.terminal.open(this.$refs.terminal);
+                    this.terminal.fit();
+                    this.terminal.clear();
+
                     this.$socket.emit('send server log');
+                } else {
+                    this.terminal.dispose();
                 }
-            }
+            },
         },
 
         /**
@@ -64,7 +70,7 @@
                 data.line.split(/\n/g).forEach(line => {
                     this.terminal.writeln(line + '\u001b[0m');
                 });
-            }
+            },
         },
 
         /**
@@ -73,10 +79,6 @@
          * socket is not connected this will occur automatically when it connects.
          */
         mounted: function () {
-            this.terminal.open(this.$refs.terminal);
-            this.terminal.fit();
-            this.terminal.clear();
-
             if (this.connected) {
                 this.$socket.emit('send server log');
             }

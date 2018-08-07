@@ -4,7 +4,7 @@ export default {
     namespaced: true,
     state: {
         connected: false,
-        connectionError: null,
+        connectionError: false,
         status: Status.STATUS_OFF,
     },
     actions: {
@@ -12,9 +12,16 @@ export default {
     mutations: {
         SOCKET_CONNECT: (state) => {
             state.connected = true;
+            state.connectionError = false;
         },
 
         SOCKET_ERROR: (state, err) => {
+            state.connected = false;
+            state.connectionError = err;
+        },
+
+        SOCKET_CONNECT_ERROR: (state, err) => {
+            state.connected = false;
             state.connectionError = err;
         },
 

@@ -1,6 +1,7 @@
 <template>
     <div>
         <navigation></navigation>
+        <flash class="m-6"/>
         <div v-if="loadingServerData">
             <div class="mt-6 h-16">
                 <div class="spinner spinner-xl spinner-thick blue"></div>
@@ -56,6 +57,11 @@
                 </div>
             </div>
         </div>
+        <div class="fixed pin-r pin-b m-6 max-w-sm" v-show="connectionError">
+            <div class="alert error">
+                There was an error while attempting to connect to the Daemon websocket. Error reported was: "{{connectionError.message}}"
+            </div>
+        </div>
     </div>
 </template>
 
@@ -69,9 +75,11 @@
     import Vue from 'vue';
 
     import PowerButtons from './components/PowerButtons';
+    import Flash from '../Flash';
 
     export default {
         components: {
+            Flash,
             PowerButtons, ProgressBar, Navigation,
             TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon
         },
@@ -81,14 +89,14 @@
             ...mapState('socket', ['connected', 'connectionError']),
         },
 
-        mounted: function () {
-            this.loadServer();
-        },
-
         data: function () {
             return {
                 loadingServerData: true,
             };
+        },
+
+        mounted: function () {
+            this.loadServer();
         },
 
         methods: {
