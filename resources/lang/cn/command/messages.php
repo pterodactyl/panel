@@ -49,7 +49,7 @@ return [
     ],
     'environment' => [
         'mail' => [
-            'ask_smtp_host' => 'SMTP 主机 (e.g. smtp.google.com)',
+            'ask_smtp_host' => 'SMTP 主机 (e.g. smtp.gmail.com)',
             'ask_smtp_port' => 'SMTP 端口',
             'ask_smtp_username' => 'SMTP 用户名',
             'ask_smtp_password' => 'SMTP 密码',
