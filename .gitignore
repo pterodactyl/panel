@@ -20,6 +20,8 @@ sami.phar
 # For local development with docker
 # Remove if we ever put the Dockerfile in the repo
 .dockerignore
+#Dockerfile
+docker-compose.yml
 
 # for image related files
 misc
