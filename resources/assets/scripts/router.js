@@ -41,7 +41,7 @@ const routes = [
     { path: '/server/:id', component: Server,
         children: [
             { name: 'server', path: '', component: ConsolePage },
-            { name: 'server-files', path: 'files', component: FileManagerPage },
+            { name: 'server-files', path: 'files/:path(.*)?', component: FileManagerPage },
             { name: 'server-subusers', path: 'subusers', component: ServerSubusers },
             { name: 'server-schedules', path: 'schedules', component: ServerSchedules },
             { name: 'server-databases', path: 'databases', component: ServerDatabases },

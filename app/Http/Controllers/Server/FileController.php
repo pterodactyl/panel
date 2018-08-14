@@ -39,18 +39,6 @@ class FileController extends Controller
         $this->authorize('list-files', $server);
 
         $requestDirectory = '/' . trim(urldecode($request->route()->parameter('directory', '/')), '/');
-        $directory = [
-            'header' => $requestDirectory !== '/' ? $requestDirectory : '',
-            'first' => $requestDirectory !== '/',
-        ];
-
-        $goBack = explode('/', trim($requestDirectory, '/'));
-        if (! empty(array_filter($goBack)) && count($goBack) >= 2) {
-            array_pop($goBack);
-            $directory['show'] = true;
-            $directory['link'] = '/' . implode('/', $goBack);
-            $directory['link_show'] = implode('/', $goBack) . '/';
-        }
 
         try {
             $contents = $this->fileRepository->setServer($server)->setToken(
@@ -63,7 +51,7 @@ class FileController extends Controller
         return JsonResponse::create([
             'contents' => $contents,
             'editable' => config('pterodactyl.files.editable'),
-            'current_directory' => $directory,
+            'current_directory' => $requestDirectory,
         ]);
     }
 }

@@ -1,5 +1,5 @@
 .filemanager {
-  & > .header {
+  & .header {
     @apply .flex .text-sm .pb-4 .font-bold .border-b .border-grey-light .mb-3;
 
     & > div {
@@ -7,15 +7,15 @@
     }
   }
 
-  & > .row {
-    @apply .flex .text-sm .py-3 .text-sm .border .border-transparent;
+  & .row {
+    @apply .flex .text-sm .py-3 .text-sm .border .border-transparent .text-black;
 
     & > div {
       @apply .pr-4;
     }
 
     &.clickable {
-      @apply .rounded .cursor-pointer;
+      @apply .rounded .cursor-pointer .no-underline;
 
       &:hover {
         @apply .bg-grey-lightest .border-blue-light .text-blue-dark;
@@ -27,6 +27,18 @@
       & > svg {
         @apply .h-4;
       }
+    }
+  }
+}
+
+.filemanager-breadcrumbs {
+  @apply .px-4 .py-3 .mb-6 .rounded .border .bg-grey-lightest .text-grey-darker;
+
+  & a {
+    @apply .no-underline .text-blue-light;
+
+    &:hover {
+      @apply .text-blue-dark;
     }
   }
 }
