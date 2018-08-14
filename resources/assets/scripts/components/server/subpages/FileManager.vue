@@ -3,6 +3,9 @@
         <div v-if="loading">
             <div class="spinner spinner-xl blue"></div>
         </div>
+        <div v-else-if="!loading && errorMessage">
+            <div class="alert error" v-text="errorMessage"></div>
+        </div>
         <div class="filemanager" v-else>
             <div class="header">
                 <div class="flex-none w-8"></div>
@@ -34,6 +37,7 @@
 
 <script>
     import filter from 'lodash/filter';
+    import isObject from 'lodash/isObject';
     import format from 'date-fns/format';
     import { mapState } from 'vuex';
     import { FileTextIcon, FolderIcon, Link2Icon } from 'vue-feather-icons';
@@ -44,18 +48,33 @@
 
         computed: {
             ...mapState('server', ['server', 'credentials']),
+            ...mapState('socket', ['connected']),
         },
 
         watch: {
+            /**
+             * Watch the current directory setting and when it changes update the file listing.
+             */
             currentDirectory: function () {
                 this.listDirectory();
             },
+
+            /**
+             * When we reconnect to the Daemon make sure we grab a listing of all of the files
+             * so that the error message disappears and we then load in a fresh listing.
+             */
+            connected: function () {
+                if (this.connected) {
+                    this.listDirectory();
+                }
+            }
         },
 
         data: function () {
             return {
                 currentDirectory: '/',
                 loading: true,
+                errorMessage: null,
 
                 directories: [],
                 editableFiles: [],
@@ -88,8 +107,16 @@
                         });
 
                         this.editableFiles = response.data.editable;
+                        this.errorMessage = null;
                     })
-                    .catch(console.error)
+                    .catch(err => {
+                        console.error({ err });
+                        if (err.response.data && isObject(err.response.data.errors)) {
+                            err.response.data.errors.forEach(error => {
+                                this.errorMessage = error.detail;
+                            });
+                        }
+                    })
                     .finally(() => {
                         this.loading = false;
                     });
