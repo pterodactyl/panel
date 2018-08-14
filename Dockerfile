@@ -9,10 +9,10 @@ COPY . ./
 
 RUN cp .dev/docker/default.conf /etc/nginx/conf.d/default.conf \
  && cp .dev/docker/www.conf /etc/php7/php-fpm.d/www.conf \
- && echo "APP_ENVIRONMENT_ONLY=false" > /app/.env \
- && echo "APP_KEY=" >> /app/.env \
  && mkdir /var/run/php \
- && composer install --no-dev
+ && cp .env.example .env \
+ && composer install --no-dev --optimize-autoloader \
+ && rm .env
 
 EXPOSE 80 443
 

@@ -23,6 +23,7 @@ services:
       - cache
     volumes:
       - "/srv/pterodactyl/var/:/app/var/"
+      - "/srv/pterodactyl/certs/:/"
     environment:
       ## These are defaults and should be left alone
       - "APP_ENV=production"
@@ -34,6 +35,7 @@ services:
       - "QUEUE_HIGH=high"
       - "QUEUE_STANDARD=standard"
       - "QUEUE_LOW=low"
+      ## Cache settings
       - "CACHE_DRIVER=redis"
       - "SESSION_DRIVER=redis"
       - "QUEUE_DRIVER=redis"
