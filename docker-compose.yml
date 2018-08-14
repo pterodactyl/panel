@@ -1,6 +1,7 @@
 version: '2'
 services:
   database:
+    hostname: database
     image: mariadb
     volumes:
       - "/srv/pterodactyl/database:/var/lib/mysql"
@@ -11,6 +12,7 @@ services:
       - "MYSQL_PASSWORD=pterodbpass"
 
   cache:
+    hostname: redis
     image: redis:alpine
 
   panel:
@@ -23,7 +25,6 @@ services:
       - cache
     volumes:
       - "/srv/pterodactyl/var/:/app/var/"
-      - "/srv/pterodactyl/certs/:/"
     environment:
       ## These are defaults and should be left alone
       - "APP_ENV=production"
@@ -62,3 +63,9 @@ services:
       - "MAIL_USERNAME=''"
       - "MAIL_PASSWORD=''"
       - "MAIL_ENCRYPTION=true"
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

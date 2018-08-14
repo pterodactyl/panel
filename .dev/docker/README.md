@@ -17,11 +17,11 @@ Start the docker container and the required dependencies (either provide existin
 After the startup is complete you'll need to create a user.
 If you are running the docker container without docker-compose, use:
 ```
-docker exec -it <container id> php artisan pterodactyl:user
+docker exec -it <container id> php artisan p:user:make
 ```
 If you are using docker compose use
 ```
-docker-compose exec panel php artisan pterodactyl:user
+docker-compose exec panel php artisan p:user:make
 ```
 
 ## Environment Variables
