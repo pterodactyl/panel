@@ -30,28 +30,11 @@
                 <p class="text-grey text-sm text-center p-6 pb-4">This directory is empty.</p>
             </div>
             <div v-else>
-                <router-link class="row clickable"
-                             v-for="directory in directories"
-                             :to="{ name: 'server-files', params: { path: getClickablePath(directory.name).replace(/^\//, '') }}"
-                             :key="directory.name + directory.modified"
-                >
-                    <div class="flex-none icon">
-                        <folder-icon/>
-                    </div>
-                    <div class="flex-1">{{directory.name}}</div>
-                    <div class="flex-1 text-right text-grey-dark"></div>
-                    <div class="flex-1 text-right text-grey-dark">{{formatDate(directory.modified)}}</div>
-                    <div class="flex-none w-1/6"></div>
-                </router-link>
-                <div class="row" v-for="file in files" :class="{ clickable: canEdit(file) }">
-                    <div class="flex-none icon">
-                        <file-text-icon v-if="!file.symlink"/>
-                        <link2-icon v-else/>
-                    </div>
-                    <div class="flex-1">{{file.name}}</div>
-                    <div class="flex-1 text-right text-grey-dark">{{readableSize(file.size)}}</div>
-                    <div class="flex-1 text-right text-grey-dark">{{formatDate(file.modified)}}</div>
-                    <div class="flex-none w-1/6"></div>
+                <div v-for="directory in directories">
+                    <file-manager-folder-row :directory="directory"/>
+                </div>
+                <div v-for="file in files">
+                    <file-manager-file-row :file="file" :editable="editableFiles" />
                 </div>
             </div>
         </div>
@@ -59,16 +42,16 @@
 </template>
 
 <script>
-    import _ from 'lodash';
+    import map from 'lodash/map';
     import filter from 'lodash/filter';
     import isObject from 'lodash/isObject';
-    import format from 'date-fns/format';
     import { mapState } from 'vuex';
-    import { FileTextIcon, FolderIcon, Link2Icon } from 'vue-feather-icons';
+    import FileManagerFileRow from '../components/FileManagerFileRow';
+    import FileManagerFolderRow from '../components/FileManagerFolderRow';
 
     export default {
         name: 'file-manager-page',
-        components: {FileTextIcon, FolderIcon, Link2Icon},
+        components: {FileManagerFolderRow, FileManagerFileRow},
 
         computed: {
             ...mapState('server', ['server', 'credentials']),
@@ -84,7 +67,7 @@
                     return [];
                 }
 
-                return _.map(directories, function (value, key) {
+                return map(directories, function (value, key) {
                     if (key === directories.length - 1) {
                         return {directoryName: value};
                     }
@@ -178,58 +161,6 @@
                     .finally(() => {
                         this.loading = false;
                     });
-            },
-
-            /**
-             * Determine if a file can be edited on the Panel.
-             *
-             * @param {Object} file
-             * @return {Boolean}
-             */
-            canEdit: function (file) {
-                return this.editableFiles.indexOf(file.mime) >= 0;
-            },
-
-            /**
-             * Return a formatted directory path that is used to switch to a nested directory.
-             *
-             * @return {String}
-             */
-            getClickablePath (directory) {
-                return `${this.currentDirectory.replace(/\/$/, '')}/${directory}`;
-            },
-
-            /**
-             * Return the human readable filesize for a given number of bytes. This
-             * uses 1024 as the base, so the response is denoted accordingly.
-             *
-             * @param {Number} bytes
-             * @return {String}
-             */
-            readableSize: function (bytes) {
-                if (Math.abs(bytes) < 1024) {
-                    return `${bytes} Bytes`;
-                }
-
-                let u = -1;
-                const units = ['KiB', 'MiB', 'GiB', 'TiB'];
-
-                do {
-                    bytes /= 1024;
-                    u++;
-                } while (Math.abs(bytes) >= 1024 && u < units.length - 1);
-
-                return `${bytes.toFixed(1)} ${units[u]}`;
-            },
-
-            /**
-             * Format the given date as a human readable string.
-             *
-             * @param {String} date
-             * @return {String}
-             */
-            formatDate: function (date) {
-                return format(date, 'MMM D, YYYY [at] HH:MM');
             },
         }
     };
