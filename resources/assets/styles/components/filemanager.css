@@ -29,6 +29,39 @@
       }
     }
   }
+
+  .context-menu {
+    @apply .absolute .bg-white .py-2 .border .rounded .text-grey-darker .text-sm .cursor-pointer;
+
+    & > div:not(:last-of-type) {
+      @apply .border-b .border-grey-lightest .pb-2 .mb-2;
+    }
+
+    & .context-row {
+      @apply .flex .flex-row .items-center .py-2 .px-8 .border-t .border-b .border-transparent;
+
+      & > .icon {
+        @apply .flex-none;
+
+        & > svg {
+          @apply .h-4;
+        }
+      }
+
+      & > .action {
+        @apply .flex-auto .pl-2;
+      }
+
+      &:hover {
+        @apply .bg-grey-lightest .border-t .border-b .border-grey-lighter;
+      }
+
+      &.danger:hover {
+        @apply .bg-red-lightest .border-t .border-b .border-red-lighter;
+      }
+
+    }
+  }
 }
 
 .filemanager-breadcrumbs {
