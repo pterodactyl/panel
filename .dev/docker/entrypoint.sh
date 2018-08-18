@@ -24,7 +24,7 @@ else
 fi
 
 ## check for DB up before starting the panel
-zshoecho "Checking database status."
+echo "Checking database status."
 until nc -z -v -w30 $DB_HOST 3306
 
 do

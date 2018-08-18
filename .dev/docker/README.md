@@ -4,7 +4,7 @@ This is a ready to use docker image for the panel.
 ## Requirements
 This docker image requires some additional software to function. The software can either be provided in other containers (see the [docker-compose.yml](docker-compose.yml) as an example) or as existing instances.
 
-A mysql database is required. We recommend [this](quay.io/parkervcp/mariadb-alpine) image if you prefer to run it in a docker container. As a non-containerized option we recommend mariadb.
+A mysql database is required. We recommend [this](https://hub.docker.com/_/mariadb/) image if you prefer to run it in a docker container. As a non-containerized option we recommend mariadb.
 
 A caching software is required as well. You can choose any of the [supported options](#cache-drivers).
 
