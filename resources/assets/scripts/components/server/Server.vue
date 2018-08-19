@@ -80,8 +80,7 @@
         name: 'server',
         mixins: [Socketio],
         components: {
-            Flash,
-            PowerButtons, ProgressBar, Navigation,
+            Flash, PowerButtons, ProgressBar, Navigation,
             TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon,
         },
 
@@ -94,12 +93,6 @@
             return {
                 loadingServerData: true,
             };
-        },
-
-        sockets: {
-            'console': function () {
-                console.log('server CONSOLE');
-            },
         },
 
         mounted: function () {
@@ -129,7 +122,9 @@
                         this.$socket().connect(socket);
                         this.loadingServerData = false;
                     })
-                    .catch(console.error);
+                    .catch(err => {
+                       console.error({ err });
+                    });
             },
         },
     }
