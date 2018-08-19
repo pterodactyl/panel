@@ -8,18 +8,18 @@
   }
 
   & .row {
-    @apply .flex .text-sm .py-3 .text-sm .border .border-transparent .text-black;
+    @apply .flex .text-sm .py-3 .text-sm .border .border-transparent .text-black .rounded;
 
     & > div {
       @apply .pr-4;
     }
 
     &.clickable {
-      @apply .rounded .cursor-pointer .no-underline;
+      @apply .cursor-pointer .no-underline;
+    }
 
-      &:hover {
-        @apply .bg-grey-lightest .border-blue-light .text-blue-dark;
-      }
+    &.active-selection, &.clickable:hover {
+      @apply .bg-grey-lightest .border-blue-light .text-blue-dark;
     }
 
     & > .icon {
