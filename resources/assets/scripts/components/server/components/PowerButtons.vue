@@ -24,11 +24,12 @@
 
 <script>
     import Status from './../../../helpers/statuses';
+    import { Socketio } from './../../../mixins/socketio';
     import { mapState } from 'vuex';
 
     export default {
         name: 'power-buttons',
-
+        mixins: [Socketio],
         computed: {
             ...mapState('socket', ['connected', 'status']),
         },
@@ -41,7 +42,7 @@
 
         methods: {
             sendPowerAction: function (action) {
-                this.$socket.emit('set status', action)
+                this.$socket().instance().emit('set status', action)
             },
         },
     };

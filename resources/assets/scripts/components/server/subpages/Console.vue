@@ -28,10 +28,12 @@
     import { Terminal } from 'xterm';
     import * as TerminalFit from 'xterm/lib/addons/fit/fit';
     import {mapState} from 'vuex';
+    import {Socketio} from './../../../mixins/socketio';
 
     Terminal.applyAddon(TerminalFit);
 
     export default {
+        mixins: [Socketio],
         name: 'console-page',
         computed: {
             ...mapState('socket', ['connected']),
@@ -103,7 +105,7 @@
                 this.terminal.fit();
                 this.terminal.clear();
 
-                this.$socket.emit('send server log');
+                this.$socket().instance().emit('send server log');
             },
 
             /**
@@ -112,7 +114,7 @@
             sendCommand: function () {
                 this.commandHistoryIndex = -1;
                 this.commandHistory.unshift(this.command);
-                this.$socket.emit('send command', this.command);
+                this.$socket().instance().emit('send command', this.command);
                 this.command = '';
             },
 

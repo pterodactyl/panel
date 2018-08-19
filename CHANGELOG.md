@@ -171,7 +171,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Nest and Egg listings now show the associated ID in order to make API requests easier.
 * Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
 * Creating a new node will now requires a SSL connection if the Panel is configured to use SSL as well.
-* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
+* Connector error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
 * File manager now supports mass deletion option for files and folders.
 * Support for CS:GO as a default service option selection.
 * Support for GMOD as a default service option selection.
@@ -301,7 +301,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Changed 2FA login process to be more secure. Previously authentication checking happened on the 2FA post page, now it happens prior and is passed along to the 2FA page to avoid storing any credentials.
 
 ### Added
-* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
+* Connector error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added

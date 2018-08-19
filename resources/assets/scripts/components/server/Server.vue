@@ -70,18 +70,19 @@
     import Navigation from '../core/Navigation';
     import ProgressBar from './components/ProgressBar';
     import { mapState } from 'vuex';
-    import VueSocketio from 'vue-socket.io-extended';
     import io from 'socket.io-client';
-    import Vue from 'vue';
+    import { Socketio } from './../../mixins/socketio';
 
     import PowerButtons from './components/PowerButtons';
     import Flash from '../Flash';
 
     export default {
+        name: 'server',
+        mixins: [Socketio],
         components: {
             Flash,
             PowerButtons, ProgressBar, Navigation,
-            TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon
+            TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon,
         },
 
         computed: {
@@ -95,8 +96,18 @@
             };
         },
 
+        sockets: {
+            'console': function () {
+                console.log('server CONSOLE');
+            },
+        },
+
         mounted: function () {
             this.loadServer();
+        },
+
+        beforeDestroy: function () {
+            this.removeSocket();
         },
 
         methods: {
@@ -115,7 +126,7 @@
                             query: `token=${this.credentials.key}`,
                         });
 
-                        Vue.use(VueSocketio, socket, { store: this.$store });
+                        this.$socket().connect(socket);
                         this.loadingServerData = false;
                     })
                     .catch(console.error);
