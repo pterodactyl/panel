@@ -17,7 +17,6 @@
 <script>
     import * as Helpers from './../../../helpers/index';
     import { FileTextIcon, Link2Icon } from 'vue-feather-icons';
-    import isObject from 'lodash/isObject';
     import FileManagerContextMenu from './FileManagerContextMenu';
 
     export default {
@@ -67,7 +66,7 @@
 
                 const menuWidth = this.$refs.contextMenu.$el.offsetWidth;
                 const positionElement = e.clientX - Math.round(menuWidth / 2);
-                
+
                 this.$refs.contextMenu.$el.style = `left: ${positionElement}; top: ${e.clientY}`;
             },
 
