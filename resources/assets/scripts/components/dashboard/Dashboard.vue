@@ -28,9 +28,7 @@
 </template>
 
 <script>
-    import Server from '../../models/server';
     import debounce from 'lodash/debounce';
-    import differenceInSeconds from 'date-fns/difference_in_seconds';
     import Flash from '../Flash';
     import ServerBox from './ServerBox';
     import Navigation from '../core/Navigation';
@@ -56,11 +54,6 @@
             if (this.servers.length === 0) {
                 this.loadServers();
             }
-
-            document.addEventListener('visibilitychange', () => {
-                this.documentVisible = document.visibilityState === 'visible';
-                this._handleDocumentVisibilityChange(this.documentVisible);
-            });
         },
 
         /**
@@ -69,10 +62,6 @@
          */
         mounted: function () {
             this.$refs.search.focus();
-            
-            window.setTimeout(() => {
-                this._iterateServerResourceUse();
-            }, 5000);
         },
 
         computed: {
@@ -123,66 +112,6 @@
             onChange: debounce(function () {
                 this.loadServers();
             }, 500),
-
-            /**
-             * Get resource usage for an individual server for rendering purposes.
-             *
-             * @param {Server} server
-             */
-            getResourceUse: function (server) {
-                window.axios.get(this.route('api.client.servers.resources', { server: server.identifier }))
-                    .then(response => {
-                        if (!(response.data instanceof Object)) {
-                            throw new Error('Received an invalid response object back from status endpoint.');
-                        }
-
-                        window.events.$emit(`server:${server.uuid}::resources`, response.data.attributes);
-                    });
-            },
-
-            /**
-             * Iterates over all of the active servers and gets their resource usage.
-             *
-             * @private
-             */
-            _iterateServerResourceUse: function (loop = true) {
-                // Try again in 10 seconds, window is not in the foreground.
-                if (!this.documentVisible && loop) {
-                    window.setTimeout(() => {
-                        this._iterateServerResourceUse();
-                    }, 10000);
-                }
-
-                this.servers.forEach(server => {
-                    this.getResourceUse(server);
-                });
-
-                if (loop) {
-                    window.setTimeout(() => {
-                        this._iterateServerResourceUse();
-                    }, 10000);
-                }
-            },
-
-            /**
-             * Handle changes to document visibilty to keep server statuses updated properly.
-             *
-             * @param {Boolean} isVisible
-             * @private
-             */
-            _handleDocumentVisibilityChange: function (isVisible) {
-                if (!isVisible) {
-                    this.backgroundedAt = new Date();
-                    return;
-                }
-
-                // If it has been more than 30 seconds since this window was put into the background
-                // lets go ahead and refresh all of the listed servers so that they have fresh stats.
-                const diff = differenceInSeconds(new Date(), this.backgroundedAt);
-                if (diff > 30) {
-                    this._iterateServerResourceUse(false);
-                }
-            },
         }
     };
 </script>
