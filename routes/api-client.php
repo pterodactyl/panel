@@ -34,4 +34,8 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateClie
 
     Route::post('/command', 'Servers\CommandController@index')->name('api.client.servers.command');
     Route::post('/power', 'Servers\PowerController@index')->name('api.client.servers.power');
+
+    Route::group(['prefix' => '/databases'], function () {
+        Route::get('/', 'Servers\DatabaseController@index')->name('api.client.servers.databases');
+    });
 });

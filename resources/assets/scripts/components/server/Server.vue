@@ -51,9 +51,7 @@
                         </div>
                     </div>
                     -->
-                    <div class="bg-white p-6 rounded border border-grey-light">
-                        <router-view></router-view>
-                    </div>
+                    <router-view></router-view>
                 </div>
             </div>
         </div>

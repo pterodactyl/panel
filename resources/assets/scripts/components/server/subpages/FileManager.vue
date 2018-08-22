@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="bg-white p-6 rounded border border-grey-light">
         <div class="filemanager-breadcrumbs">
             /<span class="px-1">home</span><!--
             -->/<router-link :to="{ name: 'server-files' }" class="px-1">container</router-link><!--
