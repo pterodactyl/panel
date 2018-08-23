@@ -3,7 +3,7 @@
         <div v-if="loading">
             <div class="spinner spinner-xl blue"></div>
         </div>
-        <div class="bg-white p-6 rounded border border-grey-light" v-else-if="!databases.length">
+        <div class="context-box" v-else-if="!databases.length">
             <div class="flex items-center">
                 <database-icon class="flex-none text-grey-darker"></database-icon>
                 <div class="flex-1 px-4 text-grey-darker">
@@ -12,7 +12,7 @@
             </div>
         </div>
         <div v-else>
-            <div class="bg-white p-6 rounded border border-grey-light mb-6" v-for="database in databases" :key="database.name">
+            <div class="content-box mb-6" v-for="database in databases" :key="database.name">
                 <div class="flex items-center text-grey-darker">
                     <database-icon class="flex-none text-green"></database-icon>
                     <div class="flex-1 px-4">
@@ -40,22 +40,35 @@
                     </div>
                 </div>
             </div>
+            <div>
+                <button class="btn btn-blue btn-lg" v-on:click="showCreateModal = true">Create new database</button>
+            </div>
         </div>
+        <modal :show="showCreateModal" v-on:close="showCreateModal = false">
+            <create-database-modal
+                    v-on:close="showCreateModal = false"
+                    v-on:database="handleModalCallback"
+                    v-if="showCreateModal"
+            />
+        </modal>
     </div>
 </template>
 
 <script>
     import { DatabaseIcon, LockIcon } from 'vue-feather-icons';
     import map from 'lodash/map';
+    import Modal from '../../core/Modal';
+    import CreateDatabaseModal from '../components/CreateDatabaseModal';
 
     export default {
         name: 'databases-page',
-        components: { DatabaseIcon, LockIcon },
+        components: {CreateDatabaseModal, Modal, DatabaseIcon, LockIcon },
 
         data: function () {
             return {
-                loading: true,
                 databases: [],
+                loading: true,
+                showCreateModal: false,
             };
         },
 
@@ -93,6 +106,22 @@
                     .then(() => {
                         this.loading = false;
                     });
+            },
+
+            /**
+             * Add the database to the list of existing databases automatically when the modal
+             * is closed with a successful callback.
+             */
+            handleModalCallback: function (object) {
+                console.log('handle', object);
+
+                const data = object;
+                data.password = data.relationships.password.attributes.password;
+                data.showPassword = false;
+
+                delete data.relationships;
+
+                this.databases.push(data);
             },
 
             /**

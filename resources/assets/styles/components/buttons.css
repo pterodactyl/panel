@@ -43,6 +43,10 @@
     @apply .p-4 .w-full .uppercase .tracking-wide .text-sm;
   }
 
+  &.btn-lg {
+    @apply .p-4 .uppercase .tracking-wide .text-sm;
+  }
+
   &.btn-sm {
     @apply .px-6 .py-3 .uppercase .tracking-wide .text-sm;
   }
