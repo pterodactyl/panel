@@ -18,15 +18,10 @@ class DeleteDatabaseRequest extends ClientApiRequest implements ClientPermission
     }
 
     /**
-     * Determine if the provided database even belongs to this server instance.
-     *
      * @return bool
      */
     public function resourceExists(): bool
     {
-        $server = $this->getModel(Server::class);
-        $database = $this->getModel(Database::class);
-
-        return $database->server_id === $server->id;
+        return $this->getModel(Server::class)->id === $this->getModel(Database::class)->server_id;
     }
 }

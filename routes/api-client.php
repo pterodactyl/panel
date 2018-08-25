@@ -1,6 +1,6 @@
 <?php
 
-use Pterodactyl\Http\Middleware\Api\Client\AuthenticateClientAccess;
+use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +27,7 @@ Route::group(['prefix' => '/account'], function () {
 | Endpoint: /api/client/servers/{server}
 |
 */
-Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateClientAccess::class]], function () {
+Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class]], function () {
     Route::get('/', 'Servers\ServerController@index')->name('api.client.servers.view');
     Route::get('/utilization', 'Servers\ResourceUtilizationController@index')
         ->name('api.client.servers.resources');
