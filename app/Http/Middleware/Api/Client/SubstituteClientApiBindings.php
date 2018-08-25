@@ -4,9 +4,11 @@ namespace Pterodactyl\Http\Middleware\Api\Client;
 
 use Closure;
 use Illuminate\Container\Container;
+use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
 class SubstituteClientApiBindings extends ApiSubstituteBindings
 {
@@ -28,6 +30,20 @@ class SubstituteClientApiBindings extends ApiSubstituteBindings
                     ['uuidShort', '=', $value],
                 ]);
             } catch (RecordNotFoundException $ex) {
+                $request->attributes->set('is_missing_model', true);
+
+                return null;
+            }
+        });
+
+        $this->router->bind('database', function ($value) use ($request) {
+            try {
+                $id = Container::getInstance()->make(HashidsInterface::class)->decodeFirst($value);
+
+                return Container::getInstance()->make(DatabaseRepositoryInterface::class)->findFirstWhere([
+                    ['id', '=', $id],
+                ]);
+            } catch (RecordNotFoundException $exception) {
                 $request->attributes->set('is_missing_model', true);
 
                 return null;

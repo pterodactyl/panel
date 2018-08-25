@@ -38,5 +38,6 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateClie
     Route::group(['prefix' => '/databases'], function () {
         Route::get('/', 'Servers\DatabaseController@index')->name('api.client.servers.databases');
         Route::post('/', 'Servers\DatabaseController@store');
+        Route::delete('/{database}', 'Servers\DatabaseController@delete')->name('api.client.servers.databases.delete');
     });
 });

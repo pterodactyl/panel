@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api\Client;
 use Pterodactyl\Models\Database;
 use League\Fractal\Resource\Item;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 class DatabaseTransformer extends BaseClientTransformer
 {
@@ -16,13 +17,20 @@ class DatabaseTransformer extends BaseClientTransformer
     private $encrypter;
 
     /**
+     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface
+     */
+    private $hashids;
+
+    /**
      * Handle dependency injection.
      *
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
+     * @param \Illuminate\Contracts\Encryption\Encrypter         $encrypter
+     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface $hashids
      */
-    public function handle(Encrypter $encrypter)
+    public function handle(Encrypter $encrypter, HashidsInterface $hashids)
     {
         $this->encrypter = $encrypter;
+        $this->hashids = $hashids;
     }
 
     /**
@@ -42,6 +50,7 @@ class DatabaseTransformer extends BaseClientTransformer
         $model->loadMissing('host');
 
         return [
+            'id' => $this->hashids->encode($model->id),
             'host' => [
                 'address' => $model->getRelation('host')->host,
                 'port' => $model->getRelation('host')->port,

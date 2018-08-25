@@ -2,13 +2,16 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
+use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Services\Databases\DeployServerDatabaseService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest;
 
 class DatabaseController extends ClientApiController
 {
@@ -23,17 +26,27 @@ class DatabaseController extends ClientApiController
     private $repository;
 
     /**
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     */
+    private $managementService;
+
+    /**
      * DatabaseController constructor.
      *
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService     $managementService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
      * @param \Pterodactyl\Services\Databases\DeployServerDatabaseService   $deployDatabaseService
      */
-    public function __construct(DatabaseRepositoryInterface $repository, DeployServerDatabaseService $deployDatabaseService)
-    {
+    public function __construct(
+        DatabaseManagementService $managementService,
+        DatabaseRepositoryInterface $repository,
+        DeployServerDatabaseService $deployDatabaseService
+    ) {
         parent::__construct();
 
         $this->deployDatabaseService = $deployDatabaseService;
         $this->repository = $repository;
+        $this->managementService = $managementService;
     }
 
     /**
@@ -65,5 +78,17 @@ class DatabaseController extends ClientApiController
             ->parseIncludes(['password'])
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
             ->toArray();
+    }
+
+    /**
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest $request
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function delete(DeleteDatabaseRequest $request): Response
+    {
+        return Response::create('', Response::HTTP_NO_CONTENT);
+//        $this->managementService->delete($request->input('database'));
     }
 }

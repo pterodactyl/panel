@@ -1,5 +1,6 @@
 .btn {
   @apply .rounded .p-2;
+  transition: all 100ms ease-in-out;
 
   /**
    * Button Colors
@@ -21,7 +22,9 @@
   }
 
   &.btn-red {
-    @apply .bg-red .border-red-dark .border .text-white;
+    &:not(.btn-secondary) {
+      @apply .bg-red .border-red-dark .border .text-white;
+    }
 
     &:hover:enabled {
       @apply .bg-red-dark .border-red-darker;
@@ -33,6 +36,10 @@
 
     &:hover:enabled {
       @apply .border-grey .text-grey-darker;
+    }
+
+    &.btn-red:hover:enabled {
+      @apply .bg-red-dark .border-red-darker .text-white;
     }
   }
 
@@ -49,6 +56,10 @@
 
   &.btn-sm {
     @apply .px-6 .py-3 .uppercase .tracking-wide .text-sm;
+  }
+
+  &.btn-xs {
+    @apply .py-2 .px-2 .uppercase .text-xs;
   }
 
   &:disabled, &.disabled {
