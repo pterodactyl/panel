@@ -3,27 +3,29 @@
         <div v-if="loading">
             <div class="spinner spinner-xl blue"></div>
         </div>
-        <div class="context-box" v-else-if="!databases.length">
-            <div class="flex items-center">
-                <database-icon class="flex-none text-grey-darker"></database-icon>
-                <div class="flex-1 px-4 text-grey-darker">
-                    <p>You have no databases.</p>
+        <div class="animate fadein" v-else>
+            <div class="context-box" v-if="!databases.length">
+                <div class="flex items-center">
+                    <database-icon class="flex-none text-grey-darker"></database-icon>
+                    <div class="flex-1 px-4 text-grey-darker">
+                        <p>You have no databases.</p>
+                    </div>
                 </div>
             </div>
+            <div v-else>
+                <database-row v-for="database in databases" :database="database" :key="database.name"/>
+            </div>
+            <div>
+                <button class="btn btn-blue btn-lg" v-on:click="showCreateModal = true">Create new database</button>
+            </div>
+            <modal :show="showCreateModal" v-on:close="showCreateModal = false">
+                <create-database-modal
+                        v-on:close="showCreateModal = false"
+                        v-on:database="handleModalCallback"
+                        v-if="showCreateModal"
+                />
+            </modal>
         </div>
-        <div v-else>
-            <database-row v-for="database in databases" :database="database" :key="database.name"/>
-        </div>
-        <div>
-            <button class="btn btn-blue btn-lg" v-on:click="showCreateModal = true">Create new database</button>
-        </div>
-        <modal :show="showCreateModal" v-on:close="showCreateModal = false">
-            <create-database-modal
-                    v-on:close="showCreateModal = false"
-                    v-on:database="handleModalCallback"
-                    v-if="showCreateModal"
-            />
-        </modal>
     </div>
 </template>
 
