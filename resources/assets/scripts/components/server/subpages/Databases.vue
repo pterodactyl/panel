@@ -4,7 +4,7 @@
             <div class="spinner spinner-xl blue"></div>
         </div>
         <div class="animate fadein" v-else>
-            <div class="context-box" v-if="!databases.length">
+            <div class="content-box mb-6" v-if="!databases.length">
                 <div class="flex items-center">
                     <database-icon class="flex-none text-grey-darker"></database-icon>
                     <div class="flex-1 px-4 text-grey-darker">
@@ -92,8 +92,6 @@
              * is closed with a successful callback.
              */
             handleModalCallback: function (object) {
-                console.log('handle', object);
-
                 const data = object;
                 data.password = data.relationships.password.attributes.password;
                 data.showPassword = false;

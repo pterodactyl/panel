@@ -23,9 +23,14 @@
         <div class="text-right">
             <button class="btn btn-secondary btn-sm mr-2" v-on:click.once="$emit('close')">Cancel</button>
             <button class="btn btn-green btn-sm"
-                    :disabled="errors.any() || !canSubmit"
+                    :disabled="errors.any() || !canSubmit || showSpinner"
                     v-on:click="submit"
-            >Create</button>
+            >
+                <span class="spinner white" v-bind:class="{ hidden: !showSpinner }">&nbsp;</span>
+                <span :class="{ hidden: showSpinner }">
+                    Create
+                </span>
+            </button>
         </div>
     </div>
 </template>
@@ -40,6 +45,7 @@
         data: function () {
             return {
                 loading: false,
+                showSpinner: false,
                 database: '',
                 remote: '%',
                 errorMessage: '',
@@ -54,6 +60,7 @@
 
         methods: {
             submit: function () {
+                this.showSpinner = true;
                 this.errorMessage = '';
                 this.loading = true;
 
@@ -73,6 +80,7 @@
                     console.error('A network error was encountered while processing this request.', err.response);
                 }).then(() => {
                     this.loading = false;
+                    this.showSpinner = false;
                 })
             }
         }
