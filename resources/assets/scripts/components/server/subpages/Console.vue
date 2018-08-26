@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white p-6 rounded border border-grey-light">
+    <div class="content-box animate fadein">
         <div class="text-xs font-mono">
             <div class="rounded-t p-2 bg-black overflow-scroll w-full" style="min-height: 16rem;max-height:64rem;">
                 <div class="mb-2 text-grey-light" ref="terminal" v-if="connected"></div>
