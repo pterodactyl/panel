@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Database;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Services\Databases\DeployServerDatabaseService;
@@ -88,7 +89,8 @@ class DatabaseController extends ClientApiController
      */
     public function delete(DeleteDatabaseRequest $request): Response
     {
+        $this->managementService->delete($request->getModel(Database::class)->id);
+
         return Response::create('', Response::HTTP_NO_CONTENT);
-//        $this->managementService->delete($request->input('database'));
     }
 }

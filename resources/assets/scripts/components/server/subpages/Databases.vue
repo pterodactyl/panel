@@ -12,39 +12,7 @@
             </div>
         </div>
         <div v-else>
-            <div class="content-box mb-6 hover:border-grey" v-for="database in databases" :key="database.name">
-                <div class="flex items-center text-grey-darker">
-                    <database-icon class="flex-none text-green"></database-icon>
-                    <div class="flex-1 px-4">
-                        <p class="uppercase text-xs text-grey pb-1 select-none">Database Name</p>
-                        <p>{{database.name}}</p>
-                    </div>
-                    <div class="flex-1 px-4">
-                        <p class="uppercase text-xs text-grey pb-1 select-none">Username</p>
-                        <p>{{database.username}}</p>
-                    </div>
-                    <div class="flex-1 px-4">
-                        <p class="uppercase text-xs text-grey pb-1 select-none">Password</p>
-                        <p>
-                            <code class="text-sm cursor-pointer" v-on:click="revealPassword(database)">
-                                <span class="select-none" v-if="!database.showPassword">
-                                    <lock-icon class="h-3"/> &bull;&bull;&bull;&bull;&bull;&bull;
-                                </span>
-                                <span v-else>{{database.password}}</span>
-                            </code>
-                        </p>
-                    </div>
-                    <div class="flex-1 px-4">
-                        <p class="uppercase text-xs text-grey pb-1 select-none">Server</p>
-                        <p><code class="text-sm">{{database.host.address}}:{{database.host.port}}</code></p>
-                    </div>
-                    <div class="flex-none px-4">
-                        <button class="btn btn-xs btn-secondary btn-red" v-on:click="deleteDatabase(database)">
-                            <trash2-icon class="w-3 h-3 mx-1"/>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <database-row v-for="database in databases" :database="database" :key="database.name"/>
         </div>
         <div>
             <button class="btn btn-blue btn-lg" v-on:click="showCreateModal = true">Create new database</button>
@@ -62,12 +30,14 @@
 <script>
     import { DatabaseIcon, LockIcon, Trash2Icon } from 'vue-feather-icons';
     import map from 'lodash/map';
+    import filter from 'lodash/filter';
     import Modal from '../../core/Modal';
-    import CreateDatabaseModal from '../components/CreateDatabaseModal';
+    import CreateDatabaseModal from '../components/database/CreateDatabaseModal';
+    import DatabaseRow from '../components/database/DatabaseRow';
 
     export default {
         name: 'databases-page',
-        components: {CreateDatabaseModal, Modal, DatabaseIcon, LockIcon, Trash2Icon },
+        components: {DatabaseRow, CreateDatabaseModal, Modal, DatabaseIcon, LockIcon, Trash2Icon },
 
         data: function () {
             return {
@@ -79,6 +49,8 @@
 
         mounted: function () {
             this.getDatabases();
+
+            window.events.$on('server:deleted-database', this.removeDatabase);
         },
 
         methods: {
@@ -130,26 +102,15 @@
             },
 
             /**
-             * Show the password for a given database object.
+             * Handle event that is removing a database.
              *
-             * @param {Object} database
+             * @param databaseId
              */
-            revealPassword: function (database) {
-                this.databases.forEach((d) => {
-                    d.showPassword = d === database ? d.showPassword : false;
+            removeDatabase: function (databaseId) {
+                this.databases = filter(this.databases, (database) => {
+                    return database.id !== databaseId;
                 });
-
-                database.showPassword = !database.showPassword;
-            },
-
-            deleteDatabase: function (database) {
-                window.axios.delete(this.route('api.client.servers.databases.delete', {
-                    server: this.$route.params.id,
-                    database: database.id,
-                }))
-                    .then(response => console.log(response))
-                    .catch(err => console.error(err.response));
-            },
+            }
         }
     };
 </script>

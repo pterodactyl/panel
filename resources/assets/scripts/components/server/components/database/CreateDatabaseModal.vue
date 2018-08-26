@@ -31,7 +31,7 @@
 </template>
 
 <script>
-    import MessageBox from '../../MessageBox';
+    import MessageBox from '../../../MessageBox';
     import get from 'lodash/get';
 
     export default {
