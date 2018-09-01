@@ -16,7 +16,7 @@
 
 <script>
     import { FolderIcon } from 'vue-feather-icons';
-    import { formatDate } from './../../../helpers/index';
+    import { formatDate } from './../../../../helpers/index';
 
     export default {
         name: 'file-manager-folder-row',

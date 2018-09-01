@@ -46,8 +46,8 @@
     import filter from 'lodash/filter';
     import isObject from 'lodash/isObject';
     import { mapState } from 'vuex';
-    import FileManagerFileRow from '../components/FileManagerFileRow';
-    import FileManagerFolderRow from '../components/FileManagerFolderRow';
+    import FileManagerFileRow from '../components/filemanager/FileManagerFileRow';
+    import FileManagerFolderRow from '../components/filemanager/FileManagerFolderRow';
 
     export default {
         name: 'file-manager-page',
