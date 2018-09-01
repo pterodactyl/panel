@@ -3,9 +3,9 @@
 namespace Tests\Unit\Services\Schedules;
 
 use Mockery as m;
-use Carbon\Carbon;
 use Tests\TestCase;
 use Cron\CronExpression;
+use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Services\Schedules\Tasks\RunTaskService;
@@ -40,7 +40,8 @@ class ProcessScheduleServiceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        Carbon::setTestNow(Carbon::now());
+
+        Chronos::setTestNow(Chronos::now());
 
         $this->repository = m::mock(ScheduleRepositoryInterface::class);
         $this->runnerService = m::mock(RunTaskService::class);
@@ -63,7 +64,7 @@ class ProcessScheduleServiceTest extends TestCase
         $formatted = sprintf('%s %s %s * %s', $model->cron_minute, $model->cron_hour, $model->cron_day_of_month, $model->cron_day_of_week);
         $this->repository->shouldReceive('update')->with($model->id, [
             'is_processing' => true,
-            'next_run_at' => CronExpression::factory($formatted)->getNextRunDate(),
+            'next_run_at' => CronExpression::factory($formatted)->getNextRunDate()->format(Chronos::ATOM),
         ]);
 
         $this->runnerService->shouldReceive('handle')->with($task)->once()->andReturnNull();
@@ -83,12 +84,12 @@ class ProcessScheduleServiceTest extends TestCase
 
         $this->repository->shouldReceive('update')->with($model->id, [
             'is_processing' => true,
-            'next_run_at' => Carbon::now()->addSeconds(15)->toDateTimeString(),
+            'next_run_at' => Chronos::now()->addSeconds(15)->toAtomString(),
         ]);
 
         $this->runnerService->shouldReceive('handle')->with($task)->once()->andReturnNull();
 
-        $this->service->setRunTimeOverride(Carbon::now()->addSeconds(15))->handle($model);
+        $this->service->setRunTimeOverride(Chronos::now()->addSeconds(15))->handle($model);
         $this->assertTrue(true);
     }
 }

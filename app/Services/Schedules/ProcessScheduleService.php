@@ -2,8 +2,9 @@
 
 namespace Pterodactyl\Services\Schedules;
 
-use Carbon\Carbon;
+use DateTimeInterface;
 use Cron\CronExpression;
+use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Schedule;
 use Pterodactyl\Services\Schedules\Tasks\RunTaskService;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
@@ -21,7 +22,7 @@ class ProcessScheduleService
     private $runnerService;
 
     /**
-     * @var \Carbon\Carbon|null
+     * @var \DateTimeInterface|null
      */
     private $runTimeOverride;
 
@@ -41,10 +42,10 @@ class ProcessScheduleService
      * Set the time that this schedule should be run at. This will override the time
      * defined on the schedule itself. Useful for triggering one-off task runs.
      *
-     * @param \Carbon\Carbon $time
+     * @param \DateTimeInterface $time
      * @return $this
      */
-    public function setRunTimeOverride(Carbon $time)
+    public function setRunTimeOverride(DateTimeInterface $time)
     {
         $this->runTimeOverride = $time;
 
@@ -83,14 +84,14 @@ class ProcessScheduleService
      * Get the timestamp to store in the database as the next_run time for a schedule.
      *
      * @param string $formatted
-     * @return \DateTime|string
+     * @return string
      */
     private function getRunAtTime(string $formatted)
     {
-        if ($this->runTimeOverride instanceof Carbon) {
-            return $this->runTimeOverride->toDateTimeString();
+        if (! is_null($this->runTimeOverride)) {
+            return $this->runTimeOverride->format(Chronos::ATOM);
         }
 
-        return CronExpression::factory($formatted)->getNextRunDate();
+        return CronExpression::factory($formatted)->getNextRunDate()->format(Chronos::ATOM);
     }
 }
