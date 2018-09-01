@@ -64,7 +64,7 @@ class ProcessScheduleServiceTest extends TestCase
         $formatted = sprintf('%s %s %s * %s', $model->cron_minute, $model->cron_hour, $model->cron_day_of_month, $model->cron_day_of_week);
         $this->repository->shouldReceive('update')->with($model->id, [
             'is_processing' => true,
-            'next_run_at' => CronExpression::factory($formatted)->getNextRunDate()->format(Chronos::ATOM),
+            'next_run_at' => Chronos::parse(CronExpression::factory($formatted)->getNextRunDate()->format(Chronos::ATOM)),
         ]);
 
         $this->runnerService->shouldReceive('handle')->with($task)->once()->andReturnNull();
@@ -84,7 +84,7 @@ class ProcessScheduleServiceTest extends TestCase
 
         $this->repository->shouldReceive('update')->with($model->id, [
             'is_processing' => true,
-            'next_run_at' => Chronos::now()->addSeconds(15)->toAtomString(),
+            'next_run_at' => Chronos::now()->addSeconds(15),
         ]);
 
         $this->runnerService->shouldReceive('handle')->with($task)->once()->andReturnNull();

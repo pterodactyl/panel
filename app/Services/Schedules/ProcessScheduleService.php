@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Cron\CronExpression;
 use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Schedule;
+use Cake\Chronos\ChronosInterface;
 use Pterodactyl\Services\Schedules\Tasks\RunTaskService;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
@@ -84,14 +85,14 @@ class ProcessScheduleService
      * Get the timestamp to store in the database as the next_run time for a schedule.
      *
      * @param string $formatted
-     * @return string
+     * @return \Cake\Chronos\ChronosInterface
      */
-    private function getRunAtTime(string $formatted)
+    private function getRunAtTime(string $formatted): ChronosInterface
     {
         if (! is_null($this->runTimeOverride)) {
-            return $this->runTimeOverride->format(Chronos::ATOM);
+            return $this->runTimeOverride instanceof ChronosInterface ? $this->runTimeOverride : Chronos::instance($this->runTimeOverride);
         }
 
-        return CronExpression::factory($formatted)->getNextRunDate()->format(Chronos::ATOM);
+        return Chronos::instance(CronExpression::factory($formatted)->getNextRunDate());
     }
 }
