@@ -2,11 +2,8 @@
 
 namespace Pterodactyl\Services\Schedules;
 
-use DateTimeInterface;
 use Cron\CronExpression;
-use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Schedule;
-use Cake\Chronos\ChronosInterface;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Pterodactyl\Jobs\Schedule\RunTaskJob;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
@@ -18,11 +15,6 @@ class ProcessScheduleService
      * @var \Illuminate\Contracts\Bus\Dispatcher
      */
     private $dispatcher;
-
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $runTimeOverride;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
@@ -52,20 +44,6 @@ class ProcessScheduleService
     }
 
     /**
-     * Set the time that this schedule should be run at. This will override the time
-     * defined on the schedule itself. Useful for triggering one-off task runs.
-     *
-     * @param \DateTimeInterface $time
-     * @return $this
-     */
-    public function setRunTimeOverride(DateTimeInterface $time)
-    {
-        $this->runTimeOverride = $time;
-
-        return $this;
-    }
-
-    /**
      * Process a schedule and push the first task onto the queue worker.
      *
      * @param \Pterodactyl\Models\Schedule $schedule
@@ -89,7 +67,7 @@ class ProcessScheduleService
 
         $this->scheduleRepository->update($schedule->id, [
             'is_processing' => true,
-            'next_run_at' => $this->getRunAtTime($formattedCron),
+            'next_run_at' => CronExpression::factory($formattedCron)->getNextRunDate(),
         ]);
 
         $this->taskRepository->update($task->id, ['is_queued' => true]);
@@ -97,20 +75,5 @@ class ProcessScheduleService
         $this->dispatcher->dispatch(
             (new RunTaskJob($task->id, $schedule->id))->delay($task->time_offset)
         );
-    }
-
-    /**
-     * Get the timestamp to store in the database as the next_run time for a schedule.
-     *
-     * @param string $formatted
-     * @return \Cake\Chronos\ChronosInterface
-     */
-    private function getRunAtTime(string $formatted): ChronosInterface
-    {
-        if (! is_null($this->runTimeOverride)) {
-            return $this->runTimeOverride instanceof ChronosInterface ? $this->runTimeOverride : Chronos::instance($this->runTimeOverride);
-        }
-
-        return Chronos::instance(CronExpression::factory($formatted)->getNextRunDate());
     }
 }

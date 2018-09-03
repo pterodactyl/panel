@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Tasks;
 
-use Cake\Chronos\Chronos;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Http\Controllers\Controller;
@@ -71,7 +70,7 @@ class ActionController extends Controller
         $server = $request->attributes->get('server');
         $this->authorize('toggle-schedule', $server);
 
-        $this->processScheduleService->setRunTimeOverride(Chronos::now())->handle(
+        $this->processScheduleService->handle(
             $request->attributes->get('schedule')
         );
 

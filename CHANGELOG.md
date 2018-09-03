@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.10 (Derelict Dermodactylus)
+### Fixed
+* Scheduled tasks triggered manually no longer improperly change the `next_run_at` time and do not run twice in a row anymore.
+
 ## v0.7.9 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a two-factor authentication bypass present in the password reset process for an account.

@@ -57,6 +57,11 @@ class ProcessRunnableCommand extends Command
     public function handle()
     {
         $schedules = $this->repository->getSchedulesToProcess(Chronos::now()->toAtomString());
+        if ($schedules->count() < 1) {
+            $this->line('There are no scheduled tasks for servers that need to be run.');
+
+            return;
+        }
 
         $bar = $this->output->createProgressBar(count($schedules));
         $schedules->each(function ($schedule) use ($bar) {
