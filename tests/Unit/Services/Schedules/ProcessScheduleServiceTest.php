@@ -8,31 +8,28 @@ use Cron\CronExpression;
 use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\Schedule;
-use Pterodactyl\Services\Schedules\Tasks\RunTaskService;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Pterodactyl\Jobs\Schedule\RunTaskJob;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
+use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessScheduleServiceTest extends TestCase
 {
     /**
-     * @var \Cron\CronExpression|\Mockery\Mock
+     * @var \Illuminate\Contracts\Bus\Dispatcher|\Mockery\Mock
      */
-    protected $cron;
+    private $dispatcher;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
      */
-    protected $repository;
+    private $scheduleRepository;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\Tasks\RunTaskService|\Mockery\Mock
+     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface|\Mockery\Mock
      */
-    protected $runnerService;
-
-    /**
-     * @var \Pterodactyl\Services\Schedules\ProcessScheduleService
-     */
-    protected $service;
+    private $taskRepository;
 
     /**
      * Setup tests.
@@ -42,11 +39,9 @@ class ProcessScheduleServiceTest extends TestCase
         parent::setUp();
 
         Chronos::setTestNow(Chronos::now());
-
-        $this->repository = m::mock(ScheduleRepositoryInterface::class);
-        $this->runnerService = m::mock(RunTaskService::class);
-
-        $this->service = new ProcessScheduleService($this->runnerService, $this->repository);
+        $this->dispatcher = m::mock(Dispatcher::class);
+        $this->scheduleRepository = m::mock(ScheduleRepositoryInterface::class);
+        $this->taskRepository = m::mock(TaskRepositoryInterface::class);
     }
 
     /**
@@ -59,17 +54,26 @@ class ProcessScheduleServiceTest extends TestCase
             'sequence_id' => 1,
         ])]));
 
-        $this->repository->shouldReceive('loadTasks')->with($model)->once()->andReturn($model);
+        $this->scheduleRepository->shouldReceive('loadTasks')->with($model)->once()->andReturn($model);
 
         $formatted = sprintf('%s %s %s * %s', $model->cron_minute, $model->cron_hour, $model->cron_day_of_month, $model->cron_day_of_week);
-        $this->repository->shouldReceive('update')->with($model->id, [
+        $this->scheduleRepository->shouldReceive('update')->with($model->id, [
             'is_processing' => true,
             'next_run_at' => Chronos::parse(CronExpression::factory($formatted)->getNextRunDate()->format(Chronos::ATOM)),
         ]);
 
-        $this->runnerService->shouldReceive('handle')->with($task)->once()->andReturnNull();
+        $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => true])->once();
 
-        $this->service->handle($model);
+        $this->dispatcher->shouldReceive('dispatch')->with(m::on(function ($class) use ($model, $task) {
+            $this->assertInstanceOf(RunTaskJob::class, $class);
+            $this->assertSame($task->time_offset, $class->delay);
+            $this->assertSame($task->id, $class->task);
+            $this->assertSame($model->id, $class->schedule);
+
+            return true;
+        }))->once();
+
+        $this->getService()->handle($model);
         $this->assertTrue(true);
     }
 
@@ -80,16 +84,30 @@ class ProcessScheduleServiceTest extends TestCase
             'sequence_id' => 1,
         ])]));
 
-        $this->repository->shouldReceive('loadTasks')->with($model)->once()->andReturn($model);
+        $this->scheduleRepository->shouldReceive('loadTasks')->with($model)->once()->andReturn($model);
 
-        $this->repository->shouldReceive('update')->with($model->id, [
+        $this->scheduleRepository->shouldReceive('update')->with($model->id, [
             'is_processing' => true,
             'next_run_at' => Chronos::now()->addSeconds(15),
         ]);
 
-        $this->runnerService->shouldReceive('handle')->with($task)->once()->andReturnNull();
+        $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => true])->once();
 
-        $this->service->setRunTimeOverride(Chronos::now()->addSeconds(15))->handle($model);
+        $this->dispatcher->shouldReceive('dispatch')->with(m::on(function ($class) use ($model, $task) {
+            $this->assertInstanceOf(RunTaskJob::class, $class);
+            $this->assertSame($task->time_offset, $class->delay);
+            $this->assertSame($task->id, $class->task);
+            $this->assertSame($model->id, $class->schedule);
+
+            return true;
+        }))->once();
+
+        $this->getService()->setRunTimeOverride(Chronos::now()->addSeconds(15))->handle($model);
         $this->assertTrue(true);
+    }
+
+    private function getService(): ProcessScheduleService
+    {
+        return new ProcessScheduleService($this->dispatcher, $this->scheduleRepository, $this->taskRepository);
     }
 }
