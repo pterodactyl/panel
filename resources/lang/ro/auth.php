@@ -1,0 +1,27 @@
+<?php
+
+return [
+    '2fa_failed' => 'Token-ul 2FA primit este invalid. ',
+    '2fa_required' => 'Autentificare 2-Factori',
+    'authentication_required' => 'Autentificarea este necesară.',
+    'auth_error' => 'Eroare la logare.',
+    'confirmpassword' => 'Confirmă Parola',
+    'emailsent' => 'Email-ul pentru resetare parolă a fost trimis.',
+    'email_sent' => 'Un email a fost trimis către tine cu instrucțiuni pentru a-ți reseta parola.',
+    'errorencountered' => 'A apărut o eroare în încercarea de a procesa cererea ta.',
+    'failed' => 'Datele de logare introduse nu se potrivesc cu cele din baza noastră de date.',
+    'forgot_password' => 'Am uitat parola',
+    'not_authorized' => 'Nu ai permisiunea să faci această acțiune.',
+    'password_requirements' => 'Parola trebuie să conțină cel puțin o literă mare, o literă mică, o cifră și trebuie să fie de cel puțin 8 caractere în lungime.',
+    'remeberme' => 'Memorează',
+    'remember_me' => 'Memorează',
+    'request_reset' => 'Caută contul',
+    'request_reset_text' => 'Ai pierdut parola contului tău? Nu e capăt de lume, doar scrie email-ul tau mai jos.',
+    'resetpassword' => 'Resetează Parola',
+    'reset_password' => 'Restează Parola Contului',
+    'reset_password_text' => 'Resetează parola contului tău.',
+    'sendlink' => 'Link Resetare Parolă',
+    'sign_in' => 'Login',
+    'throttle' => 'Prea multe încercări de logare. Te rog încearcă iar în :seconds secunde.',
+    'totp_failed' => 'Token-ul TOTP introdus este invalid. Te rog asigură-te că token-ul generat de device-ul tău este valid.',
+];
