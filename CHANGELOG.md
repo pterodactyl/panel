@@ -7,6 +7,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Scheduled tasks triggered manually no longer improperly change the `next_run_at` time and do not run twice in a row anymore.
 
+### Changed
+* Egg and server variable values are no longer limited to 191 characters. Turns out some games require a large number of characters in these fields.
+
 ## v0.7.9 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a two-factor authentication bypass present in the password reset process for an account.
