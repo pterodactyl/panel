@@ -8,7 +8,7 @@ use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\AccessingValidServer;
+use Pterodactyl\Http\Middleware\Server\AccessingValidServer;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class AccessingValidServerTest extends MiddlewareTestCase

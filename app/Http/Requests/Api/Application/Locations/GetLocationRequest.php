@@ -1,9 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
+namespace Pterodactyl\Http\Requests\Api\Application\Locations;
 
 use Pterodactyl\Models\Location;
-use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
 
 class GetLocationRequest extends GetLocationsRequest
 {

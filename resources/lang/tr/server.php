@@ -1,0 +1,346 @@
+<?php
+
+return [
+    'config' => [
+        'allocation' => [
+            'available' => 'Available Allocations',
+            'header' => 'Server Allocations',
+            'header_sub' => 'Control the IPs and ports available on this server.',
+            'help' => 'Allocation Help',
+            'help_text' => 'The list to the left includes all available IPs and ports that are open for your server to use for incoming connections.',
+        ],
+        'database' => [
+            'add_db' => 'Add a new database.',
+            'header' => 'Databases',
+            'header_sub' => 'All databases available for this server.',
+            'host' => 'MySQL Host',
+            'no_dbs' => 'There are no databases listed for this server.',
+            'reset_password' => 'Reset Password',
+            'your_dbs' => 'Configured Databases',
+        ],
+        'name' => [
+            'details' => 'The server name is only a reference to this server on the panel, and will not affect any server specific configurations that may display to users in games.',
+            'header' => 'Server Name',
+            'header_sub' => "Change this server's name.",
+        ],
+        'sftp' => [
+            'conn_addr' => 'Connection Address',
+            'details' => 'SFTP Details',
+            'header' => 'SFTP Configuration',
+            'header_sub' => 'Account details for SFTP connections.',
+            'warning' => 'The SFTP password is your account password. Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',
+        ],
+        'startup' => [
+            'command' => 'Startup Command',
+            'edited' => 'Startup variables have been successfully edited. They will take effect the next time this server is started.',
+            'edit_params' => 'Edit Parameters',
+            'header' => 'Start Configuration',
+            'header_sub' => 'Control server startup arguments.',
+            'startup_regex' => 'Input Rules',
+            'update' => 'Update Startup Parameters',
+        ],
+    ],
+    'files' => [
+        'add' => [
+            'create' => 'Create File',
+            'header' => 'New File',
+            'header_sub' => 'Create a new file on your server.',
+            'name' => 'File Name',
+        ],
+        'add_folder' => 'Add New Folder',
+        'add_new' => 'Add New File',
+        'delete' => 'Delete Files',
+        'edit' => [
+            'header' => 'Edit File',
+            'header_sub' => 'Make modifications to a file from the web.',
+            'return' => 'Return to File Manager',
+            'save' => 'Save File',
+        ],
+        'exceptions' => [
+            'invalid_mime' => "This type of file cannot be edited via the Panel's built-in editor.",
+            'max_size' => "This file is too large to edit via the Panel's built-in editor.",
+        ],
+        'file_name' => 'File Name',
+        'header' => 'File Manager',
+        'header_sub' => 'Manage all of your files directly from the web.',
+        'last_modified' => 'Last Modified',
+        'loading' => 'Loading initial file structure, this could take a few seconds.',
+        'mass_actions' => 'Mass Actions',
+        'path' => 'When configuring any file paths in your server plugins or settings you should use :path as your base path. The maximum size for web-based file uploads to this node is :size.',
+        'saved' => 'Dosya basarli kaydedildi.',
+        'seconds_ago' => 'seconds ago',
+        'size' => 'Size',
+    ],
+    'index' => [
+        'add_new' => 'Yeni Sunucu Ekli.',
+        'disk_space' => 'Disk Alani',
+        'header' => 'Server Console',
+        'header_sub' => 'Control your server in real time.',
+        'title' => 'Viewing Server :name',
+    ],
+    'schedule' => [
+        'actions' => [
+            'command' => 'Send Command',
+            'power' => 'Power Action',
+        ],
+        'current' => 'Current Schedules',
+        'day_of_month' => 'Day of Month',
+        'day_of_week' => 'Day of Week',
+        'header' => 'Schedule Manager',
+        'header_sub' => "Manage all of this server's schedules in one place.",
+        'hour' => 'Hour of Day',
+        'manage' => [
+            'delete' => 'Delete Schedule',
+            'header' => 'Manage Schedule',
+            'submit' => 'Update Schedule',
+        ],
+        'minute' => 'Minute of Hour',
+        'new' => [
+            'header' => 'Create New Schedule',
+            'header_sub' => 'Create a new set of scheduled tasks for this server.',
+            'submit' => 'Create Schedule',
+        ],
+        'run_now' => 'Trigger Schedule',
+        'schedule_created' => 'Successfully created a new schedule for this server.',
+        'schedule_updated' => 'Schedule has been updated.',
+        'setup' => 'Schedule Setup',
+        'task' => [
+            'action' => 'Perform Action',
+            'add_more' => 'Add Another Task',
+            'payload' => 'With Payload',
+            'time' => 'After',
+        ],
+        'task_help' => 'Times for tasks are relative to the previously defined task. Each schedule may have no more than 5 tasks assigned to it and tasks may not be scheduled more than 15 minutes apart.',
+        'time_help' => 'The schedule system supports the use of Cronjob syntax when defining when tasks should begin running. Use the fields above to specify when these tasks should begin running or select options from the multiple select menus.',
+        'toggle' => 'Toggle Status',
+        'unnamed' => 'Unnamed Schedule',
+    ],
+    'tasks' => [
+        'actions' => [
+            'command' => 'Send Command',
+            'power' => 'Send Power Option',
+        ],
+        'current' => 'Current Scheduled Tasks',
+        'edit' => [
+            'header' => 'Manage Task',
+            'submit' => 'Update Task',
+        ],
+        'header' => 'Scheduled Tasks',
+        'header_sub' => 'Automate your server.',
+        'new' => [
+            'chain_arguments' => 'With Arguments',
+            'chain_do' => 'Do',
+            'chain_then' => 'Then, After',
+            'custom' => 'Custom Value',
+            'day_of_month' => 'Day of Month',
+            'day_of_week' => 'Day of Week',
+            'fri' => 'Friday',
+            'header' => 'New Task',
+            'header_sub' => 'Create a new scheduled task for this server.',
+            'hour' => 'Hour',
+            'minute' => 'Minute',
+            'mon' => 'Monday',
+            'payload' => 'Task Payload',
+            'payload_help' => 'For example, if you selected <code>Send Command</code> enter the command here. If you selected <code>Send Power Option</code> put the power action here (e.g. <code>restart</code>).',
+            'sat' => 'Saturday',
+            'submit' => 'Create Task',
+            'sun' => 'Sunday',
+            'task_name' => 'Task Name',
+            'thurs' => 'Thursday',
+            'tues' => 'Tuesday',
+            'type' => 'Task Type',
+            'wed' => 'Wednesday',
+        ],
+        'new_task' => 'Add New Task',
+        'task_created' => 'Successfully created a new task on the Panel.',
+        'task_updated' => 'Task has successfully been updated. Any currently queued task actions will be cancelled and run again at the next defined time.',
+        'toggle' => 'Toggle Status',
+    ],
+    'users' => [
+        'add' => 'Add New Subuser',
+        'configure' => 'Configure Permissions',
+        'edit' => [
+            'header' => 'Edit Subuser',
+            'header_sub' => "Modify user's access to server.",
+        ],
+        'header' => 'Manage Users',
+        'header_sub' => 'Control who can access your server.',
+        'list' => 'Accounts with Access',
+        'new' => [
+            'access_sftp' => [
+                'description' => 'Allows user to connect to the SFTP server provided by the daemon.',
+                'title' => 'SFTP Allowed',
+            ],
+            'compress_files' => [
+                'description' => 'Allows user to make archives of files and folders on the system.',
+                'title' => 'Compress Files',
+            ],
+            'copy_files' => [
+                'description' => 'Allows user to copy files and folders on the filesystem.',
+                'title' => 'Copy Files',
+            ],
+            'create_database' => [
+                'description' => 'Allows a user to create additional databases for this server.',
+                'title' => 'Create Database',
+            ],
+            'create_files' => [
+                'description' => 'Allows user to create a new file within the panel.',
+                'title' => 'Create Files',
+            ],
+            'create_schedule' => [
+                'description' => 'Allows a user to create a new schedule.',
+                'title' => 'Create Schedule',
+            ],
+            'create_subuser' => [
+                'description' => 'Allows user to create additional subusers on the server.',
+                'title' => 'Create Subuser',
+            ],
+            'database_header' => 'Database Management',
+            'db_header' => 'Veritabanı Yönetimi',
+            'decompress_files' => [
+                'description' => 'Allows user to decompress .zip and .tar(.gz) archives.',
+                'title' => 'Decompress Files',
+            ],
+            'delete_database' => [
+                'description' => 'Allows a user to delete databases for this server from the Panel.',
+                'title' => 'Delete Databases',
+            ],
+            'delete_files' => [
+                'description' => 'Allows user to delete files from the system.',
+                'title' => 'Delete Files',
+            ],
+            'delete_schedule' => [
+                'description' => 'Allows a user to delete a schedule from the server.',
+                'title' => 'Delete Schedule',
+            ],
+            'delete_subuser' => [
+                'description' => 'Allows a user to delete other subusers on the server.',
+                'title' => 'Delete Subuser',
+            ],
+            'download_files' => [
+                'description' => 'Allows user to download files. If a user is given this permission they can download and view file contents even if that permission is not assigned on the panel.',
+                'title' => 'Download Files',
+            ],
+            'edit_allocation' => [
+                'description' => 'Allows user to change the default connection allocation to use for a server.',
+                'title' => 'Edit Default Connection',
+            ],
+            'edit_files' => [
+                'description' => 'Allows user to open a file for viewing only. SFTP is not effected by this permission.',
+                'title' => 'Edit Files',
+            ],
+            'edit_schedule' => [
+                'description' => "Allows a user to edit a schedule including all of the schedule's tasks. This will allow the user to remove individual tasks, but not delete the schedule itself.",
+                'title' => 'Edit Schedule',
+            ],
+            'edit_startup' => [
+                'description' => 'Allows a user to modify startup variables for a server.',
+                'title' => 'Edit Startup Command',
+            ],
+            'edit_subuser' => [
+                'description' => 'Allows a user to edit permissions assigned to other subusers.',
+                'title' => 'Edit Subuser',
+            ],
+            'email' => 'Email Address',
+            'email_help' => 'Enter the email address for the user you wish to invite to manage this server.',
+            'file_header' => 'File Management',
+            'header' => 'Add New User',
+            'header_sub' => 'Add a new user with permissions to this server.',
+            'list_files' => [
+                'description' => 'Allows user to list all files and folders on the server but not view file contents.',
+                'title' => 'List Files',
+            ],
+            'list_schedules' => [
+                'description' => 'Allows a user to list all schedules (enabled and disabled)  for this server.',
+                'title' => 'List Schedules',
+            ],
+            'list_subusers' => [
+                'description' => 'Allows user to view a listing of all subusers assigned to the server.',
+                'title' => 'List Subusers',
+            ],
+            'move_files' => [
+                'description' => 'Allows user to move and rename files and folders on the filesystem.',
+                'title' => 'Rename & Move Files',
+            ],
+            'power_header' => 'Power Management',
+            'power_kill' => [
+                'description' => 'Allows user to kill the server process.',
+                'title' => 'Kill Server',
+            ],
+            'power_restart' => [
+                'description' => 'Allows user to restart the server.',
+                'title' => 'Restart Server',
+            ],
+            'power_start' => [
+                'description' => 'Allows user to start the server.',
+                'title' => 'Start Server',
+            ],
+            'power_stop' => [
+                'description' => 'Allows user to stop the server.',
+                'title' => 'Stop Server',
+            ],
+            'queue_schedule' => [
+                'description' => "Allows a user to queue a schedule to run it's tasks on the next process cycle.",
+                'title' => 'Queue Schedule',
+            ],
+            'reset_db_password' => [
+                'description' => 'Allows a user to reset passwords for databases.',
+                'title' => 'Reset Database Password',
+            ],
+            'reset_sftp' => [
+                'title' => 'SFTP Şifresini Sıfırla',
+            ],
+            'restart' => [
+                'title' => 'Sunucuyu Yeniden Başlat',
+            ],
+            'save_files' => [
+                'description' => 'Allows user to save modified file contents. SFTP is not effected by this permission.',
+                'title' => 'Save Files',
+            ],
+            'send_command' => [
+                'description' => "Allows sending a command from the console. If the user does not have stop or restart permissions they cannot send the application's stop command.",
+                'title' => 'Send Console Command',
+            ],
+            'server_header' => 'Server Management',
+            'subuser_header' => 'Subuser Management',
+            'task_header' => 'Schedule Management',
+            'toggle_schedule' => [
+                'description' => 'Allows a user to toggle a schedule to be active or inactive.',
+                'title' => 'Toggle Schedule',
+            ],
+            'upload_files' => [
+                'description' => 'Allows user to upload files through the file manager.',
+                'title' => 'Upload Files',
+            ],
+            'view_allocations' => [
+                'description' => 'Allows user to view all of the IPs and ports assigned to a server.',
+                'title' => 'View Allocations',
+            ],
+            'view_databases' => [
+                'description' => 'Allows user to view all databases associated with this server including the usernames and passwords for the databases.',
+                'title' => 'View Database Details',
+            ],
+            'view_schedule' => [
+                'description' => "Allows a user to view a specific schedule's details including all of the assigned tasks.",
+                'title' => 'View Schedule',
+            ],
+            'view_sftp' => [
+                'title' => 'SFTP Detaylarını Göster',
+            ],
+            'view_sftp_password' => [
+                'title' => 'SFTP Şifresini Göster',
+            ],
+            'view_startup' => [
+                'description' => 'Allows user to view the startup command and associated variables for a server.',
+                'title' => 'View Startup Command',
+            ],
+            'view_subuser' => [
+                'description' => 'Allows user to view permissions assigned to subusers.',
+                'title' => 'View Subuser',
+            ],
+        ],
+        'update' => 'Update Subuser',
+        'user_assigned' => 'Successfully assigned a new subuser to this server.',
+        'user_updated' => 'Successfully updated permissions.',
+    ],
+];
