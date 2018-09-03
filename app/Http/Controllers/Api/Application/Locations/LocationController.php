@@ -11,6 +11,7 @@ use Pterodactyl\Services\Locations\LocationDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
@@ -77,7 +78,7 @@ class LocationController extends ApplicationApiController
     /**
      * Return a single location.
      *
-     * @param \Pterodactyl\Http\Controllers\Api\Application\Locations\GetLocationRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest $request
      * @return array
      */
     public function view(GetLocationRequest $request): array
