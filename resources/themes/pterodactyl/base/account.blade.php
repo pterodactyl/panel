@@ -95,7 +95,6 @@
                                     <label for="language" class="control-label">@lang('base.account.language')</label>
                                     <div>
                                         <select name="language" id="language" class="form-control">
-                                            {{ debug($languages) }}
                                             @foreach($languages as $key => $value)
                                                 <option value="{{ $key }}" {{ Auth::user()->language !== $key ?: 'selected' }}>{{ $value }}</option>
                                             @endforeach
