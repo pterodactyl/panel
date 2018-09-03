@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Scheduled tasks triggered manually no longer improperly change the `next_run_at` time and do not run twice in a row anymore.
 * Changing the maximum web-based file upload size for a node now properly validates and updates.
+* Changing configuration values for a node now correctly updates them on the daemon on the first request, rather than requiring a second request to set them.
 
 ### Changed
 * Egg and server variable values are no longer limited to 191 characters. Turns out some games require a large number of characters in these fields.
