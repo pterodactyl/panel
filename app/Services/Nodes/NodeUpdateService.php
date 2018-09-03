@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Nodes;
 
@@ -57,7 +50,7 @@ class NodeUpdateService
      *
      * @param \Pterodactyl\Models\Node $node
      * @param array                    $data
-     * @return \Pterodactyl\Models\Node|mixed
+     * @return \Pterodactyl\Models\Node
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
