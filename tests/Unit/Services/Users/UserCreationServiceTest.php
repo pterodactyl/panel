@@ -9,9 +9,9 @@ use Tests\Traits\MocksUuids;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Contracts\Auth\PasswordBroker;
 use Pterodactyl\Notifications\AccountCreated;
 use Pterodactyl\Services\Users\UserCreationService;
-use Pterodactyl\Services\Helpers\TemporaryPasswordService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationServiceTest extends TestCase
@@ -29,9 +29,9 @@ class UserCreationServiceTest extends TestCase
     private $hasher;
 
     /**
-     * @var \Pterodactyl\Services\Helpers\TemporaryPasswordService|\Mockery\Mock
+     * @var \Illuminate\Contracts\Auth\PasswordBroker|\Mockery\Mock
      */
-    private $passwordService;
+    private $passwordBroker;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
@@ -48,7 +48,7 @@ class UserCreationServiceTest extends TestCase
         Notification::fake();
         $this->connection = m::mock(ConnectionInterface::class);
         $this->hasher = m::mock(Hasher::class);
-        $this->passwordService = m::mock(TemporaryPasswordService::class);
+        $this->passwordBroker = m::mock(PasswordBroker::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
     }
 
@@ -121,7 +121,7 @@ class UserCreationServiceTest extends TestCase
         $this->hasher->shouldNotReceive('make');
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->hasher->shouldReceive('make')->once()->andReturn('created-enc-password');
-        $this->passwordService->shouldReceive('handle')->with($user->email)->once()->andReturn('random-token');
+        $this->passwordBroker->shouldReceive('createToken')->with($user)->once()->andReturn('random-token');
 
         $this->repository->shouldReceive('create')->with([
             'password' => 'created-enc-password',
@@ -152,6 +152,6 @@ class UserCreationServiceTest extends TestCase
      */
     private function getService(): UserCreationService
     {
-        return new UserCreationService($this->connection, $this->hasher, $this->passwordService, $this->repository);
+        return new UserCreationService($this->connection, $this->hasher, $this->passwordBroker, $this->repository);
     }
 }

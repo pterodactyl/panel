@@ -3,17 +3,39 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.10 (Derelict Dermodactylus)
+### Fixed
+* Scheduled tasks triggered manually no longer improperly change the `next_run_at` time and do not run twice in a row anymore.
+* Changing the maximum web-based file upload size for a node now properly validates and updates.
+* Changing configuration values for a node now correctly updates them on the daemon on the first request, rather than requiring a second request to set them.
+
+### Changed
+* Egg and server variable values are no longer limited to 191 characters. Turns out some games require a large number of characters in these fields.
+
+## v0.7.9 (Derelict Dermodactylus)
+### Fixed
+* Fixes a two-factor authentication bypass present in the password reset process for an account.
+
 ## v0.7.8 (Derelict Dermodactylus)
 ### Added
 * Nodes can now be put into maintenance mode to deny access to servers temporarily.
 * Basic statistics about your panel are now available in the Admin CP.
+* Added support for using a MySQL socket location for connections rather than a TCP connection. Set a `DB_SOCKET` variable in your `.env` file to use this.
 
 ### Fixed
 * Hitting Ctrl+Z when editing a file on the web now works as expected.
 * Logo now links to the correct location on all pages.
+* Permissions checking to determine if a user can see the task management page now works correctly.
+* Fixed `pterodactyl.environment_variables` to be used correctly for global environment variables. The wrong config variable name was being using previously.
+* Fixes tokens being sent to users when their account is created to actually work. Implements Laravel's internal token creation mechanisms rather than trying to do it custom.
+* Updates some eggs to ensure they have the correct data and will continue working down the road. Fixes autoupdating on some source servers and MC related download links.
+* Emails should send properly now when a server is marked as installed to let the owner know it is ready for action.
+* Cancelling a file manager operation should cancel correctly across all browsers now.
 
 ### Changed
 * Attempting to upload a folder via the web file manager will now display a warning telling the user to use SFTP.
+* Changing your account password will now log out all other sessions that currently exist for that user.
+* Subusers with no permissions selected can be created.
 
 ## v0.7.7 (Derelict Dermodactylus)
 ### Fixed

@@ -48,7 +48,7 @@ return [
     'select_none' => 'Alles abwählen',
     'alias' => 'Alias',
     'primary' => 'Primär',
-    'make_primary' => 'Primät machen',
+    'make_primary' => 'Primär machen',
     'none' => 'Nichts',
     'cancel' => 'Abbrechen',
     'created_at' => 'Erstellt am',

@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Nodes;
 
@@ -13,7 +6,6 @@ use Pterodactyl\Models\Node;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Traits\Services\ReturnsUpdatedModels;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
@@ -21,8 +13,6 @@ use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
 class NodeUpdateService
 {
-    use ReturnsUpdatedModels;
-
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
@@ -60,7 +50,7 @@ class NodeUpdateService
      *
      * @param \Pterodactyl\Models\Node $node
      * @param array                    $data
-     * @return \Pterodactyl\Models\Node|mixed
+     * @return \Pterodactyl\Models\Node
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -74,14 +64,10 @@ class NodeUpdateService
         }
 
         $this->connection->beginTransaction();
-        if ($this->getUpdatedModel()) {
-            $response = $this->repository->update($node->id, $data);
-        } else {
-            $response = $this->repository->withoutFreshModel()->update($node->id, $data);
-        }
+        $updatedModel = $this->repository->update($node->id, $data);
 
         try {
-            $this->configRepository->setNode($node)->update();
+            $this->configRepository->setNode($updatedModel)->update();
             $this->connection->commit();
         } catch (RequestException $exception) {
             // Failed to connect to the Daemon. Let's go ahead and save the configuration
@@ -95,6 +81,6 @@ class NodeUpdateService
             throw new DaemonConnectionException($exception);
         }
 
-        return $response;
+        return $updatedModel;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Server\Tasks;
 
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Http\Controllers\Controller;
@@ -11,12 +10,22 @@ use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ActionController extends Controller
 {
+    /**
+     * @var \Pterodactyl\Services\Schedules\ProcessScheduleService
+     */
     private $processScheduleService;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
      */
     private $repository;
 
+    /**
+     * ActionController constructor.
+     *
+     * @param \Pterodactyl\Services\Schedules\ProcessScheduleService        $processScheduleService
+     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
+     */
     public function __construct(ProcessScheduleService $processScheduleService, ScheduleRepositoryInterface $repository)
     {
         $this->processScheduleService = $processScheduleService;
@@ -61,7 +70,7 @@ class ActionController extends Controller
         $server = $request->attributes->get('server');
         $this->authorize('toggle-schedule', $server);
 
-        $this->processScheduleService->setRunTimeOverride(Carbon::now())->handle(
+        $this->processScheduleService->handle(
             $request->attributes->get('schedule')
         );
 

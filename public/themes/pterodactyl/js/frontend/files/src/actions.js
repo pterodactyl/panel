@@ -55,6 +55,10 @@ class ActionsClass {
             showLoaderOnConfirm: true,
             inputValue: inputValue
         }, (val) => {
+            if (val === false) {
+                return false;
+            }
+
             $.ajax({
                 type: 'POST',
                 headers: {
@@ -100,6 +104,10 @@ class ActionsClass {
             showLoaderOnConfirm: true,
             inputValue: `${currentPath}${currentName}`,
         }, (val) => {
+            if (val === false) {
+                return false;
+            }
+
             $.ajax({
                 type: 'POST',
                 headers: {
@@ -233,6 +241,10 @@ class ActionsClass {
             showLoaderOnConfirm: true,
             inputValue: `${currentPath}${currentName}`,
         }, (val) => {
+            if (val === false) {
+                return false;
+            }
+
             $.ajax({
                 type: 'POST',
                 headers: {

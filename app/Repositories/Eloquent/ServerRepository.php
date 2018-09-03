@@ -330,7 +330,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Get the amount of servers that are suspended
+     * Get the amount of servers that are suspended.
      *
      * @return int
      */

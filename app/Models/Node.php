@@ -113,6 +113,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonSFTP' => 'numeric|between:1024,65535',
         'daemonListen' => 'numeric|between:1024,65535',
         'maintenance_mode' => 'boolean',
+        'upload_size' => 'int|between:1,1024',
     ];
 
     /**

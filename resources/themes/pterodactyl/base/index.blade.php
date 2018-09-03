@@ -23,10 +23,10 @@
         <div class="box">
             <div class="box-header">
                 <h3 class="box-title">@lang('base.index.list')</h3>
-                <div class="box-tools">
+                <div class="box-tools search01">
                     <form action="{{ route('index') }}" method="GET">
                         <div class="input-group input-group-sm">
-                            <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="@lang('strings.search')">
+                            <input type="text" name="query" class="form-control pull-right" value="{{ request()->input('query') }}" placeholder="@lang('strings.search')">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                             </div>
@@ -53,7 +53,7 @@
                                 <td><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></td>
                                 <td>{{ $server->getRelation('node')->name }}</td>
                                 <td><code>{{ $server->getRelation('allocation')->alias }}:{{ $server->getRelation('allocation')->port }}</code></td>
-                                <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '&infin;' : $server->memory }} MB</td>
+                                <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '∞' : $server->memory }} MB</td>
                                 <td class="text-center hidden-sm hidden-xs"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
                                 <td class="text-center">
                                     @if($server->user->id === Auth::user()->id)

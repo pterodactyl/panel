@@ -124,7 +124,7 @@ class NodeController extends ApplicationApiController
      */
     public function update(UpdateNodeRequest $request): array
     {
-        $node = $this->updateService->returnUpdatedModel()->handle(
+        $node = $this->updateService->handle(
             $request->getModel(Node::class), $request->validated()
         );
 

@@ -3,24 +3,22 @@
  * Created by PhpStorm.
  * User: Stan
  * Date: 26-5-2018
- * Time: 21:06
+ * Time: 21:06.
  */
 
 namespace Tests\Unit\Http\Controllers\Admin;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Routing\Controller;
 use Mockery as m;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Http\Controllers\Admin\StatisticsController;
 use Pterodactyl\Models\Node;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use Pterodactyl\Http\Controllers\Admin\StatisticsController;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class StatisticsControllerTest extends ControllerTestCase
 {
@@ -88,7 +86,7 @@ class StatisticsControllerTest extends ControllerTestCase
             'disk' => [
                 'value' => 1024,
                 'max' => 512,
-            ]
+            ],
         ]);
 
         $controller->shouldReceive('injectJavascript')->once();
@@ -106,8 +104,7 @@ class StatisticsControllerTest extends ControllerTestCase
             $this->eggRepository,
             $this->nodeRepository,
             $this->serverRepository,
-            $this->userRepository]
+            $this->userRepository, ]
         );
     }
-
 }

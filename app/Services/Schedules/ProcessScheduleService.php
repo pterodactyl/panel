@@ -2,53 +2,45 @@
 
 namespace Pterodactyl\Services\Schedules;
 
-use Carbon\Carbon;
 use Cron\CronExpression;
 use Pterodactyl\Models\Schedule;
-use Pterodactyl\Services\Schedules\Tasks\RunTaskService;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Pterodactyl\Jobs\Schedule\RunTaskJob;
+use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessScheduleService
 {
     /**
+     * @var \Illuminate\Contracts\Bus\Dispatcher
+     */
+    private $dispatcher;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
      */
-    private $repository;
+    private $scheduleRepository;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\Tasks\RunTaskService
+     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
      */
-    private $runnerService;
-
-    /**
-     * @var \Carbon\Carbon|null
-     */
-    private $runTimeOverride;
+    private $taskRepository;
 
     /**
      * ProcessScheduleService constructor.
      *
-     * @param \Pterodactyl\Services\Schedules\Tasks\RunTaskService          $runnerService
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
+     * @param \Illuminate\Contracts\Bus\Dispatcher                          $dispatcher
+     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $scheduleRepository
+     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface     $taskRepository
      */
-    public function __construct(RunTaskService $runnerService, ScheduleRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
-        $this->runnerService = $runnerService;
-    }
-
-    /**
-     * Set the time that this schedule should be run at. This will override the time
-     * defined on the schedule itself. Useful for triggering one-off task runs.
-     *
-     * @param \Carbon\Carbon $time
-     * @return $this
-     */
-    public function setRunTimeOverride(Carbon $time)
-    {
-        $this->runTimeOverride = $time;
-
-        return $this;
+    public function __construct(
+        Dispatcher $dispatcher,
+        ScheduleRepositoryInterface $scheduleRepository,
+        TaskRepositoryInterface $taskRepository
+    ) {
+        $this->dispatcher = $dispatcher;
+        $this->scheduleRepository = $scheduleRepository;
+        $this->taskRepository = $taskRepository;
     }
 
     /**
@@ -61,7 +53,10 @@ class ProcessScheduleService
      */
     public function handle(Schedule $schedule)
     {
-        $this->repository->loadTasks($schedule);
+        $this->scheduleRepository->loadTasks($schedule);
+
+        /** @var \Pterodactyl\Models\Task $task */
+        $task = $schedule->getRelation('tasks')->where('sequence_id', 1)->first();
 
         $formattedCron = sprintf('%s %s %s * %s',
             $schedule->cron_minute,
@@ -70,27 +65,15 @@ class ProcessScheduleService
             $schedule->cron_day_of_week
         );
 
-        $this->repository->update($schedule->id, [
+        $this->scheduleRepository->update($schedule->id, [
             'is_processing' => true,
-            'next_run_at' => $this->getRunAtTime($formattedCron),
+            'next_run_at' => CronExpression::factory($formattedCron)->getNextRunDate(),
         ]);
 
-        $task = $schedule->getRelation('tasks')->where('sequence_id', 1)->first();
-        $this->runnerService->handle($task);
-    }
+        $this->taskRepository->update($task->id, ['is_queued' => true]);
 
-    /**
-     * Get the timestamp to store in the database as the next_run time for a schedule.
-     *
-     * @param string $formatted
-     * @return \DateTime|string
-     */
-    private function getRunAtTime(string $formatted)
-    {
-        if ($this->runTimeOverride instanceof Carbon) {
-            return $this->runTimeOverride->toDateTimeString();
-        }
-
-        return CronExpression::factory($formatted)->getNextRunDate();
+        $this->dispatcher->dispatch(
+            (new RunTaskJob($task->id, $schedule->id))->delay($task->time_offset)
+        );
     }
 }

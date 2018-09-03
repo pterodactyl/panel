@@ -144,6 +144,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         $headers['X-Access-Token'] = $this->getToken() ?? $this->getNode()->daemonSecret;
 
         return new Client([
+            'verify' => config('app.env') === 'production',
             'base_uri' => sprintf('%s://%s:%s/v1/', $this->getNode()->scheme, $this->getNode()->fqdn, $this->getNode()->daemonListen),
             'timeout' => config('pterodactyl.guzzle.timeout'),
             'connect_timeout' => config('pterodactyl.guzzle.connect_timeout'),
