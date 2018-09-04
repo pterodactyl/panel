@@ -258,6 +258,9 @@ return [
             ],
         ],
     ],
+    'allocations' => [
+        'delete' => 'Delete Allocations'
+    ],
     'files' => [
         'exceptions' => [
             'invalid_mime' => 'This type of file cannot be edited via the Panel\'s built-in editor.',
