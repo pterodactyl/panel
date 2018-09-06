@@ -297,7 +297,7 @@ class NodesController extends Controller
     public function allocationRemoveMultiple(int $node, Allocation ...$allocations): Response
     {
         foreach($allocations as $allocation) {
-            $this->allocationDeletionService->handle($allocation);
+            $this->allocationRemoveSingle($node, $allocation);
         }
 
         return response('', 204);

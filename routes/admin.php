@@ -153,6 +153,7 @@ Route::group(['prefix' => 'nodes'], function () {
 
     Route::delete('/view/{node}/delete', 'NodesController@delete')->name('admin.nodes.view.delete');
     Route::delete('/view/{node}/allocation/remove/{allocation}', 'NodesController@allocationRemoveSingle')->name('admin.nodes.view.allocation.removeSingle');
+    Route::delete('/view/{node}/allocation/remove_multiple', 'NodesController@allocationRemoveMultiple')->name('admin.nodes.view.allocation.removeMultiple');
 });
 
 /*
