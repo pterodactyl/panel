@@ -75,6 +75,7 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     {
         return $this->getBuilder()->with('tasks')
             ->where('is_active', true)
+            ->where('is_processing', false)
             ->where('next_run_at', '<=', $timestamp)
             ->get($this->getColumns());
     }

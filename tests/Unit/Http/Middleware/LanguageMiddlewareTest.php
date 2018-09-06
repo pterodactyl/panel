@@ -3,8 +3,8 @@
 namespace Tests\Unit\Http\Middleware;
 
 use Mockery as m;
+use Pterodactyl\Models\User;
 use Illuminate\Foundation\Application;
-use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
 
 class LanguageMiddlewareTest extends MiddlewareTestCase
@@ -15,11 +15,6 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
     private $appMock;
 
     /**
-     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
-     */
-    private $config;
-
-    /**
      * Setup tests.
      */
     public function setUp()
@@ -27,16 +22,28 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
         parent::setUp();
 
         $this->appMock = m::mock(Application::class);
-        $this->config = m::mock(Repository::class);
     }
 
     /**
-     * Test that a language is defined via the middleware.
+     * Test that a language is defined via the middleware for guests.
      */
-    public function testLanguageIsSet()
+    public function testLanguageIsSetForGuest()
     {
-        $this->config->shouldReceive('get')->with('app.locale', 'en')->once()->andReturn('en');
+        $this->request->shouldReceive('user')->withNoArgs()->andReturnNull();
         $this->appMock->shouldReceive('setLocale')->with('en')->once()->andReturnNull();
+
+        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
+    }
+
+    /**
+     * Test that a language is defined via the middleware for a user.
+     */
+    public function testLanguageIsSetWithAuthenticatedUser()
+    {
+        $user = factory(User::class)->make(['language' => 'de']);
+
+        $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);
+        $this->appMock->shouldReceive('setLocale')->with('de')->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
@@ -48,6 +55,6 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
      */
     private function getMiddleware(): LanguageMiddleware
     {
-        return new LanguageMiddleware($this->appMock, $this->config);
+        return new LanguageMiddleware($this->appMock);
     }
 }

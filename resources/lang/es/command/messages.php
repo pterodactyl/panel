@@ -47,7 +47,7 @@ return [
     ],
     'environment' => [
         'mail' => [
-            'ask_smtp_host' => 'Host SMTP (e.g. smtp.google.com)',
+            'ask_smtp_host' => 'Host SMTP (e.g. smtp.gmail.com)',
             'ask_smtp_port' => 'Puerto SMTP',
             'ask_smtp_username' => 'El nombre de Usuario SMTP',
             'ask_smtp_password' => 'Contraseña SMTP',

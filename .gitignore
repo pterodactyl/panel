@@ -19,5 +19,14 @@ public/assets/*
 .dockerignore
 Dockerfile
 docker-compose.yml
+# for image related files
+misc
+.phpstorm.meta.php
+.php_cs.cache
+
+coverage.xml
+
+# Vagrant
+*.log
 resources/lang/locales.js
 resources/assets/pterodactyl/scripts/helpers/ziggy.js
