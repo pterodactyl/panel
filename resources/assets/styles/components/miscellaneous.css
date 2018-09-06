@@ -52,27 +52,48 @@ code {
 /**
  * Flex boxes for server listing on user dashboard.
  */
-.server-box {
-    @apply .block .pb-4 .no-underline;
+.server-card {
+    @apply .block .no-underline .shadow;
 
     @screen smx {
         @apply .w-full;
     }
 
     @screen md {
-        @apply .w-1/3 .pr-4;
+        @apply .w-1/3 .mr-4;
 
         &:nth-of-type(3n) {
-            padding-right: 0;
+            @apply .mr-0;
         }
     }
 
-    & > .content {
-        @apply .border .border-grey-light .bg-white .rounded .p-4 .justify-between .leading-normal .no-underline .block .text-black;
+    & .identifier-icon {
+        @apply .inline-block .rounded-full .text-white .text-center .leading-none .justify-center .w-8 .h-8 .mr-2 .flex .flex-row .items-center;
+    }
 
-        &:visited {
-            @apply .text-black;
+    & .pillbox {
+        @apply .rounded-full .px-2 .py-1 .text-white .font-medium .leading-none .text-xs;
+    }
+
+    & a, & a:visited {
+        @apply .no-underline .text-grey-darkest;
+    }
+
+    & > .content {
+        @apply .border .border-grey-light .bg-white .no-underline .block .text-black .p-4;
+        border-top: 4px solid config('colors.grey-light') !important;
+
+        &.is-online {
+            border-top-color: config('colors.green') !important;
         }
+
+        &.is-offline {
+            border-top-color: config('colors.red') !important;
+        }
+    }
+
+    & > .footer {
+        @apply .border .border-grey-light .border-t-0 .bg-grey-lightest;
     }
 }
 

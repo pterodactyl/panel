@@ -1,39 +1,38 @@
 <template>
-    <div class="server-box animate fadein">
-        <router-link :to="{ name: 'server', params: { id: server.identifier }}" class="content">
-            <div class="float-right">
-                <div class="indicator" :class="status"></div>
-            </div>
-            <div class="mb-4">
-                <div class="text-black font-bold text-xl">
+    <div class="server-card animated-fade-in hover:shadow-md">
+        <div class="content h-32 relative" :class="{
+            'is-online': status === 'online',
+            'is-offline': status === 'offline'
+        }">
+            <router-link :to="link">
+                <h2 class="text-xl flex flex-row items-center mb-2">
+                    <div class="identifier-icon select-none" :class="{
+                        'bg-grey': status === '',
+                        'bg-red': status === 'offline',
+                        'bg-green': status === 'online'
+                    }">
+                        {{ server.name[0] }}
+                    </div>
                     {{ server.name }}
+                </h2>
+            </router-link>
+            <div class="text-grey-darker font-normal text-sm">
+                <p v-if="server.description.length" class="pb-1">{{ server.description }}</p>
+
+                <div class="absolute pin-b pin-l p-4 w-full">
+                    <span class="font-semibold text-indigo">{{ server.node }}</span>
+                    <span class="float-right text-grey-dark font-light">{{ server.allocation.ip }}:{{ server.allocation.port }}</span>
                 </div>
             </div>
-            <div class="mb-0 flex">
-                <div class="usage">
-                    <div class="indicator-title">{{ $t('dashboard.index.cpu_title') }}</div>
-                </div>
-                <div class="usage">
-                    <div class="indicator-title">{{ $t('dashboard.index.memory_title') }}</div>
-                </div>
+        </div>
+        <div class="footer p-4 text-sm">
+            <div class="inline-block pr-2">
+                <div class="pillbox bg-green"><span class="select-none">MEM:</span> {{ memory }} Mb</div>
             </div>
-            <div class="mb-4 flex text-center">
-                <div class="inline-block border border-grey-lighter border-l-0 p-4 flex-1">
-                    <span class="font-bold text-xl">{{ cpu > 0 ? cpu : '&mdash;' }}</span>
-                    <span class="font-light text-sm">%</span>
-                </div>
-                <div class="inline-block border border-grey-lighter border-l-0 border-r-0 p-4 flex-1">
-                    <span class="font-bold text-xl">{{ memory > 0 ? memory : '&mdash;' }}</span>
-                    <span class="font-light text-sm">MB</span>
-                </div>
+            <div class="inline-block">
+                <div class="pillbox bg-blue"><span class="select-none">CPU:</span> {{ cpu }} %</div>
             </div>
-            <div class="flex items-center">
-                <div class="text-sm">
-                    <p class="text-grey">{{ server.node }}</p>
-                    <p class="text-grey-dark">{{ server.allocation.ip }}:{{ server.allocation.port }}</p>
-                </div>
-            </div>
-        </router-link>
+        </div>
     </div>
 </template>
 
@@ -57,6 +56,7 @@
                 cpu: 0,
                 memory: 0,
                 status: '',
+                link: { name: 'server', params: { id: this.server.identifier }},
             };
         },
 
@@ -101,6 +101,7 @@
          * Poll the API for changes every 10 seconds when the component is mounted.
          */
         mounted: function () {
+            console.log(this.server);
             this.$options.dataGetTimeout = window.setInterval(() => {
                 this.getResourceUse();
             }, 10000);

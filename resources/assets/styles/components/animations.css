@@ -4,6 +4,10 @@
   }
 }
 
+.animated-fade-in {
+  animation: fadein 500ms;
+}
+
 .fade-enter-active {
   animation: fadein 500ms;
 }

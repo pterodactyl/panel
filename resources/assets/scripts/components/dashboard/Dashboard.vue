@@ -16,11 +16,11 @@
                     <span class="spinner spinner-xl spinner-thick blue"></span>
                 </div>
             </div>
-            <transition-group class="w-full m-auto mt-4 animate fadein sm:flex flex-wrap content-start" v-else>
+            <transition-group class="flex flex-wrap justify-center sm:justify-start" v-else>
                 <server-box
                         v-for="(server, index) in servers"
-                        v-bind:key="index"
-                        v-bind:server="server"
+                        :key="index"
+                        :server="server"
                 />
             </transition-group>
         </div>
