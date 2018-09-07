@@ -106,7 +106,7 @@ return [
                 ],
                 'suspend' => [
                     'description' => 'Ermöglicht das Suspendieren einer Serverinstanz.',
-                    'title' => 'Server Suspendieren',
+                    'title' => 'Server suspendieren',
                 ],
                 'title' => 'Serververwaltung',
                 'unsuspend' => [
