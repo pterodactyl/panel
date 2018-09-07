@@ -210,15 +210,15 @@ return [
                         'title' => 'Server löschen',
                     ],
                     'edit-build' => [
-                        'desc' => 'Der Benutzer darf Server einstellungen bearbeiten.',
-                        'title' => 'Server einstellungen ändern',
+                        'desc' => 'Der Benutzer darf Servereinstellungen bearbeiten.',
+                        'title' => 'Servereinstellungen ändern',
                     ],
                     'edit-container' => [
                         'desc' => 'Der Benutzer darf die Container Einstellungen des Servers verändern.',
-                        'title' => 'Server Container einstellungen ändern',
+                        'title' => 'Server Container Einstellungen ändern',
                     ],
                     'edit-details' => [
-                        'desc' => 'Der Benutzer darf die Server einstellungen bearbeiten.',
+                        'desc' => 'Der Benutzer darf die Servereinstellungen bearbeiten.',
                         'title' => 'Server Details ändern',
                     ],
                     'edit-startup' => [
