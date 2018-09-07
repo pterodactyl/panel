@@ -40,7 +40,7 @@ return [
     ],
     'subusers' => [
         'editing_self' => 'Du darfst deinen eigenen Subuser nicht bearbeiten.',
-        'user_is_owner' => 'Du kannst den Owner nicht als Subuser hinzufügen.',
+        'user_is_owner' => 'Du kannst den Serverbesitzer nicht als Subuser hinzufügen.',
         'subuser_exists' => 'Diese Email ist bereits registriert.',
     ],
     'databases' => [
