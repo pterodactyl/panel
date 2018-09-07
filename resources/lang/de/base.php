@@ -105,12 +105,12 @@ return [
                     'title' => 'Server Informationen',
                 ],
                 'suspend' => [
-                    'description' => 'Ermöglicht das suspendieren einer Serverinstanz.',
-                    'title' => 'Server suspendieren',
+                    'description' => 'Ermöglicht das Suspendieren einer Serverinstanz.',
+                    'title' => 'Server Suspendieren',
                 ],
                 'title' => 'Serververwaltung',
                 'unsuspend' => [
-                    'description' => 'Ermöglicht die suspendierung einer Serverinstanz aufzuheben.',
+                    'description' => 'Ermöglicht die Suspendierung einer Serverinstanz aufzuheben.',
                     'title' => 'Suspendierung des Servers aufheben',
                 ],
                 'view' => [
