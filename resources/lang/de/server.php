@@ -305,7 +305,7 @@ return [
                 'title' => 'Server stoppen',
             ],
             'queue_schedule' => [
-                'description' => "Ermöglicht einem Benutzer, einen Zeitplan in die Warteschlange zu stellen.",
+                'description' => 'Ermöglicht einem Benutzer, einen Zeitplan in die Warteschlange zu stellen.',
                 'title' => 'Queue Schedule',
             ],
             'queue_task' => [
