@@ -40,8 +40,14 @@
                 <h3 class="box-title">Existing Allocations</h3>
             </div>
             <div class="box-body table-responsive no-padding">
+                <div class="pull-right">
+                    <a href="#" id="selective-deletion" data-action="selective-deletion">@lang('server.allocations.delete') <i class="fa fa-fw fa-trash-o"></i></a>
+                </div>
                 <table class="table table-hover" style="margin-bottom:0;">
                     <tr>
+                        <th>
+                            <input type="checkbox" class="select-all-files hidden-xs" data-action="selectAll">
+                        </th>
                         <th>IP Address <i class="fa fa-fw fa-minus-square" style="font-weight:normal;color:#d9534f;cursor:pointer;" data-toggle="modal" data-target="#allocationModal"></i></th>
                         <th>IP Alias</th>
                         <th>Port</th>
@@ -50,12 +56,19 @@
                     </tr>
                     @foreach($node->allocations as $allocation)
                         <tr>
-                            <td class="col-sm-3 middle">{{ $allocation->ip }}</td>
+                            <td class="middle min-size" data-identifier="type">
+                                @if(is_null($allocation->server_id))
+                                <input type="checkbox" class="select-file hidden-xs" data-action="addSelection">
+                                @else
+                                <input disabled="disabled" type="checkbox" class="select-file hidden-xs" data-action="addSelection">
+                                @endif
+                            </td>
+                            <td class="col-sm-3 middle" data-identifier="ip">{{ $allocation->ip }}</td>
                             <td class="col-sm-3 middle">
                                 <input class="form-control input-sm" type="text" value="{{ $allocation->ip_alias }}" data-action="set-alias" data-id="{{ $allocation->id }}" placeholder="none" />
                                 <span class="input-loader"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
                             </td>
-                            <td class="col-sm-2 middle">{{ $allocation->port }}</td>
+                            <td class="col-sm-2 middle" data-identifier="port">{{ $allocation->port }}</td>
                             <td class="col-sm-3 middle">
                                 @if(! is_null($allocation->server))
                                     <a href="{{ route('admin.servers.view', $allocation->server_id) }}">{{ $allocation->server->name }}</a>
@@ -152,6 +165,9 @@
 
 @section('footer-scripts')
     @parent
+
+    {!! Theme::js('js/frontend/nodes/allocation.js') !!}
+
     <script>
     $('#pAllocationIP').select2({
         tags: true,
