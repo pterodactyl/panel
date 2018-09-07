@@ -1,5 +1,4 @@
 <?php
-
 return [
     'home' => 'Startseite',
     'account' => [
@@ -23,7 +22,7 @@ return [
         'port_allocations' => 'Port-Einstellungen',
         'sftp_settings' => 'SFTP Einstellungen',
         'startup_parameters' => 'Startup Parameter',
-        'databases' => 'Datenbaken',
+        'databases' => 'Datenbanken',
         'edit_file' => 'Datei bearbeiten',
         'admin_header' => 'ADMINISTRATIV',
         'admin' => 'Server Konfiguration',
