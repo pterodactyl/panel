@@ -1,20 +1,28 @@
 class Allocation {
-    selectItem() {
-        $('[data-action="addSelection"]').on('click', event => {
-            event.preventDefault();
+    constructor() {
+        $('[data-action="addSelection"]').on('click', () => {
+            this.updateMassActions();
         });
-    }
 
-    selectAll() {
-        $('[data-action="selectAll"]').on('click', event => {
-            event.preventDefault();
+        $('[data-action="selectAll"]').on('click', () => {
+            $('input.select-file').prop('checked', (i, val) => {
+                return !val;
+            });
+
+            this.updateMassActions();
         });
-    }
 
-    selectiveDeletion() {
         $('[data-action="selective-deletion"]').on('mousedown', () => {
-            deleteSelected();
+            this.deleteSelected();
         });
+    }
+
+    updateMassActions() {
+        if ($('input.select-file:checked').length > 0) {
+            $('#mass_actions').removeClass('disabled');
+        } else {
+            $('#mass_actions').addClass('disabled');
+        }
     }
 
     deleteSelected() {
@@ -25,10 +33,10 @@ class Allocation {
         let portBlock;
         let delLocation;
 
-        $('#file_listing input[data-action="addSelection"]:checked').each(function () {
+        $('input.select-file:checked').each(function () {
             parent = $(this).closest('tr');
             ipBlock = $(parent).find('td[data-identifier="ip"]');
-            portBlock = $(parent).find('td[data-identifier="port"');
+            portBlock = $(parent).find('td[data-identifier="port"]');
 
             delLocation = `${ipBlock.text()}:${portBlock.text()}`;
 
@@ -62,8 +70,11 @@ class Allocation {
             }, () => {
                 $.ajax({
                     method: 'DELETE',
-                    url: Router.route('admin.nodes.view.allocation.removeMultiple', { node: Pterodactyl.node.id, allocation: selectedItems }),
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') }
+                    url: Router.route('admin.nodes.view.allocation.removeMultiple', {
+                        node: Pterodactyl.node.id,
+                        allocation: selectedItems
+                    }),
+                    headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}
                 }).done(data => {
                     $('#file_listing input:checked').each(function () {
                         $(this).prop('checked', false);
@@ -96,3 +107,5 @@ class Allocation {
         }
     }
 }
+
+window.Allocation = new Allocation();

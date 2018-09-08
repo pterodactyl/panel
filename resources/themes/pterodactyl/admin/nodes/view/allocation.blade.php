@@ -40,9 +40,6 @@
                 <h3 class="box-title">Existing Allocations</h3>
             </div>
             <div class="box-body table-responsive no-padding">
-                <div class="pull-right">
-                    <a href="#" id="selective-deletion" data-action="selective-deletion">@lang('server.allocations.delete') <i class="fa fa-fw fa-trash-o"></i></a>
-                </div>
                 <table class="table table-hover" style="margin-bottom:0;">
                     <tr>
                         <th>
@@ -52,7 +49,16 @@
                         <th>IP Alias</th>
                         <th>Port</th>
                         <th>Assigned To</th>
-                        <th></th>
+                        <th>
+                            <div class="btn-group hidden-xs">
+                                <button type="button" id="mass_actions" class="btn btn-sm btn-default dropdown-toggle disabled"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('server.allocations.mass_actions') <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-massactions">
+                                    <li><a href="#" id="selective-deletion" data-action="selective-deletion">@lang('server.allocations.delete') <i class="fa fa-fw fa-trash-o"></i></a></li>
+                                </ul>
+                            </div>
+                        </th>
                     </tr>
                     @foreach($node->allocations as $allocation)
                         <tr>
