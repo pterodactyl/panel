@@ -26,22 +26,22 @@ class Allocation {
     }
 
     deleteSelected() {
+        let selectedIds = [];
         let selectedItems = [];
         let selectedItemsElements = [];
-        let parent;
-        let ipBlock;
-        let portBlock;
-        let delLocation;
 
         $('input.select-file:checked').each(function () {
-            parent = $(this).closest('tr');
-            ipBlock = $(parent).find('td[data-identifier="ip"]');
-            portBlock = $(parent).find('td[data-identifier="port"]');
+            const $parent = $($(this).closest('tr'));
+            const id = $parent.find('[data-action="deallocate"]').data('id');
+            const $ip = $parent.find('td[data-identifier="ip"]');
+            const $port = $parent.find('td[data-identifier="port"]');
+            const block = `${$ip.text()}:${$port.text()}`;
 
-            delLocation = `${ipBlock.text()}:${portBlock.text()}`;
-
-            selectedItems.push(delLocation);
-            selectedItemsElements.push(parent);
+            selectedIds.push({
+                id: id
+            });
+            selectedItems.push(block);
+            selectedItemsElements.push($parent);
         });
 
         if (selectedItems.length !== 0) {
@@ -71,10 +71,14 @@ class Allocation {
                 $.ajax({
                     method: 'DELETE',
                     url: Router.route('admin.nodes.view.allocation.removeMultiple', {
-                        node: Pterodactyl.node.id,
-                        allocation: selectedItems
+                        node: Pterodactyl.node.id
                     }),
-                    headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')}
+                    headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+                    data: JSON.stringify({
+                        allocations: selectedIds
+                    }),
+                    contentType: 'application/json',
+                    processData: false
                 }).done(data => {
                     $('#file_listing input:checked').each(function () {
                         $(this).prop('checked', false);

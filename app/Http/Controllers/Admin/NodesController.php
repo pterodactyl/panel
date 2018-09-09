@@ -288,15 +288,18 @@ class NodesController extends Controller
     /**
      * Removes multiple individual allocations from a node.
      *
-     * @param int                               $node
-     * @param \Pterodactyl\Models\Allocation    ...$allocations
+     * @param \Illuminate\Http\Request $request
+     * @param int $node
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function allocationRemoveMultiple(int $node, Allocation ...$allocations): Response
+    public function allocationRemoveMultiple(Request $request, int $node): Response
     {
-        foreach($allocations as $allocation) {
+        $allocations = $request->input('allocations');
+        foreach($allocations as $id) {
+            $allocation = new Allocation();
+            $allocation->id = $id;
             $this->allocationRemoveSingle($node, $allocation);
         }
 
