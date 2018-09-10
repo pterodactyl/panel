@@ -1,4 +1,5 @@
 <?php
+
 return [
     'password' => 'Passwort',
     'reset' => 'Dein Passwort wurde zurückgesetzt!',
