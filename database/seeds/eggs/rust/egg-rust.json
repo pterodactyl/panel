@@ -37,8 +37,8 @@
             "description": "DEPRECIATED - PLEASE USE \"UMOD\" VARIABLE INSTEAD",
             "env_variable": "OXIDE",
             "default_value": "0",
-            "user_viewable": 0,
-            "user_editable": 0,
+            "user_viewable": 1,
+            "user_editable": 1,
             "rules": "required|boolean"
         },
         {
