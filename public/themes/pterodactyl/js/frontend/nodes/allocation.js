@@ -5,7 +5,7 @@ class Allocation {
         });
 
         $('[data-action="selectAll"]').on('click', () => {
-            $('input.select-file').prop('checked', (i, val) => {
+            $('input.select-file').not(':disabled').prop('checked', (i, val) => {
                 return !val;
             });
 
