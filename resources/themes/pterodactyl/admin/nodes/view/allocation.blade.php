@@ -171,21 +171,36 @@
 
 @section('footer-scripts')
     @parent
-
-    {!! Theme::js('js/frontend/nodes/allocation.js') !!}
-
     <script>
+    $('[data-action="addSelection"]').on('click', () => {
+        updateMassActions();
+    });
+
+    $('[data-action="selectAll"]').on('click', () => {
+        $('input.select-file').not(':disabled').prop('checked', (i, val) => {
+            return !val;
+        });
+
+        updateMassActions();
+    });
+
+    $('[data-action="selective-deletion"]').on('mousedown', () => {
+        deleteSelected();
+    });
+
     $('#pAllocationIP').select2({
         tags: true,
         maximumSelectionLength: 1,
         selectOnClose: true,
         tokenSeparators: [',', ' '],
     });
+
     $('#pAllocationPorts').select2({
         tags: true,
         selectOnClose: true,
         tokenSeparators: [',', ' '],
     });
+
     $('button[data-action="deallocate"]').click(function (event) {
         event.preventDefault();
         var element = $(this);
@@ -238,7 +253,7 @@
                 alias: element.val(),
                 allocation_id: element.data('id'),
             }
-        }).done(function (data) {
+        }).done(function () {
             element.parent().addClass('has-success');
         }).fail(function (jqXHR) {
             console.error(jqXHR);
@@ -251,6 +266,100 @@
 
     function clearHighlight(element) {
         element.parent().removeClass('has-error has-success');
+    }
+
+    function updateMassActions() {
+        if ($('input.select-file:checked').length > 0) {
+            $('#mass_actions').removeClass('disabled');
+        } else {
+            $('#mass_actions').addClass('disabled');
+        }
+    }
+
+    function deleteSelected() {
+        var selectedIds = [];
+        var selectedItems = [];
+        var selectedItemsElements = [];
+
+        $('input.select-file:checked').each(function () {
+            var $parent = $($(this).closest('tr'));
+            var id = $parent.find('[data-action="deallocate"]').data('id');
+            var $ip = $parent.find('td[data-identifier="ip"]');
+            var $port = $parent.find('td[data-identifier="port"]');
+            var block = `${$ip.text()}:${$port.text()}`;
+
+            selectedIds.push({
+                id: id
+            });
+            selectedItems.push(block);
+            selectedItemsElements.push($parent);
+        });
+
+        if (selectedItems.length !== 0) {
+            var formattedItems = "";
+            var i = 0;
+            $.each(selectedItems, function (key, value) {
+                formattedItems += ("<code>" + value + "</code>, ");
+                i++;
+                return i < 5;
+            });
+
+            formattedItems = formattedItems.slice(0, -2);
+            if (selectedItems.length > 5) {
+                formattedItems += ', and ' + (selectedItems.length - 5) + ' other(s)';
+            }
+
+            swal({
+                type: 'warning',
+                title: '',
+                text: 'Are you sure you want to delete the following allocations: ' + formattedItems + '?',
+                html: true,
+                showCancelButton: true,
+                showConfirmButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, () => {
+                $.ajax({
+                    method: 'DELETE',
+                    url: Router.route('admin.nodes.view.allocation.removeMultiple', {
+                        node: Pterodactyl.node.id
+                    }),
+                    headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+                    data: JSON.stringify({
+                        allocations: selectedIds
+                    }),
+                    contentType: 'application/json',
+                    processData: false
+                }).done(() => {
+                    $('#file_listing input:checked').each(function () {
+                        $(this).prop('checked', false);
+                    });
+
+                    $.each(selectedItemsElements, function () {
+                        $(this).addClass('warning').delay(200).fadeOut();
+                    });
+
+                    swal({
+                        type: 'success',
+                        title: 'Allocations Deleted'
+                    });
+                }).fail(jqXHR => {
+                    console.error(jqXHR);
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        html: true,
+                        text: 'An error occurred while attempting to delete these allocations. Please try again.',
+                    });
+                });
+            });
+        } else {
+            swal({
+                type: 'warning',
+                title: '',
+                text: 'Please select allocation(s) to delete.',
+            });
+        }
     }
     </script>
 @endsection
