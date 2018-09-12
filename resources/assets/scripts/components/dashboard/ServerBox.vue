@@ -1,9 +1,6 @@
 <template>
     <div class="server-card animated-fade-in hover:shadow-md">
-        <div class="content h-32 relative" :class="{
-            'is-online': status === 'online',
-            'is-offline': status === 'offline'
-        }">
+        <div class="content h-32 relative">
             <router-link :to="link">
                 <h2 class="text-xl flex flex-row items-center mb-2">
                     <div class="identifier-icon select-none" :class="{

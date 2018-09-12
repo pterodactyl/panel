@@ -82,14 +82,6 @@ code {
     & > .content {
         @apply .border .border-grey-light .bg-white .no-underline .block .text-black .p-4;
         border-top: 4px solid config('colors.grey-light') !important;
-
-        &.is-online {
-            border-top-color: config('colors.green') !important;
-        }
-
-        &.is-offline {
-            border-top-color: config('colors.red') !important;
-        }
     }
 
     & > .footer {
