@@ -1,9 +1,9 @@
 .nav {
-    @apply .bg-blue;
-    height: 48px;
+    @apply .bg-blue .border-b .border-t .border-blue-darkest;
+    height: 56px;
 
     & > .logo {
-        @apply .mx-8 .font-sans .font-thin .text-2xl .text-white .inline-block .pt-2;
+        @apply .mx-8 .font-sans .font-thin .text-3xl .text-white .inline-block .pt-2;
 
         & a {
             color: inherit;
@@ -21,8 +21,7 @@
             & > li {
                 @apply .inline-block;
                 & > a {
-                    @apply .block .h-full .no-underline .text-grey-lighter .font-light .text-sm;
-                    padding: 15px;
+                    @apply .block .h-full .no-underline .text-grey-lighter .font-light .text-sm .p-5;
 
                     &:hover {
                         @apply .bg-blue-dark;
