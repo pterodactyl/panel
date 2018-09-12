@@ -172,19 +172,19 @@
 @section('footer-scripts')
     @parent
     <script>
-    $('[data-action="addSelection"]').on('click', () => {
+    $('[data-action="addSelection"]').on('click', function () {
         updateMassActions();
     });
 
-    $('[data-action="selectAll"]').on('click', () => {
-        $('input.select-file').not(':disabled').prop('checked', (i, val) => {
+    $('[data-action="selectAll"]').on('click', function () {
+        $('input.select-file').not(':disabled').prop('checked', function (i, val) {
             return !val;
         });
 
         updateMassActions();
     });
 
-    $('[data-action="selective-deletion"]').on('mousedown', () => {
+    $('[data-action="selective-deletion"]').on('mousedown', function () {
         deleteSelected();
     });
 
@@ -318,7 +318,7 @@
                 showConfirmButton: true,
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true
-            }, () => {
+            }, function () {
                 $.ajax({
                     method: 'DELETE',
                     url: Router.route('admin.nodes.view.allocation.removeMultiple', {
@@ -330,7 +330,7 @@
                     }),
                     contentType: 'application/json',
                     processData: false
-                }).done(() => {
+                }).done(function () {
                     $('#file_listing input:checked').each(function () {
                         $(this).prop('checked', false);
                     });
@@ -343,7 +343,7 @@
                         type: 'success',
                         title: 'Allocations Deleted'
                     });
-                }).fail(jqXHR => {
+                }).fail(function (jqXHR) {
                     console.error(jqXHR);
                     swal({
                         type: 'error',
