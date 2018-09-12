@@ -37,7 +37,7 @@
             @apply .absolute .bg-grey-lightest .border .border-blue-darkest .border-t-0 .rounded .rounded-t-none .p-2 .mx-3 .z-50;
             width: 26rem;
 
-            & > a {
+            & a {
                 @apply .block .no-underline .p-2 .rounded;
 
                 &:hover {

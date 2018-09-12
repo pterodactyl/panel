@@ -7,28 +7,42 @@
         </div>
         <div class="search-box flex-none" v-if="$route.name !== 'dashboard'">
             <input type="text" class="search-input" id="searchInput" placeholder="Search..."
-                   :class="{ 'has-search-results': servers.length > 0 && searchActive }"
+                   :class="{ 'has-search-results': (servers.length > 0 || loadingResults) && searchActive }"
                    v-on:focus="searchActive = true"
                    v-on:blur="searchActive = false"
                    v-on:input="search"
                    v-model="searchTerm"
             />
-            <div class="search-results select-none" :class="{ 'hidden': servers.length === 0 || !searchActive }">
-                <router-link
-                        v-for="server in servers"
-                        :key="server.identifier"
-                        :to="{ name: 'server', params: { id: server.identifier } }"
-                >
-                    <div class="flex items-center">
-                        <div class="flex-1">
-                            <span class="font-bold text-grey-darkest">{{ server.name }}</span><br />
-                            <span class="font-light text-grey-dark text-sm" v-if="server.description.length > 0">{{ server.description }}</span>
+            <div class="search-results select-none" :class="{ 'hidden': (servers.length === 0 && !loadingResults) || !searchActive }">
+                <div v-if="loadingResults">
+                    <a href="#">
+                        <div class="flex items-center">
+                            <div class="flex-1">
+                                <span class="text-sm text-grey-darker">Loading...</span>
+                            </div>
+                            <div class="flex-none">
+                                <span class="spinner spinner-relative"></span>
+                            </div>
                         </div>
-                        <div class="flex-none">
-                            <span class="pillbox bg-indigo">{{ server.node }}</span>
+                    </a>
+                </div>
+                <div v-else>
+                    <router-link
+                            v-for="server in servers"
+                            :key="server.identifier"
+                            :to="{ name: 'server', params: { id: server.identifier } }"
+                    >
+                        <div class="flex items-center">
+                            <div class="flex-1">
+                                <span class="font-bold text-grey-darkest">{{ server.name }}</span><br />
+                                <span class="font-light text-grey-dark text-sm" v-if="server.description.length > 0">{{ server.description }}</span>
+                            </div>
+                            <div class="flex-none">
+                                <span class="pillbox bg-indigo">{{ server.node }}</span>
+                            </div>
                         </div>
-                    </div>
-                </router-link>
+                    </router-link>
+                </div>
             </div>
         </div>
         <div class="menu flex-none">
@@ -69,6 +83,7 @@
 
         data: function () {
             return {
+                loadingResults: false,
                 searchActive: false,
             };
         },
@@ -88,6 +103,7 @@
         methods: {
             search: debounce(function () {
                 if (this.searchTerm.length > 3) {
+                    this.loadingResults = true;
                     this.gatherSearchResults(this.searchTerm);
                 }
             }, 500),
@@ -106,6 +122,9 @@
                                 this.error(error.detail);
                             });
                         }
+                    })
+                    .then(() => {
+                        this.loadingResults = false;
                     });
             },
 
