@@ -98,7 +98,6 @@
          * Poll the API for changes every 10 seconds when the component is mounted.
          */
         mounted: function () {
-            console.log(this.server);
             this.$options.dataGetTimeout = window.setInterval(() => {
                 this.getResourceUse();
             }, 10000);

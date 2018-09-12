@@ -71,10 +71,6 @@ code {
         @apply .inline-block .rounded-full .text-white .text-center .leading-none .justify-center .w-8 .h-8 .mr-2 .flex .flex-row .items-center;
     }
 
-    & .pillbox {
-        @apply .rounded-full .px-2 .py-1 .text-white .font-medium .leading-none .text-xs;
-    }
-
     & a, & a:visited {
         @apply .no-underline .text-grey-darkest;
     }
@@ -87,6 +83,10 @@ code {
     & > .footer {
         @apply .border .border-grey-light .border-t-0 .bg-grey-lightest;
     }
+}
+
+.pillbox {
+    @apply .rounded-full .px-2 .py-1 .text-white .font-medium .leading-none .text-xs;
 }
 
 .server-search {

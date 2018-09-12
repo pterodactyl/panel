@@ -11,7 +11,39 @@
         }
 
         @screen xsx {
-            @apply .hidden
+            @apply .hidden;
+        }
+    }
+
+    & > .search-box {
+        & > .search-input {
+            @apply .text-sm .p-2 .mt-3 .mx-3 .rounded .border .border-blue-darker .bg-grey-lightest .text-grey-darkest;
+            width: 26rem;
+            opacity: 0.7;
+            transition: ease-in-out opacity 150ms;
+
+            &:focus {
+                @apply .border-blue-darkest;
+                opacity: 1;
+            }
+
+            &.has-search-results {
+                @apply .border-b-0 .rounded-b-none;
+                opacity: 1 !important;
+            }
+        }
+
+        & .search-results {
+            @apply .absolute .bg-grey-lightest .border .border-blue-darkest .border-t-0 .rounded .rounded-t-none .p-2 .mx-3 .z-50;
+            width: 26rem;
+
+            & > a {
+                @apply .block .no-underline .p-2 .rounded;
+
+                &:hover {
+                    @apply .bg-grey-lighter;
+                }
+            }
         }
     }
 
@@ -35,7 +67,7 @@
         }
 
         @screen sm {
-            @apply .float-right .mx-8 .inline-block;
+            @apply .float-right .mr-8 .inline-block;
         }
     }
 }
