@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div class="mt-6 sidenav mr-6 bg-white border rounded">
-                        <router-link :to="{ name: 'server', params: { id: this.$route.params.id } }">
+                        <router-link :to="{ name: 'server', params: { id: $route.params.id } }">
                             <terminal-icon class="h-4"></terminal-icon> Console
                         </router-link>
                         <router-link :to="{ name: 'server-files' }">
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     -->
-                    <router-view></router-view>
+                    <router-view :key="server.identifier"></router-view>
                 </div>
             </div>
         </div>
@@ -85,6 +85,18 @@
         computed: {
             ...mapState('server', ['server', 'credentials']),
             ...mapState('socket', ['connected', 'connectionError']),
+        },
+
+        // Watch for route changes that occur with different server parameters. This occurs when a user
+        // uses the search bar. Because of the way vue-router works, it won't re-mount the server component
+        // so we will end up seeing the wrong server data if we don't perform this watch.
+        watch: {
+            '$route': function (toRoute, fromRoute) {
+                if (toRoute.params.id !== fromRoute.params.id) {
+                    this.loadingServerData = true;
+                    this.loadServer();
+                }
+            }
         },
 
         data: function () {

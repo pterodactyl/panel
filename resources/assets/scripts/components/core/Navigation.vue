@@ -5,15 +5,14 @@
                 Pterodactyl
             </router-link>
         </div>
-        <div class="search-box flex-none" v-if="$route.name !== 'dashboard'">
+        <div class="search-box flex-none" v-if="$route.name !== 'dashboard'" ref="searchContainer">
             <input type="text" class="search-input" id="searchInput" placeholder="Search..."
-                   :class="{ 'has-search-results': (servers.length > 0 || loadingResults) && searchActive }"
+                   :class="{ 'has-search-results': ((servers.length > 0 && searchTerm.length >= 3) || loadingResults) && searchActive }"
                    v-on:focus="searchActive = true"
-                   v-on:blur="searchActive = false"
                    v-on:input="search"
                    v-model="searchTerm"
             />
-            <div class="search-results select-none" :class="{ 'hidden': (servers.length === 0 && !loadingResults) || !searchActive }">
+            <div class="search-results select-none" :class="{ 'hidden': (servers.length === 0 && !loadingResults) || !searchActive || searchTerm.length < 3 }">
                 <div v-if="loadingResults">
                     <a href="#">
                         <div class="flex items-center">
@@ -26,12 +25,8 @@
                         </div>
                     </a>
                 </div>
-                <div v-else>
-                    <router-link
-                            v-for="server in servers"
-                            :key="server.identifier"
-                            :to="{ name: 'server', params: { id: server.identifier } }"
-                    >
+                <div v-else v-for="server in servers" :key="server.identifier">
+                    <router-link :to="{ name: 'server', params: { id: server.identifier }}" v-on:click.native="searchActive = false">
                         <div class="flex items-center">
                             <div class="flex-1">
                                 <span class="font-bold text-grey-darkest">{{ server.name }}</span><br />
@@ -100,9 +95,17 @@
             }
         },
 
+        created: function () {
+            document.addEventListener('click', this.documentClick);
+        },
+
+        beforeDestroy: function () {
+            document.removeEventListener('click', this.documentClick);
+        },
+
         methods: {
             search: debounce(function () {
-                if (this.searchTerm.length > 3) {
+                if (this.searchTerm.length >= 3) {
                     this.loadingResults = true;
                     this.gatherSearchResults(this.searchTerm);
                 }
@@ -110,10 +113,6 @@
 
             gatherSearchResults: function () {
                 this.$store.dispatch('dashboard/loadServers')
-                    .then(() => {
-                        if (this.servers.length === 0) {
-                        }
-                    })
                     .catch(err => {
                         console.error(err);
                         const response = err.response;
@@ -131,6 +130,14 @@
             doLogout: function () {
                 this.$store.commit('auth/logout');
                 return window.location = this.route('auth.logout');
+            },
+
+            documentClick: function (e) {
+                if (this.$refs.searchContainer) {
+                    if (this.$refs.searchContainer !== e.target && !this.$refs.searchContainer.contains(e.target)) {
+                        this.searchActive = false;
+                    }
+                }
             },
         }
     };
