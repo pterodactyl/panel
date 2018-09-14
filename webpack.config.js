@@ -73,11 +73,7 @@ module.exports = {
         hints: false,
     },
     // Passing an array loads them all but only exports the last.
-    entry: [
-        './resources/assets/styles/main.css',
-        './node_modules/ionicons/dist/css/ionicons.css',
-        './resources/assets/scripts/app.js'
-    ],
+    entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.js'],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
         filename: 'bundle-[hash].js',
@@ -91,10 +87,6 @@ module.exports = {
                 loader: 'vue-loader',
             },
             {
-                test: /\.(eot|woff|woff2|svg|ttf)([?]?.*)$/,
-                loader: 'file-loader',
-            },
-            {
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'resources'),
@@ -105,7 +97,6 @@ module.exports = {
                 test: /\.css$/,
                 include: [
                     path.resolve(__dirname, 'resources'),
-                    path.resolve(__dirname, 'node_modules/ionicons/dist/css/ionicons.css'),
                 ],
                 use: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
