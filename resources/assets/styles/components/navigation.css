@@ -17,7 +17,8 @@
 
     & > .search-box {
         & > .search-input {
-            @apply .text-sm .p-2 .mt-3 .mx-3 .rounded .border .border-blue-darker .bg-grey-lightest .text-grey-darkest;
+            @apply .text-sm .p-2 .mx-3 .rounded .border .border-blue-darker .bg-grey-lightest .text-grey-darkest;
+            margin-top: 0.6rem;
             width: 26rem;
             opacity: 0.7;
             transition: ease-in-out opacity 150ms;
@@ -53,7 +54,7 @@
             & > li {
                 @apply .inline-block;
                 & > a {
-                    @apply .block .h-full .no-underline .text-grey-lighter .font-light .text-sm .p-5;
+                    @apply .block .h-full .no-underline .text-grey-lighter .font-light .text-xl .px-5 .py-4;
 
                     &:hover {
                         @apply .bg-blue-dark;
