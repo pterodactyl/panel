@@ -44,22 +44,22 @@
             <ul>
                 <li>
                     <router-link :to="{ name: 'dashboard' }">
-                        <Icon type="cube"/>
+                        <server-icon aria-label="Server dashboard" class="h-4"/>
                     </router-link>
                 </li>
                 <li>
                     <router-link :to="{ name: 'account' }">
-                        <Icon type="contact"/>
+                        <user-icon aria-label="Profile management" class="h-4"/>
                     </router-link>
                 </li>
                 <li>
                     <a :href="this.route('admin.index')">
-                        <Icon type="cog"/>
+                        <settings-icon aria-label="Administrative controls" class="h-4"/>
                     </a>
                 </li>
                 <li>
                     <a :href="this.route('auth.logout')" v-on:click.prevent="doLogout">
-                        <Icon type="log-out"/>
+                        <log-out-icon aria-label="Sign out" class="h-4"/>
                     </a>
                 </li>
             </ul>
@@ -70,11 +70,12 @@
 <script>
     import debounce from 'lodash/debounce';
     import { mapState } from 'vuex';
-    import Icon from '../Icon';
+    import { LogOutIcon, ServerIcon, SettingsIcon, UserIcon } from 'vue-feather-icons'
 
     export default {
         name: 'navigation',
-        components: {Icon},
+        components: { LogOutIcon, ServerIcon, SettingsIcon, UserIcon },
+
         data: function () {
             return {
                 loadingResults: false,
