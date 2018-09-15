@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -131,7 +130,6 @@ class MailController extends Controller
         }
 
         try {
-            Log::debug('Sending test message to ' . $request->user()->email);
             Notification::route('mail', $request->user()->email)
                 ->notify(new MailTested($request->user()));
         } catch (Exception $exception) {
