@@ -3,16 +3,18 @@
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Notification;
+
+
 use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
+use Pterodactyl\Notifications\MailTested;
+use Illuminate\Support\Facades\Notification;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Notifications\MailTested;
 use Pterodactyl\Providers\SettingsServiceProvider;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
@@ -129,10 +131,12 @@ class MailController extends Controller
                 ->notify(new MailTested($request->user()));
         } catch (Exception $exception) {
             $this->alert->danger(trans('base.mail.test_failed'))->flash();
+
             return redirect()->route('admin.settings.mail');
         }
 
         $this->alert->success(trans('base.mail.test_succeeded'))->flash();
+
         return redirect()->route('admin.settings.mail');
     }
 }

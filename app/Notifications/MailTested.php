@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Notifications;
 
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 use Pterodactyl\Models\User;
+use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class MailTested extends Notification
 {
@@ -13,7 +13,8 @@ class MailTested extends Notification
      */
     private $user;
 
-    public function __construct(User $user) {
+    public function __construct(User $user)
+    {
         $this->user = $user;
     }
 
