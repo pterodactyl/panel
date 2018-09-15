@@ -2,6 +2,10 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
+use Exception;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
@@ -9,6 +13,7 @@ use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Notifications\MailTested;
 use Pterodactyl\Providers\SettingsServiceProvider;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
@@ -90,7 +95,7 @@ class MailController extends Controller
     public function update(MailSettingsFormRequest $request): RedirectResponse
     {
         if ($this->config->get('mail.driver') !== 'smtp') {
-            throw new DisplayException('This feature is only available if SMTP is the selected email driver for the Panel.');
+            throw $this->smtpNotSelectedException();
         }
 
         $values = $request->normalize();
@@ -110,5 +115,40 @@ class MailController extends Controller
         $this->alert->success('Mail settings have been updated successfully and the queue worker was restarted to apply these changes.')->flash();
 
         return redirect()->route('admin.settings.mail');
+    }
+
+    /**
+     * Submit a request to send a test mail message.
+     *
+     * @throws DisplayException
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function test(Request $request): RedirectResponse
+    {
+        if ($this->config->get('mail.driver') !== 'smtp') {
+            throw $this->smtpNotSelectedException();
+        }
+
+        try {
+            Log::debug('Sending test message to ' . $request->user()->email);
+            Notification::route('mail', $request->user()->email)
+                ->notify(new MailTested($request->user()));
+        } catch (Exception $exception) {
+            $this->alert->danger(trans('base.mail.test_failed'))->flash();
+            return redirect()->route('admin.settings.mail');
+        }
+
+        $this->alert->success(trans('base.mail.test_succeeded'))->flash();
+        return redirect()->route('admin.settings.mail');
+    }
+
+    /**
+     * Generate a display exception for non-SMTP configurations.
+     *
+     * @return DisplayException
+     */
+    private function smtpNotSelectedException() {
+        return new DisplayException('This feature is only available if SMTP is the selected email driver for the Panel.');
     }
 }

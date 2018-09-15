@@ -98,7 +98,10 @@
                         </div>
                         <div class="box-footer">
                             {{ csrf_field() }}
-                            <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save</button>
+                            <div class="pull-right">
+                                <a href="{{ route('admin.settings.mail.test') }}" class="btn btn-sm btn-success">Test</a>
+                                <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary">Save</button>
+                            </div>
                         </div>
                     </form>
                 @endif
