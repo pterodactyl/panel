@@ -94,7 +94,7 @@ class MailController extends Controller
     public function update(MailSettingsFormRequest $request): RedirectResponse
     {
         if ($this->config->get('mail.driver') !== 'smtp') {
-            throw $this->smtpNotSelectedException();
+            throw new DisplayException('This feature is only available if SMTP is the selected email driver for the Panel.');
         }
 
         $values = $request->normalize();
@@ -119,16 +119,11 @@ class MailController extends Controller
     /**
      * Submit a request to send a test mail message.
      *
-     * @throws DisplayException
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function test(Request $request): RedirectResponse
     {
-        if ($this->config->get('mail.driver') !== 'smtp') {
-            throw $this->smtpNotSelectedException();
-        }
-
         try {
             Notification::route('mail', $request->user()->email)
                 ->notify(new MailTested($request->user()));
@@ -139,14 +134,5 @@ class MailController extends Controller
 
         $this->alert->success(trans('base.mail.test_succeeded'))->flash();
         return redirect()->route('admin.settings.mail');
-    }
-
-    /**
-     * Generate a display exception for non-SMTP configurations.
-     *
-     * @return DisplayException
-     */
-    private function smtpNotSelectedException() {
-        return new DisplayException('This feature is only available if SMTP is the selected email driver for the Panel.');
     }
 }
