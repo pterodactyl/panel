@@ -33,6 +33,17 @@
             <![endif]-->
         @show
     </head>
+    @if(isset($appGoogleAnalyticsId))
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $appGoogleAnalyticsId }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '{{ $appGoogleAnalyticsId }}');
+    </script>
+    @endif
     <body id="particles-js" class="hold-transition login-page">
         <div class="container">
             <div id="login-position-elements">

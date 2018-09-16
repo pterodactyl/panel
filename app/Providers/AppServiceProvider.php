@@ -29,6 +29,11 @@ class AppServiceProvider extends ServiceProvider
 
         View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
         View::share('appIsGit', $this->versionData()['is_git'] ?? false);
+        $googleAnalyticsId = env('APP_GOOGLE_ANALYTICS_ID');
+        if ($googleAnalyticsId) {
+            View::share('appGoogleAnalyticsId', $googleAnalyticsId);
+        }
+
         Theme::setSetting('cache-version', md5($this->versionData()['version'] ?? 'undefined'));
     }
 
