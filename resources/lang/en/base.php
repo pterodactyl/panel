@@ -86,8 +86,4 @@ return [
         '2fa_checkpoint_help' => 'Use the 2FA application on your phone to take a picture of the QR code to the left, or manually enter the code under it. Once you have done so, generate a token and enter it below.',
         '2fa_disable_error' => 'The 2FA token provided was not valid. Protection has not been disabled for this account.',
     ],
-    'mail' => [
-        'test_succeeded' => 'The test message was sent successfully!',
-        'test_failed' => 'Failed to send test message! Error message:',
-    ],
 ];
