@@ -3,8 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
 use Exception;
-
-
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
