@@ -137,17 +137,27 @@
         }
 
         function testSettings() {
-            return $.ajax({
-                method: 'GET',
-                url: Router.route('admin.settings.mail.test'),
-                headers: { 'X-CSRF-Token': $('input[name="_token"]').val() }
-            }).fail(function (jqXHR) {
-                showErrorDialog(jqXHR, 'test');
-            }).done(function () {
-                swal({
-                    title: 'Success',
-                    text: 'The test message was sent successfully.',
-                    type: 'success'
+            swal({
+                type: 'info',
+                title: 'Test Mail Settings',
+                text: 'Click "Test" to begin the test.',
+                showCancelButton: true,
+                confirmButtonText: 'Test',
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function () {
+                $.ajax({
+                    method: 'GET',
+                    url: Router.route('admin.settings.mail.test'),
+                    headers: { 'X-CSRF-Token': $('input[name="_token"]').val() }
+                }).fail(function (jqXHR) {
+                    showErrorDialog(jqXHR, 'test');
+                }).done(function () {
+                    swal({
+                        title: 'Success',
+                        text: 'The test message was sent successfully.',
+                        type: 'success'
+                    });
                 });
             });
         }
