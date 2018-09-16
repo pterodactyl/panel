@@ -51,8 +51,10 @@ class ActionController extends Controller
             ], 403);
         }
 
-        $server->installed = ($status === 'installed') ? 1 : 2;
-        $server->save();
+        Server::where('id', $server->id)
+            ->update([
+                'installed' => ($status === 'installed') ? 1 : 2
+            ]);
 
         // Only fire event if server installed successfully.
         if ($server->installed === 1) {
