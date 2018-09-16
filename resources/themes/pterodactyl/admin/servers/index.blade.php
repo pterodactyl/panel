@@ -59,10 +59,12 @@
                                 <td class="text-center">
                                     @if($server->suspended)
                                         <span class="label bg-maroon">Suspended</span>
-                                    @elseif(! $server->installed)
+                                    @elseif($server->installed === 0)
                                         <span class="label label-warning">Installing</span>
-                                    @else
+                                    @elseif($server->installed === 1)
                                         <span class="label label-success">Active</span>
+                                    @elseif($server->installed === 2)
+                                        <span class="label label-danger">Install Failed</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
