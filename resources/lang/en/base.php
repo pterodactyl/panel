@@ -88,6 +88,6 @@ return [
     ],
     'mail' => [
         'test_succeeded' => 'The test message was sent successfully!',
-        'test_failed' => 'Failed to send test message! Check your configuration and try again.',
+        'test_failed' => 'Failed to send test message! Error message:',
     ],
 ];

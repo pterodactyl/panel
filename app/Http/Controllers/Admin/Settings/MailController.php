@@ -128,7 +128,7 @@ class MailController extends Controller
             Notification::route('mail', $request->user()->email)
                 ->notify(new MailTested($request->user()));
         } catch (Exception $exception) {
-            $this->alert->danger(trans('base.mail.test_failed'))->flash();
+            $this->alert->danger(trans('base.mail.test_failed') . ' ' . $exception->getMessage())->flash();
 
             return redirect()->route('admin.settings.mail');
         }
