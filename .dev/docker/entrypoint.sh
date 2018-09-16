@@ -34,15 +34,13 @@ do
 done
 
 ## make sure the db is set up
-php artisan migrate --seed --force
+echo -e "Migrating and Seeding DB"
+php artisan migrate --force
+php artisan db:seed --force
 
-echo -e "Done\n"
+## start cronjobs for the queue
+echo -e "Starting cron jobs"
+crond
 
-## start php-fpm in the background
-echo -e "Starting php-fpm in the background. \n"
-php-fpm7 -D
-echo -e "php-fpm started \n"
-
-## start webserver
-echo -e "Starting nginx in the foreground. \n"
-nginx -g 'pid /tmp/nginx.pid; daemon off;'
+echo -e "Starting supervisord"
+exec "$@"
