@@ -158,14 +158,16 @@
 
         function showErrorDialog(jqXHR, verb) {
             console.error(jqXHR);
-            var errorText;
+            var errorText = '';
             if (!jqXHR.responseJSON) {
                 errorText = jqXHR.responseText;
             } else if (jqXHR.responseJSON.error) {
                 errorText = jqXHR.responseJSON.error;
             } else if (jqXHR.responseJSON.errors) {
                 $.each(jqXHR.responseJSON.errors, function (i, v) {
-                    errorText += ', ' + v.detail;
+                    if (v.detail) {
+                        errorText += v.detail + ' ';
+                    }
                 });
             }
 
