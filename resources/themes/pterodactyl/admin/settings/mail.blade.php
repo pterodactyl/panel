@@ -159,7 +159,9 @@
         function showErrorDialog(jqXHR, verb) {
             console.error(jqXHR);
             var errorText;
-            if (jqXHR.responseJSON.error) {
+            if (!jqXHR.responseJSON) {
+                errorText = jqXHR.responseText;
+            } else if (jqXHR.responseJSON.error) {
                 errorText = jqXHR.responseJSON.error;
             } else if (jqXHR.responseJSON.errors) {
                 $.each(jqXHR.responseJSON.errors, function (i, v) {
