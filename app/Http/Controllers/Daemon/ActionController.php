@@ -53,7 +53,7 @@ class ActionController extends Controller
 
         Server::where('id', $server->id)
             ->update([
-                'installed' => ($status === 'installed') ? 1 : 2
+                'installed' => ($status === 'installed') ? 1 : 2,
             ]);
 
         // Only fire event if server installed successfully.
