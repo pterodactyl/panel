@@ -8,10 +8,13 @@ use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Session\Session;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 
 class AccountController extends Controller
 {
+    use AvailableLanguages;
+
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
      */
@@ -48,7 +51,9 @@ class AccountController extends Controller
      */
     public function index()
     {
-        return view('base.account');
+        return view('base.account', [
+            'languages' => $this->getAvailableLanguages(true),
+        ]);
     }
 
     /**
@@ -70,7 +75,7 @@ class AccountController extends Controller
             if ($request->input('do_action') === 'email') {
                 $data = ['email' => $request->input('new_email')];
             } elseif ($request->input('do_action') === 'identity') {
-                $data = $request->only(['name_first', 'name_last', 'username']);
+                $data = $request->only(['name_first', 'name_last', 'username', 'language']);
             } else {
                 $data = [];
             }

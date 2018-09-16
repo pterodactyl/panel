@@ -28,5 +28,7 @@ misc
 .phpstorm.meta.php
 .php_cs.cache
 
+coverage.xml
+
 # Vagrant
 *.log

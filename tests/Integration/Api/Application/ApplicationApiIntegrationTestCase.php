@@ -7,9 +7,9 @@ use PHPUnit\Framework\Assert;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Tests\Traits\Integration\CreatesTestModels;
-use Tests\Traits\IntegrationJsonRequestAssertions;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\Traits\Http\IntegrationJsonRequestAssertions;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 

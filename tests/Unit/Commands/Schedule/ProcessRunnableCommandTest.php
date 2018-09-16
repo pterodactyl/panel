@@ -10,7 +10,7 @@
 namespace Tests\Unit\Commands\Schedule;
 
 use Mockery as m;
-use Carbon\Carbon;
+use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\Schedule;
 use Tests\Unit\Commands\CommandTestCase;
@@ -20,11 +20,6 @@ use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessRunnableCommandTest extends CommandTestCase
 {
-    /**
-     * @var \Carbon\Carbon
-     */
-    protected $carbon;
-
     /**
      * @var \Pterodactyl\Console\Commands\Schedule\ProcessRunnableCommand
      */
@@ -47,11 +42,12 @@ class ProcessRunnableCommandTest extends CommandTestCase
     {
         parent::setUp();
 
-        $this->carbon = m::mock(Carbon::class);
+        Chronos::setTestNow(Chronos::now());
+
         $this->processScheduleService = m::mock(ProcessScheduleService::class);
         $this->repository = m::mock(ScheduleRepositoryInterface::class);
 
-        $this->command = new ProcessRunnableCommand($this->carbon, $this->processScheduleService, $this->repository);
+        $this->command = new ProcessRunnableCommand($this->processScheduleService, $this->repository);
     }
 
     /**
@@ -62,9 +58,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
         $schedule = factory(Schedule::class)->make();
         $schedule->tasks = collect([factory(Task::class)->make()]);
 
-        $this->carbon->shouldReceive('now')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('toAtomString')->withNoArgs()->once()->andReturn('00:00:00');
-        $this->repository->shouldReceive('getSchedulesToProcess')->with('00:00:00')->once()->andReturn(collect([$schedule]));
+        $this->repository->shouldReceive('getSchedulesToProcess')->with(Chronos::now()->toAtomString())->once()->andReturn(collect([$schedule]));
         $this->processScheduleService->shouldReceive('handle')->with($schedule)->once()->andReturnNull();
 
         $display = $this->runCommand($this->command);
@@ -84,9 +78,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
         $schedule = factory(Schedule::class)->make();
         $schedule->tasks = collect([]);
 
-        $this->carbon->shouldReceive('now')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('toAtomString')->withNoArgs()->once()->andReturn('00:00:00');
-        $this->repository->shouldReceive('getSchedulesToProcess')->with('00:00:00')->once()->andReturn(collect([$schedule]));
+        $this->repository->shouldReceive('getSchedulesToProcess')->with(Chronos::now()->toAtomString())->once()->andReturn(collect([$schedule]));
 
         $display = $this->runCommand($this->command);
 
@@ -104,9 +96,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
     {
         $schedule = factory(Schedule::class)->make(['tasks' => null]);
 
-        $this->carbon->shouldReceive('now')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('toAtomString')->withNoArgs()->once()->andReturn('00:00:00');
-        $this->repository->shouldReceive('getSchedulesToProcess')->with('00:00:00')->once()->andReturn(collect([$schedule]));
+        $this->repository->shouldReceive('getSchedulesToProcess')->with(Chronos::now()->toAtomString())->once()->andReturn(collect([$schedule]));
 
         $display = $this->runCommand($this->command);
 

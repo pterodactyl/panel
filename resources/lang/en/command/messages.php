@@ -49,7 +49,7 @@ return [
     ],
     'environment' => [
         'mail' => [
-            'ask_smtp_host' => 'SMTP Host (e.g. smtp.google.com)',
+            'ask_smtp_host' => 'SMTP Host (e.g. smtp.gmail.com)',
             'ask_smtp_port' => 'SMTP Port',
             'ask_smtp_username' => 'SMTP Username',
             'ask_smtp_password' => 'SMTP Password',

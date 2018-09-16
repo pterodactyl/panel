@@ -9,7 +9,7 @@
 
 namespace Pterodactyl\Console\Commands\Schedule;
 
-use Carbon\Carbon;
+use Cake\Chronos\Chronos;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
@@ -17,11 +17,6 @@ use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessRunnableCommand extends Command
 {
-    /**
-     * @var \Carbon\Carbon
-     */
-    protected $carbon;
-
     /**
      * @var string
      */
@@ -45,31 +40,28 @@ class ProcessRunnableCommand extends Command
     /**
      * ProcessRunnableCommand constructor.
      *
-     * @param \Carbon\Carbon                                                $carbon
      * @param \Pterodactyl\Services\Schedules\ProcessScheduleService        $processScheduleService
      * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
-    public function __construct(
-        Carbon $carbon,
-        ProcessScheduleService $processScheduleService,
-        ScheduleRepositoryInterface $repository
-    ) {
+    public function __construct(ProcessScheduleService $processScheduleService, ScheduleRepositoryInterface $repository)
+    {
         parent::__construct();
 
-        $this->carbon = $carbon;
         $this->processScheduleService = $processScheduleService;
         $this->repository = $repository;
     }
 
     /**
      * Handle command execution.
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle()
     {
-        $schedules = $this->repository->getSchedulesToProcess($this->carbon->now()->toAtomString());
+        $schedules = $this->repository->getSchedulesToProcess(Chronos::now()->toAtomString());
+        if ($schedules->count() < 1) {
+            $this->line('There are no scheduled tasks for servers that need to be run.');
+
+            return;
+        }
 
         $bar = $this->output->createProgressBar(count($schedules));
         $schedules->each(function ($schedule) use ($bar) {
