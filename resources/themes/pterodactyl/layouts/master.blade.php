@@ -309,6 +309,19 @@
                     });
                 </script>
             @endif
+
+            @if(env('APP_GOOGLE_ANALYTICS', null) !== null)
+                <script async src="https://www.googletagmanager.com/gtag/js?id={{ env('APP_GOOGLE_ANALYTICS') }}"></script>
+                <script>
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag() {
+                        dataLayer.push(arguments);
+                    }
+
+                    gtag('js', new Date());
+                    gtag('config', "{{ env('APP_GOOGLE_ANALYTICS') }}");
+                </script>
+            @endif
         @show
     </body>
 </html>
