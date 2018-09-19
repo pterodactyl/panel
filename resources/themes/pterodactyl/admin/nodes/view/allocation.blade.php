@@ -39,23 +39,42 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Existing Allocations</h3>
             </div>
-            <div class="box-body table-responsive no-padding">
+            <div class="box-body table-responsive no-padding" style="overflow-x: visible">
                 <table class="table table-hover" style="margin-bottom:0;">
                     <tr>
+                        <th>
+                            <input type="checkbox" class="select-all-files hidden-xs" data-action="selectAll">
+                        </th>
                         <th>IP Address <i class="fa fa-fw fa-minus-square" style="font-weight:normal;color:#d9534f;cursor:pointer;" data-toggle="modal" data-target="#allocationModal"></i></th>
                         <th>IP Alias</th>
                         <th>Port</th>
                         <th>Assigned To</th>
-                        <th></th>
+                        <th>
+                            <div class="btn-group hidden-xs">
+                                <button type="button" id="mass_actions" class="btn btn-sm btn-default dropdown-toggle disabled"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang('server.allocations.mass_actions') <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-massactions">
+                                    <li><a href="#" id="selective-deletion" data-action="selective-deletion">@lang('server.allocations.delete') <i class="fa fa-fw fa-trash-o"></i></a></li>
+                                </ul>
+                            </div>
+                        </th>
                     </tr>
                     @foreach($node->allocations as $allocation)
                         <tr>
-                            <td class="col-sm-3 middle">{{ $allocation->ip }}</td>
+                            <td class="middle min-size" data-identifier="type">
+                                @if(is_null($allocation->server_id))
+                                <input type="checkbox" class="select-file hidden-xs" data-action="addSelection">
+                                @else
+                                <input disabled="disabled" type="checkbox" class="select-file hidden-xs" data-action="addSelection">
+                                @endif
+                            </td>
+                            <td class="col-sm-3 middle" data-identifier="ip">{{ $allocation->ip }}</td>
                             <td class="col-sm-3 middle">
                                 <input class="form-control input-sm" type="text" value="{{ $allocation->ip_alias }}" data-action="set-alias" data-id="{{ $allocation->id }}" placeholder="none" />
                                 <span class="input-loader"><i class="fa fa-refresh fa-spin fa-fw"></i></span>
                             </td>
-                            <td class="col-sm-2 middle">{{ $allocation->port }}</td>
+                            <td class="col-sm-2 middle" data-identifier="port">{{ $allocation->port }}</td>
                             <td class="col-sm-3 middle">
                                 @if(! is_null($allocation->server))
                                     <a href="{{ route('admin.servers.view', $allocation->server_id) }}">{{ $allocation->server->name }}</a>
@@ -153,17 +172,35 @@
 @section('footer-scripts')
     @parent
     <script>
+    $('[data-action="addSelection"]').on('click', function () {
+        updateMassActions();
+    });
+
+    $('[data-action="selectAll"]').on('click', function () {
+        $('input.select-file').not(':disabled').prop('checked', function (i, val) {
+            return !val;
+        });
+
+        updateMassActions();
+    });
+
+    $('[data-action="selective-deletion"]').on('mousedown', function () {
+        deleteSelected();
+    });
+
     $('#pAllocationIP').select2({
         tags: true,
         maximumSelectionLength: 1,
         selectOnClose: true,
         tokenSeparators: [',', ' '],
     });
+
     $('#pAllocationPorts').select2({
         tags: true,
         selectOnClose: true,
         tokenSeparators: [',', ' '],
     });
+
     $('button[data-action="deallocate"]').click(function (event) {
         event.preventDefault();
         var element = $(this);
@@ -216,7 +253,7 @@
                 alias: element.val(),
                 allocation_id: element.data('id'),
             }
-        }).done(function (data) {
+        }).done(function () {
             element.parent().addClass('has-success');
         }).fail(function (jqXHR) {
             console.error(jqXHR);
@@ -229,6 +266,100 @@
 
     function clearHighlight(element) {
         element.parent().removeClass('has-error has-success');
+    }
+
+    function updateMassActions() {
+        if ($('input.select-file:checked').length > 0) {
+            $('#mass_actions').removeClass('disabled');
+        } else {
+            $('#mass_actions').addClass('disabled');
+        }
+    }
+
+    function deleteSelected() {
+        var selectedIds = [];
+        var selectedItems = [];
+        var selectedItemsElements = [];
+
+        $('input.select-file:checked').each(function () {
+            var $parent = $($(this).closest('tr'));
+            var id = $parent.find('[data-action="deallocate"]').data('id');
+            var $ip = $parent.find('td[data-identifier="ip"]');
+            var $port = $parent.find('td[data-identifier="port"]');
+            var block = `${$ip.text()}:${$port.text()}`;
+
+            selectedIds.push({
+                id: id
+            });
+            selectedItems.push(block);
+            selectedItemsElements.push($parent);
+        });
+
+        if (selectedItems.length !== 0) {
+            var formattedItems = "";
+            var i = 0;
+            $.each(selectedItems, function (key, value) {
+                formattedItems += ("<code>" + value + "</code>, ");
+                i++;
+                return i < 5;
+            });
+
+            formattedItems = formattedItems.slice(0, -2);
+            if (selectedItems.length > 5) {
+                formattedItems += ', and ' + (selectedItems.length - 5) + ' other(s)';
+            }
+
+            swal({
+                type: 'warning',
+                title: '',
+                text: 'Are you sure you want to delete the following allocations: ' + formattedItems + '?',
+                html: true,
+                showCancelButton: true,
+                showConfirmButton: true,
+                closeOnConfirm: false,
+                showLoaderOnConfirm: true
+            }, function () {
+                $.ajax({
+                    method: 'DELETE',
+                    url: Router.route('admin.nodes.view.allocation.removeMultiple', {
+                        node: Pterodactyl.node.id
+                    }),
+                    headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
+                    data: JSON.stringify({
+                        allocations: selectedIds
+                    }),
+                    contentType: 'application/json',
+                    processData: false
+                }).done(function () {
+                    $('#file_listing input:checked').each(function () {
+                        $(this).prop('checked', false);
+                    });
+
+                    $.each(selectedItemsElements, function () {
+                        $(this).addClass('warning').delay(200).fadeOut();
+                    });
+
+                    swal({
+                        type: 'success',
+                        title: 'Allocations Deleted'
+                    });
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    swal({
+                        type: 'error',
+                        title: 'Whoops!',
+                        html: true,
+                        text: 'An error occurred while attempting to delete these allocations. Please try again.',
+                    });
+                });
+            });
+        } else {
+            swal({
+                type: 'warning',
+                title: '',
+                text: 'Please select allocation(s) to delete.',
+            });
+        }
     }
     </script>
 @endsection
