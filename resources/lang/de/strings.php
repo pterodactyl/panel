@@ -10,7 +10,7 @@ return [
     'admin_cp' => 'Administration',
     'again' => 'Nochmals',
     'alias' => 'Alias',
-    'api_access' => 'Api Access',
+    'api_access' => 'API Access',
     'cancel' => 'Abbrechen',
     'captcha_invalid' => 'Der Captcha war ungültig.',
     'close' => 'Schließen',
