@@ -84,7 +84,7 @@ return [
                 'description' => 'Staat gebruikers toe om een nieuw bestand aan te maken binnen het paneel.',
             ],
             'create_task' => [
-                'title' => 'Maak een taak',
+                'title' => 'Taak aanmaken',
             ],
             'db_header' => 'Database beheer',
             'delete_files' => [
@@ -118,10 +118,10 @@ return [
                 'title' => 'Plan taak',
             ],
             'reset_db_password' => [
-                'title' => 'Reset database wachtwoord',
+                'title' => 'Herstel database wachtwoord',
             ],
             'reset_sftp' => [
-                'title' => 'Reset SFTP wachtwoord',
+                'title' => 'Herstel SFTP wachtwoord',
             ],
             'restart' => [
                 'title' => 'Herstart server',
@@ -141,8 +141,7 @@ return [
                 'description' => 'Staat gebruikers toe om bestanden te uploaden via het bestandsbeheer.',
             ],
             'view_databases' => [
-                'title' => 'Geef database details weer
-',
+                'title' => 'Geef database details weer',
             ],
             'view_schedule' => [
                 'title' => 'Bekijk Schema',
@@ -170,6 +169,6 @@ return [
         ],
         'update' => 'Werk sub gebruiker bij',
         'user_assigned' => 'De subuser is succesvol toegevoegd aan deze server.',
-        'user_updated' => 'Permissies zijn geupdate.',
+        'user_updated' => 'Rechten zijn bijgewerkt.',
     ],
 ];
