@@ -144,7 +144,7 @@ class ContextMenuClass {
         }
 
         if (Pterodactyl.permissions.decompressFiles) {
-            if (_.without(['application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 3) {
+            if (_.without(['application/x-rar', 'application/zip', 'application/gzip', 'application/x-gzip'], parent.data('mime')).length < 4) {
                 $(menu).find('li[data-action="decompress"]').removeClass('hidden');
             }
             $(menu).find('li[data-action="decompress"]').unbind().on('click', e => {
