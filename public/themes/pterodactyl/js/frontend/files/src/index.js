@@ -113,7 +113,7 @@ class FileManager {
     addFolderButton() {
         $('[data-action="add-folder"]').unbind().on('click', () => {
             new ActionsClass().folder($('#file_listing').data('current-dir') || '/');
-        })
+        });
     }
 
     selectRow() {

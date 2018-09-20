@@ -286,6 +286,27 @@ class NodesController extends Controller
     }
 
     /**
+     * Removes multiple individual allocations from a node.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $node
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
+     */
+    public function allocationRemoveMultiple(Request $request, int $node): Response
+    {
+        $allocations = $request->input('allocations');
+        foreach ($allocations as $rawAllocation) {
+            $allocation = new Allocation();
+            $allocation->id = $rawAllocation['id'];
+            $this->allocationRemoveSingle($node, $allocation);
+        }
+
+        return response('', 204);
+    }
+
+    /**
      * Remove all allocations for a specific IP at once on a node.
      *
      * @param \Illuminate\Http\Request $request

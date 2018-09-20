@@ -1,16 +1,16 @@
-<?php
 
+<?php
 return [
     'next' => 'Nächste &raquo;',
     'previous' => '&laquo; Vorherige',
     'sidebar' => [
-        'account_controls' => 'Kontoeinstellungen',
-        'account_security' => 'Account Sicherheit',
-        'account_settings' => 'Account Einstellungen',
+        'account_controls' => 'Kontosteuerung',
+        'account_security' => 'Kontosicherheit',
+        'account_settings' => 'Kontoeinstellungen',
         'files' => 'Dateimanager',
         'manage' => 'Server verwalten',
         'overview' => 'Server Übersicht',
         'servers' => 'Deine Server',
-        'subusers' => 'Unterbenutzer verwalten',
+        'subusers' => 'Subuser verwalten',
     ],
 ];
