@@ -1,0 +1,14 @@
+[ignore]
+<PROJECT_ROOT>/vendor/.*
+<PROJECT_ROOT>/tests/.*
+<PROJECT_ROOT>/storage/.*
+<PROJECT_ROOT>/app/.*
+
+[options]
+module.name_mapper='^/\(.*\)$' -> '<PROJECT_ROOT>/\1'
+module.file_ext=.js
+module.file_ext=.vue
+module.file_ext=.json
+
+[version]
+0.81.0
