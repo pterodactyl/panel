@@ -40,6 +40,17 @@
             <![endif]-->
         @show
     </head>
+    @if(isset($appGoogleAnalyticsId))
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $appGoogleAnalyticsId }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '{{ $appGoogleAnalyticsId }}');
+    </script>
+    @endif
     <body class="hold-transition skin-blue fixed sidebar-mini">
         <div class="wrapper">
             <header class="main-header">
