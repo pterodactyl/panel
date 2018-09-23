@@ -6,6 +6,7 @@
     "flowtype-errors/show-errors": 2,
     "semi": "off",
     "indent": ["error", 4],
-    "comma-dangle": ["error", "always-multiline"]
+    "comma-dangle": ["error", "always-multiline"],
+    "no-unused-vars": "warn"
   }
 }

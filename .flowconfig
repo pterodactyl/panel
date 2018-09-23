@@ -1,5 +1,5 @@
 [ignore]
-<PROJECT_ROOT>/vendor/.*
+<PROJECT_ROOT>/vendor/symfony/.*
 <PROJECT_ROOT>/tests/.*
 <PROJECT_ROOT>/storage/.*
 <PROJECT_ROOT>/app/.*

@@ -42,126 +42,114 @@
 </template>
 
 <script>
-    import map from 'lodash/map';
-    import filter from 'lodash/filter';
-    import isObject from 'lodash/isObject';
-    import { mapState } from 'vuex';
-    import FileManagerFileRow from '../components/filemanager/FileManagerFileRow';
-    import FileManagerFolderRow from '../components/filemanager/FileManagerFolderRow';
+// @flow
+import map from 'lodash/map';
+import { mapState } from 'vuex';
+import type { Route } from 'vue-router';
+import FileManagerFileRow from '../components/filemanager/FileManagerFileRow';
+import FileManagerFolderRow from '../components/filemanager/FileManagerFolderRow';
+import { getDirectoryContents, DirectoryContentsResponse } from '../../../api/server/getDirectoryContents';
 
-    export default {
-        name: 'file-manager-page',
-        components: {FileManagerFolderRow, FileManagerFileRow},
+export default {
+    name: 'file-manager-page',
+    components: { FileManagerFolderRow, FileManagerFileRow },
 
-        computed: {
-            ...mapState('server', ['server', 'credentials']),
-            ...mapState('socket', ['connected']),
+    computed: {
+        ...mapState('server', ['server', 'credentials']),
+        ...mapState('socket', ['connected']),
 
-            /**
-             * Configure the breadcrumbs that display on the filemanager based on the directory that the
-             * user is currently in.
-             */
-            breadcrumbs: function () {
-                const directories = this.currentDirectory.replace(/^\/|\/$/, '').split('/');
-                if (directories.length < 1 || !directories[0]) {
-                    return [];
+        /**
+         * Configure the breadcrumbs that display on the filemanager based on the directory that the
+         * user is currently in.
+         */
+        breadcrumbs: function (): Array<Object> {
+            const directories: Array<string> = this.currentDirectory.replace(/^\/|\/$/, '').split('/');
+            if (directories.length < 1 || !directories[0]) {
+                return [];
+            }
+
+            return map(directories, function (value: string, key: number) {
+                if (key === directories.length - 1) {
+                    return { directoryName: value };
                 }
 
-                return map(directories, function (value, key) {
-                    if (key === directories.length - 1) {
-                        return {directoryName: value};
-                    }
+                return {
+                    directoryName: value,
+                    path: directories.slice(0, key + 1).join('/'),
+                };
+            });
+        },
+    },
 
-                    return {
-                        directoryName: value,
-                        path: directories.slice(0, key + 1).join('/'),
-                    };
-                });
-            }
+    watch: {
+        /**
+         * When the route changes reload the directory.
+         */
+        '$route': function (to: Route) {
+            this.currentDirectory = to.params.path || '/';
         },
 
-        watch: {
-            /**
-             * When the route changes reload the directory.
-             */
-            '$route': function (to) {
-                this.currentDirectory = to.params.path || '/';
-            },
-
-            /**
-             * Watch the current directory setting and when it changes update the file listing.
-             */
-            currentDirectory: function () {
-                this.listDirectory();
-            },
-
-            /**
-             * When we reconnect to the Daemon make sure we grab a listing of all of the files
-             * so that the error message disappears and we then load in a fresh listing.
-             */
-            connected: function () {
-                if (this.connected) {
-                    this.listDirectory();
-                }
-            }
-        },
-
-        data: function () {
-            return {
-                currentDirectory: this.$route.params.path || '/',
-                loading: true,
-                errorMessage: null,
-
-                directories: [],
-                editableFiles: [],
-                files: [],
-            };
-        },
-
-        mounted: function () {
+        /**
+         * Watch the current directory setting and when it changes update the file listing.
+         */
+        currentDirectory: function (): void {
             this.listDirectory();
         },
 
-        methods: {
-            /**
-             * List the contents of a directory.
-             */
-            listDirectory: function () {
-                this.loading = true;
+        /**
+         * When we reconnect to the Daemon make sure we grab a listing of all of the files
+         * so that the error message disappears and we then load in a fresh listing.
+         */
+        connected: function (): void {
+            if (this.connected) {
+                this.listDirectory();
+            }
+        },
+    },
 
-                window.axios.get(this.route('server.files', {
-                    server: this.$route.params.id,
-                    directory: encodeURI(this.currentDirectory.replace(/^\/|\/$/, '')),
-                }))
-                    .then((response) => {
-                        this.files = filter(response.data.contents, function (o) {
-                            return o.file;
-                        });
+    data: function () {
+        return {
+            currentDirectory: this.$route.params.path || '/',
+            loading: true,
+            errorMessage: null,
 
-                        this.directories = filter(response.data.contents, function (o) {
-                            return o.directory;
-                        });
+            directories: [],
+            editableFiles: [],
+            files: [],
+        };
+    },
 
-                        this.editableFiles = response.data.editable;
-                        this.errorMessage = null;
-                    })
-                    .catch(err => {
-                        console.error({err});
-                        if (err.response.status === 404) {
-                            this.errorMessage = 'The directory you requested could not be located on the server.';
-                            return;
-                        }
+    mounted: function () {
+        this.listDirectory();
+    },
 
-                        if (err.response.data && isObject(err.response.data.errors)) {
-                            err.response.data.errors.forEach(error => {
-                                this.errorMessage = error.detail;
-                            });
-                        }
-                    })
-                    .finally(() => {
-                        this.loading = false;
-                    });
-            },
-        }
-    };
+    methods: {
+        /**
+         * List the contents of a directory.
+         */
+        listDirectory: function (): void {
+            this.loading = true;
+
+            const directory: string = encodeURI(this.currentDirectory.replace(/^\/|\/$/, ''));
+            getDirectoryContents(this.$route.params.id, directory)
+                .then((response: DirectoryContentsResponse) => {
+                    this.files = response.files;
+                    this.directories = response.directories;
+                    this.editableFiles = response.editable;
+                    this.errorMessage = null;
+                })
+                .catch((err: string|Object) => {
+                    if (err instanceof String) {
+                        this.errorMessage = err;
+                        return;
+                    }
+
+                    console.error('An error was encountered while processing this request.', { err });
+                })
+                .then(() => {
+                    this.loading = false;
+                });
+        },
+    },
+};
 </script>

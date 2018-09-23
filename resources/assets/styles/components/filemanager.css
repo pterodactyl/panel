@@ -15,7 +15,7 @@
     }
 
     &.clickable {
-      @apply .cursor-pointer .no-underline;
+      @apply .no-underline;
     }
 
     &.active-selection, &.clickable:hover {
