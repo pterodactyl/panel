@@ -2,58 +2,57 @@
 
 return [
     'account' => [
-        'current_password' => 'Huidig Paswoord',
-        'delete_user' => 'Verwijder Gebruiker',
+        'current_password' => 'Huidig Wachtwoord',
+        'delete_user' => 'Gebruiker Verwijderen',
         'details_updated' => 'Je account details zijn succesvol veranderd',
-        'email_password' => 'Email paswoord',
+        'email_password' => 'E-mail wachtwoord',
         'exception' => 'Er is een fout opgetreden tijdens het veranderen van je account.',
         'first_name' => 'Voornaam',
         'header' => 'Account Beheer',
         'header_sub' => 'Beheer uw account details',
-        'invalid_pass' => 'Het opgegeven wachtwoord is niet geldig voor dit account.',
-        'invalid_password' => 'Het gegeven wachtwoord voor je account is niet geldig.',
+        'invalid_pass' => 'Het opgegeven wachtwoord is ongeldig voor dit account.',
+        'invalid_password' => 'Het opgegeven wachtwoord voor je account is ongeldig.',
         'last_name' => 'Naam',
-        'new_email' => 'Nieuw email adres',
-        'new_password' => 'Nieuw Paswoord',
+        'new_email' => 'Nieuw e-mail adres',
+        'new_password' => 'Nieuw Wachtwoord',
         'new_password_again' => 'Herhaal nieuw wachtwoord',
-        'totp_apps' => 'U moet een TOTP ondersteunde applicatie hebben (vb Google Authenticator, DUO Mobile, Auth, Enpass) om van deze optie gebruik te kunnen maken.',
-        'totp_checkpoint_help' => 'Bevestig aub uw TOTP instellingen door de QR code rechts te scannen met de authenticator applicatie op uw smartphone. Vul vervolgens de 6-delige code, die de applicatie genereerde, in onderstaand veld in. Druk op enter wanneer u klaar bent.',
+        'totp_apps' => 'U moet een TOTP ondersteunde applicatie hebben (bijv. Google Authenticator, DUO Mobile, Auth, Enpass) om van deze optie gebruik te kunnen maken.',
+        'totp_checkpoint_help' => 'Bevestig a.u.b. uw TOTP instellingen door de QR code rechts te scannen met de authenticator applicatie op uw smartphone. Vul vervolgens de 6-delige code, die de applicatie genereerde, in het onderstaand veld in. Druk op enter wanneer u klaar bent.',
         'totp_disable' => 'Schakel 2-delige authenticatie uit.',
         'totp_disable_help' => 'Om TOTP uit te schakelen op dit account moet je een geldige TOTP token geven. TOTP bescherming zal uitgeschakeld worden als de token geldig is.',
         'totp_enable' => 'Schakel Two-Factor Authentication in',
         'totp_enabled' => 'TOTP is nu ingeschakeld op dit account. Klik op de sluit knop om te beëindigen.',
         'totp_enabled_error' => 'De opgegeven TOTP token kon niet gevalideerd worden. Probeer het aub nogmaals.',
-        'totp_header' => 'Twee-Factor Authenticatie',
+        'totp_header' => 'Two-Factor Authenticatie',
         'totp_qr' => 'TOTP QR Code',
-        'totp_token' => 'TOTP Token
-',
-        'update_email' => 'Update Email Adres',
-        'update_identitity' => 'Update identiteit',
-        'update_pass' => 'Werk wachtwoord bij',
-        'update_user' => 'Update Gebruiker',
-        'username_help' => 'Uw gebruikersnaam moet uniek zijn en mas enkel volgende characters bevatten: :requirements.',
+        'totp_token' => 'TOTP Token',
+        'update_email' => 'E-mail Adres Bijwerken',
+        'update_identitity' => 'Identiteit Bijwerken',
+        'update_pass' => 'Wachtwoord Bijwerken',
+        'update_user' => 'Gebruiker Bijwerken',
+        'username_help' => 'Uw gebruikersnaam moet uniek zijn en mag enkel de volgende characters bevatten: :requirements.',
     ],
     'api' => [
         'index' => [
             'create_new' => 'Creëer nieuwe API sleutel',
             'header' => 'API toegang',
-            'header_sub' => 'Beheer jouw API keys.',
-            'keypair_created' => 'Een API Key-Pair is gegenereerd. Jouw API secret token is <code>:token</code>. Noteer deze code, hij wordt later niet nog een keer weergegeven.',
+            'header_sub' => 'Beheer jouw API sleutels.',
+            'keypair_created' => 'Een API Key-Pair is gegenereerd. Jouw API geheime token is <code>:token</code>. Noteer deze code, hij wordt later niet nog een keer weergegeven.',
             'list' => 'API sleutels',
         ],
         'new' => [
             'allowed_ips' => [
-                'title' => 'Toegestane IPs',
+                'title' => 'Toegestane IP\'s',
             ],
             'base' => [
                 'title' => 'Basis Informatie',
             ],
             'descriptive_memo' => [
-                'description' => 'Voeg een korte beschrijving over waarvoor deze API key gebruikt zal worden toe.',
+                'description' => 'Voeg een korte beschrijving over waarvoor deze API sleutel gebruikt zal worden toe.',
                 'title' => 'Beschrijvende notitie',
             ],
             'form_title' => 'Details',
-            'header' => 'Nieuwe API Key',
+            'header' => 'Nieuwe API Sleutel',
             'header_sub' => 'Maak een nieuwe API toegangs sleutel',
             'node_management' => [
                 'delete' => [
@@ -91,7 +90,7 @@ return [
             ],
             'user_management' => [
                 'create' => [
-                    'title' => 'Maak gebruiker',
+                    'title' => 'Gebruiker Aanmaken',
                 ],
                 'delete' => [
                     'description' => 'Geeft toegang tot het verwijderen van een gebruiker',
@@ -101,7 +100,7 @@ return [
                 ],
                 'title' => 'Gebruikersbeheer',
                 'update' => [
-                    'title' => 'Werk gebruiker bij',
+                    'title' => 'Gebruiker bijwerken',
                 ],
                 'view' => [
                     'title' => 'Toon gebruiker',
@@ -122,9 +121,9 @@ return [
     'security' => [
         '2fa_header' => '2-factor authenticatie',
         '2fa_qr' => 'Configureer 2FA op uw toestel',
-        'enable_2fa' => 'Zet 2-Factor  Authentication aan',
+        'enable_2fa' => 'Zet 2-Factor authenticatie aan',
     ],
     'server_name' => 'Server naam',
-    'validation_error' => 'Er is een fout opgetreden tijdens het valideren van de data die u opgegeven hebt.',
+    'validation_error' => 'Er is een fout opgetreden tijdens het valideren van de data die u heeft opgegeven.',
     'view_as_admin' => 'U bekijkt de server lijst als een administrator. Hierdoor zijn alle servers die geïnstalleerd zijn op het systeem zichtbaar. Alle servers waarvan u de eigenaar bent zijn gemarkeerd met een blauwe bol links van hun naam.',
 ];
