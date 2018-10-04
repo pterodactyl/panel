@@ -28,6 +28,20 @@ Route::group(['prefix' => 'settings'], function () {
     Route::patch('/startup', 'Settings\StartupController@update');
 });
 
+
+/*
+|--------------------------------------------------------------------------
+| Tools Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /server/{server}/settings
+|
+*/
+Route::group(['prefix' => 'tools'], function () {
+    Route::get('/modmanager', 'Tools\ModManagerController@index')->name('server.tools.modmanager');
+});
+
+
 /*
 |--------------------------------------------------------------------------
 | Server Database Controller Routes
