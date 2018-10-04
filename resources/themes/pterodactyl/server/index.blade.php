@@ -44,7 +44,6 @@
                 @can('power-stop', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="stop">Stop</button>@endcan
                 @can('power-kill', $server)<button class="btn btn-danger disabled" data-attr="power" data-action="kill">Kill</button>@endcan
                 <button class="btn btn-info"><a href="steam://connect/{{ $allocation->ip }}>Join</a></button>
-
             </div>
         </div>
     </div>
