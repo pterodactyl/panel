@@ -200,6 +200,26 @@
                                     </ul>
                                 </li>
                             @endif
+                            @if(Gate::allows('view-modmanager', $server))
+                                <li class="treeview
+                                    @if(starts_with(Route::currentRouteName(), 'server.modmanager'))
+                                        active
+                                    @endif
+                                ">
+                                    <a href="#">
+                                        <i class="fa fa-gears"></i>
+                                        <span>@lang('navigation.server.tools')</span>
+                                        <span class="pull-right-container">
+                                            <i class="fa fa-angle-left pull-right"></i>
+                                        </span>
+                                    </a>
+                                    <ul class="treeview-menu">
+                                        @can('view-modmanager', $server)
+                                            <li class="{{ Route::currentRouteName() !== 'server.tools.modmanager' ?: 'active' }}"><a href="{{ route('server.tools.modmanager', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.tools.modmanager')</a></li>
+                                        @endcan
+                                    </ul>
+                                </li>
+                            @endif
                             @if(Auth::user()->root_admin)
                                 <li class="header">@lang('navigation.server.admin_header')</li>
                                 <li>
