@@ -55,7 +55,7 @@ $(document).ready(function () {
                     console.error(jqXHR);
                     swal({
                         title: 'Whoops!',
-                        text: 'An error occured while attempting to set the EULA as accepted: ' . jqXHR.responseJSON.error,
+                        text: 'An error occurred while attempting to set the EULA as accepted: ' + jqXHR.responseJSON.error,
                         type: 'error'
                     })
                 });
