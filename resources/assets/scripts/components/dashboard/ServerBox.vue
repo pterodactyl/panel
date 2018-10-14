@@ -1,33 +1,35 @@
 <template>
-    <div class="server-card animated-fade-in hover:shadow-md">
-        <div class="content h-32 relative">
-            <router-link :to="link">
-                <h2 class="text-xl flex flex-row items-center mb-2">
-                    <div class="identifier-icon select-none" :class="{
+    <div class="server-card-container">
+        <div class="server-card animated-fade-in hover:shadow-md">
+            <div class="content h-32 relative">
+                <router-link :to="link">
+                    <h2 class="text-xl flex flex-row items-center mb-2">
+                        <div class="identifier-icon select-none" :class="{
                         'bg-grey': status === '',
                         'bg-red': status === 'offline',
                         'bg-green': status === 'online'
                     }">
-                        {{ server.name[0] }}
-                    </div>
-                    {{ server.name }}
-                </h2>
-            </router-link>
-            <div class="text-grey-darker font-normal text-sm">
-                <p v-if="server.description.length" class="pb-1">{{ server.description }}</p>
+                            {{ server.name[0] }}
+                        </div>
+                        {{ server.name }}
+                    </h2>
+                </router-link>
+                <div class="text-grey-darker font-normal text-sm">
+                    <p v-if="server.description.length" class="pb-1">{{ server.description }}</p>
 
-                <div class="absolute pin-b pin-l p-4 w-full">
-                    <span class="font-semibold text-indigo">{{ server.node }}</span>
-                    <span class="float-right text-grey-dark font-light">{{ server.allocation.ip }}:{{ server.allocation.port }}</span>
+                    <div class="absolute pin-b pin-l p-4 w-full">
+                        <span class="font-semibold text-indigo">{{ server.node }}</span>
+                        <span class="float-right text-grey-dark font-light">{{ server.allocation.ip }}:{{ server.allocation.port }}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer p-4 text-sm">
-            <div class="inline-block pr-2">
-                <div class="pillbox bg-green"><span class="select-none">MEM:</span> {{ memory }} Mb</div>
-            </div>
-            <div class="inline-block">
-                <div class="pillbox bg-blue"><span class="select-none">CPU:</span> {{ cpu }} %</div>
+            <div class="footer p-4 text-sm">
+                <div class="inline-block pr-2">
+                    <div class="pillbox bg-green"><span class="select-none">MEM:</span> {{ memory }} Mb</div>
+                </div>
+                <div class="inline-block">
+                    <div class="pillbox bg-blue"><span class="select-none">CPU:</span> {{ cpu }} %</div>
+                </div>
             </div>
         </div>
     </div>
@@ -122,7 +124,6 @@
                             throw new Error('Received an invalid response object back from status endpoint.');
                         }
 
-
                         this.resources = response.data.attributes;
                         this.status = this.getServerStatus();
 
@@ -150,14 +151,14 @@
                 }
 
                 switch (this.resources.state) {
-                    case 'off':
-                        return 'offline';
-                    case 'on':
-                    case 'starting':
-                    case 'stopping':
-                        return 'online';
-                    default:
-                        return '';
+                case 'off':
+                    return 'offline';
+                case 'on':
+                case 'starting':
+                case 'stopping':
+                    return 'online';
+                default:
+                    return '';
                 }
             },
 
@@ -189,6 +190,6 @@
                     this.backgroundedAt = new Date();
                 }
             },
-        }
+        },
     };
 </script>

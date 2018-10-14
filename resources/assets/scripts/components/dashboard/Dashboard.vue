@@ -33,7 +33,7 @@
     import ServerBox from './ServerBox';
     import Navigation from '../core/Navigation';
     import isObject from 'lodash/isObject';
-    import {mapState} from 'vuex';
+    import { mapState } from 'vuex';
 
     export default {
         name: 'dashboard',
@@ -72,8 +72,8 @@
                 },
                 set: function (value) {
                     this.$store.dispatch('dashboard/setSearchTerm', value);
-                }
-            }
+                },
+            },
         },
 
         methods: {
@@ -112,6 +112,6 @@
             onChange: debounce(function () {
                 this.loadServers();
             }, 500),
-        }
+        },
     };
 </script>

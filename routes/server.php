@@ -13,3 +13,6 @@ Route::group(['prefix' => '/files'], function () {
         ->name('server.files')
         ->where('directory', '.*');
 });
+
+Route::get('/')->name('server.index');
+Route::get('/console')->name('server.console');
