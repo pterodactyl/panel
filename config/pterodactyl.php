@@ -150,6 +150,20 @@ return [
         'cache_time' => 60,
         'url' => 'https://cdn.pterodactyl.io/releases/latest.json',
     ],
+    
+    /*
+    |--------------------------------------------------------------------------
+    | Client Features
+    |--------------------------------------------------------------------------
+    |
+    | Allow clients to create their own databases.
+    */
+    'client_features' => [
+        'databases' => [
+            'enabled' => env('PTERODACTYL_CLIENT_DATABASES_ENABLED', true),
+            'allow_random' => env('PTERODACTYL_CLIENT_DATABASES_ALLOW_RANDOM', true),
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------
