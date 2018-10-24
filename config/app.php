@@ -179,7 +179,6 @@ return [
         Pterodactyl\Providers\HashidsServiceProvider::class,
         Pterodactyl\Providers\RouteServiceProvider::class,
         Pterodactyl\Providers\MacroServiceProvider::class,
-        Pterodactyl\Providers\PhraseAppTranslationProvider::class,
         Pterodactyl\Providers\RepositoryServiceProvider::class,
         Pterodactyl\Providers\ViewComposerServiceProvider::class,
 
