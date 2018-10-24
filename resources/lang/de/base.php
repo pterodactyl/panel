@@ -340,7 +340,7 @@ return [
         '2fa_disable_error' => 'Der bereitgestellte 2FA-Token war nicht gültig. Der Schutz wurde für dieses Konto nicht deaktiviert.',
         '2fa_header' => '2-Faktor-Authentifizierung',
         '2fa_qr' => '2FA konfigurieren',
-        '2fa_token_help' => 'Bitte gebe den 2FA Code von deiner 2FA APP ein (Google Authenticatior, Authy, etc.).',
+        '2fa_token_help' => 'Bitte gebe den 2FA Code von deiner 2FA APP ein (Google Authenticator, Authy, etc.).',
         'disable_2fa' => '2-Factor-Authentifizierung deaktivieren',
         'enable_2fa' => '2-Faktor-Authentifizierung aktivieren',
         'header' => 'Kontosicherheit',
