@@ -150,7 +150,7 @@ return [
         'cache_time' => 60,
         'url' => 'https://cdn.pterodactyl.io/releases/latest.json',
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Client Features
