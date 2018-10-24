@@ -153,33 +153,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Language Editor
-    |--------------------------------------------------------------------------
-    |
-    | Set `PHRASE_IN_CONTEXT` to true to enable the PhaseApp in-context editor
-    | on this site which allows you to translate the panel, from the panel.
-    */
-    'lang' => [
-        'in_context' => env('PHRASE_IN_CONTEXT', false),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Language Editor
-    |--------------------------------------------------------------------------
-    |
-    | Set `PHRASE_IN_CONTEXT` to true to enable the PhaseApp in-context editor
-    | on this site which allows you to translate the panel, from the panel.
-    */
-    'client_features' => [
-        'databases' => [
-            'enabled' => env('PTERODACTYL_CLIENT_DATABASES_ENABLED', true),
-            'allow_random' => env('PTERODACTYL_CLIENT_DATABASES_ALLOW_RANDOM', true),
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | File Editor
     |--------------------------------------------------------------------------
     |
