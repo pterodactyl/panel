@@ -1,0 +1,45 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v1"
+    },
+    "exported_at": "2018-09-26T12:40:31-04:00",
+    "name": "Waterfall",
+    "author": "support@pterodactyl.io",
+    "description": "Waterfall is a fork of the well-known BungeeCord server teleportation suite.",
+    "image": "quay.io\/pterodactyl\/core:java",
+    "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+    "config": {
+        "files": "{\r\n    \"config.yml\": {\r\n        \"parser\": \"yaml\",\r\n        \"find\": {\r\n            \"listeners[0].query_enabled\": true,\r\n            \"listeners[0].query_port\": \"{{server.build.default.port}}\",\r\n            \"listeners[0].host\": \"0.0.0.0:{{server.build.default.port}}\",\r\n            \"servers.*.address\": {\r\n                \"127.0.0.1\": \"{{config.docker.interface}}\",\r\n                \"localhost\": \"{{config.docker.interface}}\"\r\n            }\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"Listening on \",\r\n    \"userInteraction\": [\r\n        \"Listening on \/0.0.0.0:25577\"\r\n    ]\r\n}",
+        "logs": "{\r\n    \"custom\": false,\r\n    \"location\": \"proxy.log.0\"\r\n}",
+        "stop": "end"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/ash\r\n# Waterfall Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add curl\r\n\r\ncd \/mnt\/server\r\n\r\nif [ -z \"${WATERFALL_VERSION}\" ] || [ \"${WATERFALL_VERSION}\" == \"latest\" ]; then\r\n    WATERFALL_VERSION=\"lastStableBuild\"\r\nfi\r\n\r\ncurl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Waterfall\/${WATERFALL_VERSION}\/artifact\/Waterfall-Proxy\/bootstrap\/target\/Waterfall.jar",
+            "container": "alpine:3.4",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Waterfall Version",
+            "description": "The version of Waterfall to download and use.",
+            "env_variable": "WATERFALL_VERSION",
+            "default_value": "latest",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|alpha_num|between:1,6"
+        },
+        {
+            "name": "Waterfall Jar File",
+            "description": "The name of the Jarfile to use when running Waterfall.",
+            "env_variable": "SERVER_JARFILE",
+            "default_value": "waterfall.jar",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|regex:\/^([\\w\\d._-]+)(\\.jar)$\/"
+        }
+    ]
+}
