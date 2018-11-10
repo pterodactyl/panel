@@ -9,6 +9,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * TS3 egg updated to use CLI arguments correctly and have a more minimalistic installation script.
 * Terminal was not properly displaying longer lines leading to some visual inconsistency.
 * Assorted translation updates.
+* Pagination for server listing now properly respects configuration setting.
 
 ### Changed
 * Removed PhraseApp integration from Panel code as it is no longer used.

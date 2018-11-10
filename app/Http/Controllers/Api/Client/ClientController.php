@@ -35,7 +35,7 @@ class ClientController extends ClientApiController
      */
     public function index(GetServersRequest $request): array
     {
-        $servers = $this->repository->filterUserAccessServers($request->user(), User::FILTER_LEVEL_SUBUSER);
+        $servers = $this->repository->filterUserAccessServers($request->user(), User::FILTER_LEVEL_SUBUSER, config('pterodactyl.paginate.frontend.servers'));
 
         return $this->fractal->collection($servers)
             ->transformWith($this->getTransformer(ServerTransformer::class))
