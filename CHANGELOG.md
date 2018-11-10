@@ -10,6 +10,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Terminal was not properly displaying longer lines leading to some visual inconsistency.
 * Assorted translation updates.
 * Pagination for server listing now properly respects configuration setting.
+* Client API now properly respects permissions that are set and allows subusers to access their assigned servers.
 
 ### Changed
 * Removed PhraseApp integration from Panel code as it is no longer used.
