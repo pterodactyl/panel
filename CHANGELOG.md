@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Changed
 * Removed PhraseApp integration from Panel code as it is no longer used.
+* SFTP login endpoint now returns the permissions for that user rather than requiring additional queries to get that data.
 
 ### Added
 * You can now test your mail settings from the Admin CP without waiting to see if things are working correctly.
