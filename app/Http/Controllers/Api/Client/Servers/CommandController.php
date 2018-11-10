@@ -7,7 +7,6 @@ use Pterodactyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\SendCommandRequest;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -17,11 +16,6 @@ use Symfony\Component\HttpKernel\Exception\PreconditionFailedHttpException;
 class CommandController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
-     */
-    private $keyProviderService;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface
      */
     private $repository;
@@ -30,13 +24,11 @@ class CommandController extends ClientApiController
      * CommandController constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface $repository
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService           $keyProviderService
      */
-    public function __construct(CommandRepositoryInterface $repository, DaemonKeyProviderService $keyProviderService)
+    public function __construct(CommandRepositoryInterface $repository)
     {
         parent::__construct();
 
-        $this->keyProviderService = $keyProviderService;
         $this->repository = $repository;
     }
 
@@ -46,14 +38,12 @@ class CommandController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\SendCommandRequest $request
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function index(SendCommandRequest $request): Response
     {
         $server = $request->getModel(Server::class);
-        $token = $this->keyProviderService->handle($server, $request->user());
+        $token = $request->attributes->get('server_token');
 
         try {
             $this->repository->setServer($server)
