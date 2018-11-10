@@ -286,9 +286,6 @@
             {!! Theme::js('vendor/socketio/socket.io.v203.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js?t={cache-version}') !!}
             {!! Theme::js('js/autocomplete.js?t={cache-version}') !!}
-            @if(config('pterodactyl.lang.in_context'))
-                {!! Theme::js('vendor/phraseapp/phraseapp.js?t={cache-version}') !!}
-            @endif
 
             @if(Auth::user()->root_admin)
                 <script>
