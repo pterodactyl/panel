@@ -102,6 +102,7 @@ class AuthenticateUsingPasswordService
         return [
             'server' => $server->uuid,
             'token' => $this->keyProviderService->handle($server, $user),
+            'permissions' => $permissions ?? ['*'],
         ];
     }
 }

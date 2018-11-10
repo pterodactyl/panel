@@ -3,21 +3,21 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2018-01-21T17:01:45-06:00",
+    "exported_at": "2018-10-28T20:50:23+01:00",
     "name": "Teamspeak3 Server",
     "author": "support@pterodactyl.io",
     "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
     "image": "quay.io\/pterodactyl\/core:glibc",
-    "startup": ".\/ts3server_minimal_runscript.sh default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}",
+    "startup": ".\/ts3server_minimal_runscript.sh default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}  license_accepted=1",
     "config": {
-        "files": "{\"ts3server.ini\":{\"parser\": \"ini\", \"find\":{\"default_voice_port\": \"{{server.build.default.port}}\", \"voice_ip\": \"0.0.0.0\", \"query_port\": \"{{server.build.default.port}}\", \"query_ip\": \"0.0.0.0\"}}}",
+        "files": "{}",
         "startup": "{\"done\": \"listening on 0.0.0.0:\", \"userInteraction\": []}",
         "logs": "{\"custom\": true, \"location\": \"logs\/ts3.log\"}",
         "stop": "^C"
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\n# TS3 Installation Script\n#\n# Server Files: \/mnt\/server\napk update\napk add tar curl\n\ncd \/tmp\n\ncurl -sSLO http:\/\/dl.4players.de\/ts\/releases\/${TS_VERSION}\/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2\n\ntar -xjvf teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2\ncp -r teamspeak3-server_linux_amd64\/* \/mnt\/server\n\necho \"machine_id=\ndefault_voice_port=${SERVER_PORT}\nvoice_ip=0.0.0.0\nlicensepath=\nfiletransfer_port=30033\nfiletransfer_ip=\nquery_port=${SERVER_PORT}\nquery_ip=0.0.0.0\nquery_ip_whitelist=query_ip_whitelist.txt\nquery_ip_blacklist=query_ip_blacklist.txt\ndbplugin=ts3db_sqlite3\ndbpluginparameter=\ndbsqlpath=sql\/\ndbsqlcreatepath=create_sqlite\/\ndbconnections=10\nlogpath=logs\nlogquerycommands=0\ndbclientkeepdays=30\nlogappend=0\nquery_skipbruteforcecheck=0\" > \/mnt\/server\/ts3server.ini\n\ntouch \/mnt\/server\/.ts3server_license_accepted",
+            "script": "#!\/bin\/ash\n# TS3 Installation Script\n#\n# Server Files: \/mnt\/server\napk update\napk add tar curl\n\ncd \/mnt\/server\n\ncurl http:\/\/dl.4players.de\/ts\/releases\/${TS_VERSION}\/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar xj --strip-components=1",
             "container": "alpine:3.4",
             "entrypoint": "ash"
         }
@@ -27,7 +27,7 @@
             "name": "Server Version",
             "description": "The version of Teamspeak 3 to use when running the server.",
             "env_variable": "TS_VERSION",
-            "default_value": "3.1.1",
+            "default_value": "3.4.0",
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|regex:\/^([0-9_\\.-]{5,10})$\/"

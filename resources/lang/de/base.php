@@ -6,7 +6,7 @@ return [
         'delete_user' => 'Benutzer löschen',
         'details_updated' => 'Dein Account wurde erfolgreich bearbeitet.',
         'email_password' => 'Email Passwort',
-        'exception' => 'Währen dem Aktualisieren deines Account ist ein Fehler aufgetreten.',
+        'exception' => 'Während dem aktualisieren deines Kontos ist ein Fehler aufgetreten.',
         'first_name' => 'Vorname',
         'header' => 'BENUTZERVERWALTUNG',
         'header_sub' => 'Verwalte deine Kontodetails.',
@@ -18,11 +18,11 @@ return [
         'new_password_again' => 'Neues Passwort wiederholen',
         'totp_disable' => 'Deaktiviere die Zwei-Faktor-Authentifizierung',
         'totp_enable' => 'Zwei-Faktor-Authentifizierung aktivieren',
-        'totp_enable_help' => 'Es sieht so aus als hättest du Zwei-Faktor-Authentifizierung deaktiviert. Diese Authentifizierungsmethode schützt dein Konto zusätzlich vor unerlaubtem Zugriff. Wenn du es aktivierst musst du zukünftig neben deinem Passwort auch einen Code, der von deinem Smartphone oder einem anderen TOTP fähigen Gerät generiert wird, eingeben um dich anzumelden.',
+        'totp_enable_help' => 'Es sieht so aus als hättest du die Zwei-Faktor-Authentifizierung deaktiviert. Diese Authentifizierungsmethode schützt dein Konto zusätzlich vor unerlaubtem Zugriff. Wenn du sie aktivierst musst du zukünftig neben deinem Passwort auch einen Code, der von deinem Smartphone oder einem anderen TOTP fähigen Gerät generiert wird, eingeben um dich anzumelden.',
         'totp_header' => 'Zwei-Faktor Authentifizierung',
         'update_email' => 'E-Mail Adresse aktualisieren',
         'update_identitity' => 'Kotodetails aktualisieren',
-        'update_identity' => 'Account bearbeiten',
+        'update_identity' => 'Konto bearbeiten',
         'update_pass' => 'Passwort ändern',
         'update_user' => 'Benutzer aktualisieren',
         'username_help' => 'Dein Benutzername muss für dein Konto einzigartig sein und darf nur die folgenden Zeichen enthalten: :requirements.',
@@ -32,7 +32,7 @@ return [
             'create_new' => 'Neuen API Schlüssel erstellen',
             'header' => 'API Zugriff',
             'header_sub' => 'Verwalte deine API Zugangsschlüssel.',
-            'keypair_created' => 'An API Key-Pair has been generated. Your API secret token is <code>:token</code>. Please take note of this key as it will not be displayed again.',
+            'keypair_created' => 'Ein API-Schlüsselpaar wurde generiert. Dein API Secret Token ist <code>: token </ code>. Bitte notiere diesen Schlüssel, da er nicht mehr angezeigt wird. ',
             'list' => 'API Schlüssel',
         ],
         'new' => [
@@ -141,7 +141,7 @@ return [
                 ],
                 'title' => 'Benutzerverwaltung',
                 'update' => [
-                    'description' => 'Erlaubt Benutzerdetails zu ändern (E-Mail, Passwort, TOPT einstellungen).',
+                    'description' => 'Erlaubt Benutzerdetails zu ändern (E-Mail, Passwort, TOPT Einstellungen).',
                     'title' => 'Benutzer aktualisieren',
                 ],
                 'view' => [
@@ -154,7 +154,7 @@ return [
             'admin' => [
                 'location' => [
                     'list' => [
-                        'desc' => 'Der User darf alle Standorte sehen.',
+                        'desc' => 'Der Benutzer darf alle Standorte sehen.',
                         'title' => 'Liste Standorte',
                     ],
                 ],
@@ -169,11 +169,11 @@ return [
                         'title' => 'Node löschen',
                     ],
                     'list' => [
-                        'desc' => 'Der User darf alle Nodes sehen.',
+                        'desc' => 'Der Benutzer darf alle Nodes sehen.',
                         'title' => 'Nodes auflisten',
                     ],
                     'view-config' => [
-                        'desc' => 'Achtung. Der User kann die Konfiguration dieser Node sehen.',
+                        'desc' => 'Der Benutzer kann die Konfiguration dieser Node sehen.',
                         'title' => 'Node Konfiguration anzeigen',
                     ],
                     'view' => [
@@ -202,70 +202,70 @@ return [
                 'pack_header' => 'Pack Control',
                 'server' => [
                     'create' => [
-                        'desc' => 'Der User darf Server erstellen.',
-                        'title' => 'Create Server',
+                        'desc' => 'Der Benutzer darf Server erstellen.',
+                        'title' => 'Server erstellen',
                     ],
                     'delete' => [
-                        'desc' => 'Der User darf Server löschen.',
-                        'title' => 'Delete Server',
+                        'desc' => 'Der Benutzer darf Server löschen.',
+                        'title' => 'Server löschen',
                     ],
                     'edit-build' => [
-                        'desc' => 'Der User darf Server einstellungen bearbeiten.',
-                        'title' => 'Edit Server Build',
+                        'desc' => 'Der Benutzer darf Servereinstellungen bearbeiten.',
+                        'title' => 'Servereinstellungen ändern',
                     ],
                     'edit-container' => [
-                        'desc' => 'Der User darf die Container Einstellungen des Servers verändern.',
-                        'title' => 'Edit Server Container',
+                        'desc' => 'Der Benutzer darf die Container Einstellungen des Servers verändern.',
+                        'title' => 'Server Container Einstellungen ändern',
                     ],
                     'edit-details' => [
-                        'desc' => 'Der User darf die Server EInstellungen bearbeiten.',
-                        'title' => 'Edit Server Details',
+                        'desc' => 'Der Benutzer darf die Servereinstellungen bearbeiten.',
+                        'title' => 'Server Details ändern',
                     ],
                     'edit-startup' => [
                         'desc' => 'Der User darf die Startparameter ändern.',
-                        'title' => 'Edit Server Startup',
+                        'title' => 'Server Startparameter ändern',
                     ],
                     'install' => [
-                        'desc' => 'Der User darf den Installationstatus bearbeiten',
-                        'title' => 'Toggle Install Status',
+                        'desc' => 'Der Benutzer darf den Installationstatus bearbeiten',
+                        'title' => 'Installlations Status ändern',
                     ],
                     'list' => [
-                        'desc' => 'Der User darf alle Server dieser Instanz sehen.',
-                        'title' => 'List Servers',
+                        'desc' => 'Der Benutzer darf alle Server dieser Instanz sehen.',
+                        'title' => 'Servers Liste anzeigen',
                     ],
                     'rebuild' => [
-                        'desc' => 'Der User darf den Server ner erstellen',
+                        'desc' => 'Der Benutzer darf den Server ner erstellen',
                         'title' => 'Rebuild Server',
                     ],
                     'suspend' => [
                         'desc' => 'Der User darf Server sperren.',
-                        'title' => 'Suspend Server',
+                        'title' => 'Server sperren',
                     ],
                     'view' => [
-                        'desc' => 'Der user darf detaillierte Informationen zu allen Servern dieser Instanz sehen.',
-                        'title' => 'View Server',
+                        'desc' => 'Der Benutzer darf detaillierte Informationen zu allen Servern dieser Instanz sehen.',
+                        'title' => 'Server Informationen anzeigen',
                     ],
                 ],
                 'server_header' => 'Server Control',
                 'service' => [
                     'list' => [
-                        'desc' => 'Der User kann alle Services sehen.',
-                        'title' => 'List Service',
+                        'desc' => 'Der Benutzer kann alle Services sehen.',
+                        'title' => 'Services anzeigen',
                     ],
                     'view' => [
-                        'desc' => 'Der user kann detaillierte Informationen über einen Service sehen.',
-                        'title' => 'View Service',
+                        'desc' => 'Der Benutzer kann detaillierte Informationen über einen Service sehen.',
+                        'title' => 'Service anzeigen',
                     ],
                 ],
                 'service_header' => 'Service Control',
                 'user' => [
                     'create' => [
-                        'desc' => 'Der User kann einen User erstellen.',
-                        'title' => 'Create User',
+                        'desc' => 'Der Benutzer kann einen User erstellen.',
+                        'title' => 'Benutzer erstellen',
                     ],
                     'delete' => [
                         'desc' => 'Der User kann einen Server löschen.',
-                        'title' => 'Delete User',
+                        'title' => 'Benutzer löschen',
                     ],
                     'edit' => [
                         'desc' => 'Der User kann einen User bearbeiten.',
@@ -273,11 +273,11 @@ return [
                     ],
                     'list' => [
                         'desc' => 'Ermöglicht die Auflistung aller derzeit im System befindlichen Benutzer.',
-                        'title' => 'List Users',
+                        'title' => 'Benutzerliste anzeigen',
                     ],
                     'view' => [
                         'desc' => 'Der User kann detaillierte Informationen der User sehen.',
-                        'title' => 'View User',
+                        'title' => 'Benutzerinformationen anzeigen',
                     ],
                 ],
                 'user_header' => 'Benutzer Control',
@@ -285,20 +285,20 @@ return [
             'user' => [
                 'server' => [
                     'command' => [
-                        'desc' => 'Der User hat Zugriff auf die Server Console.',
-                        'title' => 'Send Command',
+                        'desc' => 'Der Benutzer hat Zugriff auf die Server Konsole.',
+                        'title' => 'Befehl senden',
                     ],
                     'list' => [
-                        'desc' => 'Der user darf seine Serverliste ansehen.',
-                        'title' => 'List Servers',
+                        'desc' => 'Der Benutzer darf seine Serverliste ansehen.',
+                        'title' => 'Serverliste',
                     ],
                     'power' => [
-                        'desc' => 'Der User darf den Server starten/stoppen/restartet.',
-                        'title' => 'Toggle Power',
+                        'desc' => 'Der Benutzer darf den Server starten/stoppen/restartet.',
+                        'title' => 'Server start/stop/restart',
                     ],
                     'view' => [
-                        'desc' => 'Der User darf detaillierte Informationen über seine Server sehen.',
-                        'title' => 'View Server',
+                        'desc' => 'Der Benutzer darf detaillierte Informationen über seine Server sehen.',
+                        'title' => 'Serverinformationen anzeigen',
                     ],
                 ],
                 'server_header' => 'Benutzer Rechte',
@@ -312,13 +312,13 @@ return [
             'header' => 'Forbidden',
         ],
         '404' => [
-            'desc' => 'Die Angefragte Ressource konnte nicht gefunden werden.',
+            'desc' => 'Die angefragte Ressource konnte nicht gefunden werden.',
             'header' => 'File Not Found',
         ],
         'home' => 'Gehe zur Startseite',
         'installing' => [
-            'desc' => 'Der angeforderte Server wird derzeit noch installiert. Bitte versuche es in ein paar Minuten erneut, du solltest eine E-Mail erhalten, sobald dieser Prozess abgeschlossen ist.',
-            'header' => 'Server Installing',
+            'desc' => 'Dieser Server wird derzeit noch installiert. Bitte versuche es in ein paar Minuten erneut, du solltest eine E-Mail erhalten, sobald dieser Prozess abgeschlossen ist.',
+            'header' => 'Server Installation',
         ],
         'return' => 'Zur vorherigen Seite zurückkehren',
         'suspended' => [
@@ -335,13 +335,13 @@ return [
     'no_servers' => 'Deinem Benutzerkonto sind aktuell keine Server zugeordnet.',
     'password_req' => 'Passwörter müssen den folgenden Anforderungen genügen: mindestens ein Großbuchstabe, ein Kleinbuchstabe, eine Ziffer und eine Länge von mindestens 8 Zeichen.',
     'security' => [
-        '2fa_checkpoint_help' => 'Verwende die 2FA-Anwendung auf deinem Telefon, um den QR-Codes auf der linken Seite zu scannen, oder gebe den Code darunter manuell ein. Sobald du dies getan haben, generiere einen Token und gebe ihn unten ein.',
-        '2fa_disabled' => '2-Faktor-Authentifizierung ist deaktiviert! Du solltest 2-Faktor-Authentifizierung aktivieren um dein Konto zusätzlich zu schützen.',
+        '2fa_checkpoint_help' => 'Verwende die 2FA-Anwendung auf deinem Telefon, um den QR-Codes auf der linken Seite zu scannen, oder gebe den Code darunter manuell ein. Sobald du dies getan hast, generiere einen Token und gebe ihn unten ein.',
+        '2fa_disabled' => '2-Faktor-Authentifizierung ist deaktiviert! Du solltest die 2-Faktor-Authentifizierung aktivieren um dein Konto zusätzlich zu schützen.',
         '2fa_disable_error' => 'Der bereitgestellte 2FA-Token war nicht gültig. Der Schutz wurde für dieses Konto nicht deaktiviert.',
         '2fa_header' => '2-Faktor-Authentifizierung',
         '2fa_qr' => '2FA konfigurieren',
-        '2fa_token_help' => 'Bitte gebe den 2FA Code von deiner 2FA APP ein (Google Authenticatior, Authy, etc.).',
-        'disable_2fa' => '2-Factor-Authentification deaktivieren',
+        '2fa_token_help' => 'Bitte gebe den 2FA Code von deiner 2FA APP ein (Google Authenticator, Authy, etc.).',
+        'disable_2fa' => '2-Factor-Authentifizierung deaktivieren',
         'enable_2fa' => '2-Faktor-Authentifizierung aktivieren',
         'header' => 'Kontosicherheit',
         'header_sub' => 'Verwalte aktive Sitzungen und die 2-Faktor-Authentifizierung.',
@@ -349,6 +349,6 @@ return [
         'session_mgmt_disabled' => 'Der Administrator hat die Möglichkeit, aktive Sitzungen über dieses Panel zu verwalten, nicht aktiviert.',
     ],
     'server_name' => 'Name des Servers',
-    'validation_error' => 'Es gab ein Problem mit einer oder mehreren deriner Eingaben.',
+    'validation_error' => 'Es gab ein Problem mit einer oder mehreren deiner Eingaben.',
     'view_as_admin' => 'Du siehst die Serverliste als Administrator. Deshalb siehst du alle im System vorhandenen Server. Die Server bei denen du als Besitzer eingetragen bist sind mit einem blauen Punkt markiert.',
 ];

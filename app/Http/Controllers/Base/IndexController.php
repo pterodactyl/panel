@@ -56,7 +56,7 @@ class IndexController extends Controller
     public function getIndex(Request $request)
     {
         $servers = $this->repository->setSearchTerm($request->input('query'))->filterUserAccessServers(
-            $request->user(), User::FILTER_LEVEL_ALL
+            $request->user(), User::FILTER_LEVEL_ALL, config('pterodactyl.paginate.frontend.servers')
         );
 
         return view('base.index', ['servers' => $servers]);

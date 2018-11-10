@@ -2,10 +2,14 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
+use Exception;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
+use Pterodactyl\Notifications\MailTested;
+use Illuminate\Support\Facades\Notification;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -81,13 +85,13 @@ class MailController extends Controller
      * Handle request to update SMTP mail settings.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Settings\MailSettingsFormRequest $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response
      *
      * @throws DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(MailSettingsFormRequest $request): RedirectResponse
+    public function update(MailSettingsFormRequest $request): Response
     {
         if ($this->config->get('mail.driver') !== 'smtp') {
             throw new DisplayException('This feature is only available if SMTP is the selected email driver for the Panel.');
@@ -107,8 +111,25 @@ class MailController extends Controller
         }
 
         $this->kernel->call('queue:restart');
-        $this->alert->success('Mail settings have been updated successfully and the queue worker was restarted to apply these changes.')->flash();
 
-        return redirect()->route('admin.settings.mail');
+        return response('', 204);
+    }
+
+    /**
+     * Submit a request to send a test mail message.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function test(Request $request): Response
+    {
+        try {
+            Notification::route('mail', $request->user()->email)
+                ->notify(new MailTested($request->user()));
+        } catch (Exception $exception) {
+            return response($exception->getMessage(), 500);
+        }
+
+        return response('', 204);
     }
 }

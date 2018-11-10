@@ -153,23 +153,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Language Editor
+    | Client Features
     |--------------------------------------------------------------------------
     |
-    | Set `PHRASE_IN_CONTEXT` to true to enable the PhaseApp in-context editor
-    | on this site which allows you to translate the panel, from the panel.
-    */
-    'lang' => [
-        'in_context' => env('PHRASE_IN_CONTEXT', false),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Language Editor
-    |--------------------------------------------------------------------------
-    |
-    | Set `PHRASE_IN_CONTEXT` to true to enable the PhaseApp in-context editor
-    | on this site which allows you to translate the panel, from the panel.
+    | Allow clients to create their own databases.
     */
     'client_features' => [
         'databases' => [

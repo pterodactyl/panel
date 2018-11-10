@@ -8,7 +8,7 @@ return [
     'alpha' => 'Het :attribute mag enkel letters bevatten.',
     'alpha_dash' => 'De :attribute mag alleen letters, nummers en streepjes bevatten.',
     'alpha_num' => 'De :attribute mag alleen letters en nummers bevatten.',
-    'email' => 'Email',
+    'email' => 'E-mail',
     'in' => 'Het geselecteerde :attribute is ongeldig.',
     'timezone' => 'Het :attribute moet een geldige tijdszone zijn.',
     'totp' => 'De totp token is ongeldig. Is het verlopen?',

@@ -30,7 +30,7 @@ var Server = (function ()  {
         }
 
         if (typeof io !== 'function') {
-            console.error('Socket.io is reqired to use this panel.');
+            console.error('Socket.io is required to use this panel.');
             return;
         }
 

@@ -362,7 +362,7 @@ return [
         '2fa_enabled' => '2-Factor de Autenticación está habilitada en esta cuenta y será necesario iniciar la sesión en el panel de. Si usted desea deshabilitar el 2FA, simplemente ingrese un token válido a continuación y envíe el formulario.',
         '2fa_header' => '2-Factor De Autenticación',
         '2fa_qr' => 'Confgure 2FA en Su Dispositivo',
-        '2fa_token_help' => 'Introduzca el 2FA Token generado por la aplicación (Google Authenticatior, Authy, etc.).',
+        '2fa_token_help' => 'Introduzca el 2FA Token generado por la aplicación (Google Authenticator, Authy, etc.).',
         'disable_2fa' => 'Deshabilitar 2-Factor De Autenticación',
         'enable_2fa' => 'Habilitar 2-Factor De Autenticación',
         'header' => 'Seguridad De La Cuenta',
