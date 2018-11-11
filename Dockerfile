@@ -15,9 +15,9 @@ RUN cp .env.example .env \
 RUN cp .dev/docker/default.conf /etc/nginx/conf.d/default.conf \
  && cp .dev/docker/www.conf /etc/php7/php-fpm.d/www.conf \
  && cat .dev/docker/supervisord.conf > /etc/supervisord.conf \
- && echo "* * * * * /usr/bin/php /app/pterodactyl/artisan schedule:run >> /dev/null 2>&1" >> /var/spool/cron/crontabs/root \
- && mkdir -p /var/run/php /var/run/nginx \
- && mkdir -p /var/log/supervisord/
+ && echo "* * * * * /usr/bin/php /app/artisan schedule:run >> /dev/null 2>&1" >> /var/spool/cron/crontabs/root \
+ && sed -i s/ssl_session_cache/#ssl_session_cache/g /etc/nginx/nginx.conf \
+ && mkdir -p /var/run/php /var/run/nginx
 
 EXPOSE 80 443
 
