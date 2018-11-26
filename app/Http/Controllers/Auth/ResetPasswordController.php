@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Auth\Events\PasswordReset;
