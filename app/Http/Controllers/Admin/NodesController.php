@@ -263,7 +263,7 @@ class NodesController extends Controller
      */
     public function updateSettings(NodeFormRequest $request, Node $node)
     {
-        $this->updateService->handle($node, $request->normalize());
+        $this->updateService->handle($node, $request->normalize(), $request->input('reset_secret') === 'on');
         $this->alert->success(trans('admin/node.notices.node_updated'))->flash();
 
         return redirect()->route('admin.nodes.view.settings', $node->id)->withInput();
@@ -289,7 +289,7 @@ class NodesController extends Controller
      * Removes multiple individual allocations from a node.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int $node
+     * @param int                      $node
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
