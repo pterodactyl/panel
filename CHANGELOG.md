@@ -12,6 +12,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Updated
 * Upgraded core to use Laravel `5.7.14`.
 
+### Added
+* Added support for opening and editing Python files through the web editor.
+
 ## v0.7.11 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with certain systems not handling an API folder that was named `API` but referenced as `Api` in the namespace.
