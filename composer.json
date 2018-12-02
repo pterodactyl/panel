@@ -24,7 +24,7 @@
         "hashids/hashids": "^2.0",
         "igaster/laravel-theme": "^2.0.6",
         "laracasts/utilities": "^3.0",
-        "laravel/framework": "5.7.*",
+        "laravel/framework": "~5.7.14",
         "laravel/tinker": "^1.0",
         "lord/laroute": "^2.4",
         "matriphe/iso-639": "^1.2",
