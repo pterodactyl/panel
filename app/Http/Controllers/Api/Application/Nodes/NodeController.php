@@ -125,7 +125,7 @@ class NodeController extends ApplicationApiController
     public function update(UpdateNodeRequest $request): array
     {
         $node = $this->updateService->handle(
-            $request->getModel(Node::class), $request->validated()
+            $request->getModel(Node::class), $request->validated(), $request->input('reset_secret') === true
         );
 
         return $this->fractal->item($node)
