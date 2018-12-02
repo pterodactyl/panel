@@ -242,6 +242,6 @@ class LoginController extends Controller
      */
     private function fireFailedLoginEvent(Authenticatable $user = null, array $credentials = [])
     {
-        event(new Failed($user, $credentials));
+        event(new Failed(config('auth.defaults.guard'), $user, $credentials));
     }
 }
