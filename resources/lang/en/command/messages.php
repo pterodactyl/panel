@@ -44,7 +44,7 @@ return [
         'rebuild_failed' => 'Rebuild request for ":name" (#:id) on node ":node" failed with error: :message',
         'reinstall' => [
             'failed' => 'Reinstall request for ":name" (#:id) on node ":node" failed with error: :message',
-            'confirm' => 'You are about to reinstall against a group of servers. Do you wish to continue?'
+            'confirm' => 'You are about to reinstall against a group of servers. Do you wish to continue?',
         ],
         'power' => [
             'confirm' => 'You are about to perform a :action against :count servers. Do you wish to continue?',

@@ -69,7 +69,7 @@ class BulkReinstallActionCommand extends Command
      */
     public function handle()
     {
-    	$servers = $this->getServersToProcess();
+        $servers = $this->getServersToProcess();
 
         if (! $this->confirm(trans('command/messages.server.reinstall.confirm'))) {
             return;
