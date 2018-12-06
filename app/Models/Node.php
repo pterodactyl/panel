@@ -191,7 +191,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
                 'count' => 3,
             ],
             'remote' => [
-                'base' => route('index'),
+                'base' => config('app.url'),
             ],
             'uploads' => [
                 'size_limit' => $this->upload_size,
