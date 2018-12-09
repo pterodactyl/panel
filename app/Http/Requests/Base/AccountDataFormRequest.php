@@ -9,11 +9,11 @@
 
 namespace Pterodactyl\Http\Requests\Base;
 
-use Illuminate\Validation\Rule;
 use Pterodactyl\Models\User;
+use Illuminate\Validation\Rule;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
 
 class AccountDataFormRequest extends FrontendUserFormRequest
 {
