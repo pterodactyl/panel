@@ -10,15 +10,11 @@
 namespace Pterodactyl\Http\Requests\Base;
 
 use Pterodactyl\Models\User;
-use Illuminate\Validation\Rule;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 
 class AccountDataFormRequest extends FrontendUserFormRequest
 {
-    use AvailableLanguages;
-
     /**
      * @return bool
      * @throws \Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException
@@ -63,7 +59,7 @@ class AccountDataFormRequest extends FrontendUserFormRequest
                     'name_first' => array_get($modelRules, 'name_first'),
                     'name_last' => array_get($modelRules, 'name_last'),
                     'username' => array_get($modelRules, 'username'),
-                    'language' => 'required|string|' . Rule::in(array_keys($this->getAvailableLanguages())),
+                    'language' => array_get($modelRules, 'language'),
                 ];
                 break;
             default:
