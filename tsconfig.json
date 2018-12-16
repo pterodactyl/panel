@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "strict": true,
+    "moduleResolution": "node",
+    "module": "es2015"
+  },
+  "include": [
+    "./resources/assets/scripts/**/*"
+  ]
+}

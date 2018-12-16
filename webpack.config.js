@@ -9,6 +9,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const ShellPlugin = require('webpack-shell-plugin');
 const PurgeCssPlugin = require('purgecss-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 // Custom PurgeCSS extractor for Tailwind that allows special characters in
 // class names.
 //
@@ -52,7 +53,7 @@ const productionPlugins = [
             {
                 extractor: TailwindExtractor,
                 extensions: ['html', 'js', 'php', 'vue'],
-            }
+            },
         ],
     }),
     new UglifyJsPlugin({
@@ -87,6 +88,14 @@ module.exports = {
                 loader: 'vue-loader',
             },
             {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                exclude: /node_modules/,
+                options: {
+                    appendTsSuffixTo: [/\.vue$/],
+                },
+            },
+            {
                 test: /\.js$/,
                 include: [
                     path.resolve(__dirname, 'resources'),
@@ -114,36 +123,43 @@ module.exports = {
                             plugins: [
                                 require('postcss-import'),
                                 tailwind('./tailwind.js'),
-                                require('postcss-preset-env')({stage: 0}),
+                                require('postcss-preset-env')({ stage: 0 }),
                                 require('precss'),
                                 require('autoprefixer'),
                                 require('cssnano'),
-                            ]
+                            ],
                         },
                     }],
                 }),
-            }
-        ]
+            },
+            {
+                test: /\.(png|jpg|gif|svg)$/,
+                loader: 'file-loader',
+                options: {
+                    name: '[name].[ext]?[hash]',
+                },
+            },
+        ],
     },
     resolve: {
+        extensions: ['.ts', '.js', '.vue', '.json'],
         alias: {
-            'vue$': 'vue/dist/vue.esm.js'
+            'vue$': 'vue/dist/vue.esm.js',
         },
-        extensions: ['.js', '.vue', '.json'],
         symlinks: false,
     },
     plugins: process.env.NODE_ENV === 'production' ? basePlugins.concat(productionPlugins) : basePlugins,
     serve: {
-        content: "./public/",
+        content: './public/',
         dev: {
-            publicPath: "/assets/",
+            publicPath: '/assets/',
             headers: {
-                "Access-Control-Allow-Origin": "*",
+                'Access-Control-Allow-Origin': '*',
             },
         },
         hot: {
             hmr: true,
             reload: true,
-        }
-    }
+        },
+    },
 };

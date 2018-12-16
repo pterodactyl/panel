@@ -52,6 +52,8 @@
         "purgecss-webpack-plugin": "^1.1.0",
         "style-loader": "^0.21.0",
         "tailwindcss": "^0.5.1",
+        "ts-loader": "^5.3.1",
+        "typescript": "^3.2.2",
         "uglifyjs-webpack-plugin": "^1.2.5",
         "vue-devtools": "^3.1.9",
         "vue-feather-icons": "^4.7.1",
