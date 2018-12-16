@@ -1,4 +1,3 @@
-// @flow
 import format from 'date-fns/format';
 
 /**
@@ -8,13 +7,13 @@ import format from 'date-fns/format';
  * @param {Number} bytes
  * @return {String}
  */
-export function readableSize (bytes: number): string {
+export function readableSize (bytes) {
     if (Math.abs(bytes) < 1024) {
         return `${bytes} Bytes`;
     }
 
-    let u: number = -1;
-    const units: Array<string> = ['KiB', 'MiB', 'GiB', 'TiB'];
+    let u = -1;
+    const units = ['KiB', 'MiB', 'GiB', 'TiB'];
 
     do {
         bytes /= 1024;
@@ -30,6 +29,6 @@ export function readableSize (bytes: number): string {
  * @param {String} date
  * @return {String}
  */
-export function formatDate (date: string): string {
+export function formatDate (date) {
     return format(date, 'MMM D, YYYY [at] HH:MM');
 }

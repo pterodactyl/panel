@@ -1,23 +1,16 @@
-// @flow
 import http from './../http';
 import filter from 'lodash/filter';
 import isObject from 'lodash/isObject';
 import route from '../../../../../vendor/tightenco/ziggy/src/js/route';
-
-export interface DirectoryContentsResponse {
-    files: Object,
-    directories: Object,
-    editable: Array<string>,
-}
 
 /**
  * Get the contents of a specific directory for a given server.
  *
  * @param {String} server
  * @param {String} directory
- * @return {Promise<DirectoryContentsResponse>}
+ * @return {Promise}
  */
-export function getDirectoryContents(server: string, directory: string): Promise<DirectoryContentsResponse> {
+export function getDirectoryContents (server, directory) {
     return new Promise((resolve, reject) => {
         http.get(route('server.files', { server, directory }))
             .then((response) => {

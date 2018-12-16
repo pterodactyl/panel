@@ -1,12 +1,10 @@
-// @flow
 import axios from 'axios';
-import type { AxiosInstance } from 'axios';
 
 // This token is set in the bootstrap.js file at the beginning of the request
 // and is carried through from there.
 // const token: string = '';
 
-const http: AxiosInstance = axios.create({
+const http = axios.create({
     'X-Requested-With': 'XMLHttpRequest',
     'Accept': 'application/json',
     'Content-Type': 'application/json',

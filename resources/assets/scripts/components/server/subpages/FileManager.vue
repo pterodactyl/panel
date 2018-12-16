@@ -42,13 +42,11 @@
 </template>
 
 <script>
-// @flow
 import map from 'lodash/map';
 import { mapState } from 'vuex';
-import type { Route } from 'vue-router';
 import FileManagerFileRow from '../components/filemanager/FileManagerFileRow';
 import FileManagerFolderRow from '../components/filemanager/FileManagerFolderRow';
-import { getDirectoryContents, DirectoryContentsResponse } from '../../../api/server/getDirectoryContents';
+import { getDirectoryContents } from '../../../api/server/getDirectoryContents';
 
 export default {
     name: 'file-manager-page',
@@ -62,13 +60,13 @@ export default {
          * Configure the breadcrumbs that display on the filemanager based on the directory that the
          * user is currently in.
          */
-        breadcrumbs: function (): Array<Object> {
-            const directories: Array<string> = this.currentDirectory.replace(/^\/|\/$/, '').split('/');
+        breadcrumbs: function () {
+            const directories = this.currentDirectory.replace(/^\/|\/$/, '').split('/');
             if (directories.length < 1 || !directories[0]) {
                 return [];
             }
 
-            return map(directories, function (value: string, key: number) {
+            return map(directories, function (value, key) {
                 if (key === directories.length - 1) {
                     return { directoryName: value };
                 }
@@ -85,14 +83,14 @@ export default {
         /**
          * When the route changes reload the directory.
          */
-        '$route': function (to: Route) {
+        '$route': function (to) {
             this.currentDirectory = to.params.path || '/';
         },
 
         /**
          * Watch the current directory setting and when it changes update the file listing.
          */
-        currentDirectory: function (): void {
+        currentDirectory: function () {
             this.listDirectory();
         },
 
@@ -100,7 +98,7 @@ export default {
          * When we reconnect to the Daemon make sure we grab a listing of all of the files
          * so that the error message disappears and we then load in a fresh listing.
          */
-        connected: function (): void {
+        connected: function () {
             if (this.connected) {
                 this.listDirectory();
             }
@@ -127,18 +125,18 @@ export default {
         /**
          * List the contents of a directory.
          */
-        listDirectory: function (): void {
+        listDirectory: function () {
             this.loading = true;
 
-            const directory: string = encodeURI(this.currentDirectory.replace(/^\/|\/$/, ''));
+            const directory = encodeURI(this.currentDirectory.replace(/^\/|\/$/, ''));
             getDirectoryContents(this.$route.params.id, directory)
-                .then((response: DirectoryContentsResponse) => {
+                .then((response) => {
                     this.files = response.files;
                     this.directories = response.directories;
                     this.editableFiles = response.editable;
                     this.errorMessage = null;
                 })
-                .catch((err: string|Object) => {
+                .catch((err) => {
                     if (err instanceof String) {
                         this.errorMessage = err;
                         return;

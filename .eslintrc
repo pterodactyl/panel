@@ -1,9 +1,8 @@
 {
   "parser": "babel-eslint",
-  "plugins": ["html", "flowtype-errors"],
+  "plugins": ["html"],
   "extends": ["vue"],
   "rules": {
-    "flowtype-errors/show-errors": 2,
     "semi": "off",
     "indent": ["error", 4],
     "comma-dangle": ["error", "always-multiline"],

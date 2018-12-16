@@ -1,4 +1,3 @@
-// @flow
 import Vue from 'vue';
 import Vuex from 'vuex';
 import vuexI18n from 'vuex-i18n';
