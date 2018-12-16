@@ -27,7 +27,7 @@ class ForgotPasswordController extends Controller
         // exist on the system.
         event(new FailedPasswordReset($request->ip(), $request->input('email')));
 
-        return $this->sendResetLinkResponse(Password::RESET_LINK_SENT);
+        return $this->sendResetLinkResponse($request, Password::RESET_LINK_SENT);
     }
 
     /**

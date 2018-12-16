@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers;
 
-use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class GetServerRequest extends ClientApiRequest
@@ -17,15 +16,5 @@ class GetServerRequest extends ClientApiRequest
     public function authorize(): bool
     {
         return true;
-    }
-
-    /**
-     * Determine if the user should even know that this server exists.
-     *
-     * @return bool
-     */
-    public function resourceExists(): bool
-    {
-        return $this->user()->can('view-server', $this->getModel(Server::class));
     }
 }

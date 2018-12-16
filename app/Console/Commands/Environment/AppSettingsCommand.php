@@ -132,7 +132,7 @@ class AppSettingsCommand extends Command
         );
 
         $selected = $this->config->get('queue.default', 'redis');
-        $this->variables['QUEUE_DRIVER'] = $this->option('queue') ?? $this->choice(
+        $this->variables['QUEUE_CONNECTION'] = $this->option('queue') ?? $this->choice(
             trans('command/messages.environment.app.queue_driver'),
             self::ALLOWED_QUEUE_DRIVERS,
             array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null

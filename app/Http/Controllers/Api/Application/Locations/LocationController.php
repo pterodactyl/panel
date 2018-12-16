@@ -14,6 +14,7 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
+use Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
 
 class LocationController extends ApplicationApiController
@@ -92,7 +93,7 @@ class LocationController extends ApplicationApiController
      * Store a new location on the Panel and return a HTTP/201 response code with the
      * new location attached.
      *
-     * @param \Pterodactyl\Http\Controllers\Api\Application\Locations\StoreLocationRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

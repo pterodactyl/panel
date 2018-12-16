@@ -41,8 +41,7 @@ In addition to our standard nest of supported games, our community is constantly
 * Discord ATLBot
 
 ## Credits
-A huge thank you to [PhraseApp](https://phraseapp.com) who provide us the software to help translate this project. This software would not be possible
-without the work of other open-source authors who provide tools such as:
+This software would not be possible without the work of other open-source authors who provide tools such as:
 
 [Ace Editor](https://ace.c9.io), [AdminLTE](https://almsaeedstudio.com), [Animate.css](http://daneden.github.io/animate.css/), [AnsiUp](https://github.com/drudru/ansi_up), [Async.js](https://github.com/caolan/async), 
 [Bootstrap](http://getbootstrap.com), [Bootstrap Notify](http://bootstrap-notify.remabledesigns.com), [Chart.js](http://www.chartjs.org), [FontAwesome](http://fontawesome.io),

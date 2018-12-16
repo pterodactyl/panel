@@ -51,21 +51,34 @@ class NodeUpdateServiceTest extends TestCase
     public function testNodeIsUpdatedAndDaemonSecretIsReset()
     {
         $model = factory(Node::class)->make();
+        $updatedModel = factory(Node::class)->make([
+            'name' => 'New Name',
+            'daemonSecret' => 'abcd1234',
+        ]);
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'str_random')
-            ->expects($this->once())->willReturn('random_string');
+            ->expects($this->once())->willReturn($updatedModel->daemonSecret);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
         $this->repository->shouldReceive('update')->with($model->id, [
-            'name' => 'NewName',
-            'daemonSecret' => 'random_string',
+            'name' => $updatedModel->name,
+            'daemonSecret' => $updatedModel->daemonSecret,
         ])->andReturn($model);
 
-        $this->configRepository->shouldReceive('setNode')->with($model)->once()->andReturnSelf()
-            ->shouldReceive('update')->withNoArgs()->once()->andReturn(new Response);
+        $cloned = $updatedModel->replicate(['daemonSecret']);
+        $cloned->daemonSecret = $model->daemonSecret;
+
+        $this->configRepository->shouldReceive('setNode')->with(m::on(function ($model) use ($updatedModel) {
+            return $model->daemonSecret !== $updatedModel->daemonSecret;
+        }))->once()->andReturnSelf();
+
+        $this->configRepository->shouldReceive('update')->with([
+            'keys' => ['abcd1234'],
+        ])->once()->andReturn(new Response);
+
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $response = $this->getService()->handle($model, ['name' => 'NewName', 'reset_secret' => true]);
+        $response = $this->getService()->handle($model, ['name' => $updatedModel->name], true);
         $this->assertInstanceOf(Node::class, $response);
     }
 

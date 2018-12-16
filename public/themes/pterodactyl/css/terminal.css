@@ -26,6 +26,7 @@
 
 #terminal > .cmd {
     padding: 1px 0;
+    word-wrap: break-word;
 }
 
 #terminal_input {
