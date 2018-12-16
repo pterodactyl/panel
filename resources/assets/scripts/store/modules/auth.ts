@@ -1,20 +1,35 @@
-import User from './../../models/user';
+import User, {UserData} from '../../models/user';
+import {ActionContext} from "vuex";
 
 const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').default;
+
+type LoginAction = {
+    type: 'login',
+    user: string,
+    password: string,
+}
+
+type UpdateEmailAction = {
+    type: 'updateEmail',
+    email: string,
+    password: string,
+}
+
+export type AuthenticationState = {
+    user: null | User,
+}
 
 export default {
     namespaced: true,
     state: {
+        // @ts-ignore
         user: typeof window.PterodactylUser === 'object' ? new User(window.PterodactylUser) : null,
     },
     getters: {
         /**
          * Return the currently authenticated user.
-         *
-         * @param state
-         * @returns {User|null}
          */
-        getUser: function (state) {
+        getUser: function (state: AuthenticationState): null | User {
             return state.user;
         },
     },
@@ -22,15 +37,16 @@ export default {
     actions: {
         /**
          * Log a user into the Panel.
-         *
-         * @param commit
-         * @param {String} user
-         * @param {String} password
-         * @returns {Promise<any>}
          */
-        login: ({commit}, {user, password}) => {
+        login: ({commit}: ActionContext<AuthenticationState, any>, {user, password}: LoginAction): Promise<{
+            complete: boolean,
+            intended?: string,
+            token?: string,
+        }> => {
             return new Promise((resolve, reject) => {
+                // @ts-ignore
                 window.axios.post(route('auth.login'), {user, password})
+                    // @ts-ignore
                     .then(response => {
                         commit('logout');
 
@@ -59,15 +75,12 @@ export default {
 
         /**
          * Update a user's email address on the Panel and store the updated result in Vuex.
-         *
-         * @param commit
-         * @param {String} email
-         * @param {String} password
-         * @return {Promise<any>}
          */
-        updateEmail: function ({commit}, {email, password}) {
+        updateEmail: function ({commit}: ActionContext<AuthenticationState, any>, {email, password}: UpdateEmailAction): Promise<void> {
             return new Promise((resolve, reject) => {
+                // @ts-ignore
                 window.axios.put(route('api.client.account.update-email'), {email, password})
+                    // @ts-ignore
                     .then(response => {
                         // If there is a 302 redirect or some other odd behavior (basically, response that isnt
                         // in JSON format) throw an error and don't try to continue with the login.
@@ -83,13 +96,15 @@ export default {
         },
     },
     mutations: {
-        setEmail: function (state, email) {
-            state.user.email = email;
+        setEmail: function (state: AuthenticationState, email: string) {
+            if (state.user) {
+                state.user.email = email;
+            }
         },
-        login: function (state, data) {
+        login: function (state: AuthenticationState, data: UserData) {
             state.user = new User(data);
         },
-        logout: function (state) {
+        logout: function (state: AuthenticationState) {
             state.user = null;
         },
     },

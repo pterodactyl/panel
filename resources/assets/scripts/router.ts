@@ -1,4 +1,4 @@
-import VueRouter from 'vue-router';
+import VueRouter, {Route} from 'vue-router';
 import store from './store/index';
 
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
@@ -17,7 +17,7 @@ import {
     DatabasesPage,
     ServerSchedules,
     ServerSettings,
-    ServerSubusers
+    ServerSubusers,
 } from './components/server';
 
 const routes = [
@@ -28,9 +28,9 @@ const routes = [
         name: 'reset-password',
         path: '/auth/password/reset/:token',
         component: ResetPassword,
-        props: function (route) {
+        props: function (route: Route) {
             return {token: route.params.token, email: route.query.email || ''};
-        }
+        },
     },
 
     {name: 'dashboard', path: '/', component: Dashboard},
@@ -38,21 +38,22 @@ const routes = [
     {name: 'account.api', path: '/account/api', component: Account},
     {name: 'account.security', path: '/account/security', component: Account},
 
-    { path: '/server/:id', component: Server,
+    {
+        path: '/server/:id', component: Server,
         children: [
-            { name: 'server', path: '', component: ConsolePage },
-            { name: 'server-files', path: 'files/:path(.*)?', component: FileManagerPage },
-            { name: 'server-subusers', path: 'subusers', component: ServerSubusers },
-            { name: 'server-schedules', path: 'schedules', component: ServerSchedules },
-            { name: 'server-databases', path: 'databases', component: DatabasesPage },
-            { name: 'server-allocations', path: 'allocations', component: ServerAllocations },
-            { name: 'server-settings', path: 'settings', component: ServerSettings },
-        ]
-    }
+            {name: 'server', path: '', component: ConsolePage},
+            {name: 'server-files', path: 'files/:path(.*)?', component: FileManagerPage},
+            {name: 'server-subusers', path: 'subusers', component: ServerSubusers},
+            {name: 'server-schedules', path: 'schedules', component: ServerSchedules},
+            {name: 'server-databases', path: 'databases', component: DatabasesPage},
+            {name: 'server-allocations', path: 'allocations', component: ServerAllocations},
+            {name: 'server-settings', path: 'settings', component: ServerSettings},
+        ],
+    },
 ];
 
 const router = new VueRouter({
-    mode: 'history', routes
+    mode: 'history', routes,
 });
 
 // Redirect the user to the login page if they try to access a protected route and

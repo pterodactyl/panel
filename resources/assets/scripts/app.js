@@ -11,7 +11,7 @@ require('./bootstrap');
 import { Ziggy } from './helpers/ziggy';
 import Locales from './../../../resources/lang/locales';
 import { flash } from './mixins/flash';
-import store from './store/index.js';
+import store from './store/index';
 import router from './router';
 
 window.events = new Vue();

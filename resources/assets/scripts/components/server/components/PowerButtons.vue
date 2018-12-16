@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import Status from './../../../helpers/statuses';
+    import Status from '../../../helpers/statuses';
     import { Socketio } from './../../../mixins/socketio';
     import { mapState } from 'vuex';
 
