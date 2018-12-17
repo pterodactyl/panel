@@ -1,22 +1,17 @@
 import User, {UserData} from '../../models/user';
 import {ActionContext} from "vuex";
+import {AuthenticationState} from "../types";
 
 const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').default;
 
 type LoginAction = {
-    type: 'login',
     user: string,
     password: string,
 }
 
 type UpdateEmailAction = {
-    type: 'updateEmail',
     email: string,
     password: string,
-}
-
-export type AuthenticationState = {
-    user: null | User,
 }
 
 export default {

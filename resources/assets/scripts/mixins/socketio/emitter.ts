@@ -1,18 +1,21 @@
-import isFunction from 'lodash/isFunction';
+import {isFunction} from 'lodash';
+import {ComponentOptions} from "vue";
+import {Vue} from "vue/types/vue";
 
 export default new class SocketEmitter {
-    constructor () {
+    listeners: Map<string | number, Array<{
+        callback: (a: ComponentOptions<Vue>) => void,
+        vm: ComponentOptions<Vue>,
+    }>>;
+
+    constructor() {
         this.listeners = new Map();
     }
 
     /**
      * Add an event listener for socket events.
-     *
-     * @param {String|Number|Symbol} event
-     * @param {Function} callback
-     * @param {*} vm
      */
-    addListener (event, callback, vm) {
+    addListener(event: string | number, callback: (data: any) => void, vm: ComponentOptions<Vue>) {
         if (!isFunction(callback)) {
             return;
         }
@@ -21,21 +24,19 @@ export default new class SocketEmitter {
             this.listeners.set(event, []);
         }
 
+        // @ts-ignore
         this.listeners.get(event).push({callback, vm});
     }
 
     /**
      * Remove an event listener for socket events based on the context passed through.
-     *
-     * @param {String|Number|Symbol} event
-     * @param {Function} callback
-     * @param {*} vm
      */
-    removeListener (event, callback, vm) {
+    removeListener(event: string | number, callback: (data: any) => void, vm: ComponentOptions<Vue>) {
         if (!isFunction(callback) || !this.listeners.has(event)) {
             return;
         }
 
+        // @ts-ignore
         const filtered = this.listeners.get(event).filter((listener) => {
             return listener.callback !== callback || listener.vm !== vm;
         });
@@ -49,13 +50,10 @@ export default new class SocketEmitter {
 
     /**
      * Emit a socket event.
-     *
-     * @param {String|Number|Symbol} event
-     * @param {Array} args
      */
-    emit (event, ...args) {
+    emit(event: string | number, ...args: any) {
         (this.listeners.get(event) || []).forEach((listener) => {
-            listener.callback.call(listener.vm, ...args);
+            listener.callback.call(listener.vm, args);
         });
     }
 }

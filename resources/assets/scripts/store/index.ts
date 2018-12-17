@@ -1,20 +1,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import auth, {AuthenticationState} from './modules/auth';
-import dashboard, {DashboardState} from './modules/dashboard';
-import server, {ServerState} from './modules/server';
-import socket, {SocketState} from './modules/socket';
+import auth from './modules/auth';
+import dashboard from './modules/dashboard';
+import server from './modules/server';
+import socket from './modules/socket';
+import {ApplicationState} from "./types";
 
 Vue.use(Vuex);
 
-export type ApplicationState = {
-    socket: SocketState,
-    server: ServerState,
-    auth: AuthenticationState,
-    dashboard: DashboardState,
-}
-
-const store = new Vuex.Store({
+const store = new Vuex.Store<ApplicationState>({
     strict: process.env.NODE_ENV !== 'production',
     modules: {auth, dashboard, server, socket},
 });

@@ -1,10 +1,5 @@
 import Status from '../../helpers/statuses';
-
-export type SocketState = {
-    connected: boolean,
-    connectionError: boolean | Error,
-    status: number,
-}
+import {SocketState} from "../types";
 
 export default {
     namespaced: true,

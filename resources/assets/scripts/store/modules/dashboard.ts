@@ -1,11 +1,7 @@
 import Server, {ServerData} from '../../models/server';
 import {ActionContext} from "vuex";
+import {DashboardState} from "../types";
 const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').default;
-
-export type DashboardState = {
-    searchTerm: string,
-    servers: Array<Server>,
-};
 
 export default {
     namespaced: true,

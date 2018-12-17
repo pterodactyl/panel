@@ -1,19 +1,16 @@
-import format from 'date-fns/format';
+import { format } from 'date-fns';
 
 /**
  * Return the human readable filesize for a given number of bytes. This
  * uses 1024 as the base, so the response is denoted accordingly.
- *
- * @param {Number} bytes
- * @return {String}
  */
-export function readableSize (bytes) {
+export function readableSize (bytes: number): string {
     if (Math.abs(bytes) < 1024) {
         return `${bytes} Bytes`;
     }
 
-    let u = -1;
-    const units = ['KiB', 'MiB', 'GiB', 'TiB'];
+    let u: number = -1;
+    const units: Array<string> = ['KiB', 'MiB', 'GiB', 'TiB'];
 
     do {
         bytes /= 1024;
@@ -25,10 +22,7 @@ export function readableSize (bytes) {
 
 /**
  * Format the given date as a human readable string.
- *
- * @param {String} date
- * @return {String}
  */
-export function formatDate (date) {
+export function formatDate (date: string): string {
     return format(date, 'MMM D, YYYY [at] HH:MM');
 }

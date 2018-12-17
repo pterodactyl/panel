@@ -69,7 +69,7 @@
     import ProgressBar from './components/ProgressBar';
     import { mapState } from 'vuex';
     import io from 'socket.io-client';
-    import { Socketio } from './../../mixins/socketio';
+    import { Socketio } from '../../mixins/socketio/index';
 
     import PowerButtons from './components/PowerButtons';
     import Flash from '../Flash';

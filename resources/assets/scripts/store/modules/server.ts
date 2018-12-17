@@ -2,17 +2,7 @@
 import route from '../../../../../vendor/tightenco/ziggy/src/js/route';
 import {ActionContext} from "vuex";
 import {ServerData} from "../../models/server";
-
-type ServerApplicationCredentials = {
-    node: string,
-    key: string,
-};
-
-export type ServerState = {
-    server: ServerData,
-    credentials: ServerApplicationCredentials,
-    console: Array<string>,
-};
+import {ServerApplicationCredentials, ServerState} from "../types";
 
 export default {
     namespaced: true,

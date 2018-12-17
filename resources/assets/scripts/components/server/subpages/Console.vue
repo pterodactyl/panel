@@ -28,7 +28,7 @@
     import { Terminal } from 'xterm';
     import * as TerminalFit from 'xterm/lib/addons/fit/fit';
     import {mapState} from 'vuex';
-    import {Socketio} from './../../../mixins/socketio';
+    import {Socketio} from '../../../mixins/socketio/index';
 
     Terminal.applyAddon(TerminalFit);
 

@@ -1,9 +1,11 @@
 import SocketEmitter from './emitter';
 import SocketioConnector from './connector';
+import {ComponentOptions} from 'vue';
+import {Vue} from "vue/types/vue";
 
-let connector = null;
+let connector: SocketioConnector | null = null;
 
-export const Socketio = {
+export const Socketio: ComponentOptions<Vue> = {
     /**
      * Setup the socket when we create the first component using the mixin. This is the Server.vue
      * file, unless you mess up all of this code. Subsequent components to use this mixin will
@@ -15,7 +17,7 @@ export const Socketio = {
             connector = new SocketioConnector(this.$store);
         }
 
-        const sockets = this.$options.sockets || {};
+        const sockets = (this.$options || {}).sockets || {};
         Object.keys(sockets).forEach((event) => {
             SocketEmitter.addListener(event, sockets[event], this);
         });
@@ -25,7 +27,7 @@ export const Socketio = {
      * Before destroying the component we need to remove any event listeners registered for it.
      */
     beforeDestroy: function () {
-        const sockets = this.$options.sockets || {};
+        const sockets = (this.$options || {}).sockets || {};
         Object.keys(sockets).forEach((event) => {
             SocketEmitter.removeListener(event, sockets[event], this);
         });
@@ -43,8 +45,13 @@ export const Socketio = {
          * Disconnects from the active socket and sets the connector to null.
          */
         removeSocket: function () {
-            if (connector !== null && connector.instance() !== null) {
-                connector.instance().close();
+            if (!connector) {
+                return;
+            }
+
+            const instance: SocketIOClient.Socket | null = connector.instance();
+            if (instance) {
+                instance.close();
             }
 
             connector = null;

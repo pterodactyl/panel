@@ -24,7 +24,7 @@
 
 <script>
     import Status from '../../../helpers/statuses';
-    import { Socketio } from './../../../mixins/socketio';
+    import { Socketio } from '../../../mixins/socketio/index';
     import { mapState } from 'vuex';
 
     export default {
