@@ -17,7 +17,7 @@ class NestSeeder extends Seeder
     private $repository;
 
     /**
-     * MinecraftNestSeeder constructor.
+     * NestSeeder constructor.
      *
      * @param \Pterodactyl\Services\Nests\NestCreationService           $creationService
      * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
