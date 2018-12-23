@@ -18,6 +18,7 @@ return [
     'search' => 'Search',
     'suspended' => 'Suspended',
     'account' => 'Account',
+    'billing' => 'Billing',
     'security' => 'Security',
     'ip' => 'IP Address',
     'last_activity' => 'Last Activity',

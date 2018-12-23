@@ -17,19 +17,19 @@
         <div class="col-xs-6">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">@lang('base.billing.charge.heading')</h3>
+                    <h3 class="box-title">@lang('base.billing.link.heading')</h3>
                 </div>
-                <form method="POST" action="{{ route('account.billing.submit') }}">
+                <form method="POST" action="{{ route('account.billing.stripe') }}">
                     <div class="box-body">
-                        <p>@lang('base.billing.charge.description')</p>
+                        <p>@lang('base.billing.link.description')</p>
                         <div class="form-group">
-                            <label class="control-label">@lang('base.billing.charge.credit_card_info')</label>
+                            <label class="control-label">@lang('base.billing.link.credit_card_info')</label>
                             <div>
                                 <div id="card-element"></div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label">@lang('base.billing.charge.amount')</label>
+                            <label class="control-label">@lang('base.billing.link.amount')</label>
                             <div>
                                 <input type="number" name="amount" value="20" class="form-control">
                             </div>
@@ -40,7 +40,7 @@
                         <input type="hidden" name="card_brand">
                         <input type="hidden" name="card_last4">
                         {!! csrf_field() !!}
-                        <button type="submit" class="btn btn-success btn-sm">@lang('base.billing.charge.submit_button')</button>
+                        <button type="submit" class="btn btn-success btn-sm">@lang('base.billing.link.submit_button')</button>
                     </div>
                 </form>
             </div>
@@ -62,6 +62,26 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@lang('base.billing.charge.heading')</h3>
+                </div>
+                <form method="POST" action="{{ route('account.billing.paypal') }}">
+                    <div class="box-body">
+                        <p>@lang('base.billing.charge.description')</p>
+                        <div class="form-group">
+                            <label class="control-label">@lang('base.billing.charge.amount')</label>
+                            <div>
+                                <input type="number" name="amount" value="20" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        {!! csrf_field() !!}
+                        <button type="submit" class="btn btn-success btn-sm">@lang('base.billing.charge.submit_button')</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -86,8 +106,7 @@
                     fontSmoothing: 'antialiased',
                     fontSize: '16px',
                     '::placeholder': {
-                    color: '#aab7c4'
-                    }
+                        color: '#aab7c4'}
                 },
                 invalid: {
                     color: '#fa755a',
@@ -105,7 +124,6 @@
                 form.find('[name="card_brand"]').val(result.token.card.brand);
                 form.find('[name="card_last4"]').val(result.token.card.last4);
                 token.val(result.token.id);
-                console.log(result.token);
                 form.submit();
             });
             return false;

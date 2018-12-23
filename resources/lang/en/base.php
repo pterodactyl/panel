@@ -89,12 +89,18 @@ return [
     'billing' => [
         'header' => 'Billing',
         'header_sub' => '',
-        'charge' => [
-            'heading' => 'Add founds',
-            'description' => 'You can add founds to your account using any kind of credit-card. Payments are handled safely using <a href="//stripe.com/" target="_blank">Stripe</a>.',
+        'link' => [
+            'heading' => 'Link a CreditCard',
+            'description' => 'You can add founds and link your creditcard to your account using any kind of credit-card. Payments are handled safely using <a href="//stripe.com/" target="_blank">Stripe</a>.',
             'credit_card_info' => 'Credit Card Info',
             'amount' => 'Amount',
-            'submit_button' => 'Charge',
+            'submit_button' => 'Charge & Link',
+        ],
+        'charge' => [
+            'heading' => 'Add Founds using PayPal',
+            'description' => 'Safely add founds to your account using paypal. This is a one-time transaction, your paypal account won\'t be linked to this website.',
+            'amount' => 'Amount',
+            'submit_button' => 'Pay with Paypal',
         ],
         'summary' => [
             'header' => 'Summary',
