@@ -97,6 +97,11 @@
                                 <i class="fa fa-user"></i> <span>@lang('navigation.account.my_account')</span>
                             </a>
                         </li>
+                        <li class="{{ Route::currentRouteName() !== 'account.billing' ?: 'active' }}">
+                            <a href="{{ route('account.billing') }}">
+                                <i class="fa fa-credit-card"></i> <span>@lang('navigation.account.billing')</span>
+                            </a>
+                        </li>
                         <li class="{{ Route::currentRouteName() !== 'account.security' ?: 'active' }}">
                             <a href="{{ route('account.security')}}">
                                 <i class="fa fa-lock"></i> <span>@lang('navigation.account.security_controls')</span>

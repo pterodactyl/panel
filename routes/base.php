@@ -58,3 +58,17 @@ Route::group(['prefix' => 'account/security'], function () {
 
     Route::delete('/totp', 'SecurityController@disableTotp')->name('account.security.totp.disable');
 });
+
+
+/*
+|--------------------------------------------------------------------------
+| Account Billing Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /account/billing
+|
+*/
+Route::group(['prefix' => 'account/billing'], function () {
+    Route::get('/', 'BillingController@index')->name('account.billing');
+    Route::post('/', 'BillingController@submit')->name('account.billing.submit');
+});

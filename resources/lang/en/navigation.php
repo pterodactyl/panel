@@ -8,6 +8,7 @@ return [
         'security_controls' => 'Security Controls',
         'api_access' => 'Account API',
         'my_servers' => 'My Servers',
+        'billing' => 'Billing',
     ],
     'server' => [
         'header' => 'SERVER MANAGEMENT',

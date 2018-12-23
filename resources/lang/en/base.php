@@ -86,4 +86,20 @@ return [
         '2fa_checkpoint_help' => 'Use the 2FA application on your phone to take a picture of the QR code to the left, or manually enter the code under it. Once you have done so, generate a token and enter it below.',
         '2fa_disable_error' => 'The 2FA token provided was not valid. Protection has not been disabled for this account.',
     ],
+    'billing' => [
+        'header' => 'Billing',
+        'header_sub' => '',
+        'charge' => [
+            'heading' => 'Add founds',
+            'description' => 'You can add founds to your account using any kind of credit-card. Payments are handled safely using <a href="//stripe.com/" target="_blank">Stripe</a>.',
+            'credit_card_info' => 'Credit Card Info',
+            'amount' => 'Amount',
+            'submit_button' => 'Charge',
+        ],
+        'summary' => [
+            'header' => 'Summary',
+            'this_month_charges' => 'This Month Charges',
+            'account_balance' => 'Account Balance',
+        ]
+    ]
 ];
