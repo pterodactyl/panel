@@ -98,7 +98,7 @@ return [
         ],
         'unlink' => [
             'heading' => 'Unlink CreditCard',
-            'description' => 'A :brand card ending in :last4 is actually linked to your profile.',
+            'description' => 'A <b>:brand</b> card ending in <b>:last4</b> is actually linked to your profile.',
             'submit_button' => 'Unlink',
         ],
         'charge' => [
