@@ -188,6 +188,27 @@ class User extends Model implements
     }
 
     /**
+     * Add balance, create invoice and send notification
+     * 
+     * @param float $amount
+     */
+    public function addBalance($amount) 
+    {
+        $invoice = new Invoice();
+        $invoice->amount = $amount;
+        $invoice->user_id = $this->id;
+        $invoice->billing_first_name = $this->billing_first_name;
+        $invoice->billing_last_name = $this->billing_last_name;
+        $invoice->billing_address = $this->billing_address;
+        $invoice->billing_city = $this->billing_city;
+        $invoice->billing_country = $this->billing_country;
+        $invoice->billing_zip = $this->billing_zip;
+        $invoice->save();
+        $this->balance += $invoice->amount;
+        $this->save();
+    }
+
+    /**
      * Store the username as a lowercase string.
      *
      * @param string $value
@@ -225,6 +246,16 @@ class User extends Model implements
     public function servers()
     {
         return $this->hasMany(Server::class, 'owner_id');
+    }
+
+    /**
+     * Returns all the invoices for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 
     /**

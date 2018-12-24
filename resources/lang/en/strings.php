@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'date_format' => 'Y-m-d',
     'email' => 'Email',
     'user_identifier' => 'Username or Email',
     'password' => 'Password',

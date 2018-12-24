@@ -70,7 +70,10 @@ Route::group(['prefix' => 'account/security'], function () {
 */
 Route::group(['prefix' => 'account/billing'], function () {
     Route::get('/', 'BillingController@index')->name('account.billing');
+    Route::get('/invoice/pdf/{id}', 'BillingController@invoicePdf')->name('account.invoice.pdf');
     Route::post('/paypal', 'BillingController@paypal')->name('account.billing.paypal');
     Route::get('/paypal/callback', 'BillingController@paypalCallback')->name('account.billing.paypal.callback');
-    Route::post('/stripe', 'BillingController@stripe')->name('account.billing.stripe');
+    Route::post('/link', 'BillingController@link')->name('account.billing.link');
+    Route::post('/unlink', 'BillingController@unlink')->name('account.billing.unlink');
+    Route::post('/billing', 'BillingController@billing')->name('account.billing.info');
 });
