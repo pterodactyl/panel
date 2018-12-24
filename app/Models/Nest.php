@@ -33,6 +33,13 @@ class Nest extends Model implements CleansAttributes, ValidableContract
     protected $fillable = [
         'name',
         'description',
+        'database_limit',
+        'allocation_limit',
+        'memory_monthly_cost',
+        'max_memory',
+        'disk_monthly_cost',
+        'max_disk',
+        'cpu_limit',
     ];
 
     /**

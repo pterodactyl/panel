@@ -21,6 +21,12 @@ class StoreNestFormRequest extends AdminFormRequest
         return [
             'name' => 'required|string|min:1|max:255',
             'description' => 'required|nullable|string',
+            'database_limit' => 'nullable|numeric',
+            'allocation_limit' => 'nullable|numeric',
+            'memory_monthly_cost' => 'nullable|numeric',
+            'disk_monthly_cost' => 'nullable|numeric',
+            'max_disk' => 'nullable|numeric',
+            'cpu_limit' => 'nullable|numeric',
         ];
     }
 }

@@ -22,7 +22,7 @@
 <div class="row">
     <form action="{{ route('admin.nests.view', $nest->id) }}" method="POST">
         <div class="col-md-6">
-            <div class="box">
+        <div class="box">
                 <div class="box-body">
                     <div class="form-group">
                         <label class="control-label">Name <span class="field-required"></span></label>
@@ -37,11 +37,80 @@
                             <textarea name="description" class="form-control" rows="7">{{ $nest->description }}</textarea>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label">Database Limit</label>
+                        <div>
+                            <input type="text" name="database_limit" class="form-control" value="{{ $nest->database_limit }}" />
+                        </div>
+                    </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
                     <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
                     <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-sm btn-danger muted muted-hover"><i class="fa fa-trash-o"></i></button>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-body">
+                    <div class="col-xs-4">
+                        <div class="form-group">
+                            <label class="control-label">Database Limit</label>
+                            <div>
+                                <input type="numeric" name="database_limit" class="form-control" value="{{ $nest->database_limit }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="form-group">
+                            <label class="control-label">Allocations</label>
+                            <div>
+                                <input type="number" name="allocation_limit" class="form-control" value="{{ $nest->allocation_limit }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-4">
+                        <div class="form-group">
+                            <label class="control-label">CPU Limit</label>
+                            <div>
+                                <input type="number" name="cpu_limit" class="form-control" value="{{ $nest->cpu_limit }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">Memory Monthly Cost</label>
+                            <div>
+                                <input type="number" step="0.01" name="memory_monthly_cost" class="form-control" value="{{ $nest->memory_monthly_cost }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">MAX Memory</label>
+                            <div>
+                                <input type="number" step="0.01" name="max_memory" class="form-control" value="{{ $nest->max_memory }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">Disk Monthly Cost</label>
+                            <div>
+                                <input type="number" step="0.01" name="disk_monthly_cost" class="form-control" value="{{ $nest->disk_monthly_cost }}" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">MAX Disk</label>
+                            <div>
+                                <input type="number" step="0.01" name="max_disk" class="form-control" value="{{ $nest->max_disk }}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box-footer">
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
                 </div>
             </div>
         </div>
