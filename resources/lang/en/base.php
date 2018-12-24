@@ -96,6 +96,11 @@ return [
             'amount' => 'Amount',
             'submit_button' => 'Charge & Link',
         ],
+        'unlink' => [
+            'heading' => 'Unlink CreditCard',
+            'description' => 'A :brand card ending in :last4 is actually linked to your profile.',
+            'submit_button' => 'Unlink',
+        ],
         'charge' => [
             'heading' => 'Add Founds using PayPal',
             'description' => 'Safely add founds to your account using paypal. This is a one-time transaction, your paypal account won\'t be linked to this website.',
@@ -106,6 +111,21 @@ return [
             'header' => 'Summary',
             'this_month_charges' => 'This Month Charges',
             'account_balance' => 'Account Balance',
+        ],
+        'info' => [
+            'header' => 'Billing Info',
+            'first_name' => 'First Name',
+            'last_name' => 'Last Name',
+            'address' => 'Street Address',
+            'city' => 'City',
+            'country' => 'Country',
+            'zip' => 'Zip',
+            'submit_button' => 'Save',
+        ],
+        'invoices' => [
+            'heading' => 'Invoices',
+            'amount' => 'Amount',
+            'date' => 'Date',
         ]
     ]
 ];
