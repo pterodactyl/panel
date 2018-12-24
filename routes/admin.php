@@ -25,6 +25,21 @@ Route::group(['prefix' => 'api'], function () {
 | Location Controller Routes
 |--------------------------------------------------------------------------
 |
+| Endpoint: /admin/billing
+|
+*/
+Route::group(['prefix' => 'billing'], function () {
+    Route::get('/', 'BillingController@index')->name('admin.billing');
+    Route::get('/new', 'BillingController@new')->name('admin.billing.new');
+    Route::post('/submit', 'BillingController@submit')->name('admin.billing.submit');
+    Route::get('/pdf/{id}', 'BillingController@pdf')->name('admin.billing.pdf');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Location Controller Routes
+|--------------------------------------------------------------------------
+|
 | Endpoint: /admin/locations
 |
 */

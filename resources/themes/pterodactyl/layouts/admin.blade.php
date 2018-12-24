@@ -85,6 +85,11 @@
                                 <i class="fa fa-tachometer"></i> <span>Statistics</span>
                             </a>
                         </li>
+                        <li class="{{ Route::currentRouteName() !== 'admin.billing' ?: 'active' }}">
+                            <a href="{{ route('admin.billing') }}">
+                                <i class="fa fa-credit-card"></i> <span>Billing</span>
+                            </a>
+                        </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.settings') ?: 'active' }}">
                             <a href="{{ route('admin.settings')}}">
                                 <i class="fa fa-wrench"></i> <span>Settings</span>
