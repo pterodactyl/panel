@@ -23,7 +23,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping();
+        $schedule->command('p:billing:server-scheduler')->everyFiveMinutes()->withoutOverlapping();
         $schedule->command('p:maintenance:clean-service-backups')->daily();
         $schedule->command('p:billing:update-hourly-rates')->hourly();
+        $schedule->command('p:billing:update-billing-monthly')->monthly();
     }
 }

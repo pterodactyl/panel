@@ -24,6 +24,8 @@ return [
     'ip' => 'IP Address',
     'last_activity' => 'Last Activity',
     'revoke' => 'Revoke',
+    'price' => 'Monthly Price',
+    'cost' => 'Usage Cost',
     '2fa_token' => 'Authentication Token',
     'submit' => 'Submit',
     'close' => 'Close',

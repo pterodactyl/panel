@@ -68,7 +68,7 @@ class DeployController extends Controller
             ]);
         }
         $server = $this->creationService->handle($data);
-        $server->montly_price = $cost;
+        $server->monthly_cost = $cost;
         $server->save();
         return redirect()->route('index');
     }

@@ -25,7 +25,7 @@
                             <b>@lang('base.billing.summary.this_month_charges')</b>
                             <h1>$ {{ number_format(Auth::user()->monthly_cost, 2) }}</h1>                            
                         </div>
-                        <div class="col-xs-6 text-center text-success">
+                        <div class="col-xs-6 text-center {{ Auth::user()->balance > 0 ? 'text-success' : 'text-danger' }}">
                             <b>@lang('base.billing.summary.account_balance')</b>
                             <h1>$ {{ number_format(Auth::user()->balance, 2) }}</h1>
                         </div>

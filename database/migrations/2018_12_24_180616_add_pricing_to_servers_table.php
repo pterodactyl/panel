@@ -14,7 +14,7 @@ class AddPricingToServersTable extends Migration
     public function up()
     {
         Schema::table('servers', function (Blueprint $table) {
-            $table->float('montly_price')->nullable();
+            $table->float('monthly_cost')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddPricingToServersTable extends Migration
     public function down()
     {
         Schema::table('servers', function (Blueprint $table) {
-            $table->dropColumn('montly_price');
+            $table->dropColumn('monthly_cost');
         });
     }
 }

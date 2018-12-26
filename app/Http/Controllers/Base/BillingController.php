@@ -327,10 +327,13 @@ class BillingController extends Controller
                 'amount'   => $request->amount * 100,
                 'currency' => 'usd'
             ]);
-            $user->stripe_card_brand = $request->card_brand;
-            $user->stripe_card_last4 = $request->card_last4;
-            $user->stripe_customer_id = $customer->id;
-            $user->addBalance($request->amount);
+            if ($charge->paid) {
+                $user->stripe_card_brand = $request->card_brand;
+                $user->stripe_card_last4 = $request->card_last4;
+                $user->stripe_customer_id = $customer->id;
+                $user->addBalance($request->amount);
+            } else {
+                return redirect()->back()->withErrors(trans('base.errors.billing.failed'));}
         } catch (\Exception $ex) {}
         return redirect()->back();
     }

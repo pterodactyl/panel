@@ -3,23 +3,24 @@
 namespace Pterodactyl\Console\Commands\Billing;
 
 use Illuminate\Console\Command;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 
-class UpdateHourlyRates extends Command
+class UpdateBillingMonthly extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'p:billing:update-hourly-rates';
+    protected $signature = 'p:billing:update-billing-monthly';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Charge users for each hour of server usage';
+    protected $description = 'Command description';
 
     /**
      * Create a new command instance.
@@ -38,15 +39,17 @@ class UpdateHourlyRates extends Command
      */
     public function handle()
     {
-        $this->info("Updating servers prices...");
-        $servers = Server::where('monthly_cost', '>', 0)->where('suspended', false)->get();
-        foreach ($servers as $server) {
-            $hourly_price = $server->monthly_cost / 720;
-            $user = $server->user;
-            $server->this_month_cost += $hourly_price;
-            $server->save();
-            $user->monthly_cost += $hourly_price;
+        $this->info("Updating users wallets...");
+        $users = User::where('monthly_cost', '>', 0)->get();
+        $servers = Server::where('monthly_cost', '>', 0)->get();
+        foreach ($users as $user) {
+            $user->balance -= $user->monthly_cost;
+            $user->monthly_cost = 0;
             $user->save();
+        }
+        foreach ($servers as $server) {
+            $server->this_month_cost = 0;
+            $server->save();
         }
     }
 }
