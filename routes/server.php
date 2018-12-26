@@ -22,6 +22,9 @@ Route::group(['prefix' => 'settings'], function () {
     Route::get('/name', 'Settings\NameController@index')->name('server.settings.name');
     Route::get('/sftp', 'Settings\SftpController@index')->name('server.settings.sftp');
     Route::get('/startup', 'Settings\StartupController@index')->name('server.settings.startup');
+    Route::get('/delete', 'Settings\DeleteController@index')->name('server.settings.delete');
+
+    Route::post('/delete', 'Settings\DeleteController@delete')->name('server.settings.delete.submit');
 
     Route::patch('/allocation', 'Settings\AllocationController@update');
     Route::patch('/name', 'Settings\NameController@update');

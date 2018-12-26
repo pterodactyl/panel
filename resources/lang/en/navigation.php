@@ -29,5 +29,6 @@ return [
         'admin_header' => 'ADMINISTRATIVE',
         'admin' => 'Server Configuration',
         'server_name' => 'Server Name',
+        'delete' => 'Delete Server',
     ],
 ];

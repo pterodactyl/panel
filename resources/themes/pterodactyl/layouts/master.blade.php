@@ -202,6 +202,9 @@
                                         @can('view-startup', $server)
                                             <li class="{{ Route::currentRouteName() !== 'server.settings.startup' ?: 'active' }}"><a href="{{ route('server.settings.startup', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.startup_parameters')</a></li>
                                         @endcan
+                                        @if ($server->owner_id == Auth::user()->id) 
+                                            <li class="{{ Route::currentRouteName() !== 'server.settings.delete' ?: 'active' }}"><a href="{{ route('server.settings.delete', $server->uuidShort) }}"><i class="fa fa-angle-right"></i> @lang('navigation.server.delete')</a></li>
+                                        @endif
                                     </ul>
                                 </li>
                             @endif

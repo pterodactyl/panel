@@ -330,5 +330,15 @@ return [
             'help' => 'Allocation Help',
             'help_text' => 'The list to the left includes all available IPs and ports that are open for your server to use for incoming connections.',
         ],
+        'delete' => [
+            'header' => 'Delete Server',
+            'header_sub' => 'Remove this server permanently.',
+            'details' => 'Removing your server will stop us from billing it hourly to your wallet. This action is <b>not reversible</b>.',
+            'errors' => [
+                'owner' => 'Only the owner of the server can delete it!',
+                'time' => 'You will be able to delete the server at least after on hour from its creation.',
+                'unknown' => 'An unknown error has occurred while removing the server.',
+            ]
+        ],
     ],
 ];
