@@ -14,6 +14,20 @@ Route::get('/status/{server}', 'IndexController@status')->name('index.status');
 | Account Controller Routes
 |--------------------------------------------------------------------------
 |
+| Endpoint: /deploy
+|
+*/
+Route::group(['prefix' => 'deploy'], function () {
+    Route::get('/', 'DeployController@index')->name('deploy');
+    Route::post('/', 'DeployController@submit')->name('deploy.submit');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Account Controller Routes
+|--------------------------------------------------------------------------
+|
 | Endpoint: /account
 |
 */

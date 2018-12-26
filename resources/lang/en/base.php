@@ -26,6 +26,13 @@ return [
             'title' => 'Temporarily Unavailable',
             'desc' => 'This node is under maintenance, therefore your server can temporarily not be accessed.',
         ],
+        'deploy' => [
+            'full' => 'We are sorry but at the moment there is no space left on our servers.',
+            'founds' => 'You don\'t have enough founds on your account to start this server.',
+        ],
+        'billing' => [
+            'identity' => 'You need to fill up your billing info before making any payments.',
+        ]
     ],
     'index' => [
         'header' => 'Your Servers',

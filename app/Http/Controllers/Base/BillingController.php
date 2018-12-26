@@ -316,7 +316,7 @@ class BillingController extends Controller
         Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
         $user = $request->user();
         if (!$this->validateBilling($user)) {
-            return redirect()->back()->withErrors('You need to fill up your billing info before making any payments.');}
+            return redirect()->back()->withErrors(trans('base.errors.billing.identity'));}
         try {
             $customer = Customer::create([
                 'email' => $user->email,
@@ -371,7 +371,7 @@ class BillingController extends Controller
             'amount' => 'required|numeric|min:5|max:1000',
         ]);
         if (!$this->validateBilling($request->user())) {
-            return redirect()->back()->withErrors('You need to fill up your billing info before making any payments.');}
+            return redirect()->back()->withErrors(trans('base.errors.billing.identity'));}
         $apiContext = $this->getPaypalApiContext();
         $payer = new Payer();
         $payer->setPaymentMethod('paypal');

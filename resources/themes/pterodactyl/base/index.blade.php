@@ -40,6 +40,8 @@
                         <tr>
                             <th>@lang('strings.id')</th>
                             <th>@lang('strings.name')</th>
+                            <th>@lang('strings.price')</th>
+                            <th>@lang('strings.cost')</th>
                             <th>@lang('strings.node')</th>
                             <th>@lang('strings.connection')</th>
                             <th class="text-center hidden-sm hidden-xs">@lang('strings.memory')</th>
@@ -51,6 +53,8 @@
                             <tr class="dynamic-update" data-server="{{ $server->uuidShort }}">
                                 <td @if(! empty($server->description)) rowspan="2" @endif><code>{{ $server->uuidShort }}</code></td>
                                 <td><a href="{{ route('server.index', $server->uuidShort) }}">{{ $server->name }}</a></td>
+                                <td>${{ number_format($server->montly_price, 2) }}/month</td>
+                                <td>${{ number_format($server->this_month_cost, 2) }}</td>
                                 <td>{{ $server->getRelation('node')->name }}</td>
                                 <td><code>{{ $server->getRelation('allocation')->alias }}:{{ $server->getRelation('allocation')->port }}</code></td>
                                 <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '∞' : $server->memory }} MB</td>

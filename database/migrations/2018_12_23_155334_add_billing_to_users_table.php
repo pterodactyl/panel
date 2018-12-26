@@ -17,7 +17,7 @@ class AddBillingToUsersTable extends Migration
             $table->string('stripe_customer_id')->nullable();
             $table->string('stripe_card_brand', 12)->nullable();
             $table->string('stripe_card_last4', 4)->nullable();
-            $table->float('balance')->default(0);
+            $table->float('balance', 16, 12)->default(0);
         });
     }
 

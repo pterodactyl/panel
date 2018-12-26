@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddUsageInfoToUsersTable extends Migration
+class AddMonthlyCostsMonitorToServersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddUsageInfoToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->float('monthly_cost', 16, 12)->default(0);
+        Schema::table('servers', function (Blueprint $table) {
+            $table->float('this_month_cost', 16, 12)->default(0);
         });
     }
 
@@ -25,8 +25,8 @@ class AddUsageInfoToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('monthly_cost');
+        Schema::table('servers', function (Blueprint $table) {
+            $table->dropColumn('this_month_cost');
         });
     }
 }
