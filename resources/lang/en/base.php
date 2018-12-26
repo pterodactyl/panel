@@ -32,6 +32,7 @@ return [
         ],
         'billing' => [
             'identity' => 'You need to fill up your billing info before making any payments.',
+            'failed' => 'Sorry, your credit union rejected our request.',
         ]
     ],
     'index' => [
