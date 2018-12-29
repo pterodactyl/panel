@@ -1,16 +1,13 @@
-import http from './../http';
-import filter from 'lodash/filter';
-import isObject from 'lodash/isObject';
+import http from '../http';
+import { filter, isObject } from 'lodash';
+// @ts-ignore
 import route from '../../../../../vendor/tightenco/ziggy/src/js/route';
+import {DirectoryContents} from "./types";
 
 /**
  * Get the contents of a specific directory for a given server.
- *
- * @param {String} server
- * @param {String} directory
- * @return {Promise}
  */
-export function getDirectoryContents (server, directory) {
+export function getDirectoryContents (server: string, directory: string): Promise<DirectoryContents> {
     return new Promise((resolve, reject) => {
         http.get(route('server.files', { server, directory }))
             .then((response) => {
@@ -30,7 +27,7 @@ export function getDirectoryContents (server, directory) {
                 }
 
                 if (err.response.data && isObject(err.response.data.errors)) {
-                    err.response.data.errors.forEach(error => {
+                    err.response.data.errors.forEach((error: any) => {
                         return reject(error.detail);
                     });
                 }

@@ -1,16 +1,27 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "lib": [
-      "es2015",
-      "es2016",
-      "dom"
-    ],
+    "target": "esnext",
+    "module": "esnext",
     "strict": true,
     "moduleResolution": "node",
-    "module": "es2015"
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "resources/*"
+      ]
+    }
   },
   "include": [
-    "./resources/assets/scripts/**/*"
+    "./resources/assets/**/*.ts",
+    "./resources/assets/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

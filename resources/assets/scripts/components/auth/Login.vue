@@ -15,13 +15,14 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+    import Vue from 'vue';
     import Flash from '../Flash';
     import ForgotPassword from "./ForgotPassword";
     import LoginForm from "./LoginForm";
     import TwoFactorForm from "./TwoFactorForm";
 
-    export default {
+    export default Vue.extend({
         name: 'login',
         data: function () {
             return {
@@ -41,5 +42,5 @@
             ForgotPassword,
             LoginForm,
         },
-    }
+    });
 </script>

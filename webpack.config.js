@@ -88,7 +88,7 @@ module.exports = {
                 loader: 'vue-loader',
             },
             {
-                test: /\.tsx?$/,
+                test: /\.ts$/,
                 loader: 'ts-loader',
                 exclude: /node_modules/,
                 options: {
