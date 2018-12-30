@@ -9,7 +9,7 @@ import {Ziggy} from './helpers/ziggy';
 // @ts-ignore
 import Locales from './../../../resources/lang/locales';
 
-import {flash} from './mixins/flash';
+import {FlashMixin} from './mixins/flash';
 import store from './store/index';
 import router from './router';
 
@@ -30,7 +30,7 @@ Vue.use(VueI18n);
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.mixin({methods: {route}});
-Vue.mixin(flash);
+Vue.mixin(FlashMixin);
 
 const i18n = new VueI18n({
     locale: 'en',
