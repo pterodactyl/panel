@@ -26,7 +26,6 @@ export default Vue.component('login-form', {
         // Handle a login request eminating from the form. If 2FA is required the
         // user will be presented with the 2FA modal window.
         submitForm: function () {
-            const self = this;
             this.$data.showSpinner = true;
 
             this.$flash.clear();
@@ -47,13 +46,14 @@ export default Vue.component('login-form', {
                     this.$store.commit('auth/logout');
 
                     if (!err.response) {
+                        this.$flash.error('There was an error with the network request. Please try again.');
                         return console.error(err);
                     }
 
                     const response = err.response;
                     if (response.data && isObject(response.data.errors)) {
-                        response.data.errors.forEach(function (error: any) {
-                            self.$flash.error(error.detail);
+                        response.data.errors.forEach((error: any) => {
+                            this.$flash.error(error.detail);
                         });
                     }
                 });

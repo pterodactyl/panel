@@ -49,7 +49,7 @@ class Flash implements FlashInterface {
 }
 
 export const FlashMixin: ComponentOptions<Vue> = {
-    methods: {
+    computed: {
         '$flash': function () {
             return new Flash();
         }
