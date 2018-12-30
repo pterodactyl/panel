@@ -51,7 +51,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import { CopyIcon, CornerUpLeftIcon, DeleteIcon, DownloadIcon, Edit3Icon, FilePlusIcon, FolderPlusIcon } from 'vue-feather-icons';
 
     export default {

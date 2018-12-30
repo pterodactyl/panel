@@ -27,7 +27,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import debounce from 'lodash/debounce';
     import Flash from '../Flash';
     import ServerBox from './ServerBox';

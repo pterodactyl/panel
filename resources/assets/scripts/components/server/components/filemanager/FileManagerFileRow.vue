@@ -14,7 +14,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import * as Helpers from '../../../../helpers/index';
     import { FileTextIcon, Link2Icon } from 'vue-feather-icons';
     import FileManagerContextMenu from './FileManagerContextMenu';

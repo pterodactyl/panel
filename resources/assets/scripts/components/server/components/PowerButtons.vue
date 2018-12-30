@@ -22,14 +22,12 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import Status from '../../../helpers/statuses';
-    import { Socketio } from '../../../mixins/socketio/index';
     import { mapState } from 'vuex';
 
     export default {
         name: 'power-buttons',
-        mixins: [Socketio],
         computed: {
             ...mapState('socket', ['connected', 'status']),
         },

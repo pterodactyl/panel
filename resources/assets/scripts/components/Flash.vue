@@ -12,7 +12,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import MessageBox from './MessageBox.vue';
 
     export default {

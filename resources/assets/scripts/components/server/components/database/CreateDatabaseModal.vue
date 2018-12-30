@@ -35,7 +35,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import MessageBox from '../../../MessageBox';
     import get from 'lodash/get';
 

@@ -63,20 +63,18 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import { TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon } from 'vue-feather-icons'
     import Navigation from '../core/Navigation';
     import ProgressBar from './components/ProgressBar';
     import { mapState } from 'vuex';
     import io from 'socket.io-client';
-    import { Socketio } from '../../mixins/socketio/index';
 
     import PowerButtons from './components/PowerButtons';
     import Flash from '../Flash';
 
     export default {
         name: 'server',
-        mixins: [Socketio],
         components: {
             Flash, PowerButtons, ProgressBar, Navigation,
             TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon,

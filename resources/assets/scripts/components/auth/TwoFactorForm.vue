@@ -28,7 +28,7 @@
     </form>
 </template>
 
-<script lang="ts">
+<script>
     export default {
         name: "two-factor-form",
         data: function () {

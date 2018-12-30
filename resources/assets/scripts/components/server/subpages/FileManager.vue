@@ -41,7 +41,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
 import map from 'lodash/map';
 import { mapState } from 'vuex';
 import FileManagerFileRow from '../components/filemanager/FileManagerFileRow';

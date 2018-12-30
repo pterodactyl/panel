@@ -11,7 +11,7 @@
     </transition>
 </template>
 
-<script lang="ts">
+<script>
     import { XIcon } from 'vue-feather-icons';
     export default {
         name: 'modal',

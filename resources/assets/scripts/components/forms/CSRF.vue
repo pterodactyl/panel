@@ -2,7 +2,7 @@
     <input type="hidden" name="_token" v-bind:value="X_CSRF_TOKEN" />
 </template>
 
-<script lang="ts">
+<script>
     export default {
         name: 'csrf',
         data: function () {

@@ -62,7 +62,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import Vue from 'vue';
     import isObject from 'lodash/isObject';
 

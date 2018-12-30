@@ -35,7 +35,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import get from 'lodash/get';
     import differenceInSeconds from 'date-fns/difference_in_seconds';
 

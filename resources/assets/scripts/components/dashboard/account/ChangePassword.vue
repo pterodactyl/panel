@@ -38,7 +38,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import isObject from 'lodash/isObject';
 
     export default {

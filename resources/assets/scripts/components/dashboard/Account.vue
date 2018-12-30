@@ -25,7 +25,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     import Navigation from '../core/Navigation';
     import Flash from '../Flash';
     import UpdateEmail from './account/UpdateEmail';

@@ -18,7 +18,7 @@
     </div>
 </template>
 
-<script lang="ts">
+<script>
     export default {
         name: 'delete-database-modal',
         props: {
