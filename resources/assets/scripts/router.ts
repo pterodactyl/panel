@@ -6,7 +6,7 @@ const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 // Base Vuejs Templates
 import Login from './components/auth/Login';
 import Dashboard from './components/dashboard/Dashboard';
-import Account from './components/dashboard/Account.vue';
+import Account from './components/dashboard/Account';
 import ResetPassword from './components/auth/ResetPassword';
 import User from './models/user';
 import {

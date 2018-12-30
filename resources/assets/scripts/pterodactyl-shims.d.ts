@@ -3,6 +3,7 @@ import {Store} from "vuex";
 import {FlashInterface} from "./mixins/flash";
 import {AxiosInstance} from "axios";
 import {Vue as VueType} from "vue/types/vue";
+import {ApplicationState} from "./store/types";
 
 declare global {
     interface Window {
@@ -17,7 +18,7 @@ declare global {
 
 declare module 'vue/types/options' {
     interface ComponentOptions<V extends Vue> {
-        $store?: Store<any>,
+        $store?: Store<ApplicationState>,
         $options?: {
             sockets?: {
                 [s: string]: (data: any) => void,
