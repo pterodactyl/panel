@@ -1,5 +1,6 @@
 import axios from './helpers/axios';
 
+// @ts-ignore
 window._ = require('lodash');
 
 /**
@@ -9,9 +10,11 @@ window._ = require('lodash');
  */
 
 try {
+    // @ts-ignore
     window.$ = window.jQuery = require('jquery');
 } catch (e) {}
 
+// @ts-ignore
 window.axios = axios;
 
 /**
@@ -23,7 +26,10 @@ window.axios = axios;
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
+    // @ts-ignore
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+
+    // @ts-ignore
     window.X_CSRF_TOKEN = token.content;
 } else {
     console.error('CSRF token not found in document.');
