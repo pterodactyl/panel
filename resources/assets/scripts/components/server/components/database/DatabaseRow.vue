@@ -41,7 +41,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import { LockIcon, Trash2Icon, DatabaseIcon } from 'vue-feather-icons';
     import Modal from '../../../core/Modal';
     import DeleteDatabaseModal from './DeleteDatabaseModal';

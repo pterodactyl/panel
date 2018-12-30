@@ -16,11 +16,11 @@
 </template>
 
 <script lang="ts">
+    import Flash from '../Flash.vue';
+    import ForgotPassword from "./ForgotPassword.vue";
+    import LoginForm from "./LoginForm.vue";
+    import TwoFactorForm from "./TwoFactorForm.vue";
     import Vue from 'vue';
-    import Flash from '../Flash';
-    import ForgotPassword from "./ForgotPassword";
-    import LoginForm from "./LoginForm";
-    import TwoFactorForm from "./TwoFactorForm";
 
     export default Vue.extend({
         name: 'login',

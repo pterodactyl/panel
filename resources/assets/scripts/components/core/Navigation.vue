@@ -67,7 +67,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import debounce from 'lodash/debounce';
     import { mapState } from 'vuex';
     import { LogOutIcon, ServerIcon, SettingsIcon, UserIcon } from 'vue-feather-icons'

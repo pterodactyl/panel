@@ -12,8 +12,9 @@
     </div>
 </template>
 
-<script>
-    import MessageBox from './MessageBox';
+<script lang="ts">
+    import MessageBox from './MessageBox.vue';
+
     export default {
         name: 'flash',
         components: {MessageBox},

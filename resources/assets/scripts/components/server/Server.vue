@@ -63,7 +63,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import { TerminalIcon, FolderIcon, UsersIcon, CalendarIcon, DatabaseIcon, GlobeIcon, SettingsIcon } from 'vue-feather-icons'
     import Navigation from '../core/Navigation';
     import ProgressBar from './components/ProgressBar';

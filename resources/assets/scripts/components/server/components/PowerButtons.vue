@@ -22,7 +22,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import Status from '../../../helpers/statuses';
     import { Socketio } from '../../../mixins/socketio/index';
     import { mapState } from 'vuex';

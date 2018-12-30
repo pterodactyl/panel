@@ -29,7 +29,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import { DatabaseIcon, LockIcon, Trash2Icon } from 'vue-feather-icons';
     import map from 'lodash/map';
     import filter from 'lodash/filter';

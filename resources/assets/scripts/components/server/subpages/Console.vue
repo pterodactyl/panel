@@ -24,7 +24,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import { Terminal } from 'xterm';
     import * as TerminalFit from 'xterm/lib/addons/fit/fit';
     import {mapState} from 'vuex';

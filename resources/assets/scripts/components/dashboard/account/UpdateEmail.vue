@@ -26,7 +26,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import { isObject, get } from 'lodash';
     import { mapState, mapActions } from 'vuex';
 

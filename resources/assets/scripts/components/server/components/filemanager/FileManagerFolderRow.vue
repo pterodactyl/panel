@@ -14,7 +14,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
     import { FolderIcon } from 'vue-feather-icons';
     import { formatDate } from '../../../../helpers/index';
 
