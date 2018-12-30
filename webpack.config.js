@@ -74,7 +74,7 @@ module.exports = {
         hints: false,
     },
     // Passing an array loads them all but only exports the last.
-    entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.js'],
+    entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.ts'],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
         filename: 'bundle-[hash].js',
