@@ -1,6 +1,5 @@
-import axios from './helpers/axios';
+import axios from './api/http';
 
-// @ts-ignore
 window._ = require('lodash');
 
 /**
@@ -10,11 +9,9 @@ window._ = require('lodash');
  */
 
 try {
-    // @ts-ignore
     window.$ = window.jQuery = require('jquery');
 } catch (e) {}
 
-// @ts-ignore
 window.axios = axios;
 
 /**
@@ -28,7 +25,6 @@ let token = document.head.querySelector('meta[name="csrf-token"]');
 if (token) {
     // @ts-ignore
     window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
-
     // @ts-ignore
     window.X_CSRF_TOKEN = token.content;
 } else {

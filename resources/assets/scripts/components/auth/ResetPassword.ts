@@ -1,5 +1,70 @@
-<template>
-    <div>
+import Vue from 'vue';
+import {isObject} from 'lodash';
+import {AxiosError, AxiosResponse} from "axios";
+
+export default Vue.component('reset-password', {
+    props: {
+        token: {type: String, required: true},
+        email: {type: String, required: false},
+    },
+    mounted: function () {
+        if (this.$props.email.length > 0) {
+            (this.$refs.email as HTMLElement).setAttribute('value', this.$props.email);
+            (this.$refs.password as HTMLElement).focus();
+        }
+    },
+    data: function () {
+        return {
+            errors: [],
+            showSpinner: false,
+            password: '',
+            passwordConfirmation: '',
+        };
+    },
+    methods: {
+        updateEmailField: function (event: { target: HTMLInputElement }) {
+            this.$data.submitDisabled = event.target.value.length === 0;
+        },
+
+        submitForm: function () {
+            this.$data.showSpinner = true;
+
+            this.$flash.clear();
+            window.axios.post(this.route('auth.reset-password'), {
+                email: this.$props.email,
+                password: this.$data.password,
+                password_confirmation: this.$data.passwordConfirmation,
+                token: this.$props.token,
+            })
+                .then((response: AxiosResponse) => {
+                    if (!(response.data instanceof Object)) {
+                        throw new Error('An error was encountered while processing this login.');
+                    }
+
+                    if (response.data.send_to_login) {
+                        this.$flash.success('Your password has been reset, please login to continue.');
+                        return this.$router.push({ name: 'login' });
+                    }
+
+                    return window.location = response.data.redirect_to;
+                })
+                .catch((err: AxiosError) => {
+                    this.$data.showSpinner = false;
+                    if (!err.response) {
+                        return console.error(err);
+                    }
+
+                    const response = err.response;
+                    if (response.data && isObject(response.data.errors)) {
+                        response.data.errors.forEach((error: any) => {
+                            this.$flash.error(error.detail);
+                        });
+                        (this.$refs.password as HTMLElement).focus();
+                    }
+                });
+        }
+    },
+    template: `
         <form class="bg-white shadow-lg rounded-lg pt-10 px-8 pb-6 mb-4 animate fadein" method="post"
               v-on:submit.prevent="submitForm"
         >
@@ -52,73 +117,5 @@
                 </router-link>
             </div>
         </form>
-    </div>
-</template>
-
-<script>
-    export default {
-        name: "ResetPassword",
-        props: {
-            token: {type: String, required: true},
-            email: {type: String, required: false},
-        },
-        mounted: function () {
-            if (this.$props.email.length > 0) {
-                this.$refs.email.value = this.$props.email;
-                return this.$refs.password.focus();
-            }
-        },
-        data: function () {
-            return {
-                errors: [],
-                showSpinner: false,
-                password: '',
-                passwordConfirmation: '',
-            };
-        },
-        methods: {
-            updateEmailField: function (event) {
-                this.$data.submitDisabled = event.target.value.length === 0;
-            },
-
-            submitForm: function () {
-                const self = this;
-                this.$data.showSpinner = true;
-
-                this.clearFlashes();
-                window.axios.post(this.route('auth.reset-password'), {
-                    email: this.$props.email,
-                    password: this.$data.password,
-                    password_confirmation: this.$data.passwordConfirmation,
-                    token: this.$props.token,
-                })
-                    .then(function (response) {
-                        if (!(response.data instanceof Object)) {
-                            throw new Error('An error was encountered while processing this login.');
-                        }
-
-                        if (response.data.send_to_login) {
-                            self.success('Your password has been reset, please login to continue.');
-                            return self.$router.push({ name: 'login' });
-                        }
-
-                        return window.location = response.data.redirect_to;
-                    })
-                    .catch(function (err) {
-                        self.$data.showSpinner = false;
-                        if (!err.response) {
-                            return console.error(err);
-                        }
-
-                        const response = err.response;
-                        if (response.data && _.isObject(response.data.errors)) {
-                            response.data.errors.forEach(function (error) {
-                                self.error(error.detail);
-                            });
-                            self.$refs.password.focus();
-                        }
-                    });
-            }
-        }
-    }
-</script>
+    `,
+})
