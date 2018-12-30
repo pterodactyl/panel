@@ -9,6 +9,6 @@ export default Vue.component('icon', {
         replace();
     },
     template: `
-        <i data-feather="{{ name }}"></i>
+        <i :data-feather="name"></i>
     `,
 });

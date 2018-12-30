@@ -1,18 +1,19 @@
 import {ComponentOptions} from "vue";
 import {Vue} from "vue/types/vue";
+import {TranslateResult} from "vue-i18n";
 
 export interface FlashInterface {
-    flash(message: string, title: string, severity: string): void;
+    flash(message: string | TranslateResult, title: string, severity: string): void;
 
     clear(): void,
 
-    success(message: string): void,
+    success(message: string | TranslateResult): void,
 
-    info(message: string): void,
+    info(message: string | TranslateResult): void,
 
-    warning(message: string): void,
+    warning(message: string | TranslateResult): void,
 
-    error(message: string): void,
+    error(message: string | TranslateResult): void,
 }
 
 class Flash implements FlashInterface {

@@ -32,12 +32,11 @@ export default Vue.component('navigation', {
     },
 
     methods: {
-        search: debounce(function (): void {
-            // @todo why is this not liked?
-            // if (this.searchTerm.length >= 3) {
-            //     this.loadingResults = true;
-            //     this.gatherSearchResults();
-            // }
+        search: debounce(function (this: any): void {
+            if (this.searchTerm.length >= 3) {
+                this.loadingResults = true;
+                this.gatherSearchResults();
+            }
         }, 500),
 
         gatherSearchResults: function (): void {
