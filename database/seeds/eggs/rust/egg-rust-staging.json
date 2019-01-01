@@ -4,7 +4,7 @@
         "version": "PTDL_v1"
     },
     "exported_at": "2018-01-21T16:58:36-06:00",
-    "name": "Rust",
+    "name": "Rust Staging",
     "author": "support@pterodactyl.io",
     "description": "The only aim in Rust is to survive. To do this you will need to overcome struggles such as hunger, thirst and cold. Build a fire. Build a shelter. Kill animals for meat. Protect yourself from other players, and kill them for meat. Create alliances with other players and form a town. Do whatever it takes to survive.",
     "image": "quay.io\/pterodactyl\/core:rust",
