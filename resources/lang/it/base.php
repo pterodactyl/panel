@@ -31,7 +31,7 @@ return [
         'update_identitity' => 'Aggiorna Identità',
         'update_pass' => 'Aggiorna Password',
         'update_user' => 'Aggiorna utente',
-        'username_help' => 'II tuo username deve essere unico nel tuo account, e può contenere solo i seguenti caratteri: :requisements.',
+        'username_help' => 'II tuo username deve essere unico nel tuo account, e può contenere solo i seguenti caratteri: ',
     ],
     'api' => [
         'index' => [
