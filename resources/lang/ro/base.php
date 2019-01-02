@@ -29,8 +29,7 @@ return [
         'update_identitity' => 'Actualizează Identitatea',
         'update_pass' => 'Actualizează Parola',
         'update_user' => 'Actualizează Utilizator',
-        'username_help' => 'Numele tău de utilizator trebuie să fie unic contului tau, el poate conține următoarele caractere:
-:requirements.',
+        'username_help' => 'Numele tău de utilizator trebuie să fie unic contului tau, el poate conține următoarele caractere: ',
     ],
     'api' => [
         'index' => [
