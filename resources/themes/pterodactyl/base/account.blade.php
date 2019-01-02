@@ -86,7 +86,7 @@
                                     <label for="password" class="control-label">@lang('strings.username')</label>
                                     <div>
                                         <input type="text" class="form-control" name="username" value="{{ Auth::user()->username }}" />
-                                        <p class="text-muted small no-margin">@lang('base.account.username_help', [ 'requirements' => '<code>a-z A-Z 0-9 _ - .</code>'])</p>
+                                        <p class="text-muted small no-margin">@lang('base.account.username_help')<code>a-z A-Z 0-9 _ - .</code></p>
                                     </div>
                                 </div>
                             </div>
