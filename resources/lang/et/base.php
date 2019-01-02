@@ -29,7 +29,7 @@ return [
         'update_identitity' => 'Uuenda informatsiooni',
         'update_pass' => 'Uuenda salasõna',
         'update_user' => 'Uuenda kasutajat ',
-        'username_help' => 'Sinu kasutajanimi peab olema unikaalne sinu kasutajale ja võib ainult sisaldada järgmiseid märke: :requirements',
+        'username_help' => 'Sinu kasutajanimi peab olema unikaalne sinu kasutajale ja võib ainult sisaldada järgmiseid märke: ',
     ],
     'api' => [
         'index' => [
