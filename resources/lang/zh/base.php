@@ -68,7 +68,7 @@ return [
         'first_name' => '姓',
         'last_name' => '名',
         'update_identity' => '更新个人信息',
-        'username_help' => '您的用户名必须唯一（未被使用），并满足以下要求: :requirements.',
+        'username_help' => '您的用户名必须唯一（未被使用），并满足以下要求: ',
     ],
     'security' => [
         'session_mgmt_disabled' => '为了安全原因，您的此次会话无法访问用户管理.',
