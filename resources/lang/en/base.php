@@ -68,7 +68,7 @@ return [
         'first_name' => 'First Name',
         'last_name' => 'Last Name',
         'update_identity' => 'Update Identity',
-        'username_help' => 'Your username must be unique to your account, and may only contain the following characters: :requirements.',
+        'username_help' => 'Your username must be unique to your account, and may only contain the following characters: ',
         'language' => 'Language',
     ],
     'security' => [
