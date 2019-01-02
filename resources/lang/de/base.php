@@ -25,7 +25,7 @@ return [
         'update_identity' => 'Konto bearbeiten',
         'update_pass' => 'Passwort ändern',
         'update_user' => 'Benutzer aktualisieren',
-        'username_help' => 'Dein Benutzername muss für dein Konto einzigartig sein und darf nur die folgenden Zeichen enthalten: :requirements.',
+        'username_help' => 'Dein Benutzername muss für dein Konto einzigartig sein und darf nur die folgenden Zeichen enthalten: ',
     ],
     'api' => [
         'index' => [
