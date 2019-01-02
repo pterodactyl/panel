@@ -30,7 +30,7 @@ return [
         'update_identitity' => 'Identiteit Bijwerken',
         'update_pass' => 'Wachtwoord Bijwerken',
         'update_user' => 'Gebruiker Bijwerken',
-        'username_help' => 'Uw gebruikersnaam moet uniek zijn en mag enkel de volgende characters bevatten: :requirements.',
+        'username_help' => 'Uw gebruikersnaam moet uniek zijn en mag enkel de volgende characters bevatten: ',
     ],
     'api' => [
         'index' => [
