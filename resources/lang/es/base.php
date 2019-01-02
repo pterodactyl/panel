@@ -32,7 +32,7 @@ return [
         'update_identity' => 'Actualización De La Identidad',
         'update_pass' => 'Cambiar contraseña',
         'update_user' => 'Actualizar usuario',
-        'username_help' => 'Tu nombre de usuario debe ser único, y solo puede contener estos caracteres: :requirements.',
+        'username_help' => 'Tu nombre de usuario debe ser único, y solo puede contener estos caracteres: ',
     ],
     'api' => [
         'index' => [
