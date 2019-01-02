@@ -31,7 +31,7 @@ return [
         'update_identitity' => 'Modifier les informations',
         'update_pass' => 'Modifier le mot de passe',
         'update_user' => "Modifier l'utilisateur",
-        'username_help' => "Votre nom d'utilisateur doit être unique à votre compte et ne doit être composé que des caractères suivants : :requirements.",
+        'username_help' => "Votre nom d'utilisateur doit être unique à votre compte et ne doit être composé que des caractères suivants: ",
     ],
     'api' => [
         'index' => [
