@@ -22,7 +22,7 @@ return [
         'update_identitity' => 'Güncelle',
         'update_pass' => 'Güncelle',
         'update_user' => 'Güncelle',
-        'username_help' => 'Kullanıcı adınız hesabınıza özgün olmalı ve belirtilen karakterleri barındırmalıdır. :requirements.',
+        'username_help' => 'Kullanıcı adınız hesabınıza özgün olmalı ve belirtilen karakterleri barındırmalıdır. ',
     ],
     'api' => [
         'index' => [
