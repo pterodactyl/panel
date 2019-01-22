@@ -138,7 +138,7 @@ class AppSettingsCommand extends Command
             array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null
         );
 
-        if (!is_null($this->option('settings-ui'))) {
+        if (! is_null($this->option('settings-ui'))) {
             $this->variables['APP_ENVIRONMENT_ONLY'] = $this->option('settings-ui') == 'true' ? 'false' : 'true';
         } else {
             $this->variables['APP_ENVIRONMENT_ONLY'] = $this->confirm(trans('command/messages.environment.app.settings'), true) ? 'false' : 'true';
