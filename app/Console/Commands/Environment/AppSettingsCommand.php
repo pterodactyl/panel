@@ -139,7 +139,7 @@ class AppSettingsCommand extends Command
         );
 
         if (!is_null($this->option('settings-ui'))) {
-            $this->variables['APP_ENVIRONMENT_ONLY'] = $this->option('settings-ui') == "true" ? "false" : "true";
+            $this->variables['APP_ENVIRONMENT_ONLY'] = $this->option('settings-ui') == 'true' ? 'false' : 'true';
         } else {
             $this->variables['APP_ENVIRONMENT_ONLY'] = $this->confirm(trans('command/messages.environment.app.settings'), true) ? 'false' : 'true';
         }
