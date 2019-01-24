@@ -8,7 +8,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes an issue with the locations API endpoint referencing an invalid namespace.
 * Fixes the `store()` function on the locations API not working due to an incorrect return typehint.
 * Fixes daemon secrets not being able to be reset on a Node.
- 
+* Fixes an issue where files were not editable due to missing URL encoding in the file manager.
+
 ### Updated
 * Upgraded core to use Laravel `5.7.14`.
 
