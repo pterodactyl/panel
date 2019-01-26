@@ -13,8 +13,8 @@ use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest;
+use Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
 
 class LocationController extends ApplicationApiController
