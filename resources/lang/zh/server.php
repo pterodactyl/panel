@@ -141,7 +141,7 @@ return [
                 'description' => '允许用户访问文件内容（但更改后无法保存）. SFTP 不受此权限影响.',
             ],
             'save_files' => [
-                'title' => 'Save Files',
+                'title' => '保存文件',
                 'description' => '允许用户保存文件（和编辑文件权限联动）. SFTP 不受此权限影响.',
             ],
             'move_files' => [
@@ -308,7 +308,7 @@ return [
             'header_sub' => 'SFTP 连接所需要的信息.',
             'details' => 'SFTP 信息',
             'conn_addr' => '连接地址',
-            'warning' => 'SFTP密码就是您的用户密码. 请确认你使用的时SFTP，不是FTP,也不是FTPS, 这些都是不同的协议.',
+            'warning' => 'SFTP密码就是您的用户密码. 请确认你使用的是SFTP，不是FTP,也不是FTPS, 这些都是不同的协议.',
         ],
         'database' => [
             'header' => '数据库',
@@ -323,7 +323,7 @@ return [
             'header' => '服务器连接信息',
             'header_sub' => '控制此服务器可用的IP和端口.',
             'available' => '可用的连接信息',
-            'help' => '连接信息版主',
+            'help' => '连接信息帮助',
             'help_text' => '左边列出的所有IP和端口都是开放的，是您连接到您服务器的地址',
         ],
     ],
