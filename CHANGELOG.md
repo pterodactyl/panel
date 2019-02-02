@@ -20,6 +20,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * Added support for opening and editing Python files through the web editor.
+* Adds Russian translation.
 
 ## v0.7.11 (Derelict Dermodactylus)
 ### Fixed
