@@ -3,9 +3,6 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-### Updated
-* Updated Simplified Chinese translation pack.
-
 ## v0.7.12 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with the locations API endpoint referencing an invalid namespace.
@@ -18,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Updated
 * Upgraded core to use Laravel `5.7.14`.
+* Updated Simplified Chinese translation pack.
 
 ### Added
 * Added support for opening and editing Python files through the web editor.
