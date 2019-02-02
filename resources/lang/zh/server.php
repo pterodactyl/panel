@@ -258,10 +258,10 @@ return [
             ],
         ],
     ],
-	    'allocations' => [
+    'allocations' => [
         'mass_actions' => '批量操作',
         'delete' => '删除分配地址',
-	],
+    ],
     'files' => [
         'exceptions' => [
             'invalid_mime' => '此类型文件无法通过面板内置编辑器编辑。',

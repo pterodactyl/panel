@@ -69,7 +69,7 @@ return [
         'last_name' => '名称',
         'update_identity' => '更新个人信息',
         'username_help' => '您的用户名必须未被他人使用，且仅包含下列字符：:requirements。',
-		'language' => '语言',
+        'language' => '语言',
     ],
     'security' => [
         'session_mgmt_disabled' => '您的托管商未启用此界面来管理账户会话。',
