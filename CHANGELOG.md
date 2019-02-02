@@ -15,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Updated
 * Upgraded core to use Laravel `5.7.14`.
+* Updated Simplified Chinese translation pack.
 
 ### Added
 * Added support for opening and editing Python files through the web editor.
