@@ -12,6 +12,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixed checking of language changes
 * Fixed Spigot egg not building versions other than `latest`.
 * Fixed the Forge egg install script.
+* Fixes a bug that would ignore the `skip_scripts` setting when creating or editing a server.
 
 ### Updated
 * Upgraded core to use Laravel `5.7.14`.
