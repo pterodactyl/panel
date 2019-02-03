@@ -94,8 +94,7 @@ export default Vue.component('server-console', {
          */
         sendCommand: function () {
             this.commandHistoryIndex = -1;
-            // this.commandHistory.unshift(this.command);
-            this.commandHistory.unshift();
+            this.commandHistory.unshift(this.command);
             this.$socket().instance().emit('send command', this.command);
             this.command = '';
         },
