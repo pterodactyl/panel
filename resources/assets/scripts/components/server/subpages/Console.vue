@@ -179,5 +179,5 @@
 </script>
 
 <style lang="postcss">
-    @import "~xterm/src/xterm.css";
+    /*@import "xterm/src/xterm.css";*/
 </style>

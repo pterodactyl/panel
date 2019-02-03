@@ -44,8 +44,8 @@
 <script>
 import map from 'lodash/map';
 import { mapState } from 'vuex';
-import FileManagerFileRow from '../components/filemanager/FileManagerFileRow';
-import FileManagerFolderRow from '../components/filemanager/FileManagerFolderRow';
+import FileManagerFileRow from '../components/filemanager/FileRow';
+import FileManagerFolderRow from '../components/filemanager/FolderRow';
 import { getDirectoryContents } from '../../../api/server/getDirectoryContents';
 
 export default {

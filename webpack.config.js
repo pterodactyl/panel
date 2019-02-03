@@ -5,22 +5,15 @@ const glob = require('glob-all');
 
 const AssetsManifestPlugin = require('webpack-assets-manifest');
 const CleanPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ShellPlugin = require('webpack-shell-plugin');
 const PurgeCssPlugin = require('purgecss-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
-// Custom PurgeCSS extractor for Tailwind that allows special characters in
-// class names.
-//
-// https://github.com/FullHuman/purgecss#extractor
-class TailwindExtractor {
-    static extract (content) {
-        return content.match(/[A-z0-9-:\/]+/g) || [];
-    }
-}
+const isProduction = process.env.NODE_ENV === 'production';
 
-const basePlugins = [
+let plugins = [
     new CleanPlugin(path.resolve(__dirname, 'public/assets')),
     new ShellPlugin({
         onBuildStart: [
@@ -28,56 +21,101 @@ const basePlugins = [
             'php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js',
         ],
     }),
-    new ExtractTextPlugin('bundle-[hash].css', {
-        allChunks: true,
-    }),
+    new MiniCssExtractPlugin({ filename: 'bundle.[hash:8].css' }),
     new AssetsManifestPlugin({
         writeToDisk: true,
         publicPath: true,
         integrity: true,
         integrityHashes: ['sha384'],
     }),
+    new VueLoaderPlugin(),
 ];
 
-const productionPlugins = [
-    new PurgeCssPlugin({
-        paths: glob.sync([
-            path.join(__dirname, 'resources/assets/scripts/**/*.vue'),
-            path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
-        ]),
-        // Don't let PurgeCSS remove classes ending with -enter or -leave-active
-        // They're used by Vue transitions and are therefore not specifically defined
-        // in any of the files are are checked by PurgeCSS.
-        whitelistPatterns: [/-enter$/, /-leave-active$/],
-        extractors: [
-            {
-                extractor: TailwindExtractor,
-                extensions: ['html', 'js', 'php', 'vue'],
-            },
-        ],
-    }),
-    new UglifyJsPlugin({
-        include: [
-            path.join(__dirname, 'resources/assets/scripts'),
-            path.join(__dirname, 'node_modules'),
-            path.join(__dirname, 'vendor/tightenco'),
-        ],
-        cache: true,
-        parallel: 2,
-    }),
+if (isProduction) {
+    plugins = plugins.concat([
+        new PurgeCssPlugin({
+            paths: glob.sync([
+                path.join(__dirname, 'resources/assets/scripts/**/*.vue'),
+                path.join(__dirname, 'resources/assets/scripts/**/*.ts'),
+                path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
+            ]),
+            // Don't let PurgeCSS remove classes ending with -enter or -leave-active
+            // They're used by Vue transitions and are therefore not specifically defined
+            // in any of the files are are checked by PurgeCSS.
+            whitelistPatterns: [/-enter$/, /-leave-active$/],
+            extractors: [
+                {
+                    extractor: class {
+                        static extract (content) {
+                            return content.match(/[A-z0-9-:\/]+/g) || [];
+                        }
+                    },
+                    extensions: ['html', 'js', 'php', 'vue'],
+                },
+            ],
+        }),
+    ]);
+}
+
+const typescriptLoaders = [
+    {
+        loader: 'babel-loader',
+        options: {
+            cacheDirectory: !isProduction,
+            presets: ['@babel/preset-env'],
+            plugins: [
+                '@babel/plugin-proposal-class-properties',
+                ['@babel/plugin-proposal-object-rest-spread', { 'useBuiltIns': true }]
+            ],
+        },
+    },
+    {
+        loader: 'ts-loader',
+        options: {
+            appendTsSuffixTo: [/\.vue$/],
+            experimentalWatchApi: true,
+        }
+    }
+];
+
+const cssLoaders = [
+    { loader: MiniCssExtractPlugin.loader },
+    {
+        loader: 'css-loader',
+        options: {
+            sourceMap: !isProduction,
+            importLoaders: 1,
+        }
+    },
+    { loader: 'resolve-url-loader' },
+    {
+        loader: 'postcss-loader',
+        options: {
+            ident: 'postcss',
+            sourceMap: true,
+            plugins: [
+                require('postcss-import'),
+                tailwind('./tailwind.js'),
+                require('postcss-preset-env')({
+                    stage: 2,
+                }),
+                require('precss'),
+            ].concat(isProduction ? require('cssnano') : []),
+        }
+    }
 ];
 
 module.exports = {
     mode: process.env.NODE_ENV,
-    devtool: process.env.NODE_ENV === 'production' ? false : 'inline-source-map',
+    devtool: isProduction ? false : 'inline-source-map',
     performance: {
         hints: false,
     },
-    // Passing an array loads them all but only exports the last.
     entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.ts'],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
-        filename: 'bundle-[hash].js',
+        filename: 'bundle.[hash:8].js',
+        chunkFilename: 'chunk.[name].js',
         publicPath: _.get(process.env, 'PUBLIC_PATH', '') + '/assets/',
         crossOriginLoading: 'anonymous',
     },
@@ -89,54 +127,21 @@ module.exports = {
             },
             {
                 test: /\.ts$/,
-                loader: 'ts-loader',
                 exclude: /node_modules/,
-                options: {
-                    appendTsSuffixTo: [/\.vue$/],
-                },
-            },
-            {
-                test: /\.js$/,
-                include: [
-                    path.resolve(__dirname, 'resources'),
-                ],
-                loader: 'babel-loader?cacheDirectory',
+                use: typescriptLoaders,
             },
             {
                 test: /\.css$/,
                 include: [
                     path.resolve(__dirname, 'resources'),
                 ],
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: [{
-                        loader: 'css-loader',
-                        options: {
-                            sourceMap: true,
-                            importLoaders: 1,
-                        },
-                    }, {
-                        loader: 'postcss-loader',
-                        options: {
-                            ident: 'postcss',
-                            sourceMap: true,
-                            plugins: [
-                                require('postcss-import'),
-                                tailwind('./tailwind.js'),
-                                require('postcss-preset-env')({ stage: 0 }),
-                                require('precss'),
-                                require('autoprefixer'),
-                                require('cssnano'),
-                            ],
-                        },
-                    }],
-                }),
+                use: cssLoaders,
             },
             {
                 test: /\.(png|jpg|gif|svg)$/,
                 loader: 'file-loader',
                 options: {
-                    name: '[name].[ext]?[hash]',
+                    name: '[name].[ext]?[hash:8]',
                 },
             },
         ],
@@ -148,18 +153,29 @@ module.exports = {
         },
         symlinks: false,
     },
-    plugins: process.env.NODE_ENV === 'production' ? basePlugins.concat(productionPlugins) : basePlugins,
-    serve: {
-        content: './public/',
-        dev: {
-            publicPath: '/assets/',
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-            },
-        },
-        hot: {
-            hmr: true,
-            reload: true,
+    plugins: plugins,
+    optimization: {
+        minimize: true,
+        minimizer: !isProduction ? [] : [
+            new UglifyJsPlugin({
+                cache: true,
+                parallel: true,
+                uglifyOptions: {
+                    output: {
+                        comments: false,
+                    },
+                },
+            }),
+        ],
+    },
+    devServer: {
+        contentBase: path.join(__dirname, 'public'),
+        publicPath: '/assets/',
+        allowedHosts: [
+            '.pterodactyl.test',
+        ],
+        headers: {
+            'Access-Control-Allow-Origin': '*',
         },
     },
 };
