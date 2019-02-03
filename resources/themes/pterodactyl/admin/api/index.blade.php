@@ -1,14 +1,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Application API
+    @lang('admin/api.header.title')
 @endsection
 
 @section('content-header')
-    <h1>Application API<small>Control access credentials for managing this Panel via the API.</small></h1>
+    <h1>@lang('admin/api.header.overview')</h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Application API</li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/api.header.admin')</a></li>
+        <li class="active">@lang('admin/api.header.api')</li>
     </ol>
 @endsection
 
@@ -17,9 +17,9 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Credentials List</h3>
+                    <h3 class="box-title">@lang('admin/api.content.list')</h3>
                     <div class="box-tools">
-                        <a href="{{ route('admin.api.new') }}" class="btn btn-sm btn-primary">Create New</a>
+                        <a href="{{ route('admin.api.new') }}" class="btn btn-sm btn-primary">@lang('admin/api.content.new')</a>
                     </div>
                 </div>
                 <div class="box-body table-responsive no-padding">
@@ -66,8 +66,8 @@
                 event.preventDefault();
                 swal({
                     type: 'error',
-                    title: 'Revoke API Key',
-                    text: 'Once this API key is revoked any applications currently using it will stop working.',
+                    title: '@lang('admin/api.revoke.revoke')',
+                    text: '@lang('admin/api.revoke.warning')',
                     showCancelButton: true,
                     allowOutsideClick: true,
                     closeOnConfirm: false,
@@ -85,15 +85,15 @@
                         swal({
                             type: 'success',
                             title: '',
-                            text: 'API Key has been revoked.'
+                            text: '@lang('admin/api.revoke.success')'
                         });
                         self.parent().parent().slideUp();
                     }).fail(function (jqXHR) {
                         console.error(jqXHR);
                         swal({
                             type: 'error',
-                            title: 'Whoops!',
-                            text: 'An error occurred while attempting to revoke this key.'
+                            title: '@lang('admin/api.revoke.ooopsi')',
+                            text: '@lang('admin/api.revoke.error')'
                         });
                     });
                 });

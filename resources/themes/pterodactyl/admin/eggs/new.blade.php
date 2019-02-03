@@ -6,15 +6,15 @@
 @extends('layouts.admin')
 
 @section('title')
-    Nests &rarr; New Egg
+    @lang('admin/eggs.header.title')
 @endsection
 
 @section('content-header')
-    <h1>New Egg<small>Create a new Egg to assign to servers.</small></h1>
+    <h1>@lang('admin/eggs.header.overview')</h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nests') }}">Nests</a></li>
-        <li class="active">New Egg</li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/eggs.header.admin')</a></li>
+        <li><a href="{{ route('admin.nests') }}">@lang('admin/eggs.header.nests')</a></li>
+        <li class="active">@lang('admin/eggs.header.new_egg')</li>
     </ol>
 @endsection
 
@@ -24,38 +24,38 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Configuration</h3>
+                    <h3 class="box-title">@lang('admin/eggs.content.configuration')</h3>
                 </div>
                 <div class="box-body">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pNestId" class="form-label">Associated Nest</label>
+                                <label for="pNestId" class="form-label">@lang('admin/eggs.content.associated_nest')</label>
                                 <div>
                                     <select name="nest_id" id="pNestId">
                                         @foreach($nests as $nest)
                                             <option value="{{ $nest->id }}" {{ old('nest_id') != $nest->id ?: 'selected' }}>{{ $nest->name }} &lt;{{ $nest->author }}&gt;</option>
                                         @endforeach
                                     </select>
-                                    <p class="text-muted small">Think of a Nest as a category. You can put multiple Eggs in a nest, but consider putting only Eggs that are related to each other in each Nest.</p>
+                                    <p class="text-muted small">@lang('admin/eggs.content.associated_nest_description')</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="pName" class="form-label">Name</label>
+                                <label for="pName" class="form-label">@lang('admin/eggs.content.name')</label>
                                 <input type="text" id="pName" name="name" value="{{ old('name') }}" class="form-control" />
-                                <p class="text-muted small">A simple, human-readable name to use as an identifier for this Egg. This is what users will see as their game server type.</p>
+                                <p class="text-muted small">@lang('admin/eggs.content.name_description')</p>
                             </div>
                             <div class="form-group">
-                                <label for="pDescription" class="form-label">Description</label>
+                                <label for="pDescription" class="form-label">@lang('admin/eggs.content.description')</label>
                                 <textarea id="pDescription" name="description" class="form-control" rows="8">{{ old('description') }}</textarea>
-                                <p class="text-muted small">A description of this Egg.</p>
+                                <p class="text-muted small">@lang('admin/eggs.content.name_description_description')</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pDockerImage" class="control-label">Docker Image</label>
+                                <label for="pDockerImage" class="control-label">@lang('admin/eggs.content.docker')</label>
                                 <input type="text" id="pDockerImage" name="docker_image" value="{{ old('docker_image') }}" placeholder="quay.io/pterodactyl/service" class="form-control" />
-                                <p class="text-muted small">The default docker image that should be used for new servers using this Egg. This can be changed per-server.</p>
+                                <p class="text-muted small">@lang('admin/eggs.content.docker_description')</p>
                             </div>
                             <div class="form-group">
                                 <label for="pStartup" class="control-label">Startup Command</label>

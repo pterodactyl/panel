@@ -14,15 +14,15 @@ return [
         'admin' => 'Admin',
         'index' => 'Index',
     ],
-
     'content' => [
         'title' => 'System Information',
-        'isLatest' => 'You are running Pterodactyl Panel version <code>{{ config('app.version') }}</code>. Your panel is up-to-date!',
-        'notLatest' => 'Your panel is <strong>not up-to-date!</strong> The latest version is <a href="https://github.com/Pterodactyl/Panel/releases/v{{ $version->getPanel() }}" target="_blank"><code>{{ $version->getPanel() }}</code></a> and you are currently running version <code>{{ config('app.version') }}</code>.',
+        'isLatestStart' => 'You are running Pterodactyl Panel version ',
+        'isLatestEnd' => '. Your panel is up-to-date!',
+        'notLatestStart' => 'Your panel is <strong>not up-to-date!</strong> The latest version is', 
+        'notLatestEnd' => 'and you are currently running version',
     ],
-
     'button' => [
-        'discord' => 'Get Help <small>(via Discord)</small>';
+        'discord' => 'Get Help <small>(via Discord)</small>',
         'doc' => 'Documentation',
         'github' => 'GitHub',
         'support' => 'Support the Project',

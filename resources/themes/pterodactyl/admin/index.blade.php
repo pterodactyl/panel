@@ -32,9 +32,9 @@
             </div>
             <div class="box-body">
                 @if ($version->isLatestPanel())
-                    @lang('admin/admin.content.isLatest')
+                    @lang('admin/admin.content.isLatestStart') <code>{{ config('app.version') }}</code> @lang('admin/admin.content.isLatestEnd')
                 @else
-                    @lang('admin/admin.content.notLatest')
+                    @lang('admin/admin.content.notLatestStart') <a href="https://github.com/Pterodactyl/Panel/releases/v{{ $version->getPanel() }}" target="_blank"><code>{{ $version->getPanel() }}</code></a> @lang('admin/admin.content.notLatestEnd') <code>{{ config('app.version') }}</code>.
                 @endif
             </div>
         </div>
