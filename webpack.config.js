@@ -21,7 +21,7 @@ let plugins = [
             'php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js',
         ],
     }),
-    new MiniCssExtractPlugin({ filename: 'bundle.[hash:8].css' }),
+    new MiniCssExtractPlugin({ filename: isProduction ? 'bundle.[chunkhash:8].css' : 'bundle.[hash:8].css' }),
     new AssetsManifestPlugin({
         writeToDisk: true,
         publicPath: true,
@@ -50,7 +50,7 @@ if (isProduction) {
                             return content.match(/[A-z0-9-:\/]+/g) || [];
                         }
                     },
-                    extensions: ['html', 'js', 'php', 'vue'],
+                    extensions: ['html', 'ts', 'js', 'php', 'vue'],
                 },
             ],
         }),
@@ -114,8 +114,8 @@ module.exports = {
     entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.ts'],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
-        filename: 'bundle.[hash:8].js',
-        chunkFilename: 'chunk.[name].js',
+        filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
+        chunkFilename: isProduction ? '[name].[chunkhash:8].js' : '[name].[hash:8].js',
         publicPath: _.get(process.env, 'PUBLIC_PATH', '') + '/assets/',
         crossOriginLoading: 'anonymous',
     },
@@ -124,6 +124,18 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
+            },
+            {
+                test: /\.js$/,
+                loader: 'babel-loader',
+                options: {
+                    cacheDirectory: !isProduction,
+                    presets: ['@babel/preset-env'],
+                    plugins: [
+                        '@babel/plugin-proposal-class-properties',
+                        ['@babel/plugin-proposal-object-rest-spread', { 'useBuiltIns': true }]
+                    ],
+                },
             },
             {
                 test: /\.ts$/,
@@ -167,6 +179,25 @@ module.exports = {
                 },
             }),
         ],
+        splitChunks: {
+            cacheGroups: {
+                vue: {
+                    test: /[\\/]node_modules[\\/](vue\w?)[\\/]/,
+                    name: 'vue',
+                    chunks: 'initial',
+                },
+                locales: {
+                    test: /locales/,
+                    name: 'locales',
+                    chunks: 'initial',
+                },
+                vendors: {
+                    test: /[\\/]node_modules[\\/](?!vue)(.*)[\\/]/,
+                    name: 'vendor',
+                    chunks: 'initial',
+                },
+            }
+        }
     },
     devServer: {
         contentBase: path.join(__dirname, 'public'),

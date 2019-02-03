@@ -42,6 +42,9 @@
         @show
         @section('scripts')
             {!! $asset->js('main.js') !!}
+            {!! $asset->js('vue.js') !!}
+            {!! $asset->js('vendor.js') !!}
+            {!! $asset->js('locales.js') !!}
         @show
     </body>
 </html>
