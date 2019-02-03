@@ -164,6 +164,7 @@ module.exports = {
         extensions: ['.ts', '.js', '.vue', '.json'],
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
+            '@': path.join(__dirname, 'resources/assets/scripts'),
         },
         symlinks: false,
     },

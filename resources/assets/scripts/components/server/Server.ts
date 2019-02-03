@@ -1,15 +1,20 @@
 import Vue from 'vue';
-import Navigation from '../core/Navigation';
+import Navigation from '@/components/core/Navigation';
 import ProgressBar from './components/ProgressBar';
 import { mapState } from 'vuex';
 import * as io from 'socket.io-client';
+import { Socketio } from "@/mixins/socketio";
+import Icon from "@/components/core/Icon";
+import PowerButtons from "@/components/server/components/PowerButtons";
 
 export default Vue.component('server', {
-    components: { ProgressBar, Navigation },
+    components: { ProgressBar, PowerButtons, Navigation, Icon },
     computed: {
         ...mapState('server', ['server', 'credentials']),
         ...mapState('socket', ['connected', 'connectionError']),
     },
+
+    mixins: [ Socketio ],
 
     // Watch for route changes that occur with different server parameters. This occurs when a user
     // uses the search bar. Because of the way vue-router works, it won't re-mount the server component
@@ -83,25 +88,25 @@ export default Vue.component('server', {
                         </div>
                         <div class="mt-6 sidenav mr-6 bg-white border rounded">
                             <router-link :to="{ name: 'server', params: { id: $route.params.id } }">
-                                <terminal-icon class="h-4"></terminal-icon> Console
+                                <icon name="terminal" class="h-4"></icon> Console
                             </router-link>
                             <router-link :to="{ name: 'server-files' }">
-                                <folder-icon class="h-4"></folder-icon> Files
+                                <icon name="folder" class="h-4"></icon> Files
                             </router-link>
                             <router-link :to="{ name: 'server-subusers' }">
-                                <users-icon class="h-4"></users-icon> Subusers
+                                <icon name="users" class="h-4"></icon> Subusers
                             </router-link>
                             <router-link :to="{ name: 'server-schedules' }">
-                                <calendar-icon class="h-4"></calendar-icon> Schedules
+                                <icon name="calendar" class="h-4"></icon> Schedules
                             </router-link>
                             <router-link :to="{ name: 'server-databases' }">
-                                <database-icon class="h-4"></database-icon> Databases
+                                <icon name="database" class="h-4"></icon> Databases
                             </router-link>
                             <router-link :to="{ name: 'server-allocations' }">
-                                <globe-icon class="h-4"></globe-icon> Allocations
+                                <icon name="globe" class="h-4"></icon> Allocations
                             </router-link>
                             <router-link :to="{ name: 'server-settings' }">
-                                <settings-icon class="h-4"></settings-icon> Settings
+                                <icon name="settings" class="h-4"></icon> Settings
                             </router-link>
                         </div>
                     </div>
