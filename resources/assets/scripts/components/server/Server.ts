@@ -93,21 +93,21 @@ export default Vue.component('server', {
                             <router-link :to="{ name: 'server-files' }">
                                 <icon name="folder" class="h-4"></icon> Files
                             </router-link>
-                            <router-link :to="{ name: 'server-subusers' }">
-                                <icon name="users" class="h-4"></icon> Subusers
-                            </router-link>
-                            <router-link :to="{ name: 'server-schedules' }">
-                                <icon name="calendar" class="h-4"></icon> Schedules
-                            </router-link>
+                            <!--<router-link :to="{ name: 'server-subusers' }">-->
+                                <!--<icon name="users" class="h-4"></icon> Subusers-->
+                            <!--</router-link>-->
+                            <!--<router-link :to="{ name: 'server-schedules' }">-->
+                                <!--<icon name="calendar" class="h-4"></icon> Schedules-->
+                            <!--</router-link>-->
                             <router-link :to="{ name: 'server-databases' }">
                                 <icon name="database" class="h-4"></icon> Databases
                             </router-link>
-                            <router-link :to="{ name: 'server-allocations' }">
-                                <icon name="globe" class="h-4"></icon> Allocations
-                            </router-link>
-                            <router-link :to="{ name: 'server-settings' }">
-                                <icon name="settings" class="h-4"></icon> Settings
-                            </router-link>
+                            <!--<router-link :to="{ name: 'server-allocations' }">-->
+                                <!--<icon name="globe" class="h-4"></icon> Allocations-->
+                            <!--</router-link>-->
+                            <!--<router-link :to="{ name: 'server-settings' }">-->
+                                <!--<icon name="settings" class="h-4"></icon> Settings-->
+                            <!--</router-link>-->
                         </div>
                     </div>
                     <div class="h-full w-full">

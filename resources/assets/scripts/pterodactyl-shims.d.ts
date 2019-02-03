@@ -4,6 +4,8 @@ import {FlashInterface} from "./mixins/flash";
 import {AxiosInstance} from "axios";
 import {Vue as VueType} from "vue/types/vue";
 import {ApplicationState} from "./store/types";
+import {Route} from "vue-router";
+
 // @ts-ignore
 import {Ziggy} from './helpers/ziggy';
 
@@ -35,6 +37,7 @@ declare module 'vue/types/options' {
 
 declare module 'vue/types/vue' {
     interface Vue {
+        $route: Route,
         $store: Store<any>,
         $flash: FlashInterface,
         route: (name: string, params?: object, absolute?: boolean) => string,

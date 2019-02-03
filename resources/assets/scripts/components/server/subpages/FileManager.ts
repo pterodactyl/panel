@@ -1,57 +1,21 @@
-<template>
-    <div class="content-box animate fadein">
-        <div class="filemanager-breadcrumbs">
-            /<span class="px-1">home</span><!--
-            -->/<router-link :to="{ name: 'server-files' }" class="px-1">container</router-link><!--
-            --><span v-for="crumb in breadcrumbs" class="inline-block">
-                <span v-if="crumb.path">
-                    /<router-link :to="{ name: 'server-files', params: { path: crumb.path } }" class="px-1">{{crumb.directoryName}}</router-link>
-                </span>
-                <span v-else>
-                    /<span class="px-1 font-semibold">{{crumb.directoryName}}</span>
-                </span>
-            </span>
-        </div>
-        <div v-if="loading">
-            <div class="spinner spinner-xl blue"></div>
-        </div>
-        <div v-else-if="!loading && errorMessage">
-            <div class="alert error" v-text="errorMessage"></div>
-        </div>
-        <div class="filemanager" v-else>
-            <div class="header">
-                <div class="flex-none w-8"></div>
-                <div class="flex-1">Name</div>
-                <div class="flex-1 text-right">Size</div>
-                <div class="flex-1 text-right">Modified</div>
-                <div class="flex-none w-1/6">Actions</div>
-            </div>
-            <div v-if="!directories.length && !files.length">
-                <p class="text-grey text-sm text-center p-6 pb-4">This directory is empty.</p>
-            </div>
-            <div v-else>
-                <div v-for="directory in directories">
-                    <file-manager-folder-row :directory="directory"/>
-                </div>
-                <div v-for="file in files">
-                    <file-manager-file-row :file="file" :editable="editableFiles" />
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
+import Vue from 'vue';
+import {mapState} from "vuex";
+import { map } from 'lodash';
+import getDirectoryContents from "@/api/server/getDirectoryContents";
+import FileRow from "@/components/server/components/filemanager/FileRow";
+import FolderRow from "@/components/server/components/filemanager/FolderRow";
 
-<script>
-import map from 'lodash/map';
-import { mapState } from 'vuex';
-import FileManagerFileRow from '../components/filemanager/FileRow';
-import FileManagerFolderRow from '../components/filemanager/FolderRow';
-import { getDirectoryContents } from '../../../api/server/getDirectoryContents';
+type DataStructure = {
+    loading: boolean,
+    errorMessage: string | null,
+    currentDirectory: string,
+    files: Array<any>,
+    directories: Array<any>,
+    editableFiles: Array<string>,
+}
 
-export default {
-    name: 'file-manager-page',
-    components: { FileManagerFolderRow, FileManagerFileRow },
-
+export default Vue.component('file-manager', {
+    components: { FileRow, FolderRow },
     computed: {
         ...mapState('server', ['server', 'credentials']),
         ...mapState('socket', ['connected']),
@@ -66,7 +30,7 @@ export default {
                 return [];
             }
 
-            return map(directories, function (value, key) {
+            return map(directories, function (value: string, key: number) {
                 if (key === directories.length - 1) {
                     return { directoryName: value };
                 }
@@ -99,18 +63,18 @@ export default {
          * so that the error message disappears and we then load in a fresh listing.
          */
         connected: function () {
+            // @ts-ignore
             if (this.connected) {
                 this.listDirectory();
             }
         },
     },
 
-    data: function () {
+    data: function (): DataStructure {
         return {
             currentDirectory: this.$route.params.path || '/',
             loading: true,
             errorMessage: null,
-
             directories: [],
             editableFiles: [],
             files: [],
@@ -137,7 +101,7 @@ export default {
                     this.errorMessage = null;
                 })
                 .catch((err) => {
-                    if (err instanceof String) {
+                    if (typeof err === 'string') {
                         this.errorMessage = err;
                         return;
                     }
@@ -149,5 +113,47 @@ export default {
                 });
         },
     },
-};
-</script>
+
+    template: `
+        <div class="content-box animate fadein">
+            <div class="filemanager-breadcrumbs">
+                /<span class="px-1">home</span><!--
+                -->/<router-link :to="{ name: 'server-files' }" class="px-1">container</router-link><!--
+                --><span v-for="crumb in breadcrumbs" class="inline-block">
+                    <span v-if="crumb.path">
+                        /<router-link :to="{ name: 'server-files', params: { path: crumb.path } }" class="px-1">{{crumb.directoryName}}</router-link>
+                    </span>
+                    <span v-else>
+                        /<span class="px-1 font-semibold">{{crumb.directoryName}}</span>
+                    </span>
+                </span>
+            </div>
+            <div v-if="loading">
+                <div class="spinner spinner-xl blue"></div>
+            </div>
+            <div v-else-if="!loading && errorMessage">
+                <div class="alert error" v-text="errorMessage"></div>
+            </div>
+            <div class="filemanager" v-else>
+                <div class="header">
+                    <div class="flex-none w-8"></div>
+                    <div class="flex-1">Name</div>
+                    <div class="flex-1 text-right">Size</div>
+                    <div class="flex-1 text-right">Modified</div>
+                    <div class="flex-none w-1/6">Actions</div>
+                </div>
+                <div v-if="!directories.length && !files.length">
+                    <p class="text-grey text-sm text-center p-6 pb-4">This directory is empty.</p>
+                </div>
+                <div v-else>
+                    <div v-for="directory in directories">
+                        <folder-row :directory="directory"/>
+                    </div>
+                    <div v-for="file in files">
+                        <file-row :file="file" :editable="editableFiles" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    `,
+});

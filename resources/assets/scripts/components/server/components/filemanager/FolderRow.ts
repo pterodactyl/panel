@@ -1,11 +1,9 @@
 import Vue from 'vue';
-import { formatDate } from "../../../../helpers";
-import Icon from "../../../core/Icon";
+import { formatDate } from "@/helpers";
+import Icon from "@/components/core/Icon";
 
 export default Vue.component('folder-row', {
-    components: {
-        Icon,
-    },
+    components: { Icon },
 
     props: {
         directory: {type: Object, required: true},
@@ -34,7 +32,7 @@ export default Vue.component('folder-row', {
                          :to="{ name: 'server-files', params: { path: getClickablePath(directory.name).replace(/^\\//, '') }}"
             >
                 <div class="flex-none icon">
-                    <folder-icon/>
+                    <icon name="folder"/>
                 </div>
                 <div class="flex-1">{{directory.name}}</div>
                 <div class="flex-1 text-right text-grey-dark"></div>

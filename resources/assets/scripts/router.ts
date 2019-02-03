@@ -11,13 +11,9 @@ import ResetPassword from './components/auth/ResetPassword';
 import User from './models/user';
 import {
     Server,
-    ServerAllocations,
     ConsolePage,
     FileManagerPage,
     DatabasesPage,
-    ServerSchedules,
-    ServerSettings,
-    ServerSubusers,
 } from './components/server';
 
 const routes = [
@@ -43,11 +39,11 @@ const routes = [
         children: [
             {name: 'server', path: '', component: ConsolePage},
             {name: 'server-files', path: 'files/:path(.*)?', component: FileManagerPage},
-            {name: 'server-subusers', path: 'subusers', component: ServerSubusers},
-            {name: 'server-schedules', path: 'schedules', component: ServerSchedules},
+            // {name: 'server-subusers', path: 'subusers', component: ServerSubusers},
+            // {name: 'server-schedules', path: 'schedules', component: ServerSchedules},
             {name: 'server-databases', path: 'databases', component: DatabasesPage},
-            {name: 'server-allocations', path: 'allocations', component: ServerAllocations},
-            {name: 'server-settings', path: 'settings', component: ServerSettings},
+            // {name: 'server-allocations', path: 'allocations', component: ServerAllocations},
+            // {name: 'server-settings', path: 'settings', component: ServerSettings},
         ],
     },
 ];

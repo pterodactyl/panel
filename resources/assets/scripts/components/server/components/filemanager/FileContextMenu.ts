@@ -2,17 +2,15 @@ import Vue from 'vue';
 import Icon from "../../../core/Icon";
 
 export default Vue.component('file-context-menu', {
-    components: {
-        Icon,
-    },
+    components: { Icon },
 
     template: `
         <div class="context-menu">
             <div>
                 <div class="context-row">
                     <div class="icon">
-                        <icon name="edit3"/>
-                    </div>
+                        <icon name="edit-3"/>
+                    </div> 
                     <div class="action"><span>Rename</span></div>
                 </div>
                 <div class="context-row">
