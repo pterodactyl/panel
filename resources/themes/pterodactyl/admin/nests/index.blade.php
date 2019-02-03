@@ -38,12 +38,12 @@
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th class="text-center">Eggs</th>
-                        <th class="text-center">Packs</th>
-                        <th class="text-center">Servers</th>
+                        <th>@lang('admin/nests.content.id')</th>
+                        <th>@lang('admin/nests.content.name')</th>
+                        <th>@lang('admin/nests.content.description')</th>
+                        <th class="text-center">@lang('admin/nests.content.eggs')</th>
+                        <th class="text-center">@lang('admin/nests.content.packs')</th>
+                        <th class="text-center">@lang('admin/nests.content.servers')</th>
                     </tr>
                     @foreach($nests as $nest)
                         <tr>
@@ -65,33 +65,33 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Import an Egg</h4>
+                <h4 class="modal-title">@lang('admin/nests.content.import_an_egg')</h4>
             </div>
             <form action="{{ route('admin.nests.egg.import') }}" enctype="multipart/form-data" method="POST">
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="control-label" for="pImportFile">Egg File <span class="field-required"></span></label>
+                        <label class="control-label" for="pImportFile">@lang('admin/nests.content.egg_file') <span class="field-required"></span></label>
                         <div>
                             <input id="pImportFile" type="file" name="import_file" class="form-control" accept="application/json" />
-                            <p class="small text-muted">Select the <code>.json</code> file for the new egg that you wish to import.</p>
+                            <p class="small text-muted">@lang('admin/nests.content.egg_file_description')</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label" for="pImportToNest">Associated Nest <span class="field-required"></span></label>
+                        <label class="control-label" for="pImportToNest">@lang('admin/nests.content.associated_nest')<span class="field-required"></span></label>
                         <div>
                             <select id="pImportToNest" name="import_to_nest">
                                 @foreach($nests as $nest)
                                    <option value="{{ $nest->id }}">{{ $nest->name }} &lt;{{ $nest->author }}&gt;</option>
                                 @endforeach
                             </select>
-                            <p class="small text-muted">Select the nest that this egg will be associated with from the dropdown. If you wish to associate it with a new nest you will need to create that nest before continuing.</p>
+                            <p class="small text-muted">@lang('admin/nests.content.associated_nest_hint')</p>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     {{ csrf_field() }}
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Import</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('admin/nests.content.cancel')</button>
+                    <button type="submit" class="btn btn-primary">@lang('admin/nests.content.import')</button>
                 </div>
             </form>
         </div>
