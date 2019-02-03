@@ -42,7 +42,7 @@ if (isProduction) {
             // Don't let PurgeCSS remove classes ending with -enter or -leave-active
             // They're used by Vue transitions and are therefore not specifically defined
             // in any of the files are are checked by PurgeCSS.
-            whitelistPatterns: [/-enter$/, /-leave-active$/],
+            whitelistPatterns: [/^xterm/, /-enter$/, /-leave-active$/],
             extractors: [
                 {
                     extractor: class {

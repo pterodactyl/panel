@@ -4,6 +4,8 @@
 @import "tailwindcss/preflight";
 @import "tailwindcss/components";
 
+@import "xterm/src/xterm.css";
+
 /**
  * Pterodactyl Specific CSS
  */

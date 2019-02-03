@@ -27,6 +27,9 @@ declare module 'vue/types/options' {
                 [s: string]: (data: any) => void,
             }
         },
+        sockets?: {
+            [s: string]: (data: any) => void,
+        }
     }
 }
 
