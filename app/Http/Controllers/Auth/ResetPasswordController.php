@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Auth;
 
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Auth\Events\PasswordReset;
@@ -109,10 +110,11 @@ class ResetPasswordController extends Controller
     /**
      * Get the response for a successful password reset.
      *
-     * @param string $response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $response
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
      */
-    protected function sendResetResponse($response)
+    protected function sendResetResponse(Request $request, $response)
     {
         if ($this->hasTwoFactor) {
             $this->alerts->success('Your password was successfully updated. Please log in to continue.')->flash();

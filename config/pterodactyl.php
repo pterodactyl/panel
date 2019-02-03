@@ -186,6 +186,7 @@ return [
             'text/plain',
             'text/x-perl',
             'text/x-shellscript',
+            'text/x-python',
         ],
     ],
 

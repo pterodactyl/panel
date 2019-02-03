@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Requests\Api\Application\Locations;
 
 use Pterodactyl\Models\Location;
-use Pterodactyl\Http\Controllers\Api\Application\Locations\StoreLocationRequest;
 
 class UpdateLocationRequest extends StoreLocationRequest
 {

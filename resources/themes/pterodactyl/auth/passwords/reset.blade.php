@@ -30,7 +30,7 @@
             <form id="resetForm" action="{{ route('auth.reset.post') }}" method="POST">
                 <div class="form-group has-feedback">
                     <div class="pterodactyl-login-input">
-                        <input type="email" name="email" class="form-control input-lg" value="{{ $email or old('email') }}" required autofocus placeholder="@lang('strings.email')">
+                        <input type="email" name="email" class="form-control input-lg" value="{{ $email ?? old('email') }}" required autofocus placeholder="@lang('strings.email')">
                         <span class="fa fa-envelope form-control-feedback fa-lg"></span>
                         @if ($errors->has('email'))
                             <span class="help-block text-red small">

@@ -59,6 +59,7 @@ class AccountDataFormRequest extends FrontendUserFormRequest
                     'name_first' => array_get($modelRules, 'name_first'),
                     'name_last' => array_get($modelRules, 'name_last'),
                     'username' => array_get($modelRules, 'username'),
+                    'language' => array_get($modelRules, 'language'),
                 ];
                 break;
             default:

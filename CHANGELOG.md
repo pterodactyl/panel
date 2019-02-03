@@ -3,6 +3,25 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.12 (Derelict Dermodactylus)
+### Fixed
+* Fixes an issue with the locations API endpoint referencing an invalid namespace.
+* Fixes the `store()` function on the locations API not working due to an incorrect return typehint.
+* Fixes daemon secrets not being able to be reset on a Node.
+* Fixes an issue where files were not editable due to missing URL encoding in the file manager.
+* Fixed checking of language changes
+* Fixed Spigot egg not building versions other than `latest`.
+* Fixed the Forge egg install script.
+* Fixes a bug that would ignore the `skip_scripts` setting when creating or editing a server.
+
+### Updated
+* Upgraded core to use Laravel `5.7.14`.
+* Updated Simplified Chinese translation pack.
+
+### Added
+* Added support for opening and editing Python files through the web editor.
+* Adds Russian translation.
+
 ## v0.7.11 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with certain systems not handling an API folder that was named `API` but referenced as `Api` in the namespace.

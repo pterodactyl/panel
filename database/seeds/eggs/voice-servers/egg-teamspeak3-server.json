@@ -27,7 +27,7 @@
             "name": "Server Version",
             "description": "The version of Teamspeak 3 to use when running the server.",
             "env_variable": "TS_VERSION",
-            "default_value": "3.4.0",
+            "default_value": "3.5.0",
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|regex:\/^([0-9_\\.-]{5,10})$\/"
