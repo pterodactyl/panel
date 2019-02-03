@@ -34,10 +34,10 @@ return [
     ],
     'api' => [
         'index' => [
-            'list' => '您的密钥',
-            'header' => '账户 API',
+            'list' => '密钥列表',
+            'header' => 'API 列表',
             'header_sub' => '管理允许您对面板执行操作的 API 密钥。',
-            'create_new' => '新建 API 密钥',
+            'create_new' => '新建密钥',
             'keypair_created' => '已成功生成 API 密钥并列于下方。',
         ],
         'new' => [
