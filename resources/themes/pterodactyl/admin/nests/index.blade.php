@@ -6,14 +6,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Nests
+    @lang('admin/nests.header.title')
 @endsection
 
 @section('content-header')
-    <h1>Nests<small>All nests currently available on this system.</small></h1>
+    <h1>@lang('admin/nests.header.overview')</h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Nests</li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/nests.header.admin')</a></li>
+        <li class="active">@lang('admin/nests.header.title')</li>
     </ol>
 @endsection
 
@@ -21,7 +21,7 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="alert alert-danger">
-            Eggs are a powerful feature of Pterodactyl Panel that allow for extreme flexibility and configuration. Please note that while powerful, modifying an egg wrongly can very easily brick your servers and cause more problems. Please avoid editing our default eggs — those provided by <code>support@pterodactyl.io</code> — unless you are absolutely sure of what you are doing.
+            @lang('admin/nests.content.alert')
         </div>
     </div>
 </div>
@@ -29,10 +29,10 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Configured Nests</h3>
+                <h3 class="box-title">@lang('admin/nests.content.configured_nests')</h3>
                 <div class="box-tools">
-                    <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#importServiceOptionModal" role="button"><i class="fa fa-upload"></i> Import Egg</a>
-                    <a href="{{ route('admin.nests.new') }}" class="btn btn-primary btn-sm">Create New</a>
+                    <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#importServiceOptionModal" role="button"><i class="fa fa-upload"></i> @lang('admin/nests.content.import_egg')</a>
+                    <a href="{{ route('admin.nests.new') }}" class="btn btn-primary btn-sm">@lang('admin/nests.content.create_new')</a>
                 </div>
             </div>
             <div class="box-body table-responsive no-padding">

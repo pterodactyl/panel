@@ -6,14 +6,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    Nests &rarr; Egg: {{ $egg->name }} &rarr; Scripts
+    @lang('admin/eggs.scripts.header.titleStart') {{ $egg->name }} &rarr; @lang('admin/eggs.scripts.header.titleEnd')
 @endsection
 
 @section('content-header')
-    <h1>{{ $egg->name }}<small>Manage install and upgrade scripts for this Egg.</small></h1>
+    <h1>{{ $egg->name }}<small>@lang('admin/eggs.scripts.header.overview')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nests') }}">Service</a></li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/eggs.scripts.header.admin')</a></li>
+        <li><a href="{{ route('admin.nests') }}">@lang('admin/eggs.scripts.header.service')</a></li>
         <li><a href="{{ route('admin.nests.view', $egg->nest->id) }}">{{ $egg->nest->name }}</a></li>
         <li class="active">{{ $egg->name }}</li>
     </ol>
@@ -24,9 +24,9 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.nests.egg.view', $egg->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.nests.egg.variables', $egg->id) }}">Variables</a></li>
-                <li class="active"><a href="{{ route('admin.nests.egg.scripts', $egg->id) }}">Scripts</a></li>
+                <li><a href="{{ route('admin.nests.egg.view', $egg->id) }}">@lang('admin/eggs.content.configuration')</a></li>
+                <li><a href="{{ route('admin.nests.egg.variables', $egg->id) }}">@lang('admin/eggs.scripts.content.variables')</a></li>
+                <li class="active"><a href="{{ route('admin.nests.egg.scripts', $egg->id) }}">@lang('admin/eggs.scripts.content.scripts')</a></li>
             </ul>
         </div>
     </div>
@@ -36,12 +36,12 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Install Script</h3>
+                    <h3 class="box-title">@lang('admin/eggs.scripts.content.install_script')</h3>
                 </div>
                 @if(! is_null($egg->copyFrom))
                     <div class="box-body">
                         <div class="callout callout-warning no-margin">
-                            This service option is copying installation scripts and container options from <a href="{{ route('admin.nests.egg.view', $egg->copyFrom->id) }}">{{ $egg->copyFrom->name }}</a>. Any changes you make to this script will not apply unless you select "None" from the dropdown box below.
+                        @lang('admin/eggs.scripts.content.install_scriptStart')<a href="{{ route('admin.nests.egg.view', $egg->copyFrom->id) }}">{{ $egg->copyFrom->name }}</a>@lang('admin/eggs.scripts.content.install_scriptEnd')
                         </div>
                     </div>
                 @endif
@@ -51,29 +51,29 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="form-group col-sm-4">
-                            <label class="control-label">Copy Script From</label>
+                            <label class="control-label">@lang('admin/eggs.scripts.content.copy_script_from')</label>
                             <select id="pCopyScriptFrom" name="copy_script_from">
                                 <option value="">None</option>
                                 @foreach($copyFromOptions as $opt)
                                     <option value="{{ $opt->id }}" {{ $egg->copy_script_from !== $opt->id ?: 'selected' }}>{{ $opt->name }}</option>
                                 @endforeach
                             </select>
-                            <p class="text-muted small">If selected, script above will be ignored and script from selected option will be used in place.</p>
+                            <p class="text-muted small">@lang('admin/eggs.scripts.content.copy_script_from_description')</p>
                         </div>
                         <div class="form-group col-sm-4">
-                            <label class="control-label">Script Container</label>
+                            <label class="control-label">@lang('admin/eggs.scripts.content.script_container')</label>
                             <input type="text" name="script_container" class="form-control" value="{{ $egg->script_container }}" />
-                            <p class="text-muted small">Docker container to use when running this script for the server.</p>
+                            <p class="text-muted small">@lang('admin/eggs.scripts.content.script_container_description')</p>
                         </div>
                         <div class="form-group col-sm-4">
-                            <label class="control-label">Script Entrypoint Command</label>
+                            <label class="control-label">@lang('admin/eggs.scripts.content.script_entcommand')</label>
                             <input type="text" name="script_entry" class="form-control" value="{{ $egg->script_entry }}" />
-                            <p class="text-muted small">The entrypoint command to use for this script.</p>
+                            <p class="text-muted small">@lang('admin/eggs.scripts.content.script_entcommand_description')</p>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-xs-12 text-muted">
-                            The following service options rely on this script:
+                            @lang('admin/eggs.scripts.content.script_entcommand_description')
                             @if(count($relyOnScript) > 0)
                                 @foreach($relyOnScript as $rely)
                                     <a href="{{ route('admin.nests.egg.view', $rely->id) }}">
@@ -89,7 +89,7 @@
                 <div class="box-footer">
                     {!! csrf_field() !!}
                     <textarea name="script_install" class="hidden"></textarea>
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
+                    <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">@lang('admin/eggs.scripts.content.save')</button>
                 </div>
             </div>
         </div>
