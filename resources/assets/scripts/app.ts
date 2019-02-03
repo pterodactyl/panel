@@ -16,9 +16,7 @@ import router from './router';
 Vue.config.productionTip = false;
 require('./bootstrap');
 
-// @ts-ignore
 window.events = new Vue();
-// @ts-ignore
 window.Ziggy = Ziggy;
 
 Vue.use(Vuex);
@@ -26,7 +24,6 @@ Vue.use(VueRouter);
 Vue.use(VeeValidate);
 Vue.use(VueI18n);
 
-// $FlowFixMe: this is always going to be unhappy because we ignore the vendor dir.
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
 Vue.mixin({methods: {route}});
@@ -37,7 +34,6 @@ const i18n = new VueI18n({
     messages: {...Locales},
 });
 
-// $FlowFixMe
 if (module.hot) {
     module.hot.accept();
 }

@@ -4,6 +4,8 @@ import {FlashInterface} from "./mixins/flash";
 import {AxiosInstance} from "axios";
 import {Vue as VueType} from "vue/types/vue";
 import {ApplicationState} from "./store/types";
+// @ts-ignore
+import {Ziggy} from './helpers/ziggy';
 
 declare global {
     interface Window {
@@ -13,6 +15,7 @@ declare global {
         jQuery: any,
         axios: AxiosInstance,
         events: VueType,
+        Ziggy: Ziggy,
     }
 }
 

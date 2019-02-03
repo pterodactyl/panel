@@ -106,6 +106,7 @@ const cssLoaders = [
 ];
 
 module.exports = {
+    target: 'web',
     mode: process.env.NODE_ENV,
     devtool: isProduction ? false : 'inline-source-map',
     performance: {
@@ -201,7 +202,7 @@ module.exports = {
     },
     devServer: {
         contentBase: path.join(__dirname, 'public'),
-        publicPath: '/assets/',
+        publicPath: _.get(process.env, 'PUBLIC_PATH', '') + '/assets/',
         allowedHosts: [
             '.pterodactyl.test',
         ],
