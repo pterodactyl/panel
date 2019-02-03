@@ -1,4 +1,4 @@
-export {default as Server} from './Server.vue';
+export {default as Server} from './Server';
 export {default as ServerAllocations} from './ServerAllocations.vue';
 export {default as ConsolePage} from './subpages/Console.vue';
 export {default as DatabasesPage} from './subpages/Databases.vue';
