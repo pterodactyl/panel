@@ -2,8 +2,8 @@
     @apply .bg-blue .border-b .border-t .border-blue-darkest;
     height: 56px;
 
-    & > .logo {
-        @apply .mx-8 .font-sans .font-thin .text-3xl .text-white .inline-block .pt-2;
+    & .logo {
+        @apply .mr-8 .font-sans .font-thin .text-3xl .text-white .inline-block;
 
         & a {
             color: inherit;
@@ -15,11 +15,12 @@
         }
     }
 
-    & > .search-box {
+    & .search-box {
+        @apply .mr-2;
+
         & > .search-input {
-            @apply .text-sm .p-2 .mt-3 .mx-3 .rounded .border .border-blue-darker .bg-grey-lightest .text-grey-darkest;
-            width: 26rem;
-            opacity: 0.7;
+            @apply .text-sm .p-2 .ml-8 .rounded .border .border-blue-darker .bg-grey-lightest .text-grey-darkest .w-96;
+            opacity: 0.9;
             transition: ease-in-out opacity 150ms;
 
             &:focus {
@@ -34,8 +35,7 @@
         }
 
         & .search-results {
-            @apply .absolute .bg-grey-lightest .border .border-blue-darkest .border-t-0 .rounded .rounded-t-none .p-2 .mx-3 .z-50;
-            width: 26rem;
+            @apply .absolute .bg-grey-lightest .border .border-blue-darkest .border-t-0 .rounded .rounded-t-none .p-2 .ml-8 .z-50 .w-96;
 
             & a {
                 @apply .block .no-underline .p-2 .rounded;
@@ -47,27 +47,15 @@
         }
     }
 
-    & > .menu {
-        & > ul {
-            @apply .list-reset;
-            & > li {
-                @apply .inline-block;
-                & > a {
-                    @apply .block .h-full .no-underline .text-grey-lighter .font-light .text-sm .p-5;
+    & .menu {
+        @apply .flex .h-full .items-center;
 
-                    &:hover {
-                        @apply .bg-blue-dark;
-                    }
-                }
+        & > a {
+            @apply .block .flex .self-stretch .items-center .no-underline .text-grey-lighter .font-light .text-sm .px-5;
+
+            &:hover {
+                @apply .bg-blue-dark;
             }
-        }
-
-        @screen xsx {
-            @apply .w-full .text-center;
-        }
-
-        @screen sm {
-            @apply .float-right .mr-8 .inline-block;
         }
     }
 }

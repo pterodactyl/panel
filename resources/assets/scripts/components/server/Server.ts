@@ -71,13 +71,13 @@ export default Vue.component('server', {
         <div>
             <navigation></navigation>
             <flash class="m-6"/>
-            <div v-if="loadingServerData">
+            <div v-if="loadingServerData" class="container">
                 <div class="mt-6 h-16">
                     <div class="spinner spinner-xl spinner-thick blue"></div>
                 </div>
             </div>
-            <div v-else>
-                <div class="m-6 flex flex-no-shrink rounded animate fadein">
+            <div v-else class="container">
+                <div class="my-6 flex flex-no-shrink rounded animate fadein">
                     <div class="sidebar border-grey-lighter flex-no-shrink w-1/3 max-w-xs">
                         <div class="mr-6">
                             <div class="p-6 text-center bg-white border rounded">

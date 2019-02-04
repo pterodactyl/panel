@@ -71,70 +71,64 @@ export default Vue.component('navigation', {
     },
 
     template: `
-        <div class="nav flex">
-            <div class="logo flex-1">
-                <router-link :to="{ name: 'dashboard' }">
-                    Pterodactyl
-                </router-link>
-            </div>
-            <div class="search-box flex-none" v-if="$route.name !== 'dashboard'" ref="searchContainer">
-                <input type="text" class="search-input" id="searchInput" placeholder="Search..."
-                       :class="{ 'has-search-results': ((servers.length > 0 && searchTerm.length >= 3) || loadingResults) && searchActive }"
-                       v-on:focus="searchActive = true"
-                       v-on:input="search"
-                       v-model="searchTerm"
-                />
-                <div class="search-results select-none" :class="{ 'hidden': (servers.length === 0 && !loadingResults) || !searchActive || searchTerm.length < 3 }">
-                    <div v-if="loadingResults">
-                        <a href="#">
-                            <div class="flex items-center">
-                                <div class="flex-1">
-                                    <span class="text-sm text-grey-darker">Loading...</span>
+        <div class="nav flex flex-grow">
+            <div class="flex flex-1 justify-center items-center container">
+                <div class="logo">
+                    <router-link :to="{ name: 'dashboard' }">
+                        Pterodactyl
+                    </router-link>
+                </div>
+                <div class="menu flex-1">
+                    <router-link :to="{ name: 'dashboard' }">
+                        <icon name="server" aria-label="Server dashboard" class="h-4 self-center"/>
+                    </router-link>
+                    <router-link :to="{ name: 'account' }">
+                        <icon name="user" aria-label="Profile management" class="h-4"/>
+                    </router-link>
+                    <a :href="this.route('admin.index')">
+                        <icon name="settings" aria-label="Administrative controls" class="h-4"/>
+                    </a>
+                </div>
+                <div class="search-box flex-none" v-if="$route.name !== 'dashboard'" ref="searchContainer">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search..."
+                           :class="{ 'has-search-results': ((servers.length > 0 && searchTerm.length >= 3) || loadingResults) && searchActive }"
+                           v-on:focus="searchActive = true"
+                           v-on:input="search"
+                           v-model="searchTerm"
+                    />
+                    <div class="search-results select-none" :class="{ 'hidden': (servers.length === 0 && !loadingResults) || !searchActive || searchTerm.length < 3 }">
+                        <div v-if="loadingResults">
+                            <a href="#">
+                                <div class="flex items-center">
+                                    <div class="flex-1">
+                                        <span class="text-sm text-grey-darker">Loading...</span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="spinner spinner-relative"></span>
+                                    </div>
                                 </div>
-                                <div class="flex-none">
-                                    <span class="spinner spinner-relative"></span>
+                            </a>
+                        </div>
+                        <div v-else v-for="server in servers" :key="server.identifier">
+                            <router-link :to="{ name: 'server', params: { id: server.identifier }}" v-on:click.native="searchActive = false">
+                                <div class="flex items-center">
+                                    <div class="flex-1">
+                                        <span class="font-bold text-grey-darkest">{{ server.name }}</span><br />
+                                        <span class="font-light text-grey-dark text-sm" v-if="server.description.length > 0">{{ server.description }}</span>
+                                    </div>
+                                    <div class="flex-none">
+                                        <span class="pillbox bg-indigo">{{ server.node }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div v-else v-for="server in servers" :key="server.identifier">
-                        <router-link :to="{ name: 'server', params: { id: server.identifier }}" v-on:click.native="searchActive = false">
-                            <div class="flex items-center">
-                                <div class="flex-1">
-                                    <span class="font-bold text-grey-darkest">{{ server.name }}</span><br />
-                                    <span class="font-light text-grey-dark text-sm" v-if="server.description.length > 0">{{ server.description }}</span>
-                                </div>
-                                <div class="flex-none">
-                                    <span class="pillbox bg-indigo">{{ server.node }}</span>
-                                </div>
-                            </div>
-                        </router-link>
+                            </router-link>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="menu flex-none">
-                <ul>
-                    <li>
-                        <router-link :to="{ name: 'dashboard' }">
-                            <icon name="server" aria-label="Server dashboard" class="h-4"/>
-                        </router-link>
-                    </li>
-                    <li>
-                        <router-link :to="{ name: 'account' }">
-                            <icon name="user" aria-label="Profile management" class="h-4"/>
-                        </router-link>
-                    </li>
-                    <li>
-                        <a :href="this.route('admin.index')">
-                            <icon name="settings" aria-label="Administrative controls" class="h-4"/>
-                        </a>
-                    </li>
-                    <li>
-                        <a :href="this.route('auth.logout')" v-on:click.prevent="doLogout">
-                            <icon name="log-out" aria-label="Sign out" class="h-4"/>
-                        </a>
-                    </li>
-                </ul>
+                <div class="menu">
+                    <a :href="this.route('auth.logout')" v-on:click.prevent="doLogout">
+                        <icon name="log-out" aria-label="Sign out" class="h-4"/>
+                    </a>
+                </div>
             </div>
         </div>
     `
