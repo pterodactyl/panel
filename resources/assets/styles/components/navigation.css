@@ -61,6 +61,21 @@
 }
 
 .sidenav {
+    a {
+        @apply .block .no-underline .text-grey-darker .py-2;
+        transition: color 75ms ease-in;
+
+        &:hover {
+            @apply .text-grey;
+        }
+
+        &.router-link-exact-active {
+            @apply .font-medium;
+        }
+    }
+}
+/*
+.sidenav {
     @apply .py-2;
 
     a {
@@ -78,3 +93,4 @@
         }
     }
 }
+*/

@@ -78,20 +78,20 @@ export default Vue.component('server', {
             </div>
             <div v-else class="container">
                 <div class="my-6 flex flex-no-shrink rounded animate fadein">
-                    <div class="sidebar border-grey-lighter flex-no-shrink w-1/3 max-w-xs">
+                    <div class="sidebar flex-no-shrink w-1/3 max-w-xs">
                         <div class="mr-6">
-                            <div class="p-6 text-center bg-white border rounded">
+                            <div class="p-6 text-center bg-white rounded shadow">
                                 <h3 class="mb-2 text-blue font-medium">{{server.name}}</h3>
                                 <span class="text-grey-dark text-sm">{{server.node}}</span>
                                 <power-buttons class="mt-6 pt-6 text-center border-t border-grey-lighter"/>
                             </div>
                         </div>
-                        <div class="mt-6 sidenav mr-6 bg-white border rounded">
+                        <div class="mt-6 sidenav mr-6">
                             <router-link :to="{ name: 'server', params: { id: $route.params.id } }">
-                                <icon name="terminal" class="h-4"></icon> Console
+                                Console
                             </router-link>
                             <router-link :to="{ name: 'server-files' }">
-                                <icon name="folder" class="h-4"></icon> Files
+                                File Manager
                             </router-link>
                             <!--<router-link :to="{ name: 'server-subusers' }">-->
                                 <!--<icon name="users" class="h-4"></icon> Subusers-->
@@ -100,7 +100,7 @@ export default Vue.component('server', {
                                 <!--<icon name="calendar" class="h-4"></icon> Schedules-->
                             <!--</router-link>-->
                             <router-link :to="{ name: 'server-databases' }">
-                                <icon name="database" class="h-4"></icon> Databases
+                                Databases
                             </router-link>
                             <!--<router-link :to="{ name: 'server-allocations' }">-->
                                 <!--<icon name="globe" class="h-4"></icon> Allocations-->
