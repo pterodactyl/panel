@@ -115,7 +115,7 @@ export default Vue.component('file-manager', {
     },
 
     template: `
-        <div class="content-box animate fadein">
+        <div class="animate fadein">
             <div class="filemanager-breadcrumbs">
                 /<span class="px-1">home</span><!--
                 -->/<router-link :to="{ name: 'server-files' }" class="px-1">container</router-link><!--
@@ -128,24 +128,24 @@ export default Vue.component('file-manager', {
                     </span>
                 </span>
             </div>
-            <div v-if="loading">
-                <div class="spinner spinner-xl blue"></div>
-            </div>
-            <div v-else-if="!loading && errorMessage">
-                <div class="alert error" v-text="errorMessage"></div>
-            </div>
-            <div class="filemanager" v-else>
-                <div class="header">
-                    <div class="flex-none w-8"></div>
-                    <div class="flex-1">Name</div>
-                    <div class="flex-1 text-right">Size</div>
-                    <div class="flex-1 text-right">Modified</div>
-                    <div class="flex-none w-1/6">Actions</div>
+            <div class="content-box">
+                <div v-if="loading">
+                    <div class="spinner spinner-xl blue"></div>
                 </div>
-                <div v-if="!directories.length && !files.length">
+                <div v-else-if="!loading && errorMessage">
+                    <div class="alert error" v-text="errorMessage"></div>
+                </div>
+                <div v-else-if="!directories.length && !files.length">
                     <p class="text-grey text-sm text-center p-6 pb-4">This directory is empty.</p>
                 </div>
-                <div v-else>
+                <div class="filemanager" v-else>
+                    <div class="header">
+                        <div class="flex-none w-8"></div>
+                        <div class="flex-1">Name</div>
+                        <div class="flex-1 text-right">Size</div>
+                        <div class="flex-1 text-right">Modified</div>
+                        <div class="flex-none w-1/6">Actions</div>
+                    </div>
                     <div v-for="directory in directories">
                         <folder-row :directory="directory"/>
                     </div>

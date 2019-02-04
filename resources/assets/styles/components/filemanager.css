@@ -15,11 +15,11 @@
     }
 
     &.clickable {
-      @apply .no-underline;
+      @apply .no-underline .cursor-pointer;
     }
 
     &.active-selection, &.clickable:hover {
-      @apply .bg-grey-lightest .border-blue-light .text-blue-dark;
+      @apply .bg-grey-lightest .text-grey-darkest .shadow;
     }
 
     & > .icon {
@@ -65,13 +65,14 @@
 }
 
 .filemanager-breadcrumbs {
-  @apply .px-4 .py-3 .mb-6 .rounded .border .bg-grey-lightest .text-grey-darker;
+  @apply .px-4 .py-3 .mb-6 .rounded .bg-white .text-grey-darker .shadow-md;
 
   & a {
-    @apply .no-underline .text-blue-light;
+    @apply .no-underline .text-blue;
+    transition: color 50ms ease-in;
 
     &:hover {
-      @apply .text-blue-dark;
+      @apply .text-blue-darker;
     }
   }
 }

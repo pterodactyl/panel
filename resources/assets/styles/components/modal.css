@@ -4,7 +4,7 @@
   transition: opacity 250ms ease;
 
   & > .modal-container {
-    @apply .relative .p-8 .bg-white .w-full .max-w-md .m-auto .flex-col .flex;
+    @apply .relative .p-8 .bg-white .w-full .max-w-md .m-auto .flex-col .flex .rounded;
     transition: all 250ms ease;
     margin-top: 15%;
 

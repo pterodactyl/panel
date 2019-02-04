@@ -1,5 +1,5 @@
 .nav {
-    @apply .bg-blue .border-b .border-t .border-blue-darkest;
+    @apply .bg-blue-dark .border-b .border-t .border-blue-darkest;
     height: 56px;
 
     & .logo {

@@ -159,7 +159,7 @@ export default Vue.component('server-console', {
     },
 
     template: `
-        <div class="content-box animate fadein">
+        <div class="animate fadein shadow-md">
             <div class="text-xs font-mono">
                 <div class="rounded-t p-2 bg-black overflow-scroll w-full" style="min-height: 16rem;max-height:64rem;">
                     <div class="mb-2 text-grey-light" ref="terminal" v-if="connected"></div>
