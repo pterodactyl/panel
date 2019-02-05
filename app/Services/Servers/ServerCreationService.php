@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
@@ -17,6 +18,8 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Services\Deployment\AllocationSelectionService;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
+use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
@@ -132,12 +135,17 @@ class ServerCreationService
     {
         $this->connection->beginTransaction();
 
-        // If a deployment object has been passed we need to get the allocation
-        // that the server should use, and assign the node from that allocation.
-        if ($deployment instanceof DeploymentObject) {
-            $allocation = $this->configureDeployment($data, $deployment);
-            $data['allocation_id'] = $allocation->id;
-            $data['node_id'] = $allocation->node_id;
+        try {
+            // If a deployment object has been passed we need to get the allocation
+            // that the server should use, and assign the node from that allocation.
+            if ($deployment instanceof DeploymentObject) {
+                $allocation = $this->configureDeployment($data, $deployment);
+                $data['allocation_id'] = $allocation->id;
+                $data['node_id'] = $allocation->node_id;
+            }
+        } catch (NoViableNodeException | NoViableAllocationException $exception) {
+            $this->connection->rollBack();
+            throw $exception;
         }
 
         // Auto-configure the node based on the selected allocation
@@ -151,9 +159,14 @@ class ServerCreationService
             $data['nest_id'] = $egg->nest_id;
         }
 
-        $eggVariableData = $this->validatorService
-            ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle(array_get($data, 'egg_id'), array_get($data, 'environment', []));
+        try {
+            $eggVariableData = $this->validatorService
+                ->setUserLevel(User::USER_LEVEL_ADMIN)
+                ->handle(array_get($data, 'egg_id'), array_get($data, 'environment', []));
+        } catch (ValidationException $exception) {
+            $this->connection->rollBack();
+            throw $exception;
+        }
 
         // Create the server and assign any additional allocations to it.
         $server = $this->createModel($data);
