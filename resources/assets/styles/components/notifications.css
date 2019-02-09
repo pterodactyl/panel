@@ -37,7 +37,7 @@
     }
 
     &.warning {
-        @apply .bg-yellow-dark .border-yellow-darker .text-yellow-lightest;
+        @apply .bg-yellow-600 .border-yellow-800 .text-yellow-50;
 
         & > .title {
             @apply .bg-yellow;
