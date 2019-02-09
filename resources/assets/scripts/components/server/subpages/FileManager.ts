@@ -136,7 +136,7 @@ export default Vue.component('file-manager', {
                     <div class="alert error" v-text="errorMessage"></div>
                 </div>
                 <div v-else-if="!directories.length && !files.length">
-                    <p class="textneutral-500stext-sm text-center p-6 pb-4">This directory is empty.</p>
+                    <p class="text-neutral-500 text-sm text-center p-6 pb-4">This directory is empty.</p>
                 </div>
                 <div class="filemanager" v-else>
                     <div class="header">

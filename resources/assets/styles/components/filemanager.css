@@ -68,7 +68,7 @@
   @apply .px-4 .py-3 .mb-6 .rounded .bg-white .text-neutral-800 .shadow-md;
 
   & a {
-    @apply .no-underline .text-blue;
+    @apply .no-underline .text-primary-500;
     transition: color 50ms ease-in;
 
     &:hover {

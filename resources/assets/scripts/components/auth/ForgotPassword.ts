@@ -81,7 +81,7 @@ export default Vue.component('forgot-password', {
                 </button>
             </div>
             <div class="pt-6 text-center">
-                <router-link class="text-xs textneutral-500stracking-wide no-underline uppercase hover:text-neutral-600"
+                <router-link class="text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600"
                              aria-label="Go to login"
                              :to="{ name: 'login' }"
                 >

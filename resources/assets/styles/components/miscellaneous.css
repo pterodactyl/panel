@@ -11,18 +11,18 @@ code {
  * Indicators for server online status.
  */
 .indicator {
-    @apply .bg-neutral-800 .border .border-grey;
+    @apply .bg-neutral-800 .border .border-primary-500;
     border-radius: 50%;
     width: 16px;
     height: 16px;
 
     &.online {
-        @apply .bg-green-600 .border-green;
+        @apply .bg-green-600 .border-green-500;
         animation: onlineblink 2s infinite alternate;
     }
 
     &.offline {
-        @apply .bg-green-600 .border-red;
+        @apply .bg-green-600 .border-red-500;
         animation: offlineblink 2s infinite alternate;
     }
 }
@@ -34,7 +34,7 @@ code {
     @apply .flex-1 .text-center .relative;
 
     & > .indicator-title {
-        @apply .text-xs .uppercase .font-hairline .bg-white .absolute .text-grey;
+        @apply .text-xs .uppercase .font-hairline .bg-white .absolute .text-primary-500;
         margin-top:-9px;
         padding: 0 8px;
         left: 50%;

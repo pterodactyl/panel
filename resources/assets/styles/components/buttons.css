@@ -35,7 +35,7 @@
     @apply .border .border-neutral-400 .text-neutral-600;
 
     &:hover:enabled {
-      @apply .borderneutral-500s.text-neutral-800;
+      @apply .border-neutral-500 .text-neutral-800;
     }
 
     &.btn-red:hover:enabled {

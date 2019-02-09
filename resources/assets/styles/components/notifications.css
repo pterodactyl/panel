@@ -40,7 +40,7 @@
         @apply .bg-yellow-600 .border-yellow-800 .text-yellow-50;
 
         & > .title {
-            @apply .bg-yellow;
+            @apply .bg-yellow-500;
         }
     }
 }

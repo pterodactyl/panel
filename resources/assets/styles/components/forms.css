@@ -40,7 +40,7 @@ input[type=number] {
 }
 
 .input-open > label {
-    @apply .block .uppercase .tracking-wide .textneutral-500s.text-xs .mb-2 .absolute;
+    @apply .block .uppercase .tracking-wide .text-neutral-500 .text-xs .mb-2 .absolute;
     top: 14px;
     transition: transform 200ms ease-out;
 }
@@ -61,7 +61,7 @@ input[type=number] {
     }
 
     &.error {
-        @apply .text-red-600 .border-red;
+        @apply .text-red-600 .border-red-500;
     }
 }
 
@@ -70,7 +70,7 @@ input[type=number] {
 }
 
 .input-help {
-    @apply .text-xs .textneutral-500s.pt-2;
+    @apply .text-xs .text-neutral-500 .pt-2;
 
     &.error {
         @apply .text-red-600;

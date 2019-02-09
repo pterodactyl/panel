@@ -102,7 +102,7 @@ export default Vue.component('login-form', {
                 </button>
             </div>
             <div class="pt-6 text-center">
-                <router-link class="text-xs textneutral-500stracking-wide no-underline uppercase hover:text-neutral-600" aria-label="Forgot password"
+                <router-link class="text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600" aria-label="Forgot password"
                              :to="{ name: 'forgot-password' }">
                     {{ $t('auth.forgot_password.label') }}
                 </router-link>

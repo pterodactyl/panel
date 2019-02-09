@@ -8,7 +8,7 @@
             <img src="/assets/img/pterodactyl-flat.svg" class="max-w-xxs">
         </div>
         <router-view></router-view>
-        <p class="text-center textneutral-500stext-xs">
+        <p class="text-center text-neutral-500 text-xs">
             {!! trans('strings.copyright', ['year' => date('Y')]) !!}
         </p>
     </div>

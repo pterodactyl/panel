@@ -1,17 +1,17 @@
 <template>
-    <div class="content-box mb-6 hover:borderneutral-500">
+    <div class="content-box mb-6 hover:border-neutral-500">
         <div class="flex items-center text-neutral-800">
-            <database-icon class="flex-none text-green"></database-icon>
+            <database-icon class="flex-none text-green-500"></database-icon>
             <div class="flex-1 px-4">
-                <p class="uppercase text-xs textneutral-500spb-1 select-none">Database Name</p>
+                <p class="uppercase text-xs text-neutral-500 pb-1 select-none">Database Name</p>
                 <p>{{database.name}}</p>
             </div>
             <div class="flex-1 px-4">
-                <p class="uppercase text-xs textneutral-500spb-1 select-none">Username</p>
+                <p class="uppercase text-xs text-neutral-500 pb-1 select-none">Username</p>
                 <p>{{database.username}}</p>
             </div>
             <div class="flex-1 px-4">
-                <p class="uppercase text-xs textneutral-500spb-1 select-none">Password</p>
+                <p class="uppercase text-xs text-neutral-500 pb-1 select-none">Password</p>
                 <p>
                     <code class="text-sm cursor-pointer" v-on:click="revealPassword">
                         <span class="select-none" v-if="!database.showPassword">
@@ -22,7 +22,7 @@
                 </p>
             </div>
             <div class="flex-1 px-4">
-                <p class="uppercase text-xs textneutral-500spb-1 select-none">Server</p>
+                <p class="uppercase text-xs text-neutral-500 pb-1 select-none">Server</p>
                 <p><code class="text-sm">{{database.host.address}}:{{database.host.port}}</code></p>
             </div>
             <div class="flex-none px-4">
