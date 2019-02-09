@@ -162,9 +162,9 @@ export default Vue.component('server-box', {
                     <router-link :to="link">
                         <h2 class="text-xl flex flex-row items-center mb-2">
                             <div class="identifier-icon select-none" :class="{
-                            'bg-grey': status === '',
-                            'bg-red': status === 'offline',
-                            'bg-green': status === 'online'
+                            'bg-grey-500': status === '',
+                            'bg-red-500': status === 'offline',
+                            'bg-green-500': status === 'online'
                         }">
                                 {{ server.name[0] }}
                             </div>
@@ -182,7 +182,7 @@ export default Vue.component('server-box', {
                 </div>
                 <div class="footer p-4 text-sm">
                     <div class="inline-block pr-2">
-                        <div class="pillbox bg-green"><span class="select-none">MEM:</span> {{ memory }} Mb</div>
+                        <div class="pillbox bg-green-500"><span class="select-none">MEM:</span> {{ memory }} Mb</div>
                     </div>
                     <div class="inline-block">
                         <div class="pillbox bg-blue"><span class="select-none">CPU:</span> {{ cpu }} %</div>

@@ -32,7 +32,7 @@
         @apply .bg-green-600 .border-green-800 .text-green-50;
 
         & > .title {
-            @apply .bg-green;
+            @apply .bg-green-500;
         }
     }
 

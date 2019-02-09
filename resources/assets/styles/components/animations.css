@@ -23,7 +23,7 @@
 
 @keyframes onlineblink {
   0% {
-    @apply .bg-green;
+    @apply .bg-green-500;
   }
   100% {
     @apply .bg-green-600;
