@@ -21,7 +21,7 @@ input[type=number] {
 }
 
 .input-open > .input {
-    @apply .appearance-none .block .w-full .text-neutral-800 .border-b-2 .border-neutral-400 .py-3 .mb-3;
+    @apply .appearance-none .block .w-full .text-neutral-800 .border-b-2 .border-neutral-200 .py-3 .mb-3;
 
     &:focus {
         @apply .border-primary-400;
@@ -49,8 +49,8 @@ input[type=number] {
  * Styling for other forms throughout the Panel.
  */
 .input:not(.open-label) {
-    @apply .appearance-none .p-3 .rounded .border .text-neutral-800 .w-full;
-    transition: all 100ms linear;
+    @apply .appearance-none .p-3 .rounded .border .border-neutral-200 .text-neutral-800 .w-full;
+    transition: border 150ms linear;
 
     &:focus {
         @apply .border-primary-400;
@@ -66,13 +66,83 @@ input[type=number] {
 }
 
 .input-label {
-    @apply .block .uppercase .tracking-wide .text-neutral-900 .text-xs .font-bold .mb-2;
+    @apply .block .uppercase .tracking-wide .text-neutral-800 .text-xs .font-bold .mb-2;
 }
 
 .input-help {
-    @apply .text-xs .text-neutral-500 .pt-2;
+    @apply .text-xs .text-neutral-400 .pt-2;
 
     &.error {
         @apply .text-red-600;
+    }
+}
+
+.btn {
+    @apply .rounded .p-2;
+    transition: all 150ms linear;
+
+    /**
+     * Button Colors
+     */
+    &.btn-primary {
+        @apply .bg-primary-500 .border-primary-600 .border .text-white;
+
+        &:hover:enabled {
+            @apply .bg-primary-600 .border-primary-800;
+        }
+    }
+
+    &.btn-green {
+        @apply .bg-green-500 .border-green-600 .border .text-white;
+
+        &:hover:enabled {
+            @apply .bg-green-600 .border-green-800;
+        }
+    }
+
+    &.btn-red {
+        &:not(.btn-secondary) {
+            @apply .bg-red-500 .border-red-600 .border .text-white;
+        }
+
+        &:hover:enabled {
+            @apply .bg-red-600 .border-red-800;
+        }
+    }
+
+    &.btn-secondary {
+        @apply .border .border-neutral-400 .text-neutral-600;
+
+        &:hover:enabled {
+            @apply .border-neutral-500 .text-neutral-800;
+        }
+
+        &.btn-red:hover:enabled {
+            @apply .bg-red-600 .border-red-800 .text-white;
+        }
+    }
+
+    /**
+     * Button Sizes
+     */
+    &.btn-jumbo {
+        @apply .p-4 .w-full .uppercase .tracking-wide .text-sm;
+    }
+
+    &.btn-lg {
+        @apply .p-4 .uppercase .tracking-wide .text-sm;
+    }
+
+    &.btn-sm {
+        @apply .px-6 .py-3 .uppercase .tracking-wide .text-sm;
+    }
+
+    &.btn-xs {
+        @apply .py-2 .px-2 .uppercase .text-xs;
+    }
+
+    &:disabled, &.disabled {
+        opacity: 0.55;
+        cursor: default;
     }
 }

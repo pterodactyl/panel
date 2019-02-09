@@ -1,5 +1,5 @@
 .nav {
-    @apply .bg-primary-600 .border-b .border-t .border-primary-900;
+    @apply .bg-primary-600 .border-b .border-t .border-primary-700;
     height: 56px;
 
     & .logo {
@@ -19,29 +19,26 @@
         @apply .mr-2;
 
         & > .search-input {
-            @apply .text-sm .p-2 .ml-8 .rounded .border .border-primary-800 .bg-neutral-50 .text-neutral-900 .w-96;
-            opacity: 0.9;
-            transition: ease-in-out opacity 150ms;
+            @apply .text-sm .p-2 .ml-8 .rounded .border .border-primary-600 .bg-white .text-neutral-900 .w-96;
+            transition: border 150ms ease-in;
 
             &:focus {
-                @apply .border-primary-900;
-                opacity: 1;
+                @apply .border-primary-700;
             }
 
             &.has-search-results {
                 @apply .border-b-0 .rounded-b-none;
-                opacity: 1 !important;
             }
         }
 
         & .search-results {
-            @apply .absolute .bg-neutral-50 .border .border-primary-900 .border-t-0 .rounded .rounded-t-none .p-2 .ml-8 .z-50 .w-96;
+            @apply .absolute .bg-white .border .border-primary-700 .border-t-0 .rounded .rounded-t-none .p-2 .ml-8 .z-50 .w-96;
 
             & a {
                 @apply .block .no-underline .p-2 .rounded;
 
-                &:hover {
-                    @apply .bg-neutral-100;
+                &:not(.no-hover):hover {
+                    @apply .bg-neutral-50;
                 }
             }
         }
@@ -51,10 +48,11 @@
         @apply .flex .h-full .items-center;
 
         & > a {
-            @apply .block .flex .self-stretch .items-center .no-underline .text-neutral-100 .font-light .text-sm .px-5;
+            transition: background-color 150ms linear;
+            @apply .block .flex .self-stretch .items-center .no-underline .text-white .font-light .text-sm .px-5;
 
             &:hover {
-                @apply .bg-primary-600;
+                @apply .bg-primary-700;
             }
         }
     }

@@ -98,10 +98,10 @@ export default Vue.component('navigation', {
                     />
                     <div class="search-results select-none" :class="{ 'hidden': (servers.length === 0 && !loadingResults) || !searchActive || searchTerm.length < 3 }">
                         <div v-if="loadingResults">
-                            <a href="#">
+                            <a href="#" class="no-hover cursor-default">
                                 <div class="flex items-center">
                                     <div class="flex-1">
-                                        <span class="text-sm text-neutral-800">Loading...</span>
+                                        <span class="text-sm text-neutral-500">Loading...</span>
                                     </div>
                                     <div class="flex-none">
                                         <span class="spinner spinner-relative"></span>
@@ -114,10 +114,10 @@ export default Vue.component('navigation', {
                                 <div class="flex items-center">
                                     <div class="flex-1">
                                         <span class="font-bold text-neutral-900">{{ server.name }}</span><br />
-                                        <span class="font-light text-neutral-600 text-sm" v-if="server.description.length > 0">{{ server.description }}</span>
+                                        <span class="text-neutral-600 text-sm" v-if="server.description.length > 0">{{ server.description }}</span>
                                     </div>
                                     <div class="flex-none">
-                                        <span class="pillbox bg-indigo">{{ server.node }}</span>
+                                        <span class="pillbox bg-neutral-900">{{ server.node }}</span>
                                     </div>
                                 </div>
                             </router-link>
