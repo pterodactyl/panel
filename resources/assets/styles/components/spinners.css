@@ -7,7 +7,7 @@
   }
 
   &:after {
-    @apply .border-2 .border-grey-light .absolute .block .h-4 .w-4 .rounded-full;
+    @apply .border-2 .border-neutral-400 .absolute .block .h-4 .w-4 .rounded-full;
     animation: spinners--spin 500ms infinite linear;
     border-top-color: transparent !important;
     border-right-color: transparent !important;

@@ -35,7 +35,7 @@
     @apply .bg-red;
   }
   100% {
-    @apply .bg-red-dark;
+    @apply .bg-red-600;
   }
 }
 

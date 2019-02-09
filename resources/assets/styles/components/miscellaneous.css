@@ -11,7 +11,7 @@ code {
  * Indicators for server online status.
  */
 .indicator {
-    @apply .bg-grey-darker .border .border-grey;
+    @apply .bg-neutral-800 .border .border-grey;
     border-radius: 50%;
     width: 16px;
     height: 16px;
@@ -89,16 +89,16 @@ code {
     }
 
     & a, & a:visited {
-        @apply .no-underline .text-grey-darkest;
+        @apply .no-underline .text-neutral-900;
     }
 
     & > .content {
-        @apply .border .border-grey-light .bg-white .no-underline .block .text-black .p-4;
-        border-top: 4px solid config('colors.grey-light') !important;
+        @apply .border .border-neutral-400 .bg-white .no-underline .block .text-black .p-4;
+        border-top: 4px solid config('colors.neutral-400') !important;
     }
 
     & > .footer {
-        @apply .border .border-grey-light .border-t-0 .bg-grey-lightest;
+        @apply .border .border-neutral-400 .border-t-0 .bg-neutral-50;
     }
 }
 
@@ -110,7 +110,7 @@ code {
     @apply .w-full .my-4;
 
     & > input[type="text"] {
-        @apply .w-full .p-3 .rounded .border .text-grey-darker;
+        @apply .w-full .p-3 .rounded .border .text-neutral-800;
         transition: border 150ms ease-in;
 
         &:focus {

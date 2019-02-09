@@ -53,7 +53,7 @@ export default Vue.component('change-password', {
         <div id="change-password-container" :class>
             <form method="post" v-on:submit.prevent="submitForm">
                 <div class="content-box">
-                    <h2 class="mb-6 text-grey-darkest font-medium">{{ $t('dashboard.account.password.title') }}</h2>
+                    <h2 class="mb-6 text-neutral-900 font-medium">{{ $t('dashboard.account.password.title') }}</h2>
                     <div class="mt-6">
                         <label for="grid-password-current" class="input-label">{{ $t('strings.password') }}</label>
                         <input id="grid-password-current" name="current_password" type="password" class="input" required

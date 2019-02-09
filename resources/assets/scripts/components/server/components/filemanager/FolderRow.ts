@@ -35,8 +35,8 @@ export default Vue.component('folder-row', {
                     <icon name="folder"/>
                 </div>
                 <div class="flex-1">{{directory.name}}</div>
-                <div class="flex-1 text-right text-grey-dark"></div>
-                <div class="flex-1 text-right text-grey-dark">{{formatDate(directory.modified)}}</div>
+                <div class="flex-1 text-right text-neutral-600"></div>
+                <div class="flex-1 text-right text-neutral-600">{{formatDate(directory.modified)}}</div>
                 <div class="flex-none w-1/6"></div>
             </router-link>
         </div>

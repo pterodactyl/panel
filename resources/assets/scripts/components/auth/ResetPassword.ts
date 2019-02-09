@@ -88,7 +88,7 @@ export default Vue.component('reset-password', {
                            v-model="password"
                     />
                     <label for="grid-password">{{ $t('strings.password') }}</label>
-                    <p class="text-grey-darker text-xs">{{ $t('auth.password_requirements') }}</p>
+                    <p class="text-neutral-800 text-xs">{{ $t('auth.password_requirements') }}</p>
                 </div>
             </div>
             <div class="flex flex-wrap -mx-3 mb-6">
@@ -110,7 +110,7 @@ export default Vue.component('reset-password', {
                 </button>
             </div>
             <div class="pt-6 text-center">
-                <router-link class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark"
+                <router-link class="text-xs textneutral-500stracking-wide no-underline uppercase hover:text-neutral-600"
                              :to="{ name: 'login' }"
                 >
                     {{ $t('auth.go_to_login') }}

@@ -162,12 +162,12 @@ export default Vue.component('server-console', {
         <div class="animate fadein shadow-md">
             <div class="text-xs font-mono">
                 <div class="rounded-t p-2 bg-black overflow-scroll w-full" style="min-height: 16rem;max-height:64rem;">
-                    <div class="mb-2 text-grey-light" ref="terminal" v-if="connected"></div>
+                    <div class="mb-2 text-neutral-400" ref="terminal" v-if="connected"></div>
                     <div v-else>
                         <div class="spinner spinner-xl mt-24"></div>
                     </div>
                 </div>
-                <div class="rounded-b bg-grey-darkest text-white flex">
+                <div class="rounded-b bg-neutral-900 text-white flex">
                     <div class="flex-no-shrink p-2">
                         <span class="font-bold">$</span>
                     </div>

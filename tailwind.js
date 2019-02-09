@@ -49,61 +49,76 @@ let colors = {
     'white': '#ffffff',
     'basically-white': '#fafafb',
 
-    'grey-lightest': '#F5F7FA',
-    'grey-lighter': '#E4E7EB',
-    'grey-light': '#CBD2D9',
-    'grey': '#9AA5B1',
-    'grey-dark': '#52606D',
-    'grey-darker': '#3E4C59',
-    'grey-darkest': '#323F4B',
+    // The design's primary colors. Splashes of color that should appear the most
+    // within the UI and determine the overall look of the site.
+    'primary-50': 'hsl(202, 100%, 95%)', // lightest
+    'primary-100': 'hsl(204, 100%, 86%)', // lighter
+    'primary-200': 'hsl(206, 93%, 73%)',
+    'primary-300': 'hsl(208, 88%, 62%)',
+    'primary-400': 'hsl(210, 83%, 53%)', // light
+    'primary-500': 'hsl(212, 92%, 43%)', // base
+    'primary-600': 'hsl(214, 95%, 36%)', // dark
+    'primary-700': 'hsl(215, 96%, 32%)',
+    'primary-800': 'hsl(216, 98%, 25%)', // darker
+    'primary-900': 'hsl(218, 100%, 17%)', //darkest
 
-    'red-lightest': '#FFE3E3',
-    'red-lighter': '#FFBDBD',
-    'red-light': '#F86A6A',
-    'red': '#CF1124',
-    'red-dark': '#AB091E',
-    'red-darker': '#8A041A',
-    'red-darkest': '#610316',
+    // Color used the most in the design and make up the majority of the UI.
+    'neutral-50': 'hsl(216, 33%, 97%)',
+    'neutral-100': 'hsl(214, 15%, 91%)',
+    'neutral-200': 'hsl(210, 16%, 82%)',
+    'neutral-300': 'hsl(211, 13%, 65%)',
+    'neutral-400': 'hsl(211, 10%, 53%)',
+    'neutral-500': 'hsl(211, 12%, 43%)',
+    'neutral-600': 'hsl(209, 14%, 37%)',
+    'neutral-700': 'hsl(209, 18%, 30%)',
+    'neutral-800': 'hsl(209, 20%, 25%)',
+    'neutral-900': 'hsl(210, 24%, 16%)',
 
-    'orange-lightest': '#FFE8D9',
-    'orange-lighter': '#FFD0B5',
-    'orange-light': '#F9703E',
-    'orange': '#DE3A11',
-    'orange-dark': '#C52707',
-    'orange-darker': '#AD1D07',
-    'orange-darkest': '#841003',
+    // Supporting colors used to make an element stand out or re-inforce error
+    // states or trends.
+    'red-50': 'hsl(360, 100%, 95%)',
+    'red-100': 'hsl(360, 100%, 87%)',
+    'red-200': 'hsl(360, 100%, 80%)',
+    'red-300': 'hsl(360, 91%, 69%)',
+    'red-400': 'hsl(360, 83%, 62%)',
+    'red-500': 'hsl(356, 75%, 53%)',
+    'red-600': 'hsl(354, 85%, 44%)',
+    'red-700': 'hsl(352, 90%, 35%)',
+    'red-800': 'hsl(350, 94%, 28%)',
+    'red-900': 'hsl(348, 94%, 20%)',
 
-    'yellow-lightest': '#fbfae9',
-    'yellow-lighter': '#ede9a7',
-    'yellow-light': '#e0d965',
-    'yellow': '#d2c823',
-    'yellow-dark': '#bdb420',
-    'yellow-darker': '#7e7815',
-    'yellow-darkest': '#3f3c0b',
+    'yellow-50': 'hsl(49, 100%, 96%)',
+    'yellow-100': 'hsl(48, 100%, 88%)',
+    'yellow-200': 'hsl(48, 95%, 76%)',
+    'yellow-300': 'hsl(48, 94%, 68%)',
+    'yellow-400': 'hsl(44, 92%, 63%)',
+    'yellow-500': 'hsl(42, 87%, 55%)',
+    'yellow-600': 'hsl(36, 77%, 49%)',
+    'yellow-700': 'hsl(29, 80%, 44%)',
+    'yellow-800': 'hsl(22, 82%, 39%)',
+    'yellow-900': 'hsl(15, 86%, 30%)',
 
-    'green-lightest': '#eef7eb',
-    'green-lighter': '#bbdeae',
-    'green-light': '#89c671',
-    'green': '#56ad34',
-    'green-dark': '#4d9c2f',
-    'green-darker': '#34681f',
-    'green-darkest': '#1a3410',
+    'cyan-50': 'hsl(171, 82%, 94%)',
+    'cyan-100': 'hsl(172, 97%, 88%)',
+    'cyan-200': 'hsl(174, 96%, 78%)',
+    'cyan-300': 'hsl(176, 87%, 67%)',
+    'cyan-400': 'hsl(178, 78%, 57%)',
+    'cyan-500': 'hsl(180, 77%, 47%)',
+    'cyan-600': 'hsl(182, 85%, 39%)',
+    'cyan-700': 'hsl(184, 90%, 34%)',
+    'cyan-800': 'hsl(186, 91%, 29%)',
+    'cyan-900': 'hsl(188, 91%, 23%)',
 
-    'blue-lightest': '#E6F6FF',
-    'blue-lighter': '#BAE3FF',
-    'blue-light': '#2186EB',
-    'blue': '#0967D2',
-    'blue-dark': '#0552B5',
-    'blue-darker': '#01337D',
-    'blue-darkest': '#002159',
-
-    'cyan-lightest': '#E1FCF8',
-    'cyan-lighter': '#C1FEF6',
-    'cyan-light': '#62F4EB',
-    'cyan': '#0FB5BA',
-    'cyan-dark': '#099AA4',
-    'cyan-darker': '#07818F',
-    'cyan-darkest': '#05606E',
+    'green-50': 'hsl(83, 100%, 96%)',
+    'green-100': 'hsl(83, 100%, 87%)',
+    'green-200': 'hsl(86, 100%, 76%)',
+    'green-300': 'hsl(88, 91%, 66%)',
+    'green-400': 'hsl(90, 84%, 55%)',
+    'green-500': 'hsl(92, 86%, 45%)',
+    'green-600': 'hsl(92, 89%, 38%)',
+    'green-700': 'hsl(100, 89%, 31%)',
+    'green-800': 'hsl(99, 91%, 25%)',
+    'green-900': 'hsl(100, 93%, 17%)',
 };
 
 module.exports = {
@@ -357,6 +372,7 @@ module.exports = {
         default: '1px',
         '0': '0',
         '2': '2px',
+        '3': '3px',
         '4': '4px',
         '8': '8px',
     },
@@ -378,7 +394,7 @@ module.exports = {
     |
     */
 
-    borderColors: global.Object.assign({default: colors['grey-light']}, colors),
+    borderColors: global.Object.assign({default: colors['neutral-400']}, colors),
 
     /*
     |-----------------------------------------------------------------------------

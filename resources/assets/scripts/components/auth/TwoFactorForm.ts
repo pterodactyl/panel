@@ -60,7 +60,7 @@ export default Vue.component('two-factor-form', {
                            v-model="code"
                     />
                     <label for="grid-code">{{ $t('auth.two_factor.label') }}</label>
-                    <p class="text-grey-darker text-xs">{{ $t('auth.two_factor.label_help') }}</p>
+                    <p class="text-neutral-800 text-xs">{{ $t('auth.two_factor.label_help') }}</p>
                 </div>
             </div>
             <div>
@@ -69,7 +69,7 @@ export default Vue.component('two-factor-form', {
                 </button>
             </div>
             <div class="pt-6 text-center">
-                <router-link class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark"
+                <router-link class="text-xs textneutral-500stracking-wide no-underline uppercase hover:text-neutral-600"
                              :to="{ name: 'login' }"
                 >
                     Back to Login

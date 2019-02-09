@@ -1,5 +1,5 @@
 @extends('templates/wrapper', [
-    'css' => ['body' => 'bg-grey-darkest']
+    'css' => ['body' => 'bg-neutral-900']
 ])
 
 @section('container')
@@ -8,7 +8,7 @@
             <img src="/assets/img/pterodactyl-flat.svg" class="max-w-xxs">
         </div>
         <router-view></router-view>
-        <p class="text-center text-grey text-xs">
+        <p class="text-center textneutral-500stext-xs">
             {!! trans('strings.copyright', ['year' => date('Y')]) !!}
         </p>
     </div>

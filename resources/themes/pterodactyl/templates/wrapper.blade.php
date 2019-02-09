@@ -32,7 +32,7 @@
 
         @include('layouts.scripts')
     </head>
-    <body class="{{ $css['body'] ?? 'bg-grey-lightest' }}">
+    <body class="{{ $css['body'] ?? 'bg-neutral-50' }}">
         @section('content')
             @yield('above-container')
             <div id="pterodactyl" class="flex flex-col">

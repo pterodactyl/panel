@@ -1,7 +1,7 @@
 <template>
     <div>
         <message-box class="alert error mb-6" :message="errorMessage" v-show="errorMessage.length"/>
-        <h2 class="font-medium text-grey-darkest mb-6">Create a new database</h2>
+        <h2 class="font-medium text-neutral-900 mb-6">Create a new database</h2>
         <div class="mb-6">
             <label class="input-label" for="grid-database-name">Database name</label>
             <input id="grid-database-name" type="text" class="input" name="database_name" required

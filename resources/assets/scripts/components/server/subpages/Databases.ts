@@ -92,8 +92,8 @@ export default Vue.component('server-databases', {
             <div class="animate fadein" v-else>
                 <div class="content-box mb-6" v-if="!databases.length">
                     <div class="flex items-center">
-                        <icon name="database" class="flex-none text-grey-darker"></icon>
-                        <div class="flex-1 px-4 text-grey-darker">
+                        <icon name="database" class="flex-none text-neutral-800"></icon>
+                        <div class="flex-1 px-4 text-neutral-800">
                             <p>You have no databases.</p>
                         </div>
                     </div>

@@ -82,32 +82,28 @@ export default Vue.component('server', {
                         <div class="mr-6">
                             <div class="p-6 text-center bg-white rounded shadow">
                                 <h3 class="mb-2 text-blue font-medium">{{server.name}}</h3>
-                                <span class="text-grey-dark text-sm">{{server.node}}</span>
-                                <power-buttons class="mt-6 pt-6 text-center border-t border-grey-lighter"/>
+                                <span class="text-neutral-600 text-sm">{{server.node}}</span>
+                                <power-buttons class="mt-6 pt-6 text-center border-t border-neutral-100"/>
                             </div>
                         </div>
-                        <div class="mt-6 sidenav mr-6">
-                            <router-link :to="{ name: 'server', params: { id: $route.params.id } }">
-                                Console
-                            </router-link>
-                            <router-link :to="{ name: 'server-files' }">
-                                File Manager
-                            </router-link>
-                            <!--<router-link :to="{ name: 'server-subusers' }">-->
-                                <!--<icon name="users" class="h-4"></icon> Subusers-->
-                            <!--</router-link>-->
-                            <!--<router-link :to="{ name: 'server-schedules' }">-->
-                                <!--<icon name="calendar" class="h-4"></icon> Schedules-->
-                            <!--</router-link>-->
-                            <router-link :to="{ name: 'server-databases' }">
-                                Databases
-                            </router-link>
-                            <!--<router-link :to="{ name: 'server-allocations' }">-->
-                                <!--<icon name="globe" class="h-4"></icon> Allocations-->
-                            <!--</router-link>-->
-                            <!--<router-link :to="{ name: 'server-settings' }">-->
-                                <!--<icon name="settings" class="h-4"></icon> Settings-->
-                            <!--</router-link>-->
+                        <div class="sidenav mt-6 mr-6">
+                            <ul>
+                                <li>
+                                    <router-link :to="{ name: 'server', params: { id: $route.params.id } }">
+                                        Console
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <router-link :to="{ name: 'server-files' }">
+                                        File Manager
+                                    </router-link>
+                                </li>
+                                <li>
+                                    <router-link :to="{ name: 'server-databases' }">
+                                        Databases
+                                    </router-link>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="h-full w-full">

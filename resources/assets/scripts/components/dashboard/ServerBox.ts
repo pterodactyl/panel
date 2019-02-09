@@ -171,12 +171,12 @@ export default Vue.component('server-box', {
                             {{ server.name }}
                         </h2>
                     </router-link>
-                    <div class="text-grey-darker font-normal text-sm">
+                    <div class="text-neutral-800 font-normal text-sm">
                         <p v-if="server.description.length" class="pb-1">{{ server.description }}</p>
     
                         <div class="absolute pin-b pin-l p-4 w-full">
                             <span class="font-semibold text-indigo">{{ server.node }}</span>
-                            <span class="float-right text-grey-dark font-light">{{ server.allocation.ip }}:{{ server.allocation.port }}</span>
+                            <span class="float-right text-neutral-600 font-light">{{ server.allocation.ip }}:{{ server.allocation.port }}</span>
                         </div>
                     </div>
                 </div>

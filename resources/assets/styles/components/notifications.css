@@ -13,7 +13,7 @@
     }
 
     &.error {
-        @apply .bg-red-dark .border-red-darker .text-red-lightest;
+        @apply .bg-red-600 .border-red-800 .text-red-50;
 
         & > .title {
             @apply .bg-red;

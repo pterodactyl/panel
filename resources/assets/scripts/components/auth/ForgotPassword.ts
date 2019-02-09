@@ -69,7 +69,7 @@ export default Vue.component('forgot-password', {
                            v-on:input="updateEmail($event)"
                     />
                     <label for="grid-email" id="grid-email-label">{{ $t('strings.email') }}</label>
-                    <p class="text-grey-darker text-xs">{{ $t('auth.forgot_password.label_help') }}</p>
+                    <p class="text-neutral-800 text-xs">{{ $t('auth.forgot_password.label_help') }}</p>
                 </div>
             </div>
             <div>
@@ -81,7 +81,7 @@ export default Vue.component('forgot-password', {
                 </button>
             </div>
             <div class="pt-6 text-center">
-                <router-link class="text-xs text-grey tracking-wide no-underline uppercase hover:text-grey-dark"
+                <router-link class="text-xs textneutral-500stracking-wide no-underline uppercase hover:text-neutral-600"
                              aria-label="Go to login"
                              :to="{ name: 'login' }"
                 >

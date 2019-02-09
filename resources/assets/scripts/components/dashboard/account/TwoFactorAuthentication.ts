@@ -128,7 +128,7 @@ export default Vue.component('two-factor-authentication', {
                 <span class="spinner spinner-xl text-blue"></span>
             </div>
             <div id="container-disable-two-factor" v-if="response.enabled" v-show="!spinner">
-                <h2 class="font-medium text-grey-darkest">{{ $t('dashboard.account.two_factor.disable.title') }}</h2>
+                <h2 class="font-medium text-neutral-900">{{ $t('dashboard.account.two_factor.disable.title') }}</h2>
                 <div class="mt-6">
                     <label class="input-label" for="grid-two-factor-token-disable">{{ $t('dashboard.account.two_factor.disable.field') }}</label>
                     <input id="grid-two-factor-token-disable" type="number" class="input"
@@ -151,14 +151,14 @@ export default Vue.component('two-factor-authentication', {
                 </div>
             </div>
             <div id="container-enable-two-factor" v-else v-show="!spinner">
-                <h2 class="font-medium text-grey-darkest">{{ $t('dashboard.account.two_factor.setup.title') }}</h2>
+                <h2 class="font-medium text-neutral-900">{{ $t('dashboard.account.two_factor.setup.title') }}</h2>
                 <div class="flex mt-6">
                     <div class="flex-none w-full sm:w-1/2 text-center">
                         <div class="h-48">
                             <img :src="response.qr_image" id="grid-qr-code" alt="Two-factor qr image" class="h-48">
                         </div>
                         <div>
-                            <p class="text-xs text-grey-darker mb-2">{{ $t('dashboard.account.two_factor.setup.help') }}</p>
+                            <p class="text-xs text-neutral-800 mb-2">{{ $t('dashboard.account.two_factor.setup.help') }}</p>
                             <p class="text-xs"><code>{{response.secret}}</code></p>
                         </div>
                     </div>

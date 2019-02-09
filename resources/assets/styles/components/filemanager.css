@@ -1,6 +1,6 @@
 .filemanager {
   & .header {
-    @apply .flex .text-sm .pb-4 .font-bold .border-b .border-grey-light .mb-3;
+    @apply .flex .text-sm .pb-4 .font-bold .border-b .border-neutral-400 .mb-3;
 
     & > div {
       @apply .pr-4;
@@ -19,7 +19,7 @@
     }
 
     &.active-selection, &.clickable:hover {
-      @apply .bg-grey-lightest .text-grey-darkest .shadow;
+      @apply .bg-neutral-50 .text-neutral-900 .shadow;
     }
 
     & > .icon {
@@ -31,10 +31,10 @@
   }
 
   .context-menu {
-    @apply .absolute .bg-white .py-2 .border .rounded .text-grey-darker .text-sm .cursor-pointer;
+    @apply .absolute .bg-white .py-2 .border .rounded .text-neutral-800 .text-sm .cursor-pointer;
 
     & > div:not(:last-of-type) {
-      @apply .border-b .border-grey-lightest .pb-2 .mb-2;
+      @apply .border-b .border-neutral-50 .pb-2 .mb-2;
     }
 
     & .context-row {
@@ -53,11 +53,11 @@
       }
 
       &:hover {
-        @apply .bg-grey-lightest .border-t .border-b .border-grey-lighter;
+        @apply .bg-neutral-50 .border-t .border-b .border-neutral-100;
       }
 
       &.danger:hover {
-        @apply .bg-red-lightest .border-t .border-b .border-red-lighter;
+        @apply .bg-red-50 .border-t .border-b .border-red-100;
       }
 
     }
@@ -65,7 +65,7 @@
 }
 
 .filemanager-breadcrumbs {
-  @apply .px-4 .py-3 .mb-6 .rounded .bg-white .text-grey-darker .shadow-md;
+  @apply .px-4 .py-3 .mb-6 .rounded .bg-white .text-neutral-800 .shadow-md;
 
   & a {
     @apply .no-underline .text-blue;

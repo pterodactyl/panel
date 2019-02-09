@@ -89,8 +89,8 @@ export default Vue.component('file-row', {
                     <icon name="link2" v-else/>
                 </div>
                 <div class="flex-1">{{file.name}}</div>
-                <div class="flex-1 text-right text-grey-dark">{{readableSize(file.size)}}</div>
-                <div class="flex-1 text-right text-grey-dark">{{formatDate(file.modified)}}</div>
+                <div class="flex-1 text-right text-neutral-600">{{readableSize(file.size)}}</div>
+                <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
                 <div class="flex-none w-1/6"></div>
             </div>
             <file-context-menu class="context-menu" v-show="contextMenuVisible" ref="contextMenu"/>

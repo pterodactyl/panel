@@ -34,7 +34,7 @@ export default Vue.component('modal', {
                 <div class="modal-container" @click.stop>
                     <div v-on:click="close">
                         <icon name="x"
-                              class="absolute pin-r pin-t m-2 text-grey cursor-pointer"
+                              class="absolute pin-r pin-t m-2 textneutral-500scursor-pointer"
                               aria-label="Close modal"
                               role="button"
                         />

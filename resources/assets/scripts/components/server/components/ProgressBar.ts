@@ -13,7 +13,7 @@ export default Vue.component('progress-bar', {
             } else if (this.percent >= 70 && this.percent < 90) {
                 return "bg-yellow-dark";
             } else {
-                return "bg-red-dark";
+                return "bg-red-600";
             }
         },
         borderColor: function () {
@@ -22,7 +22,7 @@ export default Vue.component('progress-bar', {
             } else if (this.percent >= 70 && this.percent < 90) {
                 return "border-yellow-dark";
             } else {
-                return "border-red-dark";
+                return "border-red-600";
             }
         }
     },
@@ -30,7 +30,7 @@ export default Vue.component('progress-bar', {
     template: `
         <div>
             <div class="text-right mb-1" v-if="title.length > 0">
-                <span class="text-grey-dark text-xs uppercase">{{ title }}</span>
+                <span class="text-neutral-600 text-xs uppercase">{{ title }}</span>
             </div>
             <div class="w-full border rounded h-4" :class="borderColor">
                 <div class="h-full w-1/3 text-center" :style="{ width: percent + '%' }" :class="backgroundColor">

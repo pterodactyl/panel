@@ -101,7 +101,7 @@ export default Vue.component('navigation', {
                             <a href="#">
                                 <div class="flex items-center">
                                     <div class="flex-1">
-                                        <span class="text-sm text-grey-darker">Loading...</span>
+                                        <span class="text-sm text-neutral-800">Loading...</span>
                                     </div>
                                     <div class="flex-none">
                                         <span class="spinner spinner-relative"></span>
@@ -113,8 +113,8 @@ export default Vue.component('navigation', {
                             <router-link :to="{ name: 'server', params: { id: server.identifier }}" v-on:click.native="searchActive = false">
                                 <div class="flex items-center">
                                     <div class="flex-1">
-                                        <span class="font-bold text-grey-darkest">{{ server.name }}</span><br />
-                                        <span class="font-light text-grey-dark text-sm" v-if="server.description.length > 0">{{ server.description }}</span>
+                                        <span class="font-bold text-neutral-900">{{ server.name }}</span><br />
+                                        <span class="font-light text-neutral-600 text-sm" v-if="server.description.length > 0">{{ server.description }}</span>
                                     </div>
                                     <div class="flex-none">
                                         <span class="pillbox bg-indigo">{{ server.node }}</span>

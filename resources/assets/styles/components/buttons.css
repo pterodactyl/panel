@@ -23,23 +23,23 @@
 
   &.btn-red {
     &:not(.btn-secondary) {
-      @apply .bg-red .border-red-dark .border .text-white;
+      @apply .bg-red-500 .border-red-600 .border .text-white;
     }
 
     &:hover:enabled {
-      @apply .bg-red-dark .border-red-darker;
+      @apply .bg-red-600 .border-red-800;
     }
   }
 
   &.btn-secondary {
-    @apply .border .border-grey-light .text-grey-dark;
+    @apply .border .border-neutral-400 .text-neutral-600;
 
     &:hover:enabled {
-      @apply .border-grey .text-grey-darker;
+      @apply .borderneutral-500s.text-neutral-800;
     }
 
     &.btn-red:hover:enabled {
-      @apply .bg-red-dark .border-red-darker .text-white;
+      @apply .bg-red-600 .border-red-800 .text-white;
     }
   }
 
