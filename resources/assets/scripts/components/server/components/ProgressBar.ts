@@ -9,7 +9,7 @@ export default Vue.component('progress-bar', {
     computed: {
         backgroundColor: function () {
             if (this.percent < 70) {
-                return "bg-green-dark";
+                return "bg-green-600";
             } else if (this.percent >= 70 && this.percent < 90) {
                 return "bg-yellow-dark";
             } else {
@@ -18,7 +18,7 @@ export default Vue.component('progress-bar', {
         },
         borderColor: function () {
             if (this.percent < 70) {
-                return "border-green-dark";
+                return "border-green-600";
             } else if (this.percent >= 70 && this.percent < 90) {
                 return "border-yellow-dark";
             } else {

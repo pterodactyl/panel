@@ -14,10 +14,10 @@
   }
 
   &.btn-green {
-    @apply .bg-green .border-green-dark .border .text-white;
+    @apply .bg-green-500 .border-green-600 .border .text-white;
 
     &:hover:enabled {
-      @apply .bg-green-dark .border-green-darker;
+      @apply .bg-green-600 .border-green-800;
     }
   }
 

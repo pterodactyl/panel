@@ -17,12 +17,12 @@ code {
     height: 16px;
 
     &.online {
-        @apply .bg-green-dark .border-green;
+        @apply .bg-green-600 .border-green;
         animation: onlineblink 2s infinite alternate;
     }
 
     &.offline {
-        @apply .bg-green-dark .border-red;
+        @apply .bg-green-600 .border-red;
         animation: offlineblink 2s infinite alternate;
     }
 }

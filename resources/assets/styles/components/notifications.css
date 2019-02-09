@@ -29,7 +29,7 @@
     }
 
     &.success {
-        @apply .bg-green-dark .border-green-darker .text-green-lightest;
+        @apply .bg-green-600 .border-green-800 .text-green-50;
 
         & > .title {
             @apply .bg-green;
