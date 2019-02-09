@@ -24,7 +24,7 @@ input[type=number] {
     @apply .appearance-none .block .w-full .text-neutral-800 .border-b-2 .border-neutral-400 .py-3 .mb-3;
 
     &:focus {
-        @apply .border-blue-light;
+        @apply .border-primary-400;
         outline: 0;
         transition: border 500ms ease-out;
     }
@@ -53,7 +53,7 @@ input[type=number] {
     transition: all 100ms linear;
 
     &:focus {
-        @apply .border-blue-light;
+        @apply .border-primary-400;
     }
 
     &:required, &:invalid {

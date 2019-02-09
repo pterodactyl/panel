@@ -16,15 +16,15 @@
         @apply .bg-red-600 .border-red-800 .text-red-50;
 
         & > .title {
-            @apply .bg-red;
+            @apply .bg-red-500;
         }
     }
 
     &.info {
-        @apply .bg-blue-dark .border-blue-darker .text-blue-lightest;
+        @apply .bg-primary-600 .border-primary-800 .text-primary-50;
 
         & > .title {
-            @apply .bg-blue;
+            @apply .bg-primary-500;
         }
     }
 

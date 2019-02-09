@@ -1,5 +1,5 @@
 .nav {
-    @apply .bg-blue-dark .border-b .border-t .border-blue-darkest;
+    @apply .bg-primary-600 .border-b .border-t .border-primary-900;
     height: 56px;
 
     & .logo {
@@ -19,12 +19,12 @@
         @apply .mr-2;
 
         & > .search-input {
-            @apply .text-sm .p-2 .ml-8 .rounded .border .border-blue-darker .bg-neutral-50 .text-neutral-900 .w-96;
+            @apply .text-sm .p-2 .ml-8 .rounded .border .border-primary-800 .bg-neutral-50 .text-neutral-900 .w-96;
             opacity: 0.9;
             transition: ease-in-out opacity 150ms;
 
             &:focus {
-                @apply .border-blue-darkest;
+                @apply .border-primary-900;
                 opacity: 1;
             }
 
@@ -35,7 +35,7 @@
         }
 
         & .search-results {
-            @apply .absolute .bg-neutral-50 .border .border-blue-darkest .border-t-0 .rounded .rounded-t-none .p-2 .ml-8 .z-50 .w-96;
+            @apply .absolute .bg-neutral-50 .border .border-primary-900 .border-t-0 .rounded .rounded-t-none .p-2 .ml-8 .z-50 .w-96;
 
             & a {
                 @apply .block .no-underline .p-2 .rounded;
@@ -54,7 +54,7 @@
             @apply .block .flex .self-stretch .items-center .no-underline .text-neutral-100 .font-light .text-sm .px-5;
 
             &:hover {
-                @apply .bg-blue-dark;
+                @apply .bg-primary-600;
             }
         }
     }
@@ -76,7 +76,7 @@
                 }
 
                 &.router-link-exact-active {
-                    @apply .border-blue .cursor-default;
+                    @apply .border-primary-500 .cursor-default;
                 }
             }
         }

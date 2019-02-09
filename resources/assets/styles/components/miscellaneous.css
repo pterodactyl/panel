@@ -114,7 +114,7 @@ code {
         transition: border 150ms ease-in;
 
         &:focus {
-            @apply .border-blue-light;
+            @apply .border-primary-400;
         }
     }
 }

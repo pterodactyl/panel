@@ -5,11 +5,11 @@
   /**
    * Button Colors
    */
-  &.btn-blue {
-    @apply .bg-blue .border-blue-dark .border .text-white;
+  &.btn-primary {
+    @apply .bg-primary-500 .border-primary-600 .border .text-white;
 
     &:hover:enabled {
-      @apply .bg-blue-dark .border-blue-darker;
+      @apply .bg-primary-600 .border-primary-800;
     }
   }
 

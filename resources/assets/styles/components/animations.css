@@ -32,7 +32,7 @@
 
 @keyframes offlineblink {
   0% {
-    @apply .bg-red;
+    @apply .bg-red-500;
   }
   100% {
     @apply .bg-red-600;

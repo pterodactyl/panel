@@ -35,7 +35,7 @@
    * Spinner Colors
    */
   &.blue:after, &.text-blue:after {
-    @apply .border-blue;
+    @apply .border-primary-500;
   }
 
   &.white:after, &.text-white:after {

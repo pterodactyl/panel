@@ -102,7 +102,7 @@ export default Vue.component('server-databases', {
                     <database-row v-for="database in databases" :database="database" :key="database.name"/>
                 </div>
                 <div>
-                    <button class="btn btn-blue btn-lg" v-on:click="showCreateModal = true">Create new database</button>
+                    <button class="btn btn-primary btn-lg" v-on:click="showCreateModal = true">Create new database</button>
                 </div>
                 <modal :show="showCreateModal" v-on:close="showCreateModal = false">
                     <create-database-modal

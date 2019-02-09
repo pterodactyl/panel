@@ -125,7 +125,7 @@ export default Vue.component('two-factor-authentication', {
     template: `
         <div id="configure-two-factor">
             <div class="h-16 text-center" v-show="spinner">
-                <span class="spinner spinner-xl text-blue"></span>
+                <span class="spinner spinner-xl text-primary-500"></span>
             </div>
             <div id="container-disable-two-factor" v-if="response.enabled" v-show="!spinner">
                 <h2 class="font-medium text-neutral-900">{{ $t('dashboard.account.two_factor.disable.title') }}</h2>
@@ -175,7 +175,7 @@ export default Vue.component('two-factor-authentication', {
                             <p class="input-help error" v-show="errors.has('token')">{{ errors.first('token') }}</p>
                         </div>
                         <div class="mt-6">
-                            <button class="btn btn-blue btn-jumbo" type="submit"
+                            <button class="btn btn-primary btn-jumbo" type="submit"
                                     :disabled="submitDisabled"
                                     v-on:click.prevent="enableTwoFactor"
                             >{{ $t('strings.enable') }}</button>

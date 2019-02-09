@@ -93,7 +93,7 @@ export default Vue.component('login-form', {
                 </div>
             </div>
             <div>
-                <button id="grid-login-button" class="btn btn-blue btn-jumbo" type="submit" aria-label="Log in"
+                <button id="grid-login-button" class="btn btn-primary btn-jumbo" type="submit" aria-label="Log in"
                         v-bind:disabled="showSpinner">
                     <span class="spinner white" v-bind:class="{ hidden: ! showSpinner }">&nbsp;</span>
                     <span v-bind:class="{ hidden: showSpinner }">

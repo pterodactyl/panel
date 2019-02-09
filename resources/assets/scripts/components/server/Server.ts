@@ -81,7 +81,7 @@ export default Vue.component('server', {
                     <div class="sidebar flex-no-shrink w-1/3 max-w-xs">
                         <div class="mr-6">
                             <div class="p-6 text-center bg-white rounded shadow">
-                                <h3 class="mb-2 text-blue font-medium">{{server.name}}</h3>
+                                <h3 class="mb-2 text-primary-500 font-medium">{{server.name}}</h3>
                                 <span class="text-neutral-600 text-sm">{{server.node}}</span>
                                 <power-buttons class="mt-6 pt-6 text-center border-t border-neutral-100"/>
                             </div>

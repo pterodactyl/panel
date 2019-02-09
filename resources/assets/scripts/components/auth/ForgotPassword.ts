@@ -73,7 +73,7 @@ export default Vue.component('forgot-password', {
                 </div>
             </div>
             <div>
-                <button class="btn btn-blue btn-jumbo" type="submit" v-bind:disabled="submitDisabled">
+                <button class="btn btn-primary btn-jumbo" type="submit" v-bind:disabled="submitDisabled">
                     <span class="spinner white" v-bind:class="{ hidden: ! showSpinner }">&nbsp;</span>
                     <span v-bind:class="{ hidden: showSpinner }">
                         {{ $t('auth.forgot_password.button') }}

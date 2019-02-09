@@ -185,7 +185,7 @@ export default Vue.component('server-box', {
                         <div class="pillbox bg-green-500"><span class="select-none">MEM:</span> {{ memory }} Mb</div>
                     </div>
                     <div class="inline-block">
-                        <div class="pillbox bg-blue"><span class="select-none">CPU:</span> {{ cpu }} %</div>
+                        <div class="pillbox bg-primary-500"><span class="select-none">CPU:</span> {{ cpu }} %</div>
                     </div>
                 </div>
             </div>

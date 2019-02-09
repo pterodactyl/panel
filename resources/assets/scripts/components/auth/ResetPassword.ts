@@ -102,7 +102,7 @@ export default Vue.component('reset-password', {
                 </div>
             </div>
             <div>
-                <button class="btn btn-blue btn-jumbo" type="submit" v-bind:class="{ disabled: showSpinner }">
+                <button class="btn btn-primary btn-jumbo" type="submit" v-bind:class="{ disabled: showSpinner }">
                     <span class="spinner white" v-bind:class="{ hidden: ! showSpinner }">&nbsp;</span>
                     <span v-bind:class="{ hidden: showSpinner }">
                         {{ $t('auth.reset_password.button') }}

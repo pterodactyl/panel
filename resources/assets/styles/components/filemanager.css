@@ -72,7 +72,7 @@
     transition: color 50ms ease-in;
 
     &:hover {
-      @apply .text-blue-darker;
+      @apply .text-primary-800;
     }
   }
 }

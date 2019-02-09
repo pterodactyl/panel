@@ -64,7 +64,7 @@ export default Vue.component('two-factor-form', {
                 </div>
             </div>
             <div>
-                <button class="btn btn-blue btn-jumbo" type="submit">
+                <button class="btn btn-primary btn-jumbo" type="submit">
                     {{ $t('auth.sign_in') }}
                 </button>
             </div>

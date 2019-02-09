@@ -3,7 +3,7 @@
 {{--
 =======
 @section('above-container')
-    <header class="bg-blue text-white text-xl rounded-b fixed pin-t w-full z-40 shadow-md">
+    <header class="bg-primary-500 text-white text-xl rounded-b fixed pin-t w-full z-40 shadow-md">
         <div class="container h-16 mx-auto flex">
             <img class="h-12 mt-2 mr-3" src="/assets/img/pterodactyl-flat.svg">
             <div class="py-6">PTERODACTYL</div>

@@ -82,7 +82,7 @@ export default Vue.component('change-password', {
                         <p class="input-help error" v-show="errors.has('password_confirmation')">{{ errors.first('password_confirmation') }}</p>
                     </div>
                     <div class="mt-6 text-right">
-                        <button class="btn btn-blue btn-sm text-right" type="submit">{{ $t('strings.save') }}</button>
+                        <button class="btn btn-primary btn-sm text-right" type="submit">{{ $t('strings.save') }}</button>
                     </div>
                 </div>
             </form>
