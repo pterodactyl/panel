@@ -1,25 +1,32 @@
 import VueRouter, {Route} from 'vue-router';
 import store from './store/index';
+import User from './models/user';
 
 const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
 
 // Base Vuejs Templates
-import Login from './components/auth/Login';
-import Dashboard from './components/dashboard/Dashboard';
-import Account from './components/dashboard/Account';
-import ResetPassword from './components/auth/ResetPassword';
-import User from './models/user';
-import {
-    Server,
-    ConsolePage,
-    FileManagerPage,
-    DatabasesPage,
-} from './components/server';
+import Login from './components/auth/Login.vue';
+import Dashboard from './components/dashboard/Dashboard.vue';
+import Account from './components/dashboard/Account.vue';
+import ResetPassword from './components/auth/ResetPassword.vue';
+import LoginForm from "@/components/auth/LoginForm.vue";
+import ForgotPassword from "@/components/auth/ForgotPassword.vue";
+import TwoFactorForm from "@/components/auth/TwoFactorForm.vue";
+import Server from "@/components/server/Server.vue";
+import ConsolePage from "@/components/server/subpages/Console.vue";
+import FileManagerPage from "@/components/server/subpages/FileManager.vue";
+import DatabasesPage from "@/components/server/subpages/Databases.vue";
 
 const routes = [
-    {name: 'login', path: '/auth/login', component: Login},
-    {name: 'forgot-password', path: '/auth/password', component: Login},
-    {name: 'checkpoint', path: '/auth/checkpoint', component: Login},
+    {
+        path: '/auth', component: Login,
+        children: [
+            { name: 'login', path: 'login', component: LoginForm },
+            { name: 'forgot-password', path: 'password', component: ForgotPassword },
+            { name: 'checkpoint', path: 'checkpoint', component: TwoFactorForm },
+        ]
+    },
+
     {
         name: 'reset-password',
         path: '/auth/password/reset/:token',
