@@ -31,7 +31,7 @@ export default Vue.component('folder-row', {
             <router-link class="row clickable"
                          :to="{ name: 'server-files', params: { path: getClickablePath(directory.name).replace(/^\\//, '') }}"
             >
-                <div class="flex-none icon">
+                <div class="flex-none icon text-primary-700">
                     <icon name="folder"/>
                 </div>
                 <div class="flex-1">{{directory.name}}</div>

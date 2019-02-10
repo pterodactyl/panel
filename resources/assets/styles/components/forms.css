@@ -77,6 +77,10 @@ input[type=number] {
     }
 }
 
+a.btn {
+    @apply .no-underline;
+}
+
 .btn {
     @apply .rounded .p-2;
     transition: all 150ms linear;
@@ -87,7 +91,7 @@ input[type=number] {
     &.btn-primary {
         @apply .bg-primary-500 .border-primary-600 .border .text-white;
 
-        &:hover:enabled {
+        &:hover:not(:disabled) {
             @apply .bg-primary-600 .border-primary-800;
         }
     }
@@ -95,7 +99,7 @@ input[type=number] {
     &.btn-green {
         @apply .bg-green-500 .border-green-600 .border .text-white;
 
-        &:hover:enabled {
+        &:hover:not(:disabled) {
             @apply .bg-green-600 .border-green-800;
         }
     }
@@ -105,19 +109,19 @@ input[type=number] {
             @apply .bg-red-500 .border-red-600 .border .text-white;
         }
 
-        &:hover:enabled {
+        &:hover:not(:disabled) {
             @apply .bg-red-600 .border-red-800;
         }
     }
 
     &.btn-secondary {
-        @apply .border .border-neutral-400 .text-neutral-600;
+        @apply .border .border-neutral-200 .text-neutral-400;
 
-        &:hover:enabled {
-            @apply .border-neutral-500 .text-neutral-800;
+        &:hover:not(:disabled) {
+            @apply .border-neutral-500 .text-neutral-700;
         }
 
-        &.btn-red:hover:enabled {
+        &.btn-red:hover:not(:disabled) {
             @apply .bg-red-600 .border-red-800 .text-white;
         }
     }

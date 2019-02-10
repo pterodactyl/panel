@@ -73,7 +73,7 @@
                     @apply .text-neutral-800;
                 }
 
-                &.router-link-exact-active {
+                &.router-link-exact-active, &.router-link-active {
                     @apply .border-primary-500 .cursor-default;
                 }
             }

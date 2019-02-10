@@ -46,7 +46,7 @@ code {
  * Styling for elements that contain the core page content.
  */
 .content-box {
-    @apply .bg-white .p-6 .rounded .shadow-md;
+    @apply .bg-white .p-6 .rounded .shadow .border .border-neutral-100;
 }
 
 /**
