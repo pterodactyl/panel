@@ -1,14 +1,15 @@
 import Vue from 'vue';
 import { map, filter } from 'lodash';
 import Modal from '@/components/core/Modal';
-import CreateDatabaseModal from './../components/database/CreateDatabaseModal.vue';
-import DatabaseRow from './../components/database/DatabaseRow.vue';
+import CreateDatabaseModal from './../components/database/CreateDatabaseModal';
 import Icon from "@/components/core/Icon";
+import {ServerDatabase} from "@/api/server/types";
+import DatabaseRow from "@/components/server/components/database/DatabaseRow";
 
 type DataStructure = {
     loading: boolean,
     showCreateModal: boolean,
-    databases: Array<any>,
+    databases: Array<ServerDatabase>,
 }
 
 export default Vue.component('server-databases', {
@@ -64,20 +65,14 @@ export default Vue.component('server-databases', {
          * Add the database to the list of existing databases automatically when the modal
          * is closed with a successful callback.
          */
-        handleModalCallback: function (object: any) {
-            const data = object;
-            data.password = data.relationships.password.attributes.password;
-            data.showPassword = false;
-
-            delete data.relationships;
-
+        handleModalCallback: function (data: ServerDatabase) {
             this.databases.push(data);
         },
 
         /**
          * Handle event that is removing a database.
          */
-        removeDatabase: function (databaseId: number) {
+        removeDatabase: function (databaseId: string) {
             this.databases = filter(this.databases, (database) => {
                 return database.id !== databaseId;
             });
@@ -99,13 +94,13 @@ export default Vue.component('server-databases', {
                     </div>
                 </div>
                 <div v-else>
-                    <database-row v-for="database in databases" :database="database" :key="database.name"/>
+                    <DatabaseRow v-for="database in databases" :database="database" :key="database.name"/>
                 </div>
                 <div>
                     <button class="btn btn-primary btn-lg" v-on:click="showCreateModal = true">Create new database</button>
                 </div>
                 <modal :show="showCreateModal" v-on:close="showCreateModal = false">
-                    <create-database-modal
+                    <CreateDatabaseModal
                             v-on:close="showCreateModal = false"
                             v-on:database="handleModalCallback"
                             v-if="showCreateModal"
