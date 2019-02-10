@@ -48,7 +48,6 @@
         "uglifyjs-webpack-plugin": "^2.1.1",
         "vue-devtools": "^3.1.9",
         "vue-feather-icons": "^4.7.1",
-        "vue-loader": "^15.6.2",
         "vue-mc": "^0.2.4",
         "vue-template-compiler": "^2.5.16",
         "vueify-insert-css": "^1.0.0",

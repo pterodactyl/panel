@@ -9,7 +9,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ShellPlugin = require('webpack-shell-plugin');
 const PurgeCssPlugin = require('purgecss-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -28,7 +27,6 @@ let plugins = [
         integrity: true,
         integrityHashes: ['sha384'],
     }),
-    new VueLoaderPlugin(),
 ];
 
 if (isProduction) {
@@ -123,10 +121,6 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.vue$/,
-                loader: 'vue-loader',
-            },
-            {
                 test: /\.js$/,
                 loader: 'babel-loader',
                 exclude: file => (/node_modules/.test(file) && !/\.vue\.js/.test(file)),
@@ -184,18 +178,13 @@ module.exports = {
         ],
         splitChunks: {
             cacheGroups: {
-                vue: {
-                    test: /[\\/]node_modules[\\/](vue\w?)[\\/]/,
-                    name: 'vue',
-                    chunks: 'initial',
-                },
                 locales: {
                     test: /locales/,
                     name: 'locales',
                     chunks: 'initial',
                 },
                 vendors: {
-                    test: /[\\/]node_modules[\\/](?!vue)(.*)[\\/]/,
+                    test: /[\\/]node_modules[\\/]/,
                     name: 'vendor',
                     chunks: 'initial',
                 },
