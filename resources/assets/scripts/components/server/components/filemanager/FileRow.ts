@@ -50,7 +50,7 @@ export default Vue.component('file-row', {
 
             this.contextMenuVisible = true;
 
-            const menuWidth = (this.$refs.contextMenu as VueType).$el.offsetWidth;
+            const menuWidth = (this.$refs.contextMenu as VueType).$el.clientWidth;
             const positionElement = e.clientX - Math.round(menuWidth / 2);
 
             (this.$refs.contextMenu as VueType).$el.setAttribute('style', `left: ${positionElement}; top: ${e.clientY}`);

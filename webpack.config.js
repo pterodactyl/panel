@@ -9,6 +9,8 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ShellPlugin = require('webpack-shell-plugin');
 const PurgeCssPlugin = require('purgecss-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -26,6 +28,10 @@ let plugins = [
         publicPath: true,
         integrity: true,
         integrityHashes: ['sha384'],
+    }),
+    new VueLoaderPlugin(),
+    new ForkTsCheckerWebpackPlugin({
+        vue: true,
     }),
 ];
 
@@ -72,6 +78,7 @@ const typescriptLoaders = [
         options: {
             appendTsSuffixTo: [/\.vue$/],
             experimentalWatchApi: true,
+            transpileOnly: true,
         }
     }
 ];
@@ -132,6 +139,10 @@ module.exports = {
                         ['@babel/plugin-proposal-object-rest-spread', { 'useBuiltIns': true }]
                     ],
                 },
+            },
+            {
+                test: /\.vue$/,
+                use: 'vue-loader',
             },
             {
                 test: /\.ts$/,
