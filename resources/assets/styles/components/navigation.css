@@ -69,12 +69,23 @@
                 transition: border-left-color 250ms linear, color 250ms linear;
                 @apply .block .px-4 .py-3 .border-l-3 .border-neutral-100 .no-underline .text-neutral-400 .font-medium;
 
-                &:hover, &.router-link-exact-active {
+                &:hover, &.router-link-exact-active, &.router-link-active {
                     @apply .text-neutral-800;
                 }
 
                 &.router-link-exact-active, &.router-link-active {
                     @apply .border-primary-500 .cursor-default;
+                }
+            }
+
+            /**
+              * Because of how the router works the first sidebar link is always active
+              * since that is the container for all of the server things. Override the
+              * style for active links if its the first one and not an exact route match.
+              */
+            &:first-of-type > a {
+                &.router-link-active:not(.router-link-exact-active) {
+                    @apply .border-neutral-100 .text-neutral-400 .cursor-pointer;
                 }
             }
         }

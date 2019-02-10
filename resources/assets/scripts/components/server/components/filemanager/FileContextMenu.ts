@@ -25,6 +25,12 @@ export default Vue.component('file-context-menu', {
                     </div>
                     <div class="action">Copy</div>
                 </div>
+                <div class="context-row">
+                    <div class="icon">
+                        <icon name="download" class="h-4"/>
+                    </div>
+                    <div class="action">Download</div>
+                </div>
             </div>
             <div>
                 <div class="context-row">
@@ -41,12 +47,6 @@ export default Vue.component('file-context-menu', {
                 </div>
             </div>
             <div>
-                <div class="context-row">
-                    <div class="icon">
-                        <icon name="download" class="h-4"/>
-                    </div>
-                    <div class="action">Download</div>
-                </div>
                 <div class="context-row danger">
                     <div class="icon">
                         <icon name="delete" class="h-4"/>

@@ -31,14 +31,15 @@
   }
 
   .context-menu {
-    @apply .absolute .bg-white .py-2 .border .rounded .text-neutral-800 .text-sm .cursor-pointer;
+    @apply .absolute .bg-white .py-2 .border .border-neutral-300 .shadow-lg .rounded .text-neutral-600 .text-sm .cursor-pointer;
 
     & > div:not(:last-of-type) {
-      @apply .border-b .border-neutral-50 .pb-2 .mb-2;
+      @apply .border-b .border-neutral-100 .pb-2 .mb-2;
     }
 
     & .context-row {
-      @apply .flex .flex-row .items-center .py-2 .px-8 .border-t .border-b .border-transparent;
+      @apply .flex .flex-row .items-center .py-2 .px-8 .mx-2 .rounded;
+      transition: background-color 50ms linear;
 
       & > .icon {
         @apply .flex-none;
@@ -53,11 +54,16 @@
       }
 
       &:hover {
-        @apply .bg-neutral-50 .border-t .border-b .border-neutral-100;
+        @apply .bg-neutral-50 .text-neutral-800;
       }
 
-      &.danger:hover {
-        @apply .bg-red-50 .border-t .border-b .border-red-100;
+      &.danger {
+        @apply .border .border-transparent;
+        transition: border 50ms linear;
+
+        &:hover {
+          @apply .bg-red-50 .border-red-100;
+        }
       }
 
     }
