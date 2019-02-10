@@ -5,7 +5,8 @@
                 <button class="btn btn-green uppercase text-xs px-4 py-2"
                         v-if="status === statuses.STATUS_OFF"
                         v-on:click.prevent="sendPowerAction('start')"
-                >Start</button>
+                >Start
+                </button>
                 <div v-else>
                     <button class="btn btn-red uppercase text-xs px-4 py-2" v-on:click.prevent="sendPowerAction('stop')">Stop</button>
                     <button class="btn btn-secondary uppercase text-xs px-4 py-2" v-on:click.prevent="sendPowerAction('restart')">Restart</button>

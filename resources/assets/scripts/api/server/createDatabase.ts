@@ -9,7 +9,7 @@ import {ServerDatabase} from "@/api/server/types";
  */
 export function createDatabase(server: string, database: string, remote: string): Promise<ServerDatabase> {
     return new Promise((resolve, reject) => {
-        http.post(route('api.client.servers.databases', { server }), {database, remote})
+        http.post(route('api.client.servers.databases', {server}), {database, remote})
             .then(response => {
                 const copy: any = response.data.attributes;
                 copy.password = copy.relationships.password.attributes.password;

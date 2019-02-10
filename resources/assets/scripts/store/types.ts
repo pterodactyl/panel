@@ -1,5 +1,4 @@
-import {ServerData} from "../models/server";
-import Server from "../models/server";
+import Server, {ServerData} from "../models/server";
 import User from "../models/user";
 
 export type ApplicationState = {

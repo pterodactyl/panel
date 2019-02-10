@@ -14,12 +14,12 @@ export default {
             state.connectionError = false;
         },
 
-        SOCKET_ERROR: (state: SocketState, err : Error) => {
+        SOCKET_ERROR: (state: SocketState, err: Error) => {
             state.connected = false;
             state.connectionError = err;
         },
 
-        SOCKET_CONNECT_ERROR: (state: SocketState, err : Error) => {
+        SOCKET_CONNECT_ERROR: (state: SocketState, err: Error) => {
             state.connected = false;
             state.connectionError = err;
         },

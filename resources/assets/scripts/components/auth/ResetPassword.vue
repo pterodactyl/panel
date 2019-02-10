@@ -103,7 +103,7 @@
 
                         if (response.data.send_to_login) {
                             this.$flash.success('Your password has been reset, please login to continue.');
-                            return this.$router.push({ name: 'login' });
+                            return this.$router.push({name: 'login'});
                         }
 
                         return window.location = response.data.redirect_to;

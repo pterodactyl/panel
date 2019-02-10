@@ -16,12 +16,12 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import { formatDate } from "@/helpers";
+    import {formatDate} from "@/helpers";
     import Icon from "@/components/core/Icon.vue";
 
     export default Vue.extend({
         name: 'FolderRow',
-        components: { Icon },
+        components: {Icon},
 
         props: {
             directory: {type: Object, required: true},
@@ -37,7 +37,7 @@
             /**
              * Return a formatted directory path that is used to switch to a nested directory.
              */
-            getClickablePath (directory: string): string {
+            getClickablePath(directory: string): string {
                 return `${this.currentDirectory.replace(/\/$/, '')}/${directory}`;
             },
 

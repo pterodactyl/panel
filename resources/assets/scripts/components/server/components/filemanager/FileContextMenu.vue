@@ -57,6 +57,6 @@
 
     export default Vue.extend({
         name: 'FileContextMenu',
-        components: { Icon },
+        components: {Icon},
     });
 </script>

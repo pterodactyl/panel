@@ -1,5 +1,5 @@
 <template>
-    <input type="hidden" name="_token" v-bind:value="X_CSRF_TOKEN" />
+    <input type="hidden" name="_token" v-bind:value="X_CSRF_TOKEN"/>
 </template>
 
 <script lang="ts">

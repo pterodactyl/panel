@@ -24,9 +24,9 @@
         components: {Icon},
 
         props: {
-            modalName: { type: String, default: 'modal' },
-            show: { type: Boolean, default: false },
-            closeOnEsc: { type: Boolean, default: true },
+            modalName: {type: String, default: 'modal'},
+            show: {type: Boolean, default: false},
+            closeOnEsc: {type: Boolean, default: true},
         },
 
         mounted: function () {

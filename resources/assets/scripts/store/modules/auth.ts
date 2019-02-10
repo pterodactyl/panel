@@ -41,7 +41,7 @@ export default {
             return new Promise((resolve, reject) => {
                 // @ts-ignore
                 window.axios.post(route('auth.login'), {user, password})
-                    // @ts-ignore
+                // @ts-ignore
                     .then(response => {
                         commit('logout');
 
@@ -75,7 +75,7 @@ export default {
             return new Promise((resolve, reject) => {
                 // @ts-ignore
                 window.axios.put(route('api.client.account.update-email'), {email, password})
-                    // @ts-ignore
+                // @ts-ignore
                     .then(response => {
                         // If there is a 302 redirect or some other odd behavior (basically, response that isnt
                         // in JSON format) throw an error and don't try to continue with the login.

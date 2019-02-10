@@ -1,9 +1,6 @@
 import VueRouter, {Route} from 'vue-router';
 import store from './store/index';
 import User from './models/user';
-
-const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
-
 // Base Vuejs Templates
 import Login from './components/auth/Login.vue';
 import Dashboard from './components/dashboard/Dashboard.vue';
@@ -17,13 +14,15 @@ import ConsolePage from "@/components/server/subpages/Console.vue";
 import FileManagerPage from "@/components/server/subpages/FileManager.vue";
 import DatabasesPage from "@/components/server/subpages/Databases.vue";
 
+const route = require('./../../../vendor/tightenco/ziggy/src/js/route').default;
+
 const routes = [
     {
         path: '/auth', component: Login,
         children: [
-            { name: 'login', path: 'login', component: LoginForm },
-            { name: 'forgot-password', path: 'password', component: ForgotPassword },
-            { name: 'checkpoint', path: 'checkpoint', component: TwoFactorForm },
+            {name: 'login', path: 'login', component: LoginForm},
+            {name: 'forgot-password', path: 'password', component: ForgotPassword},
+            {name: 'checkpoint', path: 'checkpoint', component: TwoFactorForm},
         ]
     },
 

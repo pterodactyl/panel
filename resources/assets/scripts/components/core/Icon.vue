@@ -4,7 +4,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import { replace } from 'feather-icons';
+    import {replace} from 'feather-icons';
 
     export default Vue.extend({
         name: 'Icon',

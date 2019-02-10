@@ -1,6 +1,7 @@
 import Server, {ServerData} from '../../models/server';
 import {ActionContext} from "vuex";
 import {DashboardState} from "../types";
+
 const route = require('./../../../../../vendor/tightenco/ziggy/src/js/route').default;
 
 export default {
@@ -22,9 +23,9 @@ export default {
             return new Promise((resolve, reject) => {
                 // @ts-ignore
                 window.axios.get(route('api.client.index'), {
-                    params: { query: state.searchTerm },
+                    params: {query: state.searchTerm},
                 })
-                    // @ts-ignore
+                // @ts-ignore
                     .then(response => {
                         // If there is a 302 redirect or some other odd behavior (basically, response that isnt
                         // in JSON format) throw an error and don't try to continue with the request processing.

@@ -1,4 +1,3 @@
-
 type ServerAllocation = {
     ip: string,
     port: number,
@@ -75,7 +74,7 @@ export default class Server {
     /**
      * Construct a new server model instance.
      */
-    constructor (data: ServerData) {
+    constructor(data: ServerData) {
         this.identifier = data.identifier;
         this.uuid = data.uuid;
         this.name = data.name;

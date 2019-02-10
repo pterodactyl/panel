@@ -1,10 +1,10 @@
-import { format } from 'date-fns';
+import {format} from 'date-fns';
 
 /**
  * Return the human readable filesize for a given number of bytes. This
  * uses 1024 as the base, so the response is denoted accordingly.
  */
-export function readableSize (bytes: number): string {
+export function readableSize(bytes: number): string {
     if (Math.abs(bytes) < 1024) {
         return `${bytes} Bytes`;
     }
@@ -23,6 +23,6 @@ export function readableSize (bytes: number): string {
 /**
  * Format the given date as a human readable string.
  */
-export function formatDate (date: string): string {
+export function formatDate(date: string): string {
     return format(date, 'MMM D, YYYY [at] HH:MM');
 }

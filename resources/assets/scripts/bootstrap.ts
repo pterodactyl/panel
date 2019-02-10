@@ -10,7 +10,8 @@ window._ = require('lodash');
 
 try {
     window.$ = window.jQuery = require('jquery');
-} catch (e) {}
+} catch (e) {
+}
 
 window.axios = axios;
 

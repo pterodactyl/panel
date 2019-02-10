@@ -40,7 +40,7 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import { isObject } from 'lodash';
+    import {isObject} from 'lodash';
     import {AxiosError} from "axios";
 
     export default Vue.extend({

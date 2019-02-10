@@ -11,8 +11,7 @@ export default {
         credentials: {node: '', key: ''},
         console: [],
     },
-    getters: {
-    },
+    getters: {},
     actions: {
         /**
          * Fetches the active server from the API and stores it in vuex.
@@ -20,8 +19,8 @@ export default {
         getServer: ({commit}: ActionContext<ServerState, any>, {server}: { server: string }): Promise<void> => {
             return new Promise((resolve, reject) => {
                 // @ts-ignore
-                window.axios.get(route('api.client.servers.view', { server }))
-                    // @ts-ignore
+                window.axios.get(route('api.client.servers.view', {server}))
+                // @ts-ignore
                     .then(response => {
                         // If there is a 302 redirect or some other odd behavior (basically, response that isnt
                         // in JSON format) throw an error and don't try to continue with the login.
@@ -47,7 +46,7 @@ export default {
             return new Promise((resolve, reject) => {
                 // @ts-ignore
                 window.axios.get(route('server.credentials', {server}))
-                    // @ts-ignore
+                // @ts-ignore
                     .then(response => {
                         // If there is a 302 redirect or some other odd behavior (basically, response that isnt
                         // in JSON format) throw an error and don't try to continue with the login.

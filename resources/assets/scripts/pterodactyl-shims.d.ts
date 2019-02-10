@@ -5,7 +5,6 @@ import {AxiosInstance} from "axios";
 import {Vue as VueType} from "vue/types/vue";
 import {ApplicationState} from "./store/types";
 import {Route} from "vue-router";
-
 // @ts-ignore
 import {Ziggy} from './helpers/ziggy';
 
