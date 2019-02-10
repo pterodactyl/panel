@@ -156,13 +156,13 @@ export default Vue.component('server-box', {
     },
 
     template: `
-        <div class="server-card-container">
-            <div class="server-card animated-fade-in hover:shadow-md">
-                <div class="content h-32 relative">
-                    <router-link :to="link">
+        <div class="server-card-container animated-fade-in">
+            <div>
+                <div class="server-card">
+                    <router-link :to="link" class="block">
                         <h2 class="text-xl flex flex-row items-center mb-2">
                             <div class="identifier-icon select-none" :class="{
-                            'bg-grey-500': status === '',
+                            'bg-neutral-400': status === '',
                             'bg-red-500': status === 'offline',
                             'bg-green-500': status === 'online'
                         }">
@@ -171,21 +171,24 @@ export default Vue.component('server-box', {
                             {{ server.name }}
                         </h2>
                     </router-link>
-                    <div class="text-neutral-800 font-normal text-sm">
-                        <p v-if="server.description.length" class="pb-1">{{ server.description }}</p>
-    
-                        <div class="absolute pin-b pin-l p-4 w-full">
-                            <span class="font-semibold text-indigo">{{ server.node }}</span>
-                            <span class="float-right text-neutral-600 font-light">{{ server.allocation.ip }}:{{ server.allocation.port }}</span>
+                    <div class="flex-1 py-3">
+                        <p v-if="server.description.length" class="text-neutral-500 text-sm">{{ server.description }}</p>
+                    </div>
+                    <div class="flex flex-none pt-2">
+                        <div class="flex-1">
+                            <span class="font-semibold text-cyan-800">{{ server.node }}</span>
+                        </div>
+                        <div>
+                            <span class="text-neutral-300">{{ server.allocation.ip }}:{{ server.allocation.port }}</span>
                         </div>
                     </div>
                 </div>
                 <div class="footer p-4 text-sm">
                     <div class="inline-block pr-2">
-                        <div class="pillbox bg-green-500"><span class="select-none">MEM:</span> {{ memory }} Mb</div>
+                        <div class="pillbox bg-neutral-700"><span class="select-none">MEM:</span> {{ memory }} Mb</div>
                     </div>
                     <div class="inline-block">
-                        <div class="pillbox bg-primary-500"><span class="select-none">CPU:</span> {{ cpu }} %</div>
+                        <div class="pillbox bg-neutral-700"><span class="select-none">CPU:</span> {{ cpu }} %</div>
                     </div>
                 </div>
             </div>

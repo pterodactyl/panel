@@ -108,7 +108,7 @@ export default Vue.component('dashboard', {
                     />
                 </div>
                 <div v-if="this.loading" class="my-4 animate fadein">
-                    <div class="text-center h-16">
+                    <div class="text-center h-16 my-20">
                         <span class="spinner spinner-xl spinner-thick blue"></span>
                     </div>
                 </div>

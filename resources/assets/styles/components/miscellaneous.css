@@ -53,11 +53,7 @@ code {
  * Flex boxes for server listing on user dashboard.
  */
 .server-card-container {
-    @apply .mb-4;
-
-    @screen smx {
-        @apply .w-full;
-    }
+    @apply .mb-4 .w-full;
 
     @screen md {
         @apply .w-1/2 .pr-4;
@@ -78,27 +74,31 @@ code {
             @apply .pr-0;
         }
     }
-}
 
-.server-card {
-    @apply .block .no-underline .shadow;
-    transition: all 100ms ease-in;
+    & > div {
+        @apply .flex .flex-col .h-full;
+        transition: box-shadow 150ms ease-in;
 
-    & .identifier-icon {
-        @apply .inline-block .rounded-full .text-white .text-center .leading-none .justify-center .w-8 .h-8 .mr-2 .flex .flex-row .items-center;
+        &:hover {
+            @apply .shadow-md;
+        }
     }
 
-    & a, & a:visited {
-        @apply .no-underline .text-neutral-900;
+    & > div > .server-card {
+        @apply .flex .flex-1 .flex-col .p-4 .border .border-t-4 .border-neutral-100 .bg-white;
+        transition: all 100ms ease-in;
+
+        & .identifier-icon {
+            @apply .select-none .inline-block .rounded-full .text-white .text-center .leading-none .justify-center .w-8 .h-8 .mr-2 .flex .flex-row .items-center;
+        }
+
+        & a, & a:visited {
+            @apply .no-underline .text-neutral-800;
+        }
     }
 
-    & > .content {
-        @apply .border .border-neutral-400 .bg-white .no-underline .block .text-black .p-4;
-        border-top: 4px solid config('colors.neutral-400') !important;
-    }
-
-    & > .footer {
-        @apply .border .border-neutral-400 .border-t-0 .bg-neutral-50;
+    & > div > .footer {
+        @apply .border .border-neutral-100 .border-t-0 .bg-neutral-50 .shadow-inner;
     }
 }
 
@@ -110,11 +110,11 @@ code {
     @apply .w-full .my-4;
 
     & > input[type="text"] {
-        @apply .w-full .p-3 .rounded .border .text-neutral-800;
+        @apply .w-full .p-4 .rounded .border .border-neutral-200 .text-neutral-500;
         transition: border 150ms ease-in;
 
         &:focus {
-            @apply .border-primary-400;
+            @apply .border-primary-500;
         }
     }
 }
