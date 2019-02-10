@@ -1,11 +1,14 @@
 import Vue from 'vue';
-import { mapState } from 'vuex';
+import {mapState} from 'vuex';
 import Status from '../../../helpers/statuses';
+import {Socketio} from "@/mixins/socketio";
 
 export default Vue.component('power-buttons', {
     computed: {
         ...mapState('socket', ['connected', 'status']),
     },
+
+    mixins: [Socketio],
 
     data: function () {
         return {
@@ -15,7 +18,7 @@ export default Vue.component('power-buttons', {
 
     methods: {
         sendPowerAction: function (action: string) {
-            // this.$socket().instance().emit('set status', action)
+            this.$socket().instance().emit('set status', action)
         },
     },
 
@@ -28,9 +31,9 @@ export default Vue.component('power-buttons', {
                             v-on:click.prevent="sendPowerAction('start')"
                     >Start</button>
                     <div v-else>
-                        <button class="btn btn-red-500 uppercase text-xs px-4 py-2" v-on:click.prevent="sendPowerAction('stop')">Stop</button>
+                        <button class="btn btn-red uppercase text-xs px-4 py-2" v-on:click.prevent="sendPowerAction('stop')">Stop</button>
                         <button class="btn btn-secondary uppercase text-xs px-4 py-2" v-on:click.prevent="sendPowerAction('restart')">Restart</button>
-                        <button class="btn btn-secondary uppercase text-xs px-4 py-2" v-on:click.prevent="sendPowerAction('kill')">Kill</button>
+                        <button class="btn btn-secondary btn-red uppercase text-xs px-4 py-2" v-on:click.prevent="sendPowerAction('kill')">Kill</button>
                     </div>
                 </transition>
             </div>

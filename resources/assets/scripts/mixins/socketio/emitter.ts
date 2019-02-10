@@ -15,7 +15,7 @@ export default new class SocketEmitter {
     /**
      * Add an event listener for socket events.
      */
-    addListener(event: string | number, callback: (data: any) => void, vm: ComponentOptions<Vue>) {
+    addListener(event: string | number, callback: (...data: any[]) => void, vm: ComponentOptions<Vue>) {
         if (!isFunction(callback)) {
             return;
         }
@@ -31,7 +31,7 @@ export default new class SocketEmitter {
     /**
      * Remove an event listener for socket events based on the context passed through.
      */
-    removeListener(event: string | number, callback: (data: any) => void, vm: ComponentOptions<Vue>) {
+    removeListener(event: string | number, callback: (...data: any[]) => void, vm: ComponentOptions<Vue>) {
         if (!isFunction(callback) || !this.listeners.has(event)) {
             return;
         }
@@ -53,7 +53,8 @@ export default new class SocketEmitter {
      */
     emit(event: string | number, ...args: any) {
         (this.listeners.get(event) || []).forEach((listener) => {
-            listener.callback.call(listener.vm, args);
+            // @ts-ignore
+            listener.callback.call(listener.vm, ...args);
         });
     }
 }
