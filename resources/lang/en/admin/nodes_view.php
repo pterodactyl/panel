@@ -97,7 +97,7 @@ return [
             'limit' => '<small>Character limits: <code>a-zA-Z0-9_.-</code> and <code>[Space]</code> (min 1, max 100 characters).</small>',
             'location' => 'Location',
             'auto' => 'Allow Automatic Allocation',
-            'auto_title' => 'Allow automatic allocation to this Node?'
+            'auto_title' => 'Allow automatic allocation to this Node?',
             'yes' => 'Yes',
             'no' => 'No',
             'fqdn' => 'Fully Qualified Domain Name',

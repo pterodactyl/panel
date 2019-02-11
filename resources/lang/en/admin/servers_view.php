@@ -122,8 +122,8 @@ return [
         'installing' => 'Installing',
         'install_failed' => 'Install Failed',
         'server_owner' => 'Server Owner',
-        'more_info' => 'More info'
-        'server_node' => 'Server Node'
+        'more_info' => 'More info',
+        'server_node' => 'Server Node',
     ],
     'manage' => [
         'header' => [
