@@ -54,5 +54,5 @@ return [
             'startup_command_hint' => 'The following data substitutes are available for the startup command: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>. They will be replaced with the allocated memory, server IP, and server port respectively.',
             'service_var' => 'Service Variables',
         ],
-    ]
+    ],
 ];

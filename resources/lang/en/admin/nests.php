@@ -18,7 +18,7 @@ return [
         'configured_nests' => 'Configured Nests',
         'import_egg' => 'Import Egg',
         'create_new' => 'Create New',
-        'id' => 'ID', 
+        'id' => 'ID',
         'name' => 'Name',
         'description' => 'Description',
         'eggs' => 'Eggs',
@@ -62,7 +62,7 @@ return [
             'overview' => 'New Nest<small>Configure a new nest to deploy to all nodes.</small>',
             'admin' => 'Admin',
             'nests' => 'Nests',
-            'new' => 'New'
+            'new' => 'New',
         ],
         'content' => [
             'new_nest' => 'New Nest',

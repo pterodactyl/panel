@@ -85,5 +85,5 @@ return [
         'sat' => 'Saturday',
     ],
     'last_used' => 'Last Used',
-	'key' => 'Key',
+    'key' => 'Key',
 ];

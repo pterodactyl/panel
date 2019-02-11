@@ -18,7 +18,7 @@ return [
         'servers' => 'Servers',
         'used_memory' => 'Total used Memory (in MB)',
         'used_space' => 'Total used Disk (in MB)',
-        'total_ram' => 'Total RAM', 
+        'total_ram' => 'Total RAM',
         'total_disk' => 'Total Disk Space',
         'total_allocations' => 'Total Allocations',
         'total_eggs' => 'Total Eggs',

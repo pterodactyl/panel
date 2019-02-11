@@ -19,7 +19,7 @@ return [
         'settings' => 'Settings',
         'configuration' => 'Configuration',
         'allocation' => 'Allocation',
-        'servers' => 'Servers', 
+        'servers' => 'Servers',
         'exist' => 'Existing Allocations',
         'ip' => 'IP Address',
         'alias' => 'IP Alias',

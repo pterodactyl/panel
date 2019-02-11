@@ -18,7 +18,7 @@ return [
         'list' => 'Host List',
         'new' => 'Create New',
         'id' => 'ID',
-        'name' => 'Name', 
+        'name' => 'Name',
         'host' => 'Host',
         'port' => 'Port',
         'username' => 'Username',

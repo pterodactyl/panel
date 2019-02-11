@@ -11,7 +11,7 @@ return [
     'header' => [
         'title' => 'Advanced Settings',
         'overview' => 'Advanced Settings<small>Configure advanced settings for Pterodactyl.</small>',
-        'settings' => 'Settings'
+        'settings' => 'Settings',
     ],
     'content' => [
         'recaptcha' => 'reCAPTCHA',
@@ -55,7 +55,7 @@ return [
     'mail' => [
         'header' => [
             'title' => 'Mail Settings',
-            'overview' => 'Mail Settings<small>Configure how Pterodactyl should handle sending emails.</small>'
+            'overview' => 'Mail Settings<small>Configure how Pterodactyl should handle sending emails.</small>',
         ],
         'content' => [
             'email_settings' => 'Email Settings',

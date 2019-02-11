@@ -18,7 +18,7 @@ return [
         'title' => 'System Information',
         'isLatestStart' => 'You are running Pterodactyl Panel version ',
         'isLatestEnd' => '. Your panel is up-to-date!',
-        'notLatestStart' => 'Your panel is <strong>not up-to-date!</strong> The latest version is', 
+        'notLatestStart' => 'Your panel is <strong>not up-to-date!</strong> The latest version is',
         'notLatestEnd' => 'and you are currently running version',
     ],
     'button' => [
@@ -45,7 +45,7 @@ return [
         'users' => 'Users',
         'service' => 'SERVICE MANAGEMENT',
         'nests' => 'Nests',
-        'packs' => 'Packs',        
+        'packs' => 'Packs',
         'logout_title' => 'Do you want to log out?',
         'logout' => 'Log out',
     ],
