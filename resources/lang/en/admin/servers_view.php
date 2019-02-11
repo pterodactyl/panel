@@ -152,7 +152,7 @@ return [
         'content' => [
             'startup_command_modify' => 'Startup Command Modification',
             'startup_command' => 'Startup Command',
-            'startup_command_hint' => 'Edit your server’s startup command here. The following variables are available by default:'
+            'startup_command_hint' => 'Edit your server’s startup command here. The following variables are available by default:',
             'default_command' => 'Default Service Start Command',
             'save_modification' => 'Save Modifications',
             'service_conf' => 'Service Configuration',
@@ -165,11 +165,11 @@ return [
             'data_pack' => 'Data Pack',
             'data_pack_hint' => 'Select a data pack to be automatically installed on this server when first created.',
             'skip_script' => 'Skip Egg Install Script',
-            'skip_script_hint' => 'If the selected Egg has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.'
+            'skip_script_hint' => 'If the selected Egg has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.',
             'docker_conf' => 'Docker Container Configuration',
             'image' => 'Image',
             'image_hint' => 'The Docker image to use for this server. The default image for the selected egg is <code id="setDefaultImage"></code>.',
-            'select_sp' => 'Select a Service Pack'
+            'select_sp' => 'Select a Service Pack',
             'select_egg' => 'Select a Nest Egg',
             'error' => 'ERROR: Startup Not Defined!',
             'no_sp' => 'No Service Pack',

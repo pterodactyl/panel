@@ -115,7 +115,7 @@ return [
             'maintenance' => 'Maintenance Mode',
             'disabled' => 'Disabled',
             'enabled' => 'Enabled',
-            'maintenance_hint' => 'If the node is marked as ‘Under Maintenance’ users won’t be able to access servers that are on this node.'
+            'maintenance_hint' => 'If the node is marked as ‘Under Maintenance’ users won’t be able to access servers that are on this node.',
             'allocation_limit' => 'Allocation Limits',
             'memory' => 'Total Memory',
             'overallocate' => 'Overallocate',
