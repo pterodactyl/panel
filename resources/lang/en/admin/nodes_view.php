@@ -55,10 +55,10 @@ return [
         ],
     ],
     'index' => [
-        'header' = > '<small>A quick overview of your node.</small>',
+        'header' => '<small>A quick overview of your node.</small>',
         'information' => 'Information',
         'daemon_ver' => 'Daemon Version',
-        'latest' => 'Latest:'
+        'latest' => 'Latest:',
         'sys_info' => 'System Information',
         'all_cpu' => 'Total CPU Cores',
         'description' => 'Description',

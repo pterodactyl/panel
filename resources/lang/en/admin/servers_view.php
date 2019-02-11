@@ -98,7 +98,7 @@ return [
             'ext_id' => 'External Identifier',
             'ext_id_hint' => 'Leave empty to not assign an external identifier for this server. The external ID should be unique to this server and not be in use by any other servers.',
             'server_owner' => 'Server Owner',
-            'server_owner_hint' => 'You can change the owner of this server by changing this field to an email matching another use on this system. If you do this a new daemon security token will be generated automatically.'
+            'server_owner_hint' => 'You can change the owner of this server by changing this field to an email matching another use on this system. If you do this a new daemon security token will be generated automatically.',
             'server_desc' => 'Server Description',
             'server_desc_hint' => 'A brief description of this server.',
             'update_details' => 'Update Details',
