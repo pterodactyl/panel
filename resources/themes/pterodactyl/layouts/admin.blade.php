@@ -48,7 +48,7 @@
                 </a>
                 <nav class="navbar navbar-static-top">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
-                        <span class="sr-only">Toggle navigation</span>
+                        <span class="sr-only">@lang('admin/admin.sidebar.toggle')</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -57,15 +57,15 @@
                         <ul class="nav navbar-nav">
                             <li class="user-menu">
                                 <a href="{{ route('account') }}">
-                                    <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="User Image">
+                                    <img src="https://www.gravatar.com/avatar/{{ md5(strtolower(Auth::user()->email)) }}?s=160" class="user-image" alt="@lang('admin/admin.sidebar.user_image')">
                                     <span class="hidden-xs">{{ Auth::user()->name_first }} {{ Auth::user()->name_last }}</span>
                                 </a>
                             </li>
                             <li>
-                                <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="Exit Admin Control"><i class="fa fa-server"></i></a></li>
+                                <li><a href="{{ route('index') }}" data-toggle="tooltip" data-placement="bottom" title="@lang('admin/admin.sidebar.exit')"><i class="fa fa-server"></i></a></li>
                             </li>
                             <li>
-                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="Logout"><i class="fa fa-sign-out"></i></a></li>
+                                <li><a href="{{ route('auth.logout') }}" id="logoutButton" data-toggle="tooltip" data-placement="bottom" title="@lang('admin/admin.sidebar.logout')"><i class="fa fa-sign-out"></i></a></li>
                             </li>
                         </ul>
                     </div>
@@ -74,62 +74,62 @@
             <aside class="main-sidebar">
                 <section class="sidebar">
                     <ul class="sidebar-menu">
-                        <li class="header">BASIC ADMINISTRATION</li>
+                        <li class="header">@lang('admin/admin.sidebar.basic')</li>
                         <li class="{{ Route::currentRouteName() !== 'admin.index' ?: 'active' }}">
                             <a href="{{ route('admin.index') }}">
-                                <i class="fa fa-home"></i> <span>Overview</span>
+                                <i class="fa fa-home"></i> <span>@lang('admin/admin.sidebar.overview')</span>
                             </a>
                         </li>
                         <li class="{{ Route::currentRouteName() !== 'admin.statistics' ?: 'active' }}">
                             <a href="{{ route('admin.statistics') }}">
-                                <i class="fa fa-tachometer"></i> <span>Statistics</span>
+                                <i class="fa fa-tachometer"></i> <span>@lang('admin/admin.sidebar.stats')</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.settings') ?: 'active' }}">
                             <a href="{{ route('admin.settings')}}">
-                                <i class="fa fa-wrench"></i> <span>Settings</span>
+                                <i class="fa fa-wrench"></i> <span>@lang('admin/admin.sidebar.settings')</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.api') ?: 'active' }}">
                             <a href="{{ route('admin.api.index')}}">
-                                <i class="fa fa-gamepad"></i> <span>Application API</span>
+                                <i class="fa fa-gamepad"></i> <span>@lang('admin/admin.sidebar.api')</span>
                             </a>
                         </li>
-                        <li class="header">MANAGEMENT</li>
+                        <li class="header">@lang('admin/admin.sidebar.management')</li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.databases') ?: 'active' }}">
                             <a href="{{ route('admin.databases') }}">
-                                <i class="fa fa-database"></i> <span>Databases</span>
+                                <i class="fa fa-database"></i> <span>@lang('admin/admin.sidebar.databases')</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.locations') ?: 'active' }}">
                             <a href="{{ route('admin.locations') }}">
-                                <i class="fa fa-globe"></i> <span>Locations</span>
+                                <i class="fa fa-globe"></i> <span>@lang('admin/admin.sidebar.locations')</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nodes') ?: 'active' }}">
                             <a href="{{ route('admin.nodes') }}">
-                                <i class="fa fa-sitemap"></i> <span>Nodes</span>
+                                <i class="fa fa-sitemap"></i> <span>@lang('admin/admin.sidebar.nodes')</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.servers') ?: 'active' }}">
                             <a href="{{ route('admin.servers') }}">
-                                <i class="fa fa-server"></i> <span>Servers</span>
+                                <i class="fa fa-server"></i> <span>@lang('admin/admin.sidebar.servers')</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.users') ?: 'active' }}">
                             <a href="{{ route('admin.users') }}">
-                                <i class="fa fa-users"></i> <span>Users</span>
+                                <i class="fa fa-users"></i> <span>@lang('admin/admin.sidebar.users')</span>
                             </a>
                         </li>
-                        <li class="header">SERVICE MANAGEMENT</li>
+                        <li class="header">@lang('admin/admin.sidebar.service')</li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nests') ?: 'active' }}">
                             <a href="{{ route('admin.nests') }}">
-                                <i class="fa fa-th-large"></i> <span>Nests</span>
+                                <i class="fa fa-th-large"></i> <span>@lang('admin/admin.sidebar.nests')</span>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.packs') ?: 'active' }}">
                             <a href="{{ route('admin.packs') }}">
-                                <i class="fa fa-archive"></i> <span>Packs</span>
+                                <i class="fa fa-archive"></i> <span>@lang('admin/admin.sidebar.packs')</span>
                             </a>
                         </li>
                     </ul>
