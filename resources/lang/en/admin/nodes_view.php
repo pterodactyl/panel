@@ -15,7 +15,7 @@ return [
         'nodes' => 'Nodes',
     ],
     'content' => [
-        'about' => 'About'
+        'about' => 'About',
         'settings' => 'Settings',
         'configuration' => 'Configuration',
         'allocation' => 'Allocation',

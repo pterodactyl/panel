@@ -61,7 +61,7 @@ return [
             'conn_from' => 'Connections From',
             'host' => 'Host',
             'create_new_db' => 'Create New Database',
-            'db_host' => 'Database Host'
+            'db_host' => 'Database Host',
             'db_host_hint' => 'Select the host database server that this database should be created on.',
             'conn' => 'Connections',
             'conn_hint' => 'This should reflect the IP address that connections are allowed from. Uses standard MySQL notation. If unsure leave as <code>%</code>.','auth_hint' => 'A username and password for this database will be randomly generated after form submission.',

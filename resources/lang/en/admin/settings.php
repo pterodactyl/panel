@@ -15,7 +15,7 @@ return [
     ],
     'content' => [
         'recaptcha' => 'reCAPTCHA',
-        'status' => 'Status'
+        'status' => 'Status',
         'enabled' => 'Enabled',
         'disabled' => 'Disabled',
         'toggle_hint' => 'If enabled, login forms and password reset forms will do a silent captcha check and display a visible captcha if needed.',

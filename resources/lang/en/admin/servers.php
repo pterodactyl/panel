@@ -13,8 +13,8 @@ return [
         'overview' => 'Servers<small>All servers available on the system.</small>',
     ],
     'content' => [
-        'server_list' => 'Server List'
-        'create_new' => 'Create New'
+        'server_list' => 'Server List',
+        'create_new' => 'Create New',
         'server_name' => 'Server Name',
         'uuid' => 'UUID',
         'owner' => 'Owner',

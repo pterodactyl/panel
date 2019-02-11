@@ -70,7 +70,7 @@ return [
             'total_memory' => 'Total Memory',
             'memory_overallocation' => 'Memory Over-Allocation',
             'memory_overallocation_hint' => 'Enter the total amount of memory available for new servers. If you would like to allow overallocation of memory enter the percentage that you want to allow. To disable checking for overallocation enter <code>-1</code> into the field. Entering <code>0</code> will prevent creating new servers if it would put the node over the limit.',
-            'total_disk', => 'Total Disk Space',
+            'total_disk' => 'Total Disk Space',
             'disk_overallocation' => 'Disk Over-Allocation',
             'disk_overallocation_hint' => 'Enter the total amount of disk space available for new servers. If you would like to allow overallocation of disk space enter the percentage that you want to allow. To disable checking for overallocation enter <code>-1</code> into the field. Entering <code>0</code> will prevent creating new servers if it would put the node over the limit.',
             'sftp_port' => 'Daemon SFTP Port',

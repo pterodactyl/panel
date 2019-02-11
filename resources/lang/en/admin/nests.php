@@ -14,7 +14,7 @@ return [
         'admin' => 'Admin',
     ],
     'content' => [
-        'alert' => 'Eggs are a powerful feature of Pterodactyl Panel that allow for extreme flexibility and configuration. Please note that while powerful, modifying an egg wrongly can very easily brick your servers and cause more problems. Please avoid editing our default eggs — those provided by <code>support@pterodactyl.io</code> — unless you are absolutely sure of what you are doing.'
+        'alert' => 'Eggs are a powerful feature of Pterodactyl Panel that allow for extreme flexibility and configuration. Please note that while powerful, modifying an egg wrongly can very easily brick your servers and cause more problems. Please avoid editing our default eggs — those provided by <code>support@pterodactyl.io</code> — unless you are absolutely sure of what you are doing.',
         'configured_nests' => 'Configured Nests',
         'import_egg' => 'Import Egg',
         'create_new' => 'Create New',
