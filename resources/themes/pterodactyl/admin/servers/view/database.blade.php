@@ -6,16 +6,16 @@
 @extends('layouts.admin')
 
 @section('title')
-    Server — {{ $server->name }}: Databases
+    @lang('admin/servers_view.content.server') — {{ $server->name }}: @lang('admin/servers_view.database.header.title')
 @endsection
 
 @section('content-header')
-    <h1>{{ $server->name }}<small>Manage server databases.</small></h1>
+    <h1>{{ $server->name }}<small>@lang('admin/servers_view.database.header.overview')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.servers') }}">Servers</a></li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/servers_view.header.admin')</a></li>
+        <li><a href="{{ route('admin.servers') }}">@lang('admin/servers_view.header.servers')</a></li>
         <li><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></li>
-        <li class="active">Databases</li>
+        <li class="active">@lang('admin/servers_view.database.header.title')</li>
     </ol>
 @endsection
 
@@ -24,15 +24,15 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.servers.view', $server->id) }}">About</a></li>
+                <li><a href="{{ route('admin.servers.view', $server->id) }}">@lang('admin/servers_view.content.about')</a></li>
                 @if($server->installed === 1)
-                    <li><a href="{{ route('admin.servers.view.details', $server->id) }}">Details</a></li>
-                    <li><a href="{{ route('admin.servers.view.build', $server->id) }}">Build Configuration</a></li>
-                    <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">Startup</a></li>
-                    <li class="active"><a href="{{ route('admin.servers.view.database', $server->id) }}">Database</a></li>
-                    <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
+                    <li><a href="{{ route('admin.servers.view.details', $server->id) }}">@lang('admin/servers_view.content.details')</a></li>
+                    <li><a href="{{ route('admin.servers.view.build', $server->id) }}">@lang('admin/servers_view.header.build_config')</a></li>
+                    <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">@lang('admin/servers_view.content.startup')</a></li>
+                    <li class="active"><a href="{{ route('admin.servers.view.database', $server->id) }}">@lang('admin/servers_view.content.database')</a></li>
+                    <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">@lang('admin/servers_view.content.manage')</a></li>
                 @endif
-                <li class="tab-danger"><a href="{{ route('admin.servers.view.delete', $server->id) }}">Delete</a></li>
+                <li class="tab-danger"><a href="{{ route('admin.servers.view.delete', $server->id) }}">@lang('admin/servers_view.content.delete')</a></li>
                 <li class="tab-success"><a href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-external-link"></i></a></li>
             </ul>
         </div>
@@ -41,19 +41,19 @@
 <div class="row">
     <div class="col-sm-7">
         <div class="alert alert-info">
-            Database passwords can be viewed when <a href="{{ route('server.databases.index', ['server' => $server->uuidShort]) }}">visiting this server</a> on the front-end.
+            @lang('admin/servers_view.database.content.pw_infoStart')<a href="{{ route('server.databases.index', ['server' => $server->uuidShort]) }}">@lang('admin/servers_view.database.content.pw_infoEnd')
         </div>
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Active Databases</h3>
+                <h3 class="box-title">@lang('admin/servers_view.database.content.active_db')</h3>
             </div>
             <div class="box-body table-responsible no-padding">
                 <table class="table table-hover">
                     <tr>
-                        <th>Database</th>
-                        <th>Username</th>
-                        <th>Connections From</th>
-                        <th>Host</th>
+                        <th>@lang('admin/servers_view.content.database')</th>
+                        <th>@lang('admin/servers_view.database.content.username')</th>
+                        <th>@lang('admin/servers_view.database.content.conn_from')</th>
+                        <th>@lang('admin/servers_view.database.content.host')</th>
                         <th></th>
                     </tr>
                     @foreach($server->databases as $database)
@@ -75,35 +75,35 @@
     <div class="col-sm-5">
         <div class="box box-success">
             <div class="box-header with-border">
-                <h3 class="box-title">Create New Database</h3>
+                <h3 class="box-title">@lang('admin/servers_view.database.content.create_new_db')</h3>
             </div>
             <form action="{{ route('admin.servers.view.database', $server->id) }}" method="POST">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="pDatabaseHostId" class="control-label">Database Host</label>
+                        <label for="pDatabaseHostId" class="control-label">@lang('admin/servers_view.database.content.db_host')</label>
                         <select id="pDatabaseHostId" name="database_host_id" class="form-control">
                             @foreach($hosts as $host)
                                 <option value="{{ $host->id }}">{{ $host->name }}</option>
                             @endforeach
                         </select>
-                        <p class="text-muted small">Select the host database server that this database should be created on.</p>
+                        <p class="text-muted small">@lang('admin/servers_view.database.content.db_host_hint')</p>
                     </div>
                     <div class="form-group">
-                        <label for="pDatabaseName" class="control-label">Database</label>
+                        <label for="pDatabaseName" class="control-label">@lang('admin/servers_view.content.database')</label>
                         <div class="input-group">
                             <span class="input-group-addon">s{{ $server->id }}_</span>
                             <input id="pDatabaseName" type="text" name="database" class="form-control" placeholder="database" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pRemote" class="control-label">Connections</label>
+                        <label for="pRemote" class="control-label">@lang('admin/servers_view.database.content.conn')</label>
                         <input id="pRemote" type="text" name="remote" class="form-control" value="%" />
-                        <p class="text-muted small">This should reflect the IP address that connections are allowed from. Uses standard MySQL notation. If unsure leave as <code>%</code>.</p>
+                        <p class="text-muted small">@lang('admin/servers_view.database.content.conn_hint')</p>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <p class="text-muted small no-margin">A username and password for this database will be randomly generated after form submission.</p>
+                    <p class="text-muted small no-margin">@lang('admin/servers_view.database.content.auth_hint')</p>
                     <input type="submit" class="btn btn-sm btn-success pull-right" value="Create Database" />
                 </div>
             </form>
@@ -122,7 +122,7 @@
         swal({
             title: '',
             type: 'warning',
-            text: 'Are you sure that you want to delete this database? There is no going back, all data will immediately be removed.',
+            text: '@lang('admin/servers_view.database.content.auth_hint')',
             showCancelButton: true,
             confirmButtonText: 'Delete',
             confirmButtonColor: '#d9534f',
@@ -140,8 +140,8 @@
                 console.error(jqXHR);
                 swal({
                     type: 'error',
-                    title: 'Whoops!',
-                    text: (typeof jqXHR.responseJSON.error !== 'undefined') ? jqXHR.responseJSON.error : 'An error occurred while processing this request.'
+                    title: '@lang('admin/servers_view.database.content.ooopsi')',
+                    text: (typeof jqXHR.responseJSON.error !== 'undefined') ? jqXHR.responseJSON.error : '@lang('admin/servers_view.database.content.error')'
                 });
             });
         });
@@ -159,17 +159,17 @@
             swal({
                 type: 'success',
                 title: '',
-                text: 'The password for this database has been reset.',
+                text: '@lang('admin/servers_view.database.content.success')',
             });
         }).fail(function(jqXHR, textStatus, errorThrown) {
             console.error(jqXHR);
-            var error = 'An error occurred while trying to process this request.';
+            var error = '@lang('admin/servers_view.database.content.error')';
             if (typeof jqXHR.responseJSON !== 'undefined' && typeof jqXHR.responseJSON.error !== 'undefined') {
                 error = jqXHR.responseJSON.error;
             }
             swal({
                 type: 'error',
-                title: 'Whoops!',
+                title: '@lang('admin/servers_view.database.content.ooopsi')',
                 text: error
             });
         }).always(function () {

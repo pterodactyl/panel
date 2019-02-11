@@ -6,7 +6,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    List Nodes
+    @lang('admin/nodes.index.header.title')
 @endsection
 
 @section('scripts')
@@ -15,10 +15,10 @@
 @endsection
 
 @section('content-header')
-    <h1>Nodes<small>All nodes available on the system.</small></h1>
+    <h1>@lang('admin/nodes.index.header.overview')</h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Nodes</li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/nodes.index.header.admin')</a></li>
+        <li class="active">@lang('admin/nodes.index.header.nodes')</li>
     </ol>
 @endsection
 
@@ -27,14 +27,14 @@
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Node List</h3>
+                <h3 class="box-title">@lang('admin/nodes.index.content.node_list')</h3>
                 <div class="box-tools">
                     <form action="{{ route('admin.nodes') }}" method="GET">
                         <div class="input-group input-group-sm">
                             <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="Search Nodes">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                                <a href="{{ route('admin.nodes.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">Create New</button></a>
+                                <a href="{{ route('admin.nodes.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">@lang('admin/nodes.index.content.create_new')</button></a>
                             </div>
                         </div>
                     </form>
@@ -45,13 +45,13 @@
                     <tbody>
                         <tr>
                             <th></th>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>Memory</th>
-                            <th>Disk</th>
-                            <th class="text-center">Servers</th>
-                            <th class="text-center">SSL</th>
-                            <th class="text-center">Public</th>
+                            <th>@lang('admin/nodes.index.content.name')</th>
+                            <th>@lang('admin/nodes.index.content.location')</th>
+                            <th>@lang('admin/nodes.index.content.memory')</th>
+                            <th>@lang('admin/nodes.index.content.disk')</th>
+                            <th class="text-center">@lang('admin/nodes.index.content.servers')</th>
+                            <th class="text-center">@lang('admin/nodes.index.content.ssl')</th>
+                            <th class="text-center">@lang('admin/nodes.index.content.public')</th>
                         </tr>
                         @foreach ($nodes as $node)
                             <tr>
@@ -96,7 +96,7 @@
                 });
                 $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
             }).fail(function (error) {
-                var errorText = 'Error connecting to node! Check browser console for details.';
+                var errorText = '@lang('admin/nodes.index.content.error')';
                 try {
                     errorText = error.responseJSON.errors[0].detail || errorText;
                 } catch (ex) {}

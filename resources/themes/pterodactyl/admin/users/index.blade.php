@@ -6,14 +6,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    List Users
+    @lang('admin/users.header.title')
 @endsection
 
 @section('content-header')
-    <h1>Users<small>All registered users on the system.</small></h1>
+    <h1> @lang('admin/users.header.overview')</h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Users</li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/servers_view.header.admin')</a></li>
+        <li class="active">@lang('admin/users.header.users')</li>
     </ol>
 @endsection
 
@@ -22,14 +22,14 @@
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">User List</h3>
+                <h3 class="box-title">@lang('admin/users.header.user_list')</h3>
                 <div class="box-tools">
                     <form action="{{ route('admin.users') }}" method="GET">
                         <div class="input-group input-group-sm">
                             <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="Search">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                                <a href="{{ route('admin.users.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">Create New</button></a>
+                                <a href="{{ route('admin.users.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">@lang('admin/users.header.create_new')</button></a>
                             </div>
                         </div>
                     </form>
@@ -39,13 +39,13 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Email</th>
-                            <th>Client Name</th>
-                            <th>Username</th>
-                            <th class="text-center">2FA</th>
-                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</span></th>
-                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</span></th>
+                            <th>@lang('admin/users.header.id')</th>
+                            <th>@lang('admin/users.header.email')</th>
+                            <th>@lang('admin/users.header.client_name')</th>
+                            <th>@lang('admin/users.header.username')</th>
+                            <th class="text-center">@lang('admin/users.header.2fa')</th>
+                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="@lang('admin/users.header.servers_owned_hint')">@lang('admin/users.header.servers_owned')</span></th>
+                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="@lang('admin/users.header.can_access_hint')">@lang('admin/users.header.can_access')</span></th>
                             <th></th>
                         </tr>
                     </thead>

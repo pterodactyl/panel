@@ -6,14 +6,14 @@
 @extends('layouts.admin')
 
 @section('title')
-    List Packs
+    @lang('admin/packs.header.title')
 @endsection
 
 @section('content-header')
-    <h1>Packs<small>All service packs available on the system.</small></h1>
+    <h1>@lang('admin/packs.header.overview')</h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Packs</li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/packs.header.admin')</a></li>
+        <li class="active">@lang('admin/packs.header.packs')</li>
     </ol>
 @endsection
 
@@ -22,14 +22,14 @@
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Pack List</h3>
+                <h3 class="box-title">@lang('admin/packs.content.pack_list')</h3>
                 <div class="box-tools">
                     <form action="{{ route('admin.packs') }}" method="GET">
                         <div class="input-group input-group-sm">
                             <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="Search Packs">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                                <a href="{{ route('admin.packs.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">Create New</button></a>
+                                <a href="{{ route('admin.packs.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">@lang('admin/packs.content.create_new')</button></a>
                             </div>
                         </div>
                     </form>
@@ -39,12 +39,12 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>ID</th>
-                            <th>Pack Name</th>
-                            <th>Version</th>
-                            <th>Description</th>
-                            <th>Egg</th>
-                            <th class="text-center">Servers</th>
+                            <th>@lang('admin/packs.content.id')</th>
+                            <th>@lang('admin/packs.content.pack_name')</th>
+                            <th>@lang('admin/packs.content.version')</th>
+                            <th>@lang('admin/packs.content.description')</th>
+                            <th>@lang('admin/packs.content.egg')</th>
+                            <th class="text-center">@lang('admin/packs.content.servers')</th>
                         </tr>
                         @foreach ($packs as $pack)
                             <tr>

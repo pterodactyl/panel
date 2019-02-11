@@ -6,16 +6,16 @@
 @extends('layouts.admin')
 
 @section('title')
-    Server — {{ $server->name }}: Details
+    @lang('admin/servers_view.header.server') — {{ $server->name }}: @lang('admin/servers_view.content.details')
 @endsection
 
 @section('content-header')
-    <h1>{{ $server->name }}<small>Edit details for this server including owner and container.</small></h1>
+    <h1>{{ $server->name }}<small>@lang('admin/servers_view.details.header.overview')</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.servers') }}">Servers</a></li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/servers_view.header.admin')</a></li>
+        <li><a href="{{ route('admin.servers') }}">@lang('admin/servers_view.header.servers')</a></li>
         <li><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></li>
-        <li class="active">Details</li>
+        <li class="active">@lang('admin/servers_view.content.details')</li>
     </ol>
 @endsection
 
@@ -24,15 +24,15 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.servers.view', $server->id) }}">About</a></li>
+                <li><a href="{{ route('admin.servers.view', $server->id) }}">@lang('admin/servers_view.content.about')</a></li>
                 @if($server->installed === 1)
-                    <li class="active"><a href="{{ route('admin.servers.view.details', $server->id) }}">Details</a></li>
-                    <li><a href="{{ route('admin.servers.view.build', $server->id) }}">Build Configuration</a></li>
-                    <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">Startup</a></li>
-                    <li><a href="{{ route('admin.servers.view.database', $server->id) }}">Database</a></li>
-                    <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">Manage</a></li>
+                    <li class="active"><a href="{{ route('admin.servers.view.details', $server->id) }}">@lang('admin/servers_view.content.details')</a></li>
+                    <li><a href="{{ route('admin.servers.view.build', $server->id) }}">@lang('admin/servers_view.header.build_conf')</a></li>
+                    <li><a href="{{ route('admin.servers.view.startup', $server->id) }}">@lang('admin/servers_view.content.startup')</a></li>
+                    <li><a href="{{ route('admin.servers.view.database', $server->id) }}">@lang('admin/servers_view.content.database')</a></li>
+                    <li><a href="{{ route('admin.servers.view.manage', $server->id) }}">@lang('admin/servers_view.content.manage')</a></li>
                 @endif
-                <li class="tab-danger"><a href="{{ route('admin.servers.view.delete', $server->id) }}">Delete</a></li>
+                <li class="tab-danger"><a href="{{ route('admin.servers.view.delete', $server->id) }}">@lang('admin/servers_view.content.delete')</a></li>
                 <li class="tab-success"><a href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-external-link"></i></a></li>
             </ul>
         </div>
@@ -42,37 +42,37 @@
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Base Information</h3>
+                <h3 class="box-title">@lang('admin/servers_view.details.content.base_info')</h3>
             </div>
             <form action="{{ route('admin.servers.view.details', $server->id) }}" method="POST">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="name" class="control-label">Server Name <span class="field-required"></span></label>
+                        <label for="name" class="control-label">@lang('admin/servers_view.details.content.server_name') <span class="field-required"></span></label>
                         <input type="text" name="name" value="{{ old('name', $server->name) }}" class="form-control" />
-                        <p class="text-muted small">Character limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code> (max 35 characters).</p>
+                        <p class="text-muted small">@lang('admin/servers_view.details.content.character_limit') </p>
                     </div>
                     <div class="form-group">
-                        <label for="external_id" class="control-label">External Identifier</label>
+                        <label for="external_id" class="control-label">@lang('admin/servers_view.details.content.ext_id')</label>
                         <input type="text" name="external_id" value="{{ old('external_id', $server->external_id) }}" class="form-control" />
-                        <p class="text-muted small">Leave empty to not assign an external identifier for this server. The external ID should be unique to this server and not be in use by any other servers.</p>
+                        <p class="text-muted small">@lang('admin/servers_view.details.content.ext_id_hint')</p>
                     </div>
                     <div class="form-group">
-                        <label for="pUserId" class="control-label">Server Owner <span class="field-required"></span></label>
+                        <label for="pUserId" class="control-label">@lang('admin/servers_view.details.content.server_owner') <span class="field-required"></span></label>
                         <select name="owner_id" class="form-control" id="pUserId">
                             <option value="{{ $server->owner_id }}" selected>{{ $server->user->email }}</option>
                         </select>
-                        <p class="text-muted small">You can change the owner of this server by changing this field to an email matching another use on this system. If you do this a new daemon security token will be generated automatically.</p>
+                        <p class="text-muted small">@lang('admin/servers_view.details.content.server_owner_hint')</p>
                     </div>
                     <div class="form-group">
-                        <label for="description" class="control-label">Server Description</label>
+                        <label for="description" class="control-label">@lang('admin/servers_view.details.content.server_desc')</label>
                         <textarea name="description" rows="3" class="form-control">{{ old('description', $server->description) }}</textarea>
-                        <p class="text-muted small">A brief description of this server.</p>
+                        <p class="text-muted small">@lang('admin/servers_view.details.content.server_desc_hint')</p>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
                     {!! method_field('PATCH') !!}
-                    <input type="submit" class="btn btn-sm btn-primary" value="Update Details" />
+                    <input type="submit" class="btn btn-sm btn-primary" value="@lang('admin/servers_view.details.content.update_details')" />
                 </div>
             </form>
         </div>

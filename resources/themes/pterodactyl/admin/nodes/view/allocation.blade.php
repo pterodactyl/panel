@@ -6,17 +6,17 @@
 @extends('layouts.admin')
 
 @section('title')
-    {{ $node->name }}: Allocations
+    {{ $node->name }}: @lang('admin/nodes_view.header.title')
 @endsection
 
 @section('content-header')
-    <h1>{{ $node->name }}<small>Control allocations available for servers on this node.</small></h1>
+    <h1>{{ $node->name }}@lang('admin/nodes_view.header.overview')</h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nodes') }}">Nodes</a></li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/nodes_view.header.admin')</a></li>
+        <li><a href="{{ route('admin.nodes') }}">@lang('admin/nodes_view.header.nodes')</a></li>
         <li><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></li>
         <li class="active">Allocations</li>
-    </ol>
+    </ol>@lang('admin/nodes_view.header.title')
 @endsection
 
 @section('content')
@@ -24,11 +24,11 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.nodes.view', $node->id) }}">About</a></li>
-                <li><a href="{{ route('admin.nodes.view.settings', $node->id) }}">Settings</a></li>
-                <li><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">Configuration</a></li>
-                <li class="active"><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">Allocation</a></li>
-                <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">Servers</a></li>
+                <li><a href="{{ route('admin.nodes.view', $node->id) }}">@lang('admin/nodes_view.content.about')</a></li>
+                <li><a href="{{ route('admin.nodes.view.settings', $node->id) }}">@lang('admin/nodes_view.content.settings')</a></li>
+                <li><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">@lang('admin/nodes_view.content.configuration')</a></li>
+                <li class="active"><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">@lang('admin/nodes_view.content.allocation')</a></li>
+                <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">@lang('admin/nodes_view.content.servers')</a></li>
             </ul>
         </div>
     </div>
@@ -37,7 +37,7 @@
     <div class="col-sm-8">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Existing Allocations</h3>
+                <h3 class="box-title">@lang('admin/nodes_view.content.exist')</h3>
             </div>
             <div class="box-body table-responsive no-padding" style="overflow-x: visible">
                 <table class="table table-hover" style="margin-bottom:0;">
@@ -45,10 +45,10 @@
                         <th>
                             <input type="checkbox" class="select-all-files hidden-xs" data-action="selectAll">
                         </th>
-                        <th>IP Address <i class="fa fa-fw fa-minus-square" style="font-weight:normal;color:#d9534f;cursor:pointer;" data-toggle="modal" data-target="#allocationModal"></i></th>
-                        <th>IP Alias</th>
-                        <th>Port</th>
-                        <th>Assigned To</th>
+                        <th>@lang('admin/nodes_view.content.ip') <i class="fa fa-fw fa-minus-square" style="font-weight:normal;color:#d9534f;cursor:pointer;" data-toggle="modal" data-target="#allocationModal"></i></th>
+                        <th>@lang('admin/nodes_view.content.alias')</th>
+                        <th>@lang('admin/nodes_view.content.port')</th>
+                        <th>@lang('admin/nodes_view.content.assign')</th>
                         <th>
                             <div class="btn-group hidden-xs">
                                 <button type="button" id="mass_actions" class="btn btn-sm btn-default dropdown-toggle disabled"
@@ -102,38 +102,38 @@
         <form action="{{ route('admin.nodes.view.allocation', $node->id) }}" method="POST">
             <div class="box box-success">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Assign New Allocations</h3>
+                    <h3 class="box-title">@lang('admin/nodes_view.content.assign_new')</h3>
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="pAllocationIP" class="control-label">IP Address</label>
+                        <label for="pAllocationIP" class="control-label">@lang('admin/nodes_view.content.ip')</label>
                         <div>
                             <select class="form-control" name="allocation_ip" id="pAllocationIP" multiple>
                                 @foreach($allocations as $allocation)
                                     <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
                                 @endforeach
                             </select>
-                            <p class="text-muted small">Enter an IP address to assign ports to here.</p>
+                            <p class="text-muted small">@lang('admin/nodes_view.content.ip_hint')</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pAllocationIP" class="control-label">IP Alias</label>
+                        <label for="pAllocationIP" class="control-label">@lang('admin/nodes_view.content.alias')</label>
                         <div>
                             <input type="text" id="pAllocationAlias" class="form-control" name="allocation_alias" placeholder="alias" />
-                            <p class="text-muted small">If you would like to assign a default alias to these allocations enter it here.</p>
+                            <p class="text-muted small">@lang('admin/nodes_view.content.alias_hint')</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pAllocationPorts" class="control-label">Ports</label>
+                        <label for="pAllocationPorts" class="control-label">@lang('admin/nodes_view.content.ports')</label>
                         <div>
                             <select class="form-control" name="allocation_ports[]" id="pAllocationPorts" multiple></select>
-                            <p class="text-muted small">Enter individual ports or port ranges here separated by commas or spaces.</p>
+                            <p class="text-muted small">@lang('admin/nodes_view.content.ports_hint')</p>
                         </div>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-success btn-sm pull-right">Submit</button>
+                    <button type="submit" class="btn btn-success btn-sm pull-right">@lang('admin/nodes_view.content.submit')</button>
                 </div>
             </div>
         </form>
@@ -144,7 +144,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Delete Allocations for IP Block</h4>
+                <h4 class="modal-title">@lang('admin/nodes_view.content.delete')</h4>
             </div>
             <form action="{{ route('admin.nodes.view.allocation.removeBlock', $node->id) }}" method="POST">
                 <div class="modal-body">
@@ -160,8 +160,8 @@
                 </div>
                 <div class="modal-footer">
                     {{{ csrf_field() }}}
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Delete Allocations</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('admin/nodes_view.content.close')</button>
+                    <button type="submit" class="btn btn-danger">@lang('admin/nodes_view.content.delete_allocations')</button>
                 </div>
             </form>
         </div>

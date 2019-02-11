@@ -6,16 +6,16 @@
 @extends('layouts.admin')
 
 @section('title')
-    {{ $node->name }}: Configuration
+    {{ $node->name }}: @lang('admin/nodes_view.configuration.header.title')
 @endsection
 
 @section('content-header')
-    <h1>{{ $node->name }}<small>Your daemon configuration file.</small></h1>
+    <h1>{{ $node->name }}@lang('admin/nodes_view.configuration.header.overview')</h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nodes') }}">Nodes</a></li>
+        <li><a href="{{ route('admin.index') }}">@lang('admin/nodes_view.configuration.header.admin')</a></li>
+        <li><a href="{{ route('admin.nodes') }}">@lang('admin/nodes_view.header.nodes')</a></li>
         <li><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></li>
-        <li class="active">Configuration</li>
+        <li class="active">@lang('admin/nodes_view.configuration.header.title')</li>
     </ol>
 @endsection
 
@@ -24,11 +24,11 @@
     <div class="col-xs-12">
         <div class="nav-tabs-custom nav-tabs-floating">
             <ul class="nav nav-tabs">
-                <li><a href="{{ route('admin.nodes.view', $node->id) }}">About</a></li>
-                <li><a href="{{ route('admin.nodes.view.settings', $node->id) }}">Settings</a></li>
-                <li class="active"><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">Configuration</a></li>
-                <li><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">Allocation</a></li>
-                <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">Servers</a></li>
+                <li><a href="{{ route('admin.nodes.view', $node->id) }}">@lang('admin/nodes_view.content.about')</a></li>
+                <li><a href="{{ route('admin.nodes.view.settings', $node->id) }}">@lang('admin/nodes_view.content.settings')</a></li>
+                <li class="active"><a href="{{ route('admin.nodes.view.configuration', $node->id) }}">@lang('admin/nodes_view.content.configuration')</a></li>
+                <li><a href="{{ route('admin.nodes.view.allocation', $node->id) }}">@lang('admin/nodes_view.content.allocation')</a></li>
+                <li><a href="{{ route('admin.nodes.view.servers', $node->id) }}">@lang('admin/nodes_view.content.servers')</a></li>
             </ul>
         </div>
     </div>
@@ -37,26 +37,26 @@
     <div class="col-sm-8">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Configuration File</h3>
+                <h3 class="box-title">@lang('admin/nodes_view.configuration.content.config')</h3>
             </div>
             <div class="box-body">
                 <pre class="no-margin">{{ $node->getConfigurationAsJson(true) }}</pre>
             </div>
             <div class="box-footer">
-                <p class="no-margin">This file should be placed in your daemon's <code>config</code> directory in a file called <code>core.json</code>.</p>
+                <p class="no-margin">@lang('admin/nodes_view.configuration.content.config_hint')</p>
             </div>
         </div>
     </div>
     <div class="col-sm-4">
         <div class="box box-success">
             <div class="box-header with-border">
-                <h3 class="box-title">Auto-Deploy</h3>
+                <h3 class="box-title">@lang('admin/nodes_view.configuration.content.auto')</h3>
             </div>
             <div class="box-body">
-                <p class="text-muted small">To simplify the configuration of nodes it is possible to fetch the config from the panel. A token is required for this process. The button below will generate a token and provide you with the commands necessary for automatic configuration of the node. <em>Tokens are only valid for 5 minutes.</em></p>
+                <p class="text-muted small">@lang('admin/nodes_view.configuration.content.auto_hint')</p>
             </div>
             <div class="box-footer">
-                <button type="button" id="configTokenBtn" class="btn btn-sm btn-default" style="width:100%;">Generate Token</button>
+                <button type="button" id="configTokenBtn" class="btn btn-sm btn-default" style="width:100%;">@lang('admin/nodes_view.configuration.content.generate')</button>
             </div>
         </div>
     </div>
@@ -70,15 +70,15 @@
         $.getJSON('{{ route('admin.nodes.view.configuration.token', $node->id) }}').done(function (data) {
             swal({
                 type: 'success',
-                title: 'Token created.',
-                text: 'Your token will expire <strong>in 5 minutes.</strong><br /><br />' +
-                      '<p>To auto-configure your node run the following command:<br /><small><pre>npm run configure -- --panel-url {{ config('app.url') }} --token ' + data.token + '</pre></small></p>',
+                title: '@lang('admin/nodes_view.configuration.content.success_title')',
+                text: '@lang('admin/nodes_view.configuration.content.success_textStart')' +
+                      '<p>@lang('admin/nodes_view.configuration.content.success_textEnd')<br /><small><pre>npm run configure -- --panel-url {{ config('app.url') }} --token ' + data.token + '</pre></small></p>',
                 html: true
             })
         }).fail(function () {
             swal({
-                title: 'Error',
-                text: 'Something went wrong creating your token.',
+                title: '@lang('admin/nodes_view.configuration.content.error_title')',
+                text: '@lang('admin/nodes_view.configuration.content.error_text')',
                 type: 'error'
             });
         });
