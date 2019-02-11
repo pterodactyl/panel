@@ -45,6 +45,8 @@ return [
         'users' => 'Users',
         'service' => 'SERVICE MANAGEMENT',
         'nests' => 'Nests',
-        'packs' => 'Packs',
+        'packs' => 'Packs',        
+        'logout_title' => 'Do you want to log out?',
+        'logout' => 'Log out',
     ],
 ];

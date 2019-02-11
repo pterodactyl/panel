@@ -55,8 +55,6 @@ return [
             <p class="text-muted small">If checked, any errors thrown while revoking keys across nodes will be ignored. You should avoid this checkbox if possible as any non-revoked keys could continue to be active for up to 24 hours after this account is changed. If you are needing to revoke account permissions immediately and are facing node issues, you should check this box and then restart any nodes that failed to be updated to clear out any stored keys.</p>',
             'delete' => 'Delete User',
             'delete_hint' => 'There must be no servers associated with this account in order for it to be deleted.',
-            'logout_title' => 'Do you want to log out?',
-            'logout' => 'Log out',
         ],
     ],
 ];
