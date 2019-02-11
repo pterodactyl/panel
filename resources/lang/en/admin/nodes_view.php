@@ -56,7 +56,7 @@ return [
     ],
     'index' => [
         'header' = > '<small>A quick overview of your node.</small>',
-        'information' => 'Information'
+        'information' => 'Information',
         'daemon_ver' => 'Daemon Version',
         'latest' => 'Latest:'
         'sys_info' => 'System Information',

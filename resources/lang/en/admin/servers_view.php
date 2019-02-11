@@ -93,7 +93,7 @@ return [
         ],
         'content' => [
             'base_info' => 'Base Information',
-            'server_name' => 'Server Name'
+            'server_name' => 'Server Name',
             'character_limit' => 'Character limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code> (max 35 characters).',
             'ext_id' => 'External Identifier',
             'ext_id_hint' => 'Leave empty to not assign an external identifier for this server. The external ID should be unique to this server and not be in use by any other servers.',
