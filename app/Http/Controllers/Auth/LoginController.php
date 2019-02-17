@@ -126,7 +126,7 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request);
         }
 
-        if ($user->getAttributes()['oauth2_id'] != null) {
+        if (isset($user->getAttributes()['oauth2_id'])) {
             return $this->sendFailedLoginResponse($request, $user);
         }
 

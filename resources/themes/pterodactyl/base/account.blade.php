@@ -145,7 +145,7 @@
             </div>
         </div>
     </div>
-    @if(! is_null(env('OAUTH2_CLIENT_ID')) && Auth::user()->getAttributes()['oauth2_id'] != null)
+    @if(! is_null(env('OAUTH2_CLIENT_ID')) && isset(Auth::user()->getAttributes()['oauth2_id']))
         <div class="col-sm-6">
             <div class="row">
                 <div class="col-xs-12">

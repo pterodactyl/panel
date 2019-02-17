@@ -90,7 +90,7 @@ class SecurityController extends Controller
      */
     public function generateTotp(Request $request)
     {
-        if ($request->user()->getAttributes()['oauth2_id'] != null) {
+        if (isset($request->user()->getAttributes()['oauth2_id'])) {
             return abort(500, 'The user with the oauth2_id: ' . $request->user()->getAttributes()['oauth2_id'] . ' was not allowed to require a 2fa QR as he signed up thru OAuth2.');
         }
 
@@ -110,7 +110,7 @@ class SecurityController extends Controller
      */
     public function setTotp(Request $request)
     {
-        if ($request->user()->getAttributes()['oauth2_id'] != null) {
+        if (isset($request->user()->getAttributes()['oauth2_id'])) {
             return abort(500, 'The user with the oauth2_id: ' . $request->user()->getAttributes()['oauth2_id'] . ' was not allowed to set a 2fa token as he signed up thru OAuth2.');
         }
 
@@ -134,7 +134,7 @@ class SecurityController extends Controller
      */
     public function disableTotp(Request $request)
     {
-        if ($request->user()->getAttributes()['oauth2_id'] != null) {
+        if (isset($request->user()->getAttributes()['oauth2_id'])) {
             return abort(500, 'The user with the oauth2_id: ' . $request->user()->getAttributes()['oauth2_id'] . ' was not allowed to disable 2fa as he signed up thru OAuth2.');
         }
 

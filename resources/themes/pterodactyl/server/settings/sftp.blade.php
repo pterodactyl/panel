@@ -4,6 +4,7 @@
 {{-- This software is licensed under the terms of the MIT license. --}}
 {{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.master')
+@include('partials/server.settings.sftp-notice')
 
 @section('title')
     @lang('server.config.sftp.header')

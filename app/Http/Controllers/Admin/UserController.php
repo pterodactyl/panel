@@ -225,7 +225,7 @@ class UserController extends Controller
             return redirect()->route('admin.users.view', $user->id);
         }
 
-        if ($user->getAttributes()['oauth2_id'] != null) {
+        if (isset($user->getAttributes()['oauth2_id'])) {
             DB::table('users')->where('id', '=', $user->id)->update(['oauth2_id'  => null]);
         } else {
             $oauth2_id = $request->only('oauth2_id')['oauth2_id'];
