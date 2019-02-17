@@ -144,7 +144,7 @@ class OAuth2SettingsCommand extends Command
                 (env('OAUTH2_CREATE_USER', false) ? '1' : '0')
             ) == trans('command/messages.environment.oauth2.create_user_options.create') ? 'true' : 'false');
 
-        $this->output->warning(trans(('command/messages.environment.oauth2.create_user_warning.'. ($this->variables['OAUTH2_CREATE_USER'] == true ? 'create' : 'only_allow_login'))));
+        $this->output->warning(trans(('command/messages.environment.oauth2.create_user_warning.'. ($this->variables['OAUTH2_CREATE_USER'] == 'true' ? 'create' : 'only_allow_login'))));
 
         $this->variables['OAUTH2_UPDATE_USER'] = $this->option('updateUser') ?? ($this->confirm(
                 trans('command/messages.environment.oauth2.update_user'),env('OAUTH2_UPDATE_USER', true)
