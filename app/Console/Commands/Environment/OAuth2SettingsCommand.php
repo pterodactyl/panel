@@ -43,6 +43,7 @@ class OAuth2SettingsCommand extends Command
                             {--emailKey= : The key for getting the user\'s email from the OAuth2 server.}
                             {--firstNameKey= : The key for getting the user\'s first name from the OAuth2 server.}
                             {--lastNameKey= : The key for getting the user\'s last name from the OAuth2 server.}
+                            {--scopes= : The scopes for the authorization url of OAuth2 server.}
                             {--createUser= : Whether or not to create a user if he doesnt exist on the system using OAuth2 resources.}
                             {--updateUser= : Whether or not to update the user\'s details using OAuth2 resources after each login.}';
 
@@ -137,6 +138,10 @@ class OAuth2SettingsCommand extends Command
         } else {
             array_push($this->unset,'OAUTH2_LAST_NAME_KEY');
         }
+
+        $this->variables['OAUTH2_SCOPES'] =  $this->option('scopes') ?? $this->ask(
+                trans('command/messages.environment.oauth2.scopes'), env('OAUTH2_SCOPES', 'email')
+            );
 
         $this->variables['OAUTH2_CREATE_USER'] = $this->option('createUser') ?? ($this->choice(
                 trans('command/messages.environment.oauth2.create_user'),

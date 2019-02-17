@@ -111,6 +111,7 @@ return [
             'first_name' => 'First Name OAuth2 Resource Key',
             'ask_last_name' => 'Does your OAuth2 server/provider provide the user\'s last name?',
             'last_name' => 'Last Name OAuth2 Resource Key',
+            'scopes' => 'OAuth2 Authorization Scopes (Separated by \',\')',
             'create_user' => 'Would you like to only allow users with an account to login or create one if the user doesn\'t have one?',
             'create_user_options' => [
                 'only_allow_login' => 'Only allow users with an existing account',

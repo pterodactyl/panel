@@ -23,7 +23,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "hashids/hashids": "^3.0",
         "igaster/laravel-theme": "^2.0.6",
-        "jer3m01/laravel-oauth2-php-wrapper": "^1.1",
+        "jer3m01/laravel-oauth2-php-wrapper": "^1.2",
         "laracasts/utilities": "^3.0",
         "laravel/framework": "~5.7.14",
         "laravel/tinker": "^1.0",

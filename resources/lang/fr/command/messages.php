@@ -21,6 +21,7 @@ return [
             'first_name' => 'Clé De Resource OAuth2 Pour Le Prénom',
             'ask_last_name' => 'Est-ce que vôtre serveur/procureur OAuth2 renseigne le nom de famille de l\'utilisateur?',
             'last_name' => 'Clé De Resource OAuth2 Pour Le Nom De Famille',
+            'scopes' => 'Scopes D\'Authorisation OAuth2 (Séparé par \',\')',
             'create_user' => 'Voulez vous authoriser uniquement les utilisateurs avec un compte d\'utiliser OAuth2 ou voulez vous leur créer un nouveau compte si il n\'en n\'ont pas?',
             'create_user_options' => [
                 'only_allow_login' => 'Uniquement authoriser les utilisateurs existant.',

@@ -26,6 +26,21 @@ return [
     ],
 
     /*
+     * Fully Qualified Provider Class Name
+     * https://github.com/thephpleague/oauth2-client/blob/master/docs/providers/thirdparty.md
+     * Leave blank to use the default one.
+     */
+    'provider' => '',
+
+    /*
+     * getAuthorizationUrl() Options
+     * Use this option if you need to pass options to your provider's getAuthorizationUrl() method.
+     */
+    'authorization-options' => [
+        'scope' => preg_split( '~,~', env('OAUTH2_SCOPES', 'email')),
+    ],
+
+    /*
      * Session keys
      */
     'authorization-code-session-key' => 'oauth2_code',
