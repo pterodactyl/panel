@@ -15,4 +15,5 @@ return [
     'reset_password_text' => 'Herstel uw account wachtwoord.',
     'sendlink' => 'Stuur wachtwoord herstel link',
     'throttle' => 'Teveel inlog pogingen. Probeer het opnieuw in :seconds seconden.',
+    'oauth2_sign_in' => 'Log In Met OAuth2',
 ];

@@ -32,6 +32,8 @@ return [
         'update_pass' => 'Modifier le mot de passe',
         'update_user' => "Modifier l'utilisateur",
         'username_help' => "Votre nom d'utilisateur doit être unique à votre compte et ne doit être composé que des caractères suivants : :requirements.",
+        'revoke_oauth2' => 'Révoquer L\'Accès OAuth2',
+        'revoke_oauth2_description' => 'Révoquer l\'access du panel à votre compte OAuth2 de vôtre serveur/procureur OAuth2. Vous devrez re-authoriser reauthorize l\'accès pour pouvoir vous reconnectez.',
     ],
     'api' => [
         'index' => [

@@ -2,14 +2,14 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Users\TwoFactorSetupService;
-use Pterodactyl\Services\Users\ToggleTwoFactorService;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Users\ToggleTwoFactorService;
+use Pterodactyl\Services\Users\TwoFactorSetupService;
 
 class SecurityController extends Controller
 {
@@ -90,6 +90,9 @@ class SecurityController extends Controller
      */
     public function generateTotp(Request $request)
     {
+        if($request->user()->getAttributes()['oauth2_id'] != null)
+            return abort(500, 'The user with the oauth2_id: '.$request->user()->getAttributes()['oauth2_id'].' was not allowed to require a 2fa QR as he signed up thru OAuth2.');
+
         return response()->json([
             'qrImage' => $this->twoFactorSetupService->handle($request->user()),
         ]);
@@ -106,6 +109,9 @@ class SecurityController extends Controller
      */
     public function setTotp(Request $request)
     {
+        if($request->user()->getAttributes()['oauth2_id'] != null)
+            return abort(500, 'The user with the oauth2_id: '.$request->user()->getAttributes()['oauth2_id'].' was not allowed to set a 2fa token as he signed up thru OAuth2.');
+
         try {
             $this->toggleTwoFactorService->handle($request->user(), $request->input('token') ?? '');
 
@@ -126,6 +132,9 @@ class SecurityController extends Controller
      */
     public function disableTotp(Request $request)
     {
+        if($request->user()->getAttributes()['oauth2_id'] != null)
+        return abort(500, 'The user with the oauth2_id: '.$request->user()->getAttributes()['oauth2_id'].' was not allowed to disable 2fa as he signed up thru OAuth2.');
+
         try {
             $this->toggleTwoFactorService->handle($request->user(), $request->input('token') ?? '', false);
         } catch (TwoFactorAuthenticationTokenInvalid $exception) {

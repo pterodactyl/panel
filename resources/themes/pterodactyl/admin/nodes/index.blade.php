@@ -30,7 +30,7 @@
                 <h3 class="box-title">Node List</h3>
                 <div class="box-tools">
                     <form action="{{ route('admin.nodes') }}" method="GET">
-                        <div class="input-group input-group-sm">
+                        <div class="input-group input-group-sm container">
                             <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="Search Nodes">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>

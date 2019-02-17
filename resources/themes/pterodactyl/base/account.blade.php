@@ -23,6 +23,11 @@
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
+                    @if(! is_null(env('OAUTH2_CLIENT_ID')) && Auth::user()->getAttributes()['oauth2_id'] != null)
+                        <div class="disabled-by-oauth2">
+                            <p>@lang('strings.disabled_by_oauth2')</p>
+                        </div>
+                    @endif
                     <div class="box-header with-border">
                         <h3 class="box-title">@lang('base.account.update_pass')</h3>
                     </div>
@@ -112,6 +117,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="col-sm-6">
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
@@ -143,5 +150,24 @@
             </div>
         </div>
     </div>
+    @if(! is_null(env('OAUTH2_CLIENT_ID')) && Auth::user()->getAttributes()['oauth2_id'] != null)
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box box-danger">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@lang('base.account.revoke_oauth2')</h3>
+                        </div>
+                        <div class="box-body">
+                            <p class="no-margin">@lang('base.account.revoke_oauth2_description')</p>
+                        </div>
+                        <div class="box-footer">
+                            <a href="{{ env('OAUTH2_URL_REVOKE') }}" target="_blank"><button class="btn btn-danger btn-sm pull-right">@lang('base.account.revoke_oauth2')</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>
 @endsection

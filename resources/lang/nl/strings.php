@@ -46,4 +46,5 @@ return [
     'username' => 'gebruikersnaam',
     'whoops' => 'Oeps',
     'yes' => 'Ja',
+    'or' => 'Of',
 ];

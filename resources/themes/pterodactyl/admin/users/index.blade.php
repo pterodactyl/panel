@@ -25,7 +25,7 @@
                 <h3 class="box-title">User List</h3>
                 <div class="box-tools">
                     <form action="{{ route('admin.users') }}" method="GET">
-                        <div class="input-group input-group-sm">
+                        <div class="input-group input-group-sm container">
                             <input type="text" name="query" class="form-control pull-right" style="width:30%;" value="{{ request()->input('query') }}" placeholder="Search">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
@@ -44,6 +44,7 @@
                             <th>Client Name</th>
                             <th>Username</th>
                             <th class="text-center">2FA</th>
+                            @if(! is_null(env('OAUTH2_CLIENT_ID'))) <th class="text-center">OAuth2</th>@endif
                             <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</span></th>
                             <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</span></th>
                             <th></th>
@@ -56,13 +57,34 @@
                                 <td><a href="{{ route('admin.users.view', $user->id) }}">{{ $user->email }}</a> @if($user->root_admin)<i class="fa fa-star text-yellow"></i>@endif</td>
                                 <td>{{ $user->name_last }}, {{ $user->name_first }}</td>
                                 <td>{{ $user->username }}</td>
-                                <td class="text-center">
-                                    @if($user->use_totp)
-                                        <i class="fa fa-lock text-green"></i>
-                                    @else
-                                        <i class="fa fa-unlock text-red"></i>
-                                    @endif
-                                </td>
+                                @if(! is_null(env('OAUTH2_CLIENT_ID')))
+                                    <td class="text-center">
+                                        @if($user->getAttributes()['oauth2_id'] != null)
+                                            <i class="fa fa-minus text-gray" aria-hidden="true"></i>
+                                        @else
+                                            @if($user->use_totp)
+                                                <i class="fa fa-lock text-green"></i>
+                                            @else
+                                                <i class="fa fa-unlock text-red"></i>
+                                            @endif
+                                        @endif
+                                    </td>
+                                    <td class="text-center">
+                                        @if($user->getAttributes()['oauth2_id'] != null)
+                                            <i class="fa fa-check text-green" aria-hidden="true"></i>
+                                        @else
+                                            <i class="fa fa-times text-red" aria-hidden="true"></i>
+                                        @endif
+                                    </td>
+                                @else
+                                    <td class="text-center">
+                                        @if($user->use_totp)
+                                            <i class="fa fa-lock text-green"></i>
+                                        @else
+                                            <i class="fa fa-unlock text-red"></i>
+                                        @endif
+                                    </td>
+                                @endif
                                 <td class="text-center">
                                     <a href="{{ route('admin.servers', ['query' => $user->email]) }}">{{ $user->servers_count }}</a>
                                 </td>

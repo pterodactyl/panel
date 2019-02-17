@@ -59,6 +59,11 @@
     </div>
     <div class="col-md-6">
         <div class="box {{ (Auth::user()->use_totp) ? 'box-success' : 'box-danger' }}">
+            @if(! is_null(env('OAUTH2_CLIENT_ID')) && Auth::user()->getAttributes()['oauth2_id'] != null)
+                <div class="disabled-by-oauth2">
+                    <p>@lang('strings.disabled_by_oauth2')</p>
+                </div>
+            @endif
             <div class="box-header with-border">
                 <h3 class="box-title">@lang('base.security.2fa_header')</h3>
             </div>

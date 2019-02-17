@@ -2,15 +2,16 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Hashing\Hasher;
+use DB;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
-use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Http\Controllers\Controller;
 
 class ResetPasswordController extends Controller
 {
@@ -76,6 +77,25 @@ class ResetPasswordController extends Controller
             'email' => 'required|email',
             'password' => 'required|confirmed|min:8',
         ];
+    }
+
+    /**
+     * Display the password reset view for the given token.
+     *
+     * If no token is present, display the link request form.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string|null  $token
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function showResetForm(Request $request, $token = null)
+    {
+        if (DB::table('users')->where('email', '=', $request->email)->value('oauth2_id') != null)
+            return abort(500, 'Couldn\'t let the user with the oauth2_id: ' . DB::table('users')->where('email', '=', $request->email)->value('oauth2_id') . ' change his password as he signed up thru OAuth2.');
+
+        return view('auth.passwords.reset')->with(
+            ['token' => $token, 'email' => $request->email]
+        );
     }
 
     /**

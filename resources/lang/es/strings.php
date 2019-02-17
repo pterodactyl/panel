@@ -98,4 +98,5 @@ return [
     'user_identifier' => 'Nombre de usuario o Email',
     'whoops' => 'Whoops',
     'yes' => 'Sí',
+    'or' => 'O',
 ];

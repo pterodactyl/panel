@@ -27,6 +27,14 @@
                     <h3 class="box-title">Identity</h3>
                 </div>
                 <div class="box-body">
+                    @if(! is_null(env('OAUTH2_CLIENT_ID')) && $user->getAttributes()['oauth2_id'] != null)
+                        <div class="form-group">
+                            <label for="oauth2_id" class="control-label">OAuth2 ID</label>
+                            <div>
+                                <input readonly type="text" name="oauth2_id" value="{{ $user->getAttributes()['oauth2_id'] }}" class="form-control form-autocomplete-stop">
+                            </div>
+                        </div>
+                    @endif
                     <div class="form-group">
                         <label for="email" class="control-label">Email</label>
                         <div>
@@ -72,6 +80,11 @@
         </div>
         <div class="col-md-6">
             <div class="box">
+                @if(! is_null(env('OAUTH2_CLIENT_ID')) && $user->getAttributes()['oauth2_id'] != null)
+                    <div class="disabled-by-oauth2">
+                        <p>@lang('strings.disabled_by_oauth2')</p>
+                    </div>
+                @endif
                 <div class="box-header with-border">
                     <h3 class="box-title">Password</h3>
                 </div>
@@ -111,6 +124,35 @@
                 </div>
             </div>
         </div>
+        @if(! is_null(env('OAUTH2_CLIENT_ID')))
+            <div class="col-md-6">
+                <div class="box box-{{ $user->getAttributes()['oauth2_id'] != null ? 'danger' : 'success' }}">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">OAuth2</h3>
+                    </div>
+                    <div class="box-body">
+                        <p class="no-margin">@lang('admin/user.convert_description')</p>
+                    </div>
+                    <div class="box-footer">
+                        <form action="{{ route('admin.users.view', $user->id) }}" method="POST">
+                            {!! csrf_field() !!}
+                            {!! method_field('PUT') !!}
+                            @if($user->getAttributes()['oauth2_id'] != null)
+                                <input id="oauth2" type="submit" class="btn btn-sm btn-danger pull-right" value="@lang('admin/user.convert_to_normal')" />
+                            @else
+                                <label for="oauth2_id" class="control-label">OAuth2 ID</label>
+                                <div class="input-group input-group-sm" data-children-count="1">
+                                    <input readonly type="text" name="oauth2_id" class="form-control form-autocomplete-stop" required/>
+                                    <span class="input-group-btn">
+                                        <input id="oauth2" type="submit" class="btn btn-sm btn-{{ $user->getAttributes()['oauth2_id'] != null ? 'danger' : 'success' }}" value="@lang('admin/user.convert_to_oauth2')" />
+                                    </span>
+                                </div>
+                            @endif
+                        </form>
+                    </div>
+                </div>
+            </div>
+        @endif
     </form>
     {{--<div class="col-xs-12">--}}
         {{--<div class="box">--}}

@@ -90,6 +90,8 @@ Route::group(['prefix' => 'users'], function () {
     Route::patch('/view/{user}', 'UserController@update');
 
     Route::delete('/view/{user}', 'UserController@delete');
+
+    Route::put('/view/{user}', 'UserController@put');
 });
 
 /*

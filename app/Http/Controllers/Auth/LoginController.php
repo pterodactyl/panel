@@ -2,19 +2,19 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
-use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Auth\Events\Failed;
-use Illuminate\Http\RedirectResponse;
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use PragmaRX\Google2FA\Google2FA;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Http\Controllers\Controller;
 
 class LoginController extends Controller
 {
@@ -125,6 +125,8 @@ class LoginController extends Controller
         } catch (RecordNotFoundException $exception) {
             return $this->sendFailedLoginResponse($request);
         }
+
+        if ($user->getAttributes()['oauth2_id'] != null) return $this->sendFailedLoginResponse($request, $user);
 
         $validCredentials = password_verify($request->input('password'), $user->password);
         if ($user->use_totp) {
