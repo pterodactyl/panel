@@ -83,9 +83,6 @@
                     }
 
                     this.isLoading = true;
-
-                    console.log(`${this.fm.currentDirectory}/${this.folderName.replace(/^\//, '')}`);
-
                     createFolder(this.server, this.credentials, `${this.fm.currentDirectory}/${this.folderName.replace(/^\//, '')}`)
                         .then(() => {
                             this.$emit('close');
