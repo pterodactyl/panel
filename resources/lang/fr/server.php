@@ -28,7 +28,7 @@ return [
             'details' => 'Détails du SFTP',
             'header' => 'Configurations SFTP',
             'header_sub' => 'Informations de compte pour la connexion SFTP.',
-            'oauth2_notice' => 'Le mot de passe SFTP est le <b>MOT DE PASSE DU COMPTE SUR LE PANEL</b> qui se trouve sur la page de vôtre compte et <b>non vôtre MOT DE PASSE OAUTH2</b>!'
+            'oauth2_notice' => 'Le mot de passe SFTP est le <b>MOT DE PASSE DU COMPTE SUR LE PANEL</b> qui se trouve sur la page de vôtre compte et <b>non vôtre MOT DE PASSE OAUTH2</b>!',
         ],
         'startup' => [
             'command' => 'Commande de lancement ',
