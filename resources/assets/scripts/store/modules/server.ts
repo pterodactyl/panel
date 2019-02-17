@@ -1,8 +1,8 @@
 // @ts-ignore
 import route from '../../../../../vendor/tightenco/ziggy/src/js/route';
 import {ActionContext} from "vuex";
-import {ServerData} from "../../models/server";
-import {ServerApplicationCredentials, ServerState} from "../types";
+import {ServerData} from "@/models/server";
+import {FileManagerState, ServerApplicationCredentials, ServerState} from "../types";
 
 export default {
     namespaced: true,
@@ -10,6 +10,9 @@ export default {
         server: {},
         credentials: {node: '', key: ''},
         console: [],
+        fm: {
+            currentDirectory: '/',
+        },
     },
     getters: {},
     actions: {
@@ -63,8 +66,20 @@ export default {
                     .catch(reject);
             });
         },
+
+        /**
+         * Update the last viewed directory for the server the user is currently viewing. This allows
+         * us to quickly navigate back to that directory, as well as ensure that actions taken are
+         * performed aganist the correct directory without having to pass that mess everywhere.
+         */
+        updateCurrentDirectory: ({commit}: ActionContext<ServerState, any>, directory: string) => {
+            commit('SET_CURRENT_DIRECTORY', directory);
+        },
     },
     mutations: {
+        SET_CURRENT_DIRECTORY: function (state: ServerState, directory: string) {
+            state.fm.currentDirectory = directory;
+        },
         SERVER_DATA: function (state: ServerState, data: ServerData) {
             state.server = data;
         },

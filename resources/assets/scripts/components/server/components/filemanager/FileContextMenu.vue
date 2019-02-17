@@ -33,7 +33,7 @@
                 </div>
                 <div class="action">New File</div>
             </div>
-            <div class="context-row">
+            <div class="context-row" v-on:click="openFolderModal">
                 <div class="icon">
                     <Icon name="folder-plus" class="h-4"/>
                 </div>
@@ -58,5 +58,12 @@
     export default Vue.extend({
         name: 'FileContextMenu',
         components: {Icon},
+
+        methods: {
+            openFolderModal: function () {
+                window.events.$emit('server:files:open-directory-modal');
+                this.$emit('close');
+            }
+        }
     });
 </script>

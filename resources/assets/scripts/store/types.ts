@@ -19,10 +19,15 @@ export type ServerApplicationCredentials = {
     key: string,
 };
 
+export type  FileManagerState = {
+    currentDirectory: string,
+}
+
 export type ServerState = {
     server: ServerData,
     credentials: ServerApplicationCredentials,
     console: Array<string>,
+    fm: FileManagerState,
 };
 
 export type DashboardState = {

@@ -10,7 +10,12 @@
             <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
             <div class="flex-none w-1/6"></div>
         </div>
-        <FileContextMenu class="context-menu" v-show="contextMenuVisible" ref="contextMenu"/>
+        <FileContextMenu
+            class="context-menu"
+            v-show="contextMenuVisible"
+            v-on:close="contextMenuVisible = false"
+            ref="contextMenu"
+        />
     </div>
 </template>
 

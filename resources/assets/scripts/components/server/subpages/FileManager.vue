@@ -42,12 +42,13 @@
         <div class="flex mt-6" v-if="!loading && !errorMessage">
             <div class="flex-1"></div>
             <div class="mr-4">
-                <a href="#" class="block btn btn-secondary btn-sm">New Folder</a>
+                <a href="#" class="block btn btn-secondary btn-sm" v-on:click.prevent="openNewFolderModal">New Folder</a>
             </div>
             <div>
                 <a href="#" class="block btn btn-primary btn-sm">New File</a>
             </div>
         </div>
+        <CreateFolderModal/>
     </div>
 </template>
 
@@ -58,6 +59,7 @@
     import getDirectoryContents from "@/api/server/getDirectoryContents";
     import FileRow from "@/components/server/components/filemanager/FileRow.vue";
     import FolderRow from "@/components/server/components/filemanager/FolderRow.vue";
+    import CreateFolderModal from '../components/filemanager/modals/CreateFolderModal.vue';
 
     type DataStructure = {
         loading: boolean,
@@ -70,7 +72,7 @@
 
     export default Vue.extend({
         name: 'FileManager',
-        components: {FileRow, FolderRow},
+        components: {CreateFolderModal, FileRow, FolderRow},
         computed: {
             ...mapState('server', ['server', 'credentials']),
             ...mapState('socket', ['connected']),
@@ -110,6 +112,8 @@
              * Watch the current directory setting and when it changes update the file listing.
              */
             currentDirectory: function () {
+                this.$store.dispatch('server/updateCurrentDirectory', this.currentDirectory);
+
                 this.listDirectory();
             },
 
@@ -167,6 +171,10 @@
                         this.loading = false;
                     });
             },
+
+            openNewFolderModal: function () {
+                window.events.$emit('server:files:open-directory-modal');
+            }
         },
     });
 </script>
