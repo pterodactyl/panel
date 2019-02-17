@@ -313,7 +313,7 @@ return [
             'details' => 'SFTP Details',
             'conn_addr' => 'Connection Address',
             'warning' => 'The SFTP password is your account password. Ensure that your client is set to use SFTP and not FTP or FTPS for connections, there is a difference between the protocols.',
-            'oauth2_notice' => "The SFTP password is your <b>PANEL ACCOUNT PASSWORD</b> located on your account page and <b>not your OAUTH2 PASSWORD</b>!"
+            'oauth2_notice' => 'The SFTP password is your <b>PANEL ACCOUNT PASSWORD</b> located on your account page and <b>not your OAUTH2 PASSWORD</b>!'
         ],
         'database' => [
             'header' => 'Databases',

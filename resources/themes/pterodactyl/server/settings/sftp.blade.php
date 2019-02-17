@@ -21,32 +21,33 @@
 @endsection
 
 @section('content')
-<div class="row">
-    <div class="col-xs-12">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">@lang('server.config.sftp.details')</h3>
-            </div>
-            <div class="box-body">
-                <div class="form-group">
-                    <label class="control-label">@lang('server.config.sftp.conn_addr')</label>
-                    <div>
-                        <input type="text" class="form-control" readonly value="sftp://{{ $node->fqdn }}:{{ $node->daemonSFTP }}" />
+    @yield('notice::sftp')
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@lang('server.config.sftp.details')</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="control-label">@lang('server.config.sftp.conn_addr')</label>
+                        <div>
+                            <input type="text" class="form-control" readonly value="sftp://{{ $node->fqdn }}:{{ $node->daemonSFTP }}" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="control-label">@lang('strings.username')</label>
+                        <div>
+                            <input type="text" class="form-control" readonly value="{{ auth()->user()->username }}.{{ $server->uuidShort }}" />
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="password" class="control-label">@lang('strings.username')</label>
-                    <div>
-                        <input type="text" class="form-control" readonly value="{{ auth()->user()->username }}.{{ $server->uuidShort }}" />
-                    </div>
+                <div class="box-footer">
+                    <p class="small text-muted no-margin-bottom">@lang('server.config.sftp.warning')</p>
                 </div>
-            </div>
-            <div class="box-footer">
-                <p class="small text-muted no-margin-bottom">@lang('server.config.sftp.warning')</p>
             </div>
         </div>
     </div>
-</div>
 @endsection
 
 @section('footer-scripts')
