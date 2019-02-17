@@ -27,6 +27,14 @@
                     <h3 class="box-title">Identity</h3>
                 </div>
                 <div class="box-body">
+                    @if(! is_null(env('OAUTH2_CLIENT_ID')))
+                        <div class="form-group">
+                            <label for="oauth2_id" class="control-label">OAuth2 ID <span class="field-optional"></span></label>
+                            <div>
+                                <input id="oauth2-id" autocomplete="off" type="text" name="oauth2_id" value="{{ old('oauth2_id') }}" class="form-control">
+                            </div>
+                        </div>
+                    @endif
                     <div class="form-group">
                         <label for="email" class="control-label">Email</label>
                         <div>
@@ -90,6 +98,11 @@
         </div>
         <div class="col-md-6">
             <div class="box">
+                @if(! is_null(env('OAUTH2_CLIENT_ID')))
+                    <div id="password-overlay" class="disabled-by-oauth2 hidden">
+                        <p>@lang('strings.disabled_by_oauth2')</p>
+                    </div>
+                @endif
                 <div class="box-header with-border">
                     <h3 class="box-title">Password</h3>
                 </div>
@@ -130,4 +143,15 @@
             return false;
         });
     </script>
+    @if(! is_null(env('OAUTH2_CLIENT_ID')))
+        <script>
+            $(document).ready(function () {
+                if ($('#oauth2-id').val() !== "") $('#password-overlay').removeClass("hidden");
+            });
+            $('#oauth2-id').keyup(function () {
+                if ($('#oauth2-id').val() === "") $('#password-overlay').addClass("hidden");
+                else $('#password-overlay').removeClass("hidden");
+            });
+        </script>
+    @endif
 @endsection

@@ -20,7 +20,7 @@ class UserFormRequest extends AdminFormRequest
         }
 
         return $rules->only([
-            'email', 'username', 'name_first', 'name_last', 'password',
+            'email', 'username', 'oauth2_id', 'name_first', 'name_last', 'password',
             'language', 'ignore_connection_error', 'root_admin',
         ])->toArray();
     }

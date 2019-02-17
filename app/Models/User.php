@@ -2,22 +2,22 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Validation\Rules\In;
+use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
+use Pterodactyl\Rules\Username;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use Sofa\Eloquence\Contracts\CleansAttributes;
+use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
-use Pterodactyl\Rules\Username;
-use Illuminate\Validation\Rules\In;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Notifications\Notifiable;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 class User extends Model implements
     AuthenticatableContract,
@@ -76,6 +76,7 @@ class User extends Model implements
         'totp_authenticated_at',
         'gravatar',
         'root_admin',
+        'oauth2_id',
     ];
 
     /**
@@ -143,6 +144,7 @@ class User extends Model implements
         'password' => 'sometimes',
         'language' => 'sometimes',
         'use_totp' => 'sometimes',
+        'oauth2_id' => 'sometimes',
     ];
 
     /**
@@ -162,6 +164,7 @@ class User extends Model implements
         'language' => 'string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
+        'oauth2_id' => 'nullable|string',
     ];
 
     /**

@@ -166,7 +166,15 @@ class UserController extends Controller
      */
     public function store(UserFormRequest $request)
     {
-        $user = $this->creationService->handle($request->normalize());
+        $data = $request->normalize();
+
+        if (env('OAUTH2_CLIENT_ID')) {
+            if (!empty($data['oauth2_id'])) $data['password'] = $this->hasher->make(str_random(30));
+        } else {
+            $data['oauth2_id'] = null;
+        }
+
+        $user = $this->creationService->handle($data);
         $this->alert->success($this->translator->trans('admin/user.notices.account_created'))->flash();
 
         return redirect()->route('admin.users.view', $user->id);
