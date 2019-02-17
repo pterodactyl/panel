@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="visible" v-on:close="onModalClose" :showCloseIcon="false">
+    <Modal :show="visible" v-on:close="onModalClose" :showCloseIcon="false" :dismissable="!isLoading">
         <div class="flex items-end">
             <div class="flex-1">
                 <label class="input-label">
@@ -16,8 +16,15 @@
                 />
             </div>
             <div class="ml-4">
-                <button class="btn btn-primary btn-sm" type="submit" v-on:submit.prevent="submit">
-                    Create
+                <button type="submit"
+                        class="btn btn-primary btn-sm"
+                        v-on:click.prevent="submit"
+                        :disabled="errors.any() || isLoading"
+                >
+                    <span class="spinner white" v-bind:class="{ hidden: !isLoading }">&nbsp;</span>
+                    <span :class="{ hidden: isLoading }">
+                        Create
+                    </span>
                 </button>
             </div>
         </div>
@@ -31,17 +38,19 @@
     import Vue from 'vue';
     import Modal from '@/components/core/Modal.vue';
     import {mapState} from "vuex";
+    import {createFolder} from "@/api/server/files/createFolder";
 
     export default Vue.extend({
         name: 'CreateFolderModal',
         components: {Modal},
 
         computed: {
-            ...mapState('server', ['fm']),
+            ...mapState('server', ['server', 'credentials', 'fm']),
         },
 
         data: function () {
             return {
+                isLoading: false,
                 visible: false,
                 folderName: '',
             };
@@ -55,9 +64,15 @@
             window.events.$on('server:files:open-directory-modal', () => {
                 this.visible = true;
                 this.$nextTick(() => {
-                    (this.$refs.folderNameField as HTMLInputElement).focus();
+                    if (this.$refs.folderNameField) {
+                        (this.$refs.folderNameField as HTMLInputElement).focus();
+                    }
                 });
             });
+        },
+
+        beforeDestroy: function () {
+            window.events.$off('server:files:open-directory-modal');
         },
 
         methods: {
@@ -67,7 +82,17 @@
                         return;
                     }
 
-                    this.onModalClose();
+                    this.isLoading = true;
+
+                    console.log(`${this.fm.currentDirectory}/${this.folderName.replace(/^\//, '')}`);
+
+                    createFolder(this.server, this.credentials, `${this.fm.currentDirectory}/${this.folderName.replace(/^\//, '')}`)
+                        .then(() => {
+                            this.$emit('close');
+                            this.onModalClose();
+                        })
+                        .catch(console.error.bind(this))
+                        .then(() => this.isLoading = false)
                 });
             },
 

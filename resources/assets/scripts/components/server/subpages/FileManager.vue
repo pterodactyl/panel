@@ -48,7 +48,7 @@
                 <a href="#" class="block btn btn-primary btn-sm">New File</a>
             </div>
         </div>
-        <CreateFolderModal/>
+        <CreateFolderModal v-on:close="listDirectory"/>
     </div>
 </template>
 
@@ -112,8 +112,6 @@
              * Watch the current directory setting and when it changes update the file listing.
              */
             currentDirectory: function () {
-                this.$store.dispatch('server/updateCurrentDirectory', this.currentDirectory);
-
                 this.listDirectory();
             },
 
@@ -152,6 +150,8 @@
                 this.loading = true;
 
                 const directory = encodeURI(this.currentDirectory.replace(/^\/|\/$/, ''));
+                this.$store.dispatch('server/updateCurrentDirectory', `/${directory}`);
+
                 getDirectoryContents(this.$route.params.id, directory)
                     .then((response) => {
                         this.files = response.files;
