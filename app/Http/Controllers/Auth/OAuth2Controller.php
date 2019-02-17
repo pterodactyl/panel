@@ -3,18 +3,18 @@
 namespace Pterodactyl\Http\Controllers\Auth;
 
 use DB;
-use Illuminate\Auth\AuthManager;
-use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Http\Request;
-use Illuminate\Support\MessageBag;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use OAuth2;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Model\DataValidationException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Illuminate\Http\Request;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Support\MessageBag;
+use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserUpdateService;
+use Pterodactyl\Services\Users\UserCreationService;
+use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class OAuth2Controller extends Controller
 {
@@ -139,8 +139,6 @@ class OAuth2Controller extends Controller
             $email = $resources[env('OAUTH2_EMAIL_KEY', 'email')];
             $username = $resources[env('OAUTH2_USERNAME_KEY', 'username')];
 
-            $password = $this->hasher->make(str_random(30));
-
             $name_first = __('base.account.first_name');
             if (env('OAUTH2_FIRST_NAME_KEY') != null) {
                 $name_first = $resources[env('OAUTH2_FIRST_NAME_KEY')];
@@ -153,7 +151,7 @@ class OAuth2Controller extends Controller
 
             $root_admin = false;
 
-            $user = $this->creationService->handle(compact('email', 'username', 'password', 'name_first', 'name_last', 'root_admin', 'oauth2_id'));
+            $user = $this->creationService->handle(compact('email', 'username', 'name_first', 'name_last', 'root_admin', 'oauth2_id'));
 
             // Login
             $this->auth->guard()->login($user);

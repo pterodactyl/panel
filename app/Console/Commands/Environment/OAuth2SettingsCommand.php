@@ -3,9 +3,9 @@
 namespace Pterodactyl\Console\Commands\Environment;
 
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class OAuth2SettingsCommand extends Command
 {

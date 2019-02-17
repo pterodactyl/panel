@@ -3,21 +3,20 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use DB;
-use Illuminate\Contracts\Auth\PasswordBroker;
-use Illuminate\Contracts\Hashing\Hasher;
-use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\UserFormRequest;
-use Pterodactyl\Models\User;
-use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Services\Users\UserCreationService;
-use Pterodactyl\Services\Users\UserDeletionService;
+use Illuminate\Contracts\Auth\PasswordBroker;
+use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use Pterodactyl\Services\Users\UserCreationService;
+use Pterodactyl\Services\Users\UserDeletionService;
+use Pterodactyl\Http\Requests\Admin\UserFormRequest;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserController extends Controller
 {
@@ -166,17 +165,7 @@ class UserController extends Controller
      */
     public function store(UserFormRequest $request)
     {
-        $data = $request->normalize();
-
-        if (env('OAUTH2_CLIENT_ID')) {
-            if (! empty($data['oauth2_id'])) {
-                $data['password'] = $this->hasher->make(str_random(30));
-            }
-        } else {
-            $data['oauth2_id'] = null;
-        }
-
-        $user = $this->creationService->handle($data);
+        $user = $this->creationService->handle($request->normalize());
         $this->alert->success($this->translator->trans('admin/user.notices.account_created'))->flash();
 
         return redirect()->route('admin.users.view', $user->id);
@@ -196,12 +185,7 @@ class UserController extends Controller
     {
         $this->updateService->setUserLevel(User::USER_LEVEL_ADMIN);
 
-        $user_data = $request->normalize();
-        if ($user->getAttributes()['oauth2_id'] != null) {
-            unset($user_data['password']);
-        }
-
-        $data = $this->updateService->handle($user, $user_data);
+        $data = $this->updateService->handle($user, $request->normalize());
 
         if (! empty($data->get('exceptions'))) {
             foreach ($data->get('exceptions') as $node => $exception) {
@@ -243,13 +227,11 @@ class UserController extends Controller
 
         if ($user->getAttributes()['oauth2_id'] != null) {
             DB::table('users')->where('id', '=', $user->id)->update(['oauth2_id'  => null]);
-            $user->notify(new AccountCreated($user, $this->passwordBroker->createToken($user)));
         } else {
             $oauth2_id = $request->only('oauth2_id')['oauth2_id'];
             if (empty($oauth2_id)) {
                 throw new DisplayException($this->translator->trans('admin/user.exceptions.empty_oauth2_id'));
             }
-            $password = $this->hasher->make(str_random(30));
             DB::table('users')->where('id', '=', $user->id)->update(compact('oauth2_id', 'password'));
         }
 

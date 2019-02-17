@@ -2,13 +2,13 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
-use Pterodactyl\Models\User;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 
 class AccountController extends Controller
 {
@@ -69,8 +69,7 @@ class AccountController extends Controller
         // Prevent logging this specific session out when the password is changed. This will
         // automatically update the user's password anyways, so no need to do anything else here.
         // If the user has signed up thru OAuth2 don't allow him to change his password.
-        if ($request->input('do_action') === 'password' and
-            $this->sessionGuard->user()->getAttributes()['oauth2_id'] == null) {
+        if ($request->input('do_action') === 'password') {
             $this->sessionGuard->logoutOtherDevices($request->input('new_password'));
         } else {
             if ($request->input('do_action') === 'email') {

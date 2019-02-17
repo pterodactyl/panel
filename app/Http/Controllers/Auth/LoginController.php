@@ -2,19 +2,19 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
+use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Auth\Events\Failed;
+use Illuminate\Http\RedirectResponse;
+use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use PragmaRX\Google2FA\Google2FA;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class LoginController extends Controller
 {

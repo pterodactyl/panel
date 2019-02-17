@@ -98,11 +98,6 @@
         </div>
         <div class="col-md-6">
             <div class="box">
-                @if(! is_null(env('OAUTH2_CLIENT_ID')))
-                    <div id="password-overlay" class="disabled-by-oauth2 hidden">
-                        <p>@lang('strings.disabled_by_oauth2')</p>
-                    </div>
-                @endif
                 <div class="box-header with-border">
                     <h3 class="box-title">Password</h3>
                 </div>
@@ -143,15 +138,4 @@
             return false;
         });
     </script>
-    @if(! is_null(env('OAUTH2_CLIENT_ID')))
-        <script>
-            $(document).ready(function () {
-                if ($('#oauth2-id').val() !== "") $('#password-overlay').removeClass("hidden");
-            });
-            $('#oauth2-id').keyup(function () {
-                if ($('#oauth2-id').val() === "") $('#password-overlay').addClass("hidden");
-                else $('#password-overlay').removeClass("hidden");
-            });
-        </script>
-    @endif
 @endsection
