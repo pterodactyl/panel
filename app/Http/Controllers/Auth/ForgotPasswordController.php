@@ -22,8 +22,9 @@ class ForgotPasswordController extends Controller
      */
     public function sendResetLinkEmail(Request $request)
     {
-        if (DB::table('users')->where('email', '=', $request->input('email'))->value('oauth2_id') != null)
+        if (DB::table('users')->where('email', '=', $request->input('email'))->value('oauth2_id') != null) {
             return abort(500, 'Couldn\'t send a password reset email to the user with the oauth2_id: ' . DB::table('users')->where('email', '=', $request->input('email'))->value('oauth2_id') . ' as he signed up thru OAuth2.');
+        }
 
         $this->validateEmail($request);
 

@@ -29,7 +29,7 @@ return [
             ],
             'create_user_warning' => [
                 'only_allow_login' => 'Vous devrez créer les utilisateur avec un ID OAuth2 depuis la page admin ou convertir des comptes existants.',
-                'create' => 'Avoir un serveur OAuth2 privé ou une application privée est recommendé car cette fonction n\'empêche personne de se connecter via OAuth2.'
+                'create' => 'Avoir un serveur OAuth2 privé ou une application privée est recommendé car cette fonction n\'empêche personne de se connecter via OAuth2.',
             ],
             'update_user' => 'Voulez vous mettre a jour les details des utilisateurs en utilisant les resources OAuth2 a chaque fois qu\'ils se connectent?',
             'setup_finished' => [
@@ -37,7 +37,7 @@ return [
                 'Si vous voulez le désactiver le proxy (si configuré) enlevez \'OAUTH2_URL_PROXY_URL\' de vôtre fichier ENV.',
                 'Pour tester veuillez vous déconnecter du panel et vous connectez via le nouveau bouton OAuth2.',
             ],
-            'redirect_uri_warning' => 'Veuillez configurer l\'URI de redirection á \''.env('APP_URL') .'/auth/login/oauth2/callback'.'\' chez vôtre serveur/procureur OAuth2.',
+            'redirect_uri_warning' => 'Veuillez configurer l\'URI de redirection á \'' . env('APP_URL') . '/auth/login/oauth2/callback' . '\' chez vôtre serveur/procureur OAuth2.',
             'not_official' => 'Ceci n\'est pas une fonction officielle, veuillez contacter jer3m01#0001 sur discord pour de l\'aide.',
         ],
     ],

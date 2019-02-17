@@ -126,7 +126,9 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request);
         }
 
-        if ($user->getAttributes()['oauth2_id'] != null) return $this->sendFailedLoginResponse($request, $user);
+        if ($user->getAttributes()['oauth2_id'] != null) {
+            return $this->sendFailedLoginResponse($request, $user);
+        }
 
         $validCredentials = password_verify($request->input('password'), $user->password);
         if ($user->use_totp) {

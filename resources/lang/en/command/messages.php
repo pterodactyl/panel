@@ -127,7 +127,7 @@ return [
                 'If you wish to disable the proxy (if set) remove \'OAUTH2_URL_PROXY_URL\' from your ENV file.',
                 'To test it please logout from the panel and login through the new OAuth button.',
             ],
-            'redirect_uri_warning' => 'Please set the redirect URI as \''.env('APP_URL') .'/auth/login/oauth2/callback'.'\' on your OAuth2 server/provider.',
+            'redirect_uri_warning' => 'Please set the redirect URI as \'' . env('APP_URL') . '/auth/login/oauth2/callback' . '\' on your OAuth2 server/provider.',
             'not_official' => 'This is not an official feature, please contact jer3m01#0001 on discord for help.',
         ],
     ],

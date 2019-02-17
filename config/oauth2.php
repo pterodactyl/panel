@@ -7,12 +7,12 @@ return [
      * More information can be found here http://oauth2-client.thephpleague.com/
      */
     'options' => [
-        'clientId' => env('OAUTH2_CLIENT_ID','pterodactyl'),
+        'clientId' => env('OAUTH2_CLIENT_ID', 'pterodactyl'),
         'clientSecret' => env('OAUTH2_CLIENT_SECRET'),
-        'redirectUri' => env('APP_URL') .'/auth/login/oauth2/callback',
-        'urlAuthorize' => env('OAUTH2_URL_AUTHORIZE','http://example.com/oauth2/authorize'),
-        'urlAccessToken' => env('OAUTH2_URL_ACCESS_TOKEN','http://example.com/oauth2/token'),
-        'urlResourceOwnerDetails' => env('OAUTH2_URL_RESOURCE_OWNER_DETAILS','http://example.com/oauth2/resource'),
+        'redirectUri' => env('APP_URL') . '/auth/login/oauth2/callback',
+        'urlAuthorize' => env('OAUTH2_URL_AUTHORIZE', 'http://example.com/oauth2/authorize'),
+        'urlAccessToken' => env('OAUTH2_URL_ACCESS_TOKEN', 'http://example.com/oauth2/token'),
+        'urlResourceOwnerDetails' => env('OAUTH2_URL_RESOURCE_OWNER_DETAILS', 'http://example.com/oauth2/resource'),
     ],
 
     /*
@@ -37,7 +37,7 @@ return [
      * Use this option if you need to pass options to your provider's getAuthorizationUrl() method.
      */
     'authorization-options' => [
-        'scope' => preg_split( '~,~', env('OAUTH2_SCOPES', 'email')),
+        'scope' => preg_split('~,~', env('OAUTH2_SCOPES', 'email')),
     ],
 
     /*

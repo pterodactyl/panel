@@ -116,30 +116,30 @@ class OAuth2SettingsCommand extends Command
             );
 
         $this->variables['OAUTH2_USERNAME_KEY'] = $this->option('usernameKey') ?? $this->ask(
-                trans('command/messages.environment.oauth2.username'),env('OAUTH2_USERNAME_KEY', 'username')
+                trans('command/messages.environment.oauth2.username'), env('OAUTH2_USERNAME_KEY', 'username')
             );
 
         $this->variables['OAUTH2_EMAIL_KEY'] = $this->option('emailKey') ?? $this->ask(
-                trans('command/messages.environment.oauth2.email'),env('OAUTH2_EMAIL_KEY', 'email')
+                trans('command/messages.environment.oauth2.email'), env('OAUTH2_EMAIL_KEY', 'email')
             );
 
         if ($this->option('firstNameKey') ?? $this->confirm(trans('command/messages.environment.oauth2.ask_first_name'), env('OAUTH2_FIRST_NAME_KEY') != null)) {
             $this->variables['OAUTH2_FIRST_NAME_KEY'] = $this->option('firstNameKey') ?? $this->ask(
-                    trans('command/messages.environment.oauth2.first_name'),env('OAUTH2_FIRST_NAME_KEY', 'first_name')
+                    trans('command/messages.environment.oauth2.first_name'), env('OAUTH2_FIRST_NAME_KEY', 'first_name')
                 );
         } else {
-            array_push($this->unset,'OAUTH2_FIRST_NAME_KEY');
+            array_push($this->unset, 'OAUTH2_FIRST_NAME_KEY');
         }
 
         if ($this->option('lastNameKey') ?? $this->confirm(trans('command/messages.environment.oauth2.ask_last_name'), env('OAUTH2_LAST_NAME_KEY') != null)) {
             $this->variables['OAUTH2_LAST_NAME_KEY'] = $this->option('lastNameKey') ?? $this->ask(
-                    trans('command/messages.environment.oauth2.last_name'),env('OAUTH2_LAST_NAME_KEY', 'last_name')
+                    trans('command/messages.environment.oauth2.last_name'), env('OAUTH2_LAST_NAME_KEY', 'last_name')
                 );
         } else {
-            array_push($this->unset,'OAUTH2_LAST_NAME_KEY');
+            array_push($this->unset, 'OAUTH2_LAST_NAME_KEY');
         }
 
-        $this->variables['OAUTH2_SCOPES'] =  $this->option('scopes') ?? $this->ask(
+        $this->variables['OAUTH2_SCOPES'] = $this->option('scopes') ?? $this->ask(
                 trans('command/messages.environment.oauth2.scopes'), env('OAUTH2_SCOPES', 'email')
             );
 
@@ -149,14 +149,13 @@ class OAuth2SettingsCommand extends Command
                 (env('OAUTH2_CREATE_USER', false) ? '1' : '0')
             ) == trans('command/messages.environment.oauth2.create_user_options.create') ? 'true' : 'false');
 
-        $this->output->warning(trans(('command/messages.environment.oauth2.create_user_warning.'. ($this->variables['OAUTH2_CREATE_USER'] == 'true' ? 'create' : 'only_allow_login'))));
+        $this->output->warning(trans(('command/messages.environment.oauth2.create_user_warning.' . ($this->variables['OAUTH2_CREATE_USER'] == 'true' ? 'create' : 'only_allow_login'))));
 
         $this->variables['OAUTH2_UPDATE_USER'] = $this->option('updateUser') ?? ($this->confirm(
-                trans('command/messages.environment.oauth2.update_user'),env('OAUTH2_UPDATE_USER', true)
+                trans('command/messages.environment.oauth2.update_user'), env('OAUTH2_UPDATE_USER', true)
             ) ? 'true' : 'false');
 
-
-        if (!empty($this->unset)) {
+        if (! empty($this->unset)) {
             $path = base_path('.env');
             if (! file_exists($path)) {
                 throw new PterodactylException('Cannot locate .env file, was this software installed correctly?');

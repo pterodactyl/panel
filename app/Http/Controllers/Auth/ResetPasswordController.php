@@ -90,8 +90,9 @@ class ResetPasswordController extends Controller
      */
     public function showResetForm(Request $request, $token = null)
     {
-        if (DB::table('users')->where('email', '=', $request->email)->value('oauth2_id') != null)
+        if (DB::table('users')->where('email', '=', $request->email)->value('oauth2_id') != null) {
             return abort(500, 'Couldn\'t let the user with the oauth2_id: ' . DB::table('users')->where('email', '=', $request->email)->value('oauth2_id') . ' change his password as he signed up thru OAuth2.');
+        }
 
         return view('auth.passwords.reset')->with(
             ['token' => $token, 'email' => $request->email]

@@ -34,7 +34,7 @@ return [
                 'Als je de proxy (als ingesteld) wilt uitschakelen moet je \'OAUTH2_URL_PROXY_URL\' weghalen uit je ENV bestand.',
                 'Als je het wil uittesten moet je uitloggen en daarna inloggen via de nieuwe OAuth2 knop.',
             ],
-            'redirect_uri_warning' => 'Stel de redirect URI in naar \''.env('APP_URL') .'/auth/login/oauth2/callback'.'\' op je OAuth2 server/provider.',
+            'redirect_uri_warning' => 'Stel de redirect URI in naar \'' . env('APP_URL') . '/auth/login/oauth2/callback' . '\' op je OAuth2 server/provider.',
             'not_official' => 'Dit is geen officiële functie, als je hulp wil moet je jer3m01#0001 contacten op Discord.',
         ],
     ],

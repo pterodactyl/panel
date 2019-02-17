@@ -169,7 +169,9 @@ class UserController extends Controller
         $data = $request->normalize();
 
         if (env('OAUTH2_CLIENT_ID')) {
-            if (!empty($data['oauth2_id'])) $data['password'] = $this->hasher->make(str_random(30));
+            if (! empty($data['oauth2_id'])) {
+                $data['password'] = $this->hasher->make(str_random(30));
+            }
         } else {
             $data['oauth2_id'] = null;
         }
@@ -195,7 +197,9 @@ class UserController extends Controller
         $this->updateService->setUserLevel(User::USER_LEVEL_ADMIN);
 
         $user_data = $request->normalize();
-        if($user->getAttributes()['oauth2_id'] != null) unset($user_data['password']);
+        if ($user->getAttributes()['oauth2_id'] != null) {
+            unset($user_data['password']);
+        }
 
         $data = $this->updateService->handle($user, $user_data);
 
@@ -233,14 +237,16 @@ class UserController extends Controller
      */
     public function put(Request $request, User $user)
     {
-        if(is_null(env('OAUTH2_CLIENT_ID'))) return redirect()->route('admin.users.view', $user->id);
+        if (is_null(env('OAUTH2_CLIENT_ID'))) {
+            return redirect()->route('admin.users.view', $user->id);
+        }
 
         if ($user->getAttributes()['oauth2_id'] != null) {
             DB::table('users')->where('id', '=', $user->id)->update(['oauth2_id'  => null]);
             $user->notify(new AccountCreated($user, $this->passwordBroker->createToken($user)));
         } else {
             $oauth2_id = $request->only('oauth2_id')['oauth2_id'];
-            if(empty($oauth2_id)) {
+            if (empty($oauth2_id)) {
                 throw new DisplayException($this->translator->trans('admin/user.exceptions.empty_oauth2_id'));
             }
             $password = $this->hasher->make(str_random(30));

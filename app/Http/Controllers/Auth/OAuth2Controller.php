@@ -62,7 +62,7 @@ class OAuth2Controller extends Controller
     }
 
     /**
-     * OAuth2 Login
+     * OAuth2 Login.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse|mixed
@@ -73,7 +73,9 @@ class OAuth2Controller extends Controller
         if ($this->auth->guard()->check()) {
             return redirect()->route('index');
         }
-        if (!env('OAUTH2_CLIENT_ID')) abort(404);
+        if (! env('OAUTH2_CLIENT_ID')) {
+            abort(404);
+        }
         try {
             $accessToken = OAuth2::getAccessToken();
         } catch (IdentityProviderException $e) {
@@ -81,13 +83,18 @@ class OAuth2Controller extends Controller
         }
 
         try {
-            if ($accessToken->hasExpired()) OAuth2::refreshAccessToken();
-        } catch (\Exception $exception) {}
+            if ($accessToken->hasExpired()) {
+                OAuth2::refreshAccessToken();
+            }
+        } catch (\Exception $exception) {
+        }
 
         try {
-            if (env('OAUTH2_UPDATE_USER', true))
+            if (env('OAUTH2_UPDATE_USER', true)) {
                 $resources = OAuth2::getResources(null, null, null, true);
-            else $resources = OAuth2::getResources();
+            } else {
+                $resources = OAuth2::getResources();
+            }
         } catch (\Exception $e) {
             return abort(400, $e->getMessage());
         }
@@ -106,10 +113,14 @@ class OAuth2Controller extends Controller
                 $email = $resources[env('OAUTH2_EMAIL_KEY', 'email')];
                 $username = $resources[env('OAUTH2_USERNAME_KEY', 'username')];
                 $name_first = $user->getAttributes()['name_first'];
-                if(env('OAUTH2_FIRST_NAME_KEY') != null) $name_first = $resources[env('OAUTH2_FIRST_NAME_KEY')];
+                if (env('OAUTH2_FIRST_NAME_KEY') != null) {
+                    $name_first = $resources[env('OAUTH2_FIRST_NAME_KEY')];
+                }
 
                 $name_last = $user->getAttributes()['name_last'];
-                if(env('OAUTH2_LAST_NAME_KEY') != null) $name_last = $resources[env('OAUTH2_LAST_NAME_KEY')];
+                if (env('OAUTH2_LAST_NAME_KEY') != null) {
+                    $name_last = $resources[env('OAUTH2_LAST_NAME_KEY')];
+                }
                 try {
                     $this->updateService->handle($user, compact('email', 'username', 'name_first', 'name_last'));
                 } catch (\Exception $e) {
@@ -131,10 +142,14 @@ class OAuth2Controller extends Controller
             $password = $this->hasher->make(str_random(30));
 
             $name_first = __('base.account.first_name');
-            if(env('OAUTH2_FIRST_NAME_KEY') != null) $name_first = $resources[env('OAUTH2_FIRST_NAME_KEY')];
+            if (env('OAUTH2_FIRST_NAME_KEY') != null) {
+                $name_first = $resources[env('OAUTH2_FIRST_NAME_KEY')];
+            }
 
             $name_last = __('base.account.last_name');
-            if(env('OAUTH2_LAST_NAME_KEY') != null) $name_last = $resources[env('OAUTH2_LAST_NAME_KEY')];
+            if (env('OAUTH2_LAST_NAME_KEY') != null) {
+                $name_last = $resources[env('OAUTH2_LAST_NAME_KEY')];
+            }
 
             $root_admin = false;
 
@@ -146,13 +161,14 @@ class OAuth2Controller extends Controller
             if ($this->auth->guard()->check()) {
                 return redirect()->route('index');
             }
+
             return abort(500, 'Could not create a user for OAuth2 with the oauth2_id: ' . $oauth2_id . '.');
         }
 
         session()->forget([config('oauth2.authorization-code-session-key'),
             config('oauth2.authorization-state-session-key'),
             config('oauth2.authorization-access-token-session-key'),
-            config('oauth2.authorization-resources-session-key')]);
+            config('oauth2.authorization-resources-session-key'), ]);
 
         $errors = new MessageBag(['user' => [__('auth.failed')]]);
 
@@ -165,8 +181,11 @@ class OAuth2Controller extends Controller
         if ($this->auth->guard()->check()) {
             return redirect()->route('index');
         }
-        if (!env('OAUTH2_CLIENT_ID')) abort(404);
+        if (! env('OAUTH2_CLIENT_ID')) {
+            abort(404);
+        }
         OAuth2::AuthorizationCodeCallback();
+
         return redirect()->route('auth.oauth2');
     }
 }
