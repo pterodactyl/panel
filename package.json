@@ -7,7 +7,7 @@
         "jquery": "^3.3.1",
         "lodash": "^4.17.11",
         "socket.io-client": "^2.1.1",
-        "vee-validate": "^2.1.0-beta.2",
+        "vee-validate": "^2.1.7",
         "vue": "^2.6.4",
         "vue-axios": "^2.1.1",
         "vue-i18n": "^8.6.0",

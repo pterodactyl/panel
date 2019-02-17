@@ -113,7 +113,7 @@ const cssLoaders = [
 module.exports = {
     target: 'web',
     mode: process.env.NODE_ENV,
-    devtool: isProduction ? false : 'inline-source-map',
+    devtool: isProduction ? false : 'eval-source-map',
     performance: {
         hints: false,
     },

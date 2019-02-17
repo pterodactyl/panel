@@ -2,7 +2,7 @@
     <transition name="modal">
         <div class="modal-mask" v-show="show" v-on:click="close">
             <div class="modal-container" @click.stop>
-                <div v-on:click="close" v-if="dismissable">
+                <div v-on:click="close" v-if="dismissable && showCloseIcon">
                     <Icon name="x"
                           class="absolute pin-r pin-t m-2 text-neutral-500 cursor-pointer"
                           aria-label="Close modal"
@@ -24,6 +24,7 @@
         components: {Icon},
 
         props: {
+            showCloseIcon: {type: Boolean, default: true},
             modalName: {type: String, default: 'modal'},
             show: {type: Boolean, default: false},
             closeOnEsc: {type: Boolean, default: true},
