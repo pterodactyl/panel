@@ -16,7 +16,7 @@
                     <span class="spinner spinner-xl spinner-thick blue"></span>
                 </div>
             </div>
-            <TransitionGroup class="flex flex-wrap justify-center sm:justify-start" v-else>
+            <TransitionGroup class="flex flex-wrap justify-center sm:justify-start" tag="div" v-else>
                 <ServerBox
                         v-for="(server, index) in servers"
                         :key="index"

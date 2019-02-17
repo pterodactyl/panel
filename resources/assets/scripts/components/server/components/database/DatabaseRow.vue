@@ -31,26 +31,23 @@
                 </button>
             </div>
         </div>
-        <Modal :show="showDeleteModal" v-on:close="showDeleteModal = false">
-            <DeleteDatabaseModal
-                    :database="database"
-                    v-on:close="showDeleteModal = false"
-                    v-if="showDeleteModal"
-            />
-        </modal>
+        <DeleteDatabaseModal
+                :database="database"
+                :show="showDeleteModal"
+                v-on:close="showDeleteModal = false"
+        />
     </div>
 </template>
 
 <script lang="ts">
     import Vue from 'vue';
     import Icon from "@/components/core/Icon.vue";
-    import Modal from "@/components/core/Modal.vue";
     import {ServerDatabase} from "@/api/server/types";
     import DeleteDatabaseModal from "@/components/server/components/database/DeleteDatabaseModal.vue";
 
     export default Vue.extend({
         name: 'DatabaseRow',
-        components: {DeleteDatabaseModal, Modal, Icon},
+        components: {DeleteDatabaseModal, Icon},
         props: {
             database: {
                 type: Object as () => ServerDatabase,

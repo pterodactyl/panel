@@ -2,7 +2,7 @@
     <transition name="modal">
         <div class="modal-mask" v-show="show" v-on:click="close">
             <div class="modal-container" @click.stop>
-                <div v-on:click="close">
+                <div v-on:click="close" v-if="dismissable">
                     <Icon name="x"
                           class="absolute pin-r pin-t m-2 text-neutral-500 cursor-pointer"
                           aria-label="Close modal"
@@ -27,10 +27,11 @@
             modalName: {type: String, default: 'modal'},
             show: {type: Boolean, default: false},
             closeOnEsc: {type: Boolean, default: true},
+            dismissable: {type: Boolean, default: true},
         },
 
         mounted: function () {
-            if (this.$props.closeOnEsc) {
+            if (this.$props.dismissable && this.$props.closeOnEsc) {
                 document.addEventListener('keydown', e => {
                     if (this.show && e.key === 'Escape') {
                         this.close();
@@ -41,7 +42,9 @@
 
         methods: {
             close: function () {
-                this.$emit('close', this.$props.modalName);
+                if (this.$props.dismissable) {
+                    this.$emit('close', this.$props.modalName);
+                }
             }
         },
     });

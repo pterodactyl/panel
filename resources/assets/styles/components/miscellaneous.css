@@ -76,7 +76,7 @@ code {
     }
 
     & > div {
-        @apply .flex .flex-col .h-full;
+        @apply .flex .flex-col;
         transition: box-shadow 150ms ease-in;
 
         &:hover {
@@ -85,7 +85,7 @@ code {
     }
 
     & > div > .server-card {
-        @apply .flex .flex-1 .flex-col .p-4 .border .border-t-4 .border-neutral-100 .bg-white;
+        @apply .flex .flex-col .p-4 .border .border-t-4 .border-neutral-100 .bg-white;
         transition: all 100ms ease-in;
 
         & .identifier-icon {
