@@ -49,7 +49,6 @@
         data: function () {
             return {
                 X_CSRF_TOKEN: window.X_CSRF_TOKEN,
-                errors: [],
                 submitDisabled: false,
                 showSpinner: false,
                 email: '',
@@ -65,7 +64,6 @@
             submitForm: function () {
                 this.submitDisabled = true;
                 this.showSpinner = true;
-                this.errors = [];
                 this.$flash.clear();
 
                 window.axios.post(this.route('auth.forgot-password'), {
