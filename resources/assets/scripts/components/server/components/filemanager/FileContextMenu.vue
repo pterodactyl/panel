@@ -1,7 +1,7 @@
 <template>
     <div class="context-menu">
         <div>
-            <div class="context-row">
+            <div class="context-row" v-on:click="openRenameModal">
                 <div class="icon">
                     <Icon name="edit-3"/>
                 </div>
@@ -54,16 +54,29 @@
 <script lang="ts">
     import Vue from 'vue';
     import Icon from "../../../core/Icon.vue";
+    import {DirectoryContentObject} from "@/api/server/types";
 
     export default Vue.extend({
         name: 'FileContextMenu',
         components: {Icon},
 
+        props: {
+            object: {
+                type: Object as () => DirectoryContentObject,
+                required: true,
+            },
+        },
+
         methods: {
             openFolderModal: function () {
                 window.events.$emit('server:files:open-directory-modal');
                 this.$emit('close');
-            }
+            },
+
+            openRenameModal: function () {
+                window.events.$emit('server:files:rename', this.object);
+                this.$emit('close');
+            },
         }
     });
 </script>

@@ -2,7 +2,7 @@ import http from '../http';
 import {filter, isObject} from 'lodash';
 // @ts-ignore
 import route from '../../../../../vendor/tightenco/ziggy/src/js/route';
-import {DirectoryContents} from "./types";
+import {DirectoryContentObject, DirectoryContents} from "./types";
 
 /**
  * Get the contents of a specific directory for a given server.
@@ -12,10 +12,10 @@ export function getDirectoryContents(server: string, directory: string): Promise
         http.get(route('server.files', {server, directory}))
             .then((response) => {
                 return resolve({
-                    files: filter(response.data.contents, function (o) {
+                    files: filter(response.data.contents, function (o: DirectoryContentObject) {
                         return o.file;
                     }),
-                    directories: filter(response.data.contents, function (o) {
+                    directories: filter(response.data.contents, function (o: DirectoryContentObject) {
                         return o.directory;
                     }),
                     editable: response.data.editable,

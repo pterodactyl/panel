@@ -12,6 +12,7 @@
         </div>
         <FileContextMenu
             class="context-menu"
+            v-bind:object="file"
             v-show="contextMenuVisible"
             v-on:close="contextMenuVisible = false"
             ref="contextMenu"
@@ -25,17 +26,21 @@
     import {Vue as VueType} from "vue/types/vue";
     import {formatDate, readableSize} from '../../../../helpers'
     import FileContextMenu from "./FileContextMenu.vue";
+    import {DirectoryContentObject} from "@/api/server/types";
 
     export default Vue.extend({
         name: 'FileRow',
-        components: {
-            Icon,
-            FileContextMenu,
-        },
+        components: {Icon, FileContextMenu},
 
         props: {
-            file: {type: Object, required: true},
-            editable: {type: Array, required: true}
+            file: {
+                type: Object as () => DirectoryContentObject,
+                required: true,
+            },
+            editable: {
+                type: Array,
+                required: true,
+            },
         },
 
         data: function () {

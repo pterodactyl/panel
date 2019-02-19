@@ -1,7 +1,19 @@
 export type DirectoryContents = {
-    files: Array<string>,
-    directories: Array<string>,
+    files: Array<DirectoryContentObject>,
+    directories: Array<DirectoryContentObject>,
     editable: Array<string>
+}
+
+export type DirectoryContentObject = {
+    name: string,
+    created: string,
+    modified: string,
+    mode: number,
+    size: number,
+    directory: boolean,
+    file: boolean,
+    symlink: boolean,
+    mime: string,
 }
 
 export type ServerDatabase = {

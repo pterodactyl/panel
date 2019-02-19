@@ -83,7 +83,7 @@
                     }
 
                     this.isLoading = true;
-                    createFolder(this.server, this.credentials, `${this.fm.currentDirectory}/${this.folderName.replace(/^\//, '')}`)
+                    createFolder(this.server.uuid, this.credentials, `${this.fm.currentDirectory}/${this.folderName.replace(/^\//, '')}`)
                         .then(() => {
                             this.$emit('close');
                             this.onModalClose();

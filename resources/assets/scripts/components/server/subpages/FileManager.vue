@@ -49,6 +49,7 @@
             </div>
         </div>
         <CreateFolderModal v-on:close="listDirectory"/>
+        <RenameModal v-on:close="listDirectory"/>
     </div>
 </template>
 
@@ -60,19 +61,21 @@
     import FileRow from "@/components/server/components/filemanager/FileRow.vue";
     import FolderRow from "@/components/server/components/filemanager/FolderRow.vue";
     import CreateFolderModal from '../components/filemanager/modals/CreateFolderModal.vue';
+    import RenameModal from '../components/filemanager/modals/RenameModal.vue';
+    import {DirectoryContentObject} from "@/api/server/types";
 
     type DataStructure = {
         loading: boolean,
         errorMessage: string | null,
         currentDirectory: string,
-        files: Array<any>,
-        directories: Array<any>,
+        files: Array<DirectoryContentObject>,
+        directories: Array<DirectoryContentObject>,
         editableFiles: Array<string>,
     }
 
     export default Vue.extend({
         name: 'FileManager',
-        components: {CreateFolderModal, FileRow, FolderRow},
+        components: {CreateFolderModal, FileRow, FolderRow, RenameModal},
         computed: {
             ...mapState('server', ['server', 'credentials']),
             ...mapState('socket', ['connected']),

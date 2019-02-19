@@ -1,4 +1,5 @@
-import axios, {AxiosInstance} from 'axios';
+import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
+import {ServerApplicationCredentials} from "@/store/types";
 
 // This token is set in the bootstrap.js file at the beginning of the request
 // and is carried through from there.
@@ -25,3 +26,15 @@ if (typeof window.phpdebugbar !== 'undefined') {
 }
 
 export default http;
+
+/**
+ * Creates a request object for the node that uses the server UUID and connection
+ * credentials. Basically just a tiny wrapper to set this quickly.
+ */
+export function withCredentials(server: string, credentials: ServerApplicationCredentials): AxiosInstance {
+    http.defaults.baseURL = credentials.node;
+    http.defaults.headers['X-Access-Server'] = server;
+    http.defaults.headers['X-Access-Token'] = credentials.key;
+
+    return http;
+}
