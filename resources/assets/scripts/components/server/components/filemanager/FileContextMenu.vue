@@ -41,7 +41,7 @@
             </div>
         </div>
         <div>
-            <div class="context-row danger">
+            <div class="context-row danger" v-on:click="openDeleteModal">
                 <div class="icon">
                     <Icon name="delete" class="h-4"/>
                 </div>
@@ -77,6 +77,11 @@
                 window.events.$emit('server:files:rename', this.object);
                 this.$emit('close');
             },
+
+            openDeleteModal: function () {
+                window.events.$emit('server:files:delete', this.object);
+                this.$emit('close');
+            }
         }
     });
 </script>
