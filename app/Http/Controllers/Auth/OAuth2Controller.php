@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use DB;
 use OAuth2;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Support\MessageBag;
 use Illuminate\Contracts\Hashing\Hasher;
@@ -13,7 +13,6 @@ use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class OAuth2Controller extends Controller
@@ -102,13 +101,10 @@ class OAuth2Controller extends Controller
         $oauth2_id = $resources[env('OAUTH2_ID_KEY', 'id')];
 
         // Login the user if he already exists
-        if (DB::table('users')->where('oauth2_id', '=', $oauth2_id)->value('oauth2_id') == $oauth2_id) {
-            try {
-                $user = $this->repository->find(DB::table('users')->where('oauth2_id', '=', $oauth2_id)->value('id'));
-            } catch (RecordNotFoundException $e) {
-                return abort(500, $e->getMessage());
-            }
-            // Update the user's details
+        try {
+            $user = User::where('oauth2_id', '=' , $oauth2_id)->firstOrFail();
+
+            // Update the user's details if enabled
             if (env('OAUTH2_UPDATE_USER', true) == true) {
                 $email = $resources[env('OAUTH2_EMAIL_KEY', 'email')];
                 $username = $resources[env('OAUTH2_USERNAME_KEY', 'username')];
@@ -132,35 +128,47 @@ class OAuth2Controller extends Controller
             if ($this->auth->guard()->check()) {
                 return redirect()->route('index');
             }
-        }
+        } catch (\Exception $e) {
 
-        // Create a new user using the OAuth2 provided info if enabled
-        if (env('OAUTH2_CREATE_USER', false) == true) {
-            $email = $resources[env('OAUTH2_EMAIL_KEY', 'email')];
-            $username = $resources[env('OAUTH2_USERNAME_KEY', 'username')];
+            // Create a new user using the OAuth2 provided info if enabled
+            if (env('OAUTH2_CREATE_USER', false) == true) {
+                $email = $resources[env('OAUTH2_EMAIL_KEY', 'email')];
+                $username = $resources[env('OAUTH2_USERNAME_KEY', 'username')];
 
-            $name_first = __('base.account.first_name');
-            if (env('OAUTH2_FIRST_NAME_KEY') != null) {
-                $name_first = $resources[env('OAUTH2_FIRST_NAME_KEY')];
+                $name_first = __('base.account.first_name');
+                if (env('OAUTH2_FIRST_NAME_KEY') != null) {
+                    $name_first = $resources[env('OAUTH2_FIRST_NAME_KEY')];
+                }
+
+                $name_last = __('base.account.last_name');
+                if (env('OAUTH2_LAST_NAME_KEY') != null) {
+                    $name_last = $resources[env('OAUTH2_LAST_NAME_KEY')];
+                }
+
+                $root_admin = false;
+
+                $user = $this->creationService->handle(compact('email', 'username', 'name_first', 'name_last', 'root_admin', 'oauth2_id'));
+
+                // Login
+                $this->auth->guard()->login($user);
+
+                if ($this->auth->guard()->check()) {
+                    return redirect()->route('index');
+                }
+
+                return abort(500, 'Could not create a user for OAuth2 with the oauth2_id: ' . $oauth2_id . '.');
             }
 
-            $name_last = __('base.account.last_name');
-            if (env('OAUTH2_LAST_NAME_KEY') != null) {
-                $name_last = $resources[env('OAUTH2_LAST_NAME_KEY')];
-            }
+            // Invalid Login
+            session()->forget([config('oauth2.authorization-code-session-key'),
+                config('oauth2.authorization-state-session-key'),
+                config('oauth2.authorization-access-token-session-key'),
+                config('oauth2.authorization-resources-session-key'), ]);
 
-            $root_admin = false;
+            $errors = new MessageBag(['user' => [__('auth.failed')]]);
 
-            $user = $this->creationService->handle(compact('email', 'username', 'name_first', 'name_last', 'root_admin', 'oauth2_id'));
-
-            // Login
-            $this->auth->guard()->login($user);
-
-            if ($this->auth->guard()->check()) {
-                return redirect()->route('index');
-            }
-
-            return abort(500, 'Could not create a user for OAuth2 with the oauth2_id: ' . $oauth2_id . '.');
+            return redirect()->route('auth.login')
+                ->withErrors($errors);
         }
 
         session()->forget([config('oauth2.authorization-code-session-key'),

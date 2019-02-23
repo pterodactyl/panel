@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use DB;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
@@ -226,13 +225,15 @@ class UserController extends Controller
         }
 
         if (isset($user->getAttributes()['oauth2_id'])) {
-            DB::table('users')->where('id', '=', $user->id)->update(['oauth2_id'  => null]);
+            $user->update(['oauth2_id'  => null]);
+            $user->save();
         } else {
             $oauth2_id = $request->only('oauth2_id')['oauth2_id'];
             if (empty($oauth2_id)) {
                 throw new DisplayException($this->translator->trans('admin/user.exceptions.empty_oauth2_id'));
             }
-            DB::table('users')->where('id', '=', $user->id)->update(compact('oauth2_id', 'password'));
+            $user->update(compact('oauth2_id', 'password'));
+            $user->save();
         }
 
         $this->alert->success($this->translator->trans('admin/user.notices.account_updated'))->flash();
