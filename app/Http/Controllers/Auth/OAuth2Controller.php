@@ -160,10 +160,7 @@ class OAuth2Controller extends Controller
             }
 
             // Invalid Login
-            session()->forget([config('oauth2.authorization-code-session-key'),
-                config('oauth2.authorization-state-session-key'),
-                config('oauth2.authorization-access-token-session-key'),
-                config('oauth2.authorization-resources-session-key'), ]);
+            OAuth2::forgetCachedData();
 
             $errors = new MessageBag(['user' => [__('auth.failed')]]);
 
@@ -171,10 +168,7 @@ class OAuth2Controller extends Controller
                 ->withErrors($errors);
         }
 
-        session()->forget([config('oauth2.authorization-code-session-key'),
-            config('oauth2.authorization-state-session-key'),
-            config('oauth2.authorization-access-token-session-key'),
-            config('oauth2.authorization-resources-session-key'), ]);
+        OAuth2::forgetCachedData();
 
         $errors = new MessageBag(['user' => [__('auth.failed')]]);
 
