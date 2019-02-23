@@ -102,7 +102,7 @@ class OAuth2Controller extends Controller
 
         // Login the user if he already exists
         try {
-            $user = User::where('oauth2_id', '=' , $oauth2_id)->firstOrFail();
+            $user = User::where('oauth2_id', '=', $oauth2_id)->firstOrFail();
 
             // Update the user's details if enabled
             if (env('OAUTH2_UPDATE_USER', true) == true) {
