@@ -1,0 +1,54 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v1"
+    },
+    "exported_at": "2019-02-23T23:52:23-05:00",
+    "name": "Paper",
+    "author": "parker@pterodactyl.io",
+    "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
+    "image": "quay.io\/pterodactyl\/core:java",
+    "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
+    "config": {
+        "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"enable-query\": \"true\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \")! For help, type \",\r\n    \"userInteraction\": [\r\n        \"Go to eula.txt for more info.\"\r\n    ]\r\n}",
+        "logs": "{}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/ash\r\n# Paper Spigot Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk add --no-cache --update curl jq\r\n\r\ncd \/mnt\/server\r\nif [ ! -z \"${DL_PATH}\" ]; then\r\n    MODIFIED_DOWNLOAD=`eval echo $(echo ${DL_PATH} | sed -e 's\/{{\/${\/g' -e 's\/}}\/}\/g')`\r\n    curl -sSL -o ${SERVER_JARFILE} ${MODIFIED_DOWNLOAD}\r\nelse\r\n    echo -e \"Downloading $MINECRAFT_VERSION jar from papermc\"\r\n    case $(cat $MINECRAFT_VERSION | grep -o -e '[1]\\.[0-9]*') in\r\n    1.8)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/443\/artifact\/Paperclip.jar\r\n      ;;\r\n    1.9)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/773\/artifact\/paperclip.jar\r\n      ;;\r\n    1.10)\r\n      Mcurl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/916\/artifact\/paperclip.jar\r\n      ;;\r\n    1.11)\r\n     curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/1104\/artifact\/paperclip.jar\r\n      ;;\r\n    1.12)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/lastSuccessfulBuild\/artifact\/paperclip.jar\r\n      ;;\r\n    latest)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper-$(echo $(curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq -r '.latest.release' |  grep -o -e '[1].[0-9]*' | head -1))\/lastSuccessfulBuild\/artifact\/paperclip.jar\r\n      ;;\r\n    *)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper-$(echo $(curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq -r '.latest.release' |  grep -o -e '[1].[0-9]*' | head -1))\/lastSuccessfulBuild\/artifact\/paperclip.jar\r\n      ;;\r\nfi",
+            "container": "alpine:3.9",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Minecraft Version",
+            "description": "The version of minecraft to download. \r\n\r\nUse major versions like 1.13 or 1.10. If you put in a minor version it will be cut down to the major version.",
+            "env_variable": "MINECRAFT_VERSION",
+            "default_value": "latest",
+            "user_viewable": 0,
+            "user_editable": 0,
+            "rules": "nullable|string|max:20"
+        },
+        {
+            "name": "Server Jar File",
+            "description": "The name of the server jarfile to run the server with.",
+            "env_variable": "SERVER_JARFILE",
+            "default_value": "server.jar",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string|max:20"
+        },
+        {
+            "name": "Download Path",
+            "description": "A URL to use to download a server.jar rather than the ones in the install script. This is not user viewable.",
+            "env_variable": "DL_PATH",
+            "default_value": "",
+            "user_viewable": 0,
+            "user_editable": 0,
+            "rules": "nullable|string"
+        }
+    ]
+}
