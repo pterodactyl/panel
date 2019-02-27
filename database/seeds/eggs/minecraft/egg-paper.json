@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2019-02-25T08:10:56-05:00",
+    "exported_at": "2019-02-27T15:21:19-05:00",
     "name": "Paper",
     "author": "parker@pterodactyl.io",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -17,7 +17,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\r\n# Paper Spigot Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk add --no-cache --update curl jq\r\n\r\ncd \/mnt\/server\r\nif [ -n \"${DL_PATH}\" ]; then\r\n    MODIFIED_DOWNLOAD=`eval echo $(echo ${DL_PATH} | sed -e 's\/{{\/${\/g' -e 's\/}}\/}\/g')`\r\n    curl -sSL -o ${SERVER_JARFILE} ${MODIFIED_DOWNLOAD}\r\nelse\r\n    echo -e \"Downloading $MINECRAFT_VERSION jar from papermc\"\r\n    case $(cat $MINECRAFT_VERSION | grep -o -e '[1]\\.[0-9]*') in\r\n    1.8)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/443\/artifact\/Paperclip.jar\r\n      ;;\r\n    1.9)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/773\/artifact\/paperclip.jar\r\n      ;;\r\n    1.10)\r\n      Mcurl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/916\/artifact\/paperclip.jar\r\n      ;;\r\n    1.11)\r\n     curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/1104\/artifact\/paperclip.jar\r\n      ;;\r\n    1.12)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper\/lastSuccessfulBuild\/artifact\/paperclip.jar\r\n      ;;\r\n    latest)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper-$(echo $(curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq -r '.latest.release' |  grep -o -e '[1].[0-9]*' | head -1))\/lastSuccessfulBuild\/artifact\/paperclip.jar\r\n      ;;\r\n    *)\r\n      curl -o ${SERVER_JARFILE} https:\/\/papermc.io\/ci\/job\/Paper-$(echo $(curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq -r '.latest.release' |  grep -o -e '[1].[0-9]*' | head -1))\/lastSuccessfulBuild\/artifact\/paperclip.jar\r\n      ;;\r\n    esac\r\nfi",
+            "script": "#!\/bin\/ash\r\n# Paper Spigot Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk add --no-cache --update curl jq\r\n\r\nif [ -n \"${DL_PATH}\" ]; then\r\n    echo -e \"using supplied download url\"\r\n    DOWNLOAD_URL=`eval echo $(echo ${DL_PATH} | sed -e 's\/{{\/${\/g' -e 's\/}}\/}\/g')`\r\nelse\r\n    VER_EXISTS=`curl -s https:\/\/papermc.io\/api\/v1\/paper | jq -r --arg VERSION $MINECRAFT_VERSION '.versions[] | IN($VERSION)' | grep true`\r\n    LATEST_PAPER_VERSION=`curl -s https:\/\/papermc.io\/api\/v1\/paper | jq -r '.versions' | jq -r '.[0]'`\r\n    \r\n    if [ \"${VER_EXISTS}\" == \"true\" ]; then\r\n        echo -e \"Version is valid. Using version ${MINECRAFT_VERSION}\"\r\n    else\r\n        echo -e \"Using the latest paper version\"\r\n        MINECRAFT_VERSION=${LATEST_PAPER_VERSION}\r\n    fi\r\n    \r\n    BUILD_EXISTS=`curl -s https:\/\/papermc.io\/api\/v1\/paper\/${MINECRAFT_VERSION} | jq -r --arg BUILD ${BUILD_NUMBER} '.builds.all[] | IN($BUILD)' | grep true`\r\n    LATEST_PAPER_BUILD=`curl -s https:\/\/papermc.io\/api\/v1\/paper\/${MINECRAFT_VERSION} | jq -r '.builds.latest'`\r\n    \r\n    if [ \"${BUILD_EXISTS}\" == \"true\" ] || [ ${BUILD_NUMBER} == \"latest\" ]; then\r\n        echo -e \"Build is valid. Using version ${BUILD_NUMBER}\"\r\n    else\r\n        echo -e \"Using the latest paper build\"\r\n        BUILD_NUMBER=${LATEST_PAPER_BUILD}\r\n    fi\r\n    \r\n    echo \"Version being downloaded\"\r\n    echo -e \"MC Version: ${MINECRAFT_VERSION}\"\r\n    echo -e \"Build: ${BUILD_NUMBER}\"\r\n    DOWNLOAD_URL=https:\/\/papermc.io\/api\/v1\/paper\/${MINECRAFT_VERSION}\/${BUILD_NUMBER}\/download \r\nfi\r\n\r\ncd \/mnt\/server\r\n\r\necho -e \"running curl -o ${SERVER_JARFILE} ${DOWNLOAD_URL}\"\r\n\r\ncurl -o ${SERVER_JARFILE} ${DOWNLOAD_URL}\r\n\r\necho -e \"Downloading MC server.properties\"\r\ncurl -o server.properties https:\/\/raw.githubusercontent.com\/parkervcp\/eggs\/master\/minecraft_java\/server.properties",
             "container": "alpine:3.9",
             "entrypoint": "ash"
         }
@@ -25,10 +25,10 @@
     "variables": [
         {
             "name": "Minecraft Version",
-            "description": "The version of minecraft to download. \r\n\r\nUse major versions like 1.13 or 1.10. If you put in a minor version it will be cut down to the major version.",
+            "description": "The version of minecraft to download. \r\n\r\nLeave at latest to always get the latest version. Invalid versions will default to latest.",
             "env_variable": "MINECRAFT_VERSION",
             "default_value": "latest",
-            "user_viewable": 0,
+            "user_viewable": 1,
             "user_editable": 0,
             "rules": "nullable|string|max:20"
         },
@@ -49,6 +49,15 @@
             "user_viewable": 0,
             "user_editable": 0,
             "rules": "nullable|string"
+        },
+        {
+            "name": "Build Number",
+            "description": "The build number for the paper release.\r\n\r\nLeave at latest to always get the latest version. Invalid versions will default to latest.",
+            "env_variable": "BUILD_NUMBER",
+            "default_value": "latest",
+            "user_viewable": 1,
+            "user_editable": 0,
+            "rules": "required|string|max:20"
         }
     ]
 }
