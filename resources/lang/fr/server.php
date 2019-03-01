@@ -47,7 +47,7 @@ return [
         'task_created' => 'Création réussie d\'une nouvelle tâche sur le Panel.',
         'task_updated' => 'La tâche a été mise à jour avec succès. Toutes les actions de tâche actuellement en file d\'attente seront annulées et relancées à l\'heure définie suivante.',
         'header' => 'Tâches planifiées',
-        'header_sub' => 'AAutomatisez votre serveur.',
+        'header_sub' => 'Automatisez votre serveur.',
         'current' => 'Tâches planifiées actuelles',
         'actions' => [
             'command' => 'Envoyer la commande',
@@ -299,7 +299,7 @@ return [
             'details' => 'Le nom du serveur est uniquement une référence à ce serveur sur le panel et n\'affecte pas les configurations spécifiques au serveur susceptibles d\'être affichées par les utilisateurs dans les jeux.',
         ],
         'startup' => [
-            'header' => 'Démarrer la configuration',
+            'header' => 'Configuration de démarrage',
             'header_sub' => 'Contrôlez les arguments de démarrage du serveur.',
             'command' => 'Commande de démarrage',
             'edit_params' => 'Modifier les paramètres',
