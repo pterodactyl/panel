@@ -7,6 +7,12 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes a bug with the location update API endpoint throwing an error due to an unexected response value.
 
+### Changed
+* `allocation_limit` for servers now defaults to a null value, and is not required in PATCH/POST requests when adding
+a server through the API.
+* The `PATCH` endpoint for `/api/applications/servers/{server}/build` now accepts an array called `limits` to match
+the response from the server `GET` endpoint.
+
 ## v0.7.12 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with the locations API endpoint referencing an invalid namespace.
