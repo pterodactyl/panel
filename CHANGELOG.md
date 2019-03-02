@@ -16,6 +16,9 @@ a server through the API.
 * The `PATCH` endpoint for `/api/applications/servers/{server}/build` now accepts an array called `limits` to match
 the response from the server `GET` endpoint.
 
+### Added
+* The server listing for a node is now paginated to 25 servers per page to improve performance on large nodes.
+
 ## v0.7.12 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with the locations API endpoint referencing an invalid namespace.
