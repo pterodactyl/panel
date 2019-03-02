@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes a bug with the location update API endpoint throwing an error due to an unexected response value.
 * Fixes bug where node creation API endpoint was not correctly requiring the `disk_overallocate` key.
+* Prevents an exception from being thrown when a database with the same name is created on two different hosts.
 
 ### Changed
 * `allocation_limit` for servers now defaults to a null value, and is not required in PATCH/POST requests when adding
