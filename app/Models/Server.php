@@ -63,7 +63,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'image' => 'required',
         'startup' => 'required',
         'database_limit' => 'present',
-        'allocation_limit' => 'present',
+        'allocation_limit' => 'sometimes',
     ];
 
     /**
