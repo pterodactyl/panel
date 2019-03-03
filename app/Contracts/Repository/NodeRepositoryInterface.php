@@ -56,16 +56,6 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     public function loadNodeAllocations(Node $node, bool $refresh = false): Node;
 
     /**
-     * Return a node with all of the servers attached to that node.
-     *
-     * @param int $id
-     * @return \Pterodactyl\Models\Node
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getNodeServers(int $id): Node;
-
-    /**
      * Return a collection of nodes for all locations to use in server creation UI.
      *
      * @return \Illuminate\Support\Collection

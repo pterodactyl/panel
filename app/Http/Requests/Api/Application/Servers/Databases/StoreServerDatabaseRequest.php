@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers\Databases;
 
+use Illuminate\Validation\Rule;
+use Illuminate\Database\Query\Builder;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
@@ -25,7 +27,15 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
     public function rules(): array
     {
         return [
-            'database' => 'required|string|min:1|max:24',
+            'database' => [
+                'required',
+                'string',
+                'min:1',
+                'max:24',
+                Rule::unique('databases')->where(function (Builder $query) {
+                    $query->where('database_host_id', $this->input('host') ?? 0);
+                }),
+            ],
             'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
             'host' => 'required|integer|exists:database_hosts,id',
         ];

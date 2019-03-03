@@ -2,5 +2,4 @@ coverage:
   status:
     project: off
     patch: off
-comment:
-  layout: "diff"
+comment: false
