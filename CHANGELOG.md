@@ -11,6 +11,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes the redis password not saving correctly when setting up the environment from the command line.
 * Fixes a bug with transaction handling in many areas of the application that would cause validation error messages
 and other session data to not be persisted properly when using the database as the session driver.
+* Fix a bug introduced at some point in the past that causes internal data integrity exceptions to not bubble up to
+the user correctly, leading to extraneous and confusing exception messages.
 
 ### Changed
 * `allocation_limit` for servers now defaults to a null value, and is not required in PATCH/POST requests when adding
