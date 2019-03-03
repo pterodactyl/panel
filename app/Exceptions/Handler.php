@@ -6,6 +6,7 @@ use Exception;
 use PDOException;
 use Psr\Log\LoggerInterface;
 use Illuminate\Container\Container;
+use Illuminate\Database\Connection;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
@@ -137,6 +138,21 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        $connections = Container::getInstance()->make(Connection::class);
+
+        // If we are currently wrapped up inside a transaction, we will roll all the way
+        // back to the beginning. This needs to happen, otherwise session data does not
+        // get properly persisted.
+        //
+        // This is kind of a hack, and ideally things like this should be handled as
+        // much as possible at the code level, but there are a lot of spots that do a
+        // ton of actions and were written before this bug discovery was made.
+        //
+        // @see https://github.com/pterodactyl/panel/pull/1468
+        if ($connections->transactionLevel()) {
+            $connections->rollBack(0);
+        }
+
         return parent::render($request, $exception);
     }
 
