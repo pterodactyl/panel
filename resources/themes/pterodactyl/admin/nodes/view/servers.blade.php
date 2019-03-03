@@ -51,7 +51,7 @@
                         <th class="text-center">CPU</th>
                         <th class="text-center">Status</th>
                     </tr>
-                    @foreach($node->servers as $server)
+                    @foreach($servers as $server)
                         <tr data-server="{{ $server->uuid }}">
                             <td><code>{{ $server->uuidShort }}</code></td>
                             <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
@@ -64,6 +64,11 @@
                         </tr>
                     @endforeach
                 </table>
+                @if($servers->hasPages())
+                    <div class="box-footer with-border">
+                        <div class="col-md-12 text-center">{!! $servers->render() !!}</div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
