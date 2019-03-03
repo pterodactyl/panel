@@ -18,7 +18,7 @@
     "scripts": {
         "installation": {
             "script": "#!\/bin\/ash\n# TShock Installation Script\n#\n# Server Files: \/mnt\/server\napk update\napk add curl unzip\n\ncd \/tmp\n\ncurl -sSLO https:\/\/github.com\/NyxStudios\/TShock\/releases\/download\/v${T_VERSION}\/tshock_${T_VERSION}.zip\n\nunzip -o tshock_${T_VERSION}.zip -d \/mnt\/server",
-            "container": "alpine:3.4",
+            "container": "alpine:3.9",
             "entrypoint": "ash"
         }
     },
