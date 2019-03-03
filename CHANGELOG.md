@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 and other session data to not be persisted properly when using the database as the session driver.
 * Fix a bug introduced at some point in the past that causes internal data integrity exceptions to not bubble up to
 the user correctly, leading to extraneous and confusing exception messages.
+* Fixes a bug causing servers to not be marked as having failed installation in some cases.
 
 ### Changed
 * `allocation_limit` for servers now defaults to a null value, and is not required in PATCH/POST requests when adding
