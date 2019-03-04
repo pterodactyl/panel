@@ -152,4 +152,14 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return int
      */
     public function getSuspendedServersCount(): int;
+
+    /**
+     * Returns all of the servers that exist for a given node in a paginated response.
+     *
+     * @param int $node
+     * @param int $limit
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator;
 }

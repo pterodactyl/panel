@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
@@ -337,5 +338,21 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     public function getSuspendedServersCount(): int
     {
         return $this->getBuilder()->where('suspended', true)->count();
+    }
+
+    /**
+     * Returns all of the servers that exist for a given node in a paginated response.
+     *
+     * @param int $node
+     * @param int $limit
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator
+    {
+        return $this->getBuilder()
+            ->with(['user', 'nest', 'egg'])
+            ->where('node_id', '=', $node)
+            ->paginate($limit);
     }
 }
