@@ -599,7 +599,7 @@ class ServersController extends Controller
             ['id', '=', $request->input('database')],
         ]);
 
-        $this->databasePasswordService->handle($database, str_random(16));
+        $this->databasePasswordService->handle($database, str_random(24));
 
         return response('', 204);
     }
