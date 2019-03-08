@@ -196,6 +196,10 @@ return [
                 'title' => 'Delete Subuser',
                 'description' => 'Allows a user to delete other subusers on the server.',
             ],
+            'reinstall_server' => [
+                'title' => 'Reinstall Server',
+                'description' => 'Allows user to reinstall a server.'
+            ],
             'view_allocations' => [
                 'title' => 'View Allocations',
                 'description' => 'Allows user to view all of the IPs and ports assigned to a server.',
@@ -293,10 +297,18 @@ return [
         ],
     ],
     'config' => [
-        'name' => [
-            'header' => 'Server Name',
-            'header_sub' => 'Change this server\'s name.',
-            'details' => 'The server name is only a reference to this server on the panel, and will not affect any server specific configurations that may display to users in games.',
+        'settings' => [
+            'header' => 'Server Settings',
+            'header_sub' => 'Change this server\'s settings.',
+            'name' => [
+                'header' => 'Server Name',
+                'details' => 'The server name is only a reference to this server on the panel, and will not affect any server specific configurations that may display to users in games.'
+            ],
+            'reinstall' => [
+                'header' => 'Reinstall Server',
+                'details' => 'This will reinstall the server with the assigned pack and service scripts. Danger! This could overwrite server data.',
+                'properly' => 'Server Must Install Properly to Reinstall'
+            ]
         ],
         'startup' => [
             'header' => 'Start Configuration',

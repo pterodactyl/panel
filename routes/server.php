@@ -18,13 +18,14 @@ Route::get('/console', 'ConsoleController@console')->name('server.console');
 |
 */
 Route::group(['prefix' => 'settings'], function () {
+    Route::get('/', 'Settings\SettingsController@index')->name('server.settings');
     Route::get('/allocation', 'Settings\AllocationController@index')->name('server.settings.allocation');
-    Route::get('/name', 'Settings\NameController@index')->name('server.settings.name');
     Route::get('/sftp', 'Settings\SftpController@index')->name('server.settings.sftp');
     Route::get('/startup', 'Settings\StartupController@index')->name('server.settings.startup');
 
+    Route::patch('/reinstall', 'Settings\SettingsController@reinstallServer')->name('server.settings.reinstall');
     Route::patch('/allocation', 'Settings\AllocationController@update');
-    Route::patch('/name', 'Settings\NameController@update');
+    Route::patch('/', 'Settings\SettingsController@update');
     Route::patch('/startup', 'Settings\StartupController@update');
 });
 
