@@ -91,7 +91,7 @@ class SettingsController extends Controller
     {
         $this->authorize('reinstall-server',  $request->attributes->get('server'));
         $this->reinstallService->reinstall( $request->attributes->get('server'));
-        $this->alert->success(trans('admin/server.alerts.server_reinstalled'))->flash();
+        $this->alert->success(trans('config.settings.reinstall.queued'))->flash();
 
         return redirect()->route('index');
     }

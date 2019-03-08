@@ -307,7 +307,8 @@ return [
             'reinstall' => [
                 'header' => 'Reinstall Server',
                 'details' => 'This will reinstall the server with the assigned pack and service scripts. Danger! This could overwrite server data.',
-                'properly' => 'Server Must Install Properly to Reinstall'
+                'properly' => 'Server Must Install Properly to Reinstall',
+                'queued' => 'This server has been queued for a reinstallation beginning now.'
             ]
         ],
         'startup' => [
