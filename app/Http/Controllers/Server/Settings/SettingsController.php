@@ -41,8 +41,7 @@ class SettingsController extends Controller
         AlertsMessageBag $alert,
         ReinstallServerService $reinstallService,
         ServerRepositoryInterface $repository
-    )
-    {
+    ) {
         $this->alert = $alert;
         $this->reinstallService = $reinstallService;
         $this->repository = $repository;
