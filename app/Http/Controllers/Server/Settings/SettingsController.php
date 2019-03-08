@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
+use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Http\Requests\Server\Settings\ChangeServerNameRequest;
 
@@ -89,8 +89,8 @@ class SettingsController extends Controller
      */
     public function reinstallServer(Request $request): RedirectResponse
     {
-        $this->authorize('reinstall-server',  $request->attributes->get('server'));
-        $this->reinstallService->reinstall( $request->attributes->get('server'));
+        $this->authorize('reinstall-server', $request->attributes->get('server'));
+        $this->reinstallService->reinstall($request->attributes->get('server'));
         $this->alert->success(trans('config.settings.reinstall.queued'))->flash();
 
         return redirect()->route('index');

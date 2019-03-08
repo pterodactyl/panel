@@ -198,7 +198,7 @@ return [
             ],
             'reinstall_server' => [
                 'title' => 'Reinstall Server',
-                'description' => 'Allows user to reinstall a server.'
+                'description' => 'Allows user to reinstall a server.',
             ],
             'view_allocations' => [
                 'title' => 'View Allocations',
@@ -302,14 +302,14 @@ return [
             'header_sub' => 'Change this server\'s settings.',
             'name' => [
                 'header' => 'Server Name',
-                'details' => 'The server name is only a reference to this server on the panel, and will not affect any server specific configurations that may display to users in games.'
+                'details' => 'The server name is only a reference to this server on the panel, and will not affect any server specific configurations that may display to users in games.',
             ],
             'reinstall' => [
                 'header' => 'Reinstall Server',
                 'details' => 'This will reinstall the server with the assigned pack and service scripts. Danger! This could overwrite server data.',
                 'properly' => 'Server Must Install Properly to Reinstall',
-                'queued' => 'This server has been queued for a reinstallation beginning now.'
-            ]
+                'queued' => 'This server has been queued for a reinstallation beginning now.',
+            ],
         ],
         'startup' => [
             'header' => 'Start Configuration',
