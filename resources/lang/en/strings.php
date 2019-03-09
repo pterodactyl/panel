@@ -87,4 +87,6 @@ return [
     'last_used' => 'Last Used',
     'disabled_by_oauth2' => 'This feature is disabled for OAuth2 accounts.',
     'or' => 'Or',
+    'enabled' => 'Enabled',
+    'disabled' => 'Disabled',
 ];

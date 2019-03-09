@@ -35,7 +35,7 @@
 </div>
 <div class="row">
     <div class="col-sm-offset-3 col-xs-offset-1 col-sm-6 col-xs-10 pterodactyl-login-box">
-        @if(env('OAUTH2_CLIENT_ID'))
+        @if(env('OAUTH2'))
             <div id="oauth2Login">
                 <a href="{{ route('auth.oauth2') }}"><button class="btn pterodactyl-login-button--oauth2">@lang('auth.oauth2_sign_in') <i class="fa fa-user-circle" aria-hidden="true"></i></button></a>
                 <p id="oauth2Or">– {{ strtoupper(__('strings.or')) }} –</p>

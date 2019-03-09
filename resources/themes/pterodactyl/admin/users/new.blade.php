@@ -27,7 +27,7 @@
                     <h3 class="box-title">Identity</h3>
                 </div>
                 <div class="box-body">
-                    @if(! is_null(env('OAUTH2_CLIENT_ID')))
+                    @if(env('OAUTH2'))
                         <div class="form-group">
                             <label for="oauth2_id" class="control-label">OAuth2 ID <span class="field-optional"></span></label>
                             <div>

@@ -52,16 +52,6 @@ class UserController extends Controller
     protected $updateService;
 
     /**
-     * @var \Illuminate\Contracts\Auth\PasswordBroker
-     */
-    private $passwordBroker;
-
-    /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
-     */
-    private $hasher;
-
-    /**
      * UserController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                         $alert
@@ -70,8 +60,6 @@ class UserController extends Controller
      * @param \Illuminate\Contracts\Translation\Translator              $translator
      * @param \Pterodactyl\Services\Users\UserUpdateService             $updateService
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Auth\PasswordBroker                 $passwordBroker
-     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -79,9 +67,7 @@ class UserController extends Controller
         UserDeletionService $deletionService,
         Translator $translator,
         UserUpdateService $updateService,
-        UserRepositoryInterface $repository,
-        PasswordBroker $passwordBroker,
-        Hasher $hasher
+        UserRepositoryInterface $repository
     ) {
         $this->alert = $alert;
         $this->creationService = $creationService;
@@ -89,8 +75,6 @@ class UserController extends Controller
         $this->repository = $repository;
         $this->translator = $translator;
         $this->updateService = $updateService;
-        $this->passwordBroker = $passwordBroker;
-        $this->hasher = $hasher;
     }
 
     /**
@@ -201,39 +185,6 @@ class UserController extends Controller
                     'link' => route('admin.nodes.view', $node),
                 ]))->flash();
             }
-        }
-
-        $this->alert->success($this->translator->trans('admin/user.notices.account_updated'))->flash();
-
-        return redirect()->route('admin.users.view', $user->id);
-    }
-
-    /**
-     * Change a user to OAuth2/Normal on the system.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\User $user
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Exception
-     * @throws \Throwable
-     */
-    public function put(Request $request, User $user)
-    {
-        if (is_null(env('OAUTH2_CLIENT_ID'))) {
-            return redirect()->route('admin.users.view', $user->id);
-        }
-
-        if (isset($user->getAttributes()['oauth2_id'])) {
-            $user->update(['oauth2_id'  => null]);
-            $user->save();
-        } else {
-            $oauth2_id = $request->only('oauth2_id')['oauth2_id'];
-            if (empty($oauth2_id)) {
-                throw new DisplayException($this->translator->trans('admin/user.exceptions.empty_oauth2_id'));
-            }
-            $user->update(compact('oauth2_id', 'password'));
-            $user->save();
         }
 
         $this->alert->success($this->translator->trans('admin/user.notices.account_updated'))->flash();

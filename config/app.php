@@ -189,6 +189,7 @@ return [
         Igaster\LaravelTheme\themeServiceProvider::class,
         Prologue\Alerts\AlertsServiceProvider::class,
         Lord\Laroute\LarouteServiceProvider::class,
+        SocialiteProviders\Manager\ServiceProvider::class,
     ],
 
     /*

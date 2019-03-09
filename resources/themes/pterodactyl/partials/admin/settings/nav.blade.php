@@ -9,6 +9,7 @@
                     <li @if($activeTab === 'basic')class="active"@endif><a href="{{ route('admin.settings') }}">General</a></li>
                     <li @if($activeTab === 'mail')class="active"@endif><a href="{{ route('admin.settings.mail') }}">Mail</a></li>
                     <li @if($activeTab === 'advanced')class="active"@endif><a href="{{ route('admin.settings.advanced') }}">Advanced</a></li>
+                    <li @if($activeTab === 'oauth2')class="active"@endif><a href="{{ route('admin.settings.oauth2') }}">OAuth2</a></li>
                 </ul>
             </div>
         </div>

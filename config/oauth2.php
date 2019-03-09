@@ -2,60 +2,25 @@
 
 return [
 
-    /*
-     * OAuth2 Configuration
-     * More information can be found here http://oauth2-client.thephpleague.com/
-     */
-    'options' => [
-        'clientId' => env('OAUTH2_CLIENT_ID', 'pterodactyl'),
-        'clientSecret' => env('OAUTH2_CLIENT_SECRET'),
-        'redirectUri' => env('APP_URL') . '/auth/login/oauth2/callback',
-        'urlAuthorize' => env('OAUTH2_URL_AUTHORIZE', 'http://example.com/oauth2/authorize'),
-        'urlAccessToken' => env('OAUTH2_URL_ACCESS_TOKEN', 'http://example.com/oauth2/token'),
-        'urlResourceOwnerDetails' => env('OAUTH2_URL_RESOURCE_OWNER_DETAILS', 'http://example.com/oauth2/resource'),
-    ],
+    'enabled' => env('OAUTH2', false),
 
-    /*
-     * Proxy Configuration
-     * More Information can be found here http://oauth2-client.thephpleague.com/
-     */
-    'use-proxy' => env('OAUTH2_URL_PROXY_URL') != null,
-    'proxy-options' => [
-        'proxy' => env('OAUTH2_URL_PROXY_URL', '192.168.0.1:8888'),
-        'verify' => false,
-    ],
+    'required' => env('OAUTH2_REQUIRED', 0),
 
-    /*
-     * Fully Qualified Provider Class Name
-     * https://github.com/thephpleague/oauth2-client/blob/master/docs/providers/thirdparty.md
-     * Leave blank to use the default one.
+    /**
+     * List of all installed drivers
      */
-    'provider' => '',
+    'all_drivers' => env('OAUTH2_ALL_DRIVERS', 'github,facebook,twitter,linkedin,google,gitlab,bitbucket,discord'),
 
-    /*
-     * getAuthorizationUrl() Options
-     * Use this option if you need to pass options to your provider's getAuthorizationUrl() method.
+    /**
+     * Provider configuration
+     * These settings will overwrite the generated ones
      */
-    'authorization-options' => [
-        'scope' => preg_split('~,~', env('OAUTH2_SCOPES', 'email')),
-    ],
+    'providers' => [],
 
-    /*
-     * Session keys
+    /**
+     * Default driver
+     * Used as a fallback when trying to use a disabled/unset driver
      */
-    'authorization-code-session-key' => 'oauth2_code',
-    'authorization-state-session-key' => 'oauth2_state',
-
-    /*
-     * Cache the access token to avoid a new request each time
-     */
-    'cache-access-token' => true,
-    'authorization-access-token-session-key' => 'oauth2_token',
-
-    /*
-     * Cache the resources to avoid a new request each time
-     */
-    'cache-resources' => true,
-    'authorization-resources-session-key' => 'oauth2_resources',
+    'default_driver' => env('OAUTH2_DEFAULT_DRIVER', 'github'),
 
 ];

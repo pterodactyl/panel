@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "27bea7bcedc2644a343bd2c1a8788aee",
+    "content-hash": "50fb23cff07288cd9df9ab8d8abf0209",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -1190,52 +1190,6 @@
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
-            "name": "jer3m01/laravel-oauth2-php-wrapper",
-            "version": "1.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jer3m01/laravel-oauth2-php-wrapper.git",
-                "reference": "c31307cc19a8496f60799b52a4234660786da70d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jer3m01/laravel-oauth2-php-wrapper/zipball/c31307cc19a8496f60799b52a4234660786da70d",
-                "reference": "c31307cc19a8496f60799b52a4234660786da70d",
-                "shasum": ""
-            },
-            "require": {
-                "league/oauth2-client": "^2.4"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "jer3m01\\LaravelOAuth2PHPWrapper\\OAuth2ServiceProvider"
-                    ],
-                    "aliases": {
-                        "OAuth2": "jer3m01\\LaravelOAuth2PHPWrapper\\OAuth2Facade"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "jer3m01\\LaravelOAuth2PHPWrapper\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "jer3m01",
-                    "email": "jer3m01@jer3m01.com"
-                }
-            ],
-            "description": "A laravel wrapper for PHP League's OAuth 2.0 Client.",
-            "time": "2019-02-23T23:05:06+00:00"
-        },
-        {
             "name": "laracasts/utilities",
             "version": "3.0",
             "source": {
@@ -1553,6 +1507,70 @@
             "time": "2018-12-12T13:12:06+00:00"
         },
         {
+            "name": "laravel/socialite",
+            "version": "v4.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/socialite.git",
+                "reference": "7581c57a60742f423a68362c79d507028f989bd7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/socialite/zipball/7581c57a60742f423a68362c79d507028f989bd7",
+                "reference": "7581c57a60742f423a68362c79d507028f989bd7",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "~6.0",
+                "illuminate/contracts": "~5.7.0|~5.8.0",
+                "illuminate/http": "~5.7.0|~5.8.0",
+                "illuminate/support": "~5.7.0|~5.8.0",
+                "league/oauth1-client": "~1.0",
+                "php": "^7.1.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.0",
+                "phpunit/phpunit": "~7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Socialite\\SocialiteServiceProvider"
+                    ],
+                    "aliases": {
+                        "Socialite": "Laravel\\Socialite\\Facades\\Socialite"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Socialite\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel wrapper around OAuth 1 & OAuth 2 libraries.",
+            "homepage": "https://laravel.com",
+            "keywords": [
+                "laravel",
+                "oauth"
+            ],
+            "time": "2019-02-14T16:57:39+00:00"
+        },
+        {
             "name": "laravel/tinker",
             "version": "v1.0.8",
             "source": {
@@ -1822,40 +1840,37 @@
             "time": "2017-06-12T11:04:56+00:00"
         },
         {
-            "name": "league/oauth2-client",
-            "version": "2.4.1",
+            "name": "league/oauth1-client",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/thephpleague/oauth2-client.git",
-                "reference": "cc114abc622a53af969e8664722e84ca36257530"
+                "url": "https://github.com/thephpleague/oauth1-client.git",
+                "reference": "fca5f160650cb74d23fc11aa570dd61f86dcf647"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-client/zipball/cc114abc622a53af969e8664722e84ca36257530",
-                "reference": "cc114abc622a53af969e8664722e84ca36257530",
+                "url": "https://api.github.com/repos/thephpleague/oauth1-client/zipball/fca5f160650cb74d23fc11aa570dd61f86dcf647",
+                "reference": "fca5f160650cb74d23fc11aa570dd61f86dcf647",
                 "shasum": ""
             },
             "require": {
                 "guzzlehttp/guzzle": "^6.0",
-                "paragonie/random_compat": "^1|^2|^9.99",
-                "php": "^5.6|^7.0"
+                "php": ">=5.5.0"
             },
             "require-dev": {
-                "eloquent/liberator": "^2.0",
-                "eloquent/phony-phpunit": "^1.0|^3.0",
-                "jakub-onderka/php-parallel-lint": "^0.9.2",
-                "phpunit/phpunit": "^5.7|^6.0",
-                "squizlabs/php_codesniffer": "^2.3|^3.0"
+                "mockery/mockery": "^0.9",
+                "phpunit/phpunit": "^4.0",
+                "squizlabs/php_codesniffer": "^2.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-2.x": "2.0.x-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "League\\OAuth2\\Client\\": "src/"
+                    "League\\OAuth1\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1864,29 +1879,28 @@
             ],
             "authors": [
                 {
-                    "name": "Alex Bilbie",
-                    "email": "hello@alexbilbie.com",
-                    "homepage": "http://www.alexbilbie.com",
+                    "name": "Ben Corlett",
+                    "email": "bencorlett@me.com",
+                    "homepage": "http://www.webcomm.com.au",
                     "role": "Developer"
-                },
-                {
-                    "name": "Woody Gilk",
-                    "homepage": "https://github.com/shadowhand",
-                    "role": "Contributor"
                 }
             ],
-            "description": "OAuth 2.0 Client Library",
+            "description": "OAuth 1.0 Client Library",
             "keywords": [
                 "Authentication",
                 "SSO",
                 "authorization",
+                "bitbucket",
                 "identity",
                 "idp",
                 "oauth",
-                "oauth2",
-                "single sign on"
+                "oauth1",
+                "single sign on",
+                "trello",
+                "tumblr",
+                "twitter"
             ],
-            "time": "2018-11-22T18:33:57+00:00"
+            "time": "2016-08-17T00:36:58+00:00"
         },
         {
             "name": "lord/laroute",
@@ -3222,6 +3236,95 @@
                 "subnet"
             ],
             "time": "2018-09-19T06:15:53+00:00"
+        },
+        {
+            "name": "socialiteproviders/discord",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Discord.git",
+                "reference": "e0cd8895f321943b36f533e7bf21ad29bcdece9a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Discord/zipball/e0cd8895f321943b36f533e7bf21ad29bcdece9a",
+                "reference": "e0cd8895f321943b36f533e7bf21ad29bcdece9a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.6 || ^7.0",
+                "socialiteproviders/manager": "~2.0 || ~3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Discord\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christopher Eklund",
+                    "email": "eklundchristopher@gmail.com"
+                }
+            ],
+            "description": "Discord OAuth2 Provider for Laravel Socialite",
+            "time": "2018-05-26T03:40:07+00:00"
+        },
+        {
+            "name": "socialiteproviders/manager",
+            "version": "v3.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Manager.git",
+                "reference": "58b72a667da292a1d0a0b1e6e9aeda4053617030"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/58b72a667da292a1d0a0b1e6e9aeda4053617030",
+                "reference": "58b72a667da292a1d0a0b1e6e9aeda4053617030",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/socialite": "~3.0|~4.0",
+                "php": "^5.6 || ^7.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^0.9.4",
+                "phpunit/phpunit": "^5.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "SocialiteProviders\\Manager\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Manager\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andy Wendt",
+                    "email": "andy@awendt.com"
+                },
+                {
+                    "name": "Anton Komarev",
+                    "email": "a.komarev@cybercog.su"
+                }
+            ],
+            "description": "Easily add new or override built-in providers in Laravel Socialite.",
+            "time": "2019-01-16T07:58:54+00:00"
         },
         {
             "name": "sofa/eloquence-base",

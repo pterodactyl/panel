@@ -23,6 +23,8 @@
 
         @include('layouts.scripts')
 
+        @yield('extra-scripts')
+
         @section('scripts')
             {!! Theme::css('vendor/select2/select2.min.css?t={cache-version}') !!}
             {!! Theme::css('vendor/bootstrap/bootstrap.min.css?t={cache-version}') !!}
@@ -214,5 +216,6 @@
                 })
             </script>
         @show
+        @yield('extra-footer-scripts')
     </body>
 </html>
