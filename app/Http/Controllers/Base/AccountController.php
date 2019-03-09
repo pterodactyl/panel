@@ -68,7 +68,6 @@ class AccountController extends Controller
     {
         // Prevent logging this specific session out when the password is changed. This will
         // automatically update the user's password anyways, so no need to do anything else here.
-        // If the user has signed up thru OAuth2 don't allow him to change his password.
         if ($request->input('do_action') === 'password') {
             $this->sessionGuard->logoutOtherDevices($request->input('new_password'));
         } else {
