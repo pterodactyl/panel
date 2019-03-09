@@ -44,6 +44,7 @@
             </form>
         </div>
     </div>
+    @can('reinstall-server', $server)
     <div class="row">
         <div class="col-sm-4">
             <div class="box box-danger">
@@ -67,6 +68,7 @@
             </div>
         </div>
     </div>
+    @endcan
 @endsection
 
 @section('footer-scripts')
