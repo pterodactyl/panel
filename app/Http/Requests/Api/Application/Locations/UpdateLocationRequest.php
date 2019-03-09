@@ -30,6 +30,6 @@ class UpdateLocationRequest extends StoreLocationRequest
         return collect(Location::getUpdateRulesForId($locationId))->only([
             'short',
             'long',
-        ]);
+        ])->toArray();
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'home' => '主页',
+    'home' => '首页',
     'account' => [
         'header' => '账户管理',
         'my_account' => '我的账户',

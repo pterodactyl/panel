@@ -11,9 +11,9 @@ return [
     | has failed, such as for an invalid token or invalid new password.
     |
     */
-    'password' => '密码至少六位数，并且两次输入的密码一致.',
-    'reset' => '您的密码已重设!',
-    'sent' => '我们已发送密码重设电子邮件!',
-    'token' => '此密码重设连接的令牌已过期.',
-    'user' => '无法找到此Email的用户.',
+    'password' => '密码必须至少包含六位字符且与确认密码匹配。',
+    'reset' => '已重设您的密码！',
+    'sent' => '我们已发送密码重设链接至您的电子邮件地址！',
+    'token' => '此密码重设令牌无效。',
+    'user' => '我们无法找到使用此电子邮件地址的用户。',
 ];

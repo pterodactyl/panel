@@ -3,17 +3,45 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.13 (Derelict Dermodactylus)
+### Fixed
+* Fixes a bug with the location update API endpoint throwing an error due to an unexected response value.
+* Fixes bug where node creation API endpoint was not correctly requiring the `disk_overallocate` key.
+* Prevents an exception from being thrown when a database with the same name is created on two different hosts.
+* Fixes the redis password not saving correctly when setting up the environment from the command line.
+* Fixes a bug with transaction handling in many areas of the application that would cause validation error messages
+and other session data to not be persisted properly when using the database as the session driver.
+* Fix a bug introduced at some point in the past that causes internal data integrity exceptions to not bubble up to
+the user correctly, leading to extraneous and confusing exception messages.
+* Fixes a bug causing servers to not be marked as having failed installation in some cases.
+
+### Changed
+* `allocation_limit` for servers now defaults to a null value, and is not required in PATCH/POST requests when adding
+a server through the API.
+* The `PATCH` endpoint for `/api/applications/servers/{server}/build` now accepts an array called `limits` to match
+the response from the server `GET` endpoint.
+
+### Added
+* The server listing for a node is now paginated to 25 servers per page to improve performance on large nodes.
+
 ## v0.7.12 (Derelict Dermodactylus)
 ### Fixed
 * Fixes an issue with the locations API endpoint referencing an invalid namespace.
 * Fixes the `store()` function on the locations API not working due to an incorrect return typehint.
 * Fixes daemon secrets not being able to be reset on a Node.
- 
+* Fixes an issue where files were not editable due to missing URL encoding in the file manager.
+* Fixed checking of language changes
+* Fixed Spigot egg not building versions other than `latest`.
+* Fixed the Forge egg install script.
+* Fixes a bug that would ignore the `skip_scripts` setting when creating or editing a server.
+
 ### Updated
 * Upgraded core to use Laravel `5.7.14`.
+* Updated Simplified Chinese translation pack.
 
 ### Added
 * Added support for opening and editing Python files through the web editor.
+* Adds Russian translation.
 
 ## v0.7.11 (Derelict Dermodactylus)
 ### Fixed

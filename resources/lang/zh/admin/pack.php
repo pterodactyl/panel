@@ -9,8 +9,8 @@
 
 return [
     'notices' => [
-        'pack_updated' => '整合包已经被更新。',
-        'pack_deleted' => '成功删除整合包： ":name" 。',
-        'pack_created' => '一个整合包已被成功创建，现在可以用它来部署服务器了。',
+        'pack_updated' => '已成功更新整合包。',
+        'pack_deleted' => '已成功从系统中删除整合包 “:name”。',
+        'pack_created' => '已成功在系统上创建整合包，您现在可以使用它来部署服务器了。',
     ],
 ];

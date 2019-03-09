@@ -9,10 +9,10 @@
 
 return [
     'exceptions' => [
-        'user_has_servers' => '无法删除一个拥有活动状态服务器的用户. 请在继续此操作前删除他的服务器',
+        'user_has_servers' => '无法删除已绑定活跃服务器的账户。请删除服务器后继续。',
     ],
     'notices' => [
-        'account_created' => '成功创建用户',
-        'account_updated' => '成功更新用户',
+        'account_created' => '已成功创建用户。',
+        'account_updated' => '已成功更新用户。',
     ],
 ];
