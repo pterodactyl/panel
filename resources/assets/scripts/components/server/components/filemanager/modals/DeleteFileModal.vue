@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="visible" v-on:close="visible = false">
+    <Modal :show="isVisible" v-on:close="isVisible = false">
         <MessageBox
             class="alert error mb-8"
             title="Error"
@@ -12,7 +12,7 @@
                 Deletion is a permanent operation: <strong>{{ object.name }}</strong><span v-if="object.directory">, as well as its contents,</span> will be removed immediately.
             </p>
             <div class="mt-8 text-right">
-                <button class="btn btn-secondary btn-sm" v-on:click.prevent="visible = false">Cancel</button>
+                <button class="btn btn-secondary btn-sm" v-on:click.prevent="isVisible = false">Cancel</button>
                 <button class="btn btn-red btn-sm ml-2" v-on:click="deleteItem" :disabled="isLoading">
                     <span v-if="isLoading" class="spinner white">&nbsp;</span>
                     <span v-else>Yes, Delete</span>
@@ -30,6 +30,7 @@
     import {mapState} from "vuex";
     import {AxiosError} from "axios";
     import { join } from 'path';
+    import {ApplicationState} from '@/store/types';
 
     type DataStructure = {
         isLoading: boolean,
@@ -45,12 +46,6 @@
             object: { type: Object as () => DirectoryContentObject, required: true }
         },
 
-        watch: {
-            visible: function (value: boolean) {
-                this.$emit('update:visible', value);
-            },
-        },
-
         data: function (): DataStructure {
             return {
                 isLoading: false,
@@ -59,14 +54,29 @@
         },
 
         computed: {
-            ...mapState('server', ['fm', 'server', 'credentials']),
+            ...mapState({
+                server: (state: ApplicationState) => state.server.server,
+                credentials: (state: ApplicationState) => state.server.credentials,
+                fm: (state: ApplicationState) => state.server.fm,
+            }),
+
+           isVisible: {
+                get: function (): boolean {
+                    return this.visible;
+                },
+                set: function (value: boolean) {
+                    this.$emit('update:visible', value);
+                },
+            },
         },
 
         methods: {
             deleteItem: function () {
                 this.isLoading = true;
 
+                // @ts-ignore
                 deleteElement(this.server.uuid, this.credentials, [
+                    // @ts-ignore
                     join(this.fm.currentDirectory, this.object.name)
                 ])
                     .then(() => this.$emit('deleted'))
