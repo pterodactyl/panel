@@ -1,32 +1,32 @@
 <template>
     <Modal :show="visible" v-on:close="onModalClose" :showCloseIcon="false" :dismissable="!isLoading">
-        <div class="flex items-end">
-            <div class="flex-1">
-                <label class="input-label">
-                    Folder Name
-                </label>
-                <input
-                        type="text" class="input" name="folder_name"
-                        ref="folderNameField"
-                        v-model="folderName"
-                        v-validate.disabled="'required'"
-                        v-validate="'alpha_dash'"
-                        data-vv-as="Folder Name"
-                        v-on:keyup.enter="submit"
-                />
-            </div>
-            <div class="ml-4">
-                <button type="submit"
-                        class="btn btn-primary btn-sm"
-                        v-on:click.prevent="submit"
-                        :disabled="errors.any() || isLoading"
-                >
-                    <span class="spinner white" v-bind:class="{ hidden: !isLoading }">&nbsp;</span>
-                    <span :class="{ hidden: isLoading }">
-                        Create
-                    </span>
-                </button>
-            </div>
+        <div>
+            <label class="input-label">
+                Directory Name
+            </label>
+            <input
+                    type="text" class="input" name="folder_name"
+                    ref="folderNameField"
+                    v-model="folderName"
+                    v-validate.disabled="'required'"
+                    v-validate="'alpha_dash'"
+                    data-vv-as="Folder Name"
+                    v-on:keyup.enter="submit"
+            />
+            <p class="input-help">A new directory with this name will be created in the current directory.</p>
+        </div>
+        <div class="mt-8 text-right">
+            <button class="btn btn-secondary btn-sm" v-on:click="onModalClose">Cancel</button>
+            <button type="submit"
+                    class="ml-2 btn btn-primary btn-sm"
+                    v-on:click.prevent="submit"
+                    :disabled="errors.any() || isLoading"
+            >
+                <span class="spinner white" v-bind:class="{ hidden: !isLoading }">&nbsp;</span>
+                <span :class="{ hidden: isLoading }">
+                    Create Directory
+                </span>
+            </button>
         </div>
         <p class="input-help error">
             {{ errors.first('folder_name') }}
@@ -85,7 +85,7 @@
                     this.isLoading = true;
                     createFolder(this.server.uuid, this.credentials, `${this.fm.currentDirectory}/${this.folderName.replace(/^\//, '')}`)
                         .then(() => {
-                            this.$emit('close');
+                            this.$emit('created', this.folderName.replace(/^\//, ''));
                             this.onModalClose();
                         })
                         .catch(console.error.bind(this))

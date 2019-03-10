@@ -48,7 +48,7 @@
                 <a href="#" class="block btn btn-primary btn-sm">New File</a>
             </div>
         </div>
-        <CreateFolderModal v-on:close="listDirectory"/>
+        <CreateFolderModal v-on:created="directoryCreated"/>
         <RenameModal/>
     </div>
 </template>
@@ -56,6 +56,7 @@
 <script lang="ts">
     import Vue from 'vue';
     import {mapState} from "vuex";
+    import { join } from 'path';
     import {map} from 'lodash';
     import getDirectoryContents from "@/api/server/getDirectoryContents";
     import FileRow from "@/components/server/components/filemanager/FileRow.vue";
@@ -182,6 +183,10 @@
 
             fileRowDeleted: function (file: DirectoryContentObject) {
                 this.files = this.files.filter(data => data !== file);
+            },
+
+            directoryCreated: function (directory: string) {
+                this.$router.push({ name: 'server-files', params: { path: join(this.currentDirectory, directory) }});
             },
         },
     });
