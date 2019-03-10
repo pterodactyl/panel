@@ -79,8 +79,7 @@
             },
 
             openDeleteModal: function () {
-                window.events.$emit('server:files:delete', this.object);
-                this.$emit('close');
+                this.$emit('action:delete', this.object);
             }
         }
     });

@@ -13,7 +13,10 @@
             </p>
             <div class="mt-8 text-right">
                 <button class="btn btn-secondary btn-sm" v-on:click.prevent="visible = false">Cancel</button>
-                <button class="btn btn-red btn-sm ml-2" v-on:click="deleteItem">Yes, Delete</button>
+                <button class="btn btn-red btn-sm ml-2" v-on:click="deleteItem" :disabled="isLoading">
+                    <span v-if="isLoading" class="spinner white">&nbsp;</span>
+                    <span v-else>Yes, Delete</span>
+                </button>
             </div>
         </div>
     </Modal>
@@ -30,8 +33,6 @@
 
     type DataStructure = {
         isLoading: boolean,
-        object: null | DirectoryContentObject,
-        visible: boolean,
         error: string | null,
     };
 
@@ -39,11 +40,20 @@
         name: 'DeleteFileModal',
         components: {Modal},
 
+        props: {
+            visible: { type: Boolean, default: false },
+            object: { type: Object as () => DirectoryContentObject, required: true }
+        },
+
+        watch: {
+            visible: function (value: boolean) {
+                this.$emit('update:visible', value);
+            },
+        },
+
         data: function (): DataStructure {
             return {
                 isLoading: false,
-                visible: false,
-                object: null,
                 error: null,
             };
         },
@@ -52,44 +62,19 @@
             ...mapState('server', ['fm', 'server', 'credentials']),
         },
 
-        mounted: function () {
-            window.events.$on('server:files:delete', (object: DirectoryContentObject) => {
-                this.visible = true;
-                this.object = object;
-            });
-        },
-
-        beforeDestroy: function () {
-            window.events.$off('server:files:delete');
-        },
-
         methods: {
             deleteItem: function () {
-                if (!this.object) {
-                    return;
-                }
-
                 this.isLoading = true;
 
                 deleteElement(this.server.uuid, this.credentials, [
                     join(this.fm.currentDirectory, this.object.name)
                 ])
-                    .then(() => {
-                        this.$emit('close');
-                        this.closeModal();
-                    })
+                    .then(() => this.$emit('deleted'))
                     .catch((error: AxiosError) => {
-                        this.error = `There was an error deleting the requested ${(this.object && this.object.directory) ? 'folder' : 'file'}. Response was: ${error.message}`;
-                        console.error('Error at Server::Files::Delete', { error });
+                        this.error = `There was an error deleting the requested ${(this.object.directory) ? 'folder' : 'file'}. Response was: ${error.message}`;
+                        console.error('Error at Server::Files::Delete', {error});
                     })
                     .then(() => this.isLoading = false);
-            },
-
-            closeModal: function () {
-                this.object = null;
-                this.isLoading = false;
-                this.visible = false;
-                this.error = null;
             },
         },
     });

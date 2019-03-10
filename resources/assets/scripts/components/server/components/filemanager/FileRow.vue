@@ -12,11 +12,13 @@
         </div>
         <FileContextMenu
             class="context-menu"
-            v-bind:object="file"
+            :object="file"
             v-show="contextMenuVisible"
             v-on:close="contextMenuVisible = false"
+            v-on:action:delete="showDeleteFileModal"
             ref="contextMenu"
         />
+        <DeleteFileModal :visible.sync="deleteModalVisible" :object="file" v-on:deleted="$emit('deleted')" v-on:close="deleteModalVisible = false"/>
     </div>
 </template>
 
@@ -27,10 +29,11 @@
     import {formatDate, readableSize} from '../../../../helpers'
     import FileContextMenu from "./FileContextMenu.vue";
     import {DirectoryContentObject} from "@/api/server/types";
+    import DeleteFileModal from "@/components/server/components/filemanager/modals/DeleteFileModal.vue";
 
     export default Vue.extend({
         name: 'FileRow',
-        components: {Icon, FileContextMenu},
+        components: {DeleteFileModal, Icon, FileContextMenu},
 
         props: {
             file: {
@@ -46,6 +49,7 @@
         data: function () {
             return {
                 contextMenuVisible: false,
+                deleteModalVisible: false,
             };
         },
 
@@ -67,6 +71,11 @@
         },
 
         methods: {
+            showDeleteFileModal: function () {
+                this.contextMenuVisible = false;
+                this.deleteModalVisible = true;
+            },
+
             /**
              * Handle a right-click action on a file manager row.
              */

@@ -32,10 +32,10 @@
                     <div class="flex-none w-1/6">Actions</div>
                 </div>
                 <div v-for="directory in directories">
-                    <FolderRow :directory="directory"/>
+                    <FolderRow :directory="directory" :key="directory.name"/>
                 </div>
                 <div v-for="file in files">
-                    <FileRow :file="file" :editable="editableFiles"/>
+                    <FileRow :file="file" :editable="editableFiles" v-on:deleted="fileRowDeleted(file)" :key="file.name"/>
                 </div>
             </div>
         </div>
@@ -50,7 +50,6 @@
         </div>
         <CreateFolderModal v-on:close="listDirectory"/>
         <RenameModal/>
-        <DeleteFileModal v-on:close="listDirectory"/>
     </div>
 </template>
 
@@ -179,7 +178,11 @@
 
             openNewFolderModal: function () {
                 window.events.$emit('server:files:open-directory-modal');
-            }
+            },
+
+            fileRowDeleted: function (file: DirectoryContentObject) {
+                this.files = this.files.filter(data => data !== file);
+            },
         },
     });
 </script>
