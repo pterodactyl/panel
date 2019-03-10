@@ -74,12 +74,11 @@
             },
 
             openRenameModal: function () {
-                window.events.$emit('server:files:rename', this.object);
-                this.$emit('close');
+                this.$emit('action:rename');
             },
 
             openDeleteModal: function () {
-                this.$emit('action:delete', this.object);
+                this.$emit('action:delete');
             }
         }
     });

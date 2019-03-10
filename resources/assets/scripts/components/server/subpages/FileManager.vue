@@ -31,11 +31,14 @@
                     <div class="flex-1 text-right">Modified</div>
                     <div class="flex-none w-1/6">Actions</div>
                 </div>
-                <div v-for="directory in directories">
-                    <FileRow :file="directory" v-on:deleted="folderRowDeleted(directory)" :key="`dir-${directory.name}`"/>
-                </div>
-                <div v-for="file in files">
-                    <FileRow :file="file" :editable="editableFiles" v-on:deleted="fileRowDeleted(file)" :key="file.name"/>
+                <div v-for="file in Array.concat(directories, files)">
+                    <FileRow
+                            :key="file.directory ? `dir-${file.name}` : file.name"
+                            :file="file"
+                            :editable="editableFiles"
+                            v-on:deleted="fileRowDeleted(file, file.directory)"
+                            v-on:renamed="listDirectory"
+                    />
                 </div>
             </div>
         </div>
@@ -49,7 +52,6 @@
             </div>
         </div>
         <CreateFolderModal v-on:created="directoryCreated"/>
-        <RenameModal/>
     </div>
 </template>
 
@@ -61,7 +63,6 @@
     import getDirectoryContents from "@/api/server/getDirectoryContents";
     import FileRow from "@/components/server/components/filemanager/FileRow.vue";
     import CreateFolderModal from '../components/filemanager/modals/CreateFolderModal.vue';
-    import RenameModal from '../components/filemanager/modals/RenameModal.vue';
     import DeleteFileModal from '../components/filemanager/modals/DeleteFileModal.vue';
     import {DirectoryContentObject} from "@/api/server/types";
 
@@ -76,11 +77,9 @@
 
     export default Vue.extend({
         name: 'FileManager',
-        components: {CreateFolderModal, DeleteFileModal, FileRow, RenameModal},
-        computed: {
-            ...mapState('server', ['server', 'credentials']),
-            ...mapState('socket', ['connected']),
+        components: {CreateFolderModal, DeleteFileModal, FileRow},
 
+        computed: {
             /**
              * Configure the breadcrumbs that display on the filemanager based on the directory that the
              * user is currently in.
@@ -180,12 +179,12 @@
                 window.events.$emit('server:files:open-directory-modal');
             },
 
-            fileRowDeleted: function (file: DirectoryContentObject) {
-                this.files = this.files.filter(data => data !== file);
-            },
-
-            folderRowDeleted: function (file: DirectoryContentObject) {
-                this.directories = this.directories.filter(data => data !== file);
+            fileRowDeleted: function (file: DirectoryContentObject, directory: boolean) {
+                if (directory) {
+                    this.directories = this.directories.filter(data => data !== file);
+                } else {
+                    this.files = this.files.filter(data => data !== file);
+                }
             },
 
             directoryCreated: function (directory: string) {

@@ -1,10 +1,5 @@
 <template>
-    <Modal
-        :show="visible"
-        v-on:close="closeModal"
-        :showCloseIcon="false"
-        :dismissable="!isLoading"
-    >
+    <Modal :show="isVisible" v-on:close="closeModal" :showCloseIcon="false" :dismissable="!isLoading">
         <MessageBox
                 class="alert error mb-8"
                 title="Error"
@@ -18,6 +13,7 @@
                 </label>
                 <input
                         type="text" class="input" name="element_name"
+                        :placeholder="object.name"
                         ref="elementNameField"
                         v-model="newName"
                         v-validate.disabled="'required'"
@@ -33,7 +29,7 @@
                 >
                     <span class="spinner white" v-bind:class="{ hidden: !isLoading }">&nbsp;</span>
                     <span :class="{ hidden: isLoading }">
-                        Edit
+                        Rename
                     </span>
                 </button>
             </div>
@@ -53,12 +49,11 @@
     import {mapState} from "vuex";
     import {renameElement} from "@/api/server/files/renameElement";
     import {AxiosError} from 'axios';
+    import {ApplicationState} from "@/store/types";
 
     type DataStructure = {
-        object: null | DirectoryContentObject,
         error: null | string,
         newName: string,
-        visible: boolean,
         isLoading: boolean,
     };
 
@@ -66,72 +61,75 @@
         name: 'RenameModal',
         components: { Flash, Modal, MessageBox },
 
+        props: {
+            visible: { type: Boolean, default: false },
+            object: { type: Object as () => DirectoryContentObject, required: true },
+        },
+
         computed: {
-            ...mapState('server', ['fm', 'server', 'credentials']),
+            ...mapState({
+                server: (state: ApplicationState) => state.server.server,
+                credentials: (state: ApplicationState) => state.server.credentials,
+                fm: (state: ApplicationState) => state.server.fm,
+            }),
+
+            isVisible: {
+                get: function (): boolean {
+                    return this.visible;
+                },
+                set: function (value: boolean) {
+                    this.$emit('update:visible', value);
+                },
+            },
+        },
+
+        watch: {
+            visible: function (newVal, oldVal) {
+                if (newVal && newVal !== oldVal) {
+                    this.$nextTick(() => {
+                        if (this.$refs.elementNameField) {
+                            (this.$refs.elementNameField as HTMLInputElement).focus();
+                        }
+                    });
+                }
+            }
         },
 
         data: function (): DataStructure {
             return {
-                object: null,
                 newName: '',
                 error: null,
-                visible: false,
                 isLoading: false,
             };
         },
 
-        mounted: function () {
-            window.events.$on('server:files:rename', (data: DirectoryContentObject): void => {
-                this.visible = true;
-                this.object = data;
-                this.newName = data.name;
-
-                this.$nextTick(() => {
-                    if (this.$refs.elementNameField) {
-                        (this.$refs.elementNameField as HTMLInputElement).focus();
-                    }
-                })
-            });
-        },
-
-        beforeDestroy: function () {
-            window.events.$off('server:files:rename');
-        },
-
         methods: {
             submit: function () {
-                if (!this.object) {
-                    return;
-                }
-
                 this.isLoading = true;
                 this.error = null;
+
+                // @ts-ignore
                 renameElement(this.server.uuid, this.credentials, {
+                    // @ts-ignore
                     path: this.fm.currentDirectory,
                     toName: this.newName,
                     fromName: this.object.name
                 })
                     .then(() => {
-                        if (this.object) {
-                            this.object.name = this.newName;
-                        }
-
+                        this.$emit('renamed', this.newName);
                         this.closeModal();
                     })
                     .catch((error: AxiosError) => {
-                        const t = this.object ? (this.object.file ? 'file' : 'folder') : 'item';
-
-                        this.error = `There was an error while renaming the requested ${t}. Response: ${error.message}`;
+                        this.error = `There was an error while renaming the requested ${this.object.file ? 'file' : 'folder'}. Response: ${error.message}`;
                         console.error('Error at Server::Files::Rename', { error });
                     })
                     .then(() => this.isLoading = false);
             },
 
             closeModal: function () {
-                this.object = null;
                 this.newName = '';
-                this.visible = false;
                 this.error = null;
+                this.isVisible = false;
             },
         },
     });

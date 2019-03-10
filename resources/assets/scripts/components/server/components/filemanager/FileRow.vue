@@ -31,10 +31,12 @@
             :object="file"
             v-show="contextMenuVisible"
             v-on:close="contextMenuVisible = false"
-            v-on:action:delete="showDeleteFileModal"
+            v-on:action:delete="showModal('delete')"
+            v-on:action:rename="showModal('rename')"
             ref="contextMenu"
         />
-        <DeleteFileModal :visible.sync="deleteModalVisible" :object="file" v-on:deleted="$emit('deleted')" v-on:close="deleteModalVisible = false"/>
+        <DeleteFileModal :visible.sync="modals.delete" :object="file" v-on:deleted="$emit('deleted')" v-on:close="modal.delete = false"/>
+        <RenameModal :visible.sync="modals.rename" :object="file" v-on:renamed="$emit('renamed')" v-on:close="modal.rename = false"/>
     </div>
 </template>
 
@@ -46,10 +48,17 @@
     import FileContextMenu from "./FileContextMenu.vue";
     import {DirectoryContentObject} from "@/api/server/types";
     import DeleteFileModal from "@/components/server/components/filemanager/modals/DeleteFileModal.vue";
+    import RenameModal from "@/components/server/components/filemanager/modals/RenameModal.vue";
+
+    type DataStructure = {
+        currentDirectory: string,
+        contextMenuVisible: boolean,
+        modals: { [key: string]: boolean },
+    };
 
     export default Vue.extend({
         name: 'FileRow',
-        components: {DeleteFileModal, Icon, FileContextMenu},
+        components: {DeleteFileModal, Icon, FileContextMenu, RenameModal},
 
         props: {
             file: {
@@ -63,11 +72,14 @@
             },
         },
 
-        data: function () {
+        data: function (): DataStructure {
             return {
                 currentDirectory: this.$route.params.path || '/',
                 contextMenuVisible: false,
-                deleteModalVisible: false,
+                modals: {
+                    rename: false,
+                    delete: false,
+                },
             };
         },
 
@@ -89,9 +101,13 @@
         },
 
         methods: {
-            showDeleteFileModal: function () {
+            showModal: function (name: string) {
+                console.warn('showModal', name);
                 this.contextMenuVisible = false;
-                this.deleteModalVisible = true;
+
+                Object.keys(this.modals).forEach(k => {
+                    this.modals[k] = k === name;
+                });
             },
 
             /**
