@@ -1,14 +1,30 @@
 <template>
     <div>
-        <div class="row" :class="{ clickable: canEdit(file), 'active-selection': contextMenuVisible }" v-on:contextmenu="showContextMenu">
-            <div class="flex-none icon">
-                <Icon name="file-text" v-if="!file.symlink"/>
-                <Icon name="link2" v-else/>
+        <div v-on:contextmenu="showContextMenu">
+            <div class="row" :class="{ clickable: canEdit(file), 'active-selection': contextMenuVisible }" v-if="!file.directory">
+                <div class="flex-none icon">
+                    <Icon name="file-text" v-if="!file.symlink"/>
+                    <Icon name="link2" v-else/>
+                </div>
+                <div class="flex-1">{{file.name}}</div>
+                <div class="flex-1 text-right text-neutral-600">{{readableSize(file.size)}}</div>
+                <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
+                <div class="flex-none w-1/6"></div>
             </div>
-            <div class="flex-1">{{file.name}}</div>
-            <div class="flex-1 text-right text-neutral-600">{{readableSize(file.size)}}</div>
-            <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
-            <div class="flex-none w-1/6"></div>
+            <router-link class="row clickable"
+                         :class="{ 'active-selection': contextMenuVisible }"
+                         :to="{ name: 'server-files', params: { path: getClickablePath(file.name) }}"
+                         v-else
+            >
+                <div class="flex-none icon text-primary-700">
+                    <Icon name="folder"/>
+                </div>
+                <div class="flex-1">{{file.name}}</div>
+                <div class="flex-1 text-right text-neutral-600"></div>
+                <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
+                <div class="flex-none w-1/6"></div>
+            </router-link>
+
         </div>
         <FileContextMenu
             class="context-menu"
@@ -41,13 +57,15 @@
                 required: true,
             },
             editable: {
-                type: Array,
-                required: true,
+                type: Array as () => Array<string>,
+                default: () => [],
+                required: false,
             },
         },
 
         data: function () {
             return {
+                currentDirectory: this.$route.params.path || '/',
                 contextMenuVisible: false,
                 deleteModalVisible: false,
             };
@@ -96,8 +114,8 @@
             /**
              * Determine if a file can be edited on the Panel.
              */
-            canEdit: function (file: any): boolean {
-                return this.editable.indexOf(file.mime) >= 0;
+            canEdit: function (file: DirectoryContentObject): boolean {
+                return !file.directory && this.editable.indexOf(file.mime) >= 0;
             },
 
             /**
@@ -112,6 +130,10 @@
                         this.contextMenuVisible = false;
                     }
                 }
+            },
+
+            getClickablePath(directory: string): string {
+                return `${this.currentDirectory.replace(/\/$/, '')}/${directory}`;
             },
 
             readableSize: readableSize,
