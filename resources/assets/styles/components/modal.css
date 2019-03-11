@@ -17,4 +17,8 @@
       width: 90%;
     }
   }
+
+  & > .modal-container.w-auto {
+    @apply .w-auto;
+  }
 }

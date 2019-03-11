@@ -1,7 +1,7 @@
 <template>
     <div class="context-menu">
         <div>
-            <div class="context-row" v-on:click="openRenameModal">
+            <div class="context-row" v-on:click="triggerAction('rename')">
                 <div class="icon">
                     <Icon name="edit-3"/>
                 </div>
@@ -13,7 +13,7 @@
                 </div>
                 <div class="action"><span class="text-left">Move</span></div>
             </div>
-            <div class="context-row">
+            <div class="context-row" v-on:click="triggerAction('copy')">
                 <div class="icon">
                     <Icon name="copy" class="h-4"/>
                 </div>
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div>
-            <div class="context-row danger" v-on:click="openDeleteModal">
+            <div class="context-row danger" v-on:click="triggerAction('delete')">
                 <div class="icon">
                     <Icon name="delete" class="h-4"/>
                 </div>
@@ -73,12 +73,8 @@
                 this.$emit('close');
             },
 
-            openRenameModal: function () {
-                this.$emit('action:rename');
-            },
-
-            openDeleteModal: function () {
-                this.$emit('action:delete');
+            triggerAction: function (action: string) {
+                this.$emit(`action:${action}`);
             }
         }
     });

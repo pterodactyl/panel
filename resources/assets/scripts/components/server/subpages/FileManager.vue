@@ -37,7 +37,7 @@
                             :file="file"
                             :editable="editableFiles"
                             v-on:deleted="fileRowDeleted(file, file.directory)"
-                            v-on:renamed="listDirectory"
+                            v-on:list="listDirectory"
                     />
                 </div>
             </div>
@@ -57,7 +57,6 @@
 
 <script lang="ts">
     import Vue from 'vue';
-    import {mapState} from "vuex";
     import { join } from 'path';
     import {map} from 'lodash';
     import getDirectoryContents from "@/api/server/getDirectoryContents";

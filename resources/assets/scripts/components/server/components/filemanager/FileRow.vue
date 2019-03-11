@@ -33,10 +33,12 @@
             v-on:close="contextMenuVisible = false"
             v-on:action:delete="showModal('delete')"
             v-on:action:rename="showModal('rename')"
+            v-on:action:copy="showModal('copy')"
             ref="contextMenu"
         />
+        <CopyFileModal :file="file" v-if="modals.copy" v-on:close="$emit('list')"/>
         <DeleteFileModal :visible.sync="modals.delete" :object="file" v-on:deleted="$emit('deleted')" v-on:close="modal.delete = false"/>
-        <RenameModal :visible.sync="modals.rename" :object="file" v-on:renamed="$emit('renamed')" v-on:close="modal.rename = false"/>
+        <RenameModal :visible.sync="modals.rename" :object="file" v-on:renamed="$emit('list')" v-on:close="modal.rename = false"/>
     </div>
 </template>
 
@@ -49,6 +51,7 @@
     import {DirectoryContentObject} from "@/api/server/types";
     import DeleteFileModal from "@/components/server/components/filemanager/modals/DeleteFileModal.vue";
     import RenameModal from "@/components/server/components/filemanager/modals/RenameModal.vue";
+    import CopyFileModal from "@/components/server/components/filemanager/modals/CopyFileModal.vue";
 
     type DataStructure = {
         currentDirectory: string,
@@ -58,7 +61,7 @@
 
     export default Vue.extend({
         name: 'FileRow',
-        components: {DeleteFileModal, Icon, FileContextMenu, RenameModal},
+        components: {CopyFileModal, DeleteFileModal, Icon, FileContextMenu, RenameModal},
 
         props: {
             file: {
@@ -79,6 +82,7 @@
                 modals: {
                     rename: false,
                     delete: false,
+                    copy: false,
                 },
             };
         },
@@ -102,7 +106,6 @@
 
         methods: {
             showModal: function (name: string) {
-                console.warn('showModal', name);
                 this.contextMenuVisible = false;
 
                 Object.keys(this.modals).forEach(k => {

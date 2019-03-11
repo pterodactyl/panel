@@ -5,10 +5,10 @@ import {ServerApplicationCredentials} from "@/store/types";
  * Deletes files and/or folders from the server. You should pass through an array of
  * file or folder paths to be deleted.
  */
-export function deleteElement(server: string, credentials: ServerApplicationCredentials, items: Array<string>): Promise<any> {
+export function deleteElement(server: string, credentials: ServerApplicationCredentials, items: Array<string>): Promise<void> {
     return new Promise((resolve, reject) => {
         withCredentials(server, credentials).post('/v1/server/file/delete', { items })
-            .then(resolve)
+            .then(() => resolve())
             .catch(reject);
     })
 }
