@@ -37,13 +37,13 @@ class OAuth2SettingsFormRequest extends AdminFormRequest
 
         foreach (array_filter($all_drivers) as $provider) {
             $array = [
-                'oauth2:providers:' . $provider . ':status' => 'sometimes',
-                'oauth2:providers:' . $provider . ':listener' => 'sometimes',
-                'oauth2:providers:' . $provider . ':client_id' => 'sometimes',
-                'oauth2:providers:' . $provider . ':client_secret' => 'sometimes',
-                'oauth2:providers:' . $provider . ':scopes' => 'sometimes',
-                'oauth2:providers:' . $provider . ':widget_html' => 'sometimes',
-                'oauth2:providers:' . $provider . ':widget_css' => 'sometimes',
+                'oauth2:providers:' . $provider . ':status' => 'sometimes' . empty(Request::input('oauth2:providers:' . $provider . ':status')) ? '' : '|string|in:true,false',
+                'oauth2:providers:' . $provider . ':listener' => 'sometimes' . empty(Request::input('oauth2:providers:' . $provider . ':listener')) ? '' : '|string',
+                'oauth2:providers:' . $provider . ':client_id' => 'sometimes' . empty(Request::input('oauth2:providers:' . $provider . ':client_id')) ? '' : '|string',
+                'oauth2:providers:' . $provider . ':client_secret' => 'sometimes' . empty(Request::input('oauth2:providers:' . $provider . ':client_secret')) ? '' : '|string',
+                'oauth2:providers:' . $provider . ':scopes' => 'sometimes' . empty(Request::input('oauth2:providers:' . $provider . ':scopes')) ? '' : '|string',
+                'oauth2:providers:' . $provider . ':widget_html' => 'sometimes' . empty(Request::input('oauth2:providers:' . $provider . ':widget_html')) ? '' : '|string',
+                'oauth2:providers:' . $provider . ':widget_css' => 'sometimes' . empty(Request::input('oauth2:providers:' . $provider . ':widget_css')) ? '' : '|string',
             ];
             $rules = array_merge($rules, $array);
         }

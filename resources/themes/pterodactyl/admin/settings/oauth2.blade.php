@@ -5,7 +5,8 @@
     OAuth2
 @endsection
 
-@section('extra-scripts')
+@section('scripts')
+    @parent
     <style>
         .modal {
             text-align: center;
@@ -315,7 +316,8 @@
     </div>
 @endsection
 
-@section('extra-footer-scripts')
+@section('footer-scripts')
+    @parent
     <script>
         $(document).ready(function () {
             $('#default-provider').val('{{ config('oauth2.default_driver') }}');
@@ -477,13 +479,13 @@
             let provider = $(this).attr('data-enable');
             $('#provider-state-on-' + provider).removeClass('hidden');
             $('#provider-state-off-' + provider).addClass('hidden');
-            $('#provider-state-value-' + provider).attr('value', 1);
+            $('#provider-state-value-' + provider).attr('value', 'true');
         });
         $(document).on('click', "[data-toggle='disable']", function () {
             let provider = $(this).attr('data-disable');
             $('#provider-state-off-' + provider).removeClass('hidden');
             $('#provider-state-on-' + provider).addClass('hidden');
-            $('#provider-state-value-' + provider).attr('value', 0);
+            $('#provider-state-value-' + provider).attr('value', 'false');
         });
         $(document).on('change', '#default-provider', function () {
             let def = $('#saved-default-provider').attr('value');

@@ -13,6 +13,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class OAuth2Controller extends Controller
 {
@@ -91,7 +92,7 @@ class OAuth2Controller extends Controller
             // Try to get the user
             $user = User::where('oauth2_id',
                 'LIKE',
-                '%' . Str::upper(session()->get('oauth2_driver')) . ':=>:' . $oauth2_id . '%')->firstOrFail();
+                '%' . Str::upper(session()->get('oauth2_driver')) . '=>' . $oauth2_id . '%')->firstOrFail();
 
             // Login
             $this->auth->guard()->login($user);
@@ -114,11 +115,12 @@ class OAuth2Controller extends Controller
      */
     public function redirectToProvider($driver)
     {
+        dd(array_keys(OAuth2Providers::getEnabledProviderSettings()));
         // Check if the driver exists and is enabled else use the default one
-        $driver = is_null($driver) ? env('OAUTH2_DEFAULT_DRIVER') : $driver;
-        $driver = Arr::has(config('services'), $driver) ? $driver : env('OAUTH2_DEFAULT_DRIVER');
-        $driver = Arr::has(preg_split('~,~', env('OAUTH2_ENABLED_DRIVERS')), $driver) ? $driver : env('OAUTH2_DEFAULT_DRIVER');
+        $driver = is_null($driver) ? config('oauth2.default_driver') : $driver;
+        $driver = Arr::has(array_keys(OAuth2Providers::getEnabledProviderSettings()), $driver) ? $driver : config('oauth2.default_driver');
 
+        error_log($driver);
         // Save the driver the user's using
         session()->put('oauth2_driver', $driver);
         session()->save();

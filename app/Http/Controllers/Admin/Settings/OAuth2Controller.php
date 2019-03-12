@@ -110,6 +110,8 @@ class OAuth2Controller extends Controller
             $this->settings->set('settings::' . $key, $value);
         }
 
+        $this->settings->set('settings::oauth2:providers:' . $array['oauth2:default_driver'] . ':status', 'true');
+
         SettingsServiceProvider::getInstance()->injectOAuth2Providers();
         SettingsServiceProvider::getInstance()->updateOAuth2Config();
 
