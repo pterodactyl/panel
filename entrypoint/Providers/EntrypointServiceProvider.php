@@ -45,5 +45,4 @@ class EntrypointServiceProvider extends ServiceProvider
             ->group(base_path('routes/entrypoint/base.php'));
          */
     }
-
 }
