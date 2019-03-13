@@ -34,7 +34,7 @@ class EntrypointServiceProvider extends ServiceProvider
 
     /**
      *
-     * This is the main entrypoint to introduce new route files into pterodactyl. This is the cleanest way to add without introducing vendor packages.
+     * This is the main entry-point to introduce new route files into pterodactyl. This is the cleanest way to add without introducing vendor packages.
      * @return void
      */
     protected function mapEntrypointRoutes()
