@@ -9,8 +9,8 @@
 
 namespace Entrypoint\Providers;
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class EntrypointServiceProvider extends ServiceProvider
 {
@@ -22,8 +22,7 @@ class EntrypointServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'Entrypoint\Http\Controllers';
-
-
+    
     /**
      * Define the routes for the application.
      */
@@ -33,13 +32,13 @@ class EntrypointServiceProvider extends ServiceProvider
     }
 
     /**
-     *
      * This is the main entry-point to introduce new route files into pterodactyl. This is the cleanest way to add without introducing vendor packages.
      * @return void
      */
     protected function mapEntrypointRoutes()
     {
-        /**
+
+        /*
          * Example of an extension of the base routes.
          */
 //        Route::middleware(['web', 'auth', 'csrf'])
