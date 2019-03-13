@@ -11,7 +11,9 @@ class IndexController extends Controller
     /**
      * @return string
      */
-    public function index(){
+
+    public function index()
+    {
         return 'success!';
     }
 }

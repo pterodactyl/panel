@@ -22,7 +22,7 @@ class EntrypointServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'Entrypoint\Http\Controllers';
-    
+
     /**
      * Define the routes for the application.
      */
