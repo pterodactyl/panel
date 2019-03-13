@@ -60,7 +60,8 @@
             "app/helpers.php"
         ],
         "psr-4": {
-            "Pterodactyl\\": "app/"
+            "Pterodactyl\\": "app/",
+            "Entrypoint\\": "entrypoint/"
         }
     },
     "autoload-dev": {
