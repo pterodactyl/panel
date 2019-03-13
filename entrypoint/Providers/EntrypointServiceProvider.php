@@ -40,10 +40,10 @@ class EntrypointServiceProvider extends ServiceProvider
 
         /*
          * Example of an extension of the base routes.
+         * Route::middleware(['web', 'auth', 'csrf'])
+            ->namespace($this->namespace . '\Base')
+            ->group(base_path('routes/entrypoint/base.php'));
          */
-//        Route::middleware(['web', 'auth', 'csrf'])
-//            ->namespace($this->namespace . '\Base')
-//            ->group(base_path('routes/entrypoint/base.php'));
     }
 
 }
