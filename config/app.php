@@ -184,6 +184,11 @@ return [
         Pterodactyl\Providers\ViewComposerServiceProvider::class,
 
         /*
+         * Add Entrypoint provider
+         */
+        Entrypoint\Providers\EntrypointServiceProvider::class,
+
+        /*
          * Additional Dependencies
          */
         Igaster\LaravelTheme\themeServiceProvider::class,
