@@ -16,8 +16,8 @@
                         :placeholder="object.name"
                         ref="elementNameField"
                         v-model="newName"
-                        v-validate.disabled="'required'"
-                        v-validate="'alpha_dash'"
+                        :data-vv-as="object.directory ? 'folder name' : 'file name'"
+                        v-validate="{ required: true, regex: /(^[\w\d.\-\/]+$)/}"
                         v-on:keyup.enter="submit"
                 />
             </div>
@@ -34,8 +34,8 @@
                 </button>
             </div>
         </div>
-        <p class="input-help error">
-            {{ errors.first('folder_name') }}
+        <p class="input-help error" v-if="errors.count()">
+            {{ errors.first('element_name') }}
         </p>
     </Modal>
 </template>

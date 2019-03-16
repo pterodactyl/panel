@@ -7,7 +7,7 @@
                 </div>
                 <div class="action"><span>Rename</span></div>
             </div>
-            <div class="context-row">
+            <div class="context-row" v-on:click="triggerAction('move')">
                 <div class="icon">
                     <Icon name="corner-up-left" class="h-4"/>
                 </div>
