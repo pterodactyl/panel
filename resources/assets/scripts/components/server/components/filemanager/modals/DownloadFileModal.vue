@@ -18,7 +18,6 @@
         components: { SpinnerModal },
 
         computed: mapState('server', {
-            server: (state: ServerState) => state.server,
             credentials: (state: ServerState) => state.credentials,
             fm: (state: ServerState) => state.fm,
         }),
@@ -35,7 +34,7 @@
         mounted: function () {
             const path = join(this.fm.currentDirectory, this.file.name);
 
-            getDownloadToken(this.server.uuid, path)
+            getDownloadToken(this.$route.params.id, path)
                 .then((token) => {
                     if (token) {
                         window.location.href = `${this.credentials.node}/v1/server/file/download/${token}`;

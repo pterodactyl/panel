@@ -39,7 +39,7 @@
             ref="contextMenu"
         />
         <CopyFileModal :file="file" v-if="modals.copy" v-on:close="$emit('list')"/>
-        <DownloadFileModal :file="file" v-if="modals.download" v-on:close="modals.download = false"/>
+        <DownloadFileModal :file="file" v-if="!file.directory && modals.download" v-on:close="modals.download = false"/>
         <DeleteFileModal :visible.sync="modals.delete" :object="file" v-on:deleted="$emit('deleted')" v-on:close="modal.delete = false"/>
         <RenameModal :visible.sync="modals.rename" :object="file" v-on:renamed="$emit('list')" v-on:close="modal.rename = false"/>
         <MoveFileModal :visible.sync="modals.move" :file="file" v-on:moved="$emit('list')" v-on:close="modal.move = false"/>
