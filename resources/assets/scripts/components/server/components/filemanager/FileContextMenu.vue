@@ -19,7 +19,7 @@
                 </div>
                 <div class="action">Copy</div>
             </div>
-            <div class="context-row">
+            <div class="context-row" v-on:click="triggerAction('download')">
                 <div class="icon">
                     <Icon name="download" class="h-4"/>
                 </div>

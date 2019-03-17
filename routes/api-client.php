@@ -40,4 +40,10 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/', 'Servers\DatabaseController@store');
         Route::delete('/{database}', 'Servers\DatabaseController@delete')->name('api.client.servers.databases.delete');
     });
+
+    Route::group(['prefix' => '/files'], function () {
+        Route::post('/download/{file}', 'Servers\FileController@download')
+            ->where('file', '.*')
+            ->name('api.client.servers.files.download');
+    });
 });
