@@ -11,8 +11,8 @@
 
 @section('scripts')
     @parent
-    @if(env('OAUTH2'))
-        @foreach(\Pterodactyl\Traits\Helpers\OAuth2Providers::getEnabledProviderSettings() as $provider => $value)
+    @if(config('oauth2.enabled'))
+        @foreach($providers as $provider => $value)
             @if (!empty($value['widget_css']))
                 <style>
                     {{{ $value['widget_css'] }}}
@@ -48,49 +48,43 @@
 </div>
 <div class="row">
     <div class="col-sm-offset-3 col-xs-offset-1 col-sm-6 col-xs-10 pterodactyl-login-box">
-        <form id="loginForm" action="{{ route('auth.login') }}" method="POST">
-            <div class="form-group has-feedback">
-                <div class="pterodactyl-login-input">
-                    <input type="text" name="user" class="form-control input-lg" value="{{ old('user') }}" required placeholder="@lang('strings.user_identifier')" autofocus>
-                    <span class="fa fa-envelope form-control-feedback fa-lg"></span>
+        @if (!config('oauth2.enabled') || config('oauth2.required') != 2)
+            <form id="loginForm" action="{{ route('auth.login') }}" method="POST">
+                <div class="form-group has-feedback">
+                    <div class="pterodactyl-login-input">
+                        <input type="text" name="user" class="form-control input-lg" value="{{ old('user') }}" required placeholder="@lang('strings.user_identifier')" autofocus>
+                        <span class="fa fa-envelope form-control-feedback fa-lg"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group has-feedback">
-                <div class="pterodactyl-login-input">
-                    <input type="password" name="password" class="form-control input-lg" required placeholder="@lang('strings.password')">
-                    <span class="fa fa-lock form-control-feedback fa-lg"></span>
+                <div class="form-group has-feedback">
+                    <div class="pterodactyl-login-input">
+                        <input type="password" name="password" class="form-control input-lg" required placeholder="@lang('strings.password')">
+                        <span class="fa fa-lock form-control-feedback fa-lg"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-4">
-                    <a href="{{ route('auth.password') }}"><button type="button" class="btn pterodactyl-login-button--left"><i class="fa fa-life-ring"></i></button></a>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <a href="{{ route('auth.password') }}"><button type="button" class="btn pterodactyl-login-button--left"><i class="fa fa-life-ring"></i></button></a>
+                    </div>
+                    <div class="col-xs-offset-4 col-xs-4">
+                        {!! csrf_field() !!}
+                        <button type="submit" class="btn btn-block g-recaptcha pterodactyl-login-button--main" @if(config('recaptcha.enabled')) data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit' @endif>@lang('auth.sign_in')</button>
+                    </div>
                 </div>
-                <div class="col-xs-offset-4 col-xs-4">
-                    {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-block g-recaptcha pterodactyl-login-button--main" @if(config('recaptcha.enabled')) data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit' @endif>@lang('auth.sign_in')</button>
-                </div>
-            </div>
-        </form>
-        @if(env('OAUTH2'))
+            </form>
+        @endif
+        @if(config('oauth2.enabled'))
             <div>
-                <p id="oauth2Or">– {{ strtoupper(__('strings.or')) }} –</p>
+                @if (config('oauth2.required') != 2)
+                    <p id="oauth2Or">– {{ strtoupper(__('strings.or')) }} –</p>
+                @endif
                 <div class="oauth2-login-button-wrapper">
-                    @php
-                        $x = 0;
-                    @endphp
-                    @foreach(array_chunk(\Pterodactyl\Traits\Helpers\OAuth2Providers::getEnabledProviderSettings(), 2, true) as $providers)
-                        @php
-                            $x++;
-                        @endphp
-                        <div class="row oauth2-login-button-row">
-                            @foreach($providers as $provider => $value)
-                                @if (!empty($value['widget_html']))
-                                    <a href="{{ route('auth.oauth2') . '/' . $provider }}" class="oauth2-login-button col-md-{{ $x == count(array_chunk(\Pterodactyl\Traits\Helpers\OAuth2Providers::getEnabledProviderSettings(), 2, true)) ? count($providers) == 1 ? '12' : '6' : '6' }}">
-                                        {!! $value['widget_html'] !!}
-                                    </a>
-                                @endif
-                            @endforeach
-                        </div>
+                    @foreach($providers as $provider => $value)
+                        @if (!empty($value['widget_html']))
+                            <a href="{{ route('auth.oauth2') . '/' . $provider }}" class="oauth2-login-button">
+                                {!! $value['widget_html'] !!}
+                            </a>
+                        @endif
                     @endforeach
                 </div>
             </div>

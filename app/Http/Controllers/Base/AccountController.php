@@ -9,10 +9,11 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class AccountController extends Controller
 {
-    use AvailableLanguages;
+    use AvailableLanguages, OAuth2Providers;
 
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -52,6 +53,7 @@ class AccountController extends Controller
     {
         return view('base.account', [
             'languages' => $this->getAvailableLanguages(true),
+            'enabled_providers' => config('oauth2.enabled') == true ? implode(',', array_keys($this->getEnabledProviderSettings())) : '',
         ]);
     }
 
@@ -74,7 +76,7 @@ class AccountController extends Controller
             if ($request->input('do_action') === 'email') {
                 $data = ['email' => $request->input('new_email')];
             } elseif ($request->input('do_action') === 'identity') {
-                $data = $request->only(['name_first', 'name_last', 'username', 'language']);
+                $data = $request->only(['name_first', 'name_last', 'username', 'language', 'oauth2_id']);
             } else {
                 $data = [];
             }

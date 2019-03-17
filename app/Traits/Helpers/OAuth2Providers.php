@@ -1,11 +1,9 @@
 <?php
 
-
 namespace Pterodactyl\Traits\Helpers;
 
-
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use SocialiteProviders\Discord\DiscordExtendSocialite;
 
 trait OAuth2Providers
 {
@@ -15,58 +13,54 @@ trait OAuth2Providers
      * @param $provider
      * @return array
      */
-    public static function createProviderSettings($provider) {
+    public function createProviderSettings($provider) {
         return [
             $provider => [
-                'status' => config('oauth2.default_driver') == $provider ? true : env('OAUTH2_' . Str::upper($provider) . '_STATUS'),
-                'client_id' => env('OAUTH2_' . Str::upper($provider) . '_CLIENT_ID'),
-                'client_secret' => env('OAUTH2_' . Str::upper($provider) . '_CLIENT_SECRET'),
-                'redirect' => env('APP_URL') . '/auth/login/oauth2/callback',
-                'scopes' => env('OAUTH2_' . Str::upper($provider) . '_CLIENT_SECRET'),
-                'widget_html' => env('OAUTH2_' . Str::upper($provider) . '_WIDGET_HTML'),
-                'widget_css' => env('OAUTH2_' . Str::upper($provider) . '_WIDGET_CSS'),
-                'listener' => env('OAUTH2_' . Str::upper($provider) . '_LISTENER'),
-                'package' => env('OAUTH2_' . Str::upper($provider) . '_PACKAGE'),
+                'status' => config('oauth2.default_driver') == $provider ? true : config('oauth2.providers.' . $provider . '.status', env('OAUTH2_' . Str::upper($provider) . '_STATUS')),
+                'client_id' => config('oauth2.providers.' . $provider . '.client_id', env('OAUTH2_' . Str::upper($provider) . '_CLIENT_ID')),
+                'client_secret' => config('oauth2.providers.' . $provider . '.client_secret', env('OAUTH2_' . Str::upper($provider) . '_CLIENT_SECRET')),
+                'redirect' => config('app.url') . '/auth/login/oauth2/callback',
+                'scopes' => config('oauth2.providers.' . $provider . '.scopes', env('OAUTH2_' . Str::upper($provider) . '_SCOPES')),
+                'widget_html' => config('oauth2.providers.' . $provider . '.widget_html', env('OAUTH2_' . Str::upper($provider) . '_WIDGET_HTML')),
+                'widget_css' => config('oauth2.providers.' . $provider . '.widget_css', env('OAUTH2_' . Str::upper($provider) . '_WIDGET_CSS')),
+                'listener' => config('oauth2.providers.' . $provider . '.listener', env('OAUTH2_' . Str::upper($provider) . '_LISTENER')),
+                'package' => config('oauth2.providers.' . $provider . '.package', env('OAUTH2_' . Str::upper($provider) . '_PACKAGE')),
             ]
         ];
     }
 
     /**
      * Get all providers
-     * The ones in config/oauth2.php wil overwrite the generated ones
      */
-    public static function getAllProviderSettings() {
+    public function getAllProviderSettings() {
         $array = config('oauth2.providers');
         foreach (preg_split('~,~', config('oauth2.all_drivers')) as $provider) {
-            $array = array_merge(self::createProviderSettings($provider), $array);
+            if (array_has($array, $provider)) {
+                $array[$provider] = array_merge($array[$provider], self::createProviderSettings($provider)[$provider]);
+            } else $array = array_merge(self::createProviderSettings($provider), $array);
         }
-        return array_reverse($array);
+        return $array;
     }
 
     /**
      * Get all enabled providers
-     * The ones in config/oauth2.php wil overwrite the generated ones
      */
-    public static function getEnabledProviderSettings() {
-        $array = self::getAllProviderSettings();
+    public function getEnabledProviderSettings() {
+        $array = $this->getAllProviderSettings();
         foreach ($array as $key => $value) {
-            if ($value['status'] != 'true') $array = Arr::except($array, $key);
+            if ($value['status'] != true) {
+                unset($array[$key]);
+            }
         }
-        return array_reverse($array);
+        return $array;
     }
 
     /**
-     * Inject all enabled provider settings
-     * @param $array
-     * @return array
+     * Get array of listeners for the oauth2 providers
      */
-    public static function injectEnabledProviders($array) {
-        return array_merge($array, self::getEnabledProviderSettings());
-    }
-
-    public static function getProviderListeners() {
+    public function getProviderListeners() {
         $return = [];
-        foreach (self::getAllProviderSettings() as $key => $value) {
+        foreach ($this->getAllProviderSettings() as $key => $value) {
             $return = array_merge($return, [$value['listener']]);
         }
         return $return;

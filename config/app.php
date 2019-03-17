@@ -182,6 +182,7 @@ return [
         Pterodactyl\Providers\MacroServiceProvider::class,
         Pterodactyl\Providers\RepositoryServiceProvider::class,
         Pterodactyl\Providers\ViewComposerServiceProvider::class,
+        Pterodactyl\Providers\OAuth2ServiceProvider::class,
 
         /*
          * Additional Dependencies

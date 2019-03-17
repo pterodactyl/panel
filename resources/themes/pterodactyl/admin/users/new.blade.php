@@ -27,11 +27,11 @@
                     <h3 class="box-title">Identity</h3>
                 </div>
                 <div class="box-body">
-                    @if(env('OAUTH2'))
+                    @if(config('oauth2.enabled'))
                         <div class="form-group">
-                            <label for="oauth2_id" class="control-label">OAuth2 ID <span class="field-optional"></span></label>
+                            <label for="oauth2_id" class="control-label">OAuth2 ID <code>@lang('base.account.oauth2_pattern')</code> <span>{{ $enabled_providers }}</span> <span class="field-optional"></span></label>
                             <div>
-                                <input id="oauth2-id" autocomplete="off" type="text" name="oauth2_id" value="{{ old('oauth2_id') }}" class="form-control">
+                                <input type="text" autocomplete="off" name="oauth2_id" value="{{ old('oauth2_id') }}" class="form-control">
                             </div>
                         </div>
                     @endif

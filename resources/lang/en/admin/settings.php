@@ -20,6 +20,7 @@ return [
         'providers' => [
             'label' => 'OAuth2 providers',
             'notice' => 'Please set the redirect URI as :url on your OAuth2 server/provider.',
+            'create_custom_notice' => 'If you wish to create a custom provider please follow <a href=":url">this guide</a>.',
             'table_headers' => [
                 'provider' => 'Provider',
                 'action' => 'Action',

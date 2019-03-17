@@ -102,21 +102,25 @@
                                             <th class="text-center" style="width: 150px">@lang('admin/settings.oauth2.providers.table_headers.action')</th>
                                             <th class="text-center" style="width: 20px">@lang('admin/settings.oauth2.providers.table_headers.status')</th>
                                         </tr>
+                                        @php
+                                            $default_provider = config('oauth2.default_driver');
+                                        @endphp
                                         @foreach($providers as $provider => $value)
                                             <tr id="provider-row-{{ $provider }}">
                                                 <td>{{ \Illuminate\Support\Str::ucfirst($provider) }}
-                                                    <span id="default-notice-{{ $provider }}" class="{{ $provider == old('oauth2:default_driver', config('oauth2.default_driver')) ? '' : 'hidden' }}" data-toggle="tooltip" title="@lang('admin/settings.oauth2.providers.default_provider')"><i class="fa fa-star"></i></span>
-                                                    <span id="unset-warning-{{ $provider }}" class="{{ !empty($value['client_id']) ? 'hidden' : '' }}" data-toggle="tooltip" title="@lang('admin/settings.oauth2.providers.unset_provider')"><i class="fa fa-exclamation-triangle"></i></span></td>
+                                                    <span id="default-notice-{{ $provider }}" class="{{ $provider == $default_provider ? '' : 'hidden' }}" data-toggle="tooltip" title="@lang('admin/settings.oauth2.providers.default_provider')"><i class="fa fa-star"></i></span>
+                                                    <span id="unset-warning-{{ $provider }}" class="{{ !empty($value['client_id']) ? 'hidden' : '' }}" data-toggle="tooltip" title="@lang('admin/settings.oauth2.providers.unset_provider')"><i class="fa fa-exclamation-triangle"></i></span>
+                                                </td>
                                                 <td class="text-center">
                                                     <span class="btn btn-xs btn-primary" data-toggle="edit" data-edit="{{ \Illuminate\Support\Str::ucfirst($provider) }}">@lang('admin/settings.oauth2.providers.edit')</span>
-                                                    <span id="button-delete-{{ $provider }}" class="btn btn-xs btn-danger {{ $provider == old('oauth2:default_driver', config('oauth2.default_driver')) ? 'hidden' : '' }}" data-toggle="delete" data-delete="{{ \Illuminate\Support\Str::ucfirst($provider) }}">@lang('admin/settings.oauth2.providers.delete')</span>
+                                                    <span id="button-delete-{{ $provider }}" class="btn btn-xs btn-danger {{ $provider == $default_provider ? 'hidden' : '' }}" data-toggle="delete" data-delete="{{ \Illuminate\Support\Str::ucfirst($provider) }}">@lang('admin/settings.oauth2.providers.delete')</span>
                                                 </td>
                                                 <td class="text-center">
                                                     <input id="provider-state-value-{{ $provider }}" name="oauth2:providers:{{ $provider }}:status" class="hidden" value="{{ $value['status'] == true ? 'true' : 'false' }}">
-                                                    <span id="provider-state-on-{{ $provider }}" data-toggle="disable" data-disable="{{ $provider }}" class="btn btn-xs text-green {{ $value['status'] == true && $provider != config('oauth2.default_driver') ? '' : 'hidden'}}"><i class="fa fa-check fa-2x"></i></span>
-                                                    <span id="provider-state-default-{{ $provider }}" class="btn btn-xs disabled text-green {{ $provider == old('oauth2:default_driver', config('oauth2.default_driver')) ? '' : 'hidden'}}" data-toggle="tooltip" title="@lang('admin/settings.oauth2.providers.default_provider_state_notice')"><i class="fa fa-check fa-2x"></i></span>
-                                                    <span id="provider-state-off-{{ $provider }}" data-toggle="enable" data-enable="{{ $provider }}" class="btn btn-xs text-red {{ $value['status'] != true && !empty($value['client_id']) ? '' : 'hidden'}}"><i class="fa fa-times fa-2x"></i></span>
-                                                    <span id="provider-state-unset-{{ $provider }}" class="btn btn-xs disabled text-red {{ empty($value['client_id']) && $provider != config('oauth2.default_driver') ? '' : 'hidden'}}" data-toggle="tooltip" title="@lang('admin/settings.oauth2.providers.unset_provider_state_notice')"><i class="fa fa-times fa-2x"></i></span>
+                                                    <span id="provider-state-on-{{ $provider }}" data-toggle="disable" data-disable="{{ $provider }}" class="btn btn-xs text-green {{ $value['status'] == true && $provider != $default_provider ? '' : 'hidden'}}"><i class="fa fa-check fa-2x"></i></span>
+                                                    <span id="provider-state-default-{{ $provider }}" class="btn btn-xs disabled text-green {{ $provider == $default_provider ? '' : 'hidden'}}" data-toggle="tooltip" title="@lang('admin/settings.oauth2.providers.default_provider_state_notice')"><i class="fa fa-check fa-2x"></i></span>
+                                                    <span id="provider-state-off-{{ $provider }}" data-toggle="enable" data-enable="{{ $provider }}" class="btn btn-xs text-red {{ $value['status'] != true && !empty($value['client_id']) && $provider != $default_provider ? '' : 'hidden'}}"><i class="fa fa-times fa-2x"></i></span>
+                                                    <span id="provider-state-unset-{{ $provider }}" class="btn btn-xs disabled text-red {{ empty($value['client_id']) && $provider != $default_provider ? '' : 'hidden'}}" data-toggle="tooltip" title="@lang('admin/settings.oauth2.providers.unset_provider_state_notice')"><i class="fa fa-times fa-2x"></i></span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -157,8 +161,15 @@
                 </div>
                 <form id="modal-create-form" class="modal-body">
                     <div class="box-body">
-                        <div class="row text-center text-red">
-                            <label class="control-label"><i class="fa fa-exclamation-triangle"></i> {!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . env('APP_URL') . '/auth/login/oauth2/callback' . '</code>']) !!} <i class="fa fa-exclamation-triangle"></i></label>
+                        <div class="row">
+                            <div class="callout callout-danger">
+                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/auth/login/oauth2/callback' . '</code>']) !!}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="callout callout-info">
+                                <p>{!! __('admin/settings.oauth2.providers.create_custom_notice', ['url' => '']) !!}</p>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
@@ -249,8 +260,10 @@
                 </div>
                 <form id="modal-edit-form" class="modal-body">
                     <div class="box-body">
-                        <div class="row text-center text-red">
-                            <label class="control-label"><i class="fa fa-exclamation-triangle"></i> {!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . env('APP_URL') . '/auth/login/oauth2/callback' . '</code>']) !!} <i class="fa fa-exclamation-triangle"></i></label>
+                        <div class="row">
+                            <div class="callout callout-danger">
+                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/auth/login/oauth2/callback' . '</code>']) !!}</p>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="form-group">
@@ -434,19 +447,24 @@
             let unset = $('#provider-state-unset-' + provider);
             let on = $('#provider-state-on-' + provider);
             let off = $('#provider-state-off-' + provider);
-            if ($("#saved-provider-id-" + provider).attr('value') !== '' && $('#saved-default-provider').val() === provider) $('#modal-edit-id').val($("#saved-provider-id-" + provider).attr('value'));
-            $("#saved-provider-id-" + provider).attr('value', $('#modal-edit-id').val());
+            if ($('#modal-edit-id').val() === '') {
+                if ($('#default-provider').val() === provider) {
+                    console.log('DEF AND EMPT');
+                } else $("#saved-provider-id-" + provider).attr('value', $('#modal-edit-id').val());
+            } else $("#saved-provider-id-" + provider).attr('value', $('#modal-edit-id').val());
             if($("#saved-provider-id-" + provider).attr('value') !== "") {
                 warning.addClass('hidden');
                 unset.addClass('hidden');
-                on.addClass('hidden');
-                if ($("#saved-provider-id-" + provider).attr('value') !== '' && $('#saved-default-provider').val() !== provider) off.removeClass('hidden');
+                if ($('#default-provider').val() !== provider) {
+                    if (on.hasClass('hidden')) off.removeClass('hidden');
+                }
                 $("#default-provider-option-" + provider).removeAttr('hidden');
             } else {
                 warning.removeClass('hidden');
                 unset.removeClass('hidden');
                 on.addClass('hidden');
                 off.addClass('hidden');
+                $('#provider-state-value-' + provider).attr('value', 'false');
                 $("#default-provider-option-" + provider).attr('hidden', '');
             }
         });

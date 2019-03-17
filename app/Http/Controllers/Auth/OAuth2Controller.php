@@ -17,6 +17,8 @@ use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class OAuth2Controller extends Controller
 {
+    use OAuth2Providers;
+
     /**
      * @var \Pterodactyl\Services\Users\UserCreationService
      */
@@ -73,7 +75,7 @@ class OAuth2Controller extends Controller
         if ($this->auth->guard()->check()) {
             return redirect()->route('index');
         }
-        if (! env('OAUTH2')) {
+        if (! config('oauth2.enabled')) {
             abort(404);
         }
 
@@ -90,9 +92,12 @@ class OAuth2Controller extends Controller
 
         try {
             // Try to get the user
-            $user = User::where('oauth2_id',
-                'LIKE',
-                '%' . Str::upper(session()->get('oauth2_driver')) . '=>' . $oauth2_id . '%')->firstOrFail();
+            $user = $this->repository->findFirstWhere([['oauth2_id', 'LIKE', '%' . Str::upper(session()->get('oauth2_driver')) . ':' . $oauth2_id . '%']]);
+//                User::where('oauth2_id',
+//                'LIKE',
+//                '%' . Str::upper(session()->get('oauth2_driver')) . ':' . $oauth2_id . '%')->firstOrFail();
+
+            session()->forget('oauth2_driver');
 
             // Login
             $this->auth->guard()->login($user);
@@ -115,19 +120,16 @@ class OAuth2Controller extends Controller
      */
     public function redirectToProvider($driver)
     {
-        dd(array_keys(OAuth2Providers::getEnabledProviderSettings()));
         // Check if the driver exists and is enabled else use the default one
         $driver = is_null($driver) ? config('oauth2.default_driver') : $driver;
-        $driver = Arr::has(array_keys(OAuth2Providers::getEnabledProviderSettings()), $driver) ? $driver : config('oauth2.default_driver');
+        $driver = Arr::has($this->getEnabledProviderSettings(), $driver) ? $driver : config('oauth2.default_driver');
 
-        error_log($driver);
         // Save the driver the user's using
         session()->put('oauth2_driver', $driver);
         session()->save();
 
         return Socialite::driver($driver)
-            ->with(unserialize(env(Str::upper($driver).'_OAUTH2_EXTRA_PARAMETERS', 'a:0:{}')))
-            ->scopes(preg_split('~,~', env(Str::upper($driver).'_OAUTH2_SCOPES', 'email')))
+            ->scopes(preg_split('~,~', config('oauth2.providers.' . $driver . '.scopes')))
             ->redirect();
     }
 }

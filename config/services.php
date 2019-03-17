@@ -1,6 +1,6 @@
 <?php
 
-$array = [
+return [
     /*
     |--------------------------------------------------------------------------
     | Third Party Service
@@ -32,6 +32,3 @@ $array = [
         'secret' => env('SPARKPOST_SECRET'),
     ],
 ];
-
-// Inject OAuth2 Providers
-return Pterodactyl\Traits\Helpers\OAuth2Providers::injectEnabledProviders($array);

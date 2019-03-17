@@ -16,10 +16,11 @@ use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class UserController extends Controller
 {
-    use AvailableLanguages;
+    use AvailableLanguages, OAuth2Providers;
 
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -99,6 +100,7 @@ class UserController extends Controller
     {
         return view('admin.users.new', [
             'languages' => $this->getAvailableLanguages(true),
+            'enabled_providers' => config('oauth2.enabled') == true ? implode(',', array_keys($this->getEnabledProviderSettings())) : '',
         ]);
     }
 
@@ -113,6 +115,7 @@ class UserController extends Controller
         return view('admin.users.view', [
             'user' => $user,
             'languages' => $this->getAvailableLanguages(true),
+            'enabled_providers' => config('oauth2.enabled') == true ? implode(',', array_keys($this->getEnabledProviderSettings())) : '',
         ]);
     }
 

@@ -70,8 +70,7 @@ return [
         'update_identity' => 'Update Identity',
         'username_help' => 'Your username must be unique to your account, and may only contain the following characters: :requirements.',
         'language' => 'Language',
-        'revoke_oauth2' => 'Revoke OAuth2 Access',
-        'revoke_oauth2_description' => 'Revoke access of the panel to your OAuth2 account from your OAuth2 server/provider. You will have to reauthorize access to be able to log back in.',
+        'oauth2_pattern' => '[name]:[ID],...',
     ],
     'security' => [
         'session_mgmt_disabled' => 'Your host has not enabled the ability to manage account sessions via this interface.',

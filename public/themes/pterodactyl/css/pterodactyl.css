@@ -105,15 +105,14 @@
 
 .oauth2-login-button-wrapper {
     text-align: center;
+    margin-bottom: -10px;
 }
 
 .oauth2-login-button {
     display: inline-block;
     text-align: unset;
-}
-
-.oauth2-login-button-row {
-    margin-bottom: 10px;
+    padding-right: 5px;
+    padding-bottom: 10px;
 }
 
 .weight-100 {

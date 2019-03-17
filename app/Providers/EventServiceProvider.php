@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Providers;
 
-use Illuminate\Support\Arr;
 use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
 use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -33,6 +32,6 @@ class EventServiceProvider extends ServiceProvider
         parent::__construct($app);
 
         // Add OAuth2 provider listeners
-        $this->listen[SocialiteWasCalled::class] = array_merge($this->listen[SocialiteWasCalled::class], array_filter(OAuth2Providers::getProviderListeners()));
+        $this->listen[SocialiteWasCalled::class] = array_merge($this->listen[SocialiteWasCalled::class], array_filter($this->getProviderListeners()));
     }
 }

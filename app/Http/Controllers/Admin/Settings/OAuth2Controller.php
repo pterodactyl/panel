@@ -65,7 +65,7 @@ class OAuth2Controller extends Controller
      */
     public function index(): View
     {
-        $providers = OAuth2Providers::getAllProviderSettings();
+        $providers = $this->getAllProviderSettings();
         return view('admin.settings.oauth2', compact('providers'));
     }
 
@@ -105,15 +105,17 @@ class OAuth2Controller extends Controller
 
         $array = Arr::except($array, ['oauth2:providers:new', 'oauth2:providers:deleted']);
         foreach ($array as $key => $value) {
+            // Unescape
             if (strpos($key, ':widget_html') || strpos($key, ':widget_css')) $value = html_entity_decode(preg_replace("/%u([0-9a-f]{3,4})/i", "&#x\\1;", urldecode($value)), null, 'UTF-8');
-            error_log('"' . $key . '" => "' . $value . '"');
+            // Replace escaped slash
+            if (strpos($key, ':listener')) $value = preg_replace("~//~", "/", preg_replace("~\\\\\\\\~", "\\\\", $value));
             $this->settings->set('settings::' . $key, $value);
         }
 
+        // Enable default driver
         $this->settings->set('settings::oauth2:providers:' . $array['oauth2:default_driver'] . ':status', 'true');
 
-        SettingsServiceProvider::getInstance()->injectOAuth2Providers();
-        SettingsServiceProvider::getInstance()->updateOAuth2Config();
+        app('oauth2ServiceProvider')->updateConfig();
 
         if (array_key_exists('oauth2:providers:new', $array)) $this->kernel->call('p:oauth2:packages');
         $this->kernel->call('queue:restart');
@@ -121,4 +123,5 @@ class OAuth2Controller extends Controller
 
         return redirect()->route('admin.settings.oauth2');
     }
+
 }

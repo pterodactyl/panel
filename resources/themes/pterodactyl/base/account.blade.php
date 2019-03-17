@@ -67,6 +67,16 @@
                             <h3 class="box-title">@lang('base.account.update_identity')</h3>
                         </div>
                         <div class="box-body">
+                            @if(config('oauth2.enabled'))
+                                <div class="row">
+                                    <div class="form-group col-xs-12">
+                                        <label for="oauth2_id" class="control-label">OAuth2 ID <code>@lang('base.account.oauth2_pattern')</code> <span>{{ $enabled_providers }}</span> <span class="field-optional"></span></label>
+                                        <div>
+                                            <input readonly type="text" name="oauth2_id" value="{{ Auth::user()->getAttributes()['oauth2_id'] }}" class="form-control form-autocomplete-stop">
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             <div class="row">
                                 <div class="form-group col-sm-6">
                                     <label for="first_name" class="control-label">@lang('base.account.first_name')</label>
@@ -145,24 +155,5 @@
             </div>
         </div>
     </div>
-    @if((env('OAUTH2')) && isset(Auth::user()->getAttributes()['oauth2_id']))
-        <div class="col-sm-6">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="box box-danger">
-                        <div class="box-header with-border">
-                            <h3 class="box-title">@lang('base.account.revoke_oauth2')</h3>
-                        </div>
-                        <div class="box-body">
-                            <p class="no-margin">@lang('base.account.revoke_oauth2_description')</p>
-                        </div>
-                        <div class="box-footer">
-                            <a href="{{ env('OAUTH2_URL_REVOKE') }}" target="_blank"><button class="btn btn-danger btn-sm pull-right">@lang('base.account.revoke_oauth2')</button></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
 </div>
 @endsection

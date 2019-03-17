@@ -13,9 +13,44 @@ return [
 
     /**
      * Provider configuration
-     * These settings will overwrite the generated ones
+     * Used to preinstall settings into the database
      */
-    'providers' => [],
+    'providers' => [
+        'github' => [
+            'widget_html' => '',
+            'widget_css' => '',
+        ],
+        'facebook' => [
+            'widget_html' => '',
+            'widget_css' => '',
+        ],
+        'twitter' => [
+            'widget_html' => '',
+            'widget_css' => '',
+        ],
+        'linkedin' => [
+            'widget_html' => '',
+            'widget_css' => '',
+        ],
+        'google' => [
+            'widget_html' => '',
+            'widget_css' => '',
+        ],
+        'gitlab' => [
+            'widget_html' => '',
+            'widget_css' => '',
+        ],
+        'bitbucket' => [
+            'widget_html' => '',
+            'widget_css' => '',
+        ],
+        'discord' => [
+            'package' => 'socialiteproviders/discord',
+            'listener' => 'SocialiteProviders\Discord\DiscordExtendSocialite@handle',
+            'widget_html' => '',
+            'widget_css' => '',
+        ],
+    ],
 
     /**
      * Default driver

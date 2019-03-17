@@ -64,7 +64,7 @@
                                         <i class="fa fa-unlock text-red"></i>
                                     @endif
                                 </td>
-                                @if(env('OAUTH2'))
+                                @if(config('oauth2.enabled'))
                                     <td class="text-center">
                                         @if($user->getAttributes()['oauth2_id'] != null)
                                             <i class="fa fa-check text-green" aria-hidden="true"></i>
