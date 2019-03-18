@@ -29,7 +29,7 @@
                     <div class="flex-1">Name</div>
                     <div class="flex-1 text-right">Size</div>
                     <div class="flex-1 text-right">Modified</div>
-                    <div class="flex-none w-1/6">Actions</div>
+                    <div class="flex-none"></div>
                 </div>
                 <div v-for="file in Array.concat(directories, files)">
                     <FileRow

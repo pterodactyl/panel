@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-on:contextmenu="showContextMenu">
-            <div class="row" :class="{ clickable: canEdit(file), 'active-selection': contextMenuVisible }" v-if="!file.directory">
+            <div class="row" :class="{ 'cursor-pointer': canEdit(file), 'active-selection': contextMenuVisible }" v-if="!file.directory">
                 <div class="flex-none icon">
                     <Icon name="file-text" v-if="!file.symlink"/>
                     <Icon name="link2" v-else/>
@@ -9,9 +9,11 @@
                 <div class="flex-1">{{file.name}}</div>
                 <div class="flex-1 text-right text-neutral-600">{{readableSize(file.size)}}</div>
                 <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
-                <div class="flex-none w-1/6"></div>
+                <div class="flex-none icon cursor-pointer" v-on:click="showContextMenu" ref="menuTriggerIcon">
+                    <Icon name="more-vertical" class="text-neutral-500"/>
+                </div>
             </div>
-            <router-link class="row clickable"
+            <router-link class="row"
                          :class="{ 'active-selection': contextMenuVisible }"
                          :to="{ name: 'server-files', params: { path: getClickablePath(file.name) }}"
                          v-else
@@ -22,9 +24,10 @@
                 <div class="flex-1">{{file.name}}</div>
                 <div class="flex-1 text-right text-neutral-600"></div>
                 <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
-                <div class="flex-none w-1/6"></div>
+                <div class="flex-none icon" v-on:click="showContextMenu" ref="menuTriggerIcon">
+                    <Icon name="more-vertical" class="text-neutral-500"/>
+                </div>
             </router-link>
-
         </div>
         <FileContextMenu
             class="context-menu"
@@ -129,13 +132,14 @@
 
                 // @ts-ignore
                 this.$parent.$emit('collapse-menus', this._uid);
-
                 this.contextMenuVisible = true;
 
-                const menuWidth = (this.$refs.contextMenu as VueType).$el.clientWidth;
-                const positionElement = e.clientX - Math.round(menuWidth / 2);
+                this.$nextTick(() => {
+                    const menuWidth = (this.$refs.contextMenu as VueType).$el.clientWidth;
+                    const positionElement = e.clientX - Math.round(menuWidth / 2);
 
-                (this.$refs.contextMenu as VueType).$el.setAttribute('style', `left: ${positionElement}; top: ${e.clientY}`);
+                    (this.$refs.contextMenu as VueType).$el.setAttribute('style', `left: ${positionElement}px; top: ${e.layerY}px`);
+                });
             },
 
             /**
@@ -153,6 +157,14 @@
              */
             _clickListener: function (e: MouseEvent) {
                 if (e.button !== 2 && this.contextMenuVisible) {
+                    // If we're clicking the trigger icon don't discard the event.
+                    if (this.$refs.menuTriggerIcon) {
+                        if (e.target === this.$refs.menuTriggerIcon || (this.$refs.menuTriggerIcon as HTMLDivElement).contains(e.target as Node)) {
+                            return;
+                        }
+                    }
+
+                    // If the target is outside the scope of the context menu, hide it.
                     if (e.target !== (this.$refs.contextMenu as VueType).$el && !(this.$refs.contextMenu as VueType).$el.contains(e.target as Node)) {
                         this.contextMenuVisible = false;
                     }
