@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\View\View;
@@ -106,9 +107,9 @@ class OAuth2Controller extends Controller
         $array = Arr::except($array, ['oauth2:providers:new', 'oauth2:providers:deleted']);
         foreach ($array as $key => $value) {
             // Unescape
-            if (strpos($key, ':widget_html') || strpos($key, ':widget_css')) $value = html_entity_decode(preg_replace("/%u([0-9a-f]{3,4})/i", "&#x\\1;", urldecode($value)), null, 'UTF-8');
+            if (Str::endsWith($key, ':widget_html') || Str::endsWith($key, ':widget_css')) $value = html_entity_decode(preg_replace("/%u([0-9a-f]{3,4})/i", "&#x\\1;", urldecode($value)), null, 'UTF-8');
             // Replace escaped slash
-            if (strpos($key, ':listener')) $value = preg_replace("~//~", "/", preg_replace("~\\\\\\\\~", "\\\\", $value));
+            if (Str::endsWith($key, ':listener')) $value = preg_replace("~//~", "/", preg_replace("~\\\\\\\\~", "\\\\", $value));
             $this->settings->set('settings::' . $key, $value);
         }
 

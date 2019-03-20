@@ -54,7 +54,7 @@ return [
                 'widget_css_warning' => 'This data will be inside <style> tags',
                 'preview' => 'Preview',
                 'close' => 'Close',
-                'save' => 'Save Changes',
+                'save' => 'Apply',
                 'help' => 'Check the documentation',
                 'already_exists' => 'A provider with that name already exists, it must be unique.'
             ],

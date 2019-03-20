@@ -12,7 +12,6 @@ Route::group(['middleware' => 'guest'], function () {
     Route::get('/login', 'LoginController@showLoginForm')->name('auth.login');
     Route::get('/login/totp', 'LoginController@totp')->name('auth.totp');
     Route::get('/login/oauth2/{driver?}', 'OAuth2Controller@login')->name('auth.oauth2');
-    Route::get('/login/oauth2/callback', 'OAuth2Controller@login')->name('auth.oauth2.callback');
     Route::get('/password', 'ForgotPasswordController@showLinkRequestForm')->name('auth.password');
     Route::get('/password/reset/{token}', 'ResetPasswordController@showResetForm')->name('auth.reset');
 

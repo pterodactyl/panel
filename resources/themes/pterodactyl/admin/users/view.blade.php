@@ -27,14 +27,6 @@
                     <h3 class="box-title">Identity</h3>
                 </div>
                 <div class="box-body">
-                    @if(config('oauth2.enabled'))
-                        <div class="form-group">
-                            <label for="oauth2_id" class="control-label">OAuth2 ID <code>@lang('base.account.oauth2_pattern')</code> <span>{{ $enabled_providers }}</span> <span class="field-optional"></span></label>
-                            <div>
-                                <input readonly type="text" name="oauth2_id" value="{{ $user->getAttributes()['oauth2_id'] }}" class="form-control form-autocomplete-stop">
-                            </div>
-                        </div>
-                    @endif
                     <div class="form-group">
                         <label for="email" class="control-label">Email</label>
                         <div>
@@ -70,6 +62,14 @@
                             <p class="text-muted"><small>The default language to use when rendering the Panel for this user.</small></p>
                         </div>
                     </div>
+                    @if(config('oauth2.enabled'))
+                        <div class="form-group">
+                            <label for="oauth2_id" class="control-label">OAuth2 ID <code>@lang('base.account.oauth2_pattern')</code> <span>{{ $enabled_providers }}</span> <span class="field-optional"></span></label>
+                            <div>
+                                <input readonly type="text" name="oauth2_id" value="{{ $user->getAttributes()['oauth2_id'] }}" class="form-control form-autocomplete-stop">
+                            </div>
+                        </div>
+                    @endif
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}

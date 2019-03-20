@@ -70,7 +70,23 @@ return [
         'update_identity' => 'Update Identity',
         'username_help' => 'Your username must be unique to your account, and may only contain the following characters: :requirements.',
         'language' => 'Language',
+        'oauth2_edit' => 'Edit linked OAuth2 accounts',
+        'oauth2_modal' => [
+            'title' => 'Linked OAuth2 accounts',
+            'info' => 'To link your account click on the provider logo.',
+            'hover' => 'Click to link',
+            'table_headers' => [
+                'provider' => 'Provider',
+                'name' => 'Name',
+                'id' => 'ID',
+            ],
+            'close' => 'Close',
+        ],
+        'oauth2_advanced' => 'Advanced',
         'oauth2_pattern' => '[name]:[ID],...',
+        'oauth2_unlink_success' => 'Your account has been successfully unlinked from your oauth2 account.',
+        'oauth2_link_success' => 'Your account has been successfully linked to your oauth2 account.',
+        'oauth2_link_failed' => 'An error occurred whilst linking your account to your oauth2 account.',
     ],
     'security' => [
         'session_mgmt_disabled' => 'Your host has not enabled the ability to manage account sessions via this interface.',

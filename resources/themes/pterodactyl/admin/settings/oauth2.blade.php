@@ -24,9 +24,6 @@
             text-align: left;
             vertical-align: middle;
         }
-        .button {
-            cursor: pointer;
-        }
     </style>
     <style id="modal-widget-css"></style>
 @endsection
@@ -47,7 +44,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">@lang('admin/settings.oauth2.box_title')</h3>
                 </div>
-                <form action="{{ route('admin.settings.oauth2') }}" method="POST">
+                <form id="oauth2-form" action="{{ route('admin.settings.oauth2') }}" method="POST">
                     <div class="box-body">
                         <div class="row">
                             <div class="form-group col-md-4">
@@ -163,7 +160,7 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="callout callout-danger">
-                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/auth/login/oauth2/callback' . '</code>']) !!}</p>
+                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/oauth2/callback' . '</code>']) !!}</p>
                             </div>
                         </div>
                         <div class="row">
@@ -262,7 +259,7 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="callout callout-danger">
-                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/auth/login/oauth2/callback' . '</code>']) !!}</p>
+                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/oauth2/callback' . '</code>']) !!}</p>
                             </div>
                         </div>
                         <div class="row">
@@ -331,7 +328,9 @@
 
 @section('footer-scripts')
     @parent
+    {!! Theme::js('js/admin/jquery.are-you-sure.js?t={cache-version}') !!}
     <script>
+        $('form').areYouSure();
         $(document).ready(function () {
             $('#default-provider').val('{{ config('oauth2.default_driver') }}');
         });
@@ -339,6 +338,7 @@
             selector: '[data-toggle="tooltip"]'
         });
         $(document).on('click', "[data-toggle='create']", function () {
+            $('#oauth2-form').addClass('dirty');
             $('#modal-create').modal({
                 show: true,
                 backdrop: 'static'
@@ -369,6 +369,7 @@
             $('#modal-widget-css').html($(this).val());
         });
         $("#modal-create-save").on('click', function () {
+            $('#oauth2-form').addClass('dirty');
             if (!$('#modal-create-form')[0].checkValidity()) {
                 $('#modal-create-submit').click();
                 return;
@@ -433,6 +434,7 @@
             $('#modal-widget-css').html($(this).val());
         });
         $(document).on('click', "#modal-edit-save", function () {
+            $('#oauth2-form').addClass('dirty');
             if (!$('#modal-edit-form')[0].checkValidity()) {
                 $('#modal-edit-submit').click();
                 return;
@@ -469,6 +471,7 @@
             }
         });
         $(document).on('click', "[data-toggle='delete']", function () {
+            $('#oauth2-form').addClass('dirty');
             let provider = $(this).attr('data-delete').toLowerCase();
             let that = this;
             swal({
@@ -494,18 +497,21 @@
             });
         });
         $(document).on('click', "[data-toggle='enable']", function () {
+            $('#oauth2-form').addClass('dirty');
             let provider = $(this).attr('data-enable');
             $('#provider-state-on-' + provider).removeClass('hidden');
             $('#provider-state-off-' + provider).addClass('hidden');
             $('#provider-state-value-' + provider).attr('value', 'true');
         });
         $(document).on('click', "[data-toggle='disable']", function () {
+            $('#oauth2-form').addClass('dirty');
             let provider = $(this).attr('data-disable');
             $('#provider-state-off-' + provider).removeClass('hidden');
             $('#provider-state-on-' + provider).addClass('hidden');
             $('#provider-state-value-' + provider).attr('value', 'false');
         });
         $(document).on('change', '#default-provider', function () {
+            $('#oauth2-form').addClass('dirty');
             let def = $('#saved-default-provider').attr('value');
             let provider = $(this).val();
             $('#saved-default-provider').attr('value', provider);

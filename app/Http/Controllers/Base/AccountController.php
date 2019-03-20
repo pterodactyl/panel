@@ -2,6 +2,9 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Prologue\Alerts\AlertsMessageBag;
@@ -10,6 +13,7 @@ use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
 use Pterodactyl\Traits\Helpers\OAuth2Providers;
+use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
@@ -51,9 +55,18 @@ class AccountController extends Controller
      */
     public function index()
     {
+        if (config('oauth2.enabled') == true) {
+            $oauth2_ids = [];
+            foreach (preg_split('~,~', \Auth::user()->getAttributes()['oauth2_id']) as $id) {
+                $split = preg_split('~:~', $id);
+                if (!empty($split[1])) $oauth2_ids = Arr::add($oauth2_ids, $split[0], $split[1]);
+            }
+        }
+
         return view('base.account', [
             'languages' => $this->getAvailableLanguages(true),
-            'enabled_providers' => config('oauth2.enabled') == true ? implode(',', array_keys($this->getEnabledProviderSettings())) : '',
+            'enabled_providers' => config('oauth2.enabled') == true ? $this->getEnabledProviderSettings() : '',
+            'oauth2_ids' => config('oauth2.enabled') == true ? $oauth2_ids : '',
         ]);
     }
 
@@ -87,6 +100,60 @@ class AccountController extends Controller
 
         $this->alert->success(trans('base.account.details_updated'))->flash();
 
+        return redirect()->route('account');
+    }
+
+    /**
+     * Link a user's account to an OAuth2 id
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function patch(Request $request)
+    {
+        $driver = $request->get('oauth2_driver');
+
+        // Check if the driver exists and is enabled else use the default one
+        $driver = is_null($driver) ? config('oauth2.default_driver') : $driver;
+        $driver = Arr::has($this->getEnabledProviderSettings(), $driver) ? $driver : config('oauth2.default_driver');
+
+        // Save the driver the user's using
+        session()->put('link_oauth2_driver', $driver);
+        session()->save();
+
+        return Socialite::driver($driver)
+            ->scopes(preg_split('~,~', config('oauth2.providers.' . $driver . '.scopes')))
+            ->redirect();
+    }
+
+    /**
+     * Unlink a user's account from an OAuth2 id
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function delete(Request $request)
+    {
+        $driver = $request->get('oauth2_driver');
+
+        // Check if the driver exists and is enabled else use the default one
+        $driver = is_null($driver) ? config('oauth2.default_driver') : $driver;
+        $driver = Arr::has($this->getEnabledProviderSettings(), $driver) ? $driver : config('oauth2.default_driver');
+
+        $new_ids = [];
+        // Remove the id
+        foreach (preg_split('~,~', $request->user()->getAttributes()['oauth2_id']) as $id) {
+            if (!Str::startsWith($id, $driver)) $new_ids = array_merge($new_ids, [$id]);
+        }
+
+        $oauth2_id = implode(',', $new_ids);
+
+        $this->updateService->handle($request->user(), compact('oauth2_id'));
+
+        $this->alert->success(trans('base.account.oauth2_unlink_success'))->flash();
         return redirect()->route('account');
     }
 }

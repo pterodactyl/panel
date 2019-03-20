@@ -9,6 +9,9 @@
 Route::get('/', 'IndexController@getIndex')->name('index');
 Route::get('/status/{server}', 'IndexController@status')->name('index.status');
 
+// Used when linking account to oauth2
+Route::get('/oauth2/callback', '\Pterodactyl\Http\Controllers\Auth\OAuth2Controller@login')->name('oauth2.callback');
+
 /*
 |--------------------------------------------------------------------------
 | Account Controller Routes
@@ -21,6 +24,11 @@ Route::group(['prefix' => 'account'], function () {
     Route::get('/', 'AccountController@index')->name('account');
 
     Route::post('/', 'AccountController@update');
+
+    if (config('oauth2.enabled')) {
+        Route::patch('/', 'AccountController@patch');
+        Route::delete('/', 'AccountController@delete');
+    }
 });
 
 /*
