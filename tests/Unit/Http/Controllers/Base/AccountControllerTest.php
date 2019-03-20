@@ -107,7 +107,7 @@ class AccountControllerTest extends ControllerTestCase
         $user = $this->generateRequestUserModel();
 
         $this->request->shouldReceive('input')->with('do_action')->andReturn('identity');
-        $this->request->shouldReceive('only')->with(['name_first', 'name_last', 'username', 'language'])->once()->andReturn([
+        $this->request->shouldReceive('only')->with(['name_first', 'name_last', 'username', 'language', 'oauth2_id'])->once()->andReturn([
             'test_data' => 'value',
         ]);
 
