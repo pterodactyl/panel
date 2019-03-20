@@ -2,13 +2,12 @@
 
 namespace Pterodactyl\Providers;
 
-use DB;
 use Psr\Log\LoggerInterface as Log;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\ServiceProvider;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
-use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class OAuth2ServiceProvider extends ServiceProvider
 {
@@ -56,7 +55,8 @@ class OAuth2ServiceProvider extends ServiceProvider
         $this->updateConfig();
     }
 
-    public function updateConfig() {
+    public function updateConfig()
+    {
         $providers = [];
 
         foreach (preg_split('~,~', config('oauth2.all_drivers')) as $provider) {

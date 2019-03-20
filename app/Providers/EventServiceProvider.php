@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Providers;
 
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
+use SocialiteProviders\Manager\SocialiteWasCalled;
 use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
 use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Pterodactyl\Traits\Helpers\OAuth2Providers;
-use SocialiteProviders\Manager\SocialiteWasCalled;
 
 class EventServiceProvider extends ServiceProvider
 {

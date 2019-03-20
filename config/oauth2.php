@@ -6,12 +6,12 @@ return [
 
     'required' => env('OAUTH2_REQUIRED', 0),
 
-    /**
+    /*
      * List of all installed drivers
      */
     'all_drivers' => env('OAUTH2_ALL_DRIVERS', 'github,facebook,twitter,linkedin,google,gitlab,bitbucket,discord'),
 
-    /**
+    /*
      * Provider configuration
      * Used to preinstall settings into the database
      */
@@ -52,7 +52,7 @@ return [
         ],
     ],
 
-    /**
+    /*
      * Default driver
      * Used as a fallback when trying to use a disabled/unset driver
      */

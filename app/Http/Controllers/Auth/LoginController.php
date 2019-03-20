@@ -10,12 +10,12 @@ use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class LoginController extends Controller
 {
@@ -111,6 +111,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         $providers = $this->getEnabledProviderSettings();
+
         return view('auth.login', compact('providers'));
     }
 

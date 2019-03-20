@@ -50,12 +50,15 @@ class PackagesCommand extends Command
         $packages = [];
 
         foreach (preg_split('~,~', $this->config->get('oauth2.all_drivers')) as $provider) {
-            if (empty($this->config->get('oauth2.providers.' . $provider . '.package'))) continue;
+            if (empty($this->config->get('oauth2.providers.' . $provider . '.package'))) {
+                continue;
+            }
             $packages = array_merge($packages, [$provider => $this->config->get('oauth2.providers.' . $provider . '.package')]);
         }
 
         if (empty($packages)) {
             $this->output->write(__('command/messages.environment.oauth2.no_packages'));
+
             return;
         }
 

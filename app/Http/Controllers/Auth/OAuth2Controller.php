@@ -4,19 +4,17 @@ namespace Pterodactyl\Http\Controllers\Auth;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\Model\DataValidationException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Support\MessageBag;
+use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Hashing\Hasher;
+use Laravel\Socialite\Facades\Socialite;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class OAuth2Controller extends Controller
 {
@@ -79,10 +77,10 @@ class OAuth2Controller extends Controller
      * @param string $driver
      * @return \Illuminate\Http\RedirectResponse|mixed
      */
-    public function login($driver= null)
+    public function login($driver = null)
     {
         // If this feature is not enabled or the user is already signed in and isn't linking a new account redirect or abort
-        if ($this->auth->guard()->check() and !session()->has('link_oauth2_driver')) {
+        if ($this->auth->guard()->check() and ! session()->has('link_oauth2_driver')) {
             return redirect()->route('index');
         }
         if (! config('oauth2.enabled')) {
@@ -91,13 +89,13 @@ class OAuth2Controller extends Controller
 
         // If linking a new provider form the account page
         if (session()->has('link_oauth2_driver')) {
-
             $session_driver = session()->get('link_oauth2_driver');
             session()->forget('link_oauth2_driver');
 
             // Check if authenticated
-            if (!$this->auth->guard()->check()) {
+            if (! $this->auth->guard()->check()) {
                 $errors = new MessageBag(['user' => [__('auth.failed')]]);
+
                 return redirect()->route('auth.login')
                     ->withErrors($errors);
             }
@@ -109,6 +107,7 @@ class OAuth2Controller extends Controller
                 $socialite_user = Socialite::driver($session_driver)->user();
             } catch (\Exception $exception) {
                 $this->alert->danger(trans('base.account.oauth2_link_failed'))->flash();
+
                 return redirect()->route('account');
             }
 
@@ -126,7 +125,7 @@ class OAuth2Controller extends Controller
             }
 
             // Add if doesnt exist
-            if (!$done) {
+            if (! $done) {
                 $new_ids = array_merge($new_ids, [$session_driver . ':' . $oauth2_socialite_id]);
             }
 
@@ -136,17 +135,21 @@ class OAuth2Controller extends Controller
                 $this->updateService->handle($user, compact('oauth2_id'));
             } catch (\Exception $e) {
                 $this->alert->danger(trans('base.account.oauth2_link_failed'))->flash();
+
                 return redirect()->route('account');
             }
 
             $this->alert->success(trans('base.account.oauth2_link_success'))->flash();
+
             return redirect()->route('account');
         }
 
         // Get the current OAuth2 user else redirect to auth page
-        if(!session()->has('oauth2_driver')) return $this->redirectToProvider($driver);
+        if (! session()->has('oauth2_driver')) {
+            return $this->redirectToProvider($driver);
+        }
 
-        $session_driver =session()->get('oauth2_driver');
+        $session_driver = session()->get('oauth2_driver');
         session()->forget('oauth2_driver');
 
         try {
@@ -167,10 +170,12 @@ class OAuth2Controller extends Controller
             if ($this->auth->guard()->check()) {
                 return redirect()->route('index');
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         // Invalid Login
         $errors = new MessageBag(['user' => [__('auth.failed')]]);
+
         return redirect()->route('auth.login')
             ->withErrors($errors);
     }

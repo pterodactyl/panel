@@ -5,10 +5,9 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Illuminate\Contracts\Auth\PasswordBroker;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
@@ -16,7 +15,6 @@ use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class UserController extends Controller
 {

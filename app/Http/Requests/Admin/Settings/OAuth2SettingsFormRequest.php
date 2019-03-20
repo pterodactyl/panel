@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Http\Requests\Admin\Settings;
 
+use Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
-use Request;
 
 class OAuth2SettingsFormRequest extends AdminFormRequest
 {
@@ -17,7 +17,7 @@ class OAuth2SettingsFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        $rules =  [
+        $rules = [
             'oauth2:enabled' => 'required|in:true,false',
             'oauth2:required' => 'required|integer|in:0,1,2',
             'oauth2:providers:new' => 'sometimes' . empty(Request::input('oauth2:providers:new')) ? '' : '|string|regex:[a-zA-Z0-9\-_\,]+',
@@ -29,7 +29,7 @@ class OAuth2SettingsFormRequest extends AdminFormRequest
         // Each provider settings
         $all_drivers = preg_split('~,~', config('oauth2.all_drivers'));
 
-        foreach (preg_split('~,~',  Request::input('oauth2:providers:deleted')) as $provider) {
+        foreach (preg_split('~,~', Request::input('oauth2:providers:deleted')) as $provider) {
             if (($key = array_search($provider, $all_drivers)) !== false) {
                 unset($all_drivers[$key]);
             }
@@ -50,7 +50,7 @@ class OAuth2SettingsFormRequest extends AdminFormRequest
 
         $all_drivers = preg_split('~,~', Request::input('oauth2:providers:new'));
 
-        foreach (preg_split('~,~',  Request::input('oauth2:providers:deleted')) as $provider) {
+        foreach (preg_split('~,~', Request::input('oauth2:providers:deleted')) as $provider) {
             if (($key = array_search($provider, $all_drivers)) !== false) {
                 unset($all_drivers[$key]);
             }
@@ -89,7 +89,7 @@ class OAuth2SettingsFormRequest extends AdminFormRequest
         // Each provider settings
         $all_drivers = preg_split('~,~', config('oauth2.all_drivers'));
 
-        foreach (preg_split('~,~',  Request::input('oauth2:providers:deleted')) as $provider) {
+        foreach (preg_split('~,~', Request::input('oauth2:providers:deleted')) as $provider) {
             if (($key = array_search($provider, $all_drivers)) !== false) {
                 unset($all_drivers[$key]);
             }
@@ -110,7 +110,7 @@ class OAuth2SettingsFormRequest extends AdminFormRequest
 
         $all_drivers = preg_split('~,~', Request::input('oauth2:providers:new'));
 
-        foreach (preg_split('~,~',  Request::input('oauth2:providers:deleted')) as $provider) {
+        foreach (preg_split('~,~', Request::input('oauth2:providers:deleted')) as $provider) {
             if (($key = array_search($provider, $all_drivers)) !== false) {
                 unset($all_drivers[$key]);
             }

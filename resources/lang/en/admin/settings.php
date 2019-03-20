@@ -56,7 +56,7 @@ return [
                 'close' => 'Close',
                 'save' => 'Apply',
                 'help' => 'Check the documentation',
-                'already_exists' => 'A provider with that name already exists, it must be unique.'
+                'already_exists' => 'A provider with that name already exists, it must be unique.',
             ],
             'modal_create_title'=> 'Create a new provider',
             'modal_edit_title' => 'Edit provider :provider',

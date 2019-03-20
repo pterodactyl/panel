@@ -98,7 +98,7 @@ return [
             'packages' => 'Preparing to install :number package(s).',
             'installing' => 'Installing :package...',
             'installed' => ':package installed.',
-            'done' => ':number packages have been installed.'
+            'done' => ':number packages have been installed.',
         ],
     ],
 ];

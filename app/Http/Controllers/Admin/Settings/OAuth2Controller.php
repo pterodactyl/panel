@@ -2,18 +2,17 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
+use Illuminate\View\View;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Settings\OAuth2SettingsFormRequest;
-use Pterodactyl\Providers\SettingsServiceProvider;
-use Pterodactyl\Traits\Helpers\OAuth2Providers;
 
 class OAuth2Controller extends Controller
 {
@@ -67,6 +66,7 @@ class OAuth2Controller extends Controller
     public function index(): View
     {
         $providers = $this->getAllProviderSettings();
+
         return view('admin.settings.oauth2', compact('providers'));
     }
 
@@ -107,9 +107,13 @@ class OAuth2Controller extends Controller
         $array = Arr::except($array, ['oauth2:providers:new', 'oauth2:providers:deleted']);
         foreach ($array as $key => $value) {
             // Unescape
-            if (Str::endsWith($key, ':widget_html') || Str::endsWith($key, ':widget_css')) $value = html_entity_decode(preg_replace("/%u([0-9a-f]{3,4})/i", "&#x\\1;", urldecode($value)), null, 'UTF-8');
+            if (Str::endsWith($key, ':widget_html') || Str::endsWith($key, ':widget_css')) {
+                $value = html_entity_decode(preg_replace('/%u([0-9a-f]{3,4})/i', '&#x\\1;', urldecode($value)), null, 'UTF-8');
+            }
             // Replace escaped slash
-            if (Str::endsWith($key, ':listener')) $value = preg_replace("~//~", "/", preg_replace("~\\\\\\\\~", "\\\\", $value));
+            if (Str::endsWith($key, ':listener')) {
+                $value = preg_replace('~//~', '/', preg_replace('~\\\\\\\\~', '\\\\', $value));
+            }
             $this->settings->set('settings::' . $key, $value);
         }
 
@@ -118,11 +122,12 @@ class OAuth2Controller extends Controller
 
         app('oauth2ServiceProvider')->updateConfig();
 
-        if (array_key_exists('oauth2:providers:new', $array)) $this->kernel->call('p:oauth2:packages');
+        if (array_key_exists('oauth2:providers:new', $array)) {
+            $this->kernel->call('p:oauth2:packages');
+        }
         $this->kernel->call('queue:restart');
         $this->alert->success(__('admin/settings.oauth2.success_response'))->flash();
 
         return redirect()->route('admin.settings.oauth2');
     }
-
 }

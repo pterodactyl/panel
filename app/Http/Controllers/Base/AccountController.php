@@ -4,16 +4,16 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Prologue\Alerts\AlertsMessageBag;
+use Laravel\Socialite\Facades\Socialite;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Traits\Helpers\OAuth2Providers;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
-use Pterodactyl\Traits\Helpers\OAuth2Providers;
-use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
@@ -59,7 +59,9 @@ class AccountController extends Controller
             $oauth2_ids = [];
             foreach (preg_split('~,~', \Auth::user()->getAttributes()['oauth2_id']) as $id) {
                 $split = preg_split('~:~', $id);
-                if (!empty($split[1])) $oauth2_ids = Arr::add($oauth2_ids, $split[0], $split[1]);
+                if (! empty($split[1])) {
+                    $oauth2_ids = Arr::add($oauth2_ids, $split[0], $split[1]);
+                }
             }
         }
 
@@ -104,7 +106,7 @@ class AccountController extends Controller
     }
 
     /**
-     * Link a user's account to an OAuth2 id
+     * Link a user's account to an OAuth2 id.
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
@@ -127,7 +129,7 @@ class AccountController extends Controller
     }
 
     /**
-     * Unlink a user's account from an OAuth2 id
+     * Unlink a user's account from an OAuth2 id.
      *
      * @param Request $request
      * @return \Illuminate\Http\Response
@@ -146,7 +148,9 @@ class AccountController extends Controller
         $new_ids = [];
         // Remove the id
         foreach (preg_split('~,~', $request->user()->getAttributes()['oauth2_id']) as $id) {
-            if (!Str::startsWith($id, $driver)) $new_ids = array_merge($new_ids, [$id]);
+            if (! Str::startsWith($id, $driver)) {
+                $new_ids = array_merge($new_ids, [$id]);
+            }
         }
 
         $oauth2_id = implode(',', $new_ids);
@@ -154,6 +158,7 @@ class AccountController extends Controller
         $this->updateService->handle($request->user(), compact('oauth2_id'));
 
         $this->alert->success(trans('base.account.oauth2_unlink_success'))->flash();
+
         return redirect()->route('account');
     }
 }
