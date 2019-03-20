@@ -10,7 +10,7 @@ Route::get('/', 'IndexController@getIndex')->name('index');
 Route::get('/status/{server}', 'IndexController@status')->name('index.status');
 
 // Used when linking account to oauth2
-Route::get('/oauth2/callback', '\Pterodactyl\Http\Controllers\Auth\OAuth2Controller@login')->name('oauth2.callback');
+Route::get('/oauth2/callback', 'OAuth2Controller@login')->name('oauth2.callback');
 
 /*
 |--------------------------------------------------------------------------
