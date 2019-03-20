@@ -73,6 +73,5 @@ return [
     'user_identifier' => "Nom d'utilisateur ou email",
     'whoops' => 'Oups ',
     'yes' => 'Oui',
-    'disabled_by_oauth2' => 'Cette fonctionalité est désactivé pour les comptes OAuth2.',
     'or' => 'Ou',
 ];

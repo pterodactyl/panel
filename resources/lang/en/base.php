@@ -84,8 +84,6 @@ return [
         ],
         'oauth2_advanced' => 'Advanced',
         'oauth2_pattern' => '[name]:[ID],...',
-        'oauth2_unlink_success' => 'Your account has been successfully unlinked from your oauth2 account.',
-        'oauth2_link_success' => 'Your account has been successfully linked to your oauth2 account.',
         'oauth2_link_failed' => 'An error occurred whilst linking your account to your oauth2 account.',
     ],
     'security' => [

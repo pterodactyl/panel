@@ -24,11 +24,6 @@ Route::group(['prefix' => 'account'], function () {
     Route::get('/', 'AccountController@index')->name('account');
 
     Route::post('/', 'AccountController@update');
-
-    if (config('oauth2.enabled')) {
-        Route::patch('/', 'AccountController@patch');
-        Route::delete('/', 'AccountController@delete');
-    }
 });
 
 /*

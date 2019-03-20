@@ -66,7 +66,7 @@
                         <div class="form-group">
                             <label for="oauth2_id" class="control-label">OAuth2 ID <code>@lang('base.account.oauth2_pattern')</code> <span>{{ $enabled_providers }}</span> <span class="field-optional"></span></label>
                             <div>
-                                <input readonly type="text" name="oauth2_id" value="{{ $user->getAttributes()['oauth2_id'] }}" class="form-control form-autocomplete-stop">
+                                <input readonly type="text" name="oauth2_id" value="{{ $user->getAttribute('oauth2_id') }}" class="form-control form-autocomplete-stop">
                             </div>
                         </div>
                     @endif

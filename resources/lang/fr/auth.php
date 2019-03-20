@@ -21,5 +21,4 @@ return [
     'reset_password_text' => 'Réinitialiser le mot de passer de votre compte.',
     'sendlink' => 'Envoyer le lien de réinitialisation du mot de passe.',
     'sign_in' => 'Connexion',
-    'oauth2_sign_in' => 'Se Connecter Via OAuth2',
 ];

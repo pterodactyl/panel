@@ -139,7 +139,7 @@ class OAuth2Controller extends Controller
                 return redirect()->route('account');
             }
 
-            $this->alert->success(trans('base.account.oauth2_link_success'))->flash();
+            $this->alert->success(trans('base.account.details_updated'))->flash();
 
             return redirect()->route('account');
         }

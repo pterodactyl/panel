@@ -1,5 +1,5 @@
 @section('sftp::notice')
-    @if(! (config('oauth2.enabled')) && isset(Auth::user()->getAttributes()['oauth2_id']))
+    @if(config('oauth2.enabled') && !empty(Auth::user()->getAttributes('oauth2_id')))
         <div class="row">
             <div class="col-xs-12">
                 <div class="alert alert-danger">

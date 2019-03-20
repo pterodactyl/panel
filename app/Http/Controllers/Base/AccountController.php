@@ -57,7 +57,7 @@ class AccountController extends Controller
     {
         if (config('oauth2.enabled') == true) {
             $oauth2_ids = [];
-            foreach (preg_split('~,~', \Auth::user()->getAttributes()['oauth2_id']) as $id) {
+            foreach (preg_split('~,~', \Auth::user()->getAttribute('oauth2_id')) as $id) {
                 $split = preg_split('~:~', $id);
                 if (! empty($split[1])) {
                     $oauth2_ids = Arr::add($oauth2_ids, $split[0], $split[1]);
@@ -87,11 +87,46 @@ class AccountController extends Controller
         // automatically update the user's password anyways, so no need to do anything else here.
         if ($request->input('do_action') === 'password') {
             $this->sessionGuard->logoutOtherDevices($request->input('new_password'));
+        } elseif ($request->input('do_action') === 'oauth2_link') {
+            // This code is not below since it redirects the user and doesnt update directly
+
+            $driver = $request->get('oauth2_driver');
+
+            // Check if the driver exists and is enabled else use the default one
+            $driver = is_null($driver) ? config('oauth2.default_driver') : $driver;
+            $driver = Arr::has($this->getEnabledProviderSettings(), $driver) ? $driver : config('oauth2.default_driver');
+
+            // Save the driver the user's using
+            session()->put('link_oauth2_driver', $driver);
+            session()->save();
+
+            return Socialite::driver($driver)
+                ->scopes(preg_split('~,~', config('oauth2.providers.' . $driver . '.scopes')))
+                ->redirect();
         } else {
             if ($request->input('do_action') === 'email') {
                 $data = ['email' => $request->input('new_email')];
             } elseif ($request->input('do_action') === 'identity') {
                 $data = $request->only(['name_first', 'name_last', 'username', 'language', 'oauth2_id']);
+            } elseif ($request->input('do_action') === 'oauth2_unlink') {
+                // And this code is here because it does update the user
+
+                $driver = $request->get('oauth2_driver');
+
+                // Check if the driver exists and is enabled else use the default one
+                $driver = is_null($driver) ? config('oauth2.default_driver') : $driver;
+                $driver = Arr::has($this->getEnabledProviderSettings(), $driver) ? $driver : config('oauth2.default_driver');
+
+                $new_ids = [];
+                // Remove the id
+                foreach (preg_split('~,~', $request->user()->getAttribute('oauth2_id')) as $id) {
+                    if (! Str::startsWith($id, $driver)) {
+                        $new_ids = array_merge($new_ids, [$id]);
+                    }
+                }
+                $oauth2_id = implode(',', $new_ids);
+
+                $data = compact('oauth2_id');
             } else {
                 $data = [];
             }
@@ -101,63 +136,6 @@ class AccountController extends Controller
         }
 
         $this->alert->success(trans('base.account.details_updated'))->flash();
-
-        return redirect()->route('account');
-    }
-
-    /**
-     * Link a user's account to an OAuth2 id.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function patch(Request $request)
-    {
-        $driver = $request->get('oauth2_driver');
-
-        // Check if the driver exists and is enabled else use the default one
-        $driver = is_null($driver) ? config('oauth2.default_driver') : $driver;
-        $driver = Arr::has($this->getEnabledProviderSettings(), $driver) ? $driver : config('oauth2.default_driver');
-
-        // Save the driver the user's using
-        session()->put('link_oauth2_driver', $driver);
-        session()->save();
-
-        return Socialite::driver($driver)
-            ->scopes(preg_split('~,~', config('oauth2.providers.' . $driver . '.scopes')))
-            ->redirect();
-    }
-
-    /**
-     * Unlink a user's account from an OAuth2 id.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function delete(Request $request)
-    {
-        $driver = $request->get('oauth2_driver');
-
-        // Check if the driver exists and is enabled else use the default one
-        $driver = is_null($driver) ? config('oauth2.default_driver') : $driver;
-        $driver = Arr::has($this->getEnabledProviderSettings(), $driver) ? $driver : config('oauth2.default_driver');
-
-        $new_ids = [];
-        // Remove the id
-        foreach (preg_split('~,~', $request->user()->getAttributes()['oauth2_id']) as $id) {
-            if (! Str::startsWith($id, $driver)) {
-                $new_ids = array_merge($new_ids, [$id]);
-            }
-        }
-
-        $oauth2_id = implode(',', $new_ids);
-
-        $this->updateService->handle($request->user(), compact('oauth2_id'));
-
-        $this->alert->success(trans('base.account.oauth2_unlink_success'))->flash();
 
         return redirect()->route('account');
     }

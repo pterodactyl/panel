@@ -147,7 +147,7 @@
                                     <div class="form-group col-xs-12">
                                         <label for="oauth2_id" class="control-label">OAuth2 ID <code>@lang('base.account.oauth2_pattern')</code> <span>{{ implode(',', array_keys($enabled_providers)) }}</span> <span class="field-optional"></span></label>
                                         <div>
-                                            <input readonly type="text" name="oauth2_id" value="{{ Auth::user()->getAttributes()['oauth2_id'] }}" class="form-control form-autocomplete-stop">
+                                            <input readonly type="text" name="oauth2_id" value="{{ Auth::user()->getAttribute('oauth2_id') }}" class="form-control form-autocomplete-stop">
                                         </div>
                                     </div>
                                 </div>
@@ -225,9 +225,9 @@
                                 <td>
                                     @if (empty($oauth2_ids[$provider]))
                                         <form id="link-oauth2-{{ $provider }}" action="{{ route('account') }}" method="post">
-                                            {{ method_field('PATCH') }}
                                             {!! csrf_field() !!}
-                                            <input class="hidden" name="oauth2_driver" value="{{ $provider }}">
+                                            <input type="hidden" name="do_action" value="oauth2_link" />
+                                            <input type="hidden" name="oauth2_driver" value="{{ $provider }}">
                                             <div data-toggle="tooltip" title="@lang('base.account.oauth2_modal.hover')" onclick="console.log('click');$('#link-oauth2-{{ $provider }}').submit();" style="cursor: pointer">
                                                 {!! $values['widget_html'] !!}
                                             </div>
@@ -244,9 +244,9 @@
                                         <code>{{ empty($oauth2_ids[$provider]) ? '' : $oauth2_ids[$provider] }}</code>
                                     @else
                                         <form id="unlink-oauth2-{{ $provider }}" action="{{ route('account') }}" method="post">
-                                            {{ method_field('DELETE') }}
                                             {!! csrf_field() !!}
-                                            <input class="hidden" name="oauth2_driver" value="{{ $provider }}">
+                                            <input type="hidden" name="do_action" value="oauth2_unlink" />
+                                            <input type="hidden" name="oauth2_driver" value="{{ $provider }}">
                                             <code>{{ empty($oauth2_ids[$provider]) ? '' : $oauth2_ids[$provider] }}</code> <button onclick="$('#unlink-oauth2-{{ $provider }}').submit();" class="btn btn-sm btn-danger pull-right">Unlink</button>
                                         </form>
                                     @endif

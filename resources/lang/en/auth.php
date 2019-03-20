@@ -19,5 +19,4 @@ return [
     '2fa_failed' => 'The 2FA token provided was invalid.',
     'totp_failed' => 'There was an error while attempting to validate TOTP.',
     '2fa_must_be_enabled' => 'The administrator has required that 2-Factor Authentication be enabled for your account in order to use the Panel.',
-    'oauth2_sign_in' => 'Sign In With OAuth2',
 ];

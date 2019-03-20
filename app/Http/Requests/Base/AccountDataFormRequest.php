@@ -63,6 +63,16 @@ class AccountDataFormRequest extends FrontendUserFormRequest
                     'oauth2_id' => 'sometimes',
                 ];
                 break;
+            case 'oauth2_link':
+                $rules = [
+                    'oauth2_driver' => 'required|string',
+                ];
+                break;
+            case 'oauth2_unlink':
+                $rules = [
+                    'oauth2_driver' => 'required|string',
+                ];
+                break;
             default:
                 abort(422);
         }

@@ -25,5 +25,4 @@ return [
     'sign_in' => 'Iniciar Sesión',
     'throttle' => 'Demasiados intentos de inicio de sesión. Por favor, inténtelo de nuevo en :seconds segundos.',
     'totp_failed' => 'Hubo un error al intentar validar TOTP.',
-    'oauth2_sign_in' => 'Iniciar Sesión con OAuth2',
 ];

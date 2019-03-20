@@ -44,7 +44,7 @@
                             <th>Client Name</th>
                             <th>Username</th>
                             <th class="text-center">2FA</th>
-                            @if(! is_null(env('OAUTH2_CLIENT_ID'))) <th class="text-center">OAuth2</th>@endif
+                            @if(config('oauth2.enabled')) <th class="text-center">OAuth2</th>@endif
                             <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</span></th>
                             <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</span></th>
                             <th></th>
@@ -66,7 +66,7 @@
                                 </td>
                                 @if(config('oauth2.enabled'))
                                     <td class="text-center">
-                                        @if($user->getAttributes()['oauth2_id'] != null)
+                                        @if($user->getAttribute('oauth2_id') != null)
                                             <i class="fa fa-check text-green" aria-hidden="true"></i>
                                         @else
                                             <i class="fa fa-times text-red" aria-hidden="true"></i>
