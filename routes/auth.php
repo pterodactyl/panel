@@ -22,6 +22,8 @@ Route::group(['middleware' => 'guest'], function () {
     Route::post('/password/reset/{token}', 'ForgotPasswordController@sendResetLinkEmail')->middleware('recaptcha');
 });
 
+Route::get('/oauth2/callback', 'OAuth2Controller@login')->name('oauth2.callback');
+
 /*
 |--------------------------------------------------------------------------
 | Routes Accessible only when logged in

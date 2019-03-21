@@ -160,7 +160,7 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="callout callout-danger">
-                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/oauth2/callback' . '</code>']) !!}</p>
+                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/auth/oauth2/callback' . '</code>']) !!}</p>
                             </div>
                         </div>
                         <div class="row">
@@ -259,7 +259,7 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="callout callout-danger">
-                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/oauth2/callback' . '</code>']) !!}</p>
+                                <p>{!! __('admin/settings.oauth2.providers.notice', ['url' => '<code>' . config('app.url') . '/auth/oauth2/callback' . '</code>']) !!}</p>
                             </div>
                         </div>
                         <div class="row">

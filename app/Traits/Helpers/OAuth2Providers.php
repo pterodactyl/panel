@@ -19,7 +19,7 @@ trait OAuth2Providers
                 'status' => config('oauth2.default_driver') == $provider ? true : config('oauth2.providers.' . $provider . '.status', env('OAUTH2_' . Str::upper($provider) . '_STATUS')),
                 'client_id' => config('oauth2.providers.' . $provider . '.client_id', env('OAUTH2_' . Str::upper($provider) . '_CLIENT_ID')),
                 'client_secret' => config('oauth2.providers.' . $provider . '.client_secret', env('OAUTH2_' . Str::upper($provider) . '_CLIENT_SECRET')),
-                'redirect' => config('app.url') . '/oauth2/callback',
+                'redirect' => config('app.url') . '/auth/oauth2/callback',
                 'scopes' => config('oauth2.providers.' . $provider . '.scopes', env('OAUTH2_' . Str::upper($provider) . '_SCOPES')),
                 'widget_html' => config('oauth2.providers.' . $provider . '.widget_html', env('OAUTH2_' . Str::upper($provider) . '_WIDGET_HTML')),
                 'widget_css' => config('oauth2.providers.' . $provider . '.widget_css', env('OAUTH2_' . Str::upper($provider) . '_WIDGET_CSS')),
