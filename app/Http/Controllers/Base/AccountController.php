@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Prologue\Alerts\AlertsMessageBag;
