@@ -3,16 +3,16 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2018-10-28T20:50:23+01:00",
+    "exported_at": "2019-03-22T12:56:13+01:00",
     "name": "Teamspeak3 Server",
     "author": "support@pterodactyl.io",
     "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
     "image": "quay.io\/pterodactyl\/core:glibc",
-    "startup": ".\/ts3server_minimal_runscript.sh default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}  license_accepted=1",
+    "startup": ".\/ts3server_minimal_runscript.sh default_voice_port={{SERVER_PORT}} query_port={{QUERY_PORT}} query_ssh_port={{QUERY_SSH_PORT}} filetransfer_ip=0.0.0.0 filetransfer_port={{FILETRANSFER_PORT}} license_accepted=1",
     "config": {
         "files": "{}",
-        "startup": "{\"done\": \"listening on 0.0.0.0:\", \"userInteraction\": []}",
-        "logs": "{\"custom\": true, \"location\": \"logs\/ts3.log\"}",
+        "startup": "{\r\n    \"done\": \"listening on 0.0.0.0:\",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/ts3.log\"\r\n}",
         "stop": "^C"
     },
     "scripts": {
@@ -27,10 +27,37 @@
             "name": "Server Version",
             "description": "The version of Teamspeak 3 to use when running the server.",
             "env_variable": "TS_VERSION",
-            "default_value": "3.5.0",
+            "default_value": "3.7.0",
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|regex:\/^([0-9_\\.-]{5,10})$\/"
+        },
+        {
+            "name": "Query Port (Raw)",
+            "description": "The",
+            "env_variable": "QUERY_PORT",
+            "default_value": "10011",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string"
+        },
+        {
+            "name": "Query Port (SSH)",
+            "description": "",
+            "env_variable": "QUERY_SSH_PORT",
+            "default_value": "10022",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string"
+        },
+        {
+            "name": "Filetransfer Port",
+            "description": "",
+            "env_variable": "FILETRANSFER_PORT",
+            "default_value": "30033",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|string"
         }
     ]
 }
