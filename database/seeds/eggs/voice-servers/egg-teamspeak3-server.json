@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2019-03-22T12:56:13+01:00",
+    "exported_at": "2019-03-22T20:05:05+01:00",
     "name": "Teamspeak3 Server",
     "author": "support@pterodactyl.io",
     "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
@@ -17,7 +17,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\n# TS3 Installation Script\n#\n# Server Files: \/mnt\/server\napk update\napk add tar curl\n\ncd \/mnt\/server\n\ncurl https:\/\/files.teamspeak-services.com\/releases\/server\/${TS_VERSION}\/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar xj --strip-components=1",
+            "script": "#!\/bin\/ash\r\n# TS3 Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add tar curl jq\r\n\r\ncd \/mnt\/server\r\n\r\nif [ -z \"${TS_VERSION}\" ]; then\r\n    VERSION=\"$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.version')\"\r\n    LATESTTS3RELEASELINK=$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.mirrors.\"teamspeak.com\"')\r\n    echo -e \"\\nDownloading TS3 Version $VERSION\\n\"\r\n    curl $LATESTTS3RELEASELINK | tar xj --strip-components=1\r\nelse\r\n    echo -e \"\\nDownloading TS3 Version ${TS_VERSION}\\n\"\r\n    curl https:\/\/files.teamspeak-services.com\/releases\/server\/${TS_VERSION}\/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar xj --strip-components=1\r\nfi",
             "container": "alpine:3.9",
             "entrypoint": "ash"
         }
@@ -27,10 +27,10 @@
             "name": "Server Version",
             "description": "The version of Teamspeak 3 to use when running the server.",
             "env_variable": "TS_VERSION",
-            "default_value": "3.7.0",
+            "default_value": "",
             "user_viewable": 1,
             "user_editable": 1,
-            "rules": "required|regex:\/^([0-9_\\.-]{5,10})$\/"
+            "rules": "nullable|regex:\/^([0-9_\\.-]{5,10})$\/"
         },
         {
             "name": "Query Port (Raw)",
