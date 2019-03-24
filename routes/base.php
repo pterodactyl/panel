@@ -1,16 +1,7 @@
 <?php
 
-Route::get('/', 'IndexController@index')->name('index');
+Route::get('/', 'IndexController@index')->name('index')->fallback();
 Route::get('/account', 'IndexController@index')->name('account');
-
-/*
-|--------------------------------------------------------------------------
-| Account Controller Routes
-|--------------------------------------------------------------------------
-|
-| Endpoint: /account
-|
-*/
 
 /*
 |--------------------------------------------------------------------------
@@ -23,9 +14,7 @@ Route::get('/account', 'IndexController@index')->name('account');
 Route::group(['prefix' => 'account/api'], function () {
     Route::get('/', 'ClientApiController@index')->name('account.api');
     Route::get('/new', 'ClientApiController@create')->name('account.api.new');
-
     Route::post('/new', 'ClientApiController@store');
-
     Route::delete('/revoke/{identifier}', 'ClientApiController@delete')->name('account.api.revoke');
 });
 
@@ -43,5 +32,5 @@ Route::group(['prefix' => 'account/two_factor'], function () {
     Route::post('/totp/disable', 'SecurityController@delete')->name('account.two_factor.disable');
 });
 
-// Catch any other combinations of routes and pass them off to the Vuejs component.
-Route::fallback('IndexController@index');
+Route::get('/{vue}', 'IndexController@index')
+    ->where('vue', '^(?!(\/)?(api|admin|daemon)).+');
