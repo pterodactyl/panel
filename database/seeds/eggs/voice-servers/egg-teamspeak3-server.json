@@ -3,12 +3,12 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2019-03-22T20:05:05+01:00",
+    "exported_at": "2019-03-25T19:59:51+01:00",
     "name": "Teamspeak3 Server",
     "author": "support@pterodactyl.io",
     "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
     "image": "quay.io\/pterodactyl\/core:glibc",
-    "startup": ".\/ts3server_minimal_runscript.sh default_voice_port={{SERVER_PORT}} query_port={{QUERY_PORT}} query_ssh_port={{QUERY_SSH_PORT}} filetransfer_ip=0.0.0.0 filetransfer_port={{FILETRANSFER_PORT}} license_accepted=1",
+    "startup": ".\/ts3server inifile=\"ts3server.ini\"",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"listening on 0.0.0.0:\",\r\n    \"userInteraction\": []\r\n}",
@@ -17,7 +17,7 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\r\n# TS3 Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add tar curl jq\r\n\r\ncd \/mnt\/server\r\n\r\nif [ -z \"${TS_VERSION}\" ]; then\r\n    VERSION=\"$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.version')\"\r\n    LATESTTS3RELEASELINK=$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.mirrors.\"teamspeak.com\"')\r\n    echo -e \"\\nDownloading TS3 Version $VERSION\\n\"\r\n    curl $LATESTTS3RELEASELINK | tar xj --strip-components=1\r\nelse\r\n    echo -e \"\\nDownloading TS3 Version ${TS_VERSION}\\n\"\r\n    curl https:\/\/files.teamspeak-services.com\/releases\/server\/${TS_VERSION}\/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar xj --strip-components=1\r\nfi",
+            "script": "#!\/bin\/ash\r\n# TS3 Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk update\r\napk add tar curl jq bzip2 ca-certificates\r\n\r\ncd \/mnt\/server\r\n\r\nif [ -z \"${TS_VERSION}\" ]; then\r\n    VERSION=\"$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.version')\"\r\n    LATESTTS3RELEASELINK=$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.mirrors.\"teamspeak.com\"')\r\n    echo -e \"\\nDownloading TS3 Version $VERSION\\n\"\r\n    curl $LATESTTS3RELEASELINK | tar xj --strip-components=1\r\nelse\r\n    echo -e \"\\nDownloading TS3 Version ${TS_VERSION}\\n\"\r\n    curl https:\/\/files.teamspeak-services.com\/releases\/server\/${TS_VERSION}\/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar xj --strip-components=1\r\nfi\r\n\r\n# Accept license\r\nif [ ! -f \".ts3server_license_accepted\" ]; then\r\n\ttouch \".ts3server_license_accepted\"\r\nfi\r\n\r\nsleep 0.5\r\n\r\nif [ ! -f \"ts3server.ini\" ]; then\r\n    # Creating default config for teamspeak\r\n    echo 'machine_id=\r\ndefault_voice_port=9987\r\nvoice_ip=\r\nlicensepath=\r\nfiletransfer_port=30033\r\nfiletransfer_ip=\r\nquery_port=10011\r\nquery_ip=0.0.0.0, ::\r\nquery_ip_whitelist=query_ip_whitelist.txt\r\nquery_ip_blacklist=query_ip_blacklist.txt\r\ndbplugin=ts3db_sqlite3\r\ndbpluginparameter=\r\ndbsqlpath=sql\/\r\ndbsqlcreatepath=create_sqlite\/\r\ndbconnections=10\r\nlogpath=logs\r\nlogquerycommands=0\r\ndbclientkeepdays=30\r\nlogappend=0\r\nquery_skipbruteforcecheck=0\r\nquery_buffer_mb=20\r\nhttp_proxy=\r\nlicense_accepted=0\r\nserverquerydocs_path=serverquerydocs\/\r\nquery_ssh_ip=0.0.0.0, ::\r\nquery_ssh_port=10022\r\nquery_protocols=raw,ssh\r\nquery_ssh_rsa_host_key=ssh_host_rsa_key\r\nquery_timeout=300' > ts3server.ini\r\nfi",
             "container": "alpine:3.9",
             "entrypoint": "ash"
         }
@@ -31,33 +31,6 @@
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "nullable|regex:\/^([0-9_\\.-]{5,10})$\/"
-        },
-        {
-            "name": "Query Port (Raw)",
-            "description": "The",
-            "env_variable": "QUERY_PORT",
-            "default_value": "10011",
-            "user_viewable": 1,
-            "user_editable": 1,
-            "rules": "required|string"
-        },
-        {
-            "name": "Query Port (SSH)",
-            "description": "",
-            "env_variable": "QUERY_SSH_PORT",
-            "default_value": "10022",
-            "user_viewable": 1,
-            "user_editable": 1,
-            "rules": "required|string"
-        },
-        {
-            "name": "Filetransfer Port",
-            "description": "",
-            "env_variable": "FILETRANSFER_PORT",
-            "default_value": "30033",
-            "user_viewable": 1,
-            "user_editable": 1,
-            "rules": "required|string"
         }
     ]
 }
