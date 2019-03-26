@@ -301,6 +301,13 @@ $(document).ready(function () {
                 },
                 animation: {
                     duration: 1,
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
                 }
             }
         });
@@ -346,6 +353,13 @@ $(document).ready(function () {
                 },
                 animation: {
                     duration: 1,
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
                 }
             }
         });
