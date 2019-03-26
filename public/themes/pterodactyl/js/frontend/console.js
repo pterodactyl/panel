@@ -255,6 +255,29 @@ $(document).ready(function () {
 
             TimeLabels.push($.format.date(new Date(), 'HH:mm:ss'));
 
+
+            // memory.cmax is the maximum given by the container
+            // memory.amax is given by the json config
+            // Use memory.cmax here because memory.amax can be smaller than memory.total
+            MemoryChart.config.options.scales.yAxes[0].ticks.max = proc.data.memory.cmax / (1000 * 1000);
+
+            if (Pterodactyl.server.cpu > 0) {
+                // if there is a cpu limit defined use 100% as maximum
+                CPUChart.config.options.scales.yAxes[0].ticks.max = 100;
+            } else {
+                // if there is no cpu limit defined use linux percentage
+                // and find maximum in all values
+                var maxCpu = 1;
+                for(var i = 0; i < CPUData.length; i++) {
+                    maxCpu = Math.max(maxCpu, parseFloat(CPUData[i]))
+                }
+
+                maxCpu = Math.ceil(maxCpu / 100) * 100;
+                CPUChart.config.options.scales.yAxes[0].ticks.max = maxCpu;
+            }
+
+
+
             CPUChart.update();
             MemoryChart.update();
         });
