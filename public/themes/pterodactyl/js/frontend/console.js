@@ -258,8 +258,10 @@ $(document).ready(function () {
 
             // memory.cmax is the maximum given by the container
             // memory.amax is given by the json config
-            // Use memory.cmax here because memory.amax can be smaller than memory.total
-            MemoryChart.config.options.scales.yAxes[0].ticks.max = proc.data.memory.cmax / (1000 * 1000);
+            // use the maximum of both
+            // with no limit memory.cmax will always be higher
+            // but with limit memory.amax is sometimes still smaller than memory.total
+            MemoryChart.config.options.scales.yAxes[0].ticks.max = Math.max(proc.data.memory.cmax, proc.data.memory.amax) / (1000 * 1000);
 
             if (Pterodactyl.server.cpu > 0) {
                 // if there is a cpu limit defined use 100% as maximum
