@@ -1,69 +1,36 @@
-#!/bin/bash
-# TS3 Installation Script
-#
-# Server Files: /mnt/server
-apt -y update
-apt -y --no-install-recommends install tar curl jq bzip2 grep sed
-
-cd /mnt/server
-
-for FILE in logs/ts3server*_0.log
-do
-	if [ ! -f "$FILE" ]; then
-		VERSION=$(curl -s 'https://www.teamspeak.com/versions/server.json' | jq -r '.linux.x86_64.version')
-		LATESTTS3RELEASELINK=$(curl -s 'https://www.teamspeak.com/versions/server.json' | jq -r '.linux.x86_64.mirrors."teamspeak.com"')
-		echo -e "\nDownloading TS3 Version $VERSION\n"
-		curl $LATESTTS3RELEASELINK | tar xj --strip-components=1
-	else
-		if [ "${UPDATE}" -eq 1 ]; then
-			VERSION=$(curl -s 'https://www.teamspeak.com/versions/server.json' | jq -r '.linux.x86_64.version')
-			LATESTTS3RELEASELINK=$(curl -s 'https://www.teamspeak.com/versions/server.json' | jq -r '.linux.x86_64.mirrors."teamspeak.com"')
-			echo -e "\nDownloading TS3 Version $VERSION\n"
-			curl $LATESTTS3RELEASELINK | tar xj --strip-components=1
-		else
-			INSTALLEDVERSION=$(cat $(find ./* -name "ts3server*_0.log" 2> /dev/null | sort | grep -Ev "${rootdir}/.ts3version" | tail -1) | grep -Eo "TeamSpeak 3 Server ((\.)?[0-9]{1,3}){1,3}\.[0-9]{1,3}" | grep -Eo "((\.)?[0-9]{1,3}){1,3}\.[0-9]{1,3}" | sort -V | tail -1)	
-			OLDTS3RELEASELINK=$(curl -s 'https://www.teamspeak.com/versions/server.json' | jq -r '.linux.x86_64.mirrors."teamspeak.com"' | sed -r "s/((\.)?[0-9]{1,3}){1,3}\.[0-9]{1,3}+/$INSTALLEDVERSION/g")
-			echo -e "\nDownloading TS3 Version $INSTALLEDVERSION\n"
-			curl $OLDTS3RELEASELINK | tar xj --strip-components=1
-		fi
-	fi
-	break
-done
-
-# Accept license
-if [ ! -f ".ts3server_license_accepted" ]; then
-	touch ".ts3server_license_accepted"
-fi
-
-if [ ! -f "ts3server.ini" ]; then
-    echo "Creating default config for teamspeak"
-    echo 'machine_id=
-default_voice_port=9987
-voice_ip=
-licensepath=
-filetransfer_port=30033
-filetransfer_ip=
-query_port=10011
-query_ip=0.0.0.0, ::
-query_ip_whitelist=query_ip_whitelist.txt
-query_ip_blacklist=query_ip_blacklist.txt
-dbplugin=ts3db_sqlite3
-dbpluginparameter=
-dbsqlpath=sql/
-dbsqlcreatepath=create_sqlite/
-dbconnections=10
-logpath=logs
-logquerycommands=0
-dbclientkeepdays=30
-logappend=0
-query_skipbruteforcecheck=0
-query_buffer_mb=20
-http_proxy=
-license_accepted=1
-serverquerydocs_path=serverquerydocs/
-query_ssh_ip=0.0.0.0, ::
-query_ssh_port=10022
-query_protocols=raw,ssh
-query_ssh_rsa_host_key=ssh_host_rsa_key
-query_timeout=300' > ts3server.ini
-fi
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v1"
+    },
+    "exported_at": "2019-03-29T17:46:48+01:00",
+    "name": "Teamspeak3 Server",
+    "author": "support@pterodactyl.io",
+    "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
+    "image": "quay.io\/pterodactyl\/core:glibc",
+    "startup": ".\/ts3server_startscript.sh start inifile=\"ts3server.ini\"",
+    "config": {
+        "files": "{}",
+        "startup": "{\r\n    \"done\": \"listening on 0.0.0.0:\",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/ts3.log\"\r\n}",
+        "stop": ".\/ts3server_startscript.sh stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n# TS3 Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napt -y update\r\napt -y --no-install-recommends install tar curl jq bzip2 grep sed\r\n\r\ncd \/mnt\/server\r\n\r\nfor FILE in logs\/ts3server*_0.log\r\ndo\r\n\tif [ ! -f \"$FILE\" ]; then\r\n\t\tVERSION=$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.version')\r\n\t\tLATESTTS3RELEASELINK=$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.mirrors.\"teamspeak.com\"')\r\n\t\techo -e \"\\nDownloading TS3 Version $VERSION\\n\"\r\n\t\tcurl $LATESTTS3RELEASELINK | tar xj --strip-components=1\r\n\telse\r\n\t\tif [ \"${UPDATE}\" -eq 1 ]; then\r\n\t\t\tVERSION=$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.version')\r\n\t\t\tLATESTTS3RELEASELINK=$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.mirrors.\"teamspeak.com\"')\r\n\t\t\techo -e \"\\nDownloading TS3 Version $VERSION\\n\"\r\n\t\t\tcurl $LATESTTS3RELEASELINK | tar xj --strip-components=1\r\n\t\telse\r\n\t\t\tINSTALLEDVERSION=$(cat $(find .\/* -name \"ts3server*_0.log\" 2> \/dev\/null | sort | grep -Ev \"${rootdir}\/.ts3version\" | tail -1) | grep -Eo \"TeamSpeak 3 Server ((\\.)?[0-9]{1,3}){1,3}\\.[0-9]{1,3}\" | grep -Eo \"((\\.)?[0-9]{1,3}){1,3}\\.[0-9]{1,3}\" | sort -V | tail -1)\t\r\n\t\t\tOLDTS3RELEASELINK=$(curl -s 'https:\/\/www.teamspeak.com\/versions\/server.json' | jq -r '.linux.x86_64.mirrors.\"teamspeak.com\"' | sed -r \"s\/((\\.)?[0-9]{1,3}){1,3}\\.[0-9]{1,3}+\/$INSTALLEDVERSION\/g\")\r\n\t\t\techo -e \"\\nDownloading TS3 Version $INSTALLEDVERSION\\n\"\r\n\t\t\tcurl $OLDTS3RELEASELINK | tar xj --strip-components=1\r\n\t\tfi\r\n\tfi\r\n\tbreak\r\ndone\r\n\r\n# Accept license\r\nif [ ! -f \".ts3server_license_accepted\" ]; then\r\n\ttouch \".ts3server_license_accepted\"\r\nfi\r\n\r\nif [ ! -f \"ts3server.ini\" ]; then\r\n    echo \"Creating default config for teamspeak\"\r\n    echo 'machine_id=\r\ndefault_voice_port=9987\r\nvoice_ip=\r\nlicensepath=\r\nfiletransfer_port=30033\r\nfiletransfer_ip=\r\nquery_port=10011\r\nquery_ip=0.0.0.0, ::\r\nquery_ip_whitelist=query_ip_whitelist.txt\r\nquery_ip_blacklist=query_ip_blacklist.txt\r\ndbplugin=ts3db_sqlite3\r\ndbpluginparameter=\r\ndbsqlpath=sql\/\r\ndbsqlcreatepath=create_sqlite\/\r\ndbconnections=10\r\nlogpath=logs\r\nlogquerycommands=0\r\ndbclientkeepdays=30\r\nlogappend=0\r\nquery_skipbruteforcecheck=0\r\nquery_buffer_mb=20\r\nhttp_proxy=\r\nlicense_accepted=1\r\nserverquerydocs_path=serverquerydocs\/\r\nquery_ssh_ip=0.0.0.0, ::\r\nquery_ssh_port=10022\r\nquery_protocols=raw,ssh\r\nquery_ssh_rsa_host_key=ssh_host_rsa_key\r\nquery_timeout=300' > ts3server.ini\r\nfi",
+            "container": "ubuntu:18.04",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Update",
+            "description": "Should a new version be used during a reinstall or the old one installed?\r\n1 means that the latest version will be installed.\r\nTo turn off set to 0.",
+            "env_variable": "UPDATE",
+            "default_value": "1",
+            "user_viewable": 1,
+            "user_editable": 1,
+            "rules": "required|boolean"
+        }
+    ]
+}
