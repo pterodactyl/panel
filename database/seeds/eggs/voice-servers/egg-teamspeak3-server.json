@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2019-03-29T17:46:48+01:00",
+    "exported_at": "2019-03-29T17:53:00+01:00",
     "name": "Teamspeak3 Server",
     "author": "support@pterodactyl.io",
     "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
@@ -13,7 +13,7 @@
         "files": "{}",
         "startup": "{\r\n    \"done\": \"listening on 0.0.0.0:\",\r\n    \"userInteraction\": []\r\n}",
         "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/ts3.log\"\r\n}",
-        "stop": ".\/ts3server_startscript.sh stop"
+        "stop": "^C"
     },
     "scripts": {
         "installation": {
