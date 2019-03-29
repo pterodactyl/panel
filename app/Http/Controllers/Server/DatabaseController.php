@@ -142,7 +142,7 @@ class DatabaseController extends Controller
     {
         $this->authorize('reset-db-password', $request->attributes->get('server'));
 
-        $password = str_random(20);
+        $password = str_random(24);
         $this->passwordService->handle($request->attributes->get('database'), $password);
 
         return response()->json(['password' => $password]);
