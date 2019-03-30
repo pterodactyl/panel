@@ -26,9 +26,9 @@ class AppSettingsCommand extends Command
     ];
 
     const ALLOWED_SESSION_DRIVERS = [
-        'redis' => 'Redis (recommended)',
+        'redis' => 'Redis',
         'memcached' => 'Memcached',
-        'database' => 'MySQL Database',
+        'database' => 'MySQL Database (recommended)',
         'file' => 'Filesystem',
         'cookie' => 'Cookie',
     ];
