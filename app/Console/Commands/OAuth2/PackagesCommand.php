@@ -4,21 +4,29 @@ namespace Pterodactyl\Console\Commands\OAuth2;
 
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Psr\Log\LoggerInterface as Log;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\RuntimeException;
 
 class PackagesCommand extends Command
 {
+
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */
     protected $config;
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $log;
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'p:oauth2:packages
-                            {--verbose-composer : Enable verbose command output.}';
+    protected $signature = 'p:oauth2:packages';
 
     /**
      * The console command description.
@@ -31,13 +39,14 @@ class PackagesCommand extends Command
      * Create a new command instance.
      *
      * @param \Illuminate\Contracts\Config\Repository $config
-     * @return void
+     * @param Log $log
      */
-    public function __construct(ConfigRepository $config)
+    public function __construct(ConfigRepository $config, Log $log)
     {
         parent::__construct();
 
         $this->config = $config;
+        $this->log = $log;
     }
 
     /**
@@ -64,33 +73,51 @@ class PackagesCommand extends Command
 
         $this->output->write(__('command/messages.environment.oauth2.packages', ['number' => count($packages)]) . "\r\n");
 
-        $command = 'composer require';
+        $command = 'composer';
         if (file_exists('composer.phar')) {
-            $command = 'php composer.phar require';
+            $command = 'php composer.phar';
         }
 
         $bar = $this->output->createProgressBar(count($packages));
 
         $bar->start();
 
-        \Log::info('[OAuth2 Package Installer]: Starting Installation...');
+        $failed = 0;
+
+        $this->log->info('[OAuth2 Package Installer]: Starting Installation...');
         foreach ($packages as $provider => $package) {
-            \Log::info('[OAuth2 Package Installer]: Installing ' . $provider . ': ' . $package);
+            $this->log->info('[OAuth2 Package Installer]: Installing ' . $provider . ': ' . $package);
             $this->output->write(' ' . __('command/messages.environment.oauth2.installing', ['package' => $provider . ': ' . $package]));
 
-            exec($command . ' --no-progress --no-suggest --no-update --no-scripts --update-no-dev 2>&1' . $package, $output);
-            if ($this->option('verbose-composer')) {
-                $this->output->write($output);
-            }
-            \Log::info('[OAuth2 Package Installer]: [Composer]: ' . implode("\r\n", $output));
+            $process = (new Process(preg_split('~\s+~', $command . str_replace(':package', $package, ' require :package --no-progress --no-suggest --no-update --no-scripts --update-no-dev'))))->setTimeout(null);
 
-            \Log::info('[OAuth2 Package Installer]: Installed ' . $provider . ': ' . $package);
-            $this->output->write(' ' . __('command/messages.environment.oauth2.installed', ['package' => $provider . ': ' . $package]));
+            try {
+                $process->setTty(false);
+            } catch (RuntimeException $e) {
+                $this->output->writeln('Warning: '.$e->getMessage());
+            }
+            $process->run(function ($type, $line) {
+                if ($this->option('verbose')) {
+                    $this->output->write('[Composer]: ' . $line);
+                }
+                $this->log->info('[OAuth2 Package Installer]: [Composer]: ' . $line);
+            });
+
+            if ($process->isSuccessful()) {
+                $this->log->info('[OAuth2 Package Installer]: Installed ' . $provider . ': ' . $package);
+                $this->output->write(' ' . __('command/messages.environment.oauth2.installed', ['package' => $provider . ': ' . $package]));
+            } else {
+                $failed++;
+                $this->log->info('[OAuth2 Package Installer]: Failed installation of ' . $provider . ': ' . $package);
+                $this->output->write(' ' . __('command/messages.environment.oauth2.failed', ['package' => $provider . ': ' . $package]));
+            }
+
             $bar->advance();
         }
 
         $bar->finish();
-        \Log::info('[OAuth2 Package Installer]: Installation finished');
-        $this->output->write("\r\n" . __('command/messages.environment.oauth2.done', ['number' => count($packages)]));
+        $this->log->info('[OAuth2 Package Installer]: Installation finished');
+        $this->output->write("\r\n" . __('command/messages.environment.oauth2.done', ['number' => count($packages) - $failed]));
+        $this->output->write("\r\n" . __('command/messages.environment.oauth2.done_failed', ['number' => $failed]));
     }
 }

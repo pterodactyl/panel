@@ -59,7 +59,7 @@ class OAuth2ServiceProvider extends ServiceProvider
     {
         $providers = [];
 
-        foreach (preg_split('~,~', config('oauth2.all_drivers')) as $provider) {
+        foreach (preg_split('~,~', $this->config->get('oauth2.all_drivers')) as $provider) {
             $array = [
                 'oauth2:providers:' . $provider . ':status',
                 'oauth2:providers:' . $provider . ':package',

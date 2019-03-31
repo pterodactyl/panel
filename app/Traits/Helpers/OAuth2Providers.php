@@ -14,17 +14,18 @@ trait OAuth2Providers
      */
     public function createProviderSettings($provider)
     {
+        $config = app('Illuminate\Contracts\Config\Repository');
         return [
             $provider => [
-                'status' => config('oauth2.default_driver') == $provider ? true : config('oauth2.providers.' . $provider . '.status', env('OAUTH2_' . Str::upper($provider) . '_STATUS')),
-                'client_id' => config('oauth2.providers.' . $provider . '.client_id', env('OAUTH2_' . Str::upper($provider) . '_CLIENT_ID')),
-                'client_secret' => config('oauth2.providers.' . $provider . '.client_secret', env('OAUTH2_' . Str::upper($provider) . '_CLIENT_SECRET')),
-                'redirect' => config('app.url') . '/auth/oauth2/callback',
-                'scopes' => config('oauth2.providers.' . $provider . '.scopes', env('OAUTH2_' . Str::upper($provider) . '_SCOPES')),
-                'widget_html' => config('oauth2.providers.' . $provider . '.widget_html', env('OAUTH2_' . Str::upper($provider) . '_WIDGET_HTML')),
-                'widget_css' => config('oauth2.providers.' . $provider . '.widget_css', env('OAUTH2_' . Str::upper($provider) . '_WIDGET_CSS')),
-                'listener' => config('oauth2.providers.' . $provider . '.listener', env('OAUTH2_' . Str::upper($provider) . '_LISTENER')),
-                'package' => config('oauth2.providers.' . $provider . '.package', env('OAUTH2_' . Str::upper($provider) . '_PACKAGE')),
+                'status' => $config->get('oauth2.default_driver') == $provider ? true : $config->get('oauth2.providers.' . $provider . '.status', env('OAUTH2_' . Str::upper($provider) . '_STATUS')),
+                'client_id' => $config->get('oauth2.providers.' . $provider . '.client_id', env('OAUTH2_' . Str::upper($provider) . '_CLIENT_ID')),
+                'client_secret' => $config->get('oauth2.providers.' . $provider . '.client_secret', env('OAUTH2_' . Str::upper($provider) . '_CLIENT_SECRET')),
+                'redirect' => $config->get('app.url') . '/auth/oauth2/callback',
+                'scopes' => $config->get('oauth2.providers.' . $provider . '.scopes', env('OAUTH2_' . Str::upper($provider) . '_SCOPES')),
+                'widget_html' => $config->get('oauth2.providers.' . $provider . '.widget_html', env('OAUTH2_' . Str::upper($provider) . '_WIDGET_HTML')),
+                'widget_css' => $config->get('oauth2.providers.' . $provider . '.widget_css', env('OAUTH2_' . Str::upper($provider) . '_WIDGET_CSS')),
+                'listener' => $config->get('oauth2.providers.' . $provider . '.listener', env('OAUTH2_' . Str::upper($provider) . '_LISTENER')),
+                'package' => $config->get('oauth2.providers.' . $provider . '.package', env('OAUTH2_' . Str::upper($provider) . '_PACKAGE')),
             ],
         ];
     }
@@ -34,8 +35,9 @@ trait OAuth2Providers
      */
     public function getAllProviderSettings()
     {
-        $array = config('oauth2.providers');
-        foreach (preg_split('~,~', config('oauth2.all_drivers')) as $provider) {
+        $config = app('Illuminate\Contracts\Config\Repository');
+        $array = $config->get('oauth2.providers');
+        foreach (preg_split('~,~', $config->get('oauth2.all_drivers')) as $provider) {
             if (array_has($array, $provider)) {
                 $array[$provider] = array_merge($array[$provider], self::createProviderSettings($provider)[$provider]);
             } else {

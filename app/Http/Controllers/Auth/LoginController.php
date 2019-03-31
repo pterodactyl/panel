@@ -139,7 +139,7 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request);
         }
 
-        if (config('oauth2.required') == 2 or ($user->root_admin == true and config('oauth2.required') == 1)) {
+        if ($this->config->get('oauth2.required') == 2 or ($user->root_admin == true and $this->config->get('oauth2.required') == 1)) {
             return $this->sendFailedLoginResponse($request);
         }
 

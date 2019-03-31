@@ -80,7 +80,7 @@ class OAuth2Controller extends Controller
     {
         $array = $request->normalize();
 
-        $all_drivers = array_merge(preg_split('~,~', config('oauth2.all_drivers')), preg_split('~,~', $array['oauth2:providers:new']));
+        $all_drivers = array_merge(preg_split('~,~', $this->config->get('oauth2.all_drivers')), preg_split('~,~', $array['oauth2:providers:new']));
 
         foreach (preg_split('~,~', $array['oauth2:providers:deleted']) as $provider) {
             if (($key = array_search($provider, $all_drivers)) !== false) {
