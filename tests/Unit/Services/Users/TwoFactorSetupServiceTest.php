@@ -5,7 +5,7 @@ namespace Tests\Unit\Services\Users;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
-use PragmaRX\Google2FA\Google2FA;
+use PragmaRX\Google2FAQRCode\Google2FA;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
@@ -24,7 +24,7 @@ class TwoFactorSetupServiceTest extends TestCase
     private $encrypter;
 
     /**
-     * @var \PragmaRX\Google2FA\Google2FA|\Mockery\Mock
+     * @var PragmaRX\Google2FAQRCode\Google2FA|\Mockery\Mock
      */
     private $google2FA;
 
@@ -56,7 +56,7 @@ class TwoFactorSetupServiceTest extends TestCase
         $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.bytes')->once()->andReturn(32);
         $this->google2FA->shouldReceive('generateSecretKey')->with(32)->once()->andReturn('secretKey');
         $this->config->shouldReceive('get')->with('app.name')->once()->andReturn('CompanyName');
-        $this->google2FA->shouldReceive('getQRCodeGoogleUrl')->with('CompanyName', $model->email, 'secretKey')->once()->andReturn('http://url.com');
+        $this->google2FA->shouldReceive('getQRCodeInline')->with('CompanyName', $model->email, 'secretKey')->once()->andReturn('http://url.com');
         $this->encrypter->shouldReceive('encrypt')->with('secretKey')->once()->andReturn('encryptedSecret');
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, ['totp_secret' => 'encryptedSecret'])->once()->andReturnNull();
 
