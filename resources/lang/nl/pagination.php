@@ -2,6 +2,7 @@
 
 return [
     'previous' => '&laquo; Vorige',
+    'next' => 'Volgende &raquo;',
     'sidebar' => [
         'account_settings' => 'Account instellingen',
         'files' => 'Bestandsbeheer',
