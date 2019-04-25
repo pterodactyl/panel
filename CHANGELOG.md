@@ -9,6 +9,11 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes bug where node creation API endpoint was not correctly requiring the `disk_overallocate` key.
 * Prevents an exception from being thrown when a database with the same name is created on two different hosts.
 * Fixes the redis password not saving correctly when setting up the environment from the command line.
+* Fixes a bug with transaction handling in many areas of the application that would cause validation error messages
+and other session data to not be persisted properly when using the database as the session driver.
+* Fix a bug introduced at some point in the past that causes internal data integrity exceptions to not bubble up to
+the user correctly, leading to extraneous and confusing exception messages.
+* Fixes a bug causing servers to not be marked as having failed installation in some cases.
 
 ### Changed
 * `allocation_limit` for servers now defaults to a null value, and is not required in PATCH/POST requests when adding

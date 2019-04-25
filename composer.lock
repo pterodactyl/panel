@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "17de367358e9573d913860f1b446e9a7",
+    "content-hash": "2079d9e659d2f26492c9931277bd1f25",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -2959,6 +2959,58 @@
             "time": "2018-09-28T16:17:34+00:00"
         },
         {
+            "name": "staudenmeir/belongs-to-through",
+            "version": "v2.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/staudenmeir/belongs-to-through.git",
+                "reference": "2ba1ff76353058d2b4d395e725617d97fd103ab0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/staudenmeir/belongs-to-through/zipball/2ba1ff76353058d2b4d395e725617d97fd103ab0",
+                "reference": "2ba1ff76353058d2b4d395e725617d97fd103ab0",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.0"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "^1.11",
+                "orchestra/testbench": "~3.0",
+                "phpunit/php-code-coverage": "^3.3",
+                "phpunit/phpunit": "~5.0",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Znck\\Eloquent\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rahul Kadyan",
+                    "email": "hi@znck.me"
+                }
+            ],
+            "description": "Adds belongsToThrough relation to laravel models",
+            "homepage": "https://github.com/staudenmeir/belongs-to-through",
+            "keywords": [
+                "belongsToThrough",
+                "eloquent",
+                "laravel",
+                "model",
+                "models",
+                "znck"
+            ],
+            "time": "2019-02-01T14:33:18+00:00"
+        },
+        {
             "name": "swiftmailer/swiftmailer",
             "version": "v6.1.3",
             "source": {
@@ -4143,58 +4195,6 @@
                 "validate"
             ],
             "time": "2018-01-29T19:49:41+00:00"
-        },
-        {
-            "name": "znck/belongs-to-through",
-            "version": "v2.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/znck/belongs-to-through.git",
-                "reference": "8ac53e9134072902a8d3f3e18c327d4a8fd70d3d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/znck/belongs-to-through/zipball/8ac53e9134072902a8d3f3e18c327d4a8fd70d3d",
-                "reference": "8ac53e9134072902a8d3f3e18c327d4a8fd70d3d",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": "~5.0"
-            },
-            "require-dev": {
-                "fabpot/php-cs-fixer": "^1.11",
-                "orchestra/testbench": "~3.0",
-                "phpunit/php-code-coverage": "^3.3",
-                "phpunit/phpunit": "~5.0",
-                "satooshi/php-coveralls": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Znck\\Eloquent\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Rahul Kadyan",
-                    "email": "hi@znck.me"
-                }
-            ],
-            "description": "Adds belongsToThrough relation to laravel models",
-            "homepage": "https://github.com/znck/belongs-to-through",
-            "keywords": [
-                "belongsToThrough",
-                "eloquent",
-                "laravel",
-                "model",
-                "models",
-                "znck"
-            ],
-            "time": "2017-07-23T13:11:16+00:00"
         }
     ],
     "packages-dev": [

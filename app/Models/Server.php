@@ -87,7 +87,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'startup' => 'string',
         'skip_scripts' => 'boolean',
         'image' => 'string|max:255',
-        'installed' => 'boolean',
+        'installed' => 'in:0,1,2',
         'database_limit' => 'nullable|integer|min:0',
         'allocation_limit' => 'nullable|integer|min:0',
     ];

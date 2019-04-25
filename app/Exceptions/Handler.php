@@ -6,6 +6,7 @@ use Exception;
 use PDOException;
 use Psr\Log\LoggerInterface;
 use Illuminate\Container\Container;
+use Illuminate\Database\Connection;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends ExceptionHandler
 {
@@ -137,6 +139,41 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        $connections = Container::getInstance()->make(Connection::class);
+
+        // If we are currently wrapped up inside a transaction, we will roll all the way
+        // back to the beginning. This needs to happen, otherwise session data does not
+        // get properly persisted.
+        //
+        // This is kind of a hack, and ideally things like this should be handled as
+        // much as possible at the code level, but there are a lot of spots that do a
+        // ton of actions and were written before this bug discovery was made.
+        //
+        // @see https://github.com/pterodactyl/panel/pull/1468
+        if ($connections->transactionLevel()) {
+            $connections->rollBack(0);
+        }
+
+        // Because of some breaking change snuck into a Laravel update that didn't get caught
+        // by any of the tests, exceptions implementing the HttpExceptionInterface get marked
+        // as being HttpExceptions, but aren't actually implementing the HttpException abstract.
+        //
+        // This is incredibly annoying because we can't just temporarily override the handler to
+        // allow these (at least without taking on a high maintenance cost). Laravel 5.8 fixes this,
+        // so when we update (or have updated) this code can be removed.
+        //
+        // @see https://github.com/laravel/framework/pull/25975
+        // @todo remove this code when upgrading to Laravel 5.8
+        if ($exception instanceof HttpExceptionInterface && ! $exception instanceof HttpException) {
+            $exception = new HttpException(
+                $exception->getStatusCode(),
+                $exception->getMessage(),
+                $exception,
+                $exception->getHeaders(),
+                $exception->getCode()
+            );
+        }
+
         return parent::render($request, $exception);
     }
 
