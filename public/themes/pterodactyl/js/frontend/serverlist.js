@@ -74,9 +74,11 @@
                     }
                     element.find('[data-action="memory"]').html(parseInt(data.proc.memory.total / (1024 * 1024)));
                     element.find('[data-action="cpu"]').html(currentCpu);
+                    element.find('[data-action="disk"]').html(parseInt(data.proc.disk.used));
                 } else {
                     element.find('[data-action="memory"]').html('--');
                     element.find('[data-action="cpu"]').html('--');
+                    element.find('[data-action="disk"]').html('--');
                 }
             }
         }).fail(function (jqXHR) {
