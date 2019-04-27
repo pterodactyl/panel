@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.14 (Derelict Dermodactylus)
+### Fixed
+* Fixes the title of the page when creating a new schedule for a server.
+
 ## v0.7.13 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a bug with the location update API endpoint throwing an error due to an unexected response value.
