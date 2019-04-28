@@ -153,7 +153,7 @@
             }
 
             $('#pPackId').html('').select2({
-                data: [{id: '0', text: 'No Service Pack'}].concat(
+                data: [{id: '0', text: 'No Data Pack'}].concat(
                     $.map(_.get(objectChain, 'packs', []), function (item, i) {
                         return {
                             id: item.id,
