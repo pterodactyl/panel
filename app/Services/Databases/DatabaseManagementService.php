@@ -69,7 +69,7 @@ class DatabaseManagementService
         $data['server_id'] = $server;
         $data['database'] = sprintf('s%d_%s', $server, $data['database']);
         $data['username'] = sprintf('u%d_%s', $server, str_random(10));
-        $data['password'] = $this->encrypter->encrypt(str_random(16));
+        $data['password'] = $this->encrypter->encrypt(str_random(24));
 
         $this->database->beginTransaction();
         try {
