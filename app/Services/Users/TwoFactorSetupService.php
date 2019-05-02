@@ -9,12 +9,12 @@
 
 namespace Pterodactyl\Services\Users;
 
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Models\User;
-use PragmaRX\Google2FAQRCode\Google2FA;
 use Illuminate\Support\Collection;
+use PragmaRX\Google2FAQRCode\Google2FA;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class TwoFactorSetupService
 {
