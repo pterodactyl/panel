@@ -66,4 +66,22 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
 
         return json_decode($response->getBody(), true);
     }
+
+    /**
+     * Creates a new directory for the server in the given $path.
+     *
+     * @param string $name
+     * @param string $path
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function createDirectory(string $name, string $path): ResponseInterface
+    {
+        return $this->getHttpClient()->post(
+            sprintf('/api/servers/%s/files/create-directory', $this->getServer()->uuid),
+            [
+                'name' => $name,
+                'directory' => $path,
+            ]
+        );
+    }
 }

@@ -5,17 +5,16 @@ namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class ListFilesRequest extends ClientApiRequest
+class CreateFolderRequest extends ClientApiRequest
 {
     /**
-     * Check that the user making this request to the API is authorized to list all
-     * of the files that exist for a given server.
+     * Checks that the authenticated user is allowed to create files on the server.
      *
      * @return bool
      */
     public function authorize(): bool
     {
-        return $this->user()->can('list-files', $this->getModel(Server::class));
+        return $this->user()->can('create-files', $this->getModel(Server::class));
     }
 
     /**
@@ -24,7 +23,8 @@ class ListFilesRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'directory' => 'sometimes|nullable|string',
+            'root' => 'sometimes|nullable|string',
+            'name' => 'required|string',
         ];
     }
 }

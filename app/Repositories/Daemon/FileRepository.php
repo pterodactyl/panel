@@ -3,6 +3,7 @@
 namespace Pterodactyl\Repositories\Daemon;
 
 use stdClass;
+use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 
@@ -85,5 +86,19 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         $response = $this->getHttpClient()->request('GET', sprintf('server/directory/%s', rawurlencode($path)));
 
         return json_decode($response->getBody());
+    }
+
+    /**
+     * Creates a new directory for the server in the given $path.
+     *
+     * @param string $name
+     * @param string $path
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \RuntimeException
+     */
+    public function createDirectory(string $name, string $path): ResponseInterface
+    {
+        throw new RuntimeException('Not implemented.');
     }
 }

@@ -1,12 +1,13 @@
-import {ServerApplicationCredentials} from "@/store/types";
-import {withCredentials} from "@/api/http";
+import http from "@/api/http";
 
 /**
  * Connects to the remote daemon and creates a new folder on the server.
  */
-export function createFolder(server: string, credentials: ServerApplicationCredentials, path: string): Promise<void> {
+export function createFolder(server: string, directory: string, name: string): Promise<void> {
     return new Promise((resolve, reject) => {
-        withCredentials(server, credentials).post('/v1/server/file/folder', { path })
+        http.post(`/api/client/servers/${server}/files/create-folder`, {
+            directory, name,
+        })
             .then(() => resolve())
             .catch(reject);
     });

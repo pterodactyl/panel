@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
+import axios, {AxiosInstance} from 'axios';
 import {ServerApplicationCredentials} from "@/store/types";
 
 // This token is set in the bootstrap.js file at the beginning of the request

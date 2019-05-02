@@ -39,7 +39,7 @@ class AuthenticateServerAccess
         $server = $request->route()->parameter('server');
 
         if (! $server instanceof Server) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
         }
 
         if ($server->suspended) {

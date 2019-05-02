@@ -4,12 +4,14 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DownloadFileRequest;
 
 class FileController extends ClientApiController
@@ -51,6 +53,21 @@ class FileController extends ClientApiController
                 $request->get('directory') ?? '/'
             ),
         ]);
+    }
+
+    /**
+     * Creates a new folder on the server.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function createFolder(CreateFolderRequest $request): Response
+    {
+        $this->fileRepository
+            ->setServer($request->getModel(Server::class))
+            ->createDirectory($request->input('name'), $request->input('directory', '/'));
+
+        return Response::create('s');
     }
 
     /**

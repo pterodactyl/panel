@@ -47,4 +47,13 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      * @throws \GuzzleHttp\Exception\TransferException
      */
     public function getDirectory(string $path): array;
+
+    /**
+     * Creates a new directory for the server in the given $path.
+     *
+     * @param string $name
+     * @param string $path
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function createDirectory(string $name, string $path): ResponseInterface;
 }

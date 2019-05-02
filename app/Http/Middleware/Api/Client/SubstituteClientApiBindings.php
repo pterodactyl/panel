@@ -26,8 +26,13 @@ class SubstituteClientApiBindings extends ApiSubstituteBindings
         // column rather than the default 'id'.
         $this->router->bind('server', function ($value) use ($request) {
             try {
+                $column = 'uuidShort';
+                if (preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $value)) {
+                    $column = 'uuid';
+                }
+
                 return Container::getInstance()->make(ServerRepositoryInterface::class)->findFirstWhere([
-                    ['uuidShort', '=', $value],
+                    [$column, '=', $value],
                 ]);
             } catch (RecordNotFoundException $ex) {
                 $request->attributes->set('is_missing_model', true);
