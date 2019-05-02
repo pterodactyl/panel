@@ -57,8 +57,8 @@
                             <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
                             <td><a href="{{ route('admin.users.view', $server->owner_id) }}">{{ $server->user->username }}</a></td>
                             <td>{{ $server->nest->name }} ({{ $server->egg->name }})</td>
-                            <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory === 0 ? 'âˆž' : $server->memory }} MB</td>
-                            <td class="text-center"><span data-action="disk">--</span> / {{ $server->disk === 0 ? 'âˆž' : $server->disk }} MB </td>
+                            <td class="text-center"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '∞' : $server->memory }} MB</td>
+                            <td class="text-center"><span data-action="disk">--</span> / {{ $server->disk === 0 ? '∞' : $server->disk }} MB </td>
 							<td class="text-center"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
                             <td class="text-center" data-action="status">--</td>
                         </tr>
