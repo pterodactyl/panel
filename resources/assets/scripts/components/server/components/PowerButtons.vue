@@ -3,7 +3,7 @@
         <div v-if="connected">
             <transition name="slide-fade" mode="out-in">
                 <button class="btn btn-green uppercase text-xs px-4 py-2"
-                        v-if="status === statuses.STATUS_OFF"
+                        v-if="status === 'offline'"
                         v-on:click.prevent="sendPowerAction('start')"
                 >Start
                 </button>
@@ -45,7 +45,7 @@
 
         methods: {
             sendPowerAction: function (action: string) {
-                this.$socket().instance().emit('set status', action)
+                this.$socket().emit('set state', action)
             },
         },
     });

@@ -1,29 +1,23 @@
-import * as io from 'socket.io-client';
 import {camelCase} from 'lodash';
 import SocketEmitter from './emitter';
 import {Store} from "vuex";
 
-const SYSTEM_EVENTS: Array<string> = [
-    'connect',
-    'error',
-    'disconnect',
-    'reconnect',
-    'reconnect_attempt',
-    'reconnecting',
-    'reconnect_error',
-    'reconnect_failed',
-    'connect_error',
-    'connect_timeout',
-    'connecting',
-    'ping',
-    'pong',
-];
+const SOCKET_CONNECT = 'connect';
+const SOCKET_ERROR = 'error';
+const SOCKET_DISCONNECT = 'disconnect';
+
+// This is defined in the wings daemon code and referenced here so that it is obvious
+// where we are pulling these random data objects from.
+type WingsWebsocketResponse = {
+    event: string,
+    args: Array<string>
+}
 
 export default class SocketioConnector {
     /**
      * The socket instance.
      */
-    socket: null | SocketIOClient.Socket;
+    socket: null | WebSocket;
 
     /**
      * The vuex store being used to persist data and socket state.
@@ -37,19 +31,31 @@ export default class SocketioConnector {
 
     /**
      * Initialize a new Socket connection.
-     *
-     * @param {io} socket
      */
-    connect(socket: SocketIOClient.Socket) {
-        this.socket = socket;
+    connect(url: string, protocols?: string | string[]): void {
+        this.socket = new WebSocket(url, protocols);
         this.registerEventListeners();
     }
 
     /**
      * Return the socket instance we are working with.
      */
-    instance(): SocketIOClient.Socket | null {
+    instance(): WebSocket | null {
         return this.socket;
+    }
+
+    /**
+     * Sends an event along to the websocket. If there is no active connection, a void
+     * result is returned.
+     */
+    emit(event: string, payload?: string | Array<string>): void | false {
+        if (!this.socket) {
+            return false
+        }
+
+        this.socket.send(JSON.stringify({
+            event, args: typeof payload === 'string' ? [payload] : payload
+        }));
     }
 
     /**
@@ -61,55 +67,66 @@ export default class SocketioConnector {
             return;
         }
 
-        // @ts-ignore
-        this.socket['onevent'] = (packet: { data: Array<any> }): void => {
-            const [event, ...args] = packet.data;
-            SocketEmitter.emit(event, ...args);
-
-            this.passToStore(event, args);
+        this.socket.onopen = () => this.emitAndPassToStore(SOCKET_CONNECT);
+        this.socket.onclose = () => this.emitAndPassToStore(SOCKET_DISCONNECT);
+        this.socket.onerror = () => {
+            // @todo reconnect?
+            if (this.socket && this.socket.readyState !== 1) {
+                this.emitAndPassToStore(SOCKET_ERROR, ['Failed to connect to websocket.']);
+            }
         };
 
-        SYSTEM_EVENTS.forEach((event: string): void => {
-            if (!this.socket) {
-                return;
+        this.socket.onmessage = (wse): void => {
+            console.log('Socket message:', wse.data);
+
+            try {
+                let {event, args}: WingsWebsocketResponse = JSON.parse(wse.data);
+
+                this.emitAndPassToStore(event, args);
+            } catch (ex) {
+                // do nothing, bad JSON response
+                console.error(ex);
+                return
             }
+        };
+    }
 
-            this.socket.on(event, (payload: any) => {
-                SocketEmitter.emit(event, payload);
-
-                this.passToStore(event, payload);
-            });
-        });
+    /**
+     * Emits the event over the event emitter and also passes it along to the vuex store.
+     */
+    emitAndPassToStore(event: string, payload?: Array<string>) {
+        payload ? SocketEmitter.emit(event, ...payload) : SocketEmitter.emit(event);
+        this.passToStore(event, payload);
     }
 
     /**
      * Pass event calls off to the Vuex store if there is a corresponding function.
      */
-    passToStore(event: string | number, payload: Array<any>) {
+    passToStore(event: string, payload?: Array<string>) {
         if (!this.store) {
             return;
         }
 
         const s: Store<any> = this.store;
-        const mutation = `SOCKET_${String(event).toUpperCase()}`;
-        const action = `socket_${camelCase(String(event))}`;
+        const mutation = `SOCKET_${event.toUpperCase()}`;
+        const action = `socket_${camelCase(event)}`;
 
         // @ts-ignore
         Object.keys(this.store._mutations).filter((namespaced: string): boolean => {
             return namespaced.split('/').pop() === mutation;
         }).forEach((namespaced: string): void => {
-            s.commit(namespaced, this.unwrap(payload));
+            s.commit(namespaced, payload ? this.unwrap(payload) : null);
         });
 
         // @ts-ignore
         Object.keys(this.store._actions).filter((namespaced: string): boolean => {
             return namespaced.split('/').pop() === action;
         }).forEach((namespaced: string): void => {
-            s.dispatch(namespaced, this.unwrap(payload)).catch(console.error);
+            s.dispatch(namespaced, payload ? this.unwrap(payload) : null).catch(console.error);
         });
     }
 
-    unwrap(args: Array<any>) {
+    unwrap(args: Array<string>) {
         return (args && args.length <= 1) ? args[0] : args;
     }
 }

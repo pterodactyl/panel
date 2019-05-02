@@ -1,6 +1,6 @@
 export default {
-    STATUS_OFF: 0,
-    STATUS_ON: 1,
-    STATUS_STARTING: 2,
-    STATUS_STOPPING: 3,
+    STATUS_OFF: 'offline',
+    STATUS_ON: 'running',
+    STATUS_STARTING: 'starting',
+    STATUS_STOPPING: 'stopping',
 };

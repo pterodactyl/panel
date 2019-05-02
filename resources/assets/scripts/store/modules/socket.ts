@@ -19,17 +19,12 @@ export default {
             state.connectionError = err;
         },
 
-        SOCKET_CONNECT_ERROR: (state: SocketState, err: Error) => {
-            state.connected = false;
-            state.connectionError = err;
+        'SOCKET_INITIAL STATUS': (state: SocketState, data: string) => {
+            state.status = data;
         },
 
-        'SOCKET_INITIAL STATUS': (state: SocketState, data: { status: number }) => {
-            state.status = data.status;
-        },
-
-        SOCKET_STATUS: (state: SocketState, data: { status: number }) => {
-            state.status = data.status;
+        SOCKET_STATUS: (state: SocketState, data: string) => {
+            state.status = data;
         }
     },
 };

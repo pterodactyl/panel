@@ -6,7 +6,7 @@
         "feather-icons": "^4.10.0",
         "jquery": "^3.3.1",
         "lodash": "^4.17.11",
-        "socket.io-client": "^2.1.1",
+        "socket.io-client": "^2.2.0",
         "vee-validate": "^2.1.7",
         "vue": "^2.6.4",
         "vue-axios": "^2.1.1",
@@ -14,6 +14,7 @@
         "vue-router": "^3.0.1",
         "vuex": "^3.0.1",
         "vuex-router-sync": "^5.0.0",
+        "ws-wrapper": "^2.0.0",
         "xterm": "^3.5.1"
     },
     "devDependencies": {

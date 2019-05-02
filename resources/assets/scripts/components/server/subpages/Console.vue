@@ -64,20 +64,12 @@
          * Listen for specific socket.io emits from the server.
          */
         sockets: {
-            'server log': function (data: string) {
-                data.split(/\n/g).forEach((line: string): void => {
-                    if (this.terminal) {
-                        this.terminal.writeln(line + '\u001b[0m');
-                    }
-                });
+            'server log': function (lines: Array<string>) {
+                lines.forEach(data => data.split(/\n/g).forEach(line => this.terminal && this.terminal.writeln(line + '\u001b[0m')));
             },
 
-            'console': function (data: { line: string }) {
-                data.line.split(/\n/g).forEach((line: string): void => {
-                    if (this.terminal) {
-                        this.terminal.writeln(line + '\u001b[0m');
-                    }
-                });
+            'console output': function (line: string) {
+                this.terminal && this.terminal.writeln(line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
             },
         },
 
@@ -114,7 +106,7 @@
                 this.terminal.fit();
                 this.terminal.clear();
 
-                this.$socket().instance().emit('send server log');
+                this.$socket().emit('send logs');
             },
 
             /**
@@ -123,7 +115,7 @@
             sendCommand: function () {
                 this.commandHistoryIndex = -1;
                 this.commandHistory.unshift(this.command);
-                this.$socket().instance().emit('send command', this.command);
+                this.$socket().emit('send command', this.command);
                 this.command = '';
             },
 

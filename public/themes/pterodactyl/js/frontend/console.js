@@ -65,7 +65,7 @@ $(document).ready(function () {
 
         if (e.which === 13) {
             saveToHistory($(this).val());
-            Socket.emit((ConsoleServerStatus !== 0) ? 'send command' : 'set status', $(this).val());
+            Socket.emit((ConsoleServerStatus !== 0) ? 'send command' : 'set state', $(this).val());
 
             $(this).val('');
         }
@@ -233,7 +233,7 @@ function updateServerPowerControls (data) {
 $(document).ready(function () {
     $('[data-attr="power"]').click(function (event) {
         if (! $(this).hasClass('disabled')) {
-            Socket.emit('set status', $(this).data('action'));
+            Socket.emit('set state', $(this).data('action'));
         }
     });
 

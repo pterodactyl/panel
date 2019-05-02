@@ -34,10 +34,7 @@ export const Socketio: ComponentOptions<Vue> = {
     },
 
     methods: {
-        /**
-         * @return {SocketioConnector}
-         */
-        '$socket': function () {
+        '$socket': function (): SocketioConnector | null {
             return connector;
         },
 
@@ -49,7 +46,7 @@ export const Socketio: ComponentOptions<Vue> = {
                 return;
             }
 
-            const instance: SocketIOClient.Socket | null = connector.instance();
+            const instance = connector.instance();
             if (instance) {
                 instance.close();
             }

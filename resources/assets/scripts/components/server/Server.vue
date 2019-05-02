@@ -34,6 +34,11 @@
                                     Databases
                                 </router-link>
                             </li>
+                            <li>
+                                <router-link :to="{ name: 'server-network' }">
+                                    Networking
+                                </router-link>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -54,7 +59,6 @@
     import Vue from 'vue';
     import Navigation from '@/components/core/Navigation.vue';
     import {mapState} from 'vuex';
-    import * as io from 'socket.io-client';
     import {Socketio} from "@/mixins/socketio";
     import PowerButtons from "@/components/server/components/PowerButtons.vue";
     import Flash from "@/components/Flash.vue";
@@ -105,13 +109,12 @@
                     this.$store.dispatch('server/getCredentials', {server: this.$route.params.id})
                 ])
                     .then(() => {
-                        // Configure the socket.io implementation. This is a really ghetto way of handling things
-                        // but all of these plugins assume you have some constant connection, which we don't.
-                        const socket = io(`${this.credentials.node}/v1/ws/${this.server.uuid}`, {
-                            query: `token=${this.credentials.key}`,
-                        });
+                        // Configure the websocket implementation and assign it to the mixin.
+                        this.$socket().connect(
+                            `ws://192.168.50.3:8080/api/servers/${this.server.uuid}/ws`,
+                            'CC8kHCuMkXPosgzGO6d37wvhNcksWxG6kTrA',
+                        );
 
-                        this.$socket().connect(socket);
                         this.loadingServerData = false;
                     })
                     .catch(err => {
