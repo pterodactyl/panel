@@ -5,6 +5,7 @@ namespace Tests\Unit\Services\Users;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
+use Illuminate\Support\Collection;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -53,7 +54,9 @@ class TwoFactorSetupServiceTest extends TestCase
     {
         $model = factory(User::class)->make();
 
-        $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.bytes')->once()->andReturn(32);
+        config()->set('pterodactyl.auth.2fa.bytes', 32);
+        config()->set('app.name', 'CompanyName');
+
         $this->google2FA->shouldReceive('generateSecretKey')->with(32)->once()->andReturn('secretKey');
         $this->config->shouldReceive('get')->with('app.name')->once()->andReturn('CompanyName');
         $this->google2FA->shouldReceive('getQRCodeInline')->with('CompanyName', $model->email, 'secretKey')->once()->andReturn('http://url.com');
@@ -62,7 +65,9 @@ class TwoFactorSetupServiceTest extends TestCase
 
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);
-        $this->assertSame('http://url.com', $response);
+        $this->assertInstanceOf(Collection::class, $response);
+        $this->assertSame('http://url.com', $response->get('image'));
+        $this->assertSame('secretKey', $response->get('secret'));
     }
 
     /**
@@ -72,6 +77,6 @@ class TwoFactorSetupServiceTest extends TestCase
      */
     private function getService(): TwoFactorSetupService
     {
-        return new TwoFactorSetupService($this->config, $this->encrypter, $this->google2FA, $this->repository);
+        return new TwoFactorSetupService($this->encrypter, $this->google2FA, $this->repository);
     }
 }

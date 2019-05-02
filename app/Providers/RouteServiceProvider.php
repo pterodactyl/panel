@@ -22,20 +22,21 @@ class RouteServiceProvider extends ServiceProvider
     public function map()
     {
         Route::middleware(['web', 'auth', 'csrf'])
-             ->namespace($this->namespace . '\Base')
-             ->group(base_path('routes/base.php'));
+            ->namespace($this->namespace . '\Base')
+            ->group(base_path('routes/base.php'));
 
         Route::middleware(['web', 'auth', 'admin', 'csrf'])->prefix('/admin')
-             ->namespace($this->namespace . '\Admin')
-             ->group(base_path('routes/admin.php'));
+            ->namespace($this->namespace . '\Admin')
+            ->group(base_path('routes/admin.php'));
 
         Route::middleware(['web', 'csrf'])->prefix('/auth')
-             ->namespace($this->namespace . '\Auth')
-             ->group(base_path('routes/auth.php'));
+            ->namespace($this->namespace . '\Auth')
+            ->group(base_path('routes/auth.php'));
 
-        Route::middleware(['web', 'csrf', 'auth', 'server', 'subuser.auth', 'node.maintenance'])->prefix('/server/{server}')
-             ->namespace($this->namespace . '\Server')
-             ->group(base_path('routes/server.php'));
+        Route::middleware(['web', 'csrf', 'auth', 'server', 'subuser.auth', 'node.maintenance'])
+            ->prefix('/api/server/{server}')
+            ->namespace($this->namespace . '\Server')
+            ->group(base_path('routes/server.php'));
 
         Route::middleware(['api'])->prefix('/api/application')
             ->namespace($this->namespace . '\Api\Application')
@@ -50,7 +51,7 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/api-remote.php'));
 
         Route::middleware(['web', 'daemon-old'])->prefix('/daemon')
-             ->namespace($this->namespace . '\Daemon')
-             ->group(base_path('routes/daemon.php'));
+            ->namespace($this->namespace . '\Daemon')
+            ->group(base_path('routes/daemon.php'));
     }
 }

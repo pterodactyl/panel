@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Middleware\Server;
 use Closure;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -30,28 +29,20 @@ class AccessingValidServer
     private $response;
 
     /**
-     * @var \Illuminate\Contracts\Session\Session
-     */
-    private $session;
-
-    /**
      * AccessingValidServer constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository                     $config
      * @param \Illuminate\Contracts\Routing\ResponseFactory               $response
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Session\Session                       $session
      */
     public function __construct(
         ConfigRepository $config,
         ResponseFactory $response,
-        ServerRepositoryInterface $repository,
-        Session $session
+        ServerRepositoryInterface $repository
     ) {
         $this->config = $config;
         $this->repository = $repository;
         $this->response = $response;
-        $this->session = $session;
     }
 
     /**
@@ -61,7 +52,6 @@ class AccessingValidServer
      * @param \Closure                 $next
      * @return \Illuminate\Http\Response|mixed
      *
-     * @throws \Illuminate\Auth\AuthenticationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
@@ -89,10 +79,6 @@ class AccessingValidServer
 
             return $this->response->view('errors.installing', [], 409);
         }
-
-        // Store the server in the session.
-        // @todo remove from session. use request attributes.
-        $this->session->now('server_data.model', $server);
 
         // Add server to the request attributes. This will replace sessions
         // as files are updated.

@@ -3,13 +3,15 @@
 namespace Pterodactyl\Http\Controllers\Auth;
 
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Hashing\Hasher;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
+use Pterodactyl\Http\Requests\Auth\ResetPasswordRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class ResetPasswordController extends Controller
@@ -29,11 +31,6 @@ class ResetPasswordController extends Controller
     protected $hasTwoFactor = false;
 
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    private $alerts;
-
-    /**
      * @var \Illuminate\Contracts\Events\Dispatcher
      */
     private $dispatcher;
@@ -51,31 +48,44 @@ class ResetPasswordController extends Controller
     /**
      * ResetPasswordController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                         $alerts
      * @param \Illuminate\Contracts\Events\Dispatcher                   $dispatcher
      * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $userRepository
      */
-    public function __construct(AlertsMessageBag $alerts, Dispatcher $dispatcher, Hasher $hasher, UserRepositoryInterface $userRepository)
+    public function __construct(Dispatcher $dispatcher, Hasher $hasher, UserRepositoryInterface $userRepository)
     {
-        $this->alerts = $alerts;
         $this->dispatcher = $dispatcher;
         $this->hasher = $hasher;
         $this->userRepository = $userRepository;
     }
 
     /**
-     * Return the rules used when validating password reset.
+     * Reset the given user's password.
      *
-     * @return array
+     * @param \Pterodactyl\Http\Requests\Auth\ResetPasswordRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    protected function rules(): array
+    public function __invoke(ResetPasswordRequest $request): JsonResponse
     {
-        return [
-            'token' => 'required',
-            'email' => 'required|email',
-            'password' => 'required|confirmed|min:8',
-        ];
+        // Here we will attempt to reset the user's password. If it is successful we
+        // will update the password on an actual user model and persist it to the
+        // database. Otherwise we will parse the error and return the response.
+        $response = $this->broker()->reset(
+            $this->credentials($request), function ($user, $password) {
+                $this->resetPassword($user, $password);
+            }
+        );
+
+        // If the password was successfully reset, we will redirect the user back to
+        // the application's home authenticated view. If there is an error we can
+        // redirect them back to where they came from with their error message.
+        if ($response === Password::PASSWORD_RESET) {
+            return $this->sendResetResponse();
+        }
+
+        throw new DisplayException(trans($response));
     }
 
     /**
@@ -108,19 +118,16 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * Get the response for a successful password reset.
+     * Send a successful password reset response back to the callee.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    protected function sendResetResponse(Request $request, $response)
+    protected function sendResetResponse(): JsonResponse
     {
-        if ($this->hasTwoFactor) {
-            $this->alerts->success('Your password was successfully updated. Please log in to continue.')->flash();
-        }
-
-        return redirect($this->hasTwoFactor ? route('auth.login') : $this->redirectPath())
-            ->with('status', trans($response));
+        return response()->json([
+            'success' => true,
+            'redirect_to' => $this->redirectTo,
+            'send_to_login' => $this->hasTwoFactor,
+        ]);
     }
 }

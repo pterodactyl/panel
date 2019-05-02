@@ -10,6 +10,7 @@
 namespace Pterodactyl\Services\Users;
 
 use Pterodactyl\Models\User;
+use Illuminate\Support\Collection;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -62,12 +63,12 @@ class TwoFactorSetupService
      * QR code image.
      *
      * @param \Pterodactyl\Models\User $user
-     * @return string
+     * @return \Illuminate\Support\Collection
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle(User $user): string
+    public function handle(User $user): Collection
     {
         $secret = $this->google2FA->generateSecretKey($this->config->get('pterodactyl.auth.2fa.bytes'));
         $image = $this->google2FA->getQRCodeInline($this->config->get('app.name'), $user->email, $secret);
@@ -76,6 +77,9 @@ class TwoFactorSetupService
             'totp_secret' => $this->encrypter->encrypt($secret),
         ]);
 
-        return $image;
+        return new Collection([
+            'image' => $image,
+            'secret' => $secret,
+        ]);
     }
 }

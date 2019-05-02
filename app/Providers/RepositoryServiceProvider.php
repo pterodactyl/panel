@@ -3,7 +3,7 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Repositories\Daemon\FileRepository;
+use Pterodactyl\Repositories\Wings\FileRepository;
 use Pterodactyl\Repositories\Daemon\PowerRepository;
 use Pterodactyl\Repositories\Eloquent\EggRepository;
 use Pterodactyl\Repositories\Eloquent\NestRepository;

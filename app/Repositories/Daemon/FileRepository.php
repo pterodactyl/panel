@@ -84,33 +84,6 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
     {
         $response = $this->getHttpClient()->request('GET', sprintf('server/directory/%s', rawurlencode($path)));
 
-        $contents = json_decode($response->getBody());
-        $files = $folders = [];
-
-        foreach ($contents as $value) {
-            if ($value->directory) {
-                array_push($folders, [
-                    'entry' => $value->name,
-                    'directory' => trim($path, '/'),
-                    'size' => null,
-                    'date' => strtotime($value->modified),
-                    'mime' => $value->mime,
-                ]);
-            } elseif ($value->file) {
-                array_push($files, [
-                    'entry' => $value->name,
-                    'directory' => trim($path, '/'),
-                    'extension' => str_replace('\\', '/', pathinfo($value->name, PATHINFO_EXTENSION)),
-                    'size' => human_readable($value->size),
-                    'date' => strtotime($value->modified),
-                    'mime' => $value->mime,
-                ]);
-            }
-        }
-
-        return [
-            'files' => $files,
-            'folders' => $folders,
-        ];
+        return json_decode($response->getBody());
     }
 }
