@@ -42,6 +42,8 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     });
 
     Route::group(['prefix' => '/files'], function () {
+        Route::get('/list', 'Servers\FileController@listDirectory')->name('api.client.servers.files.list');
+
         Route::post('/download/{file}', 'Servers\FileController@download')
             ->where('file', '.*')
             ->name('api.client.servers.files.download');

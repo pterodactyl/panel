@@ -8,7 +8,7 @@ export type DirectoryContentObject = {
     name: string,
     created: string,
     modified: string,
-    mode: number,
+    mode: string,
     size: number,
     directory: boolean,
     file: boolean,

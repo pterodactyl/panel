@@ -6,8 +6,10 @@ use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\Cache\Repository;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DownloadFileRequest;
 
 class FileController extends ClientApiController
@@ -18,15 +20,37 @@ class FileController extends ClientApiController
     private $cache;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface
+     */
+    private $fileRepository;
+
+    /**
      * FileController constructor.
      *
-     * @param \Illuminate\Contracts\Cache\Repository $cache
+     * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $fileRepository
+     * @param \Illuminate\Contracts\Cache\Repository                           $cache
      */
-    public function __construct(Repository $cache)
+    public function __construct(FileRepositoryInterface $fileRepository, CacheRepository $cache)
     {
         parent::__construct();
 
         $this->cache = $cache;
+        $this->fileRepository = $fileRepository;
+    }
+
+    /**
+     * Returns a listing of files in a given directory.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function listDirectory(ListFilesRequest $request): JsonResponse
+    {
+        return JsonResponse::create([
+            'contents' => $this->fileRepository->setServer($request->getModel(Server::class))->getDirectory(
+                $request->get('directory') ?? '/'
+            ),
+        ]);
     }
 
     /**
