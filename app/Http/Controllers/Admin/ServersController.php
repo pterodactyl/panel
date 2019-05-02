@@ -438,7 +438,7 @@ class ServersController extends Controller
         }
 
         $this->repository->update($server->id, [
-            'installed' => (!$server->installed ? 1 : 0),
+            'installed' => ($server->installed ? 0 : 1),
         ], true, true);
 
         $this->alert->success(trans('admin/server.alerts.install_toggled'))->flash();
