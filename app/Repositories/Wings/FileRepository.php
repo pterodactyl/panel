@@ -79,8 +79,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
         return $this->getHttpClient()->post(
             sprintf('/api/servers/%s/files/create-directory', $this->getServer()->uuid),
             [
-                'name' => $name,
-                'directory' => $path,
+                'json' => [
+                    'name' => $name,
+                    'path' => $path,
+                ],
             ]
         );
     }
