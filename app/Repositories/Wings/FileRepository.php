@@ -59,8 +59,8 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
     public function getDirectory(string $path): array
     {
         $response = $this->getHttpClient()->get(
-            // Reason for the path check is because it is unnecessary on the Daemon but we need
-            // to respect the interface.
+        // Reason for the path check is because it is unnecessary on the Daemon but we need
+        // to respect the interface.
             sprintf('/api/servers/%s/files/list/%s', $this->getServer()->uuid, $path === '/' ? '' : $path)
         );
 
@@ -82,6 +82,26 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
                 'json' => [
                     'name' => $name,
                     'path' => $path,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Renames or moves a file on the remote machine.
+     *
+     * @param string $from
+     * @param string $to
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function renameFile(string $from, string $to): ResponseInterface
+    {
+        return $this->getHttpClient()->put(
+            sprintf('/api/servers/%s/files/rename', $this->getServer()->uuid),
+            [
+                'json' => [
+                    'rename_from' => $from,
+                    'rename_to' => $to,
                 ],
             ]
         );

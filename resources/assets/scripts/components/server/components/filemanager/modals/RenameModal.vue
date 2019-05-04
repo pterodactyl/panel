@@ -47,9 +47,10 @@
     import MessageBox from '@/components/MessageBox.vue';
     import {DirectoryContentObject} from "@/api/server/types";
     import {mapState} from "vuex";
-    import {renameElement} from "@/api/server/files/renameElement";
+    import {renameFile} from "@/api/server/files/renameFile";
     import {AxiosError} from 'axios';
     import {ApplicationState} from "@/store/types";
+    import {join} from "path";
 
     type DataStructure = {
         error: null | string,
@@ -109,12 +110,7 @@
                 this.error = null;
 
                 // @ts-ignore
-                renameElement(this.server.uuid, this.credentials, {
-                    // @ts-ignore
-                    path: this.fm.currentDirectory,
-                    toName: this.newName,
-                    fromName: this.object.name
-                })
+                renameFile(this.server.uuid, join(this.fm.currentDirectory, this.object.name), join(this.fm.currentDirectory, this.newName))
                     .then(() => {
                         this.$emit('renamed', this.newName);
                         this.closeModal();

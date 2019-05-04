@@ -56,4 +56,13 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function createDirectory(string $name, string $path): ResponseInterface;
+
+    /**
+     * Renames or moves a file on the remote machine.
+     *
+     * @param string $from
+     * @param string $to
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function renameFile(string $from, string $to): ResponseInterface;
 }

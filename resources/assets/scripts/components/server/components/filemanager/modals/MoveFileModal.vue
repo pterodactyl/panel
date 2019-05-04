@@ -42,7 +42,7 @@
     import Modal from "@/components/core/Modal.vue";
     import MessageBox from "@/components/MessageBox.vue";
     import {DirectoryContentObject} from "@/api/server/types";
-    import {moveElement} from '@/api/server/files/copyElement';
+    import {renameFile} from '@/api/server/files/renameFile';
     import {mapState} from "vuex";
     import {ApplicationState} from "@/store/types";
     import {join} from 'path';
@@ -106,12 +106,7 @@
                 this.isLoading = true;
 
                 // @ts-ignore
-                moveElement(this.server.uuid, this.credentials, {
-                    // @ts-ignore
-                    currentPath: join(this.fm.currentDirectory, this.file.name),
-                    // @ts-ignore
-                    newPath: join(this.fm.currentDirectory, this.moveTo),
-                })
+                renameFile(this.server.uuid, join(this.fm.currentDirectory, this.file.name), join(this.fm.currentDirectory, this.moveTo))
                     .then(() => this.$emit('moved'))
                     .catch((error: AxiosError) => {
                         this.error = `There was an error moving the requested ${(this.file.directory) ? 'folder' : 'file'}. Response was: ${error.message}`;

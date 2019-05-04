@@ -11,6 +11,7 @@ use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DownloadFileRequest;
 
@@ -67,7 +68,22 @@ class FileController extends ClientApiController
             ->setServer($request->getModel(Server::class))
             ->createDirectory($request->input('name'), $request->input('directory', '/'));
 
-        return Response::create('s');
+        return Response::create('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Renames a file on the remote machine.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function renameFile(RenameFileRequest $request): Response
+    {
+        $this->fileRepository
+            ->setServer($request->getModel(Server::class))
+            ->renameFile($request->input('rename_from'), $request->input('rename_to'));
+
+        return Response::create('', Response::HTTP_NO_CONTENT);
     }
 
     /**
