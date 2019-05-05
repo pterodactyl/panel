@@ -10,7 +10,9 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DownloadFileRequest;
@@ -82,6 +84,36 @@ class FileController extends ClientApiController
         $this->fileRepository
             ->setServer($request->getModel(Server::class))
             ->renameFile($request->input('rename_from'), $request->input('rename_to'));
+
+        return Response::create('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Copies a file on the server.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function copyFile(CopyFileRequest $request): Response
+    {
+        $this->fileRepository
+            ->setServer($request->getModel(Server::class))
+            ->copyFile($request->input('location'));
+
+        return Response::create('', Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Deletes a file or folder from the server.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(DeleteFileRequest $request): Response
+    {
+        $this->fileRepository
+            ->setServer($request->getModel(Server::class))
+            ->deleteFile($request->input('location'));
 
         return Response::create('', Response::HTTP_NO_CONTENT);
     }

@@ -26,7 +26,7 @@
     import Vue from 'vue';
     import Modal from '@/components/core/Modal.vue';
     import {DirectoryContentObject} from "@/api/server/types";
-    import {deleteElement} from '@/api/server/files/deleteElement';
+    import {deleteFile} from '@/api/server/files/deleteFile';
     import {mapState} from "vuex";
     import {AxiosError} from "axios";
     import { join } from 'path';
@@ -75,10 +75,7 @@
                 this.isLoading = true;
 
                 // @ts-ignore
-                deleteElement(this.server.uuid, this.credentials, [
-                    // @ts-ignore
-                    join(this.fm.currentDirectory, this.object.name)
-                ])
+                deleteFile(this.server.uuid, join(this.fm.currentDirectory, this.object.name))
                     .then(() => this.$emit('deleted'))
                     .catch((error: AxiosError) => {
                         this.error = `There was an error deleting the requested ${(this.object.directory) ? 'folder' : 'file'}. Response was: ${error.message}`;

@@ -10,12 +10,12 @@
     import {DirectoryContentObject} from '@/api/server/types';
     import {mapState} from "vuex";
     import {ServerState} from '@/store/types';
-    import { join } from 'path';
-    import {copyElement} from '@/api/server/files/copyElement';
+    import {join} from 'path';
+    import {copyFile} from '@/api/server/files/copyFile';
     import {AxiosError} from "axios";
 
     export default Vue.extend({
-        components: { SpinnerModal },
+        components: {SpinnerModal},
 
         computed: mapState('server', {
             server: (state: ServerState) => state.server,
@@ -24,7 +24,7 @@
         }),
 
         props: {
-            file: { type: Object as () => DirectoryContentObject, required: true },
+            file: {type: Object as () => DirectoryContentObject, required: true},
         },
 
         /**
@@ -46,7 +46,7 @@
                 }
             }
 
-            copyElement(this.server.uuid, this.credentials, {currentPath: join(this.fm.currentDirectory, this.file.name), newPath})
+            copyFile(this.server.uuid, join(this.fm.currentDirectory, this.file.name))
                 .then(() => this.$emit('close'))
                 .catch((error: AxiosError) => {
                     alert(`There was an error creating a copy of this item: ${error.message}`);

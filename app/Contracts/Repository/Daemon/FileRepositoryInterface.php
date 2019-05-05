@@ -65,4 +65,20 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
      * @return \Psr\Http\Message\ResponseInterface
      */
     public function renameFile(string $from, string $to): ResponseInterface;
+
+    /**
+     * Copy a given file and give it a unique name.
+     *
+     * @param string $location
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function copyFile(string $location): ResponseInterface;
+
+    /**
+     * Delete a file or folder for the server.
+     *
+     * @param string $location
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function deleteFile(string $location): ResponseInterface;
 }
