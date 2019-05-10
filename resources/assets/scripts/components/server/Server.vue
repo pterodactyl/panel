@@ -34,11 +34,6 @@
                                     Databases
                                 </router-link>
                             </li>
-                            <li>
-                                <router-link :to="{ name: 'server-network' }">
-                                    Networking
-                                </router-link>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -49,7 +44,7 @@
         </div>
         <div class="fixed pin-r pin-b m-6 max-w-sm" v-show="connectionError">
             <div class="alert error">
-                There was an error while attempting to connect to the Daemon websocket. Error reported was: "{{connectionError.message}}"
+                There was an error while attempting to connect to the Daemon websocket. Error: {{connectionError}}
             </div>
         </div>
     </div>

@@ -24,6 +24,21 @@ export default class SocketioConnector {
      */
     store: Store<any> | undefined;
 
+    /**
+     * Tracks a reconnect attempt for the websocket. Will gradually back off on attempts
+     * after a certain period of time has elapsed.
+     */
+    private reconnectTimeout: any;
+
+    /**
+     * Tracks the number of reconnect attempts which is used to determine the backoff
+     * throttle for connections.
+     */
+    private reconnectAttempts: number = 0;
+
+    private socketProtocol?: string;
+    private socketUrl?: string;
+
     constructor(store: Store<any> | undefined) {
         this.socket = null;
         this.store = store;
@@ -32,15 +47,23 @@ export default class SocketioConnector {
     /**
      * Initialize a new Socket connection.
      */
-    connect(url: string, protocols?: string | string[]): void {
-        this.socket = new WebSocket(url, protocols);
-        this.registerEventListeners();
+    public connect(url: string, protocol?: string): void {
+        this.socketUrl = url;
+        this.socketProtocol = protocol;
+
+        this.connectToSocket()
+            .then(socket => {
+                this.socket = socket;
+                this.emitAndPassToStore(SOCKET_CONNECT);
+                this.registerEventListeners();
+            })
+            .catch(() => this.reconnectToSocket());
     }
 
     /**
      * Return the socket instance we are working with.
      */
-    instance(): WebSocket | null {
+    public instance(): WebSocket | null {
         return this.socket;
     }
 
@@ -48,7 +71,7 @@ export default class SocketioConnector {
      * Sends an event along to the websocket. If there is no active connection, a void
      * result is returned.
      */
-    emit(event: string, payload?: string | Array<string>): void | false {
+    public emit(event: string, payload?: string | Array<string>): void | false {
         if (!this.socket) {
             return false
         }
@@ -62,23 +85,23 @@ export default class SocketioConnector {
      * Register the event listeners for this socket including user-defined ones in the store as
      * well as global system events from Socekt.io.
      */
-    registerEventListeners() {
+    protected registerEventListeners() {
         if (!this.socket) {
             return;
         }
 
-        this.socket.onopen = () => this.emitAndPassToStore(SOCKET_CONNECT);
-        this.socket.onclose = () => this.emitAndPassToStore(SOCKET_DISCONNECT);
+        this.socket.onclose = () => {
+            this.reconnectToSocket();
+            this.emitAndPassToStore(SOCKET_DISCONNECT);
+        };
+
         this.socket.onerror = () => {
-            // @todo reconnect?
-            if (this.socket && this.socket.readyState !== 1) {
+            if (this.socket && this.socket.readyState !== WebSocket.OPEN) {
                 this.emitAndPassToStore(SOCKET_ERROR, ['Failed to connect to websocket.']);
             }
         };
 
         this.socket.onmessage = (wse): void => {
-            console.log('Socket message:', wse.data);
-
             try {
                 let {event, args}: WingsWebsocketResponse = JSON.parse(wse.data);
 
@@ -92,9 +115,82 @@ export default class SocketioConnector {
     }
 
     /**
+     * Performs an actual socket connection, wrapped as a Promise for an easier interface.
+     */
+    protected connectToSocket(): Promise<WebSocket> {
+        return new Promise((resolve, reject) => {
+            let hasReturned = false;
+            const socket = new WebSocket(this.socketUrl!, this.socketProtocol);
+
+            socket.onopen = () => {
+                if (hasReturned) {
+                    socket && socket.close();
+                }
+
+                hasReturned = true;
+                this.resetConnectionAttempts();
+                resolve(socket);
+            };
+
+            const rejectFunc = () => {
+                if (!hasReturned) {
+                    hasReturned = true;
+                    this.emitAndPassToStore(SOCKET_ERROR, ['Failed to connect to websocket.']);
+                    reject();
+                }
+            };
+
+            socket.onerror = rejectFunc;
+            socket.onclose = rejectFunc;
+        });
+    }
+
+
+    /**
+     * Attempts to reconnect to the socket instance if it becomes disconnected.
+     */
+    private reconnectToSocket() {
+        const { socket } = this;
+        if (!socket) {
+            return;
+        }
+
+        // Clear the existing timeout if one exists for some reason.
+        this.reconnectTimeout && clearTimeout(this.reconnectTimeout);
+
+        this.reconnectTimeout = setTimeout(() => {
+            console.warn(`Attempting to reconnect to websocket [${this.reconnectAttempts}]...`);
+
+            this.reconnectAttempts++;
+            this.connect(this.socketUrl!, this.socketProtocol);
+        }, this.getIntervalTimeout());
+    }
+
+    private resetConnectionAttempts() {
+        this.reconnectTimeout && clearTimeout(this.reconnectTimeout);
+        this.reconnectAttempts = 0;
+    }
+
+    /**
+     * Determine the amount of time we should wait before attempting to reconnect to the socket.
+     */
+    private getIntervalTimeout(): number {
+        if (this.reconnectAttempts < 10) {
+            return 50;
+        } else if (this.reconnectAttempts < 25) {
+            return 500;
+        } else if (this.reconnectAttempts < 50) {
+            return 1000;
+        }
+
+        return 2500;
+    }
+
+
+    /**
      * Emits the event over the event emitter and also passes it along to the vuex store.
      */
-    emitAndPassToStore(event: string, payload?: Array<string>) {
+    private emitAndPassToStore(event: string, payload?: Array<string>) {
         payload ? SocketEmitter.emit(event, ...payload) : SocketEmitter.emit(event);
         this.passToStore(event, payload);
     }
@@ -102,7 +198,7 @@ export default class SocketioConnector {
     /**
      * Pass event calls off to the Vuex store if there is a corresponding function.
      */
-    passToStore(event: string, payload?: Array<string>) {
+    private passToStore(event: string, payload?: Array<string>) {
         if (!this.store) {
             return;
         }
@@ -126,7 +222,7 @@ export default class SocketioConnector {
         });
     }
 
-    unwrap(args: Array<string>) {
+    private unwrap(args: Array<string>) {
         return (args && args.length <= 1) ? args[0] : args;
     }
 }
