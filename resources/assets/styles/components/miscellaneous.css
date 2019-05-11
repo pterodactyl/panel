@@ -1,4 +1,4 @@
-code {
+code.clean {
     @apply .font-mono .px-2 .py-1;
     background-color: #eef1f6;
     color: #596981;

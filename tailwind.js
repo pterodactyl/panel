@@ -643,6 +643,15 @@ module.exports = {
     */
 
     margin: {
+        'n-12': '-3rem',
+        'n-10': '-2.5rem',
+        'n-8': '-2rem',
+        'n-6': '-1.5rem',
+        'n-4': '-1rem',
+        'n-3': '-0.75rem',
+        'n-2': '-0.5rem',
+        'n-1': '-0.25rem',
+        'n-px': '-1px',
         'auto': 'auto',
         'px': '1px',
         '0': '0',

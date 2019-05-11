@@ -2,6 +2,7 @@
     "name": "pterodactyl-panel",
     "dependencies": {
         "axios": "^0.18.0",
+        "codeflask": "^1.4.0",
         "date-fns": "^1.29.0",
         "feather-icons": "^4.10.0",
         "jquery": "^3.3.1",

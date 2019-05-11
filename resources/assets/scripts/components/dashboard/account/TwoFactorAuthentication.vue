@@ -36,7 +36,7 @@
                     </div>
                     <div>
                         <p class="text-xs text-neutral-800 mb-2">{{ $t('dashboard.account.two_factor.setup.help') }}</p>
-                        <p class="text-xs"><code>{{response.secret}}</code></p>
+                        <p class="text-xs"><code class="clean">{{response.secret}}</code></p>
                     </div>
                 </div>
                 <div class="flex-none w-full sm:w-1/2">
