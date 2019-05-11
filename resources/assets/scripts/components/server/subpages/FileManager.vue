@@ -48,10 +48,11 @@
                 <a href="#" class="block btn btn-secondary btn-sm" v-on:click.prevent="openNewFolderModal">New Folder</a>
             </div>
             <div>
-                <a href="#" class="block btn btn-primary btn-sm">New File</a>
+                <a href="#" class="block btn btn-primary btn-sm" v-on:click.prevent="openNewFileModal">New File</a>
             </div>
         </div>
         <CreateFolderModal v-on:created="directoryCreated"/>
+        <NewFileModal/>
     </div>
 </template>
 
@@ -64,6 +65,7 @@
     import CreateFolderModal from '../components/filemanager/modals/CreateFolderModal.vue';
     import DeleteFileModal from '../components/filemanager/modals/DeleteFileModal.vue';
     import {DirectoryContentObject} from "@/api/server/types";
+    import NewFileModal from "@/components/server/components/filemanager/modals/NewFileModal.vue";
 
     type DataStructure = {
         loading: boolean,
@@ -76,7 +78,7 @@
 
     export default Vue.extend({
         name: 'FileManager',
-        components: {CreateFolderModal, DeleteFileModal, FileRow},
+        components: {CreateFolderModal, DeleteFileModal, FileRow, NewFileModal},
 
         computed: {
             /**
@@ -176,6 +178,10 @@
 
             openNewFolderModal: function () {
                 window.events.$emit('server:files:open-directory-modal');
+            },
+
+            openNewFileModal: function () {
+                window.events.$emit('server:files:open-new-file-modal');
             },
 
             fileRowDeleted: function (file: DirectoryContentObject, directory: boolean) {

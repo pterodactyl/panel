@@ -27,7 +27,7 @@
             </div>
         </div>
         <div>
-            <div class="context-row">
+            <div class="context-row" v-on:click="openNewFileModal">
                 <div class="icon">
                     <Icon name="file-plus" class="h-4"/>
                 </div>
@@ -70,6 +70,11 @@
         methods: {
             openFolderModal: function () {
                 window.events.$emit('server:files:open-directory-modal');
+                this.$emit('close');
+            },
+
+            openNewFileModal: function () {
+                window.events.$emit('server:files:open-new-file-modal');
                 this.$emit('close');
             },
 
