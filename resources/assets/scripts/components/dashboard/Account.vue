@@ -2,7 +2,7 @@
     <div>
         <Navigation/>
         <div class="container animate fadein mt-2 sm:mt-6">
-            <Modal :show="modalVisible" v-on:close="modalVisible = false">
+            <Modal :isVisible="modalVisible" v-on:close="modalVisible = false">
                 <TwoFactorAuthentication v-on:close="modalVisible = false"/>
             </Modal>
             <Flash container="mt-2 sm:mt-6 mb-2"/>

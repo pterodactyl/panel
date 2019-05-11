@@ -4,9 +4,20 @@
   transition: opacity 250ms ease;
 
   & > .modal-container {
-    @apply .relative .p-8 .bg-white .w-full .max-w-md .m-auto .flex-col .flex .rounded;
+    @apply .relative .bg-white .w-full .max-w-md .m-auto .flex-col .flex .rounded .shadow-md;
     transition: all 250ms ease;
     margin-top: 15%;
+
+    & > .modal-close-icon {
+      @apply .absolute .pin-r .p-2 .text-white .cursor-pointer .opacity-50;
+      transition: opacity 150ms linear, transform 150ms ease-in;
+      top: -2.5rem;
+
+      &:hover {
+        @apply .opacity-100;
+        transform: rotate(90deg);
+      }
+    }
 
     /**
      * On tiny phone screens make sure there is a margin on the sides and also
@@ -16,6 +27,12 @@
       margin-top: auto;
       width: 90%;
     }
+  }
+
+  & > .modal-container.full-screen {
+    @apply .w-3/4 .mt-32;
+    height: calc(100vh - 16rem);
+    max-width: none;
   }
 
   & > .modal-container.w-auto {

@@ -18,7 +18,7 @@
             <div>
                 <button class="btn btn-primary btn-lg" v-on:click="showCreateModal = true">Create new database</button>
             </div>
-            <Modal :show="showCreateModal" v-on:close="showCreateModal = false">
+            <Modal :isVisible="showCreateModal" v-on:close="showCreateModal = false">
                 <CreateDatabaseModal
                         v-on:close="showCreateModal = false"
                         v-on:database="handleModalCallback"

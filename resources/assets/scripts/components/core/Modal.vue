@@ -1,13 +1,9 @@
 <template>
     <transition name="modal">
-        <div class="modal-mask" v-show="show" v-on:click="close">
-            <div class="modal-container" @click.stop>
-                <div v-on:click="close" v-if="dismissable && showCloseIcon">
-                    <Icon name="x"
-                          class="absolute pin-r pin-t m-2 text-neutral-500 cursor-pointer"
-                          aria-label="Close modal"
-                          role="button"
-                    />
+        <div class="modal-mask" v-show="isVisible" v-on:click="closeOnBackground && close()">
+            <div class="modal-container p-8" :class="{ 'full-screen': isFullScreen }" @click.stop>
+                <div class="modal-close-icon" v-on:click="close" v-if="dismissable && showCloseIcon">
+                    <Icon name="x" aria-label="Close modal" role="button"/>
                 </div>
                 <slot/>
             </div>
@@ -24,17 +20,19 @@
         components: {Icon},
 
         props: {
-            showCloseIcon: {type: Boolean, default: true},
             modalName: {type: String, default: 'modal'},
-            show: {type: Boolean, default: false},
+            isVisible: {type: Boolean, default: false},
             closeOnEsc: {type: Boolean, default: true},
             dismissable: {type: Boolean, default: true},
+            showCloseIcon: {type: Boolean, default: true},
+            isFullScreen: {type: Boolean, default: false},
+            closeOnBackground: {type: Boolean, default: true},
         },
 
         mounted: function () {
-            if (this.$props.dismissable && this.$props.closeOnEsc) {
+            if (this.$props.closeOnEsc) {
                 document.addEventListener('keydown', e => {
-                    if (this.show && e.key === 'Escape') {
+                    if (this.isVisible && e.key === 'Escape') {
                         this.close();
                     }
                 })
@@ -43,9 +41,11 @@
 
         methods: {
             close: function () {
-                if (this.$props.dismissable) {
-                    this.$emit('close', this.$props.modalName);
+                if (!this.$props.dismissable) {
+                    return;
                 }
+
+                this.$emit('close', this.$props.modalName);
             }
         },
     });

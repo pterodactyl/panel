@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="visible" v-on:close="onModalClose" :showCloseIcon="false" :dismissable="!isLoading">
+    <Modal :isVisible="visible" v-on:close="onModalClose" :showCloseIcon="false" :dismissable="!isLoading">
         <div>
             <label class="input-label">
                 Directory Name

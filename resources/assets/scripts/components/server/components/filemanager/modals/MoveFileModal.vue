@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="visible" v-on:close="isVisible = false" :dismissable="!isLoading">
+    <Modal :isVisible="visible" v-on:close="isVisible = false" :dismissable="!isLoading">
         <MessageBox class="alert error mb-8" title="Error" :message="error" v-if="error"/>
         <div class="flex items-end">
             <div class="flex-1">
