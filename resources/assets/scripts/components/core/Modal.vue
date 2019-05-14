@@ -5,7 +5,9 @@
                 <div class="modal-close-icon" v-on:click="close" v-if="dismissable && showCloseIcon">
                     <Icon name="x" aria-label="Close modal" role="button"/>
                 </div>
-                <slot/>
+                <div class="modal-content">
+                    <slot/>
+                </div>
             </div>
         </div>
     </transition>

@@ -4,9 +4,7 @@
   transition: opacity 250ms ease;
 
   & > .modal-container {
-    @apply .relative .bg-white .w-full .max-w-md .m-auto .flex-col .flex .rounded .shadow-md;
-    transition: all 250ms ease;
-    margin-top: 15%;
+    @apply .relative .w-full .max-w-md .m-auto .flex-col .flex;
 
     & > .modal-close-icon {
       @apply .absolute .pin-r .p-2 .text-white .cursor-pointer .opacity-50;
@@ -17,6 +15,12 @@
         @apply .opacity-100;
         transform: rotate(90deg);
       }
+    }
+
+    & > .modal-content {
+      @apply .bg-white .rounded .shadow-md;
+      transition: all 250ms ease;
+      margin-top: 15%;
     }
 
     /**
