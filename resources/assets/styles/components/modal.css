@@ -6,6 +6,10 @@
   & > .modal-container {
     @apply .relative .w-full .max-w-md .m-auto .flex-col .flex;
 
+    &.top {
+      margin-top: 15%;
+    }
+
     & > .modal-close-icon {
       @apply .absolute .pin-r .p-2 .text-white .cursor-pointer .opacity-50;
       transition: opacity 150ms linear, transform 150ms ease-in;
@@ -20,7 +24,6 @@
     & > .modal-content {
       @apply .bg-white .rounded .shadow-md;
       transition: all 250ms ease;
-      margin-top: 15%;
     }
 
     /**
@@ -28,8 +31,10 @@
      * center the modal rather than putting it towards the top of the screen.
      */
     @screen smx {
-      margin-top: auto;
       width: 90%;
+      .top {
+        margin-top: auto;
+      }
     }
   }
 

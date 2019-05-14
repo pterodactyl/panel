@@ -1,11 +1,11 @@
 <template>
     <transition name="modal">
         <div class="modal-mask" v-show="isVisible" v-on:click="closeOnBackground && close()">
-            <div class="modal-container p-8" :class="{ 'full-screen': isFullScreen }" @click.stop>
+            <div class="modal-container top" :class="{ 'full-screen': isFullScreen }" @click.stop>
                 <div class="modal-close-icon" v-on:click="close" v-if="dismissable && showCloseIcon">
                     <Icon name="x" aria-label="Close modal" role="button"/>
                 </div>
-                <div class="modal-content">
+                <div class="modal-content p-8">
                     <slot/>
                 </div>
             </div>
