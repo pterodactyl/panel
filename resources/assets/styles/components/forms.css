@@ -65,6 +65,26 @@ input[type=number] {
     }
 }
 
+select:not(.appearance-none) {
+    @apply .outline-none .appearance-none .block .bg-white .border .border-neutral-200 .text-neutral-400 .p-3 .pr-8 rounded;
+    transition: border-color 150ms linear, color 150ms linear;
+
+    &:hover:not(:disabled), &:focus {
+        @apply .outline-none .border-primary-500 .text-neutral-700;
+    }
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    &::-ms-expand {
+        display: none;
+    }
+
+    background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ") no-repeat center center;
+    background-size: 1rem;
+    background-position-x: calc(100% - 0.75rem);
+}
+
 .input-label {
     @apply .block .uppercase .tracking-wide .text-neutral-800 .text-xs .font-bold .mb-2;
 }
