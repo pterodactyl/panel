@@ -2,7 +2,7 @@
     "name": "pterodactyl-panel",
     "dependencies": {
         "axios": "^0.18.0",
-        "codeflask": "^1.4.0",
+        "brace": "^0.11.1",
         "date-fns": "^1.29.0",
         "feather-icons": "^4.10.0",
         "jquery": "^3.3.1",
@@ -23,6 +23,7 @@
         "@babel/core": "^7.2.2",
         "@babel/plugin-proposal-class-properties": "^7.3.0",
         "@babel/plugin-proposal-object-rest-spread": "^7.3.1",
+        "@babel/plugin-syntax-dynamic-import": "^7.2.0",
         "@babel/preset-env": "^7.3.1",
         "@types/feather-icons": "^4.7.0",
         "@types/lodash": "^4.14.119",
