@@ -20,12 +20,11 @@ interface FileRepositoryInterface extends BaseRepositoryInterface
     /**
      * Return the contents of a given file if it can be edited in the Panel.
      *
-     * @param string $path
+     * @param string   $path
+     * @param int|null $notLargerThan
      * @return string
-     *
-     * @throws \GuzzleHttp\Exception\TransferException
      */
-    public function getContent(string $path): string;
+    public function getContent(string $path, int $notLargerThan = null): string;
 
     /**
      * Save new contents to a given file.

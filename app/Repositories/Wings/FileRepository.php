@@ -3,7 +3,9 @@
 namespace Pterodactyl\Repositories\Wings;
 
 use stdClass;
+use Exception;
 use Psr\Http\Message\ResponseInterface;
+use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 
 class FileRepository extends BaseWingsRepository implements FileRepositoryInterface
@@ -14,28 +16,47 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      * @param string $path
      * @return \stdClass
      *
+     * @throws \Exception
      * @throws \GuzzleHttp\Exception\TransferException
      */
     public function getFileStat(string $path): stdClass
     {
-        // TODO: Implement getFileStat() method.
+        throw new Exception('Function not implemented.');
     }
 
     /**
-     * Return the contents of a given file if it can be edited in the Panel.
+     * Return the contents of a given file.
      *
-     * @param string $path
+     * @param string   $path
+     * @param int|null $notLargerThan the maximum content length in bytes
      * @return string
      *
      * @throws \GuzzleHttp\Exception\TransferException
+     * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
      */
-    public function getContent(string $path): string
+    public function getContent(string $path, int $notLargerThan = null): string
     {
-        // TODO: Implement getContent() method.
+        $response = $this->getHttpClient()->get(
+            sprintf('/api/servers/%s/files/contents', $this->getServer()->uuid),
+            [
+                'query' => ['file' => $path],
+            ]
+        );
+
+        $length = (int) $response->getHeader('Content-Length')[0] ?? 0;
+
+        if ($notLargerThan && $length > $notLargerThan) {
+            throw new FileSizeTooLargeException(
+                trans('server.files.exceptions.max_size')
+            );
+        }
+
+        return $response->getBody()->__toString();
     }
 
     /**
-     * Save new contents to a given file.
+     * Save new contents to a given file. This works for both creating and updating
+     * a file.
      *
      * @param string $path
      * @param string $content
@@ -45,7 +66,13 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      */
     public function putContent(string $path, string $content): ResponseInterface
     {
-        // TODO: Implement putContent() method.
+        return $this->getHttpClient()->post(
+            sprintf('/api/servers/%s/files/write', $this->getServer()->uuid),
+            [
+                'query' => ['file' => $path],
+                'body' => $content,
+            ]
+        );
     }
 
     /**
@@ -59,9 +86,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
     public function getDirectory(string $path): array
     {
         $response = $this->getHttpClient()->get(
-        // Reason for the path check is because it is unnecessary on the Daemon but we need
-        // to respect the interface.
-            sprintf('/api/servers/%s/files/list/%s', $this->getServer()->uuid, $path === '/' ? '' : $path)
+            sprintf('/api/servers/%s/files/list-directory', $this->getServer()->uuid),
+            [
+                'query' => ['directory' => $path],
+            ]
         );
 
         return json_decode($response->getBody(), true);

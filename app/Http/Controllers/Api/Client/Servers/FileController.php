@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
@@ -16,6 +17,7 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DownloadFileRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest;
 
 class FileController extends ClientApiController
 {
@@ -25,6 +27,11 @@ class FileController extends ClientApiController
     private $cache;
 
     /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    private $config;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface
      */
     private $fileRepository;
@@ -32,14 +39,16 @@ class FileController extends ClientApiController
     /**
      * FileController constructor.
      *
+     * @param \Illuminate\Contracts\Config\Repository                          $config
      * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $fileRepository
      * @param \Illuminate\Contracts\Cache\Repository                           $cache
      */
-    public function __construct(FileRepositoryInterface $fileRepository, CacheRepository $cache)
+    public function __construct(ConfigRepository $config, FileRepositoryInterface $fileRepository, CacheRepository $cache)
     {
         parent::__construct();
 
         $this->cache = $cache;
+        $this->config = $config;
         $this->fileRepository = $fileRepository;
     }
 
@@ -55,7 +64,23 @@ class FileController extends ClientApiController
             'contents' => $this->fileRepository->setServer($request->getModel(Server::class))->getDirectory(
                 $request->get('directory') ?? '/'
             ),
+            'editable' => $this->config->get('pterodactyl.files.editable', []),
         ]);
+    }
+
+    /**
+     * Return the contents of a specified file for the user.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getFileContents(GetFileContentsRequest $request): Response
+    {
+        return Response::create(
+            $this->fileRepository->setServer($request->getModel(Server::class))->getContent(
+                $request->get('file'), $this->config->get('pterodactyl.files.max_edit_size')
+            )
+        );
     }
 
     /**

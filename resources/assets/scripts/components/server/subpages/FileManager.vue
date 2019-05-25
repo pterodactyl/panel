@@ -52,7 +52,7 @@
             </div>
         </div>
         <CreateFolderModal v-on:created="directoryCreated"/>
-        <NewFileModal/>
+        <EditFileModal/>
     </div>
 </template>
 
@@ -65,7 +65,7 @@
     import CreateFolderModal from '../components/filemanager/modals/CreateFolderModal.vue';
     import DeleteFileModal from '../components/filemanager/modals/DeleteFileModal.vue';
     import {DirectoryContentObject} from "@/api/server/types";
-    import NewFileModal from "@/components/server/components/filemanager/modals/NewFileModal.vue";
+    import EditFileModal from "@/components/server/components/filemanager/modals/EditFileModal.vue";
 
     type DataStructure = {
         loading: boolean,
@@ -78,7 +78,7 @@
 
     export default Vue.extend({
         name: 'FileManager',
-        components: {CreateFolderModal, DeleteFileModal, FileRow, NewFileModal},
+        components: {CreateFolderModal, DeleteFileModal, FileRow, EditFileModal},
 
         computed: {
             /**
@@ -181,7 +181,7 @@
             },
 
             openNewFileModal: function () {
-                window.events.$emit('server:files:open-new-file-modal');
+                window.events.$emit('server:files:open-edit-file-modal');
             },
 
             fileRowDeleted: function (file: DirectoryContentObject, directory: boolean) {

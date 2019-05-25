@@ -74,7 +74,7 @@
             },
 
             openNewFileModal: function () {
-                window.events.$emit('server:files:open-new-file-modal');
+                window.events.$emit('server:files:open-edit-file-modal');
                 this.$emit('close');
             },
 

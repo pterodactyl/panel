@@ -1,7 +1,12 @@
 <template>
     <div>
         <div v-on:contextmenu="showContextMenu">
-            <div class="row" :class="{ 'cursor-pointer': canEdit(file), 'active-selection': contextMenuVisible }" v-if="!file.directory">
+            <div
+                class="row"
+                :class="{ 'cursor-pointer': canEdit(file), 'active-selection': contextMenuVisible }"
+                v-if="!file.directory"
+                v-on:click="openFileEditModal(file)"
+            >
                 <div class="flex-none icon">
                     <Icon name="file-text" v-if="!file.symlink"/>
                     <Icon name="link2" v-else/>
@@ -140,6 +145,12 @@
 
                     (this.$refs.contextMenu as VueType).$el.setAttribute('style', `left: ${positionElement}px; top: ${e.layerY}px`);
                 });
+            },
+
+            openFileEditModal: function (file: DirectoryContentObject) {
+                if (!file.directory && this.canEdit(file)) {
+                    window.events.$emit('server:files:open-edit-file-modal', file);
+                }
             },
 
             /**

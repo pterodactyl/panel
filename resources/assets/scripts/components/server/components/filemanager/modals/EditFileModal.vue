@@ -29,11 +29,17 @@
     import Vue from 'vue';
     import Icon from "@/components/core/Icon.vue";
     import MessageBox from "@/components/MessageBox.vue";
-    import {ApplicationState} from '@/store/types';
+    import {ApplicationState, FileManagerState} from '@/store/types';
     import {mapState} from "vuex";
     import * as Ace from 'brace';
+    import { join } from 'path';
+    import {DirectoryContentObject} from "@/api/server/types";
+    import getFileContents from '@/api/server/files/getFileContents';
 
     interface Data {
+        file?: DirectoryContentObject,
+        serverUuid?: string,
+        fm?: FileManagerState,
         error: string | null,
         editor: Ace.Editor | null,
         isVisible: boolean,
@@ -77,17 +83,20 @@
 
         computed: mapState({
             fm: (state: ApplicationState) => state.server.fm,
+            serverUuid: (state: ApplicationState) => state.server.server.uuid,
         }),
 
         mounted: function () {
-            window.events.$on('server:files:open-new-file-modal', () => {
+            window.events.$on('server:files:open-edit-file-modal', (file?: DirectoryContentObject) => {
+                this.file = file;
                 this.isVisible = true;
 
                 this.$nextTick(() => {
                     this.editor = Ace.edit('editor');
                     this.loadDependencies()
                         .then(() => this.loadLanguages())
-                        .then(() => this.configureEditor());
+                        .then(() => this.configureEditor())
+                        .then(() => this.loadFileContent())
                 });
             });
         },
@@ -95,6 +104,18 @@
         methods: {
             submit: function () {
 
+            },
+
+            loadFileContent: function () {
+                if (!this.file || !this.editor || this.file.directory) {
+                    return;
+                }
+
+                getFileContents(this.serverUuid!, join(this.fm!.currentDirectory, this.file.name))
+                    .then(contents => {
+                        this.editor!.$blockScrolling = Infinity;
+                        this.editor!.setValue(contents, 1);
+                    });
             },
 
             updateFileLanguage: function (e: MouseEvent) {
@@ -154,6 +175,14 @@
 <style>
     #editor {
         @apply .h-full .relative;
+
+        & > .ace_gutter > .ace_layer, & > .ace_scroller {
+            @apply .py-1;
+        }
+
+        & .ace_gutter-active-line {
+            @apply .mt-1;
+        }
     }
 
     .ace_editor {
