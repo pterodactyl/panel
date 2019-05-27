@@ -14,7 +14,7 @@
                 <div class="flex-1">{{file.name}}</div>
                 <div class="flex-1 text-right text-neutral-600">{{readableSize(file.size)}}</div>
                 <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
-                <div class="flex-none icon cursor-pointer" v-on:click="showContextMenu" ref="menuTriggerIcon">
+                <div class="flex-none icon cursor-pointer" v-on:click="showContextMenu" ref="menuTriggerIcon" @click.stop>
                     <Icon name="more-vertical" class="text-neutral-500"/>
                 </div>
             </div>
