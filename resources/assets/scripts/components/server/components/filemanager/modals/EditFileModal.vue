@@ -19,7 +19,7 @@
                     <button class="btn btn-secondary btn-sm" v-on:click="closeModal">
                         Cancel
                     </button>
-                    <button class="ml-2 btn btn-primary btn-sm">
+                    <button class="ml-2 btn btn-primary btn-sm" v-on:click="submit">
                         Save
                     </button>
                 </div>
@@ -39,6 +39,8 @@
     import {DirectoryContentObject} from "@/api/server/types";
     import getFileContents from '@/api/server/files/getFileContents';
     import SpinnerModal from "@/components/core/SpinnerModal.vue";
+    import writeFileContents from '@/api/server/files/writeFileContents';
+    import {httpErrorToHuman} from '@/api/http';
 
     interface Data {
         file?: DirectoryContentObject,
@@ -120,7 +122,16 @@
 
         methods: {
             submit: function () {
+                this.isLoading = true;
+                const content = this.editor!.getValue();
 
+                writeFileContents(this.serverUuid!, join(this.fm!.currentDirectory, this.file!.name), content)
+                    .then(() => this.error = null)
+                    .catch(error => {
+                        console.log(error);
+                        this.error = httpErrorToHuman(error);
+                    })
+                    .then(() => this.isLoading = false);
             },
 
             loadFileContent: function (): Promise<void> {

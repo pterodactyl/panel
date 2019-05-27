@@ -18,6 +18,7 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DownloadFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 
 class FileController extends ClientApiController
 {
@@ -81,6 +82,22 @@ class FileController extends ClientApiController
                 $request->get('file'), $this->config->get('pterodactyl.files.max_edit_size')
             )
         );
+    }
+
+    /**
+     * Writes the contents of the specified file to the server.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function writeFileContents(WriteFileContentRequest $request): Response
+    {
+        $this->fileRepository->setServer($request->getModel(Server::class))->putContent(
+            $request->get('file'),
+            $request->getContent()
+        );
+
+        return Response::create('', Response::HTTP_NO_CONTENT);
     }
 
     /**
