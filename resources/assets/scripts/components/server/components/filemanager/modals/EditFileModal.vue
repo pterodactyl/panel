@@ -2,18 +2,21 @@
     <transition name="modal">
         <div class="modal-mask" v-show="isVisible">
             <div class="modal-container full-screen" @click.stop>
-                <div class="modal-close-icon" v-on:click="isVisible = false">
+                <SpinnerModal :visible="isVisible && isLoading"/>
+                <div class="modal-close-icon" v-on:click="closeModal">
                     <Icon name="x" aria-label="Close modal" role="button"/>
                 </div>
-                <MessageBox class="alert error mb-8" title="Error" :message="error" v-if="error"/>
+                <MessageBox class="alert error mb-2" title="Error" :message="error" v-if="error"/>
                 <div id="editor"></div>
                 <div class="flex mt-4 bg-white rounded p-2">
                     <div class="flex-1">
-                        <select v-on:change="updateFileLanguage">
-                            <option v-for="item in supportedTypes" :value="item.type">{{ item.name }}</option>
+                        <select v-on:change="updateFileLanguage" ref="fileLanguageSelector">
+                            <option v-for="item in supportedTypes" :value="item.type">
+                                {{ item.name }}
+                            </option>
                         </select>
                     </div>
-                    <button class="btn btn-secondary btn-sm" v-on:click="isVisible = false">
+                    <button class="btn btn-secondary btn-sm" v-on:click="closeModal">
                         Cancel
                     </button>
                     <button class="ml-2 btn btn-primary btn-sm">
@@ -35,6 +38,7 @@
     import { join } from 'path';
     import {DirectoryContentObject} from "@/api/server/types";
     import getFileContents from '@/api/server/files/getFileContents';
+    import SpinnerModal from "@/components/core/SpinnerModal.vue";
 
     interface Data {
         file?: DirectoryContentObject,
@@ -44,21 +48,26 @@
         editor: Ace.Editor | null,
         isVisible: boolean,
         isLoading: boolean,
-        supportedTypes: {type: string, name: string}[],
+        supportedTypes: {type: string, name: string, default?: boolean}[],
     }
+
+    const defaults = {
+        error: null,
+        editor: null,
+        isVisible: false,
+        isLoading: true,
+    };
 
     export default Vue.extend({
         name: 'NewFileModal',
 
-        components: {Icon, MessageBox},
+        components: {Icon, SpinnerModal, MessageBox},
 
         data: function (): Data {
             return {
-                error: null,
-                editor: null,
-                isVisible: false,
-                isLoading: false,
+                ...defaults,
                 supportedTypes: [
+                    {type: 'text', name: 'Text'},
                     {type: 'dockerfile', name: 'Docker'},
                     {type: 'golang', name: 'Go'},
                     {type: 'html', name: 'HTML'},
@@ -68,7 +77,6 @@
                     {type: 'kotlin', name: 'Kotlin'},
                     {type: 'lua', name: 'Lua'},
                     {type: 'markdown', name: 'Markdown'},
-                    {type: 'plain_text', name: 'Text'},
                     {type: 'php', name: 'PHP'},
                     {type: 'properties', name: 'Properties'},
                     {type: 'python', name: 'Python'},
@@ -90,6 +98,7 @@
             window.events.$on('server:files:open-edit-file-modal', (file?: DirectoryContentObject) => {
                 this.file = file;
                 this.isVisible = true;
+                this.isLoading = true;
 
                 this.$nextTick(() => {
                     this.editor = Ace.edit('editor');
@@ -97,6 +106,14 @@
                         .then(() => this.loadLanguages())
                         .then(() => this.configureEditor())
                         .then(() => this.loadFileContent())
+                        .then(() => {
+                            this.isLoading = false;
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            this.isLoading = false;
+                            this.error = error.message;
+                        });
                 });
             });
         },
@@ -106,16 +123,40 @@
 
             },
 
-            loadFileContent: function () {
-                if (!this.file || !this.editor || this.file.directory) {
-                    return;
-                }
+            loadFileContent: function (): Promise<void> {
+                return new Promise((resolve, reject) => {
+                    const { editor, file } = this;
 
-                getFileContents(this.serverUuid!, join(this.fm!.currentDirectory, this.file.name))
-                    .then(contents => {
-                        this.editor!.$blockScrolling = Infinity;
-                        this.editor!.setValue(contents, 1);
-                    });
+                    if (!file || !editor || file.directory) {
+                        return resolve();
+                    }
+
+                    getFileContents(this.serverUuid!, join(this.fm!.currentDirectory, file.name))
+                        .then(contents => {
+                            editor.$blockScrolling = Infinity;
+                            editor.setValue(contents, 1);
+                        })
+                        .then(() => {
+                            // Set the correct MIME type on the editor for the user.
+                            const modelist = Ace.acequire('ace/ext/modelist');
+                            if (modelist) {
+                                const mode = modelist.getModeForPath(file.name).mode || 'ace/mode/text';
+                                editor.getSession().setMode(mode);
+
+                                const parts = mode.split('/');
+                                const element = (this.$refs.fileLanguageSelector as HTMLSelectElement | null);
+
+                                if (element) {
+                                    const index = this.supportedTypes.findIndex(value => value.type === parts[parts.length - 1]);
+                                    if (index >= 0) {
+                                        element.selectedIndex = index;
+                                    }
+                                }
+                            }
+                        })
+                        .then(() => resolve())
+                        .catch(reject);
+                });
             },
 
             updateFileLanguage: function (e: MouseEvent) {
@@ -131,7 +172,7 @@
                     this.supportedTypes.map(o => import(
                         /* webpackChunkName: "ace_editor" */
                         /* webpackMode: "lazy-once" */
-                        /* webpackInclude: /(dockerfile|golang|html|java|javascript|json|kotlin|lua|markdown|plain_text|php|properties|python|ruby|sh|sql|xml|yaml).js$/ */
+                        /* webpackInclude: /(dockerfile|golang|html|java|javascript|json|kotlin|lua|markdown|text|php|properties|python|ruby|sh|sql|xml|yaml).js$/ */
                         `brace/mode/${o.type}`
                     ))
                 );
@@ -153,7 +194,6 @@
                     return;
                 }
 
-                // const modelist = Ace.acequire('brace/ext/whitespace');
                 const whitespace = Ace.acequire('ace/ext/whitespace');
 
                 this.editor.setTheme('ace/theme/chrome');
@@ -167,7 +207,15 @@
                     this.editor!.commands.addCommand(c);
                 });
                 whitespace.detectIndentation(this.editor.session);
-            }
+            },
+
+            closeModal: function () {
+                if (this.editor) {
+                    this.editor.setValue('', -1);
+                }
+
+                Object.assign(this.$data, defaults);
+            },
         }
     })
 </script>
