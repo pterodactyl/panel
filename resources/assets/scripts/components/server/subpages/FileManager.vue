@@ -52,7 +52,7 @@
             </div>
         </div>
         <CreateFolderModal v-on:created="directoryCreated"/>
-        <EditFileModal/>
+        <EditFileModal v-on:refresh="listDirectory"/>
     </div>
 </template>
 

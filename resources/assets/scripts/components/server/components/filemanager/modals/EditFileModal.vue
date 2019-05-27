@@ -6,7 +6,24 @@
                 <div class="modal-close-icon" v-on:click="closeModal">
                     <Icon name="x" aria-label="Close modal" role="button"/>
                 </div>
-                <MessageBox class="alert error mb-2" title="Error" :message="error" v-if="error"/>
+                <MessageBox class="alert error mb-4" title="Error" :message="error" v-if="error"/>
+                <div class="flex items-center mb-4 bg-white rounded p-2">
+                        <div class="mx-2">
+                            <label class="input-label mb-0" for="file-name-input">File name:</label>
+                        </div>
+                    <div class="flex-1">
+                        <input
+                            type="text"
+                            name="file_name"
+                            class="input"
+                            id="file-name-input"
+                            :disabled="typeof file !== 'undefined'"
+                            v-model="fileName"
+                            v-validate="'required'"
+                        />
+                        <p class="input-help error" v-show="errors.has('file_name')">{{ errors.first('file_name') }}</p>
+                    </div>
+                </div>
                 <div id="editor"></div>
                 <div class="flex mt-4 bg-white rounded p-2">
                     <div class="flex-1">
@@ -35,7 +52,7 @@
     import {ApplicationState, FileManagerState} from '@/store/types';
     import {mapState} from "vuex";
     import * as Ace from 'brace';
-    import { join } from 'path';
+    import {join} from 'path';
     import {DirectoryContentObject} from "@/api/server/types";
     import getFileContents from '@/api/server/files/getFileContents';
     import SpinnerModal from "@/components/core/SpinnerModal.vue";
@@ -46,11 +63,12 @@
         file?: DirectoryContentObject,
         serverUuid?: string,
         fm?: FileManagerState,
+        fileName?: string,
         error: string | null,
         editor: Ace.Editor | null,
         isVisible: boolean,
         isLoading: boolean,
-        supportedTypes: {type: string, name: string, default?: boolean}[],
+        supportedTypes: { type: string, name: string, default?: boolean }[],
     }
 
     const defaults = {
@@ -58,6 +76,8 @@
         editor: null,
         isVisible: false,
         isLoading: true,
+        file: undefined,
+        fileName: undefined,
     };
 
     export default Vue.extend({
@@ -101,6 +121,8 @@
                 this.file = file;
                 this.isVisible = true;
                 this.isLoading = true;
+                this.fileName = file ? file.name : undefined;
+                this.errors.clear();
 
                 this.$nextTick(() => {
                     this.editor = Ace.edit('editor');
@@ -120,13 +142,36 @@
             });
         },
 
+        watch: {
+            fileName: function (newValue?: string, oldValue?: string) {
+                if (newValue === oldValue || !newValue) {
+                    return;
+                }
+
+                this.updateFileLanguageFromName(newValue);
+            },
+        },
+
         methods: {
             submit: function () {
+                if (!this.file && (!this.fileName || this.fileName.length === 0)) {
+                    this.error = 'You must provide a file name before saving.';
+                    return;
+                }
+
                 this.isLoading = true;
                 const content = this.editor!.getValue();
 
-                writeFileContents(this.serverUuid!, join(this.fm!.currentDirectory, this.file!.name), content)
-                    .then(() => this.error = null)
+                writeFileContents(this.serverUuid!, join(this.fm!.currentDirectory, this.fileName!), content)
+                    .then(() => {
+                        this.error = null;
+
+                        // @todo come up with a more graceful solution here
+                        if (!this.file) {
+                            this.$emit('refresh');
+                            this.closeModal();
+                        }
+                    })
                     .catch(error => {
                         console.log(error);
                         this.error = httpErrorToHuman(error);
@@ -136,7 +181,7 @@
 
             loadFileContent: function (): Promise<void> {
                 return new Promise((resolve, reject) => {
-                    const { editor, file } = this;
+                    const {editor, file} = this;
 
                     if (!file || !editor || file.directory) {
                         return resolve();
@@ -147,27 +192,30 @@
                             editor.$blockScrolling = Infinity;
                             editor.setValue(contents, 1);
                         })
-                        .then(() => {
-                            // Set the correct MIME type on the editor for the user.
-                            const modelist = Ace.acequire('ace/ext/modelist');
-                            if (modelist) {
-                                const mode = modelist.getModeForPath(file.name).mode || 'ace/mode/text';
-                                editor.getSession().setMode(mode);
-
-                                const parts = mode.split('/');
-                                const element = (this.$refs.fileLanguageSelector as HTMLSelectElement | null);
-
-                                if (element) {
-                                    const index = this.supportedTypes.findIndex(value => value.type === parts[parts.length - 1]);
-                                    if (index >= 0) {
-                                        element.selectedIndex = index;
-                                    }
-                                }
-                            }
-                        })
+                        .then(() => this.updateFileLanguageFromName(file.name))
                         .then(() => resolve())
                         .catch(reject);
                 });
+            },
+
+            updateFileLanguageFromName: function (name: string) {
+                const modelist = Ace.acequire('ace/ext/modelist');
+                if (!modelist || !this.editor) {
+                    return;
+                }
+
+                const mode = modelist.getModeForPath(name).mode || 'ace/mode/text';
+
+                const parts = mode.split('/');
+                const element = (this.$refs.fileLanguageSelector as HTMLSelectElement | null);
+
+                if (element) {
+                    const index = this.supportedTypes.findIndex(value => value.type === parts[parts.length - 1]);
+                    if (index >= 0) {
+                        element.selectedIndex = index;
+                        this.editor.getSession().setMode(mode);
+                    }
+                }
             },
 
             updateFileLanguage: function (e: MouseEvent) {
@@ -185,7 +233,7 @@
                         /* webpackMode: "lazy-once" */
                         /* webpackInclude: /(dockerfile|golang|html|java|javascript|json|kotlin|lua|markdown|text|php|properties|python|ruby|sh|sql|xml|yaml).js$/ */
                         `brace/mode/${o.type}`
-                    ))
+                        ))
                 );
             },
 

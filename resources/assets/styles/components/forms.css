@@ -65,6 +65,10 @@ input[type=number] {
     }
 }
 
+.input:disabled {
+    @apply .bg-neutral-100 .border-neutral-200;
+}
+
 select:not(.appearance-none) {
     @apply .outline-none .appearance-none .block .bg-white .border .border-neutral-200 .text-neutral-400 .p-3 .pr-8 rounded;
     transition: border-color 150ms linear, color 150ms linear;
@@ -86,7 +90,11 @@ select:not(.appearance-none) {
 }
 
 .input-label {
-    @apply .block .uppercase .tracking-wide .text-neutral-800 .text-xs .font-bold .mb-2;
+    @apply .block .uppercase .tracking-wide .text-neutral-800 .text-xs .font-bold;
+
+    &:not(.mb-0) {
+        @apply .mb-2;
+    }
 }
 
 .input-help {
