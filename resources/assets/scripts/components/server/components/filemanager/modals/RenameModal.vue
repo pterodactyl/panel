@@ -1,5 +1,5 @@
 <template>
-    <Modal :isVisible="isVisible" v-on:close="closeModal" :showCloseIcon="false" :dismissable="!isLoading">
+    <Modal :isVisible="isVisible" v-on:close="closeModal" :isVisibleCloseIcon="false" :dismissable="!isLoading">
         <MessageBox
                 class="alert error mb-8"
                 title="Error"

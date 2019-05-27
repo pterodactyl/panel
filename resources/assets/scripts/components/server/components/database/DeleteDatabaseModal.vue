@@ -1,26 +1,22 @@
 <template>
-    <Modal v-on:close="closeModal" :show="show" :dismissable="!showSpinner">
-        <transition name="modal">
-            <div>
-                <h2 class="font-medium text-neutral-900 mb-6">Delete this database?</h2>
-                <p class="text-neutral-900 text-sm">This action
-                    <strong>cannot</strong> be undone. This will permanetly delete the
-                    <strong>{{database.name}}</strong> database and remove all associated data.</p>
-                <div class="mt-6">
-                    <label class="input-label">Confirm database name</label>
-                    <input type="text" class="input" v-model="nameConfirmation"/>
-                </div>
-                <div class="mt-6 text-right">
-                    <button class="btn btn-sm btn-secondary mr-2" v-on:click="closeModal">Cancel</button>
-                    <button class="btn btn-sm btn-red" :disabled="disabled" v-on:click="deleteDatabase">
-                        <span class="spinner white" v-bind:class="{ hidden: !showSpinner }">&nbsp;</span>
-                        <span :class="{ hidden: showSpinner }">
-                            Confirm Deletion
-                        </span>
-                    </button>
-                </div>
-            </div>
-        </transition>
+    <Modal v-on:close="closeModal" :isVisible="isVisible" :dismissable="!showSpinner">
+        <h2 class="font-medium text-neutral-900 mb-6">Delete this database?</h2>
+        <p class="text-neutral-900 text-sm">This action
+            <strong>cannot</strong> be undone. This will permanetly delete the
+            <strong>{{database.name}}</strong> database and remove all associated data.</p>
+        <div class="mt-6">
+            <label class="input-label">Confirm database name</label>
+            <input type="text" class="input" v-model="nameConfirmation"/>
+        </div>
+        <div class="mt-6 text-right">
+            <button class="btn btn-sm btn-secondary mr-2" v-on:click="closeModal">Cancel</button>
+            <button class="btn btn-sm btn-red" :disabled="disabled" v-on:click="deleteDatabase">
+                <span class="spinner white" v-bind:class="{ hidden: !showSpinner }">&nbsp;</span>
+                <span :class="{ hidden: showSpinner }">
+                    Confirm Deletion
+                </span>
+            </button>
+        </div>
     </Modal>
 </template>
 
@@ -33,14 +29,8 @@
         name: 'DeleteDatabaseModal',
         components: {Modal},
         props: {
-            show: {
-                type: Boolean,
-                default: false,
-            },
-            database: {
-                type: Object as () => ServerDatabase,
-                required: true
-            },
+            isVisible: {type: Boolean, default: false },
+            database: { type: Object as () => ServerDatabase, required: true },
         },
 
         data: function () {

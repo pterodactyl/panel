@@ -32,9 +32,9 @@
             </div>
         </div>
         <DeleteDatabaseModal
-                :database="database"
-                :show="showDeleteModal"
-                v-on:close="showDeleteModal = false"
+            :database="database"
+            :isVisible="showDeleteModal"
+            v-on:close="showDeleteModal = false"
         />
     </div>
 </template>

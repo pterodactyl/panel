@@ -18,13 +18,11 @@
             <div>
                 <button class="btn btn-primary btn-lg" v-on:click="showCreateModal = true">Create new database</button>
             </div>
-            <Modal :isVisible="showCreateModal" v-on:close="showCreateModal = false">
-                <CreateDatabaseModal
-                        v-on:close="showCreateModal = false"
-                        v-on:database="handleModalCallback"
-                        v-if="showCreateModal"
-                />
-            </modal>
+            <CreateDatabaseModal
+                :isVisible="showCreateModal"
+                v-on:database="handleModalCallback"
+                v-on:close="showCreateModal = false"
+            />
         </div>
     </div>
 </template>
@@ -32,7 +30,6 @@
 <script lang="ts">
     import Vue from 'vue';
     import {filter, map} from 'lodash';
-    import Modal from '@/components/core/Modal.vue';
     import CreateDatabaseModal from './../components/database/CreateDatabaseModal.vue';
     import Icon from "@/components/core/Icon.vue";
     import {ServerDatabase} from "@/api/server/types";
@@ -46,7 +43,7 @@
 
     export default Vue.extend({
         name: 'ServerDatabases',
-        components: {DatabaseRow, CreateDatabaseModal, Modal, Icon},
+        components: {DatabaseRow, CreateDatabaseModal, Icon},
 
         data: function (): DataStructure {
             return {
