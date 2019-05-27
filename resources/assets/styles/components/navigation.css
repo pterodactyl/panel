@@ -76,6 +76,10 @@
                 &.router-link-exact-active, &.router-link-active {
                     @apply .border-primary-500 .cursor-default;
                 }
+
+                &::-moz-focus-inner {
+                    @apply .border-none;
+                }
             }
 
             /**
