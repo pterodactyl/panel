@@ -42,7 +42,7 @@
         name: 'ServerConsole',
         mixins: [Socketio],
         computed: {
-            ...mapState('socket', ['connected']),
+            ...mapState('socket', ['connected', 'outputBuffer']),
         },
 
         watch: {
@@ -65,7 +65,7 @@
          */
         sockets: {
             'console output': function (line: string) {
-                this.terminal && this.terminal.writeln(line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
+                this.writeLineToConsole(line);
             },
         },
 
@@ -101,6 +101,8 @@
                 // @ts-ignore
                 this.terminal.fit();
                 this.terminal.clear();
+
+                this.outputBuffer.forEach(this.writeLineToConsole);
             },
 
             /**
@@ -111,6 +113,10 @@
                 this.commandHistory.unshift(this.command);
                 this.$socket().emit('send command', this.command);
                 this.command = '';
+            },
+
+            writeLineToConsole: function (line: string) {
+                this.terminal && this.terminal.writeln(line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
             },
 
             /**

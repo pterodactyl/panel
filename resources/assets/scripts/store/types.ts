@@ -12,6 +12,7 @@ export type SocketState = {
     connected: boolean,
     connectionError: boolean | Error,
     status: string,
+    outputBuffer: string[],
 }
 
 export type ServerApplicationCredentials = {
