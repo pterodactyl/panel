@@ -12,8 +12,8 @@
                     <Icon name="link2" v-else/>
                 </div>
                 <div class="flex-1">{{file.name}}</div>
-                <div class="flex-1 text-right text-neutral-600">{{readableSize(file.size)}}</div>
-                <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
+                <div class="w-1/6 text-right text-neutral-600">{{readableSize(file.size)}}</div>
+                <div class="w-1/5 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
                 <div class="flex-none icon cursor-pointer" v-on:click="showContextMenu" ref="menuTriggerIcon" @click.stop>
                     <Icon name="more-vertical" class="text-neutral-500"/>
                 </div>
@@ -27,8 +27,8 @@
                     <Icon name="folder"/>
                 </div>
                 <div class="flex-1">{{file.name}}</div>
-                <div class="flex-1 text-right text-neutral-600"></div>
-                <div class="flex-1 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
+                <div class="w-1/6 text-right text-neutral-600"></div>
+                <div class="w-1/5 text-right text-neutral-600">{{formatDate(file.modified)}}</div>
                 <div class="flex-none icon" v-on:click="showContextMenu" ref="menuTriggerIcon">
                     <Icon name="more-vertical" class="text-neutral-500"/>
                 </div>
