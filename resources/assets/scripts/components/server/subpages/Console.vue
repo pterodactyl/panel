@@ -61,13 +61,9 @@
         },
 
         /**
-         * Listen for specific socket.io emits from the server.
+         * Listen for specific socket emits from the server.
          */
         sockets: {
-            'server log': function (lines: Array<string>) {
-                lines.forEach(data => data.split(/\n/g).forEach(line => this.terminal && this.terminal.writeln(line + '\u001b[0m')));
-            },
-
             'console output': function (line: string) {
                 this.terminal && this.terminal.writeln(line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
             },
@@ -105,8 +101,6 @@
                 // @ts-ignore
                 this.terminal.fit();
                 this.terminal.clear();
-
-                this.$socket().emit('send logs');
             },
 
             /**
