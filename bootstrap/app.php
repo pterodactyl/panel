@@ -1,4 +1,5 @@
 <?php
+use Pterodactyl\Navigation;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,14 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     Pterodactyl\Exceptions\Handler::class
 );
+
+$app->singleton('AdminNavigation', function($app) {
+    return new Navigation();
+});
+
+$app->singleton('UserNavigation', function($app) {
+    return new Navigation();
+});
 
 /*
 |--------------------------------------------------------------------------

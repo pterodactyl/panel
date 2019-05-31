@@ -132,6 +132,17 @@
                                 <i class="fa fa-archive"></i> <span>Packs</span>
                             </a>
                         </li>
+
+                        @if (count(resolve('UserNavigation')->getAll()) > 0)
+                        <li class="header">@lang('navigation.addon.header')</li>
+                        @endif
+                        @foreach(resolve('UserNavigation')->getAll() as $item)
+                        <li class="{{ Route::currentRouteName() !== $item['route'] ?: 'active' }}">
+                            <a href="{{ route($item['route']) }}">
+                                <i class="{{ $item['icon'] !== null ? $item['icon'] : 'fa fa-cogs' }}"></i> {{ $item['name'] }}
+                            </a>
+                        </li>
+                        @endforeach
                     </ul>
                 </section>
             </aside>

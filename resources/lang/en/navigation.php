@@ -9,6 +9,9 @@ return [
         'api_access' => 'Account API',
         'my_servers' => 'My Servers',
     ],
+    'addon' => [
+        'header' => 'ADDONS'
+    ],
     'server' => [
         'header' => 'SERVER MANAGEMENT',
         'console' => 'Console',
