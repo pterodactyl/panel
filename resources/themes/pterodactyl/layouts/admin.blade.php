@@ -133,10 +133,10 @@
                             </a>
                         </li>
 
-                        @if (count(resolve('UserNavigation')->getAll()) > 0)
+                        @if (count(resolve('AdminNavigation')->getAll()) > 0)
                         <li class="header">@lang('navigation.addon.header')</li>
                         @endif
-                        @foreach(resolve('UserNavigation')->getAll() as $item)
+                        @foreach(resolve('AdminNavigation')->getAll() as $item)
                         <li class="{{ Route::currentRouteName() !== $item['route'] ?: 'active' }}">
                             <a href="{{ route($item['route']) }}">
                                 <i class="{{ $item['icon'] !== null ? $item['icon'] : 'fa fa-cogs' }}"></i> {{ $item['name'] }}
