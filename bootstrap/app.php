@@ -1,5 +1,4 @@
 <?php
-use Pterodactyl\Navigation;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,11 +42,11 @@ $app->singleton(
 );
 
 $app->singleton('AdminNavigation', function ($app) {
-    return new Navigation();
+    return new Pterodactyl\Navigation();
 });
 
 $app->singleton('UserNavigation', function ($app) {
-    return new Navigation();
+    return new Pterodactyl\Navigation();
 });
 
 /*
