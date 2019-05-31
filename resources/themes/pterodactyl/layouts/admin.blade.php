@@ -137,11 +137,30 @@
                         <li class="header">@lang('navigation.addon.header')</li>
                         @endif
                         @foreach(resolve('AdminNavigation')->getAll() as $item)
-                        <li class="{{ Route::currentRouteName() !== $item['route'] ?: 'active' }}">
-                            <a href="{{ route($item['route']) }}">
-                                <i class="{{ $item['icon'] !== null ? $item['icon'] : 'fa fa-cogs' }}"></i> {{ $item['name'] }}
-                            </a>
-                        </li>
+                            @if (array_key_exists('children', $item))
+                            <li class="treeview">
+                                <a href="#">
+                                    <i class="{{ $item['icon'] !== null ? $item['icon'] : 'fa fa-cogs' }}"></i>
+                                    <span>{{ $item['name'] }}</span>
+                                    <span class="pull-right-container">
+                                        <i class="fa fa-angle-left pull-right"></i>
+                                    </span>
+                                </a>
+                                <ul class="treeview-menu">
+                                    @foreach($item['children'] as $child)
+                                    <li class="{{ Route::currentRouteName() !== $child['route'] ?: 'active' }}">
+                                        <a href="{{ route($child['route']) }}"><i class="{{ $child['icon'] !== null ? $child['icon'] : 'fa fa-angle-right' }}"></i> {{ $child['name'] }}</a>
+                                    </li>
+                                    @endforeach
+                                </ul>
+                            </li>
+                            @else
+                            <li class="{{ Route::currentRouteName() !== $item['route'] ?: 'active' }}">
+                                <a href="{{ route($item['route']) }}">
+                                    <i class="{{ $item['icon'] !== null ? $item['icon'] : 'fa fa-cogs' }}"></i> {{ $item['name'] }}
+                                </a>
+                            </li>
+                            @endif
                         @endforeach
                     </ul>
                 </section>
