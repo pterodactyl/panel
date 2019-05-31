@@ -12,11 +12,10 @@ class Navigation
      * @var array
      */
     private $items = [
-        /**
+        /*
          * [
-         * 
          *      'name' => 'My Route',
-         *      'route' => 'route-name', 
+         *      'route' => 'route-name',
          *      'icon' => 'fa fa-icon'
          * ]
          */
@@ -28,7 +27,7 @@ class Navigation
      * @param string $name Display name.
      * @param string $route The route name
      * @param string $icon Icon to display
-     * @param boolean $append Determine if it needs to appended to the items.
+     * @param bool $append Determine if it needs to appended to the items.
      * @return void
      */
     public function add(string $name, string $route, string $icon = null, bool $append = true)
@@ -40,7 +39,7 @@ class Navigation
                 'icon' => $icon,
             ]);
         } else {
-            $currentItems = Arr::where($this->items, function($v, $k) use ($route) {
+            $currentItems = Arr::where($this->items, function ($v, $k) use ($route) {
                 return $v['route'] === $route;
             });
 
@@ -81,7 +80,7 @@ class Navigation
      * Detemine if the route already exists in the current items.
      *
      * @param string $route
-     * @return boolean
+     * @return bool
      */
     public function has(string $route)
     {
@@ -93,7 +92,7 @@ class Navigation
     }
 
     /**
-     * Alias for getAll()
+     * Alias for getAll().
      */
     public function all()
     {
@@ -101,7 +100,7 @@ class Navigation
     }
 
     /**
-     * Alias for get()
+     * Alias for get().
      */
     public function find(string $route)
     {
@@ -109,7 +108,7 @@ class Navigation
     }
 
     /**
-     * Alias for has()
+     * Alias for has().
      */
     public function exists(string $route)
     {

@@ -10,7 +10,7 @@ return [
         'my_servers' => 'My Servers',
     ],
     'addon' => [
-        'header' => 'ADDONS'
+        'header' => 'ADDONS',
     ],
     'server' => [
         'header' => 'SERVER MANAGEMENT',

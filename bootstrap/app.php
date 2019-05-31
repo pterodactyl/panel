@@ -42,11 +42,11 @@ $app->singleton(
     Pterodactyl\Exceptions\Handler::class
 );
 
-$app->singleton('AdminNavigation', function($app) {
+$app->singleton('AdminNavigation', function ($app) {
     return new Navigation();
 });
 
-$app->singleton('UserNavigation', function($app) {
+$app->singleton('UserNavigation', function ($app) {
     return new Navigation();
 });
 
