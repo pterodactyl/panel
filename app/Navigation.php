@@ -63,7 +63,7 @@ class Navigation
      */
     public function addTree(string $name, string $id, string $icon = null)
     {
-        if (!$this->has($id)) {
+        if (! $this->has($id)) {
             array_push($this->items, [
                 'id' => $id,
                 'name' => $name,
@@ -171,10 +171,10 @@ class Navigation
     private function setTreeItem(array $item)
     {
         $currentTrees = Arr::where($this->items, function ($v, $k) use ($item) {
-            return (array_key_exists('id', $v) && $v['id'] === $item['id']);
+            return array_key_exists('id', $v) && $v['id'] === $item['id'];
         });
 
-        foreach($currentTrees as $key => $tree) {
+        foreach ($currentTrees as $key => $tree) {
             $this->items[$key] = $item;
         }
     }
