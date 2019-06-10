@@ -11,6 +11,8 @@
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
         "react-hot-loader": "^4.9.0",
+        "react-router-dom": "^5.0.1",
+        "redux": "^4.0.1",
         "socket.io-client": "^2.2.0",
         "ws-wrapper": "^2.0.0",
         "xterm": "^3.5.1"
@@ -25,10 +27,18 @@
         "@types/react": "^16.8.19",
         "@types/react-dom": "^16.8.4",
         "@types/webpack-env": "^1.13.6",
+        "@typescript-eslint/eslint-plugin": "^1.10.1",
+        "@typescript-eslint/parser": "^1.10.1",
         "babel-loader": "^8.0.5",
         "clean-webpack-plugin": "^0.1.19",
         "css-loader": "^2.1.0",
         "cssnano": "^4.0.3",
+        "eslint": "^5.16.0",
+        "eslint-config-standard": "^12.0.0",
+        "eslint-plugin-import": "^2.17.3",
+        "eslint-plugin-node": "^9.1.0",
+        "eslint-plugin-promise": "^4.1.1",
+        "eslint-plugin-standard": "^4.0.0",
         "fork-ts-checker-webpack-plugin": "^0.5.2",
         "glob-all": "^3.1.0",
         "html-webpack-plugin": "^3.2.0",
@@ -50,8 +60,7 @@
         "webpack-assets-manifest": "^3.1.1",
         "webpack-cli": "^3.0.2",
         "webpack-dev-server": "^3.1.14",
-        "webpack-manifest-plugin": "^2.0.3",
-        "webpack-stream": "^4.0.3"
+        "webpack-manifest-plugin": "^2.0.3"
     },
     "scripts": {
         "watch": "NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
