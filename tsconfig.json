@@ -8,6 +8,7 @@
     "moduleResolution": "node",
     "sourceMap": true,
     "baseUrl": ".",
+    "lib": ["es2015", "dom"],
     "paths": {
       "@/*": [
         "./resources/scripts/*"

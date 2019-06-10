@@ -35,9 +35,7 @@
     <body class="{{ $css['body'] ?? 'bg-neutral-50' }}">
         @section('content')
             @yield('above-container')
-            <div id="app" class="flex flex-col">
-                @yield('container')
-            </div>
+            @yield('container')
             @yield('below-container')
         @show
         @section('scripts')

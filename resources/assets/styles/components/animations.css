@@ -1,68 +1,19 @@
-.animate {
-  &.fadein {
-    animation: fadein 500ms;
-  }
-}
-
-.animated-fade-in {
-  animation: fadein 500ms;
+/*! purgecss start ignore */
+.fade-enter {
+  @apply .opacity-0;
 }
 
 .fade-enter-active {
-  animation: fadein 500ms;
+  @apply .opacity-100;
+  transition: opacity 150ms;
 }
 
-.fade-leave-active {
-  animation: fadein 500ms reverse;
+.fade-exit {
+  @apply .opacity-100;
 }
 
-@keyframes fadein {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+.fade-exit-active {
+  @apply .opacity-0;
+  transition: opacity 150ms;
 }
-
-@keyframes onlineblink {
-  0% {
-    @apply .bg-green-500;
-  }
-  100% {
-    @apply .bg-green-600;
-  }
-}
-
-@keyframes offlineblink {
-  0% {
-    @apply .bg-red-500;
-  }
-  100% {
-    @apply .bg-red-600;
-  }
-}
-
-/*
- * transition="modal"
- */
-.modal-enter, .modal-leave-active {
-  opacity: 0;
-}
-
-.modal-enter .modal-container,
-.modal-leave-active .modal-container {
-  animation: opacity 250ms linear;
-}
-
-/**
- * name="slide-fade" mode="out-in"
- */
-.slide-fade-enter-active {
-  transition: all 250ms ease;
-}
-
-.slide-fade-leave-active {
-  transition: all 250ms cubic-bezier(1.0, 0.5, 0.8, 1.0);
-}
-
-.slide-fade-enter, .slide-fade-leave-to {
-  transform: translateX(10px);
-  opacity: 0;
-}
+/*! purgecss end ignore */

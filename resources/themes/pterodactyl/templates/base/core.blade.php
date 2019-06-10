@@ -1,7 +1,7 @@
 @extends('templates/wrapper')
 
 @section('container')
-    <router-view></router-view>
+    <div id="app"></div>
 @endsection
 
 @section('below-container')
