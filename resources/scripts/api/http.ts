@@ -9,6 +9,7 @@ const http: AxiosInstance = axios.create({
         'X-Requested-With': 'XMLHttpRequest',
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'X-CSRF-Token': (window as any).X_CSRF_TOKEN as string || '',
     },
 });
 

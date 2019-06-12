@@ -16,4 +16,13 @@
   @apply .opacity-0;
   transition: opacity 150ms;
 }
+
+/** @todo fix this, hides footer stuff */
+div.route-transition-group {
+  @apply .relative;
+
+  & section {
+    @apply .absolute .w-full .pin-t .pin-l;
+  }
+}
 /*! purgecss end ignore */

@@ -98,7 +98,7 @@ export default class LoginContainer extends React.PureComponent<{}, State> {
                     </div>
                     <div className={'mt-6 text-center'}>
                         <Link
-                            to={'/auth/forgot-password'}
+                            to={'/forgot-password'}
                             className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
                         >
                             Forgot password?
