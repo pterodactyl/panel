@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import LoginContainer from '@/components/auth/LoginContainer';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import ForgotPasswordContainer from '@/components/auth/ForgotPasswordContainer';
+import FlashMessageRender from '@/components/FlashMessageRender';
 
 export default class AuthenticationRouter extends React.PureComponent {
     render () {
@@ -10,9 +11,12 @@ export default class AuthenticationRouter extends React.PureComponent {
             <BrowserRouter basename={'/auth'}>
                 <Route
                     render={({ location }) => (
-                        <TransitionGroup className={'route-transition-group'}>
+                        <TransitionGroup className={'route-transition-group mt-32'}>
                             <CSSTransition key={location.key} timeout={150} classNames={'fade'}>
                                 <section>
+                                    <div className={'mb-2'}>
+                                        <FlashMessageRender/>
+                                    </div>
                                     <Switch location={location}>
                                         <Route path={'/login'} component={LoginContainer}/>
                                         <Route path={'/forgot-password'} component={ForgotPasswordContainer}/>

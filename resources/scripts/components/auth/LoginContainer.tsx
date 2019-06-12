@@ -54,11 +54,9 @@ export default class LoginContainer extends React.PureComponent<{}, State> {
             <React.Fragment>
                 {this.state.errorMessage &&
                 <div className={'mb-4'}>
-                    <MessageBox
-                        type={'error'}
-                        title={'Error'}
-                        message={this.state.errorMessage}
-                    />
+                    <MessageBox type={'error'} title={'Error'}>
+                        {this.state.errorMessage}
+                    </MessageBox>
                 </div>
                 }
                 <form className={'login-box'} onSubmit={this.submit}>

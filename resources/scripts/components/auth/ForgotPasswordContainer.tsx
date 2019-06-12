@@ -2,9 +2,14 @@ import * as React from 'react';
 import OpenInputField from '@/components/forms/OpenInputField';
 import { Link } from 'react-router-dom';
 import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
+import { connect } from 'react-redux';
+import { ReduxState } from '@/redux/types';
+import { pushFlashMessage, clearAllFlashMessages } from '@/redux/actions/flash';
+import { httpErrorToHuman } from '@/api/http';
 
 type Props = Readonly<{
-
+    pushFlashMessage: typeof pushFlashMessage;
+    clearAllFlashMessages: typeof clearAllFlashMessages;
 }>;
 
 type State = Readonly<{
@@ -12,7 +17,7 @@ type State = Readonly<{
     isSubmitting: boolean;
 }>;
 
-export default class ForgotPasswordContainer extends React.PureComponent<Props, State> {
+class ForgotPasswordContainer extends React.PureComponent<Props, State> {
     state: State = {
         email: '',
         isSubmitting: false,
@@ -22,16 +27,27 @@ export default class ForgotPasswordContainer extends React.PureComponent<Props, 
         email: e.target.value,
     });
 
-    handleSubmission = (e: React.FormEvent<HTMLFormElement>) => this.setState({ isSubmitting: true }, () => {
+    handleSubmission = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        requestPasswordResetEmail(this.state.email)
-            .then(() => {
-
-            })
-            .catch(console.error)
-            .then(() => this.setState({ isSubmitting: false }));
-    });
+        this.setState({ isSubmitting: true }, () => {
+            this.props.clearAllFlashMessages();
+            requestPasswordResetEmail(this.state.email)
+                .then(() => {
+                    // @todo actually handle this.
+                })
+                .catch(error => {
+                    console.error(error);
+                    this.props.pushFlashMessage({
+                        id: 'auth:forgot-password',
+                        type: 'error',
+                        title: 'Error',
+                        message: httpErrorToHuman(error),
+                    });
+                })
+                .then(() => this.setState({ isSubmitting: false }));
+        });
+    };
 
     render () {
         return (
@@ -50,11 +66,11 @@ export default class ForgotPasswordContainer extends React.PureComponent<Props, 
                     </div>
                     <div className={'mt-6'}>
                         <button
-                            className={'btn btn-primary btn-jumbo'}
+                            className={'btn btn-primary btn-jumbo flex justify-center'}
                             disabled={this.state.isSubmitting || this.state.email.length < 5}
                         >
                             {this.state.isSubmitting ?
-                                <span className={'spinner white'}>&nbsp;</span>
+                                <div className={'spinner-circle spinner-sm spinner-white'}></div>
                                 :
                                 'Send Email'
                             }
@@ -73,3 +89,14 @@ export default class ForgotPasswordContainer extends React.PureComponent<Props, 
         );
     }
 }
+
+const mapStateToProps = (state: ReduxState) => ({
+    flashes: state.flashes,
+});
+
+const mapDispatchToProps = {
+    pushFlashMessage,
+    clearAllFlashMessages,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPasswordContainer);

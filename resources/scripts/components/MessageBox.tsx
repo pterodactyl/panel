@@ -1,14 +1,18 @@
 import * as React from 'react';
 
+export type FlashMessageType = 'success' | 'info' | 'warning' | 'error';
+
 interface Props {
     title?: string;
-    message: string;
-    type?: 'success' | 'info' | 'warning' | 'error';
+    children: string;
+    type?: FlashMessageType;
 }
 
-export default ({ title, message, type }: Props) => (
+export default ({ title, children, type }: Props) => (
     <div className={`lg:inline-flex alert ${type}`} role={'alert'}>
         {title && <span className={'title'}>{title}</span>}
-        <span className={'message'}>{message}</span>
+        <span className={'message'}>
+            {children}
+        </span>
     </div>
 );
