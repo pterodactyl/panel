@@ -33,13 +33,12 @@ class ForgotPasswordContainer extends React.PureComponent<Props, State> {
         this.setState({ isSubmitting: true }, () => {
             this.props.clearAllFlashMessages();
             requestPasswordResetEmail(this.state.email)
-                .then(() => {
-                    // @todo actually handle this.
-                })
+                .then(response => this.props.pushFlashMessage({
+                    type: 'success', title: 'Success', message: response,
+                }))
                 .catch(error => {
                     console.error(error);
                     this.props.pushFlashMessage({
-                        id: 'auth:forgot-password',
                         type: 'error',
                         title: 'Error',
                         message: httpErrorToHuman(error),
