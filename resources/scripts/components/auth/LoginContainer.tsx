@@ -3,7 +3,7 @@ import OpenInputField from '@/components/forms/OpenInputField';
 import { Link } from 'react-router-dom';
 import login from '@/api/auth/login';
 import { httpErrorToHuman } from '@/api/http';
-import MessageBox from '@/components/MessageBox';
+import NetworkErrorMessage from '@/components/NetworkErrorMessage';
 
 type State = Readonly<{
     errorMessage?: string;
@@ -52,15 +52,12 @@ export default class LoginContainer extends React.PureComponent<{}, State> {
     render () {
         return (
             <React.Fragment>
-                {this.state.errorMessage &&
-                <div className={'mb-4'}>
-                    <MessageBox type={'error'} title={'Error'}>
-                        {this.state.errorMessage}
-                    </MessageBox>
-                </div>
-                }
+                <h2 className={'text-center text-neutral-100 font-medium py-4'}>
+                    Login to Continue
+                </h2>
+                <NetworkErrorMessage message={this.state.errorMessage}/>
                 <form className={'login-box'} onSubmit={this.submit}>
-                    <div className={'-mx-3'}>
+                    <div className={'mt-3'}>
                         <OpenInputField
                             autoFocus={true}
                             label={'Username or Email'}
@@ -71,7 +68,7 @@ export default class LoginContainer extends React.PureComponent<{}, State> {
                             disabled={this.state.isLoading}
                         />
                     </div>
-                    <div className={'-mx-3 mt-6'}>
+                    <div className={'mt-6'}>
                         <OpenInputField
                             label={'Password'}
                             type={'password'}
@@ -96,7 +93,7 @@ export default class LoginContainer extends React.PureComponent<{}, State> {
                     </div>
                     <div className={'mt-6 text-center'}>
                         <Link
-                            to={'/forgot-password'}
+                            to={'/password'}
                             className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
                         >
                             Forgot password?

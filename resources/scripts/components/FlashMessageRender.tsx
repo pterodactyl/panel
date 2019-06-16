@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import MessageBox from '@/components/MessageBox';
 
 type Props = Readonly<{
+    spacerClass?: string;
     flashes: FlashMessage[];
 }>;
 
@@ -16,18 +17,17 @@ class FlashMessageRender extends React.PureComponent<Props> {
         return (
             <React.Fragment>
                 {
-                    this.props.flashes.map(flash => (
-                        <MessageBox
-                            key={flash.id || flash.type + flash.message}
-                            type={flash.type}
-                            title={flash.title}
-                        >
-                            {flash.message}
-                        </MessageBox>
+                    this.props.flashes.map((flash, index) => (
+                        <React.Fragment key={flash.id || flash.type + flash.message}>
+                            {index > 0 && <div className={this.props.spacerClass || 'mt-2'}></div>}
+                            <MessageBox type={flash.type} title={flash.title}>
+                                {flash.message}
+                            </MessageBox>
+                        </React.Fragment>
                     ))
                 }
             </React.Fragment>
-        )
+        );
     }
 }
 

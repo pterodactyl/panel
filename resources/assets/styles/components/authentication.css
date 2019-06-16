@@ -1,5 +1,5 @@
 .login-box {
-  @apply .bg-white .shadow-lg .rounded-lg .pt-10 .px-8 .pb-6 .mb-4;
+  @apply .bg-white .shadow-lg .rounded-lg .p-6;
 
   @screen xsx {
     @apply .rounded-none;

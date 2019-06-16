@@ -17,11 +17,11 @@ input[type=number] {
  * is input and then sinks back down into the field if left empty.
  */
 .input-open {
-    @apply .w-full .px-3 .relative;
+    @apply .w-full .relative;
 }
 
-.input-open > .input {
-    @apply .appearance-none .block .w-full .text-neutral-800 .border-b-2 .border-neutral-200 .py-3 .mb-3;
+.input-open > .input, .input-open > .input:disabled {
+    @apply .appearance-none .block .w-full .text-neutral-800 .border-b-2 .border-neutral-200 .py-3 .px-2 .bg-white;
 
     &:focus {
         @apply .border-primary-400;
@@ -40,9 +40,9 @@ input[type=number] {
 }
 
 .input-open > label {
-    @apply .block .uppercase .tracking-wide .text-neutral-500 .text-xs .mb-2 .absolute;
+    @apply .block .uppercase .tracking-wide .text-neutral-500 .text-xs .mb-2 .px-2 .absolute;
     top: 14px;
-    transition: transform 200ms ease-out;
+    transition: padding 200ms linear, transform 200ms ease-out;
 }
 
 /**

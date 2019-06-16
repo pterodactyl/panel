@@ -58,9 +58,12 @@ class ForgotPasswordContainer extends React.PureComponent<Props, State> {
 
     render () {
         return (
-            <React.Fragment>
+            <div>
+                <h2 className={'text-center text-neutral-100 font-medium py-4'}>
+                    Request Password Reset
+                </h2>
                 <form className={'login-box'} onSubmit={this.handleSubmission}>
-                    <div className={'-mx-3'}>
+                    <div className={'mt-3'}>
                         <OpenInputField
                             ref={this.emailField}
                             id={'email'}
@@ -93,18 +96,14 @@ class ForgotPasswordContainer extends React.PureComponent<Props, State> {
                         </Link>
                     </div>
                 </form>
-            </React.Fragment>
+            </div>
         );
     }
 }
-
-const mapStateToProps = (state: ReduxState) => ({
-    flashes: state.flashes,
-});
 
 const mapDispatchToProps = {
     pushFlashMessage,
     clearAllFlashMessages,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ForgotPasswordContainer);
+export default connect(null, mapDispatchToProps)(ForgotPasswordContainer);
