@@ -18,6 +18,8 @@ type State = Readonly<{
 }>;
 
 class ForgotPasswordContainer extends React.PureComponent<Props, State> {
+    emailField = React.createRef<HTMLInputElement>();
+
     state: State = {
         email: '',
         isSubmitting: false,
@@ -33,9 +35,15 @@ class ForgotPasswordContainer extends React.PureComponent<Props, State> {
         this.setState({ isSubmitting: true }, () => {
             this.props.clearAllFlashMessages();
             requestPasswordResetEmail(this.state.email)
-                .then(response => this.props.pushFlashMessage({
-                    type: 'success', title: 'Success', message: response,
-                }))
+                .then(response => {
+                    if (this.emailField.current) {
+                        this.emailField.current.value = '';
+                    }
+
+                    this.props.pushFlashMessage({
+                        type: 'success', title: 'Success', message: response,
+                    });
+                })
                 .catch(error => {
                     console.error(error);
                     this.props.pushFlashMessage({
@@ -54,6 +62,7 @@ class ForgotPasswordContainer extends React.PureComponent<Props, State> {
                 <form className={'login-box'} onSubmit={this.handleSubmission}>
                     <div className={'-mx-3'}>
                         <OpenInputField
+                            ref={this.emailField}
                             id={'email'}
                             type={'email'}
                             label={'Email'}

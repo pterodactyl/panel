@@ -6,7 +6,7 @@ type Props = React.InputHTMLAttributes<HTMLInputElement> & {
     description?: string;
 };
 
-export default ({ className, description, onChange, label, ...props }: Props) => {
+export default React.forwardRef<HTMLInputElement, Props>(({ className, description, onChange, label, ...props }, ref) => {
     const [ value, setValue ] = React.useState('');
 
     const classes = classNames('input open-label', {
@@ -16,6 +16,7 @@ export default ({ className, description, onChange, label, ...props }: Props) =>
     return (
         <div className={'input-open'}>
             <input
+                ref={ref}
                 className={classes}
                 onChange={e => {
                     setValue(e.target.value);
@@ -33,4 +34,4 @@ export default ({ className, description, onChange, label, ...props }: Props) =>
             }
         </div>
     );
-};
+});
