@@ -50,6 +50,7 @@ input[type=number] {
  */
 .input:not(.open-label) {
     @apply .appearance-none .p-3 .rounded .border .border-neutral-200 .text-neutral-800 .w-full;
+    min-width: 0;
     transition: border 150ms linear;
 
     &:focus {

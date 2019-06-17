@@ -5,6 +5,7 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import ForgotPasswordContainer from '@/components/auth/ForgotPasswordContainer';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
+import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer';
 
 export default class AuthenticationRouter extends React.PureComponent {
     render () {
@@ -17,7 +18,8 @@ export default class AuthenticationRouter extends React.PureComponent {
                                 <section>
                                     <FlashMessageRender/>
                                     <Switch location={location}>
-                                        <Route path={'/login'} component={LoginContainer}/>
+                                        <Route path={'/login'} component={LoginContainer} exact/>
+                                        <Route path={'/login/checkpoint'} component={LoginCheckpointContainer}/>
                                         <Route path={'/password'} component={ForgotPasswordContainer} exact/>
                                         <Route path={'/password/reset/:token'} component={ResetPasswordContainer}/>
                                         <Route path={'/checkpoint'}/>

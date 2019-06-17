@@ -1,6 +1,6 @@
 import * as React from 'react';
 import OpenInputField from '@/components/forms/OpenInputField';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import login from '@/api/auth/login';
 import { httpErrorToHuman } from '@/api/http';
 import NetworkErrorMessage from '@/components/NetworkErrorMessage';
@@ -12,7 +12,7 @@ type State = Readonly<{
     password?: string;
 }>;
 
-export default class LoginContainer extends React.PureComponent<{}, State> {
+export default class LoginContainer extends React.PureComponent<RouteComponentProps, State> {
     username = React.createRef<HTMLInputElement>();
 
     state: State = {
@@ -27,7 +27,15 @@ export default class LoginContainer extends React.PureComponent<{}, State> {
         this.setState({ isLoading: true }, () => {
             login(username!, password!)
                 .then(response => {
+                    if (response.complete) {
+                        // @ts-ignore
+                        window.location = response.intended || '/';
+                        return;
+                    }
 
+                    this.props.history.replace('/login/checkpoint', {
+                        token: response.token,
+                    });
                 })
                 .catch(error => this.setState({
                     isLoading: false,
