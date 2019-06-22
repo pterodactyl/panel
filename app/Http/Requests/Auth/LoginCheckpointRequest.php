@@ -25,7 +25,7 @@ class LoginCheckpointRequest extends FormRequest
     {
         return [
             'confirmation_token' => 'required|string',
-            'authentication_code' => 'required|int',
+            'authentication_code' => 'required|numeric',
         ];
     }
 }
