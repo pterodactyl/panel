@@ -3,6 +3,17 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.14 (Derelict Dermodactylus)
+### Fixed
+* **[SECURITY]** Fixes an XSS vulnerability when performing certain actions in the file manager.
+
+### Changed
+* Support for setting a node to listen on ports lower than 1024.
+* Regenerated database passwords now respect the same settings that were used when initially created.
+* Cleaned up 2FA QR code generation to use a more up-to-date library and API.
+* Console charts now properly start at 0 and scale based on server configuration. No more crazy spikes that
+are due to a change of one unit.
+
 ## v0.7.13 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a bug with the location update API endpoint throwing an error due to an unexected response value.
