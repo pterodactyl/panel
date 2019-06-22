@@ -126,21 +126,20 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request);
         }
 
-        $validCredentials = password_verify($request->input('password'), $user->password);
+        if (! password_verify($request->input('password'), $user->password)) {
+            return $this->sendFailedLoginResponse($request, $user);
+        }
+
         if ($user->use_totp) {
             $token = str_random(64);
-            $this->cache->put($token, ['user_id' => $user->id, 'valid_credentials' => $validCredentials], 5);
+            $this->cache->put($token, ['user_id' => $user->id, 'valid_credentials' => true], 5);
 
             return redirect()->route('auth.totp')->with('authentication_token', $token);
         }
 
-        if ($validCredentials) {
-            $this->auth->guard()->login($user, true);
+        $this->auth->guard()->login($user, true);
 
-            return $this->sendLoginResponse($request);
-        }
-
-        return $this->sendFailedLoginResponse($request, $user);
+        return $this->sendLoginResponse($request);
     }
 
     /**
@@ -161,12 +160,13 @@ class LoginController extends Controller
 
     /**
      * Handle a login where the user is required to provide a TOTP authentication
-     * token. In order to add additional layers of security, users are not
-     * informed of an incorrect password until this stage, forcing them to
-     * provide a token on each login attempt.
+     * token.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response
+     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+     * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
      */
     public function loginUsingTotp(Request $request)
     {
@@ -181,7 +181,7 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request);
         }
 
-        if (is_null($request->input('2fa_token')) || ! array_get($cache, 'valid_credentials')) {
+        if (is_null($request->input('2fa_token'))) {
             return $this->sendFailedLoginResponse($request, $user);
         }
 
