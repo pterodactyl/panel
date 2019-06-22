@@ -8,7 +8,7 @@ export default ({ className, ...props }: React.DetailedHTMLProps<React.FormHTMLA
             paddingLeft: 0,
         }}
     >
-        <div className={'flex-none'}>
+        <div className={'flex-none select-none'}>
             <img src={'/assets/pterodactyl.svg'} className={'w-64'}/>
         </div>
         <div className={'flex-1'}>

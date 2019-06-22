@@ -1,109 +1,78 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
-import { connect } from 'react-redux';
-import { pushFlashMessage, clearAllFlashMessages } from '@/redux/actions/flash';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
+import { Actions, useStoreActions } from 'easy-peasy';
+import { ApplicationState } from '@/state/types';
+import FlashMessageRender from '@/components/FlashMessageRender';
 
-type Props = Readonly<{
-    pushFlashMessage: typeof pushFlashMessage;
-    clearAllFlashMessages: typeof clearAllFlashMessages;
-}>;
+export default () => {
+    const [ isSubmitting, setSubmitting ] = React.useState(false);
+    const [ email, setEmail ] = React.useState('');
 
-type State = Readonly<{
-    email: string;
-    isSubmitting: boolean;
-}>;
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
 
-class ForgotPasswordContainer extends React.PureComponent<Props, State> {
-    emailField = React.createRef<HTMLInputElement>();
+    const handleFieldUpdate = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
 
-    state: State = {
-        email: '',
-        isSubmitting: false,
-    };
-
-    handleFieldUpdate = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({
-        email: e.target.value,
-    });
-
-    handleSubmission = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmission = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        this.setState({ isSubmitting: true }, () => {
-            this.props.clearAllFlashMessages();
-            requestPasswordResetEmail(this.state.email)
-                .then(response => {
-                    if (this.emailField.current) {
-                        this.emailField.current.value = '';
-                    }
-
-                    this.props.pushFlashMessage({
-                        type: 'success', title: 'Success', message: response,
-                    });
-                })
-                .catch(error => {
-                    console.error(error);
-                    this.props.pushFlashMessage({
-                        type: 'error',
-                        title: 'Error',
-                        message: httpErrorToHuman(error),
-                    });
-                })
-                .then(() => this.setState({ isSubmitting: false }));
-        });
+        setSubmitting(true);
+        clearFlashes();
+        requestPasswordResetEmail(email)
+            .then(response => {
+                setEmail('');
+                addFlash({ type: 'success', title: 'Success', message: response });
+            })
+            .catch(error => {
+                console.error(error);
+                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+            })
+            .then(() => setSubmitting(false));
     };
 
-    render () {
-        return (
-            <div>
-                <h2 className={'text-center text-neutral-100 font-medium py-4'}>
-                    Request Password Reset
-                </h2>
-                <LoginFormContainer onSubmit={this.handleSubmission}>
-                    <label htmlFor={'email'}>Email</label>
-                    <input
-                        ref={this.emailField}
-                        id={'email'}
-                        type={'email'}
-                        required={true}
-                        className={'input'}
-                        onChange={this.handleFieldUpdate}
-                        autoFocus={true}
-                    />
-                    <p className={'input-help'}>
-                        Enter your account email address to receive instructions on resetting your password.
-                    </p>
-                    <div className={'mt-6'}>
-                        <button
-                            className={'btn btn-primary btn-jumbo flex justify-center'}
-                            disabled={this.state.isSubmitting || this.state.email.length < 5}
-                        >
-                            {this.state.isSubmitting ?
-                                <div className={'spinner-circle spinner-sm spinner-white'}></div>
-                                :
-                                'Send Email'
-                            }
-                        </button>
-                    </div>
-                    <div className={'mt-6 text-center'}>
-                        <Link
-                            to={'/login'}
-                            className={'text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700'}
-                        >
-                            Return to Login
-                        </Link>
-                    </div>
-                </LoginFormContainer>
-            </div>
-        );
-    }
-}
-
-const mapDispatchToProps = {
-    pushFlashMessage,
-    clearAllFlashMessages,
+    return (
+        <div>
+            <h2 className={'text-center text-neutral-100 font-medium py-4'}>
+                Request Password Reset
+            </h2>
+            <FlashMessageRender/>
+            <LoginFormContainer onSubmit={handleSubmission}>
+                <label htmlFor={'email'}>Email</label>
+                <input
+                    id={'email'}
+                    type={'email'}
+                    required={true}
+                    className={'input'}
+                    value={email}
+                    onChange={handleFieldUpdate}
+                    autoFocus={true}
+                />
+                <p className={'input-help'}>
+                    Enter your account email address to receive instructions on resetting your password.
+                </p>
+                <div className={'mt-6'}>
+                    <button
+                        className={'btn btn-primary btn-jumbo flex justify-center'}
+                        disabled={isSubmitting || email.length < 5}
+                    >
+                        {isSubmitting ?
+                            <div className={'spinner-circle spinner-sm spinner-white'}></div>
+                            :
+                            'Send Email'
+                        }
+                    </button>
+                </div>
+                <div className={'mt-6 text-center'}>
+                    <Link
+                        to={'/login'}
+                        className={'text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700'}
+                    >
+                        Return to Login
+                    </Link>
+                </div>
+            </LoginFormContainer>
+        </div>
+    );
 };
-
-export default connect(null, mapDispatchToProps)(ForgotPasswordContainer);

@@ -4,7 +4,6 @@ const tailwind = require('tailwindcss');
 const glob = require('glob-all');
 
 const AssetsManifestPlugin = require('webpack-assets-manifest');
-const CleanPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const PurgeCssPlugin = require('purgecss-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
@@ -13,7 +12,6 @@ const TerserPlugin = require('terser-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 
 let plugins = [
-    new CleanPlugin(path.resolve(__dirname, 'public/assets')),
     new MiniCssExtractPlugin({ filename: isProduction ? 'bundle.[chunkhash:8].css' : 'bundle.[hash:8].css' }),
     new AssetsManifestPlugin({
         writeToDisk: true,

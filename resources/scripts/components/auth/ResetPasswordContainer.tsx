@@ -1,151 +1,109 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
 import { parse } from 'query-string';
 import { Link } from 'react-router-dom';
-import NetworkErrorMessage from '@/components/NetworkErrorMessage';
 import performPasswordReset from '@/api/auth/performPasswordReset';
 import { httpErrorToHuman } from '@/api/http';
-import { connect } from 'react-redux';
-import { pushFlashMessage, clearAllFlashMessages } from '@/redux/actions/flash';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import { Actions, useStoreActions } from 'easy-peasy';
+import { ApplicationState } from '@/state/types';
 
-type State = Readonly<{
-    email?: string;
-    password?: string;
-    passwordConfirm?: string;
-    isLoading: boolean;
-    errorMessage?: string;
-}>;
+type Props = Readonly<RouteComponentProps<{ token: string }> & {}>;
 
-type Props = Readonly<RouteComponentProps<{ token: string }> & {
-    pushFlashMessage: typeof pushFlashMessage;
-    clearAllFlashMessages: typeof clearAllFlashMessages;
-}>;
+export default (props: Props) => {
+    const [ isLoading, setIsLoading ] = useState(false);
+    const [ email, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
+    const [ passwordConfirm, setPasswordConfirm ] = useState('');
 
-class ResetPasswordContainer extends React.PureComponent<Props, State> {
-    state: State = {
-        isLoading: false,
-    };
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
 
-    componentDidMount () {
-        const parsed = parse(this.props.location.search);
-
-        this.setState({ email: parsed.email as string || undefined });
+    const parsed = parse(props.location.search);
+    if (email.length === 0 && parsed.email) {
+        setEmail(parsed.email as string);
     }
 
-    canSubmit () {
-        if (!this.state.password || !this.state.email) {
-            return false;
-        }
+    const canSubmit = () => password && email && password.length >= 8 && password === passwordConfirm;
 
-        return this.state.password.length >= 8 && this.state.password === this.state.passwordConfirm;
-    }
-
-    onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({
-        password: e.target.value,
-    });
-
-    onPasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => this.setState({
-        passwordConfirm: e.target.value,
-    });
-
-    onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const { password, passwordConfirm, email } = this.state;
         if (!password || !email || !passwordConfirm) {
             return;
         }
 
-        this.props.clearAllFlashMessages();
-        this.setState({ isLoading: true }, () => {
-            performPasswordReset(email, {
-                token: this.props.match.params.token,
-                password: password,
-                passwordConfirmation: passwordConfirm,
-            })
-                .then(response => {
-                    if (response.redirectTo) {
-                        // @ts-ignore
-                        window.location = response.redirectTo;
-                        return;
-                    }
+        setIsLoading(true);
+        clearFlashes();
 
-                    this.props.pushFlashMessage({
-                        type: 'success',
-                        message: 'Your password has been reset, please login to continue.',
-                    });
-                    this.props.history.push('/login');
-                })
-                .catch(error => {
-                    console.error(error);
-                    this.setState({ errorMessage: httpErrorToHuman(error) });
-                })
-                .then(() => this.setState({ isLoading: false }));
-        });
+        performPasswordReset(email, {
+            token: props.match.params.token, password, passwordConfirmation: passwordConfirm,
+        })
+            .then(() => {
+                addFlash({ type: 'success', message: 'Your password has been reset, please login to continue.' });
+                props.history.push('/login');
+            })
+            .catch(error => {
+                console.error(error);
+                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+            })
+            .then(() => setIsLoading(false));
     };
 
-    render () {
-        return (
-            <div>
-                <h2 className={'text-center text-neutral-100 font-medium py-4'}>
-                    Reset Password
-                </h2>
-                <NetworkErrorMessage message={this.state.errorMessage}/>
-                <LoginFormContainer onSubmit={this.onSubmit}>
-                    <label>Email</label>
-                    <input value={this.state.email || ''} disabled={true}/>
-                    <div className={'mt-6'}>
-                        <label htmlFor={'new_password'}>New Password</label>
-                        <input
-                            id={'new_password'}
-                            type={'password'}
-                            required={true}
-                            onChange={this.onPasswordChange}
-                        />
-                        <p className={'input-help'}>
-                            Passwords must be at least 8 characters in length.
-                        </p>
-                    </div>
-                    <div className={'mt-6'}>
-                        <label htmlFor={'new_password_confirm'}>Confirm New Password</label>
-                        <input
-                            id={'new_password_confirm'}
-                            type={'password'}
-                            required={true}
-                            onChange={this.onPasswordConfirmChange}
-                        />
-                    </div>
-                    <div className={'mt-6'}>
-                        <button
-                            type={'submit'}
-                            className={'btn btn-primary btn-jumbo'}
-                            disabled={this.state.isLoading || !this.canSubmit()}
-                        >
-                            {this.state.isLoading ?
-                                <span className={'spinner white'}>&nbsp;</span>
-                                :
-                                'Reset Password'
-                            }
-                        </button>
-                    </div>
-                    <div className={'mt-6 text-center'}>
-                        <Link
-                            to={'/login'}
-                            className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
-                        >
-                            Return to Login
-                        </Link>
-                    </div>
-                </LoginFormContainer>
-            </div>
-        );
-    }
-}
-
-const mapDispatchToProps = {
-    pushFlashMessage,
-    clearAllFlashMessages,
+    return (
+        <div>
+            <h2 className={'text-center text-neutral-100 font-medium py-4'}>
+                Reset Password
+            </h2>
+            <FlashMessageRender/>
+            <LoginFormContainer onSubmit={submit}>
+                <label>Email</label>
+                <input className={'input'} value={email} disabled={true}/>
+                <div className={'mt-6'}>
+                    <label htmlFor={'new_password'}>New Password</label>
+                    <input
+                        id={'new_password'}
+                        className={'input'}
+                        type={'password'}
+                        required={true}
+                        onChange={e => setPassword(e.target.value)}
+                    />
+                    <p className={'input-help'}>
+                        Passwords must be at least 8 characters in length.
+                    </p>
+                </div>
+                <div className={'mt-6'}>
+                    <label htmlFor={'new_password_confirm'}>Confirm New Password</label>
+                    <input
+                        id={'new_password_confirm'}
+                        className={'input'}
+                        type={'password'}
+                        required={true}
+                        onChange={e => setPasswordConfirm(e.target.value)}
+                    />
+                </div>
+                <div className={'mt-6'}>
+                    <button
+                        type={'submit'}
+                        className={'btn btn-primary btn-jumbo'}
+                        disabled={isLoading || !canSubmit()}
+                    >
+                        {isLoading ?
+                            <span className={'spinner white'}>&nbsp;</span>
+                            :
+                            'Reset Password'
+                        }
+                    </button>
+                </div>
+                <div className={'mt-6 text-center'}>
+                    <Link
+                        to={'/login'}
+                        className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
+                    >
+                        Return to Login
+                    </Link>
+                </div>
+            </LoginFormContainer>
+        </div>
+    );
 };
-
-export default connect(null, mapDispatchToProps)(ResetPasswordContainer);

@@ -1,38 +1,33 @@
-import * as React from 'react';
-import { FlashMessage, ReduxState } from '@/redux/types';
-import { connect } from 'react-redux';
+import React from 'react';
 import MessageBox from '@/components/MessageBox';
+import { State, useStoreState } from 'easy-peasy';
+import { ApplicationState } from '@/state/types';
 
 type Props = Readonly<{
     spacerClass?: string;
-    flashes: FlashMessage[];
+    withBottomSpace?: boolean;
 }>;
 
-class FlashMessageRender extends React.PureComponent<Props> {
-    render () {
-        if (this.props.flashes.length === 0) {
-            return null;
-        }
+export default ({ withBottomSpace, spacerClass }: Props) => {
+    const flashes = useStoreState((state: State<ApplicationState>) => state.flashes.items);
 
-        return (
-            <React.Fragment>
-                {
-                    this.props.flashes.map((flash, index) => (
-                        <React.Fragment key={flash.id || flash.type + flash.message}>
-                            {index > 0 && <div className={this.props.spacerClass || 'mt-2'}></div>}
-                            <MessageBox type={flash.type} title={flash.title}>
-                                {flash.message}
-                            </MessageBox>
-                        </React.Fragment>
-                    ))
-                }
-            </React.Fragment>
-        );
+    if (flashes.length === 0) {
+        return null;
     }
-}
 
-const mapStateToProps = (state: ReduxState) => ({
-    flashes: state.flashes,
-});
-
-export default connect(mapStateToProps)(FlashMessageRender);
+    // noinspection PointlessBooleanExpressionJS
+    return (
+        <div className={withBottomSpace === false ? undefined : 'mb-2'}>
+            {
+                flashes.map((flash, index) => (
+                    <React.Fragment key={flash.id || flash.type + flash.message}>
+                        {index > 0 && <div className={spacerClass || 'mt-2'}></div>}
+                        <MessageBox type={flash.type} title={flash.title}>
+                            {flash.message}
+                        </MessageBox>
+                    </React.Fragment>
+                ))
+            }
+        </div>
+    );
+};

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import FlashMessageRender from '@/components/FlashMessageRender';
 import DesignElements from '@/components/account/DesignElements';
 
 export default class AccountRouter extends React.PureComponent {
@@ -13,7 +12,6 @@ export default class AccountRouter extends React.PureComponent {
                         <TransitionGroup className={'route-transition-group'}>
                             <CSSTransition key={location.key} timeout={150} classNames={'fade'}>
                                 <section>
-                                    <FlashMessageRender/>
                                     <Switch location={location}>
                                         <Route path={'/'} component={DesignElements} exact/>
                                         <Route path={'/design'} component={DesignElements} exact/>
