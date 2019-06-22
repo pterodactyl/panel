@@ -83,8 +83,8 @@ class SecurityController extends Controller
 
         return JsonResponse::create([
             'enabled' => false,
-            'qr_image' => $response->get('image'),
-            'secret' => $response->get('secret'),
+            'qr_image' => $response,
+            'secret' => '',
         ]);
     }
 

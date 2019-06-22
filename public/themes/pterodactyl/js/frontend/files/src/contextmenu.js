@@ -62,7 +62,7 @@ class ContextMenuClass {
 
         if (Pterodactyl.permissions.createFiles) {
             buildMenu += '<li class="divider"></li> \
-                          <li data-action="file"><a href="/server/'+ Pterodactyl.server.uuidShort +'/files/add/?dir=' + newFilePath + '" class="text-muted"><i class="fa fa-fw fa-plus"></i> New File</a></li> \
+                          <li data-action="file"><a href="/server/'+ Pterodactyl.server.uuidShort +'/files/add/?dir=' + $('<div>').text(newFilePath).html() + '" class="text-muted"><i class="fa fa-fw fa-plus"></i> New File</a></li> \
                           <li data-action="folder"><a tabindex="-1" href="#"><i class="fa fa-fw fa-folder"></i> New Folder</a></li>';
         }
 
