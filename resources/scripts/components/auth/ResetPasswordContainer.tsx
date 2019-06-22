@@ -1,5 +1,4 @@
 import * as React from 'react';
-import OpenInputField from '@/components/forms/OpenInputField';
 import { RouteComponentProps } from 'react-router';
 import { parse } from 'query-string';
 import { Link } from 'react-router-dom';
@@ -93,30 +92,26 @@ class ResetPasswordContainer extends React.PureComponent<Props, State> {
                 </h2>
                 <NetworkErrorMessage message={this.state.errorMessage}/>
                 <form className={'login-box'} onSubmit={this.onSubmit}>
-                    <div className={'mt-3'}>
-                        <OpenInputField
-                            label={'Email'}
-                            value={this.state.email || ''}
-                            disabled
-                        />
-                    </div>
+                    <label>Email</label>
+                    <input value={this.state.email || ''} disabled={true}/>
                     <div className={'mt-6'}>
-                        <OpenInputField
-                            autoFocus={true}
-                            label={'New Password'}
-                            description={'Passwords must be at least 8 characters in length.'}
+                        <label htmlFor={'new-password'}>New Password</label>
+                        <input
+                            id={'new-password'}
                             type={'password'}
                             required={true}
-                            id={'password'}
                             onChange={this.onPasswordChange}
                         />
+                        <p className={'input-help'}>
+                            Passwords must be at least 8 characters in length.
+                        </p>
                     </div>
                     <div className={'mt-6'}>
-                        <OpenInputField
-                            label={'Confirm New Password'}
+                        <label htmlFor={'new-password-confirm'}>Confirm New Password</label>
+                        <input
+                            id={'new-password-confirm'}
                             type={'password'}
                             required={true}
-                            id={'password-confirm'}
                             onChange={this.onPasswordConfirmChange}
                         />
                     </div>

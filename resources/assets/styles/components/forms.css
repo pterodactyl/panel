@@ -13,42 +13,9 @@ input[type=number] {
 }
 
 /**
- * Styles for the login form open input boxes. Label floats up above it when content
- * is input and then sinks back down into the field if left empty.
- */
-.input-open {
-    @apply .w-full .relative;
-}
-
-.input-open > .input, .input-open > .input:disabled {
-    @apply .appearance-none .block .w-full .text-neutral-800 .border-b-2 .border-neutral-200 .py-3 .px-2 .bg-white;
-
-    &:focus {
-        @apply .border-primary-400;
-        outline: 0;
-        transition: border 500ms ease-out;
-    }
-
-    &:focus + label, &:valid + label, &.has-content + label {
-        @apply .text-neutral-800 .px-0 .cursor-pointer;
-        transform:translateY(-26px)
-    }
-
-    &:required {
-        box-shadow: none;
-    }
-}
-
-.input-open > label {
-    @apply .block .uppercase .tracking-wide .text-neutral-500 .text-xs .mb-2 .px-2 .absolute;
-    top: 14px;
-    transition: padding 200ms linear, transform 200ms ease-out;
-}
-
-/**
  * Styling for other forms throughout the Panel.
  */
-.input:not(.open-label) {
+.input {
     @apply .appearance-none .p-3 .rounded .border .border-neutral-200 .text-neutral-800 .w-full;
     min-width: 0;
     transition: border 150ms linear;
@@ -68,6 +35,10 @@ input[type=number] {
 
 .input:disabled {
     @apply .bg-neutral-100 .border-neutral-200;
+}
+
+label {
+    @apply .block .text-xs .font-medium .uppercase .text-neutral-700 .mb-2;
 }
 
 select:not(.appearance-none) {

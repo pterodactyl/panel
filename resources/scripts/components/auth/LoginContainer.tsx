@@ -1,5 +1,4 @@
 import * as React from 'react';
-import OpenInputField from '@/components/forms/OpenInputField';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import login from '@/api/auth/login';
 import { httpErrorToHuman } from '@/api/http';
@@ -65,23 +64,22 @@ export default class LoginContainer extends React.PureComponent<RouteComponentPr
                 </h2>
                 <NetworkErrorMessage message={this.state.errorMessage}/>
                 <form className={'login-box'} onSubmit={this.submit}>
-                    <div className={'mt-3'}>
-                        <OpenInputField
-                            autoFocus={true}
-                            label={'Username or Email'}
-                            type={'text'}
-                            required={true}
-                            id={'username'}
-                            onChange={this.handleFieldUpdate}
-                            disabled={this.state.isLoading}
-                        />
-                    </div>
+                    <label htmlFor={'username'}>Username or Email</label>
+                    <input
+                        id={'username'}
+                        autoFocus={true}
+                        required={true}
+                        className={'input'}
+                        onChange={this.handleFieldUpdate}
+                        disabled={this.state.isLoading}
+                    />
                     <div className={'mt-6'}>
-                        <OpenInputField
-                            label={'Password'}
-                            type={'password'}
-                            required={true}
+                        <label htmlFor={'password'}>Password</label>
+                        <input
                             id={'password'}
+                            required={true}
+                            type={'password'}
+                            className={'input'}
                             onChange={this.handleFieldUpdate}
                             disabled={this.state.isLoading}
                         />

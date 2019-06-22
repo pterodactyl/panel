@@ -63,18 +63,19 @@ class ForgotPasswordContainer extends React.PureComponent<Props, State> {
                     Request Password Reset
                 </h2>
                 <form className={'login-box'} onSubmit={this.handleSubmission}>
-                    <div className={'mt-3'}>
-                        <OpenInputField
-                            ref={this.emailField}
-                            id={'email'}
-                            type={'email'}
-                            label={'Email'}
-                            description={'Enter your account email address to receive instructions on resetting your password.'}
-                            autoFocus={true}
-                            required={true}
-                            onChange={this.handleFieldUpdate}
-                        />
-                    </div>
+                    <label htmlFor={'email'}>Email</label>
+                    <input
+                        ref={this.emailField}
+                        id={'email'}
+                        type={'email'}
+                        required={true}
+                        className={'input'}
+                        onChange={this.handleFieldUpdate}
+                        autoFocus={true}
+                    />
+                    <p className={'input-help'}>
+                        Enter your account email address to receive instructions on resetting your password.
+                    </p>
                     <div className={'mt-6'}>
                         <button
                             className={'btn btn-primary btn-jumbo flex justify-center'}
