@@ -30,7 +30,6 @@
         "matriphe/iso-639": "^1.2",
         "nesbot/carbon": "^1.22",
         "pragmarx/google2fa": "^5.0",
-        "pragmarx/google2fa-qrcode": "^1.0.3",
         "predis/predis": "^1.1",
         "prologue/alerts": "^0.4",
         "ramsey/uuid": "^3.7",

@@ -90,8 +90,10 @@ class SecurityController extends Controller
      */
     public function generateTotp(Request $request)
     {
+        $totpData = $this->twoFactorSetupService->handle($request->user());
+
         return response()->json([
-            'qrImage' => $this->twoFactorSetupService->handle($request->user()),
+            'qrImage' => 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . $totpData,
         ]);
     }
 

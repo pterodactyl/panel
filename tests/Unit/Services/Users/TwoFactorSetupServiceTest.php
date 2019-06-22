@@ -5,7 +5,6 @@ namespace Tests\Unit\Services\Users;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\User;
-use PragmaRX\Google2FAQRCode\Google2FA;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
@@ -24,11 +23,6 @@ class TwoFactorSetupServiceTest extends TestCase
     private $encrypter;
 
     /**
-     * @var PragmaRX\Google2FAQRCode\Google2FA|\Mockery\Mock
-     */
-    private $google2FA;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $repository;
@@ -42,7 +36,6 @@ class TwoFactorSetupServiceTest extends TestCase
 
         $this->config = m::mock(Repository::class);
         $this->encrypter = m::mock(Encrypter::class);
-        $this->google2FA = m::mock(Google2FA::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
     }
 
@@ -53,16 +46,27 @@ class TwoFactorSetupServiceTest extends TestCase
     {
         $model = factory(User::class)->make();
 
-        $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.bytes')->once()->andReturn(32);
-        $this->google2FA->shouldReceive('generateSecretKey')->with(32)->once()->andReturn('secretKey');
-        $this->config->shouldReceive('get')->with('app.name')->once()->andReturn('CompanyName');
-        $this->google2FA->shouldReceive('getQRCodeInline')->with('CompanyName', $model->email, 'secretKey')->once()->andReturn('http://url.com');
-        $this->encrypter->shouldReceive('encrypt')->with('secretKey')->once()->andReturn('encryptedSecret');
+        $this->config->shouldReceive('get')->with('pterodactyl.auth.2fa.bytes', 16)->andReturn(32);
+        $this->config->shouldReceive('get')->with('app.name')->andReturn('Company Name');
+        $this->encrypter->shouldReceive('encrypt')
+            ->with(m::on(function ($value) {
+                return preg_match('/([A-Z234567]{32})/', $value) !== false;
+            }))
+            ->once()
+            ->andReturn('encryptedSecret');
+
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, ['totp_secret' => 'encryptedSecret'])->once()->andReturnNull();
 
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);
-        $this->assertSame('http://url.com', $response);
+
+        $companyName = preg_quote(rawurlencode('Company Name'));
+        $email = preg_quote(rawurlencode($model->email));
+
+        $this->assertRegExp(
+            '/otpauth:\/\/totp\/' . $companyName . ':' . $email . '\?secret=([A-Z234567]{32})&issuer=' . $companyName . '/',
+            $response
+        );
     }
 
     /**
@@ -72,6 +76,6 @@ class TwoFactorSetupServiceTest extends TestCase
      */
     private function getService(): TwoFactorSetupService
     {
-        return new TwoFactorSetupService($this->config, $this->encrypter, $this->google2FA, $this->repository);
+        return new TwoFactorSetupService($this->config, $this->encrypter, $this->repository);
     }
 }
