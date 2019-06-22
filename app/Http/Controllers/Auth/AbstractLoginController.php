@@ -6,44 +6,16 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
-use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Auth\Events\Failed;
+use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 abstract class AbstractLoginController extends Controller
 {
     use AuthenticatesUsers;
-
-    /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    protected $auth;
-
-    /**
-     * @var \Illuminate\Contracts\Cache\Repository
-     */
-    protected $cache;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    protected $encrypter;
-
-    /**
-     * @var \PragmaRX\Google2FA\Google2FA
-     */
-    protected $google2FA;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    protected $repository;
 
     /**
      * Lockout time for failed login requests.
@@ -67,29 +39,28 @@ abstract class AbstractLoginController extends Controller
     protected $redirectTo = '/';
 
     /**
+     * @var \Illuminate\Auth\AuthManager
+     */
+    protected $auth;
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    protected $config;
+
+    /**
      * LoginController constructor.
      *
-     * @param \Illuminate\Auth\AuthManager                              $auth
-     * @param \Illuminate\Contracts\Cache\Repository                    $cache
-     * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
-     * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \Illuminate\Auth\AuthManager            $auth
+     * @param \Illuminate\Contracts\Config\Repository $config
      */
-    public function __construct(
-        AuthManager $auth,
-        CacheRepository $cache,
-        Encrypter $encrypter,
-        Google2FA $google2FA,
-        UserRepositoryInterface $repository
-    ) {
-        $this->auth = $auth;
-        $this->cache = $cache;
-        $this->encrypter = $encrypter;
-        $this->google2FA = $google2FA;
-        $this->repository = $repository;
+    public function __construct(AuthManager $auth, Repository $config)
+    {
+        $this->lockoutTime = $config->get('auth.lockout.time');
+        $this->maxLoginAttempts = $config->get('auth.lockout.attempts');
 
-        $this->lockoutTime = config('auth.lockout.time');
-        $this->maxLoginAttempts = config('auth.lockout.attempts');
+        $this->auth = $auth;
+        $this->config = $config;
     }
 
     /**
@@ -128,10 +99,12 @@ abstract class AbstractLoginController extends Controller
 
         $this->auth->guard()->login($user, true);
 
-        return response()->json([
-            'complete' => true,
-            'intended' => $this->redirectPath(),
-            'user' => $user->toVueObject(),
+        return JsonResponse::create([
+            'data' => [
+                'complete' => true,
+                'intended' => $this->redirectPath(),
+                'user' => $user->toVueObject(),
+            ],
         ]);
     }
 

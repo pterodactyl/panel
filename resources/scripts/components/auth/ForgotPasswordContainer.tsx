@@ -1,9 +1,7 @@
 import * as React from 'react';
-import OpenInputField from '@/components/forms/OpenInputField';
 import { Link } from 'react-router-dom';
 import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
 import { connect } from 'react-redux';
-import { ReduxState } from '@/redux/types';
 import { pushFlashMessage, clearAllFlashMessages } from '@/redux/actions/flash';
 import { httpErrorToHuman } from '@/api/http';
 

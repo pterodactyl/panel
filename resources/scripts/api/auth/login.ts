@@ -1,9 +1,9 @@
 import http from '@/api/http';
 
-interface LoginResponse {
+export interface LoginResponse {
     complete: boolean;
     intended?: string;
-    token?: string;
+    confirmationToken?: string;
 }
 
 export default (user: string, password: string): Promise<LoginResponse> => {
@@ -15,9 +15,9 @@ export default (user: string, password: string): Promise<LoginResponse> => {
                 }
 
                 return resolve({
-                    complete: response.data.complete,
-                    intended: response.data.intended || undefined,
-                    token: response.data.token || undefined,
+                    complete: response.data.data.complete,
+                    intended: response.data.data.intended || undefined,
+                    confirmationToken: response.data.data.confirmation_token || undefined,
                 });
             })
             .catch(reject);

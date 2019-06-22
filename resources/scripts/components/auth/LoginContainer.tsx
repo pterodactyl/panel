@@ -12,8 +12,6 @@ type State = Readonly<{
 }>;
 
 export default class LoginContainer extends React.PureComponent<RouteComponentProps, State> {
-    username = React.createRef<HTMLInputElement>();
-
     state: State = {
         isLoading: false,
     };
@@ -33,7 +31,7 @@ export default class LoginContainer extends React.PureComponent<RouteComponentPr
                     }
 
                     this.props.history.replace('/login/checkpoint', {
-                        token: response.token,
+                        token: response.confirmationToken,
                     });
                 })
                 .catch(error => this.setState({

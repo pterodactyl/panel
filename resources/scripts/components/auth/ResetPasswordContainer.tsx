@@ -95,9 +95,9 @@ class ResetPasswordContainer extends React.PureComponent<Props, State> {
                     <label>Email</label>
                     <input value={this.state.email || ''} disabled={true}/>
                     <div className={'mt-6'}>
-                        <label htmlFor={'new-password'}>New Password</label>
+                        <label htmlFor={'new_password'}>New Password</label>
                         <input
-                            id={'new-password'}
+                            id={'new_password'}
                             type={'password'}
                             required={true}
                             onChange={this.onPasswordChange}
@@ -107,9 +107,9 @@ class ResetPasswordContainer extends React.PureComponent<Props, State> {
                         </p>
                     </div>
                     <div className={'mt-6'}>
-                        <label htmlFor={'new-password-confirm'}>Confirm New Password</label>
+                        <label htmlFor={'new_password_confirm'}>Confirm New Password</label>
                         <input
-                            id={'new-password-confirm'}
+                            id={'new_password_confirm'}
                             type={'password'}
                             required={true}
                             onChange={this.onPasswordConfirmChange}
