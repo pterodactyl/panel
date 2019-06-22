@@ -7,6 +7,7 @@ import MessageBox from '@/components/MessageBox';
 import { Link } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import { httpErrorToHuman } from '@/api/http';
+import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
 type State = Readonly<{
     isLoading: boolean;
@@ -61,7 +62,7 @@ class LoginCheckpointContainer extends React.PureComponent<RouteComponentProps<{
                     Device Checkpoint
                 </h2>
                 <NetworkErrorMessage message={this.state.errorMessage}/>
-                <form className={'login-box'} onSubmit={this.submit}>
+                <LoginFormContainer onSubmit={this.submit}>
                     <MessageBox type={'warning'}>
                         This account is protected with two-factor authentication. A valid authentication token must
                         be provided in order to continue.
@@ -97,7 +98,7 @@ class LoginCheckpointContainer extends React.PureComponent<RouteComponentProps<{
                             Return to Login
                         </Link>
                     </div>
-                </form>
+                </LoginFormContainer>
             </React.Fragment>
         );
     }

@@ -4,6 +4,7 @@ import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
 import { connect } from 'react-redux';
 import { pushFlashMessage, clearAllFlashMessages } from '@/redux/actions/flash';
 import { httpErrorToHuman } from '@/api/http';
+import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
 type Props = Readonly<{
     pushFlashMessage: typeof pushFlashMessage;
@@ -60,7 +61,7 @@ class ForgotPasswordContainer extends React.PureComponent<Props, State> {
                 <h2 className={'text-center text-neutral-100 font-medium py-4'}>
                     Request Password Reset
                 </h2>
-                <form className={'login-box'} onSubmit={this.handleSubmission}>
+                <LoginFormContainer onSubmit={this.handleSubmission}>
                     <label htmlFor={'email'}>Email</label>
                     <input
                         ref={this.emailField}
@@ -94,7 +95,7 @@ class ForgotPasswordContainer extends React.PureComponent<Props, State> {
                             Return to Login
                         </Link>
                     </div>
-                </form>
+                </LoginFormContainer>
             </div>
         );
     }

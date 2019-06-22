@@ -7,6 +7,7 @@ import performPasswordReset from '@/api/auth/performPasswordReset';
 import { httpErrorToHuman } from '@/api/http';
 import { connect } from 'react-redux';
 import { pushFlashMessage, clearAllFlashMessages } from '@/redux/actions/flash';
+import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
 type State = Readonly<{
     email?: string;
@@ -91,7 +92,7 @@ class ResetPasswordContainer extends React.PureComponent<Props, State> {
                     Reset Password
                 </h2>
                 <NetworkErrorMessage message={this.state.errorMessage}/>
-                <form className={'login-box'} onSubmit={this.onSubmit}>
+                <LoginFormContainer onSubmit={this.onSubmit}>
                     <label>Email</label>
                     <input value={this.state.email || ''} disabled={true}/>
                     <div className={'mt-6'}>
@@ -136,7 +137,7 @@ class ResetPasswordContainer extends React.PureComponent<Props, State> {
                             Return to Login
                         </Link>
                     </div>
-                </form>
+                </LoginFormContainer>
             </div>
         );
     }

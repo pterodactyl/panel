@@ -3,6 +3,7 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import login from '@/api/auth/login';
 import { httpErrorToHuman } from '@/api/http';
 import NetworkErrorMessage from '@/components/NetworkErrorMessage';
+import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
 type State = Readonly<{
     errorMessage?: string;
@@ -61,7 +62,7 @@ export default class LoginContainer extends React.PureComponent<RouteComponentPr
                     Login to Continue
                 </h2>
                 <NetworkErrorMessage message={this.state.errorMessage}/>
-                <form className={'login-box'} onSubmit={this.submit}>
+                <LoginFormContainer onSubmit={this.submit}>
                     <label htmlFor={'username'}>Username or Email</label>
                     <input
                         id={'username'}
@@ -103,7 +104,7 @@ export default class LoginContainer extends React.PureComponent<RouteComponentPr
                             Forgot password?
                         </Link>
                     </div>
-                </form>
+                </LoginFormContainer>
             </React.Fragment>
         );
     }

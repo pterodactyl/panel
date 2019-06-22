@@ -12,7 +12,7 @@ node_modules
 _ide_helper.php
 .phpstorm.meta.php
 .php_cs.cache
-public/assets/*
+public/assets/manifest.json
 
 # For local development with docker
 # Remove if we ever put the Dockerfile in the repo
