@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
-import useRouter from 'use-react-router';
 import { StaticContext } from 'react-router';
 import FlashMessageRender from '@/components/FlashMessageRender';
 
-export default () => {
+export default ({ history, location: { state } }: RouteComponentProps<{}, StaticContext, { token?: string }>) => {
     const [ code, setCode ] = useState('');
     const [ isLoading, setIsLoading ] = useState(false);
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
-    const { history, location: { state } } = useRouter<{}, StaticContext, { token?: string }>();
 
     if (!state || !state.token) {
-        return history.replace('/login');
+        history.replace('/login');
+
+        return null;
     }
 
     const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {

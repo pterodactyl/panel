@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import login from '@/api/auth/login';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
-import useRouter from 'use-react-router';
 
-export default () => {
+export default ({ history }: RouteComponentProps) => {
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ isLoading, setLoading ] = useState(false);
-    const { history } = useRouter();
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
 
