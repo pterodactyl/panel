@@ -6,7 +6,7 @@ import AccountRouter from '@/routers/AccountRouter';
 import ServerOverviewContainer from '@/components/ServerOverviewContainer';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
-import { UserData } from '@/state/types';
+import TransitionRouter from '@/TransitionRouter';
 
 interface WindowWithUser extends Window {
     PterodactylUser?: {
@@ -39,11 +39,13 @@ const App = () => {
     return (
         <StoreProvider store={store}>
             <Router basename={'/'}>
-                <div className={'mx-auto px-10 w-auto'} style={{ maxWidth: '1000px' }}>
-                    <Route exact path="/" component={ServerOverviewContainer}/>
-                    <Route path="/auth" component={AuthenticationRouter}/>
-                    <Route path="/account" component={AccountRouter}/>
-                </div>
+                <TransitionRouter basename={'/'}>
+                    <div className={'mx-auto w-auto'} style={{ maxWidth: '1000px' }}>
+                        <Route exact path="/" component={ServerOverviewContainer}/>
+                        <Route path="/auth" component={AuthenticationRouter}/>
+                        <Route path="/account" component={AccountRouter}/>
+                    </div>
+                </TransitionRouter>
             </Router>
         </StoreProvider>
     );

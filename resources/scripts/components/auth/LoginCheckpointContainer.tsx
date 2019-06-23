@@ -15,7 +15,7 @@ export default ({ history, location: { state } }: RouteComponentProps<{}, Static
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
 
     if (!state || !state.token) {
-        history.replace('/login');
+        history.replace('/auth/login');
 
         return null;
     }
@@ -79,7 +79,7 @@ export default ({ history, location: { state } }: RouteComponentProps<{}, Static
                 </div>
                 <div className={'mt-6 text-center'}>
                     <Link
-                        to={'/login'}
+                        to={'/auth/login'}
                         className={'text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700'}
                     >
                         Return to Login

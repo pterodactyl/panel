@@ -28,7 +28,7 @@ export default ({ history }: RouteComponentProps) => {
                     return;
                 }
 
-                history.replace('/login/checkpoint', { token: response.confirmationToken });
+                history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
             })
             .catch(error => {
                 console.error(error);
@@ -82,7 +82,7 @@ export default ({ history }: RouteComponentProps) => {
                 </div>
                 <div className={'mt-6 text-center'}>
                     <Link
-                        to={'/password'}
+                        to={'/auth/password'}
                         className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
                     >
                         Forgot password?

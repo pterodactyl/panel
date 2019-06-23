@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 export default class DesignElements extends React.PureComponent {
     render () {
@@ -8,7 +9,10 @@ export default class DesignElements extends React.PureComponent {
                     <div className={'flex-1 mr-4'}>
                         <h2 className={'text-neutral-300 mb-2 px-4'}>A Special Announcement</h2>
                         <div className={'bg-neutral-700 p-4 rounded shadow-lg border-t-4 border-primary-400'}>
-                            <p className={'text-neutral-200 text-sm'}>Your demands have been received: Dark Mode will be default in Pterodactyl 0.8!</p>
+                            <p className={'text-neutral-200 text-sm'}>
+                                Your demands have been received: Dark Mode will be default in Pterodactyl 0.8!
+                            </p>
+                            <p><Link to={'/'}>Back</Link></p>
                         </div>
                     </div>
                     <div className={'ml-4 flex-1'}>

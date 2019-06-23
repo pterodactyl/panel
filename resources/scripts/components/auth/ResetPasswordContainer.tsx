@@ -41,7 +41,7 @@ export default (props: Props) => {
         })
             .then(() => {
                 addFlash({ type: 'success', message: 'Your password has been reset, please login to continue.' });
-                props.history.push('/login');
+                props.history.push('/auth/login');
             })
             .catch(error => {
                 console.error(error);
@@ -97,7 +97,7 @@ export default (props: Props) => {
                 </div>
                 <div className={'mt-6 text-center'}>
                     <Link
-                        to={'/login'}
+                        to={'/auth/login'}
                         className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
                     >
                         Return to Login

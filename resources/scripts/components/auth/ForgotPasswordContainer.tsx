@@ -66,7 +66,7 @@ export default () => {
                 </div>
                 <div className={'mt-6 text-center'}>
                     <Link
-                        to={'/login'}
+                        to={'/auth/login'}
                         className={'text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700'}
                     >
                         Return to Login
