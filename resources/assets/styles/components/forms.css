@@ -50,11 +50,15 @@ input[type=number] {
 }
 
 .input-dark {
-    @apply .p-3 .bg-neutral-600 .border .border-neutral-500 .text-sm .rounded .text-neutral-200;
+    @apply .p-3 .bg-neutral-600 .border .border-neutral-500 .text-sm .rounded .text-neutral-200 .shadow-none;
     transition: border 150ms linear, box-shaodw 150ms ease-in;
 
     &:focus {
-        @apply .shadow;
+        @apply .shadow-md .border-neutral-400;
+    }
+
+    &:hover {
+        @apply .border-neutral-400;
     }
 
     & + .input-help {
