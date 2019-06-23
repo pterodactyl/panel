@@ -23,7 +23,7 @@ interface WindowWithUser extends Window {
 
 const App = () => {
     const data = (window as WindowWithUser).PterodactylUser;
-    if (data) {
+    if (data && !store.getState().user.data) {
         store.getActions().user.setUserData({
             uuid: data.uuid,
             username: data.username,
