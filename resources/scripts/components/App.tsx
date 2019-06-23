@@ -39,13 +39,13 @@ const App = () => {
     return (
         <StoreProvider store={store}>
             <Router basename={'/'}>
-                <TransitionRouter basename={'/'}>
-                    <div className={'mx-auto w-auto'} style={{ maxWidth: '1000px' }}>
+                <div className={'mx-auto w-auto'} style={{ maxWidth: '1000px' }}>
+                    <TransitionRouter basename={'/'}>
                         <Route exact path="/" component={ServerOverviewContainer}/>
                         <Route path="/auth" component={AuthenticationRouter}/>
                         <Route path="/account" component={AccountRouter}/>
-                    </div>
-                </TransitionRouter>
+                    </TransitionRouter>
+                </div>
             </Router>
         </StoreProvider>
     );
