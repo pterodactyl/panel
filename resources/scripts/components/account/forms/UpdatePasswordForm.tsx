@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { State, useStoreState } from 'easy-peasy';
+import React from 'react';
+import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
 import { Form, Formik, FormikActions } from 'formik';
 import Field from '@/components/elements/Field';
 import * as Yup from 'yup';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import updateAccountPassword from '@/api/account/updateAccountPassword';
+import { httpErrorToHuman } from '@/api/http';
 
 interface Values {
     current: string;
@@ -22,13 +24,26 @@ const schema = Yup.object().shape({
 
 export default () => {
     const user = useStoreState((state: State<ApplicationState>) => state.user.data);
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
 
     if (!user) {
         return null;
     }
 
-    const submit = (values: Values, { setSubmitting }: FormikActions<Values>) => {
-        setTimeout(() => setSubmitting(false), 1500);
+    const submit = (values: Values, { resetForm, setSubmitting }: FormikActions<Values>) => {
+        clearFlashes('account:password');
+        updateAccountPassword({ ...values })
+            .then(() => {
+                resetForm();
+                addFlash({ key: 'account:password', type: 'success', message: 'Your password has been updated.' });
+            })
+            .catch(error => addFlash({
+                key: 'account:password',
+                type: 'error',
+                title: 'Error',
+                message: httpErrorToHuman(error),
+            }))
+            .then(() => setSubmitting(false));
     };
 
     return (

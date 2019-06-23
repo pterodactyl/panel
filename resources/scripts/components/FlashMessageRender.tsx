@@ -4,14 +4,20 @@ import { State, useStoreState } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
 
 type Props = Readonly<{
+    byKey?: string;
     spacerClass?: string;
     withBottomSpace?: boolean;
 }>;
 
-export default ({ withBottomSpace, spacerClass }: Props) => {
+export default ({ withBottomSpace, spacerClass, byKey }: Props) => {
     const flashes = useStoreState((state: State<ApplicationState>) => state.flashes.items);
 
-    if (flashes.length === 0) {
+    let filtered = flashes;
+    if (byKey) {
+        filtered = flashes.filter(flash => flash.key === byKey);
+    }
+
+    if (filtered.length === 0) {
         return null;
     }
 
@@ -19,7 +25,7 @@ export default ({ withBottomSpace, spacerClass }: Props) => {
     return (
         <div className={withBottomSpace === false ? undefined : 'mb-2'}>
             {
-                flashes.map((flash, index) => (
+                filtered.map((flash, index) => (
                     <React.Fragment key={flash.id || flash.type + flash.message}>
                         {index > 0 && <div className={spacerClass || 'mt-2'}></div>}
                         <MessageBox type={flash.type} title={flash.title}>

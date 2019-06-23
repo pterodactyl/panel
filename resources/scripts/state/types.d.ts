@@ -9,7 +9,7 @@ export interface ApplicationState {
 export interface FlashState {
     items: FlashMessage[];
     addFlash: Action<FlashState, FlashMessage>;
-    clearFlashes: Action<FlashState>;
+    clearFlashes: Action<FlashState, string | void>;
 }
 
 export interface UserState {
@@ -30,6 +30,7 @@ export interface UserData {
 
 export interface FlashMessage {
     id?: string;
+    key?: string;
     type: FlashMessageType;
     title?: string;
     message: string;

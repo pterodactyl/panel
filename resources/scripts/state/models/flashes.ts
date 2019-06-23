@@ -6,8 +6,8 @@ const flashes: FlashState = {
     addFlash: action((state, payload) => {
         state.items.push(payload);
     }),
-    clearFlashes: action(state => {
-        state.items = [];
+    clearFlashes: action((state, payload) => {
+        state.items = payload ? state.items.filter(flashes => flashes.key !== payload) : [];
     }),
 };
 

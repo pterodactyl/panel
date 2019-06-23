@@ -5,7 +5,7 @@ import UpdatePasswordForm from '@/components/account/forms/UpdatePasswordForm';
 export default () => {
     return (
         <div className={'flex my-10'}>
-            <ContentBox className={'flex-1 mr-4'} title={'Update Password'}>
+            <ContentBox className={'flex-1 mr-4'} title={'Update Password'} showFlashes={'account:password'}>
                 <UpdatePasswordForm/>
             </ContentBox>
             <div className={'flex-1 ml-4'}>
