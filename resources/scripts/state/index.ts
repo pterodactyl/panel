@@ -1,16 +1,11 @@
-import { action, createStore } from 'easy-peasy';
+import { createStore } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
+import flashes from '@/state/models/flashes';
+import user from '@/state/models/user';
 
 const state: ApplicationState = {
-    flashes: {
-        items: [],
-        addFlash: action((state, payload) => {
-            state.items.push(payload);
-        }),
-        clearFlashes: action(state => {
-            state.items = [];
-        }),
-    },
+    flashes,
+    user,
 };
 
 export const store = createStore(state);
