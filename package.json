@@ -8,6 +8,7 @@
         "date-fns": "^1.29.0",
         "easy-peasy": "^2.5.0",
         "feather-icons": "^4.10.0",
+        "formik": "^1.5.7",
         "jquery": "^3.3.1",
         "lodash": "^4.17.11",
         "query-string": "^6.7.0",
@@ -19,7 +20,8 @@
         "socket.io-client": "^2.2.0",
         "use-react-router": "^1.0.7",
         "ws-wrapper": "^2.0.0",
-        "xterm": "^3.5.1"
+        "xterm": "^3.5.1",
+        "yup": "^0.27.0"
     },
     "devDependencies": {
         "@babel/core": "^7.2.2",
@@ -35,6 +37,7 @@
         "@types/react-router-dom": "^4.3.3",
         "@types/react-transition-group": "^2.9.2",
         "@types/webpack-env": "^1.13.6",
+        "@types/yup": "^0.26.17",
         "@typescript-eslint/eslint-plugin": "^1.10.1",
         "@typescript-eslint/parser": "^1.10.1",
         "babel-loader": "^8.0.5",
