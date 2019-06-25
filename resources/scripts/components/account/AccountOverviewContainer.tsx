@@ -9,13 +9,9 @@ export default () => {
             <ContentBox className={'flex-1 mr-4'} title={'Update Password'} showFlashes={'account:password'}>
                 <UpdatePasswordForm/>
             </ContentBox>
-            <div className={'flex-1 ml-4'}>
-                <ContentBox title={'Update Email Address'} showFlashes={'account:email'}>
-                    <UpdateEmailAddressForm/>
-                </ContentBox>
-                <ContentBox title={'Update Identity'} className={'mt-8'}>
-                </ContentBox>
-            </div>
+            <ContentBox className={'flex-1 ml-4'} title={'Update Email Address'} showFlashes={'account:email'}>
+                <UpdateEmailAddressForm/>
+            </ContentBox>
         </div>
     );
 };
