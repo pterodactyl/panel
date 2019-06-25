@@ -1,6 +1,7 @@
 import * as React from 'react';
 import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/account/forms/UpdatePasswordForm';
+import UpdateEmailAddressForm from '@/components/account/forms/UpdateEmailAddressForm';
 
 export default () => {
     return (
@@ -9,7 +10,8 @@ export default () => {
                 <UpdatePasswordForm/>
             </ContentBox>
             <div className={'flex-1 ml-4'}>
-                <ContentBox title={'Update Email Address'}>
+                <ContentBox title={'Update Email Address'} showFlashes={'account:email'}>
+                    <UpdateEmailAddressForm/>
                 </ContentBox>
                 <ContentBox title={'Update Identity'} className={'mt-8'}>
                 </ContentBox>
