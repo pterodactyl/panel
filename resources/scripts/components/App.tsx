@@ -39,7 +39,7 @@ const App = () => {
     return (
         <StoreProvider store={store}>
             <Router basename={'/'}>
-                <div className={'mx-auto w-auto'} style={{ maxWidth: '1000px' }}>
+                <div className={'mx-auto w-auto'}>
                     <TransitionRouter basename={'/'}>
                         <Route exact path="/" component={ServerOverviewContainer}/>
                         <Route path="/auth" component={AuthenticationRouter}/>

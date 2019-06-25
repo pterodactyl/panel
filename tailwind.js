@@ -44,7 +44,7 @@ View the full documentation at https://tailwindcss.com.
 let colors = {
     'transparent': 'transparent',
 
-    'black': '#1F2933',
+    'black': 'hsl(210, 27%, 10%)',
     'white': '#ffffff',
     'basically-white': '#fafafb',
 
@@ -192,6 +192,12 @@ module.exports = {
             '-apple-system',
             'BlinkMacSystemFont',
             '"Helvetica Neue"',
+            '"Roboto"',
+            'system-ui',
+            'sans-serif',
+        ],
+        'header': [
+            '"IBM Plex Sans"',
             '"Roboto"',
             'system-ui',
             'sans-serif',
