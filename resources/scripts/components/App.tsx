@@ -2,11 +2,11 @@ import * as React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import AuthenticationRouter from '@/routers/AuthenticationRouter';
-import AccountRouter from '@/routers/AccountRouter';
 import ServerOverviewContainer from '@/components/ServerOverviewContainer';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
 import TransitionRouter from '@/TransitionRouter';
+import DashboardRouter from '@/routers/DashboardRouter';
 
 interface WindowWithUser extends Window {
     PterodactylUser?: {
@@ -41,9 +41,8 @@ const App = () => {
             <Router basename={'/'}>
                 <div className={'mx-auto w-auto'}>
                     <TransitionRouter basename={'/'}>
-                        <Route exact path="/" component={ServerOverviewContainer}/>
+                        <Route path="/" component={DashboardRouter}/>
                         <Route path="/auth" component={AuthenticationRouter}/>
-                        <Route path="/account" component={AccountRouter}/>
                     </TransitionRouter>
                 </div>
             </Router>
