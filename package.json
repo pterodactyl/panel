@@ -78,6 +78,6 @@
         "build": "NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "NODE_ENV=production ./node_modules/.bin/webpack",
         "serve": "yarn run clean && NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot",
-        "v:serve": "PUBLIC_PATH=http://pterodactyl.test:8080 yarn run serve"
+        "v:serve": "PUBLIC_PATH=https://pterodactyl.test:8080 yarn run serve --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
     }
 }
