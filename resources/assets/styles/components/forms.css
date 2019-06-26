@@ -79,7 +79,7 @@ input[type=number] {
 }
 
 label {
-    @apply .block .text-xs .font-medium .uppercase .text-neutral-700 .mb-2;
+    @apply .block .text-xs .uppercase .text-neutral-700 .mb-2;
 }
 
 select:not(.appearance-none) {
