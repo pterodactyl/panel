@@ -2,6 +2,8 @@ import React, { createRef, useEffect, useRef } from 'react';
 import { Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { State, useStoreState } from 'easy-peasy';
+import { ApplicationState } from '@/state/types';
 
 const theme = {
     background: 'transparent',
@@ -25,8 +27,9 @@ const theme = {
 };
 
 export default () => {
-    const ref = createRef<HTMLDivElement>();
+    const connected = useStoreState((state: State<ApplicationState>) => state.server.socket.connected);
 
+    const ref = createRef<HTMLDivElement>();
     const terminal = useRef(new Terminal({
         disableStdin: true,
         cursorStyle: 'underline',
@@ -50,7 +53,7 @@ export default () => {
 
     return (
         <div className={'text-xs font-mono relative'}>
-            <SpinnerOverlay visible={true} large={true}/>
+            <SpinnerOverlay visible={!connected} large={true}/>
             <div
                 className={'rounded-t p-2 bg-black overflow-scroll w-full'}
                 style={{
