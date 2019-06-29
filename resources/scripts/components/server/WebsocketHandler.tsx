@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
-import Sockette from 'sockette';
+import { Websocket } from '@/plugins/Websocket';
 
 export default () => {
     const server = useStoreState((state: State<ApplicationState>) => state.server.data);
     const instance = useStoreState((state: State<ApplicationState>) => state.server.socket.instance);
-    const setInstance = useStoreActions((actions: Actions<ApplicationState>) => actions.server.socket.setInstance);
-    const setConnectionState = useStoreActions((actions: Actions<ApplicationState>) => actions.server.socket.setConnectionState);
+    const setServerStatus = useStoreActions((actions: Actions<ApplicationState>) => actions.server.setServerStatus);
+    const { setInstance, setConnectionState } = useStoreActions((actions: Actions<ApplicationState>) => actions.server.socket);
 
     useEffect(() => {
         // If there is already an instance or there is no server, just exit out of this process
@@ -16,19 +16,20 @@ export default () => {
             return;
         }
 
-        console.log('need to connect to instance');
-        const socket = new Sockette(`wss://wings.pterodactyl.test:8080/api/servers/${server.uuid}/ws`, {
-            protocols: 'CC8kHCuMkXPosgzGO6d37wvhNcksWxG6kTrA',
-            // onmessage: (ev) => console.log(ev),
-            onopen: () => setConnectionState(true),
-            onclose: () => setConnectionState(false),
-            onerror: () => setConnectionState(false),
-        });
+        console.log('Connecting!');
 
-        console.log('Setting instance!');
+        const socket = new Websocket(
+            `wss://wings.pterodactyl.test:8080/api/servers/${server.uuid}/ws`,
+            'CC8kHCuMkXPosgzGO6d37wvhNcksWxG6kTrA'
+        );
+
+        socket.on('SOCKET_OPEN', () => setConnectionState(true));
+        socket.on('SOCKET_CLOSE', () => setConnectionState(false));
+        socket.on('SOCKET_ERROR', () => setConnectionState(false));
+        socket.on('status', (status) => setServerStatus(status));
 
         setInstance(socket);
-    }, [server]);
+    }, [ server ]);
 
     return null;
 };

@@ -1,10 +1,10 @@
 import { Action, action } from 'easy-peasy';
-import Sockette from 'sockette';
+import { Websocket } from '@/plugins/Websocket';
 
 export interface SocketState {
-    instance: Sockette | null;
+    instance: Websocket | null;
     connected: boolean;
-    setInstance: Action<SocketState, Sockette | null>;
+    setInstance: Action<SocketState, Websocket | null>;
     setConnectionState: Action<SocketState, boolean>;
 }
 
