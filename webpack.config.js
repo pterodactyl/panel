@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const _ = require('lodash');
 const path = require('path');
 const tailwind = require('tailwindcss');
@@ -52,7 +53,7 @@ module.exports = {
     performance: {
         hints: false,
     },
-    entry: ['./resources/assets/styles/main.css', './resources/scripts/index.tsx'],
+    entry: ['./resources/styles/main.css', './resources/scripts/index.tsx'],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
         filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
