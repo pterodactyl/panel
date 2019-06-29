@@ -1,22 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
     "module": "esnext",
+    "jsx": "react",
     "strict": true,
     "noImplicitReturns": true,
     "moduleResolution": "node",
-    "lib": [
-      "es2016",
-      "dom"
-    ],
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
     "baseUrl": ".",
+    "lib": ["es2015", "dom"],
     "paths": {
       "@/*": [
-        "./resources/assets/scripts/*"
+        "./resources/scripts/*"
       ]
     }
   },
   "include": [
-    "./resources/assets/scripts/**/*"
+    "./resources/scripts/**/*"
   ]
 }

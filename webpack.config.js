@@ -1,27 +1,18 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const _ = require('lodash');
 const path = require('path');
 const tailwind = require('tailwindcss');
 const glob = require('glob-all');
 
 const AssetsManifestPlugin = require('webpack-assets-manifest');
-const CleanPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ShellPlugin = require('webpack-shell-plugin');
 const PurgeCssPlugin = require('purgecss-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
-const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 let plugins = [
-    new CleanPlugin(path.resolve(__dirname, 'public/assets')),
-    new ShellPlugin({
-        onBuildStart: [
-            'php artisan vue-i18n:generate',
-            'php artisan ziggy:generate resources/assets/scripts/helpers/ziggy.js',
-        ],
-    }),
     new MiniCssExtractPlugin({ filename: isProduction ? 'bundle.[chunkhash:8].css' : 'bundle.[hash:8].css' }),
     new AssetsManifestPlugin({
         writeToDisk: true,
@@ -29,24 +20,17 @@ let plugins = [
         integrity: true,
         integrityHashes: ['sha384'],
     }),
-    new VueLoaderPlugin(),
-    new ForkTsCheckerWebpackPlugin({
-        vue: true,
-    }),
+    new ForkTsCheckerWebpackPlugin(),
 ];
 
 if (isProduction) {
     plugins = plugins.concat([
         new PurgeCssPlugin({
             paths: glob.sync([
-                path.join(__dirname, 'resources/assets/scripts/**/*.vue'),
-                path.join(__dirname, 'resources/assets/scripts/**/*.ts'),
+                path.join(__dirname, 'resources/scripts/**/*.ts'),
                 path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
             ]),
-            // Don't let PurgeCSS remove classes ending with -enter or -leave-active
-            // They're used by Vue transitions and are therefore not specifically defined
-            // in any of the files are are checked by PurgeCSS.
-            whitelistPatterns: [/^xterm/, /-enter$/, /-leave-active$/],
+            whitelistPatterns: [/^xterm/],
             extractors: [
                 {
                     extractor: class {
@@ -54,71 +38,22 @@ if (isProduction) {
                             return content.match(/[A-z0-9-:\/]+/g) || [];
                         }
                     },
-                    extensions: ['html', 'ts', 'js', 'php', 'vue'],
+                    extensions: ['html', 'ts', 'tsx', 'js', 'php'],
                 },
             ],
         }),
     ]);
 }
 
-const typescriptLoaders = [
-    {
-        loader: 'babel-loader',
-        options: {
-            cacheDirectory: !isProduction,
-            presets: ['@babel/preset-env'],
-            plugins: [
-                '@babel/plugin-proposal-class-properties',
-                '@babel/plugin-syntax-dynamic-import',
-                ['@babel/plugin-proposal-object-rest-spread', { 'useBuiltIns': true }]
-            ],
-        },
-    },
-    {
-        loader: 'ts-loader',
-        options: {
-            appendTsSuffixTo: [/\.vue$/],
-            experimentalWatchApi: true,
-            transpileOnly: true,
-        }
-    }
-];
-
-const cssLoaders = [
-    { loader: MiniCssExtractPlugin.loader },
-    {
-        loader: 'css-loader',
-        options: {
-            sourceMap: !isProduction,
-            importLoaders: 1,
-        }
-    },
-    { loader: 'resolve-url-loader' },
-    {
-        loader: 'postcss-loader',
-        options: {
-            ident: 'postcss',
-            sourceMap: true,
-            plugins: [
-                require('postcss-import'),
-                tailwind('./tailwind.js'),
-                require('postcss-preset-env')({
-                    stage: 2,
-                }),
-                require('precss'),
-            ].concat(isProduction ? require('cssnano') : []),
-        }
-    }
-];
-
 module.exports = {
+    cache: true,
     target: 'web',
     mode: process.env.NODE_ENV,
-    devtool: isProduction ? false : 'eval-source-map',
+    devtool: isProduction ? false : 'cheap-eval-source-map',
     performance: {
         hints: false,
     },
-    entry: ['./resources/assets/styles/main.css', './resources/assets/scripts/app.ts'],
+    entry: ['./resources/styles/main.css', './resources/scripts/index.tsx'],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
         filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
@@ -129,34 +64,57 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                exclude: file => (/node_modules/.test(file) && !/\.vue\.js/.test(file)),
-                options: {
-                    cacheDirectory: !isProduction,
-                    presets: ['@babel/preset-env'],
-                    plugins: [
-                        '@babel/plugin-proposal-class-properties',
-                        '@babel/plugin-syntax-dynamic-import',
-                        ['@babel/plugin-proposal-object-rest-spread', { 'useBuiltIns': true }]
-                    ],
-                },
-            },
-            {
-                test: /\.vue$/,
-                use: 'vue-loader',
-            },
-            {
-                test: /\.ts$/,
+                test: /\.tsx?$/,
                 exclude: /node_modules/,
-                use: typescriptLoaders,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                        options: {
+                            cacheDirectory: !isProduction,
+                            presets: ['@babel/preset-env', '@babel/preset-react'],
+                            plugins: ['react-hot-loader/babel', '@babel/plugin-syntax-dynamic-import'],
+                        },
+                    },
+                    {
+                        loader: 'ts-loader',
+                        options: {
+                            experimentalWatchApi: true,
+                            transpileOnly: true,
+                        },
+                    },
+                ],
             },
             {
                 test: /\.css$/,
                 include: [
                     path.resolve(__dirname, 'resources'),
                 ],
-                use: cssLoaders,
+                use: [
+                    { loader: MiniCssExtractPlugin.loader },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: !isProduction,
+                            importLoaders: 1,
+                        },
+                    },
+                    { loader: 'resolve-url-loader' },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            ident: 'postcss',
+                            sourceMap: true,
+                            plugins: [
+                                require('postcss-import'),
+                                tailwind('./tailwind.js'),
+                                require('postcss-preset-env')({
+                                    stage: 2,
+                                }),
+                                require('precss'),
+                            ].concat(isProduction ? require('cssnano') : []),
+                        },
+                    },
+                ],
             },
             {
                 test: /\.(png|jpg|gif|svg)$/,
@@ -168,41 +126,29 @@ module.exports = {
         ],
     },
     resolve: {
-        extensions: ['.ts', '.js', '.vue', '.json'],
+        extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
-            'vue$': 'vue/dist/vue.esm.js',
-            '@': path.join(__dirname, 'resources/assets/scripts'),
+            '@': path.join(__dirname, 'resources/scripts'),
+            'react-dom': '@hot-loader/react-dom',
         },
         symlinks: false,
     },
     plugins: plugins,
     optimization: {
         minimize: true,
-        minimizer: !isProduction ? [] : [
-            new UglifyJsPlugin({
+        minimizer: [
+            new TerserPlugin({
                 cache: true,
                 parallel: true,
-                uglifyOptions: {
+                terserOptions: {
+                    safari10: true,
+                    mangle: true,
                     output: {
                         comments: false,
                     },
                 },
             }),
         ],
-        splitChunks: {
-            cacheGroups: {
-                locales: {
-                    test: /locales/,
-                    name: 'locales',
-                    chunks: 'initial',
-                },
-                vendors: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendor',
-                    chunks: 'initial',
-                },
-            }
-        }
     },
     devServer: {
         contentBase: path.join(__dirname, 'public'),

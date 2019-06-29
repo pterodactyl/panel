@@ -12,7 +12,6 @@ we've done our very best to explain each section.
 
 View the full documentation at https://tailwindcss.com.
 
-
 |-------------------------------------------------------------------------------
 | The default config
 |-------------------------------------------------------------------------------
@@ -45,7 +44,7 @@ View the full documentation at https://tailwindcss.com.
 let colors = {
     'transparent': 'transparent',
 
-    'black': '#1F2933',
+    'black': 'hsl(210, 27%, 10%)',
     'white': '#ffffff',
     'basically-white': '#fafafb',
 
@@ -60,7 +59,7 @@ let colors = {
     'primary-600': 'hsl(214, 95%, 36%)', // dark
     'primary-700': 'hsl(215, 96%, 32%)',
     'primary-800': 'hsl(216, 98%, 25%)', // darker
-    'primary-900': 'hsl(218, 100%, 17%)', //darkest
+    'primary-900': 'hsl(218, 100%, 17%)', // darkest
 
     // Color used the most in the design and make up the majority of the UI.
     'neutral-50': 'hsl(216, 33%, 97%)',
@@ -163,10 +162,10 @@ module.exports = {
         'lg': '992px',
         'xl': '1200px',
 
-        'xsx': {'max': '575px'},
-        'smx': {'max': '767px'},
-        'mdx': {'max': '991px'},
-        'lgx': {'max': '1999px'},
+        'xsx': { 'max': '575px' },
+        'smx': { 'max': '767px' },
+        'mdx': { 'max': '991px' },
+        'lgx': { 'max': '1999px' },
     },
 
     /*
@@ -189,9 +188,16 @@ module.exports = {
 
     fonts: {
         'sans': [
+            'Rubik',
             '-apple-system',
             'BlinkMacSystemFont',
             '"Helvetica Neue"',
+            '"Roboto"',
+            'system-ui',
+            'sans-serif',
+        ],
+        'header': [
+            '"IBM Plex Sans"',
             '"Roboto"',
             'system-ui',
             'sans-serif',
@@ -209,7 +215,7 @@ module.exports = {
             'Monaco',
             'Consolas',
             'monospace',
-        ]
+        ],
     },
 
     /*
@@ -394,7 +400,7 @@ module.exports = {
     |
     */
 
-    borderColors: global.Object.assign({default: colors['neutral-400']}, colors),
+    borderColors: global.Object.assign({ default: colors['neutral-400'] }, colors),
 
     /*
     |-----------------------------------------------------------------------------
@@ -469,7 +475,7 @@ module.exports = {
         '1/6': '16.66667%',
         '5/6': '83.33333%',
         'full': '100%',
-        'screen': '100vw'
+        'screen': '100vw',
     },
 
     /*
@@ -504,7 +510,7 @@ module.exports = {
         '48': '12rem',
         '64': '16rem',
         'full': '100%',
-        'screen': '100vh'
+        'screen': '100vh',
     },
 
     /*
@@ -543,7 +549,7 @@ module.exports = {
     minHeight: {
         '0': '0',
         'full': '100%',
-        'screen': '100vh'
+        'screen': '100vh',
     },
 
     /*

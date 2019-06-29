@@ -35,15 +35,11 @@
     <body class="{{ $css['body'] ?? 'bg-neutral-50' }}">
         @section('content')
             @yield('above-container')
-            <div id="pterodactyl" class="flex flex-col">
-                @yield('container')
-            </div>
+            @yield('container')
             @yield('below-container')
         @show
         @section('scripts')
             {!! $asset->js('main.js') !!}
-            {!! $asset->js('vendor.js') !!}
-            {!! $asset->js('locales.js') !!}
         @show
     </body>
 </html>
