@@ -29,7 +29,7 @@
         "lord/laroute": "^2.4",
         "matriphe/iso-639": "^1.2",
         "nesbot/carbon": "^1.22",
-        "pragmarx/google2fa": "^2.0",
+        "pragmarx/google2fa": "^5.0",
         "predis/predis": "^1.1",
         "prologue/alerts": "^0.4",
         "ramsey/uuid": "^3.7",

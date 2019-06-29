@@ -95,7 +95,7 @@ class SecurityControllerTest extends ControllerTestCase
 
         $response = $this->getController()->generateTotp($this->request);
         $this->assertIsJsonResponse($response);
-        $this->assertResponseJsonEquals(['qrImage' => 'qrCodeImage'], $response);
+        $this->assertResponseJsonEquals(['qrImage' => 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=qrCodeImage'], $response);
     }
 
     /**
