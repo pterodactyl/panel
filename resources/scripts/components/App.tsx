@@ -41,9 +41,9 @@ const App = () => {
                 <div className={'mx-auto w-auto'}>
                     <BrowserRouter basename={'/'}>
                         <Switch>
-                            <Route path="/" component={DashboardRouter}/>
+                            <Route path="/server/:id" component={ServerRouter}/>
                             <Route path="/auth" component={AuthenticationRouter}/>
-                            <Route path="/server/:id/" component={ServerRouter}/>
+                            <Route path="/" component={DashboardRouter}/>
                         </Switch>
                     </BrowserRouter>
                 </div>

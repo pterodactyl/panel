@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router';
+import { Route } from 'react-router';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 
 type Props = Readonly<{

@@ -1,5 +1,7 @@
 import React from 'react';
 
 export default () => (
-    null
+    <div className={'my-10'}>
+        Test
+    </div>
 );

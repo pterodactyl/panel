@@ -7,7 +7,7 @@ import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import TransitionRouter from '@/TransitionRouter';
 
 export default ({ location }: RouteComponentProps) => (
-    <div>
+    <React.Fragment>
         <NavigationBar/>
         <TransitionRouter>
             <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
@@ -18,5 +18,5 @@ export default ({ location }: RouteComponentProps) => (
                 </Switch>
             </div>
         </TransitionRouter>
-    </div>
+    </React.Fragment>
 );
