@@ -21,9 +21,12 @@
         "react-router-dom": "^5.0.1",
         "react-transition-group": "^4.1.0",
         "socket.io-client": "^2.2.0",
+        "sockette": "^2.0.6",
         "use-react-router": "^1.0.7",
         "ws-wrapper": "^2.0.0",
-        "xterm": "^3.5.1",
+        "xterm": "^3.14.4",
+        "xterm-addon-attach": "^0.1.0",
+        "xterm-addon-fit": "^0.1.0",
         "yup": "^0.27.0"
     },
     "devDependencies": {

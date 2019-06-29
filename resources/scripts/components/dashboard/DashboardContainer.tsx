@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 
 export default () => (
     <div className={'my-10'}>
-        <Link to={'/server/123'} className={'flex no-underline text-neutral-200 cursor-pointer items-center bg-neutral-700 p-4 border border-transparent hover:border-neutral-500'}>
+        <Link to={'/server/e9d6c836'} className={'flex no-underline text-neutral-200 cursor-pointer items-center bg-neutral-700 p-4 border border-transparent hover:border-neutral-500'}>
             <div className={'rounded-full bg-neutral-500 p-3'}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
