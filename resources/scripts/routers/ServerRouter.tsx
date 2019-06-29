@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
-import DesignElementsContainer from '@/components/dashboard/DesignElementsContainer';
-import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import NavigationBar from '@/components/NavigationBar';
-import DashboardContainer from '@/components/dashboard/DashboardContainer';
+import ServerConsole from '@/components/server/ServerConsole';
 import TransitionRouter from '@/TransitionRouter';
 
 export default ({ location }: RouteComponentProps) => (
@@ -12,9 +10,7 @@ export default ({ location }: RouteComponentProps) => (
         <TransitionRouter>
             <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
                 <Switch location={location}>
-                    <Route path={'/'} component={DashboardContainer} exact/>
-                    <Route path={'/account'} component={AccountOverviewContainer}/>
-                    <Route path={'/design'} component={DesignElementsContainer}/>
+                    <Route path={`/`} component={ServerConsole} exact/>
                 </Switch>
             </div>
         </TransitionRouter>

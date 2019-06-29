@@ -5,10 +5,11 @@ import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
 import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
 import { faHdd } from '@fortawesome/free-solid-svg-icons/faHdd';
 import { faEthernet } from '@fortawesome/free-solid-svg-icons/faEthernet';
+import { Link } from 'react-router-dom';
 
 export default () => (
     <div className={'my-10'}>
-        <div className={'flex cursor-pointer items-center bg-neutral-700 p-4 border border-transparent hover:border-neutral-500'}>
+        <Link to={'/server/123'} className={'flex no-underline text-neutral-200 cursor-pointer items-center bg-neutral-700 p-4 border border-transparent hover:border-neutral-500'}>
             <div className={'rounded-full bg-neutral-500 p-3'}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
@@ -47,7 +48,7 @@ export default () => (
                     <p className={'text-xs text-neutral-600 text-center mt-1'}>of 16 GB</p>
                 </div>
             </div>
-        </div>
+        </Link>
         <div className={'flex mt-px cursor-pointer items-center bg-neutral-700 p-4 border border-transparent hover:border-neutral-500'}>
             <div className={'rounded-full bg-neutral-500 p-3'}>
                 <FontAwesomeIcon icon={faServer}/>

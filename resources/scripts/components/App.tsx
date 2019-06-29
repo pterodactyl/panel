@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader/root';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import AuthenticationRouter from '@/routers/AuthenticationRouter';
-import ServerOverviewContainer from '@/components/ServerOverviewContainer';
+import { BrowserRouter, BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
-import TransitionRouter from '@/TransitionRouter';
 import DashboardRouter from '@/routers/DashboardRouter';
+import ServerRouter from '@/routers/ServerRouter';
+import AuthenticationRouter from '@/routers/AuthenticationRouter';
 
 interface WindowWithUser extends Window {
     PterodactylUser?: {
@@ -40,10 +39,13 @@ const App = () => {
         <StoreProvider store={store}>
             <Router basename={'/'}>
                 <div className={'mx-auto w-auto'}>
-                    <TransitionRouter basename={'/'}>
-                        <Route path="/" component={DashboardRouter}/>
-                        <Route path="/auth" component={AuthenticationRouter}/>
-                    </TransitionRouter>
+                    <BrowserRouter basename={'/'}>
+                        <Switch>
+                            <Route path="/" component={DashboardRouter}/>
+                            <Route path="/auth" component={AuthenticationRouter}/>
+                            <Route path="/server/:id/" component={ServerRouter}/>
+                        </Switch>
+                    </BrowserRouter>
                 </div>
             </Router>
         </StoreProvider>
