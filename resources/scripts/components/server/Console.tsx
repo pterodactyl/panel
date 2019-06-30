@@ -4,6 +4,7 @@ import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { State, useStoreState } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
+import { connect } from 'formik';
 
 const theme = {
     background: 'transparent',
@@ -27,7 +28,7 @@ const theme = {
 };
 
 export default () => {
-    const connected = useStoreState((state: State<ApplicationState>) => state.server.socket.connected);
+    const { instance, connected } = useStoreState((state: State<ApplicationState>) => state.server.socket);
 
     const ref = createRef<HTMLDivElement>();
     const terminal = useRef(new Terminal({
@@ -40,16 +41,33 @@ export default () => {
         theme: theme,
     }));
 
+    const handleServerLog = (lines: string[]) => lines.forEach(data => {
+        return data.split(/\n/g).forEach(line => terminal.current.writeln(line + '\u001b[0m'));
+    });
+
+    const handleConsoleOutput = (line: string) => terminal.current.writeln(line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
+
     useEffect(() => {
         ref.current && terminal.current.open(ref.current);
 
         // @see https://github.com/xtermjs/xterm.js/issues/2265
         // @see https://github.com/xtermjs/xterm.js/issues/2230
         TerminalFit.fit(terminal.current);
-
-        terminal.current.writeln('Testing console data');
-        terminal.current.writeln('Testing other data');
     }, []);
+
+    useEffect(() => {
+        if (connected && instance) {
+            instance.addListener('server log', handleServerLog);
+            instance.addListener('console output', handleConsoleOutput);
+        }
+    }, [connected]);
+
+    useEffect(() => () => {
+        if (instance) {
+            instance.removeListener('server log', handleServerLog);
+            instance.removeListener('console output', handleConsoleOutput);
+        }
+    });
 
     return (
         <div className={'text-xs font-mono relative'}>

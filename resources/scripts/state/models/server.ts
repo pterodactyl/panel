@@ -2,7 +2,7 @@ import getServer, { Server } from '@/api/server/getServer';
 import { action, Action, thunk, Thunk } from 'easy-peasy';
 import socket, { SocketState } from './socket';
 
-export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'online';
+export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
 export interface ServerState {
     data?: Server;

@@ -39,15 +39,13 @@ export class Websocket extends EventEmitter {
         this.socket.open();
     }
 
-    json (data: any) {
-        this.socket.json(data);
-    }
-
     reconnect () {
         this.socket.reconnect();
     }
 
-    send (data: any) {
-        this.socket.send(data);
+    send (event: string, payload?: string | string[]) {
+        this.socket.send(JSON.stringify({
+            event, args: Array.isArray(payload) ? payload : [ payload ],
+        }));
     }
 }
