@@ -6,6 +6,7 @@ import { store } from '@/state';
 import DashboardRouter from '@/routers/DashboardRouter';
 import ServerRouter from '@/routers/ServerRouter';
 import AuthenticationRouter from '@/routers/AuthenticationRouter';
+import { Provider } from 'react-redux';
 
 interface WindowWithUser extends Window {
     PterodactylUser?: {
@@ -37,17 +38,19 @@ const App = () => {
 
     return (
         <StoreProvider store={store}>
-            <Router basename={'/'}>
-                <div className={'mx-auto w-auto'}>
-                    <BrowserRouter basename={'/'}>
-                        <Switch>
-                            <Route path="/server/:id" component={ServerRouter}/>
-                            <Route path="/auth" component={AuthenticationRouter}/>
-                            <Route path="/" component={DashboardRouter}/>
-                        </Switch>
-                    </BrowserRouter>
-                </div>
-            </Router>
+            <Provider store={store}>
+                <Router basename={'/'}>
+                    <div className={'mx-auto w-auto'}>
+                        <BrowserRouter basename={'/'}>
+                            <Switch>
+                                <Route path="/server/:id" component={ServerRouter}/>
+                                <Route path="/auth" component={AuthenticationRouter}/>
+                                <Route path="/" component={DashboardRouter}/>
+                            </Switch>
+                        </BrowserRouter>
+                    </div>
+                </Router>
+            </Provider>
         </StoreProvider>
     );
 };

@@ -1,9 +1,10 @@
-import React, { createRef, useEffect, useRef } from 'react';
+import React, { createRef } from 'react';
 import { Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { State, useStoreState } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
+import { connect } from 'react-redux';
+import { Websocket } from '@/plugins/Websocket';
 
 const theme = {
     background: 'transparent',
@@ -26,11 +27,14 @@ const theme = {
     brightWhite: '#ffffff',
 };
 
-export default () => {
-    const { instance, connected } = useStoreState((state: State<ApplicationState>) => state.server.socket);
+interface Props {
+    connected: boolean;
+    instance: Websocket | null;
+}
 
-    const ref = createRef<HTMLDivElement>();
-    const terminal = useRef(new Terminal({
+class Console extends React.PureComponent<Readonly<Props>> {
+    ref = createRef<HTMLDivElement>();
+    terminal = new Terminal({
         disableStdin: true,
         cursorStyle: 'underline',
         allowTransparency: true,
@@ -38,55 +42,79 @@ export default () => {
         fontFamily: 'Menlo, Monaco, Consolas, monospace',
         rows: 30,
         theme: theme,
-    }));
-
-    const handleServerLog = (lines: string[]) => lines.forEach(data => {
-        return data.split(/\n/g).forEach(line => terminal.current.writeln(line + '\u001b[0m'));
     });
 
-    const handleConsoleOutput = (line: string) => terminal.current.writeln(line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
+    componentDidMount () {
+        if (this.ref.current) {
+            this.terminal.open(this.ref.current);
+            this.terminal.clear();
 
-    useEffect(() => {
-        ref.current && terminal.current.open(ref.current);
-
-        // @see https://github.com/xtermjs/xterm.js/issues/2265
-        // @see https://github.com/xtermjs/xterm.js/issues/2230
-        TerminalFit.fit(terminal.current);
-    }, []);
-
-    useEffect(() => {
-        if (connected && instance) {
-            instance.addListener('server log', handleServerLog);
-            instance.addListener('console output', handleConsoleOutput);
-            instance.send('send logs');
+            // @see https://github.com/xtermjs/xterm.js/issues/2265
+            // @see https://github.com/xtermjs/xterm.js/issues/2230
+            TerminalFit.fit(this.terminal);
         }
-    }, [connected]);
 
-    useEffect(() => () => {
-        if (instance) {
-            instance.removeListener('server log', handleServerLog);
-            instance.removeListener('console output', handleConsoleOutput);
+        if (this.props.connected && this.props.instance) {
+            this.listenForEvents();
         }
-    }, []);
+    }
 
-    return (
-        <div className={'text-xs font-mono relative'}>
-            <SpinnerOverlay visible={!connected} large={true}/>
-            <div
-                className={'rounded-t p-2 bg-black overflow-scroll w-full'}
-                style={{
-                    minHeight: '16rem',
-                    maxHeight: '64rem',
-                }}
-            >
-                <div id={'terminal'} ref={ref}/>
-            </div>
-            <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
-                <div className={'flex-no-shrink p-2 font-bold'}>$</div>
-                <div className={'w-full'}>
-                    <input type={'text'} className={'bg-transparent text-neutral-100 p-2 pl-0 w-full'}/>
+    componentDidUpdate (prevProps: Readonly<Readonly<Props>>) {
+        if (!prevProps.connected && this.props.connected) {
+            this.listenForEvents();
+        }
+    }
+
+    componentWillUnmount () {
+        if (this.props.instance) {
+            this.props.instance.removeListener('server log', this.handleServerLog);
+            this.props.instance.removeListener('server log', this.handleConsoleOutput);
+        }
+    }
+
+    listenForEvents () {
+        const instance = this.props.instance!;
+
+        instance.addListener('server log', this.handleServerLog);
+        instance.addListener('console output', this.handleConsoleOutput);
+        instance.send('send logs');
+    }
+
+    handleServerLog = (lines: string[]) => lines.forEach(data => {
+        return data.split(/\n/g).forEach(line => this.terminal.writeln(line + '\u001b[0m'));
+    });
+
+    handleConsoleOutput = (line: string) => this.terminal.writeln(
+        line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+    );
+
+    render () {
+        return (
+            <div className={'text-xs font-mono relative'}>
+                <SpinnerOverlay visible={!this.props.connected} large={true}/>
+                <div
+                    className={'rounded-t p-2 bg-black overflow-scroll w-full'}
+                    style={{
+                        minHeight: '16rem',
+                        maxHeight: '64rem',
+                    }}
+                >
+                    <div id={'terminal'} ref={this.ref}/>
+                </div>
+                <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
+                    <div className={'flex-no-shrink p-2 font-bold'}>$</div>
+                    <div className={'w-full'}>
+                        <input type={'text'} className={'bg-transparent text-neutral-100 p-2 pl-0 w-full'}/>
+                    </div>
                 </div>
             </div>
-        </div>
-    );
-};
+        );
+    }
+}
+
+export default connect(
+    (state: ApplicationState) => ({
+        connected: state.server.socket.connected,
+        instance: state.server.socket.instance,
+    }),
+)(Console);
