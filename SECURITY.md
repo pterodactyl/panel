@@ -9,6 +9,6 @@
 
 ## Reporting a Vulnerability
 
-To report a security vulnerability, you can :
-- Contact dane at dane@daneeveritt.com
-- Contact him on Discord (Tactical Fish#8008)
+To report a security vulnerability, you can contact Dane by :
+- Emailing him at dane@daneeveritt.com
+- Sending him a message on Discord (Tactical Fish#8008)
