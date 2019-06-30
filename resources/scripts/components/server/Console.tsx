@@ -59,6 +59,7 @@ export default () => {
         if (connected && instance) {
             instance.addListener('server log', handleServerLog);
             instance.addListener('console output', handleConsoleOutput);
+            instance.send('send logs');
         }
     }, [connected]);
 
