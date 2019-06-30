@@ -4,7 +4,6 @@ import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { State, useStoreState } from 'easy-peasy';
 import { ApplicationState } from '@/state/types';
-import { connect } from 'formik';
 
 const theme = {
     background: 'transparent',
@@ -68,7 +67,7 @@ export default () => {
             instance.removeListener('server log', handleServerLog);
             instance.removeListener('console output', handleConsoleOutput);
         }
-    });
+    }, []);
 
     return (
         <div className={'text-xs font-mono relative'}>
