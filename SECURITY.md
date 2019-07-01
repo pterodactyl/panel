@@ -9,6 +9,6 @@
 
 ## Reporting a Vulnerability
 
-To report a security vulnerability, you can contact Dane by :
-- Emailing him at dane@daneeveritt.com
-- Sending him a message on Discord (Tactical Fish#8008)
+To report a security vulnerability, you can contact Pterodactyl by :
+- Emailing us: support@pterodactyl.io
+- Sending the Project Team a message on our [Discord](https://pterodactyl.io/discord)
