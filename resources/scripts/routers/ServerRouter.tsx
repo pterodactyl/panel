@@ -5,9 +5,9 @@ import ServerConsole from '@/components/server/ServerConsole';
 import TransitionRouter from '@/TransitionRouter';
 import Spinner from '@/components/elements/Spinner';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
-import ServerDatabases from '@/components/server/ServerDatabases';
 import { ServerContext } from '@/state/server';
 import { Provider } from 'react-redux';
+import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -45,7 +45,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <WebsocketHandler/>
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
-                                    <Route path={`${match.path}/databases`} component={ServerDatabases}/>
+                                    <Route path={`${match.path}/databases`} component={DatabasesContainer}/>
                                 </Switch>
                             </React.Fragment>
                         }
