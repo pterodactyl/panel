@@ -8,6 +8,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import DatabaseRow from '@/components/server/databases/DatabaseRow';
 import Spinner from '@/components/elements/Spinner';
 import { CSSTransition } from 'react-transition-group';
+import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseButton';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -45,10 +46,8 @@ export default () => {
                                 It looks like you have no databases. Click the button below to create one now.
                             </p>
                         }
-                        <div className={'mt-6 text-right'}>
-                            <button className={'btn btn-primary btn-lg'}>
-                                Create Database
-                            </button>
+                        <div className={'mt-6 flex justify-end'}>
+                            <CreateDatabaseButton onCreated={database => setDatabases(s => [...s, database])}/>
                         </div>
                     </React.Fragment>
                 </CSSTransition>
