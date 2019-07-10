@@ -28,10 +28,10 @@ export default ({ database }: { database: ServerDatabase }) => {
             </div>
             <div className={'ml-6'}>
                 <button className={'btn btn-sm btn-secondary mr-2'}>
-                    <FontAwesomeIcon icon={faEye}/>
+                    <FontAwesomeIcon icon={faEye} fixedWidth={true}/>
                 </button>
                 <button className={'btn btn-sm btn-secondary btn-red'}>
-                    <FontAwesomeIcon icon={faTrashAlt}/>
+                    <FontAwesomeIcon icon={faTrashAlt} fixedWidth={true}/>
                 </button>
             </div>
         </div>

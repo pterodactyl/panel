@@ -31,7 +31,7 @@ export default () => {
     }, []);
 
     return (
-        <div className={'my-10'}>
+        <div className={'my-10 mb-6'}>
             <FlashMessageRender byKey={'databases'}/>
             {loading ?
                 <Spinner large={true} centered={true}/>
@@ -41,8 +41,15 @@ export default () => {
                         {databases.length > 0 ?
                             databases.map(database => <DatabaseRow key={database.id} database={database}/>)
                             :
-                            <p className={'text-sm text-neutral-200'}>No databases. :(</p>
+                            <p className={'text-center text-sm text-neutral-200'}>
+                                It looks like you have no databases. Click the button below to create one now.
+                            </p>
                         }
+                        <div className={'mt-6 text-right'}>
+                            <button className={'btn btn-primary btn-lg'}>
+                                Create Database
+                            </button>
+                        </div>
                     </React.Fragment>
                 </CSSTransition>
             }
