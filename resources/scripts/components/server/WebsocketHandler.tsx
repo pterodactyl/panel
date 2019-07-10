@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
-import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
 import { Websocket } from '@/plugins/Websocket';
+import { ServerContext } from '@/state/server';
 
 export default () => {
-    const server = useStoreState((state: State<ApplicationState>) => state.server.data);
-    const instance = useStoreState((state: State<ApplicationState>) => state.server.socket.instance);
-    const setServerStatus = useStoreActions((actions: Actions<ApplicationState>) => actions.server.setServerStatus);
-    const { setInstance, setConnectionState } = useStoreActions((actions: Actions<ApplicationState>) => actions.server.socket);
+    const server = ServerContext.useStoreState(state => state.server.data);
+    const instance = ServerContext.useStoreState(state => state.socket.instance);
+    const setServerStatus = ServerContext.useStoreActions(actions => actions.status.setServerStatus);
+    const { setInstance, setConnectionState } = ServerContext.useStoreActions(actions => actions.socket);
 
     useEffect(() => {
         // If there is already an instance or there is no server, just exit out of this process
@@ -20,7 +19,7 @@ export default () => {
 
         const socket = new Websocket(
             `wss://wings.pterodactyl.test:8080/api/servers/${server.uuid}/ws`,
-            'CC8kHCuMkXPosgzGO6d37wvhNcksWxG6kTrA'
+            'CC8kHCuMkXPosgzGO6d37wvhNcksWxG6kTrA',
         );
 
         socket.on('SOCKET_OPEN', () => setConnectionState(true));

@@ -1,7 +1,7 @@
 import React from 'react';
 import MessageBox from '@/components/MessageBox';
 import { State, useStoreState } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
+import { ApplicationStore } from '@/state';
 
 type Props = Readonly<{
     byKey?: string;
@@ -10,7 +10,7 @@ type Props = Readonly<{
 }>;
 
 export default ({ withBottomSpace, spacerClass, byKey }: Props) => {
-    const flashes = useStoreState((state: State<ApplicationState>) => state.flashes.items);
+    const flashes = useStoreState((state: State<ApplicationStore>) => state.flashes.items);
 
     let filtered = flashes;
     if (byKey) {

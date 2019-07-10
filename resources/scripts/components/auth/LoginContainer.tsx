@@ -5,14 +5,14 @@ import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
+import { ApplicationStore } from '@/state';
 
 export default ({ history }: RouteComponentProps) => {
     const [ username, setUsername ] = useState('');
     const [ password, setPassword ] = useState('');
     const [ isLoading, setLoading ] = useState(false);
 
-    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

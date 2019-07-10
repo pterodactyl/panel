@@ -4,15 +4,15 @@ import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
 import { StaticContext } from 'react-router';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import { ApplicationStore } from '@/state';
 
 export default ({ history, location: { state } }: RouteComponentProps<{}, StaticContext, { token?: string }>) => {
     const [ code, setCode ] = useState('');
     const [ isLoading, setIsLoading ] = useState(false);
 
-    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     if (!state || !state.token) {
         history.replace('/auth/login');

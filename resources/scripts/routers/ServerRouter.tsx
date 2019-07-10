@@ -3,14 +3,16 @@ import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
 import TransitionRouter from '@/TransitionRouter';
-import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
 import Spinner from '@/components/elements/Spinner';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
+import ServerDatabases from '@/components/server/ServerDatabases';
+import { ServerContext } from '@/state/server';
+import { Provider } from 'react-redux';
 
-export default ({ match, location }: RouteComponentProps<{ id: string }>) => {
-    const server = useStoreState((state: State<ApplicationState>) => state.server.data);
-    const { clearServerState, getServer } = useStoreActions((actions: Actions<ApplicationState>) => actions.server);
+const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
+    const server = ServerContext.useStoreState(state => state.server.data);
+    const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
+    const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
 
     if (!server) {
         getServer(match.params.id);
@@ -31,22 +33,31 @@ export default ({ match, location }: RouteComponentProps<{ id: string }>) => {
                     </div>
                 </div>
             </div>
-            <TransitionRouter>
-                <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
-                    {!server ?
-                        <div className={'flex justify-center m-20'}>
-                            <Spinner large={true}/>
-                        </div>
-                        :
-                        <React.Fragment>
-                            <WebsocketHandler/>
-                            <Switch location={location}>
-                                <Route path={`${match.path}`} component={ServerConsole} exact/>
-                            </Switch>
-                        </React.Fragment>
-                    }
-                </div>
-            </TransitionRouter>
+            <Provider store={ServerContext.useStore()}>
+                <TransitionRouter>
+                    <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
+                        {!server ?
+                            <div className={'flex justify-center m-20'}>
+                                <Spinner large={true}/>
+                            </div>
+                            :
+                            <React.Fragment>
+                                <WebsocketHandler/>
+                                <Switch location={location}>
+                                    <Route path={`${match.path}`} component={ServerConsole} exact/>
+                                    <Route path={`${match.path}/databases`} component={ServerDatabases}/>
+                                </Switch>
+                            </React.Fragment>
+                        }
+                    </div>
+                </TransitionRouter>
+            </Provider>
         </React.Fragment>
     );
 };
+
+export default (props: RouteComponentProps<any>) => (
+    <ServerContext.Provider>
+        <ServerRouter {...props}/>
+    </ServerContext.Provider>
+);

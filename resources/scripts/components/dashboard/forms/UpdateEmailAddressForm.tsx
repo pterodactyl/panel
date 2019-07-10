@@ -1,11 +1,11 @@
 import React from 'react';
 import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
 import { Form, Formik, FormikActions } from 'formik';
 import * as Yup from 'yup';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Field from '@/components/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
+import { ApplicationStore } from '@/state';
 
 interface Values {
     email: string;
@@ -18,10 +18,10 @@ const schema = Yup.object().shape({
 });
 
 export default () => {
-    const user = useStoreState((state: State<ApplicationState>) => state.user.data);
-    const updateEmail = useStoreActions((state: Actions<ApplicationState>) => state.user.updateUserEmail);
+    const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
+    const updateEmail = useStoreActions((state: Actions<ApplicationStore>) => state.user.updateUserEmail);
 
-    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const submit = (values: Values, { resetForm, setSubmitting }: FormikActions<Values>) => {
         clearFlashes('account:email');
