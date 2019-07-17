@@ -69,7 +69,7 @@ export default ({ onCreated }: { onCreated: (database: ServerDatabase) => void }
                                 setVisible(false);
                             }}
                         >
-                            <FlashMessageRender byKey={'create-database-modal'}/>
+                            <FlashMessageRender byKey={'create-database-modal'} className={'mb-6'}/>
                             <h3 className={'mb-6'}>Create new database</h3>
                             <Form className={'m-0'}>
                                 <Field
@@ -90,6 +90,7 @@ export default ({ onCreated }: { onCreated: (database: ServerDatabase) => void }
                                 </div>
                                 <div className={'mt-6 text-right'}>
                                     <button
+                                        type={'button'}
                                         className={'btn btn-sm btn-secondary mr-2'}
                                         onClick={() => setVisible(false)}
                                     >

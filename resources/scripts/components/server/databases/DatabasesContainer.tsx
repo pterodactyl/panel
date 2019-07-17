@@ -40,11 +40,14 @@ export default () => {
                 <CSSTransition classNames={'fade'} timeout={250}>
                     <React.Fragment>
                         {databases.length > 0 ?
-                            databases.map((database, index) => <DatabaseRow
-                                key={database.id}
-                                database={database}
-                                className={index > 0 ? 'mt-1' : undefined}
-                            />)
+                            databases.map((database, index) => (
+                                <DatabaseRow
+                                    key={database.id}
+                                    database={database}
+                                    onDelete={() => setDatabases(s => [ ...s.filter(d => d.id !== database.id) ])}
+                                    className={index > 0 ? 'mt-1' : undefined}
+                                />
+                            ))
                             :
                             <p className={'text-center text-sm text-neutral-200'}>
                                 It looks like you have no databases. Click the button below to create one now.
