@@ -135,7 +135,7 @@ module.exports = {
     },
     plugins: plugins,
     optimization: {
-        minimize: true,
+        minimize: isProduction,
         minimizer: [
             new TerserPlugin({
                 cache: true,

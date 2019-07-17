@@ -4,10 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
+import classNames from 'classnames';
 
-export default ({ database }: { database: ServerDatabase }) => {
+export default ({ database, className }: { database: ServerDatabase; className?: string }) => {
     return (
-        <div className={'grey-row-box no-hover'}>
+        <div className={classNames('grey-row-box no-hover', className)}>
             <div className={'icon'}>
                 <FontAwesomeIcon icon={faDatabase}/>
             </div>

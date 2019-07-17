@@ -40,14 +40,18 @@ export default () => {
                 <CSSTransition classNames={'fade'} timeout={250}>
                     <React.Fragment>
                         {databases.length > 0 ?
-                            databases.map(database => <DatabaseRow key={database.id} database={database}/>)
+                            databases.map((database, index) => <DatabaseRow
+                                key={database.id}
+                                database={database}
+                                className={index > 0 ? 'mt-1' : undefined}
+                            />)
                             :
                             <p className={'text-center text-sm text-neutral-200'}>
                                 It looks like you have no databases. Click the button below to create one now.
                             </p>
                         }
                         <div className={'mt-6 flex justify-end'}>
-                            <CreateDatabaseButton onCreated={database => setDatabases(s => [...s, database])}/>
+                            <CreateDatabaseButton onCreated={database => setDatabases(s => [ ...s, database ])}/>
                         </div>
                     </React.Fragment>
                 </CSSTransition>

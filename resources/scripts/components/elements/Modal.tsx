@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { CSSTransition } from 'react-transition-group';
+import Spinner from '@/components/elements/Spinner';
 
 interface Props {
     visible: boolean;
@@ -9,7 +10,8 @@ interface Props {
     dismissable?: boolean;
     closeOnEscape?: boolean;
     closeOnBackground?: boolean;
-    children: React.ReactChild;
+    showSpinnerOverlay?: boolean;
+    children: React.ReactNode;
 }
 
 export default (props: Props) => {
@@ -49,6 +51,14 @@ export default (props: Props) => {
                     {props.dismissable !== false &&
                     <div className={'modal-close-icon'} onClick={() => setRender(false)}>
                         <FontAwesomeIcon icon={faTimes}/>
+                    </div>
+                    }
+                    {props.showSpinnerOverlay &&
+                    <div
+                        className={'absolute w-full h-full rounded flex items-center justify-center'}
+                        style={{ background: 'hsla(211, 10%, 53%, 0.25)' }}
+                    >
+                        <Spinner large={false}/>
                     </div>
                     }
                     <div className={'modal-content p-6'}>
