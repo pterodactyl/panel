@@ -24,6 +24,7 @@ interface Props {
 
 export default ({ database, className, onDelete }: Props) => {
     const [visible, setVisible] = useState(false);
+    const [connectionVisible, setConnectionVisible] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const server = ServerContext.useStoreState(state => state.server.data!);
 
@@ -102,6 +103,27 @@ export default ({ database, className, onDelete }: Props) => {
                     )
                 }
             </Formik>
+            <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
+                <h3 className={'mb-6'}>Database connection details</h3>
+                <div>
+                    <label className={'input-dark-label'}>Password</label>
+                    <input type={'text'} className={'input-dark'} readOnly={true} value={database.password}/>
+                </div>
+                <div className={'mt-6'}>
+                    <label className={'input-dark-label'}>JBDC Connection String</label>
+                    <input
+                        type={'text'}
+                        className={'input-dark'}
+                        readOnly={true}
+                        value={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
+                    />
+                </div>
+                <div className={'mt-6 text-right'}>
+                    <button className={'btn btn-sm btn-secondary'} onClick={() => setConnectionVisible(false)}>
+                        Close
+                    </button>
+                </div>
+            </Modal>
             <div className={classNames('grey-row-box no-hover', className)}>
                 <div className={'icon'}>
                     <FontAwesomeIcon icon={faDatabase}/>
@@ -114,8 +136,9 @@ export default ({ database, className, onDelete }: Props) => {
                     <p className={'text-center text-sm'}>{database.connectionString}</p>
                 </div>
                 <div className={'ml-6'}>
-                    <p className={'text-center text-xs text-neutral-500 uppercase mb-1 select-none'}>Connections
-                                                                                                     From:</p>
+                    <p className={'text-center text-xs text-neutral-500 uppercase mb-1 select-none'}>
+                        Connections From:
+                    </p>
                     <p className={'text-center text-sm'}>{database.allowConnectionsFrom}</p>
                 </div>
                 <div className={'ml-6'}>
@@ -123,7 +146,7 @@ export default ({ database, className, onDelete }: Props) => {
                     <p className={'text-center text-sm'}>{database.username}</p>
                 </div>
                 <div className={'ml-6'}>
-                    <button className={'btn btn-sm btn-secondary mr-2'}>
+                    <button className={'btn btn-sm btn-secondary mr-2'} onClick={() => setConnectionVisible(true)}>
                         <FontAwesomeIcon icon={faEye} fixedWidth={true}/>
                     </button>
                     <button className={'btn btn-sm btn-secondary btn-red'} onClick={() => setVisible(true)}>
