@@ -81,6 +81,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function setServer(Server $server)
     {
         $this->server = $server;
+        
+        if ($this->getNode()->id !== $server->node_id) {
+            $this->setNode($this->getServer()->getRelation('node'));
+        }
 
         return $this;
     }
