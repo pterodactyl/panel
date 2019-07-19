@@ -8,7 +8,7 @@
     "author": "support@pterodactyl.io",
     "description": "Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.",
     "image": "quay.io\/pterodactyl\/core:source",
-    "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart",
+    "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 +maxplayers {{ALLOCATION_LIMIT}} -strictportbind -norestart",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"gameserver Steam ID\",\r\n    \"userInteraction\": []\r\n}",

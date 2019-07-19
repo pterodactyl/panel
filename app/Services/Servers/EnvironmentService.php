@@ -105,6 +105,7 @@ class EnvironmentService
             'STARTUP' => 'startup',
             'P_SERVER_LOCATION' => 'location.short',
             'P_SERVER_UUID' => 'uuid',
+            'ALLOCATION_LIMIT' => 'allocation_limit',
         ];
     }
 }

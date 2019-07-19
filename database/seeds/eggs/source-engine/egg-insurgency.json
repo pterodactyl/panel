@@ -8,7 +8,7 @@
     "author": "support@pterodactyl.io",
     "description": "Take to the streets for intense close quarters combat, where a team's survival depends upon securing crucial strongholds and destroying enemy supply in this multiplayer and cooperative Source Engine based experience.",
     "image": "quay.io\/pterodactyl\/core:source",
-    "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart",
+    "startup": ".\/srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 +maxplayers {{ALLOCATION_LIMIT}} -strictportbind -norestart",
     "config": {
         "files": "{}",
         "startup": "{\"done\": \"gameserver Steam ID\", \"userInteraction\": []}",

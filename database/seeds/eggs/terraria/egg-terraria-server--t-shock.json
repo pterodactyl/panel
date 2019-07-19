@@ -10,7 +10,7 @@
     "image": "quay.io\/pterodactyl\/core:mono",
     "startup": null,
     "config": {
-        "files": "{\"tshock\/config.json\":{\"parser\": \"json\", \"find\":{\"ServerPort\": \"{{server.build.default.port}}\", \"MaxSlots\": \"{{server.build.env.MAX_SLOTS}}\"}}}",
+        "files": "{\"tshock\/config.json\":{\"parser\": \"json\", \"find\":{\"ServerPort\": \"{{server.build.default.port}}\", \"MaxSlots\": \"{{server.build.env.ALLOCATION_LIMIT}}\"}}}",
         "startup": "{\"done\": \"Type 'help' for a list of commands\", \"userInteraction\": []}",
         "logs": "{\"custom\": false, \"location\": \"ServerLog.txt\"}",
         "stop": "exit"
@@ -31,15 +31,6 @@
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|regex:\/^([0-9_\\.-]{5,10})$\/"
-        },
-        {
-            "name": "Maximum Slots",
-            "description": "Total number of slots to allow on the server.",
-            "env_variable": "MAX_SLOTS",
-            "default_value": "20",
-            "user_viewable": 1,
-            "user_editable": 0,
-            "rules": "required|numeric|digits_between:1,3"
         }
     ]
 }

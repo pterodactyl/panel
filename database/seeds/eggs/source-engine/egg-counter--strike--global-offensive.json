@@ -8,7 +8,7 @@
     "author": "support@pterodactyl.io",
     "description": "Counter-Strike: Global Offensive is a multiplayer first-person shooter video game developed by Hidden Path Entertainment and Valve Corporation.",
     "image": "quay.io\/pterodactyl\/core:source",
-    "startup": ".\/srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}",
+    "startup": ".\/srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} +maxplayers {{ALLOCATION_LIMIT}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"Connection to Steam servers successful\",\r\n    \"userInteraction\": []\r\n}",
