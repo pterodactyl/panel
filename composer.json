@@ -45,7 +45,7 @@
         "barryvdh/laravel-ide-helper": "^2.5",
         "codedungeon/phpunit-result-printer": "^0.17.1",
         "filp/whoops": "^2.1",
-        "friendsofphp/php-cs-fixer": "^2.11.1",
+        "friendsofphp/php-cs-fixer": "^2.15.1",
         "fzaninotto/faker": "^1.6",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
