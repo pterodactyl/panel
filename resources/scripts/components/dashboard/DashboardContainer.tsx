@@ -9,8 +9,8 @@ import { Link } from 'react-router-dom';
 
 export default () => (
     <div className={'my-10'}>
-        <Link to={'/server/e9d6c836'} className={'flex no-underline text-neutral-200 cursor-pointer items-center bg-neutral-700 p-4 border border-transparent hover:border-neutral-500'}>
-            <div className={'rounded-full bg-neutral-500 p-3'}>
+        <Link to={'/server/e9d6c836'} className={'grey-row-box cursor-pointer'}>
+            <div className={'icon'}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
             <div className={'w-1/2 ml-4'}>
@@ -49,8 +49,8 @@ export default () => (
                 </div>
             </div>
         </Link>
-        <div className={'flex mt-px cursor-pointer items-center bg-neutral-700 p-4 border border-transparent hover:border-neutral-500'}>
-            <div className={'rounded-full bg-neutral-500 p-3'}>
+        <div className={'grey-row-box cursor-pointer mt-2'}>
+            <div className={'icon'}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
             <div className={'w-1/2 ml-4'}>

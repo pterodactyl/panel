@@ -7,7 +7,7 @@ import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
+import { ApplicationStore } from '@/state';
 
 type Props = Readonly<RouteComponentProps<{ token: string }> & {}>;
 
@@ -17,7 +17,7 @@ export default (props: Props) => {
     const [ password, setPassword ] = useState('');
     const [ passwordConfirm, setPasswordConfirm ] = useState('');
 
-    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const parsed = parse(props.location.search);
     if (email.length === 0 && parsed.email) {

@@ -12,14 +12,14 @@ export interface UserData {
     updatedAt: Date;
 }
 
-export interface UserState {
+export interface UserStore {
     data?: UserData;
-    setUserData: Action<UserState, UserData>;
-    updateUserData: Action<UserState, Partial<UserData>>;
-    updateUserEmail: Thunk<UserState, { email: string; password: string }, any, {}, Promise<void>>;
+    setUserData: Action<UserStore, UserData>;
+    updateUserData: Action<UserStore, Partial<UserData>>;
+    updateUserEmail: Thunk<UserStore, { email: string; password: string }, any, {}, Promise<void>>;
 }
 
-const user: UserState = {
+const user: UserStore = {
     data: undefined,
     setUserData: action((state, payload) => {
         state.data = payload;

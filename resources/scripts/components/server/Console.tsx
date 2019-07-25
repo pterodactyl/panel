@@ -2,9 +2,9 @@ import React, { createRef } from 'react';
 import { Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { ApplicationState } from '@/state/types';
 import { connect } from 'react-redux';
 import { Websocket } from '@/plugins/Websocket';
+import { ServerStore } from '@/state/server';
 
 const theme = {
     background: 'transparent',
@@ -113,8 +113,8 @@ class Console extends React.PureComponent<Readonly<Props>> {
 }
 
 export default connect(
-    (state: ApplicationState) => ({
-        connected: state.server.socket.connected,
-        instance: state.server.socket.instance,
+    (state: ServerStore) => ({
+        connected: state.socket.connected,
+        instance: state.socket.instance,
     }),
 )(Console);

@@ -1,16 +1,16 @@
 import React from 'react';
 import MessageBox from '@/components/MessageBox';
 import { State, useStoreState } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
+import { ApplicationStore } from '@/state';
 
 type Props = Readonly<{
     byKey?: string;
     spacerClass?: string;
-    withBottomSpace?: boolean;
+    className?: string;
 }>;
 
-export default ({ withBottomSpace, spacerClass, byKey }: Props) => {
-    const flashes = useStoreState((state: State<ApplicationState>) => state.flashes.items);
+export default ({ className, spacerClass, byKey }: Props) => {
+    const flashes = useStoreState((state: State<ApplicationStore>) => state.flashes.items);
 
     let filtered = flashes;
     if (byKey) {
@@ -21,9 +21,8 @@ export default ({ withBottomSpace, spacerClass, byKey }: Props) => {
         return null;
     }
 
-    // noinspection PointlessBooleanExpressionJS
     return (
-        <div className={withBottomSpace === false ? undefined : 'mb-2'}>
+        <div className={className}>
             {
                 filtered.map((flash, index) => (
                     <React.Fragment key={flash.id || flash.type + flash.message}>

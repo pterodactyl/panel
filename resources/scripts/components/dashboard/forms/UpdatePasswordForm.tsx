@@ -1,12 +1,12 @@
 import React from 'react';
 import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
 import { Form, Formik, FormikActions } from 'formik';
 import Field from '@/components/elements/Field';
 import * as Yup from 'yup';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import updateAccountPassword from '@/api/account/updateAccountPassword';
 import { httpErrorToHuman } from '@/api/http';
+import { ApplicationStore } from '@/state';
 
 interface Values {
     current: string;
@@ -23,8 +23,8 @@ const schema = Yup.object().shape({
 });
 
 export default () => {
-    const user = useStoreState((state: State<ApplicationState>) => state.user.data);
-    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
+    const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     if (!user) {
         return null;

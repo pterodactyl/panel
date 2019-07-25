@@ -4,14 +4,14 @@ import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import { ApplicationStore } from '@/state';
 
 export default () => {
     const [ isSubmitting, setSubmitting ] = React.useState(false);
     const [ email, setEmail ] = React.useState('');
 
-    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationState>) => actions.flashes);
+    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const handleFieldUpdate = (e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
 

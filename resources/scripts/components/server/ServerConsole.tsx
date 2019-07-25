@@ -1,10 +1,9 @@
 import React from 'react';
 import Console from '@/components/server/Console';
-import { State, useStoreState } from 'easy-peasy';
-import { ApplicationState } from '@/state/types';
+import { ServerContext } from '@/state/server';
 
 export default () => {
-    const status = useStoreState((state: State<ApplicationState>) => state.server.status);
+    const status = ServerContext.useStoreState(state => state.status.value);
 
     return (
         <div className={'my-10 flex'}>

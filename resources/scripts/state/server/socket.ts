@@ -1,14 +1,14 @@
 import { Action, action } from 'easy-peasy';
 import { Websocket } from '@/plugins/Websocket';
 
-export interface SocketState {
+export interface SocketStore {
     instance: Websocket | null;
     connected: boolean;
-    setInstance: Action<SocketState, Websocket | null>;
-    setConnectionState: Action<SocketState, boolean>;
+    setInstance: Action<SocketStore, Websocket | null>;
+    setConnectionState: Action<SocketStore, boolean>;
 }
 
-const socket: SocketState = {
+const socket: SocketStore = {
     instance: null,
     connected: false,
     setInstance: action((state, payload) => {
