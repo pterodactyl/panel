@@ -1,0 +1,64 @@
+#navigation {
+    @apply .w-full .bg-neutral-900 .shadow-md;
+
+    & > div {
+        @apply .mx-auto .w-full .flex .items-center;
+    }
+
+    & #logo {
+        @apply .flex-1;
+
+        & > a {
+            @apply .text-2xl .font-header .px-4 .no-underline .text-neutral-200;
+            transition: color 150ms linear;
+
+            &:hover {
+                @apply .text-neutral-100;
+            }
+        }
+    }
+
+    & .right-navigation {
+        @apply .flex .h-full .items-center .justify-center;
+
+        & > a {
+            @apply .flex .items-center .h-full .no-underline .text-neutral-300 .px-6;
+            transition: background-color 150ms linear, color 150ms linear, box-shadow 150ms ease-in;
+
+            &.active, &:hover {
+                @apply .text-neutral-100 .bg-black;
+                box-shadow: inset 0 -2px config('colors.cyan-700');
+            }
+
+            &.active {
+                box-shadow: inset 0 -2px config('colors.cyan-500');
+            }
+        }
+    }
+}
+
+#sub-navigation {
+    @apply .w-full .bg-neutral-700 .shadow;
+
+    .items {
+        @apply .flex .items-center .text-sm .mx-2;
+
+        & > a, & > div {
+            @apply .inline-block .py-3 .px-4 .text-neutral-300 .no-underline;
+            transition: color 150ms linear, box-shadow 150ms ease-in;
+
+            &:not(:first-of-type) {
+                @apply .ml-2;
+            }
+
+            &.active, &:hover {
+                @apply .text-neutral-100;
+                box-shadow: inset 0 -2px config('colors.cyan-700');
+            }
+
+            &.active {
+                box-shadow: inset 0 -2px config('colors.cyan-500');
+            }
+        }
+    }
+}

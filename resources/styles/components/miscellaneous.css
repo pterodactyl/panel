@@ -1,0 +1,21 @@
+code.clean {
+    @apply .font-mono .px-2 .py-1;
+    background-color: #eef1f6;
+    color: #596981;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, .1);
+    display: inline-block;
+}
+
+.grey-row-box {
+    @apply .flex .rounded .no-underline .text-neutral-200 .items-center .bg-neutral-700 .p-4 .border .border-transparent;
+    transition: border-color 150ms linear;
+
+    &:not(.no-hover):hover {
+        @apply .border-neutral-500;
+    }
+
+    & > div.icon {
+        @apply .rounded-full .bg-neutral-500 .p-3;
+    }
+}

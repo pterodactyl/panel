@@ -32,5 +32,5 @@ Route::group(['prefix' => 'account/two_factor'], function () {
     Route::post('/totp/disable', 'SecurityController@delete')->name('account.two_factor.disable');
 });
 
-Route::get('/{vue}', 'IndexController@index')
-    ->where('vue', '^(?!(\/)?(api|admin|daemon)).+');
+Route::get('/{react}', 'IndexController@index')
+    ->where('react', '^(?!(\/)?(api|auth|admin|daemon)).+');

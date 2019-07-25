@@ -71,6 +71,7 @@ class SecurityControllerTest extends ControllerTestCase
         $this->assertIsJsonResponse($response);
         $this->assertResponseCodeEquals(Response::HTTP_OK, $response);
         $this->assertResponseJsonEquals(['enabled' => false, 'qr_image' => 'test-image', 'secret' => 'secret-code'], $response);
+        $this->assertResponseJsonEquals(['qrImage' => 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=qrCodeImage'], $response);
     }
 
     /**

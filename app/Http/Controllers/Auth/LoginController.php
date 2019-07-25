@@ -2,13 +2,57 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
+use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\View\Factory as ViewFactory;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class LoginController extends AbstractLoginController
 {
+    /**
+     * @var \Illuminate\Contracts\View\Factory
+     */
+    private $view;
+
+    /**
+     * @var \Illuminate\Contracts\Cache\Repository
+     */
+    private $cache;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     */
+    private $repository;
+
+    /**
+     * LoginController constructor.
+     *
+     * @param \Illuminate\Auth\AuthManager                              $auth
+     * @param \Illuminate\Contracts\Config\Repository                   $config
+     * @param \Illuminate\Contracts\Cache\Repository                    $cache
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \Illuminate\Contracts\View\Factory                        $view
+     */
+    public function __construct(
+        AuthManager $auth,
+        Repository $config,
+        CacheRepository $cache,
+        UserRepositoryInterface $repository,
+        ViewFactory $view
+    ) {
+        parent::__construct($auth, $config);
+
+        $this->view = $view;
+        $this->cache = $cache;
+        $this->repository = $repository;
+    }
+
     /**
      * Handle all incoming requests for the authentication routes and render the
      * base authentication view component. Vuejs will take over at this point and
@@ -18,7 +62,7 @@ class LoginController extends AbstractLoginController
      */
     public function index(): View
     {
-        return view('templates/auth.core');
+        return $this->view->make('templates/auth.core');
     }
 
     /**
@@ -54,20 +98,19 @@ class LoginController extends AbstractLoginController
             return $this->sendFailedLoginResponse($request, $user);
         }
 
-        // If the user is using 2FA we do not actually log them in at this step, we return
-        // a one-time token to link the 2FA credentials to this account via the UI.
         if ($user->use_totp) {
-            $token = str_random(128);
-            $this->cache->put($token, [
-                'user_id' => $user->id,
-                'request_ip' => $request->ip(),
-            ], 5);
+            $token = Str::random(64);
+            $this->cache->put($token, $user->id, 5);
 
-            return response()->json([
-                'complete' => false,
-                'login_token' => $token,
+            return JsonResponse::create([
+                'data' => [
+                    'complete' => false,
+                    'confirmation_token' => $token,
+                ],
             ]);
         }
+
+        $this->auth->guard()->login($user, true);
 
         return $this->sendLoginResponse($user, $request);
     }
