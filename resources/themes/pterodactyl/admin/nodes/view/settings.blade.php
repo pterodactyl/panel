@@ -67,8 +67,8 @@
                     <div class="form-group col-xs-12">
                         <label for="public" class="control-label">Allow Automatic Allocation <sup><a data-toggle="tooltip" data-placement="top" title="Allow automatic allocation to this Node?">?</a></sup></label>
                         <div>
-                            <input type="radio" name="public" value="1" {{ (old('public', $node->public) === '1') ? 'checked' : '' }} id="public_1" checked> <label for="public_1" style="padding-left:5px;">Yes</label><br />
-                            <input type="radio" name="public" value="0" {{ (old('public', $node->public) === '0') ? 'checked' : '' }} id="public_0"> <label for="public_0" style="padding-left:5px;">No</label>
+                            <input type="radio" name="public" value="1" {{ (old('public', $node->public)) ? 'checked' : '' }} id="public_1" checked> <label for="public_1" style="padding-left:5px;">Yes</label><br />
+                            <input type="radio" name="public" value="0" {{ (old('public', $node->public)) ? '' : 'checked' }} id="public_0"> <label for="public_0" style="padding-left:5px;">No</label>
                         </div>
                     </div>
                     <div class="form-group col-xs-12">
