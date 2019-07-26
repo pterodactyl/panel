@@ -1,0 +1,197 @@
+textarea, select, input, button {
+    outline: none;
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield !important;
+}
+
+/**
+ * Styling for other forms throughout the Panel.
+ */
+.input, .input-dark {
+    @apply .appearance-none .w-full;
+    min-width: 0;
+
+    &:required, &:invalid {
+        box-shadow: none;
+    }
+}
+
+.input {
+    @apply .p-3 .rounded .border .border-neutral-200 .text-neutral-800;
+    transition: border 150ms linear;
+
+    &:focus {
+        @apply .border-primary-400;
+    }
+
+    &.error {
+        @apply .text-red-600 .border-red-500;
+    }
+}
+
+.input:disabled {
+    @apply .bg-neutral-100 .border-neutral-200;
+}
+
+.input + .input-help {
+    @apply .text-xs .text-neutral-400 .pt-2;
+
+    &.error {
+        @apply .text-red-600;
+    }
+}
+
+.input-dark {
+    @apply .p-3 .bg-neutral-600 .border .border-neutral-500 .text-sm .rounded .text-neutral-200 .shadow-none;
+    transition: border 150ms linear, box-shaodw 150ms ease-in;
+
+    &:focus {
+        @apply .shadow-md .border-neutral-400;
+    }
+
+    &:hover {
+        @apply .border-neutral-400;
+    }
+
+    & + .input-help {
+        @apply .text-xs .text-neutral-400 .mt-2
+    }
+
+    &.error {
+        @apply .text-red-100 .border-red-400;
+    }
+
+    &.error + .input-help {
+        @apply .text-red-400;
+    }
+
+    &:disabled {
+        @apply .opacity-75;
+    }
+}
+
+label {
+    @apply .block .text-xs .uppercase .text-neutral-700 .mb-2;
+}
+
+select:not(.appearance-none) {
+    @apply .outline-none .appearance-none .block .bg-white .border .border-neutral-200 .text-neutral-400 .p-3 .pr-8 rounded;
+    transition: border-color 150ms linear, color 150ms linear;
+
+    &:hover:not(:disabled), &:focus {
+        @apply .outline-none .border-primary-500 .text-neutral-700;
+    }
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    &::-ms-expand {
+        display: none;
+    }
+
+    background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ") no-repeat center center;
+    background-size: 1rem;
+    background-position-x: calc(100% - 0.75rem);
+}
+
+.input-dark-label {
+    @apply .uppercase .text-neutral-200;
+}
+
+.input-label {
+    @apply .block .uppercase .tracking-wide .text-neutral-800 .text-xs .font-bold;
+
+    &:not(.mb-0) {
+        @apply .mb-2;
+    }
+}
+
+a.btn {
+    @apply .no-underline;
+}
+
+.btn {
+    @apply .rounded .p-2 .uppercase .tracking-wide .text-sm;
+    transition: all 150ms linear;
+
+    /**
+     * Button Colors
+     */
+    &.btn-primary {
+        @apply .bg-primary-500 .border-primary-600 .border .text-primary-50;
+
+        &:hover:not(:disabled) {
+            @apply .bg-primary-600 .border-primary-700;
+        }
+    }
+
+    &.btn-green {
+        @apply .bg-green-500 .border-green-600 .border .text-green-50;
+
+        &:hover:not(:disabled) {
+            @apply .bg-green-600 .border-green-700;
+        }
+    }
+
+    &.btn-red {
+        &:not(.btn-secondary) {
+            @apply .bg-red-500 .border-red-600 .text-red-50;
+        }
+
+        &:hover:not(:disabled) {
+            @apply .bg-red-600 .border-red-700;
+        }
+    }
+
+    &.btn-grey {
+        @apply .border .border-neutral-600 .bg-neutral-500 .text-neutral-50;
+
+        &:hover:not(:disabled) {
+            @apply .bg-neutral-600 .border-neutral-700;
+        }
+    }
+
+    &.btn-secondary {
+        @apply .border .border-neutral-600 .bg-transparent .text-neutral-200;
+
+        &:hover:not(:disabled) {
+            @apply .border-neutral-500 .text-neutral-100;
+        }
+
+        &.btn-red:hover:not(:disabled) {
+            @apply .bg-red-500 .border-red-600 .text-red-50;
+        }
+    }
+
+    /**
+     * Button Sizes
+     */
+    &.btn-jumbo {
+        @apply .p-4 .w-full;
+    }
+
+    &.btn-lg {
+        @apply .p-4 .text-sm;
+    }
+
+    &.btn-sm {
+        @apply .p-3;
+    }
+
+    &.btn-xs {
+        @apply .p-2 .text-xs;
+    }
+
+    &:disabled, &.disabled {
+        opacity: 0.55;
+        cursor: default;
+    }
+}

@@ -4,6 +4,7 @@ namespace Tests\Unit\Http\Middleware\API;
 
 use Mockery as m;
 use Cake\Chronos\Chronos;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -48,6 +49,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testMissingBearerTokenThrowsException()
     {
+        $this->request->shouldReceive('user')->andReturnNull();
         $this->request->shouldReceive('bearerToken')->withNoArgs()->once()->andReturnNull();
 
         try {
@@ -115,6 +117,25 @@ class AuthenticateKeyTest extends MiddlewareTestCase
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions(), ApiKey::TYPE_ACCOUNT);
         $this->assertEquals($model, $this->request->attributes->get('api_key'));
+    }
+
+    /**
+     * Test that we can still make it though this middleware if the user is logged in and passing
+     * through a cookie.
+     */
+    public function testAccessWithoutToken()
+    {
+        $user = factory(User::class)->make(['id' => 123]);
+
+        $this->request->shouldReceive('user')->andReturn($user);
+        $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturnNull();
+
+        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions(), ApiKey::TYPE_ACCOUNT);
+        $model = $this->request->attributes->get('api_key');
+
+        $this->assertSame(ApiKey::TYPE_ACCOUNT, $model->key_type);
+        $this->assertSame(123, $model->user_id);
+        $this->assertNull($model->identifier);
     }
 
     /**

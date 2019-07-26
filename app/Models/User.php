@@ -5,6 +5,7 @@ namespace Pterodactyl\Models;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Pterodactyl\Rules\Username;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -175,6 +176,16 @@ class User extends Model implements
         $rules['username'][] = new Username;
 
         return $rules;
+    }
+
+    /**
+     * Return the user model in a format that can be passed over to Vue templates.
+     *
+     * @return array
+     */
+    public function toVueObject(): array
+    {
+        return (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
     }
 
     /**

@@ -6,10 +6,8 @@ use Generator;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Concerns\Searchable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface
 {
@@ -138,25 +136,6 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
         );
 
         return $node;
-    }
-
-    /**
-     * Return a node with all of the servers attached to that node.
-     *
-     * @param int $id
-     * @return \Pterodactyl\Models\Node
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getNodeServers(int $id): Node
-    {
-        try {
-            return $this->getBuilder()->with([
-                'servers.user', 'servers.nest', 'servers.egg',
-            ])->findOrFail($id, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
-        }
     }
 
     /**

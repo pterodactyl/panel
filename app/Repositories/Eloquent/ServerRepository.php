@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
@@ -63,6 +64,26 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      * @return \Illuminate\Support\Collection
      */
     public function getDataForRebuild(int $server = null, int $node = null): Collection
+    {
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg', 'node']);
+
+        if (! is_null($server) && is_null($node)) {
+            $instance = $instance->where('id', '=', $server);
+        } elseif (is_null($server) && ! is_null($node)) {
+            $instance = $instance->where('node_id', '=', $node);
+        }
+
+        return $instance->get($this->getColumns());
+    }
+
+    /**
+     * Return a collection of servers with their associated data for reinstall operations.
+     *
+     * @param int|null $server
+     * @param int|null $node
+     * @return \Illuminate\Support\Collection
+     */
+    public function getDataForReinstall(int $server = null, int $node = null): Collection
     {
         $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg', 'node']);
 
@@ -337,5 +358,21 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     public function getSuspendedServersCount(): int
     {
         return $this->getBuilder()->where('suspended', true)->count();
+    }
+
+    /**
+     * Returns all of the servers that exist for a given node in a paginated response.
+     *
+     * @param int $node
+     * @param int $limit
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator
+    {
+        return $this->getBuilder()
+            ->with(['user', 'nest', 'egg'])
+            ->where('node_id', '=', $node)
+            ->paginate($limit);
     }
 }

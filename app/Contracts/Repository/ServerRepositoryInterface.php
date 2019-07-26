@@ -37,6 +37,15 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     public function getDataForRebuild(int $server = null, int $node = null): Collection;
 
     /**
+     * Return a collection of servers with their associated data for reinstall operations.
+     *
+     * @param int|null $server
+     * @param int|null $node
+     * @return \Illuminate\Support\Collection
+     */
+    public function getDataForReinstall(int $server = null, int $node = null): Collection;
+
+    /**
      * Return a server model and all variables associated with the server.
      *
      * @param int $id
@@ -152,4 +161,14 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return int
      */
     public function getSuspendedServersCount(): int;
+
+    /**
+     * Returns all of the servers that exist for a given node in a paginated response.
+     *
+     * @param int $node
+     * @param int $limit
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator;
 }

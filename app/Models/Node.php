@@ -110,8 +110,8 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'disk' => 'numeric|min:1',
         'disk_overallocate' => 'numeric|min:-1',
         'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
-        'daemonSFTP' => 'numeric|between:1024,65535',
-        'daemonListen' => 'numeric|between:1024,65535',
+        'daemonSFTP' => 'numeric|between:1,65535',
+        'daemonListen' => 'numeric|between:1,65535',
         'maintenance_mode' => 'boolean',
         'upload_size' => 'int|between:1,1024',
     ];
@@ -131,6 +131,16 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'daemonListen' => 8080,
         'maintenance_mode' => false,
     ];
+
+    /**
+     * Get the connection address to use when making calls to this node.
+     *
+     * @return string
+     */
+    public function getConnectionAddress(): string
+    {
+        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
+    }
 
     /**
      * Returns the configuration in JSON format.

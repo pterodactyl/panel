@@ -108,7 +108,7 @@
                         </div>
                         <div class="box-footer">
                             {!! csrf_field() !!}
-                            <p class="text-muted small">You are currently using <strong>{{ count($databases) }}</strong> of <strong>{{ $server->database_limit ?? '&infin;' }}</strong> databases. A username and password for this database will be randomly generated after form submission.</p>
+                            <p class="text-muted small">You are currently using <strong>{{ count($databases) }}</strong> of <strong>{{ $server->database_limit ?? '∞' }}</strong> databases. A username and password for this database will be randomly generated after form submission.</p>
                             <input type="submit" class="btn btn-sm btn-success pull-right" value="Create Database" />
                         </div>
                     </form>

@@ -1,0 +1,81 @@
+.filemanager {
+  & .header {
+    @apply .flex .text-xs .text-neutral-600 .pb-4 .font-bold .border-b .border-neutral-200 .mb-3 .uppercase;
+
+    & > div:not(:last-of-type) {
+      @apply .pr-4;
+    }
+  }
+
+  & .row {
+    @apply .flex .text-sm .py-3 .text-sm .border .border-transparent .text-black .rounded .no-underline;
+
+    & > div:not(:last-of-type) {
+      @apply .pr-4;
+    }
+
+    &.active-selection, &:hover {
+      @apply .bg-neutral-50 .text-neutral-900;
+    }
+
+    & > .icon {
+      @apply .w-8 .text-center;
+
+      & > svg {
+        @apply .h-4;
+      }
+    }
+  }
+
+  .context-menu {
+    @apply .absolute .bg-white .py-2 .border .border-neutral-300 .shadow-lg .rounded .text-neutral-600 .text-sm .cursor-pointer;
+
+    & > div:not(:last-of-type) {
+      @apply .border-b .border-neutral-100 .pb-2 .mb-2;
+    }
+
+    & .context-row {
+      @apply .flex .flex-row .items-center .py-2 .px-8 .mx-2 .rounded;
+      transition: background-color 50ms linear;
+
+      & > .icon {
+        @apply .flex-none;
+
+        & > svg {
+          @apply .h-4;
+        }
+      }
+
+      & > .action {
+        @apply .flex-auto .pl-2;
+      }
+
+      &:hover {
+        @apply .bg-neutral-50 .text-neutral-800;
+      }
+
+      &.danger {
+        @apply .border .border-transparent;
+        transition: border 50ms linear;
+
+        &:hover {
+          @apply .bg-red-50 .border-red-100;
+        }
+      }
+
+    }
+  }
+}
+
+.filemanager-breadcrumbs {
+  @apply .px-4 .py-3 .mb-6 .rounded .bg-white .text-neutral-400 .border .border-neutral-100 .shadow;
+
+  & a {
+    @apply .no-underline .text-neutral-400;
+    transition: color 100ms linear;
+
+    &:hover {
+      @apply .text-primary-500;
+    }
+  }
+}
