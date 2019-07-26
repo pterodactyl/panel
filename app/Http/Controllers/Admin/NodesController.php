@@ -24,6 +24,7 @@ use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
@@ -32,6 +33,11 @@ use Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest;
 
 class NodesController extends Controller
 {
+    /**
+     * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
+     */
+    protected $allocationDeletionService;
+
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
      */
@@ -73,6 +79,11 @@ class NodesController extends Controller
     protected $repository;
 
     /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    protected $serverRepository;
+
+    /**
      * @var \Pterodactyl\Services\Nodes\NodeUpdateService
      */
     protected $updateService;
@@ -81,10 +92,6 @@ class NodesController extends Controller
      * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
      */
     protected $versionService;
-    /**
-     * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
-     */
-    private $allocationDeletionService;
 
     /**
      * NodesController constructor.
@@ -98,6 +105,7 @@ class NodesController extends Controller
      * @param \Pterodactyl\Services\Nodes\NodeDeletionService                 $deletionService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $serverRepository
      * @param \Pterodactyl\Services\Nodes\NodeUpdateService                   $updateService
      * @param \Pterodactyl\Services\Helpers\SoftwareVersionService            $versionService
      */
@@ -111,6 +119,7 @@ class NodesController extends Controller
         NodeDeletionService $deletionService,
         LocationRepositoryInterface $locationRepository,
         NodeRepositoryInterface $repository,
+        ServerRepositoryInterface $serverRepository,
         NodeUpdateService $updateService,
         SoftwareVersionService $versionService
     ) {
@@ -123,6 +132,7 @@ class NodesController extends Controller
         $this->deletionService = $deletionService;
         $this->locationRepository = $locationRepository;
         $this->repository = $repository;
+        $this->serverRepository = $serverRepository;
         $this->updateService = $updateService;
         $this->versionService = $versionService;
     }
@@ -178,8 +188,6 @@ class NodesController extends Controller
      *
      * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function viewIndex(Node $node)
     {
@@ -235,19 +243,17 @@ class NodesController extends Controller
     /**
      * Shows the server listing page for a specific node.
      *
-     * @param int $node
+     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\View\View
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function viewServers($node)
+    public function viewServers(Node $node)
     {
-        $node = $this->repository->getNodeServers($node);
+        $servers = $this->serverRepository->loadAllServersForNode($node->id, 25);
         Javascript::put([
             'node' => collect($node->makeVisible('daemonSecret'))->only(['scheme', 'fqdn', 'daemonListen', 'daemonSecret']),
         ]);
 
-        return view('admin.nodes.view.servers', ['node' => $node]);
+        return view('admin.nodes.view.servers', ['node' => $node, 'servers' => $servers]);
     }
 
     /**

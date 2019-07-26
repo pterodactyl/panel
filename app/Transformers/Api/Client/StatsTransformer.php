@@ -3,6 +3,8 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Server;
+use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
 class StatsTransformer extends BaseClientTransformer
@@ -36,6 +38,8 @@ class StatsTransformer extends BaseClientTransformer
      *
      * @param \Pterodactyl\Models\Server $model
      * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function transform(Server $model)
     {
@@ -61,7 +65,10 @@ class StatsTransformer extends BaseClientTransformer
             'disk' => [
                 'current' => round(object_get($object, 'proc.disk.used', 0)),
                 'limit' => floatval($model->disk),
+                'io' => $model->io,
             ],
+            'installed' => $model->installed === 1,
+            'suspended' => (bool) $model->suspended,
         ];
     }
 

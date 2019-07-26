@@ -1,8 +1,16 @@
 ---
 name: "\U0001F41B Bug Report"
-about: Create a report to help us resolve a bug or error
+about: For reporting code or design bugs with the software. DO NOT REPORT APACHE/NGINX/PHP CONFIGURATION ISSUES.
 
 ---
+
+DO NOT REPORT ISSUES CONFIGURING: SSL, PHP, APACHE, NGINX, YOUR MACHINE, SSH, SFTP, ETC. ON THIS GITHUB TRACKER.
+
+For assistance installating this software, as well as debugging issues with dependencies, please use our discord server: https://discord.gg/pterodactyl
+
+You MUST complete all of the below information when reporting a bug, failure to do so will result in closure of your issue. PLEASE stop spamming our tracker with "bugs" that are not related to this project.
+
+**STOP: READ FIRST, AND THEN DELETE THE ABOVE LINES**
 
 **Background (please complete the following information):**
 * Panel or Daemon: 

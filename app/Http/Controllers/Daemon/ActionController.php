@@ -5,10 +5,14 @@ namespace Pterodactyl\Http\Controllers\Daemon;
 use Cache;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Events\Server\Installed as ServerInstalled;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class ActionController extends Controller
 {
@@ -16,15 +20,21 @@ class ActionController extends Controller
      * @var \Illuminate\Contracts\Events\Dispatcher
      */
     private $eventDispatcher;
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     */
+    private $repository;
 
     /**
      * ActionController constructor.
      *
-     * @param \Illuminate\Contracts\Events\Dispatcher $eventDispatcher
+     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \Illuminate\Contracts\Events\Dispatcher             $eventDispatcher
      */
-    public function __construct(EventDispatcher $eventDispatcher)
+    public function __construct(ServerRepository $repository, EventDispatcher $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
+        $this->repository = $repository;
     }
 
     /**
@@ -32,34 +42,47 @@ class ActionController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function markInstall(Request $request)
+    public function markInstall(Request $request): JsonResponse
     {
-        $server = Server::where('uuid', $request->input('server'))->with('node')->first();
-        if (! $server) {
-            return response()->json([
+        try {
+            /** @var \Pterodactyl\Models\Server $server */
+            $server = $this->repository->findFirstWhere([
+                'uuid' => $request->input('server'),
+            ]);
+        } catch (RecordNotFoundException $exception) {
+            return JsonResponse::create([
                 'error' => 'No server by that ID was found on the system.',
-            ], 422);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        if (! $server->relationLoaded('node')) {
+            $server->load('node');
         }
 
         $hmac = $request->input('signed');
         $status = $request->input('installed');
 
-        if (! hash_equals(base64_decode($hmac), hash_hmac('sha256', $server->uuid, $server->node->daemonSecret, true))) {
-            return response()->json([
+        if (! hash_equals(base64_decode($hmac), hash_hmac('sha256', $server->uuid, $server->getRelation('node')->daemonSecret, true))) {
+            return JsonResponse::create([
                 'error' => 'Signed HMAC was invalid.',
-            ], 403);
+            ], Response::HTTP_FORBIDDEN);
         }
 
-        $server->installed = ($status === 'installed') ? 1 : 2;
-        $server->save();
+        $this->repository->update($server->id, [
+            'installed' => ($status === 'installed') ? 1 : 2,
+        ], true, true);
 
         // Only fire event if server installed successfully.
-        if ($server->installed === 1) {
+        if ($status === 'installed') {
             $this->eventDispatcher->dispatch(new ServerInstalled($server));
         }
 
-        return response()->json([]);
+        // Don't use a 204 here, the daemon is hard-checking for a 200 code.
+        return JsonResponse::create([]);
     }
 
     /**

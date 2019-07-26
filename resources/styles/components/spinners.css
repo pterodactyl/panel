@@ -1,0 +1,91 @@
+.spinner {
+  @apply .h-4 .relative .bg-transparent;
+  pointer-events: none;
+
+  &.spinner-xl {
+    @apply .h-16;
+  }
+
+  &:after {
+    @apply .border-2 .border-neutral-400 .absolute .block .h-4 .w-4 .rounded-full;
+    animation: spinners--spin 500ms infinite linear;
+    border-top-color: transparent !important;
+    border-right-color: transparent !important;
+    content: '';
+    left: calc(50% - (1em / 2));
+  }
+
+  &.spinner-relative:after {
+    @apply .relative;
+  }
+
+  &.spinner-xl:after {
+    @apply .h-16 .w-16;
+    left: calc(50% - (4rem / 2));
+  }
+
+  /**
+   * Speeds
+   */
+  &.spin-slow:after {
+    animation: spinners--spin 1200ms infinite linear;
+  }
+
+  /**
+   * Spinner Colors
+   */
+  &.blue:after, &.text-blue:after {
+    @apply .border-primary-500;
+  }
+
+  &.white:after, &.text-white:after {
+    @apply .border-white;
+  }
+
+  &.spinner-thick:after {
+    @apply .border-4;
+  }
+}
+
+@keyframes spinners--spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-circle {
+  @apply .w-8 .h-8;
+  border: 3px solid hsla(211, 12%, 43%, 0.2);
+  border-top-color: hsl(211, 12%, 43%);
+  border-radius: 50%;
+  animation: spin 1s cubic-bezier(0.55, 0.25, 0.25, 0.70) infinite;
+
+  &.spinner-sm {
+    @apply .w-4 .h-4 .border-2;
+  }
+
+  &.spinner-lg {
+    @apply .w-16 .h-16;
+    border-width: 6px;
+  }
+
+  &.spinner-blue {
+    border: 3px solid hsla(212, 92%, 43%, 0.2);
+    border-top-color: hsl(212, 92%, 43%);
+  }
+
+  &.spinner-white {
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top-color: rgb(255, 255, 255);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

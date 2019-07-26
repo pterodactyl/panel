@@ -28,7 +28,12 @@ class ServerTransformer extends BaseClientTransformer
             'identifier' => $server->uuidShort,
             'uuid' => $server->uuid,
             'name' => $server->name,
+            'node' => $server->node->name,
             'description' => $server->description,
+            'allocation' => [
+                'ip' => $server->allocation->alias,
+                'port' => $server->allocation->port,
+            ],
             'limits' => [
                 'memory' => $server->memory,
                 'swap' => $server->swap,

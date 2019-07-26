@@ -76,7 +76,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
      */
     public function getDatabasesForServer(int $server): Collection
     {
-        return $this->getBuilder()->where('server_id', $server)->get($this->getColumns());
+        return $this->getBuilder()->with('host')->where('server_id', $server)->get($this->getColumns());
     }
 
     /**

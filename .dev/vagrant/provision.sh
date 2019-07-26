@@ -21,6 +21,12 @@ debconf-set-selections <<< 'mariadb-server-5.5 mysql-server/root_password_again 
 # actually install
 apt-get install -y php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-memcached php7.2-curl php7.2-zip php-xdebug mariadb-server nginx curl tar unzip git memcached > /dev/null
 
+echo "Install nodejs and yarn"
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+apt-get -y install nodejs yarn > /dev/null
+
 echo "Install composer"
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

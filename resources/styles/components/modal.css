@@ -1,0 +1,50 @@
+.modal-mask {
+  @apply .fixed .pin .z-50 .overflow-auto .flex;
+  background: rgba(0, 0, 0, 0.70);
+  transition: opacity 250ms ease;
+
+  & > .modal-container {
+    @apply .relative .w-full .max-w-md .m-auto .flex-col .flex;
+
+    &.top {
+      margin-top: 10%;
+    }
+
+    & > .modal-close-icon {
+      @apply .absolute .pin-r .p-2 .text-white .cursor-pointer .opacity-50;
+      transition: opacity 150ms linear, transform 150ms ease-in;
+      top: -2rem;
+
+      &:hover {
+        @apply .opacity-100;
+        transform: rotate(90deg);
+      }
+    }
+
+    & > .modal-content {
+      @apply .bg-neutral-800 .rounded .shadow-md;
+      transition: all 250ms ease;
+    }
+
+    /**
+     * On tiny phone screens make sure there is a margin on the sides and also
+     * center the modal rather than putting it towards the top of the screen.
+     */
+    @screen smx {
+      width: 90%;
+      .top {
+        margin-top: auto;
+      }
+    }
+  }
+
+  & > .modal-container.full-screen {
+    @apply .w-3/4 .mt-32;
+    height: calc(100vh - 16rem);
+    max-width: none;
+  }
+
+  & > .modal-container.w-auto {
+    @apply .w-auto;
+  }
+}

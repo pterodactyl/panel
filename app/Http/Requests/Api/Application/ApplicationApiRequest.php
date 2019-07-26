@@ -126,10 +126,6 @@ abstract class ApplicationApiRequest extends FormRequest
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-
-    /**
-     * @return bool
-     */
     protected function passesAuthorization()
     {
         // If we have already validated we do not need to call this function

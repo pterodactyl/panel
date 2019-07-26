@@ -18,7 +18,7 @@
     "scripts": {
         "installation": {
             "script": "#!\/bin\/ash\n# Sponge Installation Script\n#\n# Server Files: \/mnt\/server\n\napk update\napk add curl\n\ncd \/mnt\/server\n\ncurl -sSL \"https:\/\/repo.spongepowered.org\/maven\/org\/spongepowered\/spongevanilla\/${SPONGE_VERSION}\/spongevanilla-${SPONGE_VERSION}.jar\" -o ${SERVER_JARFILE}",
-            "container": "alpine:3.4",
+            "container": "alpine:3.9",
             "entrypoint": "ash"
         }
     },
