@@ -144,6 +144,14 @@ class Server extends Model implements CleansAttributes, ValidableContract
     }
 
     /**
+     * @return bool
+     */
+    public function isInstalled(): bool
+    {
+        return $this->installed === 1;
+    }
+
+    /**
      * Gets the user who owns the server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

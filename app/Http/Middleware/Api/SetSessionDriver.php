@@ -4,17 +4,10 @@ namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
 use Illuminate\Http\Request;
-use Barryvdh\Debugbar\LaravelDebugbar;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class SetSessionDriver
 {
-    /**
-     * @var \Illuminate\Contracts\Foundation\Application
-     */
-    private $app;
-
     /**
      * @var \Illuminate\Contracts\Config\Repository
      */
@@ -23,12 +16,10 @@ class SetSessionDriver
     /**
      * SetSessionDriver constructor.
      *
-     * @param \Illuminate\Contracts\Foundation\Application $app
-     * @param \Illuminate\Contracts\Config\Repository      $config
+     * @param \Illuminate\Contracts\Config\Repository $config
      */
-    public function __construct(Application $app, ConfigRepository $config)
+    public function __construct(ConfigRepository $config)
     {
-        $this->app = $app;
         $this->config = $config;
     }
 
@@ -41,10 +32,6 @@ class SetSessionDriver
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($this->config->get('app.debug')) {
-            $this->app->make(LaravelDebugbar::class)->disable();
-        }
-
         $this->config->set('session.driver', 'array');
 
         return $next($request);

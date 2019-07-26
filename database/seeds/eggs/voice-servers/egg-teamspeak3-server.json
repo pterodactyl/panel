@@ -3,11 +3,11 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2018-10-28T20:50:23+01:00",
+    "exported_at": "2019-05-01T16:35:15+00:00",
     "name": "Teamspeak3 Server",
     "author": "support@pterodactyl.io",
     "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
-    "image": "quay.io\/pterodactyl\/core:glibc",
+    "image": "quay.io/parkervcp/pterodactyl-images:base_debian",
     "startup": ".\/ts3server_minimal_runscript.sh default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}}  license_accepted=1",
     "config": {
         "files": "{}",
@@ -27,7 +27,7 @@
             "name": "Server Version",
             "description": "The version of Teamspeak 3 to use when running the server.",
             "env_variable": "TS_VERSION",
-            "default_value": "3.5.0",
+            "default_value": "3.7.1",
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|regex:\/^([0-9_\\.-]{5,10})$\/"

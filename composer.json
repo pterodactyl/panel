@@ -29,7 +29,7 @@
         "lord/laroute": "^2.4",
         "matriphe/iso-639": "^1.2",
         "nesbot/carbon": "^1.22",
-        "pragmarx/google2fa": "^2.0",
+        "pragmarx/google2fa": "^5.0",
         "predis/predis": "^1.1",
         "prologue/alerts": "^0.4",
         "ramsey/uuid": "^3.7",
@@ -47,10 +47,13 @@
         "filp/whoops": "^2.1",
         "friendsofphp/php-cs-fixer": "^2.11.1",
         "fzaninotto/faker": "^1.6",
+        "laravel/dusk": "^3.0",
+        "martinlindhe/laravel-vue-i18n-generator": "^0.1.28",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
         "php-mock/php-mock-phpunit": "^2.1",
-        "phpunit/phpunit": "~7.0"
+        "phpunit/phpunit": "~7.0",
+        "tightenco/ziggy": "^0.5.0"
     },
     "autoload": {
         "classmap": [
@@ -65,6 +68,7 @@
     },
     "autoload-dev": {
         "psr-4": {
+            "Pterodactyl\\Tests\\Browser\\": "tests/Browser",
             "Pterodactyl\\Tests\\Integration\\": "tests/Integration",
             "Tests\\": "tests/"
         }

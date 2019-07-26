@@ -7,15 +7,12 @@ storage/framework/*
 /.idea
 /nbproject
 
-package-lock.json
-composer.lock
 node_modules
-
-_ide_helper_models.php
+*.log
 _ide_helper.php
-
-sami.phar
-/.sami
+.phpstorm.meta.php
+.php_cs.cache
+public/assets/manifest.json
 
 # For local development with docker
 # Remove if we ever put the Dockerfile in the repo
@@ -32,3 +29,6 @@ coverage.xml
 
 # Vagrant
 *.log
+resources/lang/locales.js
+resources/assets/pterodactyl/scripts/helpers/ziggy.js
+resources/assets/scripts/helpers/ziggy.js

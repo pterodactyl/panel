@@ -3,6 +3,21 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.14 (Derelict Dermodactylus)
+### Fixed
+* **[SECURITY]** Fixes an XSS vulnerability when performing certain actions in the file manager.
+* **[SECURITY]** Attempting to login as a user who has 2FA enabled will no longer request the 2FA token before validating
+that their password is correct. This closes a user existence leak that would expose that an account exists if
+it had 2FA enabled.
+
+### Changed
+* Support for setting a node to listen on ports lower than 1024.
+* QR code URLs are now generated without the use of an external library to reduce the dependency tree.
+* Regenerated database passwords now respect the same settings that were used when initially created.
+* Cleaned up 2FA QR code generation to use a more up-to-date library and API.
+* Console charts now properly start at 0 and scale based on server configuration. No more crazy spikes that
+are due to a change of one unit.
+
 ## v0.7.13 (Derelict Dermodactylus)
 ### Fixed
 * Fixes a bug with the location update API endpoint throwing an error due to an unexected response value.
@@ -239,7 +254,7 @@ the response from the server `GET` endpoint.
 * Nest and Egg listings now show the associated ID in order to make API requests easier.
 * Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
 * Creating a new node will now requires a SSL connection if the Panel is configured to use SSL as well.
-* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
+* Connector error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
 * File manager now supports mass deletion option for files and folders.
 * Support for CS:GO as a default service option selection.
 * Support for GMOD as a default service option selection.
@@ -369,7 +384,7 @@ the response from the server `GET` endpoint.
 * Changed 2FA login process to be more secure. Previously authentication checking happened on the 2FA post page, now it happens prior and is passed along to the 2FA page to avoid storing any credentials.
 
 ### Added
-* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
+* Connector error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added

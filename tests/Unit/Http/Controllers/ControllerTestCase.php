@@ -67,6 +67,19 @@ abstract class ControllerTestCase extends TestCase
     }
 
     /**
+     * Mocks a request input call.
+     *
+     * @param string $param
+     * @param mixed  $return
+     */
+    protected function mockRequestInput(string $param, $return = null)
+    {
+        $this->request->shouldReceive('input')->withArgs(function ($k) use ($param) {
+            return $k === $param;
+        })->andReturn($return);
+    }
+
+    /**
      * Build and return a mocked controller instance to use for testing.
      *
      * @param string $class

@@ -1,0 +1,28 @@
+/*! purgecss start ignore */
+.fade-enter {
+  @apply .opacity-0;
+}
+
+.fade-enter-active {
+  @apply .opacity-100;
+  transition: opacity 250ms;
+}
+
+.fade-exit {
+  @apply .opacity-100;
+}
+
+.fade-exit-active {
+  @apply .opacity-0;
+  transition: opacity 250ms;
+}
+
+/** @todo fix this, hides footer stuff */
+div.route-transition-group {
+  @apply .relative;
+
+  & section {
+    @apply .absolute .w-full .pin-t .pin-l;
+  }
+}
+/*! purgecss end ignore */

@@ -1,0 +1,17 @@
+@import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:500&display=swap');
+
+body {
+    @apply .text-neutral-200;
+    letter-spacing: 0.015em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    @apply .font-medium;
+    letter-spacing: 0;
+    font-family: 'IBM Plex Sans', -apple-system, '"Roboto"', 'system-ui', 'sans-serif';
+}
+
+p {
+    @apply .text-neutral-200 .leading-snug;
+}

@@ -53,13 +53,13 @@ class IndexController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function getIndex(Request $request)
+    public function index(Request $request)
     {
         $servers = $this->repository->setSearchTerm($request->input('query'))->filterUserAccessServers(
             $request->user(), User::FILTER_LEVEL_ALL, config('pterodactyl.paginate.frontend.servers')
         );
 
-        return view('base.index', ['servers' => $servers]);
+        return view('templates/base.core', ['servers' => $servers]);
     }
 
     /**

@@ -1,0 +1,46 @@
+/**
+ * Styling to control alert boxes.
+ */
+.alert {
+    @apply .p-2 .border .items-center .leading-normal .rounded .flex .w-full .text-sm;
+
+    & > .title {
+        @apply .flex .rounded-full .uppercase .px-2 .py-1 .text-xs .font-bold .mr-3 .leading-none;
+    }
+
+    & > .message {
+        @apply .mr-2 .text-left .flex-auto;
+    }
+
+    &.error {
+        @apply .bg-red-600 .border-red-800 .text-red-50;
+
+        & > .title {
+            @apply .bg-red-500;
+        }
+    }
+
+    &.info {
+        @apply .bg-primary-600 .border-primary-800 .text-primary-50;
+
+        & > .title {
+            @apply .bg-primary-500;
+        }
+    }
+
+    &.success {
+        @apply .bg-green-600 .border-green-800 .text-green-50;
+
+        & > .title {
+            @apply .bg-green-500;
+        }
+    }
+
+    &.warning {
+        @apply .bg-yellow-600 .border-yellow-800 .text-yellow-50;
+
+        & > .title {
+            @apply .bg-yellow-500;
+        }
+    }
+}

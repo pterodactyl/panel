@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
@@ -62,36 +63,28 @@ class SecurityController extends Controller
     }
 
     /**
-     * Returns Security Management Page.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\View\View
-     */
-    public function index(Request $request)
-    {
-        if ($this->config->get('session.driver') === 'database') {
-            $activeSessions = $this->repository->getUserSessions($request->user()->id);
-        }
-
-        return view('base.security', [
-            'sessions' => $activeSessions ?? null,
-        ]);
-    }
-
-    /**
-     * Generates TOTP Secret and returns popup data for user to verify
-     * that they can generate a valid response.
+     * Return information about the user's two-factor authentication status. If not enabled setup their
+     * secret and return information to allow the user to proceede with setup.
      *
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function generateTotp(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        return response()->json([
-            'qrImage' => $this->twoFactorSetupService->handle($request->user()),
+        if ($request->user()->use_totp) {
+            return JsonResponse::create([
+                'enabled' => true,
+            ]);
+        }
+
+        $response = $this->twoFactorSetupService->handle($request->user());
+
+        return JsonResponse::create([
+            'enabled' => false,
+            'qr_image' => $response,
+            'secret' => '',
         ]);
     }
 
@@ -99,53 +92,43 @@ class SecurityController extends Controller
      * Verifies that 2FA token received is valid and will work on the account.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function setTotp(Request $request)
+    public function store(Request $request): JsonResponse
     {
         try {
             $this->toggleTwoFactorService->handle($request->user(), $request->input('token') ?? '');
-
-            return response('true');
         } catch (TwoFactorAuthenticationTokenInvalid $exception) {
-            return response('false');
+            $error = true;
         }
+
+        return JsonResponse::create([
+            'success' => ! isset($error),
+        ]);
     }
 
     /**
      * Disables TOTP on an account.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function disableTotp(Request $request)
+    public function delete(Request $request): JsonResponse
     {
         try {
             $this->toggleTwoFactorService->handle($request->user(), $request->input('token') ?? '', false);
         } catch (TwoFactorAuthenticationTokenInvalid $exception) {
-            $this->alert->danger(trans('base.security.2fa_disable_error'))->flash();
+            $error = true;
         }
 
-        return redirect()->route('account.security');
-    }
-
-    /**
-     * Revokes a user session.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string                   $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function revoke(Request $request, string $id)
-    {
-        $this->repository->deleteUserSession($request->user()->id, $id);
-
-        return redirect()->route('account.security');
+        return JsonResponse::create([
+            'success' => ! isset($error),
+        ]);
     }
 }

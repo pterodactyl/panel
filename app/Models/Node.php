@@ -133,6 +133,16 @@ class Node extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
+     * Get the connection address to use when making calls to this node.
+     *
+     * @return string
+     */
+    public function getConnectionAddress(): string
+    {
+        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
+    }
+
+    /**
      * Returns the configuration in JSON format.
      *
      * @param bool $pretty

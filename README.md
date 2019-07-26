@@ -1,4 +1,4 @@
-[![Logo Image](https://cdn.pterodactyl.io/logos/Banner%20Logo%20Black@2x.png)](https://pterodactyl.io)
+[![Logo Image](https://cdn.pterodactyl.io/logos/new/pterodactyl_logo.png)](https://pterodactyl.io)
 
 [![Build status](https://img.shields.io/travis/pterodactyl/panel/develop.svg?style=flat-square)](https://travis-ci.org/pterodactyl/panel)
 [![StyleCI](https://styleci.io/repos/47508644/shield?branch=develop)](https://styleci.io/repos/47508644)

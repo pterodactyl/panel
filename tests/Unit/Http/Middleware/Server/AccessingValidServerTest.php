@@ -4,7 +4,6 @@ namespace Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
 use Pterodactyl\Models\Server;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
@@ -29,11 +28,6 @@ class AccessingValidServerTest extends MiddlewareTestCase
     private $response;
 
     /**
-     * @var \Illuminate\Contracts\Session\Session|\Mockery\Mock
-     */
-    private $session;
-
-    /**
      * Setup tests.
      */
     public function setUp()
@@ -43,7 +37,6 @@ class AccessingValidServerTest extends MiddlewareTestCase
         $this->config = m::mock(Repository::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
         $this->response = m::mock(ResponseFactory::class);
-        $this->session = m::mock(Session::class);
     }
 
     /**
@@ -114,7 +107,6 @@ class AccessingValidServerTest extends MiddlewareTestCase
         $this->request->shouldReceive('is')->with(...[])->once()->andReturn(false);
 
         $this->repository->shouldReceive('getByUuid')->with('123456')->once()->andReturn($model);
-        $this->session->shouldReceive('now')->with('server_data.model', $model)->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
         $this->assertRequestHasAttribute('server');
@@ -141,10 +133,10 @@ class AccessingValidServerTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\AccessingValidServer
+     * @return \Pterodactyl\Http\Middleware\Server\AccessingValidServer
      */
     private function getMiddleware(): AccessingValidServer
     {
-        return new AccessingValidServer($this->config, $this->response, $this->repository, $this->session);
+        return new AccessingValidServer($this->config, $this->response, $this->repository);
     }
 }
