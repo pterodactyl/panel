@@ -1,12 +1,17 @@
 <?php
 
 return [
-    'sidebar' => [
-        'account_controls' => 'Contrôles de compte',
-        'account_security' => 'Sécurité du compte ',
-        'account_settings' => 'Paramètres de Compte',
-        'files' => 'Gestionnaire de Fichiers',
-        'manage' => 'Gérer le Serveur',
-        'overview' => "Vue d'ensemble du serveur",
-    ],
+    /*
+    |--------------------------------------------------------------------------
+    | Pagination Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used by the paginator library to build
+    | the simple pagination links. You are free to change them to anything
+    | you want to customize your views to better match your application.
+    |
+    */
+
+    'previous' => '&laquo; Précédent',
+    'next' => 'Suivant &raquo;',
 ];
