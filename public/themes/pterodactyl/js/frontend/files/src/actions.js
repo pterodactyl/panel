@@ -397,8 +397,10 @@ class ActionsClass {
         {
             let formattedItems = "";
             let i = 0;
+            let self = this;
+
             $.each(selectedItems, function(key, value) {
-                formattedItems += ("<code>" + this.sanitizedString(value) + "</code>, ");
+                formattedItems += ("<code>" + self.sanitizedString(value) + "</code>, ");
                 i++;
                 return i < 5;
             });
@@ -411,7 +413,7 @@ class ActionsClass {
             swal({
                 type: 'warning',
                 title: '',
-                text: 'Are you sure you want to delete the following files: ' + this.sanitizedString(formattedItems) + '?',
+                text: 'Are you sure you want to delete the following files: ' + formattedItems + '?',
                 html: true,
                 showCancelButton: true,
                 showConfirmButton: true,
