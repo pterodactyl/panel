@@ -101,9 +101,11 @@
                     currentCpu = parseFloat(((info.proc.cpu.total / cpuMax) * 100).toFixed(2).toString());
                 }
                 element.find('[data-action="memory"]').html(parseInt(info.proc.memory.total / (1024 * 1024)));
+                element.find('[data-action="disk"]').html(parseInt(info.proc.disk.used));
                 element.find('[data-action="cpu"]').html(currentCpu);
             } else {
                 element.find('[data-action="memory"]').html('--');
+                element.find('[data-action="disk"]').html('--');
                 element.find('[data-action="cpu"]').html('--');
             }
         });

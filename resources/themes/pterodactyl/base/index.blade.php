@@ -44,6 +44,7 @@
                             <th>@lang('strings.connection')</th>
                             <th class="text-center hidden-sm hidden-xs">@lang('strings.memory')</th>
                             <th class="text-center hidden-sm hidden-xs">@lang('strings.cpu')</th>
+                            <th class="text-center hidden-sm hidden-xs">@lang('strings.disk')</th>
                             <th class="text-center">@lang('strings.relation')</th>
                             <th class="text-center">@lang('strings.status')</th>
                         </tr>
@@ -55,6 +56,7 @@
                                 <td><code>{{ $server->getRelation('allocation')->alias }}:{{ $server->getRelation('allocation')->port }}</code></td>
                                 <td class="text-center hidden-sm hidden-xs"><span data-action="memory">--</span> / {{ $server->memory === 0 ? '∞' : $server->memory }} MB</td>
                                 <td class="text-center hidden-sm hidden-xs"><span data-action="cpu" data-cpumax="{{ $server->cpu }}">--</span> %</td>
+                                <td class="text-center hidden-sm hidden-xs"><span data-action="disk">--</span> / {{ $server->disk === 0 ? '∞' : $server->disk }} MB </td>
                                 <td class="text-center">
                                     @if($server->user->id === Auth::user()->id)
                                         <span class="label bg-purple">@lang('strings.owner')</span>
