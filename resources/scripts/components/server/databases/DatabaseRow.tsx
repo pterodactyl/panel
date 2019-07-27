@@ -15,18 +15,25 @@ import { ApplicationStore } from '@/state';
 import { ServerContext } from '@/state/server';
 import deleteServerDatabase from '@/api/server/deleteServerDatabase';
 import { httpErrorToHuman } from '@/api/http';
+import RotatePasswordButton from '@/components/server/databases/RotatePasswordButton';
 
 interface Props {
-    database: ServerDatabase;
+    databaseId: string | number;
     className?: string;
     onDelete: () => void;
 }
 
-export default ({ database, className, onDelete }: Props) => {
+export default ({ databaseId, className, onDelete }: Props) => {
     const [visible, setVisible] = useState(false);
+    const database = ServerContext.useStoreState(state => state.databases.items.find(item => item.id === databaseId));
+    const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
     const [connectionVisible, setConnectionVisible] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const server = ServerContext.useStoreState(state => state.server.data!);
+
+    if (!database) {
+        return null;
+    }
 
     const schema = object().shape({
         confirm: string()
@@ -104,6 +111,7 @@ export default ({ database, className, onDelete }: Props) => {
                 }
             </Formik>
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
+                <FlashMessageRender byKey={'database-connection-modal'} className={'mb-6'}/>
                 <h3 className={'mb-6'}>Database connection details</h3>
                 <div>
                     <label className={'input-dark-label'}>Password</label>
@@ -119,6 +127,7 @@ export default ({ database, className, onDelete }: Props) => {
                     />
                 </div>
                 <div className={'mt-6 text-right'}>
+                    <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase}/>
                     <button className={'btn btn-sm btn-secondary'} onClick={() => setConnectionVisible(false)}>
                         Close
                     </button>

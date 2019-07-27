@@ -1,6 +1,7 @@
 import getServer, { Server } from '@/api/server/getServer';
 import { action, Action, createContextStore, thunk, Thunk } from 'easy-peasy';
 import socket, { SocketStore } from './socket';
+import { ServerDatabase } from '@/api/server/getServerDatabases';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
@@ -32,8 +33,29 @@ const status: ServerStatusStore = {
     }),
 };
 
+interface ServerDatabaseStore {
+    items: ServerDatabase[];
+    setDatabases: Action<ServerDatabaseStore, ServerDatabase[]>;
+    appendDatabase: Action<ServerDatabaseStore, ServerDatabase>;
+    removeDatabase: Action<ServerDatabaseStore, ServerDatabase>;
+}
+
+const databases: ServerDatabaseStore = {
+    items: [],
+    setDatabases: action((state, payload) => {
+        state.items = payload;
+    }),
+    appendDatabase: action((state, payload) => {
+        state.items = state.items.filter(item => item.id !== payload.id).concat(payload);
+    }),
+    removeDatabase: action((state, payload) => {
+       state.items = state.items.filter(item => item.id !== payload.id);
+    }),
+};
+
 export interface ServerStore {
     server: ServerDataStore;
+    databases: ServerDatabaseStore;
     socket: SocketStore;
     status: ServerStatusStore;
     clearServerState: Action<ServerStore>;
@@ -43,8 +65,10 @@ export const ServerContext = createContextStore<ServerStore>({
     server,
     socket,
     status,
+    databases,
     clearServerState: action(state => {
         state.server.data = undefined;
+        state.databases.items = [];
 
         if (state.socket.instance) {
             state.socket.instance.removeAllListeners();

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Databases;
 
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Database;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -63,6 +64,8 @@ class DatabasePasswordService
     public function handle($database, string $password): bool
     {
         if (! $database instanceof Database) {
+            Assert::integerish($database);
+
             $database = $this->repository->find($database);
         }
 

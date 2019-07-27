@@ -12,12 +12,15 @@ import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseBu
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
-    const [ databases, setDatabases ] = useState<ServerDatabase[]>([]);
     const server = ServerContext.useStoreState(state => state.server.data!);
+    const databases = ServerContext.useStoreState(state => state.databases.items);
+    const { setDatabases, appendDatabase, removeDatabase } = ServerContext.useStoreActions(state => state.databases);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     useEffect(() => {
+        setLoading(!databases.length);
         clearFlashes('databases');
+
         getServerDatabases(server.uuid)
             .then(databases => {
                 setDatabases(databases);
@@ -43,8 +46,8 @@ export default () => {
                             databases.map((database, index) => (
                                 <DatabaseRow
                                     key={database.id}
-                                    database={database}
-                                    onDelete={() => setDatabases(s => [ ...s.filter(d => d.id !== database.id) ])}
+                                    databaseId={database.id}
+                                    onDelete={() => removeDatabase(database)}
                                     className={index > 0 ? 'mt-1' : undefined}
                                 />
                             ))
@@ -54,7 +57,7 @@ export default () => {
                             </p>
                         }
                         <div className={'mt-6 flex justify-end'}>
-                            <CreateDatabaseButton onCreated={database => setDatabases(s => [ ...s, database ])}/>
+                            <CreateDatabaseButton onCreated={appendDatabase}/>
                         </div>
                     </React.Fragment>
                 </CSSTransition>
