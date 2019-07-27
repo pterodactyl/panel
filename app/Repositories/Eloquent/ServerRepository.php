@@ -77,6 +77,26 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
+     * Return a collection of servers with their associated data for reinstall operations.
+     *
+     * @param int|null $server
+     * @param int|null $node
+     * @return \Illuminate\Support\Collection
+     */
+    public function getDataForReinstall(int $server = null, int $node = null): Collection
+    {
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg', 'node']);
+
+        if (! is_null($server) && is_null($node)) {
+            $instance = $instance->where('id', '=', $server);
+        } elseif (is_null($server) && ! is_null($node)) {
+            $instance = $instance->where('node_id', '=', $node);
+        }
+
+        return $instance->get($this->getColumns());
+    }
+
+    /**
      * Return a server model and all variables associated with the server.
      *
      * @param int $id
