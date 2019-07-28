@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Webmozart\Assert\Assert;
 use Illuminate\Container\Container;
+use Pterodactyl\Transformers\Daemon\BaseDaemonTransformer;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
@@ -19,10 +20,15 @@ abstract class ClientApiController extends ApplicationApiController
     {
         /** @var \Pterodactyl\Transformers\Api\Client\BaseClientTransformer $transformer */
         $transformer = Container::getInstance()->make($abstract);
-        Assert::isInstanceOf($transformer, BaseClientTransformer::class);
+        Assert::isInstanceOfAny($transformer, [
+            BaseClientTransformer::class,
+            BaseDaemonTransformer::class,
+        ]);
 
-        $transformer->setKey($this->request->attributes->get('api_key'));
-        $transformer->setUser($this->request->user());
+        if ($transformer instanceof BaseClientTransformer) {
+            $transformer->setKey($this->request->attributes->get('api_key'));
+            $transformer->setUser($this->request->user());
+        }
 
         return $transformer;
     }

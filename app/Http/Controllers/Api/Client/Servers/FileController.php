@@ -7,10 +7,13 @@ use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use GuzzleHttp\Exception\TransferException;
+use Pterodactyl\Transformers\Daemon\FileObjectTransformer;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
@@ -57,16 +60,23 @@ class FileController extends ClientApiController
      * Returns a listing of files in a given directory.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function listDirectory(ListFilesRequest $request): JsonResponse
+    public function listDirectory(ListFilesRequest $request): array
     {
-        return JsonResponse::create([
-            'contents' => $this->fileRepository->setServer($request->getModel(Server::class))->getDirectory(
-                $request->get('directory') ?? '/'
-            ),
-            'editable' => $this->config->get('pterodactyl.files.editable', []),
-        ]);
+        try {
+            $contents = $this->fileRepository
+                ->setServer($request->getModel(Server::class))
+                ->getDirectory($request->get('directory') ?? '/');
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception, true);
+        }
+
+        return $this->fractal->collection($contents)
+            ->transformWith($this->getTransformer(FileObjectTransformer::class))
+            ->toArray();
     }
 
     /**
