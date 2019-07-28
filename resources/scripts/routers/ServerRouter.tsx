@@ -8,6 +8,8 @@ import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { ServerContext } from '@/state/server';
 import { Provider } from 'react-redux';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
+import FileManagerContainer from '@/components/server/files/FileManagerContainer';
+import { CSSTransition } from 'react-transition-group';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -23,16 +25,18 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     return (
         <React.Fragment>
             <NavigationBar/>
-            <div id={'sub-navigation'}>
-                <div className={'mx-auto'} style={{ maxWidth: '1200px' }}>
-                    <div className={'items'}>
-                        <NavLink to={`${match.url}`} exact>Console</NavLink>
-                        <NavLink to={`${match.url}/files`}>File Manager</NavLink>
-                        <NavLink to={`${match.url}/databases`}>Databases</NavLink>
-                        <NavLink to={`${match.url}/users`}>User Management</NavLink>
+            <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
+                <div id={'sub-navigation'}>
+                    <div className={'mx-auto'} style={{ maxWidth: '1200px' }}>
+                        <div className={'items'}>
+                            <NavLink to={`${match.url}`} exact>Console</NavLink>
+                            <NavLink to={`${match.url}/files`}>File Manager</NavLink>
+                            <NavLink to={`${match.url}/databases`}>Databases</NavLink>
+                            <NavLink to={`${match.url}/users`}>User Management</NavLink>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </CSSTransition>
             <Provider store={ServerContext.useStore()}>
                 <TransitionRouter>
                     <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
@@ -45,6 +49,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <WebsocketHandler/>
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
+                                    <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
                                     <Route path={`${match.path}/databases`} component={DatabasesContainer}/>
                                 </Switch>
                             </React.Fragment>

@@ -10,7 +10,7 @@ export default ({ children }: Props) => (
     <Route
         render={({ location }) => (
             <TransitionGroup className={'route-transition-group'}>
-                <CSSTransition key={location.key} timeout={250} classNames={'fade'}>
+                <CSSTransition key={location.key} timeout={250} in={true} appear={true} classNames={'fade'}>
                     <section>
                         {children}
                         <div className={'mx-auto w-full'} style={{ maxWidth: '1200px' }}>
