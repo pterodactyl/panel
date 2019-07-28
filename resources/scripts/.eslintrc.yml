@@ -11,6 +11,8 @@ plugins:
 extends:
   - "standard"
   - "plugin:@typescript-eslint/recommended"
+globals:
+  tw: "readonly"
 rules:
   semi:
     - error

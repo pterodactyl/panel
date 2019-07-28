@@ -71,8 +71,15 @@ module.exports = {
                         loader: 'babel-loader',
                         options: {
                             cacheDirectory: !isProduction,
-                            presets: ['@babel/preset-env', '@babel/preset-react'],
-                            plugins: ['react-hot-loader/babel', '@babel/plugin-syntax-dynamic-import'],
+                            presets: ['@babel/env', '@babel/react'],
+                            plugins: [
+                                'react-hot-loader/babel',
+                                '@babel/plugin-syntax-dynamic-import',
+                                ['styled-components', {
+                                    displayName: true,
+                                }],
+                                'tailwind-components',
+                            ],
                         },
                     },
                     {
