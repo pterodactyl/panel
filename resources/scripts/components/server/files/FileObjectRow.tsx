@@ -6,9 +6,9 @@ import { bytesToHuman } from '@/helpers';
 import differenceInHours from 'date-fns/difference_in_hours';
 import format from 'date-fns/format';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons/faEllipsisH';
 import React from 'react';
 import { FileObject } from '@/api/server/files/loadDirectory';
+import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
 
 export default ({ file, directory }: { file: FileObject; directory: string }) => {
     return (
@@ -16,7 +16,7 @@ export default ({ file, directory }: { file: FileObject; directory: string }) =>
             key={file.name}
             href={file.isFile ? undefined : `#${directory}/${file.name}`}
             className={`
-                flex px-4 py-3 bg-neutral-700 text-neutral-300 rounded-sm mb-px text-sm
+                flex bg-neutral-700 text-neutral-300 rounded-sm mb-px text-sm
                 hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600
             `}
             onClick={(e) => {
@@ -25,7 +25,7 @@ export default ({ file, directory }: { file: FileObject; directory: string }) =>
                 }
             }}
         >
-            <div className={'flex-none text-neutral-400 mr-4 text-lg'}>
+            <div className={'flex-none text-neutral-400 mr-4 text-lg pl-3'}>
                 {file.isFile ?
                     <FontAwesomeIcon icon={file.isSymlink ? faFileImport : faFileAlt}/>
                     :
@@ -50,9 +50,7 @@ export default ({ file, directory }: { file: FileObject; directory: string }) =>
                     distanceInWordsToNow(file.modifiedAt, { includeSeconds: true })
                 }
             </div>
-            <div>
-                <FontAwesomeIcon icon={faEllipsisH}/>
-            </div>
+            <FileDropdownMenu file={file}/>
         </a>
     );
 };
