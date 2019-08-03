@@ -3,6 +3,22 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.15 (Derelict Dermodactylus)
+### Fixed
+* Fixes support for PHP 7.3 when running `composer install` commands due to a dependency that needed updating.
+* Automatic allocation field when creating a new node (or updating one) should now properly remeber its old
+value when showing an error state.
+* Mass deleting files now executes properly and doesn't result in a JS console error.
+* Scrolling on email settings page now works.
+
+### Added
+* Server listing view now displays the total used disk space for each server.
+
+### Changed
+* Updated Paper egg to not download `server.properties` each time. [parkervcp/eggs#260](https://github.com/parkervcp/eggs/issues/260)
+* Insurgency egg now uses the proper dedicated server ID.
+* Teamspeak egg updated with improved installation process and grabbing latest versions.
+
 ## v0.7.14 (Derelict Dermodactylus)
 ### Fixed
 * **[SECURITY]** Fixes an XSS vulnerability when performing certain actions in the file manager.
