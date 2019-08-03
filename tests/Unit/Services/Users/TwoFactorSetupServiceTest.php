@@ -60,7 +60,7 @@ class TwoFactorSetupServiceTest extends TestCase
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);
 
-        $companyName = preg_quote(rawurlencode('Company Name'));
+        $companyName = preg_quote(rawurlencode('CompanyName'));
         $email = preg_quote(rawurlencode($model->email));
 
         $this->assertRegExp(

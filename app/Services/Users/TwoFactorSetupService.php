@@ -71,7 +71,7 @@ class TwoFactorSetupService
             'totp_secret' => $this->encrypter->encrypt($secret),
         ]);
 
-        $company = $this->config->get('app.name');
+        $company = preg_replace('/\s/', '', $this->config->get('app.name'));
 
         return sprintf(
             'otpauth://totp/%1$s:%2$s?secret=%3$s&issuer=%1$s',

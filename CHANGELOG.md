@@ -12,6 +12,7 @@ value when showing an error state.
 * Scrolling on email settings page now works.
 * Database host management will now properly display an error message to the user when there is any type of MySQL related
 error encountered during creation or update.
+* Two-factor tokens generated when a company name has a space in it will now properly be parsed on iOS authenticator devices.
 
 ### Added
 * Server listing view now displays the total used disk space for each server.
