@@ -15,6 +15,7 @@ error encountered during creation or update.
 * Two-factor tokens generated when a company name has a space in it will now properly be parsed on iOS authenticator devices.
 * Fixed 500 error when trying to request subuser's from a server in the application API.
 * Creating a node allocation via the API no longer requires an alias field be passed through in the request.
+* Bulk power management for servers via the CLI no longer fails when servers span multiple nodes.
 
 ### Added
 * Server listing view now displays the total used disk space for each server.
