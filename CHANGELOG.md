@@ -16,6 +16,9 @@ error encountered during creation or update.
 
 ### Added
 * Server listing view now displays the total used disk space for each server.
+* Client API endpoint to list all servers now supports an additional `?filter=subuser-of|all|admin|owner` parameter to
+return different groupings of servers. The default value is `subuser-of` which will include all of the user's servers
+that they are the owner of, as well as all servers they're a subuser of.
 
 ### Changed
 * Updated Paper egg to not download `server.properties` each time. [parkervcp/eggs#260](https://github.com/parkervcp/eggs/issues/260)
