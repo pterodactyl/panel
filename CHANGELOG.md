@@ -21,11 +21,13 @@ error encountered during creation or update.
 * Client API endpoint to list all servers now supports an additional `?filter=subuser-of|all|admin|owner` parameter to
 return different groupings of servers. The default value is `subuser-of` which will include all of the user's servers
 that they are the owner of, as well as all servers they're a subuser of.
+* Added back ability to toggle OOM killer status on a per-server basis.
 
 ### Changed
 * Updated Paper egg to not download `server.properties` each time. [parkervcp/eggs#260](https://github.com/parkervcp/eggs/issues/260)
 * Insurgency egg now uses the proper dedicated server ID.
 * Teamspeak egg updated with improved installation process and grabbing latest versions.
+* OOM killer disabled by default on all new servers.
 
 ## v0.7.14 (Derelict Dermodactylus)
 ### Fixed

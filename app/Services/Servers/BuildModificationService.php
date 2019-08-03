@@ -85,6 +85,7 @@ class BuildModificationService
         }
 
         $server = $this->repository->withFreshModel()->update($server->id, [
+            'oom_disabled' => array_get($data, 'oom_disabled'),
             'memory' => array_get($data, 'memory'),
             'swap' => array_get($data, 'swap'),
             'io' => array_get($data, 'io'),
@@ -97,6 +98,7 @@ class BuildModificationService
 
         $allocations = $this->allocationRepository->findWhere([['server_id', '=', $server->id]]);
 
+        $build['oom_disabled'] = $server->oom_disabled;
         $build['memory'] = (int) $server->memory;
         $build['swap'] = (int) $server->swap;
         $build['io'] = (int) $server->io;

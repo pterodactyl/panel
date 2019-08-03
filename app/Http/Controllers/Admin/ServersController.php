@@ -516,7 +516,7 @@ class ServersController extends Controller
         $this->buildModificationService->handle($server, $request->only([
             'allocation_id', 'add_allocations', 'remove_allocations',
             'memory', 'swap', 'io', 'cpu', 'disk',
-            'database_limit', 'allocation_limit',
+            'database_limit', 'allocation_limit', 'oom_disabled',
         ]));
         $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
 
