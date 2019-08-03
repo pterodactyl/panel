@@ -156,11 +156,11 @@ class Server extends Model implements CleansAttributes, ValidableContract
     /**
      * Gets the subusers associated with a server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function subusers()
     {
-        return $this->hasMany(Subuser::class);
+        return $this->hasManyThrough(User::class, Subuser::class, 'server_id', 'id', 'id', 'user_id');
     }
 
     /**
