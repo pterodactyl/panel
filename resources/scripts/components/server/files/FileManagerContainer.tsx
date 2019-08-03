@@ -47,9 +47,7 @@ export default () => {
             return { name: directory, path: `/${dirs.slice(0, index + 1).join('/')}` };
         });
 
-    useEffect(() => {
-        load();
-    }, [ window.location.hash ]);
+    useEffect(() => load(), []);
 
     return (
         <div className={'my-10 mb-6'}>
