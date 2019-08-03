@@ -135,15 +135,13 @@ class DatabaseController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function update(Request $request): JsonResponse
     {
         $this->authorize('reset-db-password', $request->attributes->get('server'));
 
-        $password = str_random(24);
-        $this->passwordService->handle($request->attributes->get('database'), $password);
+        $password = $this->passwordService->handle($request->attributes->get('database'));
 
         return response()->json(['password' => $password]);
     }

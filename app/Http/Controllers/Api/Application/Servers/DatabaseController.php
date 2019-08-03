@@ -87,12 +87,11 @@ class DatabaseController extends ApplicationApiController
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function resetPassword(ServerDatabaseWriteRequest $request): Response
     {
-        $this->databasePasswordService->handle($request->getModel(Database::class), str_random(24));
+        $this->databasePasswordService->handle($request->getModel(Database::class));
 
         return response('', 204);
     }

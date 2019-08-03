@@ -29,6 +29,7 @@ that they are the owner of, as well as all servers they're a subuser of.
 * Insurgency egg now uses the proper dedicated server ID.
 * Teamspeak egg updated with improved installation process and grabbing latest versions.
 * OOM killer disabled by default on all new servers.
+* Passwords generated for MySQL now include special characters and are 24 characters in length.
 
 ## v0.7.14 (Derelict Dermodactylus)
 ### Fixed
