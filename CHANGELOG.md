@@ -10,6 +10,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 value when showing an error state.
 * Mass deleting files now executes properly and doesn't result in a JS console error.
 * Scrolling on email settings page now works.
+* Database host management will now properly display an error message to the user when there is any type of MySQL related
+error encountered during creation or update.
 
 ### Added
 * Server listing view now displays the total used disk space for each server.

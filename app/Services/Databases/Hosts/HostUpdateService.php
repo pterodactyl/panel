@@ -71,10 +71,9 @@ class HostUpdateService
      *
      * @param int   $hostId
      * @param array $data
-     * @return mixed
+     * @return \Pterodactyl\Models\DatabaseHost
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function handle(int $hostId, array $data): DatabaseHost
     {
@@ -84,13 +83,12 @@ class HostUpdateService
             unset($data['password']);
         }
 
-        $this->connection->beginTransaction();
-        $host = $this->repository->update($hostId, $data);
+        return $this->connection->transaction(function () use ($data, $hostId) {
+            $host = $this->repository->update($hostId, $data);
+            $this->dynamic->set('dynamic', $host);
+            $this->databaseManager->connection('dynamic')->select('SELECT 1 FROM dual');
 
-        $this->dynamic->set('dynamic', $host);
-        $this->databaseManager->connection('dynamic')->select('SELECT 1 FROM dual');
-        $this->connection->commit();
-
-        return $host;
+            return $host;
+        });
     }
 }
