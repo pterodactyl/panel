@@ -9,6 +9,7 @@ import { CSSTransition } from 'react-transition-group';
 import { Link } from 'react-router-dom';
 import Spinner from '@/components/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
+import { getDirectoryFromHash } from '@/helpers';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -16,12 +17,10 @@ export default () => {
     const server = ServerContext.useStoreState(state => state.server.data!);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    const currentDirectory = window.location.hash.replace(/^#(\/)+/, '/');
-
     const load = () => {
         setLoading(true);
         clearFlashes();
-        loadDirectory(server.uuid, currentDirectory)
+        loadDirectory(server.uuid, getDirectoryFromHash())
             .then(files => {
                 setFiles(files);
                 setLoading(false);
@@ -37,7 +36,7 @@ export default () => {
             });
     };
 
-    const breadcrumbs = (): { name: string; path?: string }[] => currentDirectory.split('/')
+    const breadcrumbs = (): { name: string; path?: string }[] => getDirectoryFromHash().split('/')
         .filter(directory => !!directory)
         .map((directory, index, dirs) => {
             if (index === dirs.length - 1) {
@@ -87,7 +86,7 @@ export default () => {
                                 <div>
                                     {
                                         files.map(file => (
-                                            <FileObjectRow key={file.name} directory={currentDirectory} file={file}/>
+                                            <FileObjectRow key={file.name} directory={getDirectoryFromHash()} file={file}/>
                                         ))
                                     }
                                 </div>

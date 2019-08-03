@@ -4,9 +4,12 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
 
-interface Props {
+export interface RequiredModalProps {
     visible: boolean;
     onDismissed: () => void;
+}
+
+type Props = RequiredModalProps & {
     dismissable?: boolean;
     closeOnEscape?: boolean;
     closeOnBackground?: boolean;

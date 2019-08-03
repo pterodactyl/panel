@@ -7,14 +7,16 @@ import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons/faFileDownload';
 import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy';
-import { faArrowsAltH } from '@fortawesome/free-solid-svg-icons/faArrowsAltH';
-import { faBalanceScaleLeft } from '@fortawesome/free-solid-svg-icons/faBalanceScaleLeft';
 import { faLevelUpAlt } from '@fortawesome/free-solid-svg-icons/faLevelUpAlt';
+import RenameFileModal from '@/components/server/files/RenameFileModal';
+
+type ModalType = 'rename' | 'move';
 
 export default ({ file }: { file: FileObject }) => {
     const menu = createRef<HTMLDivElement>();
     const [ visible, setVisible ] = useState(false);
-    const [posX, setPosX] = useState(0);
+    const [ modal, setModal ] = useState<ModalType | null>(null);
+    const [ posX, setPosX ] = useState(0);
 
     const windowListener = (e: MouseEvent) => {
         if (e.button === 2 || !visible || !menu.current) {
@@ -37,7 +39,7 @@ export default ({ file }: { file: FileObject }) => {
 
         if (visible && menu.current) {
             menu.current.setAttribute(
-                'style', `margin-top: -0.35rem; left: ${Math.round(posX - menu.current.clientWidth)}px`
+                'style', `margin-top: -0.35rem; left: ${Math.round(posX - menu.current.clientWidth)}px`,
             );
         }
     }, [ visible ]);
@@ -54,18 +56,28 @@ export default ({ file }: { file: FileObject }) => {
                     e.preventDefault();
                     if (!visible) {
                         setPosX(e.clientX);
+                    } else if (visible) {
+                        setModal(null);
                     }
                     setVisible(!visible);
                 }}
             >
                 <FontAwesomeIcon icon={faEllipsisH}/>
             </div>
+            {visible &&
+                <React.Fragment>
+                    <RenameFileModal file={file} visible={modal === 'rename'} onDismissed={() => setModal(null)}/>
+                </React.Fragment>
+            }
             <CSSTransition timeout={250} in={visible} unmountOnExit={true} classNames={'fade'}>
                 <div
                     className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48'}
                     ref={menu}
                 >
-                    <div className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}>
+                    <div
+                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                        onClick={() => setModal('rename')}
+                    >
                         <FontAwesomeIcon icon={faPencilAlt} className={'text-xs'}/>
                         <span className={'ml-2'}>Rename</span>
                     </div>
