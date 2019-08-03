@@ -23,6 +23,7 @@ error encountered during creation or update.
 return different groupings of servers. The default value is `subuser-of` which will include all of the user's servers
 that they are the owner of, as well as all servers they're a subuser of.
 * Added back ability to toggle OOM killer status on a per-server basis.
+* Added `LOCK` permission for generated database users.
 
 ### Changed
 * Updated Paper egg to not download `server.properties` each time. [parkervcp/eggs#260](https://github.com/parkervcp/eggs/issues/260)
