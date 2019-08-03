@@ -227,7 +227,7 @@ class ServerCreationService
             'disk' => array_get($data, 'disk'),
             'io' => array_get($data, 'io'),
             'cpu' => array_get($data, 'cpu'),
-            'oom_disabled' => false,
+            'oom_disabled' => array_get($data, 'oom_disabled', true),
             'allocation_id' => array_get($data, 'allocation_id'),
             'nest_id' => array_get($data, 'nest_id'),
             'egg_id' => array_get($data, 'egg_id'),

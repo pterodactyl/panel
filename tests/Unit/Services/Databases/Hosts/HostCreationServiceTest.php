@@ -60,18 +60,20 @@ class HostCreationServiceTest extends TestCase
     {
         $model = factory(DatabaseHost::class)->make();
 
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->encrypter->shouldReceive('encrypt')->with('test123')->once()->andReturn('enc123');
-        $this->repository->shouldReceive('create')->with(m::subset([
+        $this->connection->expects('transaction')->with(m::on(function ($closure) {
+            return ! is_null($closure());
+        }))->andReturn($model);
+
+        $this->encrypter->expects('encrypt')->with('test123')->andReturn('enc123');
+        $this->repository->expects('create')->with(m::subset([
             'password' => 'enc123',
             'username' => $model->username,
             'node_id' => $model->node_id,
-        ]))->once()->andReturn($model);
+        ]))->andReturn($model);
 
-        $this->dynamic->shouldReceive('set')->with('dynamic', $model)->once()->andReturnNull();
-        $this->databaseManager->shouldReceive('connection')->with('dynamic')->once()->andReturnSelf();
-        $this->databaseManager->shouldReceive('select')->with('SELECT 1 FROM dual')->once()->andReturnNull();
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+        $this->dynamic->expects('set')->with('dynamic', $model)->andReturnNull();
+        $this->databaseManager->expects('connection')->with('dynamic')->andReturnSelf();
+        $this->databaseManager->expects('select')->with('SELECT 1 FROM dual')->andReturnNull();
 
         $response = $this->getService()->handle([
             'password' => 'test123',

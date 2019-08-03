@@ -102,7 +102,10 @@ class BulkPowerActionCommand extends Command
             $bar->clear();
 
             try {
-                $this->powerRepository->setServer($server)->sendSignal($action);
+                $this->powerRepository
+                    ->setNode($server->node)
+                    ->setServer($server)
+                    ->sendSignal($action);
             } catch (RequestException $exception) {
                 $this->output->error(trans('command/messages.server.power.action_failed', [
                     'name' => $server->name,

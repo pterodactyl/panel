@@ -29,6 +29,16 @@ class Server extends Model implements CleansAttributes, ValidableContract
     protected $table = 'servers';
 
     /**
+     * Default values when creating the model. We want to switch to disabling OOM killer
+     * on server instances unless the user specifies otherwise in the request.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'oom_disabled' => true,
+    ];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
@@ -53,6 +63,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'swap' => 'required',
         'io' => 'required',
         'cpu' => 'required',
+        'oom_disabled' => 'sometimes',
         'disk' => 'required',
         'nest_id' => 'required',
         'egg_id' => 'required',
@@ -79,6 +90,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'swap' => 'numeric|min:-1',
         'io' => 'numeric|between:10,1000',
         'cpu' => 'numeric|min:0',
+        'oom_disabled' => 'boolean',
         'disk' => 'numeric|min:0',
         'allocation_id' => 'bail|unique:servers|exists:allocations,id',
         'nest_id' => 'exists:nests,id',
@@ -107,7 +119,7 @@ class Server extends Model implements CleansAttributes, ValidableContract
         'disk' => 'integer',
         'io' => 'integer',
         'cpu' => 'integer',
-        'oom_disabled' => 'integer',
+        'oom_disabled' => 'boolean',
         'allocation_id' => 'integer',
         'nest_id' => 'integer',
         'egg_id' => 'integer',
@@ -156,11 +168,11 @@ class Server extends Model implements CleansAttributes, ValidableContract
     /**
      * Gets the subusers associated with a server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function subusers()
     {
-        return $this->hasMany(Subuser::class);
+        return $this->hasManyThrough(User::class, Subuser::class, 'server_id', 'id', 'id', 'user_id');
     }
 
     /**

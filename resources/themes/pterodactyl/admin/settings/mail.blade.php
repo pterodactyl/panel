@@ -111,10 +111,8 @@
 @endsection
 
 @section('footer-scripts')
-    {!! Theme::js('js/laroute.js?t={cache-version}') !!}
-    {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
-    {!! Theme::js('vendor/sweetalert/sweetalert.min.js?t={cache-version}') !!}
-
+    @parent
+    
     <script>
         function saveSettings() {
             return $.ajax({

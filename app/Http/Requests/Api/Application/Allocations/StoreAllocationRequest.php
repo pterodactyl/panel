@@ -40,7 +40,7 @@ class StoreAllocationRequest extends ApplicationApiRequest
         return [
             'allocation_ip' => $data['ip'],
             'allocation_ports' => $data['ports'],
-            'allocation_alias' => $data['alias'],
+            'allocation_alias' => $data['alias'] ?? null,
         ];
     }
 }

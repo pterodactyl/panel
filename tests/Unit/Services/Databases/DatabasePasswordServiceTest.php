@@ -48,43 +48,35 @@ class DatabasePasswordServiceTest extends TestCase
 
     /**
      * Test that a password can be updated.
-     *
-     * @dataProvider useModelDataProvider
      */
-    public function testPasswordIsChanged(bool $useModel)
+    public function testPasswordIsChanged()
     {
         $model = factory(Database::class)->make();
 
-        if (! $useModel) {
-            $this->repository->shouldReceive('find')->with(1234)->once()->andReturn($model);
-        }
+        $this->connection->expects('transaction')->with(m::on(function ($closure) {
+            return is_null($closure());
+        }));
 
         $this->dynamic->shouldReceive('set')->with('dynamic', $model->database_host_id)->once()->andReturnNull();
-        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
-        $this->encrypter->shouldReceive('encrypt')->with('test123')->once()->andReturn('enc123');
+
+        $this->encrypter->expects('encrypt')->with(m::on(function ($string) {
+            preg_match_all('/[!@+=^-]/', $string, $matches, PREG_SET_ORDER);
+            $this->assertTrue(count($matches) >= 2 && count($matches) <= 6, "Failed asserting that [{$string}] contains 2 to 6 special characters.");
+            $this->assertTrue(strlen($string) === 24, "Failed asserting that [{$string}] is 24 characters in length.");
+
+            return true;
+        }))->andReturn('enc123');
 
         $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
         $this->repository->shouldReceive('update')->with($model->id, ['password' => 'enc123'])->once()->andReturn(true);
 
         $this->repository->shouldReceive('dropUser')->with($model->username, $model->remote)->once()->andReturn(true);
-        $this->repository->shouldReceive('createUser')->with($model->username, $model->remote, 'test123')->once()->andReturn(true);
+        $this->repository->shouldReceive('createUser')->with($model->username, $model->remote, m::any())->once()->andReturn(true);
         $this->repository->shouldReceive('assignUserToDatabase')->with($model->database, $model->username, $model->remote)->once()->andReturn(true);
         $this->repository->shouldReceive('flush')->withNoArgs()->once()->andReturn(true);
-        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturn(true);
 
-        $response = $this->getService()->handle($useModel ? $model : 1234, 'test123');
+        $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);
-        $this->assertTrue($response);
-    }
-
-    /**
-     * Data provider to determine if a model should be passed or an int.
-     *
-     * @return array
-     */
-    public function useModelDataProvider(): array
-    {
-        return [[false], [true]];
     }
 
     /**

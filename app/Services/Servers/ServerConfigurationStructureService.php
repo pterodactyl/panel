@@ -70,6 +70,7 @@ class ServerConfigurationStructureService
                     return $item->pluck('port');
                 })->toArray(),
                 'env' => $this->environment->handle($server),
+                'oom_disabled' => $server->oom_disabled,
                 'memory' => (int) $server->memory,
                 'swap' => (int) $server->swap,
                 'io' => (int) $server->io,

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Exception;
 use PDOException;
 use Illuminate\View\View;
 use Pterodactyl\Models\DatabaseHost;
@@ -118,17 +119,22 @@ class DatabaseController extends Controller
      * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function create(DatabaseHostFormRequest $request): RedirectResponse
     {
         try {
             $host = $this->creationService->handle($request->normalize());
-        } catch (PDOException $ex) {
-            $this->alert->danger($ex->getMessage())->flash();
+        } catch (Exception $exception) {
+            if ($exception instanceof PDOException || $exception->getPrevious() instanceof PDOException) {
+                $this->alert->danger(
+                    sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage())
+                )->flash();
 
-            return redirect()->route('admin.databases');
+                redirect()->route('admin.databases')->withInput($request->validated());
+            } else {
+                throw $exception;
+            }
         }
 
         $this->alert->success('Successfully created a new database host on the system.')->flash();
@@ -143,8 +149,7 @@ class DatabaseController extends Controller
      * @param \Pterodactyl\Models\DatabaseHost                         $host
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function update(DatabaseHostFormRequest $request, DatabaseHost $host): RedirectResponse
     {
@@ -153,9 +158,17 @@ class DatabaseController extends Controller
         try {
             $this->updateService->handle($host->id, $request->normalize());
             $this->alert->success('Database host was updated successfully.')->flash();
-        } catch (PDOException $ex) {
-            $this->alert->danger($ex->getMessage())->flash();
-            $redirect->withInput($request->normalize());
+        } catch (Exception $exception) {
+            // Catch any SQL related exceptions and display them back to the user, otherwise just
+            // throw the exception like normal and move on with it.
+            if ($exception instanceof PDOException || $exception->getPrevious() instanceof PDOException) {
+                $this->alert->danger(
+                    sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage())
+                )->flash();
+                $redirect->withInput($request->normalize());
+            } else {
+                throw $exception;
+            }
         }
 
         return $redirect;
