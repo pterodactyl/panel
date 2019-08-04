@@ -1,6 +1,8 @@
 import http from '@/api/http';
+import v4 from 'uuid/v4';
 
 export interface FileObject {
+    uuid: string;
     name: string;
     mode: string;
     size: number;
@@ -18,6 +20,7 @@ export default (uuid: string, directory?: string): Promise<FileObject[]> => {
             params: { directory },
         })
             .then(response => resolve((response.data.data || []).map((item: any): FileObject => ({
+                uuid: v4(),
                 name: item.attributes.name,
                 mode: item.attributes.mode,
                 size: Number(item.attributes.size),

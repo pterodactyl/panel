@@ -1,26 +1,32 @@
 import React from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Form, Formik, FormikActions } from 'formik';
-import { FileObject } from '@/api/server/files/loadDirectory';
 import Field from '@/components/elements/Field';
-import { getDirectoryFromHash } from '@/helpers';
 import { join } from 'path';
 import renameFile from '@/api/server/files/renameFile';
 import { ServerContext } from '@/state/server';
+import { FileObject } from '@/api/server/files/loadDirectory';
 
 interface FormikValues {
     name: string;
 }
 
-export default ({ file, ...props }: RequiredModalProps & { file: FileObject }) => {
-    const server = ServerContext.useStoreState(state => state.server.data!);
+type Props = RequiredModalProps & { file: FileObject };
+
+export default ({ file, ...props }: Props) => {
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
+    const pushFile = ServerContext.useStoreActions(actions => actions.files.pushFile);
 
     const submit = (values: FormikValues, { setSubmitting }: FormikActions<FormikValues>) => {
-        const renameFrom = join(getDirectoryFromHash(), file.name);
-        const renameTo = join(getDirectoryFromHash(), values.name);
+        const renameFrom = join(directory, file.name);
+        const renameTo = join(directory, values.name);
 
-        renameFile(server.uuid, { renameFrom, renameTo })
-            .then(() => props.onDismissed())
+        renameFile(uuid, { renameFrom, renameTo })
+            .then(() => {
+                pushFile({ ...file, name: values.name });
+                props.onDismissed();
+            })
             .catch(error => {
                 setSubmitting(false);
                 console.error(error);
@@ -41,6 +47,7 @@ export default ({ file, ...props }: RequiredModalProps & { file: FileObject }) =
                             name={'name'}
                             label={'File Name'}
                             description={'Enter the new name of this file or folder.'}
+                            autoFocus={true}
                         />
                         <div className={'mt-6 text-right'}>
                             <button className={'btn btn-sm btn-primary'}>

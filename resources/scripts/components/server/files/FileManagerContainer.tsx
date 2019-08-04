@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerContext } from '@/state/server';
-import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
@@ -9,22 +8,21 @@ import { CSSTransition } from 'react-transition-group';
 import { Link } from 'react-router-dom';
 import Spinner from '@/components/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
-import { getDirectoryFromHash } from '@/helpers';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
-    const [ files, setFiles ] = useState<FileObject[]>([]);
-    const server = ServerContext.useStoreState(state => state.server.data!);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { contents: files } = ServerContext.useStoreState(state => state.files);
+    const getDirectoryContents = ServerContext.useStoreActions(actions => actions.files.getDirectoryContents);
+
+    const urlDirectory = window.location.hash.replace(/^#(\/)+/, '/');
 
     const load = () => {
         setLoading(true);
         clearFlashes();
-        loadDirectory(server.uuid, getDirectoryFromHash())
-            .then(files => {
-                setFiles(files);
-                setLoading(false);
-            })
+
+        getDirectoryContents(urlDirectory)
+            .then(() => setLoading(false))
             .catch(error => {
                 if (error.response && error.response.status === 404) {
                     window.location.hash = '#/';
@@ -36,7 +34,7 @@ export default () => {
             });
     };
 
-    const breadcrumbs = (): { name: string; path?: string }[] => getDirectoryFromHash().split('/')
+    const breadcrumbs = (): { name: string; path?: string }[] => urlDirectory.split('/')
         .filter(directory => !!directory)
         .map((directory, index, dirs) => {
             if (index === dirs.length - 1) {
@@ -86,7 +84,7 @@ export default () => {
                                 <div>
                                     {
                                         files.map(file => (
-                                            <FileObjectRow key={file.name} directory={getDirectoryFromHash()} file={file}/>
+                                            <FileObjectRow key={file.name} file={file}/>
                                         ))
                                     }
                                 </div>

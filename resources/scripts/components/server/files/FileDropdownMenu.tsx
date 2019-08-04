@@ -1,7 +1,6 @@
 import React, { createRef, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons/faEllipsisH';
-import { FileObject } from '@/api/server/files/loadDirectory';
 import { CSSTransition } from 'react-transition-group';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
@@ -9,14 +8,20 @@ import { faFileDownload } from '@fortawesome/free-solid-svg-icons/faFileDownload
 import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy';
 import { faLevelUpAlt } from '@fortawesome/free-solid-svg-icons/faLevelUpAlt';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
+import { ServerContext } from '@/state/server';
 
 type ModalType = 'rename' | 'move';
 
-export default ({ file }: { file: FileObject }) => {
+export default ({ uuid }: { uuid: string }) => {
     const menu = createRef<HTMLDivElement>();
     const [ visible, setVisible ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
     const [ posX, setPosX ] = useState(0);
+
+    const file = ServerContext.useStoreState(state => state.files.contents.find(file => file.uuid === uuid));
+    if (!file) {
+        return null;
+    }
 
     const windowListener = (e: MouseEvent) => {
         if (e.button === 2 || !visible || !menu.current) {

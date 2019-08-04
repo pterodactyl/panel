@@ -9,8 +9,11 @@ import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import React from 'react';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
+import { ServerContext } from '@/state/server';
 
-export default ({ file, directory }: { file: FileObject; directory: string }) => {
+export default ({ file }: { file: FileObject }) => {
+    const directory = ServerContext.useStoreState(state => state.files.directory);
+
     return (
         <a
             key={file.name}
@@ -50,7 +53,7 @@ export default ({ file, directory }: { file: FileObject; directory: string }) =>
                     distanceInWordsToNow(file.modifiedAt, { includeSeconds: true })
                 }
             </div>
-            <FileDropdownMenu file={file}/>
+            <FileDropdownMenu uuid={file.uuid}/>
         </a>
     );
 };

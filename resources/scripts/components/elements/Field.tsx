@@ -8,10 +8,11 @@ interface Props {
     name: string;
     label?: string;
     description?: string;
+    autoFocus?: boolean;
     validate?: (value: any) => undefined | string | Promise<any>;
 }
 
-export default ({ id, type, name, label, description, validate }: Props) => (
+export default ({ id, type, name, label, description, autoFocus, validate }: Props) => (
     <Field name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
@@ -23,6 +24,7 @@ export default ({ id, type, name, label, description, validate }: Props) => (
                         id={id}
                         type={type}
                         {...field}
+                        autoFocus={autoFocus}
                         className={classNames('input-dark', {
                             error: touched[field.name] && errors[field.name],
                         })}

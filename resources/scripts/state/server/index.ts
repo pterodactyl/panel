@@ -2,12 +2,13 @@ import getServer, { Server } from '@/api/server/getServer';
 import { action, Action, createContextStore, thunk, Thunk } from 'easy-peasy';
 import socket, { SocketStore } from './socket';
 import { ServerDatabase } from '@/api/server/getServerDatabases';
+import files, { ServerFileStore } from '@/state/server/files';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
 interface ServerDataStore {
     data?: Server;
-    getServer: Thunk<ServerDataStore, string, {}, any, Promise<void>>;
+    getServer: Thunk<ServerDataStore, string, {}, ServerStore, Promise<void>>;
     setServer: Action<ServerDataStore, Server>;
 }
 
@@ -49,13 +50,14 @@ const databases: ServerDatabaseStore = {
         state.items = state.items.filter(item => item.id !== payload.id).concat(payload);
     }),
     removeDatabase: action((state, payload) => {
-       state.items = state.items.filter(item => item.id !== payload.id);
+        state.items = state.items.filter(item => item.id !== payload.id);
     }),
 };
 
 export interface ServerStore {
     server: ServerDataStore;
     databases: ServerDatabaseStore;
+    files: ServerFileStore;
     socket: SocketStore;
     status: ServerStatusStore;
     clearServerState: Action<ServerStore>;
@@ -66,6 +68,7 @@ export const ServerContext = createContextStore<ServerStore>({
     socket,
     status,
     databases,
+    files,
     clearServerState: action(state => {
         state.server.data = undefined;
         state.databases.items = [];
