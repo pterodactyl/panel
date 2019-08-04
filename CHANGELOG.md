@@ -3,6 +3,35 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.15 (Derelict Dermodactylus)
+### Fixed
+* Fixes support for PHP 7.3 when running `composer install` commands due to a dependency that needed updating.
+* Automatic allocation field when creating a new node (or updating one) should now properly remeber its old
+value when showing an error state.
+* Mass deleting files now executes properly and doesn't result in a JS console error.
+* Scrolling on email settings page now works.
+* Database host management will now properly display an error message to the user when there is any type of MySQL related
+error encountered during creation or update.
+* Two-factor tokens generated when a company name has a space in it will now properly be parsed on iOS authenticator devices.
+* Fixed 500 error when trying to request subuser's from a server in the application API.
+* Creating a node allocation via the API no longer requires an alias field be passed through in the request.
+* Bulk power management for servers via the CLI no longer fails when servers span multiple nodes.
+
+### Added
+* Server listing view now displays the total used disk space for each server.
+* Client API endpoint to list all servers now supports an additional `?filter=subuser-of|all|admin|owner` parameter to
+return different groupings of servers. The default value is `subuser-of` which will include all of the user's servers
+that they are the owner of, as well as all servers they're a subuser of.
+* Added back ability to toggle OOM killer status on a per-server basis.
+* Added `LOCK TABLES` permission for generated database users.
+
+### Changed
+* Updated Paper egg to not download `server.properties` each time. [parkervcp/eggs#260](https://github.com/parkervcp/eggs/issues/260)
+* Insurgency egg now uses the proper dedicated server ID.
+* Teamspeak egg updated with improved installation process and grabbing latest versions.
+* OOM killer disabled by default on all new servers.
+* Passwords generated for MySQL now include special characters and are 24 characters in length.
+
 ## v0.7.14 (Derelict Dermodactylus)
 ### Fixed
 * **[SECURITY]** Fixes an XSS vulnerability when performing certain actions in the file manager.

@@ -16,6 +16,7 @@ return [
     'connection' => 'Connection',
     'memory' => 'Memory',
     'cpu' => 'CPU',
+    'disk' => 'Disk',
     'status' => 'Status',
     'search' => 'Search',
     'suspended' => 'Suspended',

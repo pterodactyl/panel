@@ -153,7 +153,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function assignUserToDatabase(string $database, string $username, string $remote): bool
     {
         return $this->run(sprintf(
-            'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, EXECUTE ON `%s`.* TO `%s`@`%s`',
+            'GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, LOCK TABLES, EXECUTE ON `%s`.* TO `%s`@`%s`',
             $database,
             $username,
             $remote

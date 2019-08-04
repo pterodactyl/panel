@@ -85,6 +85,22 @@
                         </div>
                         <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available.</p>
                     </div>
+                    <div class="form-group">
+                        <label for="cpu" class="control-label">OOM Killer</label>
+                        <div>
+                            <div class="radio radio-danger radio-inline">
+                                <input type="radio" id="pOomKillerEnabled" value="0" name="oom_disabled" @if(!$server->oom_disabled)checked @endif>
+                                <label for="pOomKillerEnabled">Enabled</label>
+                            </div>
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" id="pOomKillerDisabled" value="1" name="oom_disabled" @if($server->oom_disabled)checked @endif>
+                                <label for="pOomKillerDisabled">Disabled</label>
+                            </div>
+                            <p class="text-muted small">
+                                Enabling OOM killer may cause server processes to exit unexpectedly.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

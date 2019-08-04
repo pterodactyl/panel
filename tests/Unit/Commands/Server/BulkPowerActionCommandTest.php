@@ -3,6 +3,8 @@
 namespace Tests\Unit\Commands\Server;
 
 use Mockery as m;
+use Pterodactyl\Models\Node;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Factory;
 use Tests\Unit\Commands\CommandTestCase;
@@ -38,7 +40,12 @@ class BulkPowerActionCommandTest extends CommandTestCase
      */
     public function testSendAction()
     {
+        /** @var \Pterodactyl\Models\Server[] $servers */
         $servers = factory(Server::class)->times(2)->make();
+
+        foreach ($servers as &$server) {
+            $server->setRelation('node', factory(Node::class)->make());
+        }
 
         $this->repository->shouldReceive('getServersForPowerActionCount')
             ->once()
@@ -51,7 +58,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
             ->andReturn($servers);
 
         for ($i = 0; $i < count($servers); $i++) {
-            $this->powerRepository->shouldReceive('setServer->sendSignal')
+            $this->powerRepository->shouldReceive('setNode->setServer->sendSignal')
                 ->once()
                 ->with('kill')
                 ->andReturnNull();
@@ -70,6 +77,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
     public function testSendWithFilters()
     {
         $server = factory(Server::class)->make();
+        $server->setRelation('node', $node = factory(Node::class)->make());
 
         $this->repository->shouldReceive('getServersForPowerActionCount')
             ->once()
@@ -81,10 +89,9 @@ class BulkPowerActionCommandTest extends CommandTestCase
             ->with([1, 2], [3, 4])
             ->andReturn([$server]);
 
-        $this->powerRepository->shouldReceive('setServer->sendSignal')
-            ->once()
-            ->with('kill')
-            ->andReturnNull();
+        $this->powerRepository->expects('setNode')->with($node)->andReturnSelf();
+        $this->powerRepository->expects('setServer')->with($server)->andReturnSelf();
+        $this->powerRepository->expects('sendSignal')->with('kill')->andReturn(new Response);
 
         $display = $this->runCommand($this->getCommand(), [
             'action' => 'kill',
@@ -103,6 +110,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
     public function testSendWithEmptyOptions()
     {
         $server = factory(Server::class)->make();
+        $server->setRelation('node', factory(Node::class)->make());
 
         $this->repository->shouldReceive('getServersForPowerActionCount')
             ->once()
@@ -110,7 +118,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
             ->andReturn(1);
 
         $this->repository->shouldReceive('getServersForPowerAction')->once()->with([], [])->andReturn([$server]);
-        $this->powerRepository->shouldReceive('setServer->sendSignal')->once()->with('kill')->andReturnNull();
+        $this->powerRepository->shouldReceive('setNode->setServer->sendSignal')->once()->with('kill')->andReturnNull();
 
         $display = $this->runCommand($this->getCommand(), [
             'action' => 'kill',

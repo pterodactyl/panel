@@ -27,10 +27,10 @@
             "name": "Game ID",
             "description": "The ID corresponding to the game to download and run using SRCDS.",
             "env_variable": "SRCDS_APPID",
-            "default_value": "17705",
+            "default_value": "237410",
             "user_viewable": 1,
             "user_editable": 0,
-            "rules": "required|regex:\/^(17705)$\/"
+            "rules": "required|regex:\/^(237410)$\/"
         },
         {
             "name": "Game Name",

@@ -516,7 +516,7 @@ class ServersController extends Controller
         $this->buildModificationService->handle($server, $request->only([
             'allocation_id', 'add_allocations', 'remove_allocations',
             'memory', 'swap', 'io', 'cpu', 'disk',
-            'database_limit', 'allocation_limit',
+            'database_limit', 'allocation_limit', 'oom_disabled',
         ]));
         $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
 
@@ -589,8 +589,7 @@ class ServersController extends Controller
      * @param int                      $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Throwable
      */
     public function resetDatabasePassword(Request $request, $server)
     {
@@ -599,7 +598,7 @@ class ServersController extends Controller
             ['id', '=', $request->input('database')],
         ]);
 
-        $this->databasePasswordService->handle($database, str_random(24));
+        $this->databasePasswordService->handle($database);
 
         return response('', 204);
     }
