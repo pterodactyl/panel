@@ -20,8 +20,6 @@ class LoginController extends Controller
 {
     use AuthenticatesUsers;
 
-    const USER_INPUT_FIELD = 'user';
-
     /**
      * @var \Illuminate\Auth\AuthManager
      */
@@ -64,14 +62,14 @@ class LoginController extends Controller
      *
      * @var int
      */
-    protected $lockoutTime;
+    protected $decayMinutes;
 
     /**
      * After how many attempts should logins be throttled and locked.
      *
      * @var int
      */
-    protected $maxLoginAttempts;
+    protected $maxAttempts;
 
     /**
      * LoginController constructor.
@@ -98,8 +96,8 @@ class LoginController extends Controller
         $this->google2FA = $google2FA;
         $this->repository = $repository;
 
-        $this->lockoutTime = $this->config->get('auth.lockout.time');
-        $this->maxLoginAttempts = $this->config->get('auth.lockout.attempts');
+        $this->decayMinutes = $this->config->get('auth.lockout.time');
+        $this->maxAttempts = $this->config->get('auth.lockout.attempts');
     }
 
     /**
@@ -112,7 +110,7 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $username = $request->input(self::USER_INPUT_FIELD);
+        $username = $request->input($this->username());
         $useColumn = $this->getField($username);
 
         if ($this->hasTooManyLoginAttempts($request)) {
@@ -209,18 +207,28 @@ class LoginController extends Controller
     {
         $this->incrementLoginAttempts($request);
         $this->fireFailedLoginEvent($user, [
-            $this->getField($request->input(self::USER_INPUT_FIELD)) => $request->input(self::USER_INPUT_FIELD),
+            $this->getField($request->input($this->username())) => $request->input($this->username()),
         ]);
 
-        $errors = [self::USER_INPUT_FIELD => trans('auth.failed')];
+        $errors = [$this->username() => trans('auth.failed')];
 
         if ($request->expectsJson()) {
             return response()->json($errors, 422);
         }
 
         return redirect()->route('auth.login')
-            ->withInput($request->only(self::USER_INPUT_FIELD))
+            ->withInput($request->only($this->username()))
             ->withErrors($errors);
+    }
+
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'user';
     }
 
     /**
