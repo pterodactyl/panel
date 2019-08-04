@@ -9,8 +9,9 @@ import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy';
 import { faLevelUpAlt } from '@fortawesome/free-solid-svg-icons/faLevelUpAlt';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
+import CopyFileModal from '@/components/server/files/CopyFileModal';
 
-type ModalType = 'rename' | 'move';
+type ModalType = 'rename' | 'move' | 'copy' | 'download' | 'delete';
 
 export default ({ uuid }: { uuid: string }) => {
     const menu = createRef<HTMLDivElement>();
@@ -54,7 +55,7 @@ export default ({ uuid }: { uuid: string }) => {
     }, []);
 
     return (
-        <div>
+        <div key={`dropdown:${file.uuid}`}>
             <div
                 className={'p-3 hover:text-white'}
                 onClick={e => {
@@ -70,9 +71,10 @@ export default ({ uuid }: { uuid: string }) => {
                 <FontAwesomeIcon icon={faEllipsisH}/>
             </div>
             {visible &&
-                <React.Fragment>
-                    <RenameFileModal file={file} visible={modal === 'rename'} onDismissed={() => setModal(null)}/>
-                </React.Fragment>
+            <React.Fragment>
+                <RenameFileModal file={file} visible={modal === 'rename'} onDismissed={() => setModal(null)}/>
+                {modal === 'copy' && <CopyFileModal file={file} onCopyComplete={() => setModal(null)}/>}
+            </React.Fragment>
             }
             <CSSTransition timeout={250} in={visible} unmountOnExit={true} classNames={'fade'}>
                 <div
@@ -80,8 +82,8 @@ export default ({ uuid }: { uuid: string }) => {
                     ref={menu}
                 >
                     <div
-                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
                         onClick={() => setModal('rename')}
+                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
                     >
                         <FontAwesomeIcon icon={faPencilAlt} className={'text-xs'}/>
                         <span className={'ml-2'}>Rename</span>
@@ -90,7 +92,10 @@ export default ({ uuid }: { uuid: string }) => {
                         <FontAwesomeIcon icon={faLevelUpAlt} className={'text-xs'}/>
                         <span className={'ml-2'}>Move</span>
                     </div>
-                    <div className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}>
+                    <div
+                        onClick={() => setModal('copy')}
+                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                    >
                         <FontAwesomeIcon icon={faCopy} className={'text-xs'}/>
                         <span className={'ml-2'}>Copy</span>
                     </div>

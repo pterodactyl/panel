@@ -84,7 +84,7 @@ export default () => {
                                 <div>
                                     {
                                         files.map(file => (
-                                            <FileObjectRow key={file.name} file={file}/>
+                                            <FileObjectRow key={file.uuid} file={file}/>
                                         ))
                                     }
                                 </div>
