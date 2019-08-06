@@ -6,14 +6,15 @@ import { join } from 'path';
 import renameFile from '@/api/server/files/renameFile';
 import { ServerContext } from '@/state/server';
 import { FileObject } from '@/api/server/files/loadDirectory';
+import classNames from 'classnames';
 
 interface FormikValues {
     name: string;
 }
 
-type Props = RequiredModalProps & { file: FileObject };
+type Props = RequiredModalProps & { file: FileObject; useMoveTerminology?: boolean };
 
-export default ({ file, ...props }: Props) => {
+export default ({ file, useMoveTerminology, ...props }: Props) => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const pushFile = ServerContext.useStoreActions(actions => actions.files.pushFile);
@@ -38,22 +39,36 @@ export default ({ file, ...props }: Props) => {
             onSubmit={submit}
             initialValues={{ name: file.name }}
         >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, values }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
                     <Form className={'m-0'}>
-                        <Field
-                            type={'string'}
-                            id={'file_name'}
-                            name={'name'}
-                            label={'File Name'}
-                            description={'Enter the new name of this file or folder.'}
-                            autoFocus={true}
-                        />
-                        <div className={'mt-6 text-right'}>
-                            <button className={'btn btn-sm btn-primary'}>
-                                Rename
-                            </button>
+                        <div className={classNames('flex', {
+                            'items-center': useMoveTerminology,
+                            'items-end': !useMoveTerminology,
+                        })}>
+                            <div className={'flex-1 mr-6'}>
+                                <Field
+                                    type={'string'}
+                                    id={'file_name'}
+                                    name={'name'}
+                                    label={'File Name'}
+                                    description={useMoveTerminology
+                                        ? 'Enter the new name and directory of this file or folder, relative to the current directory.'
+                                        : undefined
+                                    }
+                                    autoFocus={true}
+                                />
+                            </div>
+                            <div>
+                                <button className={'btn btn-sm btn-primary'}>
+                                    {useMoveTerminology ? 'Move' : 'Rename'}
+                                </button>
+                            </div>
                         </div>
+                        <p className={'text-xs mt-2 text-neutral-400'}>
+                            <strong className={'text-neutral-200'}>New location:</strong>
+                            &nbsp;/home/container/{join(directory, values.name).replace(/^(\.\.\/|\/)+/, '')}
+                        </p>
                     </Form>
                 </Modal>
             )}

@@ -9,7 +9,6 @@ import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy';
 import { faLevelUpAlt } from '@fortawesome/free-solid-svg-icons/faLevelUpAlt';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
-import CopyFileModal from '@/components/server/files/CopyFileModal';
 import { join } from 'path';
 import deleteFile from '@/api/server/files/deleteFile';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -20,6 +19,7 @@ type ModalType = 'rename' | 'move';
 
 export default ({ uuid }: { uuid: string }) => {
     const menu = createRef<HTMLDivElement>();
+    const menuButton = createRef<HTMLDivElement>();
     const [ visible, setVisible ] = useState(false);
     const [ showSpinner, setShowSpinner ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
@@ -29,6 +29,7 @@ export default ({ uuid }: { uuid: string }) => {
     const file = ServerContext.useStoreState(state => state.files.contents.find(file => file.uuid === uuid));
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const { removeFile, getDirectoryContents } = ServerContext.useStoreActions(actions => actions.files);
+
     if (!file) {
         return null;
     }
@@ -87,29 +88,39 @@ export default ({ uuid }: { uuid: string }) => {
     return (
         <div key={`dropdown:${file.uuid}`}>
             <div
+                ref={menuButton}
                 className={'p-3 hover:text-white'}
                 onClick={e => {
                     e.preventDefault();
+                    setModal(null);
+
                     if (!visible) {
                         setPosX(e.clientX);
-                    } else if (visible) {
-                        setModal(null);
                     }
+
                     setVisible(!visible);
                 }}
             >
                 <FontAwesomeIcon icon={faEllipsisH}/>
                 {visible &&
                 <React.Fragment>
-                    <RenameFileModal file={file} visible={modal === 'rename'} onDismissed={() => setModal(null)}/>
+                    <RenameFileModal
+                        file={file}
+                        visible={modal === 'rename' || modal === 'move'}
+                        useMoveTerminology={modal === 'move'}
+                        onDismissed={() => {
+                            setModal(null);
+                            setVisible(false);
+                        }}
+                    />
                     <SpinnerOverlay visible={showSpinner} fixed={true} large={true}/>
                 </React.Fragment>
                 }
             </div>
             <CSSTransition timeout={250} in={visible} unmountOnExit={true} classNames={'fade'}>
                 <div
-                    className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48'}
                     ref={menu}
+                    className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48'}
                 >
                     <div
                         onClick={() => setModal('rename')}
@@ -118,7 +129,10 @@ export default ({ uuid }: { uuid: string }) => {
                         <FontAwesomeIcon icon={faPencilAlt} className={'text-xs'}/>
                         <span className={'ml-2'}>Rename</span>
                     </div>
-                    <div className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}>
+                    <div
+                        onClick={() => setModal('move')}
+                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                    >
                         <FontAwesomeIcon icon={faLevelUpAlt} className={'text-xs'}/>
                         <span className={'ml-2'}>Move</span>
                     </div>
