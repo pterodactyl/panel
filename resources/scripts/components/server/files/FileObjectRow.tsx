@@ -25,7 +25,7 @@ export default ({ file }: { file: FileObject }) => {
         >
             <a
                 href={file.isFile ? undefined : `#${directory}/${file.name}`}
-                className={'flex flex-1 text-neutral-300 no-underline'}
+                className={'flex flex-1 text-neutral-300 no-underline p-3'}
                 onClick={e => {
                     e.preventDefault();
 
