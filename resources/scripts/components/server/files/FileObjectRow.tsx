@@ -15,45 +15,47 @@ export default ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     return (
-        <a
+        <div
             key={file.name}
-            href={file.isFile ? undefined : `#${directory}/${file.name}`}
             className={`
-                flex bg-neutral-700 text-neutral-300 rounded-sm mb-px text-sm
+                flex bg-neutral-700 rounded-sm mb-px text-sm
                 hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600
             `}
-            onClick={(e) => {
-                if (file.isFile) {
-                    return e.preventDefault();
-                }
-            }}
         >
-            <div className={'flex-none text-neutral-400 mr-4 text-lg pl-3'}>
-                {file.isFile ?
-                    <FontAwesomeIcon icon={file.isSymlink ? faFileImport : faFileAlt}/>
-                    :
-                    <FontAwesomeIcon icon={faFolder}/>
-                }
-            </div>
-            <div className={'flex-1'}>
-                {file.name}
-            </div>
-            {file.isFile &&
-            <div className={'w-1/6 text-right mr-4'}>
-                {bytesToHuman(file.size)}
-            </div>
-            }
-            <div
-                className={'w-1/5 text-right mr-4'}
-                title={file.modifiedAt.toString()}
+            <a
+                href={file.isFile ? undefined : `#${directory}/${file.name}`}
+                className={'flex flex-1 text-neutral-300 no-underline'}
+                onClick={e => {
+                    file.isFile && e.preventDefault();
+                }}
             >
-                {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
-                    format(file.modifiedAt, 'MMM Do, YYYY h:mma')
-                    :
-                    distanceInWordsToNow(file.modifiedAt, { includeSeconds: true })
+                <div className={'flex-none text-neutral-400 mr-4 text-lg pl-3'}>
+                    {file.isFile ?
+                        <FontAwesomeIcon icon={file.isSymlink ? faFileImport : faFileAlt}/>
+                        :
+                        <FontAwesomeIcon icon={faFolder}/>
+                    }
+                </div>
+                <div className={'flex-1'}>
+                    {file.name}
+                </div>
+                {file.isFile &&
+                <div className={'w-1/6 text-right mr-4'}>
+                    {bytesToHuman(file.size)}
+                </div>
                 }
-            </div>
+                <div
+                    className={'w-1/5 text-right mr-4'}
+                    title={file.modifiedAt.toString()}
+                >
+                    {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
+                        format(file.modifiedAt, 'MMM Do, YYYY h:mma')
+                        :
+                        distanceInWordsToNow(file.modifiedAt, { includeSeconds: true })
+                    }
+                </div>
+            </a>
             <FileDropdownMenu uuid={file.uuid}/>
-        </a>
+        </div>
     );
 };

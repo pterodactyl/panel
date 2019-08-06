@@ -114,7 +114,7 @@ export default ({ uuid }: { uuid: string }) => {
             <CSSTransition timeout={250} in={menuVisible} unmountOnExit={true} classNames={'fade'}>
                 <div
                     ref={menu}
-                    onClick={() => setMenuVisible(false)}
+                    onClick={e => { e.stopPropagation(); setMenuVisible(false); }}
                     className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48'}
                 >
                     <div
