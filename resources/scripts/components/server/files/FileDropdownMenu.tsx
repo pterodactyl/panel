@@ -20,7 +20,7 @@ type ModalType = 'rename' | 'move';
 export default ({ uuid }: { uuid: string }) => {
     const menu = createRef<HTMLDivElement>();
     const menuButton = createRef<HTMLDivElement>();
-    const [ visible, setVisible ] = useState(false);
+    const [ menuVisible, setMenuVisible ] = useState(false);
     const [ showSpinner, setShowSpinner ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
     const [ posX, setPosX ] = useState(0);
@@ -35,7 +35,7 @@ export default ({ uuid }: { uuid: string }) => {
     }
 
     const windowListener = (e: MouseEvent) => {
-        if (e.button === 2 || !visible || !menu.current) {
+        if (e.button === 2 || !menuVisible || !menu.current) {
             return;
         }
 
@@ -44,7 +44,7 @@ export default ({ uuid }: { uuid: string }) => {
         }
 
         if (e.target !== menu.current && !menu.current.contains(e.target as Node)) {
-            setVisible(false);
+            setMenuVisible(false);
         }
     };
 
@@ -70,16 +70,16 @@ export default ({ uuid }: { uuid: string }) => {
     };
 
     useEffect(() => {
-        visible
+        menuVisible
             ? document.addEventListener('click', windowListener)
             : document.removeEventListener('click', windowListener);
 
-        if (visible && menu.current) {
+        if (menuVisible && menu.current) {
             menu.current.setAttribute(
                 'style', `margin-top: -0.35rem; left: ${Math.round(posX - menu.current.clientWidth)}px`,
             );
         }
-    }, [ visible ]);
+    }, [ menuVisible ]);
 
     useEffect(() => () => {
         document.removeEventListener('click', windowListener);
@@ -92,34 +92,29 @@ export default ({ uuid }: { uuid: string }) => {
                 className={'p-3 hover:text-white'}
                 onClick={e => {
                     e.preventDefault();
-                    setModal(null);
-
-                    if (!visible) {
+                    if (!menuVisible) {
                         setPosX(e.clientX);
                     }
-
-                    setVisible(!visible);
+                    setModal(null);
+                    setMenuVisible(!menuVisible);
                 }}
             >
                 <FontAwesomeIcon icon={faEllipsisH}/>
-                {visible &&
-                <React.Fragment>
-                    <RenameFileModal
-                        file={file}
-                        visible={modal === 'rename' || modal === 'move'}
-                        useMoveTerminology={modal === 'move'}
-                        onDismissed={() => {
-                            setModal(null);
-                            setVisible(false);
-                        }}
-                    />
-                    <SpinnerOverlay visible={showSpinner} fixed={true} large={true}/>
-                </React.Fragment>
-                }
+                <RenameFileModal
+                    file={file}
+                    visible={modal === 'rename' || modal === 'move'}
+                    useMoveTerminology={modal === 'move'}
+                    onDismissed={() => {
+                        setModal(null);
+                        setMenuVisible(false);
+                    }}
+                />
+                <SpinnerOverlay visible={showSpinner} fixed={true} large={true}/>
             </div>
-            <CSSTransition timeout={250} in={visible} unmountOnExit={true} classNames={'fade'}>
+            <CSSTransition timeout={250} in={menuVisible} unmountOnExit={true} classNames={'fade'}>
                 <div
                     ref={menu}
+                    onClick={() => setMenuVisible(false)}
                     className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48'}
                 >
                     <div
