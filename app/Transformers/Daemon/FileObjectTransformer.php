@@ -38,8 +38,8 @@ class FileObjectTransformer extends BaseDaemonTransformer
             'is_symlink' => Arr::get($item, 'symlink', false),
             'is_editable' => in_array(Arr::get($item, 'mime', ''), $this->editable),
             'mimetype' => Arr::get($item, 'mime'),
-            'created_at' => Carbon::parse(explode(' ', Arr::get($item, 'created', ''))[0] ?? '')->toIso8601String(),
-            'modified_at' => Carbon::parse(explode(' ', Arr::get($item, 'modified', ''))[0] ?? '')->toIso8601String(),
+            'created_at' => Carbon::parse(Arr::get($item, 'created', ''))->toIso8601String(),
+            'modified_at' => Carbon::parse(Arr::get($item, 'modified', ''))->toIso8601String(),
         ];
     }
 

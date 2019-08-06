@@ -62,7 +62,7 @@ export default ({ file }: { file: FileObject }) => {
                     {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
                         format(file.modifiedAt, 'MMM Do, YYYY h:mma')
                         :
-                        distanceInWordsToNow(file.modifiedAt, { includeSeconds: true })
+                        distanceInWordsToNow(file.modifiedAt, { addSuffix: true })
                     }
                 </div>
             </a>
