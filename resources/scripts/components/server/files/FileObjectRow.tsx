@@ -13,6 +13,7 @@ import { ServerContext } from '@/state/server';
 
 export default ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
+    const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
 
     return (
         <div
@@ -26,7 +27,17 @@ export default ({ file }: { file: FileObject }) => {
                 href={file.isFile ? undefined : `#${directory}/${file.name}`}
                 className={'flex flex-1 text-neutral-300 no-underline'}
                 onClick={e => {
-                    file.isFile && e.preventDefault();
+                    e.preventDefault();
+
+                    // Don't rely on the onClick to work with the generated URL. Because of the way this
+                    // component re-renders you'll get redirected into a nested directory structure since
+                    // it'll cause the directory variable to update right away when you click.
+                    //
+                    // Just trust me future me, leave this be.
+                    if (!file.isFile) {
+                        window.location.hash = `#${directory}/${file.name}`;
+                        setDirectory(`${directory}/${file.name}`);
+                    }
                 }}
             >
                 <div className={'flex-none text-neutral-400 mr-4 text-lg pl-3'}>

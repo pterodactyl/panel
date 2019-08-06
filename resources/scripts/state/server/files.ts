@@ -13,7 +13,7 @@ export interface ServerFileStore {
 }
 
 const files: ServerFileStore = {
-    directory: '',
+    directory: '/',
     contents: [],
 
     getDirectoryContents: thunk(async (actions, payload, { getStoreState }) => {
