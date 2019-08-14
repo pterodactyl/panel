@@ -50,7 +50,7 @@ class DownloadController extends Controller
         $token = Uuid::uuid4()->toString();
         $node = $server->getRelation('node');
 
-        $this->cache->put('Server:Downloads:' . $token, ['server' => $server->uuid, 'path' => $file], 5);
+        $this->cache->put('Server:Downloads:' . $token, ['server' => $server->uuid, 'path' => $file], 300);
 
         return redirect(sprintf('%s://%s:%s/v1/server/file/download/%s', $node->scheme, $node->fqdn, $node->daemonListen, $token));
     }

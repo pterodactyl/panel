@@ -12,7 +12,7 @@ abstract class IntegrationTestCase extends TestCase
     /**
      * Setup base integration test cases.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

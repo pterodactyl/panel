@@ -15,46 +15,48 @@
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
-        "appstract/laravel-blade-directives": "^0.7",
-        "aws/aws-sdk-php": "^3.48",
-        "cakephp/chronos": "^1.1",
-        "doctrine/dbal": "^2.5",
-        "fideloper/proxy": "^4.0",
+        "appstract/laravel-blade-directives": "^1.1",
+        "aws/aws-sdk-php": "^3.109",
+        "cakephp/chronos": "^1.2",
+        "doctrine/dbal": "^2.9",
+        "fideloper/proxy": "^4.2",
         "guzzlehttp/guzzle": "^6.3",
-        "hashids/hashids": "^3.0",
-        "igaster/laravel-theme": "^2.0.6",
+        "hashids/hashids": "^4.0",
+        "igaster/laravel-theme": "^2.0",
         "laracasts/utilities": "^3.0",
-        "laravel/framework": "~5.7.14",
+        "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
         "lord/laroute": "^2.4",
         "matriphe/iso-639": "^1.2",
-        "nesbot/carbon": "^1.22",
+        "nesbot/carbon": "^1.39",
         "pragmarx/google2fa": "^5.0",
         "predis/predis": "^1.1",
         "prologue/alerts": "^0.4",
-        "ramsey/uuid": "^3.7",
+        "ramsey/uuid": "^3.8",
         "s1lentium/iptools": "^1.1",
-        "sofa/eloquence-base": "v5.6.2",
+        "sofa/eloquence-base": "v5.6.3",
         "sofa/eloquence-validable": "v5.6",
-        "spatie/laravel-fractal": "^5.4",
-        "staudenmeir/belongs-to-through": "~2.3.0",
-        "webmozart/assert": "^1.2"
+        "spatie/laravel-fractal": "^5.5",
+        "staudenmeir/belongs-to-through": "^2.5",
+        "webmozart/assert": "^1.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
-        "barryvdh/laravel-ide-helper": "^2.5",
-        "codedungeon/phpunit-result-printer": "^0.17.1",
-        "filp/whoops": "^2.1",
-        "friendsofphp/php-cs-fixer": "^2.15.1",
-        "fzaninotto/faker": "^1.6",
-        "mockery/mockery": "^1.0",
-        "nunomaduro/collision": "^2.0",
-        "php-mock/php-mock-phpunit": "^2.1",
-        "phpunit/phpunit": "~7.0"
+        "barryvdh/laravel-ide-helper": "^2.6",
+        "beyondcode/laravel-dump-server": "^1.0",
+        "codedungeon/phpunit-result-printer": "^0.26",
+        "filp/whoops": "^2.5",
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "fzaninotto/faker": "^1.8",
+        "mockery/mockery": "^1.2",
+        "nunomaduro/collision": "^3.0",
+        "php-mock/php-mock-phpunit": "^2.4",
+        "phpunit/phpunit": "~7.5"
     },
     "autoload": {
         "classmap": [
-            "database"
+            "database/seeds",
+            "database/factories"
         ],
         "files": [
             "app/helpers.php"
@@ -70,21 +72,21 @@
         }
     },
     "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate"
-        ],
-        "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover"
+            "@php artisan key:generate --ansi"
         ]
     },
     "prefer-stable": true,
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": false
+        "optimize-autoloader": true
     }
 }

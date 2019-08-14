@@ -18,7 +18,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

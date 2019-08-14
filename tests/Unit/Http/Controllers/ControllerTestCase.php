@@ -19,7 +19,7 @@ abstract class ControllerTestCase extends TestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function versionData()
     {
-        return Cache::remember('git-version', 5, function () {
+        return Cache::remember('git-version', 300, function () {
             if (file_exists(base_path('.git/HEAD'))) {
                 $head = explode(' ', file_get_contents(base_path('.git/HEAD')));
 

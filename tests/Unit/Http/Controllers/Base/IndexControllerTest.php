@@ -52,7 +52,7 @@ class IndexControllerTest extends ControllerTestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -153,7 +153,7 @@ class IndexControllerTest extends ControllerTestCase
 
         $this->daemonRepository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
             ->shouldReceive('setToken')->with('test123')->once()->andReturnSelf()
-            ->shouldReceive('details')->withNoArgs()->once()->andThrow(new ConnectException('bad connection', new ServerRequest('', '')));
+            ->shouldReceive('details')->withNoArgs()->once()->andThrow(new ConnectException('bad connection', new ServerRequest('GET', '')));
 
         $this->expectExceptionObject(new HttpException(500, 'bad connection'));
         $this->controller->status($this->request, $server->uuidShort);
@@ -173,7 +173,7 @@ class IndexControllerTest extends ControllerTestCase
 
         $this->daemonRepository->shouldReceive('setServer')->with($server)->once()->andReturnSelf()
             ->shouldReceive('setToken')->with('test123')->once()->andReturnSelf()
-            ->shouldReceive('details')->withNoArgs()->once()->andThrow(new RequestException('bad request', new ServerRequest('', '')));
+            ->shouldReceive('details')->withNoArgs()->once()->andThrow(new RequestException('bad request', new ServerRequest('GET', '')));
 
         $this->expectExceptionObject(new HttpException(500, 'bad request'));
         $this->controller->status($this->request, $server->uuidShort);

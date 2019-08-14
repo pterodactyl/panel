@@ -132,7 +132,7 @@ class LoginController extends Controller
 
         if ($user->use_totp) {
             $token = str_random(64);
-            $this->cache->put($token, ['user_id' => $user->id, 'valid_credentials' => true], 5);
+            $this->cache->put($token, ['user_id' => $user->id, 'valid_credentials' => true], 300);
 
             return redirect()->route('auth.totp')->with('authentication_token', $token);
         }

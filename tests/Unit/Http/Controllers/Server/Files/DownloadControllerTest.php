@@ -22,7 +22,7 @@ class DownloadControllerTest extends ControllerTestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -44,7 +44,7 @@ class DownloadControllerTest extends ControllerTestCase
 
         $this->cache->shouldReceive('put')
             ->once()
-            ->with('Server:Downloads:' . $this->getKnownUuid(), ['server' => $server->uuid, 'path' => '/my/file.txt'], 5)
+            ->with('Server:Downloads:' . $this->getKnownUuid(), ['server' => $server->uuid, 'path' => '/my/file.txt'], 300)
             ->andReturnNull();
 
         $response = $controller->index($this->request, $server->uuidShort, '/my/file.txt');

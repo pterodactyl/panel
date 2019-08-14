@@ -32,7 +32,7 @@ class FileActionsControllerTest extends ControllerTestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
