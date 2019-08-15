@@ -3,6 +3,7 @@
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
+use Carbon\Carbon;
 use Pterodactyl\Models\Node;
 use Tests\Traits\MocksUuids;
 use Pterodactyl\Models\Server;
@@ -42,9 +43,11 @@ class DownloadControllerTest extends ControllerTestCase
 
         $controller->shouldReceive('authorize')->with('download-files', $server)->once()->andReturnNull();
 
+        Carbon::setTestNow(now());
+
         $this->cache->shouldReceive('put')
             ->once()
-            ->with('Server:Downloads:' . $this->getKnownUuid(), ['server' => $server->uuid, 'path' => '/my/file.txt'], 300)
+            ->with('Server:Downloads:' . $this->getKnownUuid(), ['server' => $server->uuid, 'path' => '/my/file.txt'], \Hamcrest\Matchers::equalTo(now()->addMinutes(5)))
             ->andReturnNull();
 
         $response = $controller->index($this->request, $server->uuidShort, '/my/file.txt');
