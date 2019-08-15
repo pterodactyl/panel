@@ -159,7 +159,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    {{{ csrf_field() }}}
+                    {{ csrf_field() }}
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger">Delete Allocations</button>
                 </div>

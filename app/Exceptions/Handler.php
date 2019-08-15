@@ -156,26 +156,6 @@ class Handler extends ExceptionHandler
             $connections->rollBack(0);
         }
 
-        // Because of some breaking change snuck into a Laravel update that didn't get caught
-        // by any of the tests, exceptions implementing the HttpExceptionInterface get marked
-        // as being HttpExceptions, but aren't actually implementing the HttpException abstract.
-        //
-        // This is incredibly annoying because we can't just temporarily override the handler to
-        // allow these (at least without taking on a high maintenance cost). Laravel 5.8 fixes this,
-        // so when we update (or have updated) this code can be removed.
-        //
-        // @see https://github.com/laravel/framework/pull/25975
-        // @todo remove this code when upgrading to Laravel 5.8
-        if ($exception instanceof HttpExceptionInterface && ! $exception instanceof HttpException) {
-            $exception = new HttpException(
-                $exception->getStatusCode(),
-                $exception->getMessage(),
-                $exception,
-                $exception->getHeaders(),
-                $exception->getCode()
-            );
-        }
-
         return parent::render($request, $exception);
     }
 
