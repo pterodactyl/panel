@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Nests;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Egg;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
@@ -69,7 +70,7 @@ class EggShareController extends Controller
      */
     public function export(Egg $egg): Response
     {
-        $filename = trim(preg_replace('/[^\w]/', '-', kebab_case($egg->name)), '-');
+        $filename = trim(preg_replace('/[^\w]/', '-', Str::kebab($egg->name)), '-');
 
         return response($this->exporterService->handle($egg->id), 200, [
             'Content-Transfer-Encoding' => 'binary',

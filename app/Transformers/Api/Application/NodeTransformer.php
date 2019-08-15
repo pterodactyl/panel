@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
@@ -38,7 +39,7 @@ class NodeTransformer extends BaseTransformer
             // as I did. This is the tragic result of my mistakes.
             $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
 
-            return [snake_case($key) => $value];
+            return [Str::snake($key) => $value];
         })->toArray();
 
         $response[$node->getUpdatedAtColumn()] = $this->formatTimestamp($node->updated_at);

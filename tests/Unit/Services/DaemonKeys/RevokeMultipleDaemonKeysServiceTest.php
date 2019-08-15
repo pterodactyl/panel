@@ -4,6 +4,7 @@ namespace Tests\Unit\Services\DaemonKeys;
 
 use Mockery as m;
 use Tests\TestCase;
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use GuzzleHttp\Psr7\Response;
@@ -100,7 +101,7 @@ class RevokeMultipleDaemonKeysServiceTest extends TestCase
         $service->handle($user, true);
         $this->assertNotEmpty($service->getExceptions());
         $this->assertArrayHasKey($node->id, $service->getExceptions());
-        $this->assertSame(array_get($service->getExceptions(), $node->id), $this->getExceptionMock());
+        $this->assertSame(Arr::get($service->getExceptions(), $node->id), $this->getExceptionMock());
         $this->assertTrue(true);
     }
 

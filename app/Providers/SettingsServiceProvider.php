@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Providers;
 
+use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface as Log;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\ServiceProvider;
@@ -84,7 +85,7 @@ class SettingsServiceProvider extends ServiceProvider
         }
 
         foreach ($this->keys as $key) {
-            $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
+            $value = Arr::get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
             if (in_array($key, self::$encrypted)) {
                 try {
                     $value = $encrypter->decrypt($value);

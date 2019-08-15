@@ -126,7 +126,7 @@
                             </li>
                             @can('list-files', $server)
                                 <li
-                                    @if(starts_with(Route::currentRouteName(), 'server.files'))
+                                    @if(Str::startsWith(Route::currentRouteName(), 'server.files'))
                                         class="active"
                                     @endif
                                 >
@@ -137,7 +137,7 @@
                             @endcan
                             @can('list-subusers', $server)
                                 <li
-                                    @if(starts_with(Route::currentRouteName(), 'server.subusers'))
+                                    @if(Str::startsWith(Route::currentRouteName(), 'server.subusers'))
                                         class="active"
                                     @endif
                                 >
@@ -148,7 +148,7 @@
                             @endcan
                             @can('list-schedules', $server)
                                 <li
-                                    @if(starts_with(Route::currentRouteName(), 'server.schedules'))
+                                    @if(Str::startsWith(Route::currentRouteName(), 'server.schedules'))
                                         class="active"
                                     @endif
                                 >
@@ -162,7 +162,7 @@
                             @endcan
                             @can('view-databases', $server)
                                 <li
-                                    @if(starts_with(Route::currentRouteName(), 'server.databases'))
+                                    @if(Str::startsWith(Route::currentRouteName(), 'server.databases'))
                                     class="active"
                                     @endif
                                 >
@@ -173,7 +173,7 @@
                             @endcan
                             @if(Gate::allows('view-startup', $server) || Gate::allows('access-sftp', $server) ||  Gate::allows('view-allocations', $server))
                                 <li class="treeview
-                                    @if(starts_with(Route::currentRouteName(), 'server.settings'))
+                                    @if(Str::startsWith(Route::currentRouteName(), 'server.settings'))
                                         active
                                     @endif
                                 ">
@@ -261,8 +261,8 @@
                                             <i class="menu-icon fa fa-user-o bg-gray"></i>
                                         @endif
                                         <div class="menu-info">
-                                            <h4 class="control-sidebar-subheading">{{ str_limit($sidebarServer->name, 20) }}</h4>
-                                            <p>{{ str_limit($sidebarServer->description, 20) }}</p>
+                                            <h4 class="control-sidebar-subheading">{{ Str::limit($sidebarServer->name, 20) }}</h4>
+                                            <p>{{ Str::limit($sidebarServer->description, 20) }}</p>
                                         </div>
                                     </a>
                                 </li>

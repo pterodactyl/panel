@@ -113,24 +113,24 @@
                             'text/x-shellscript'
                         ]))
                             <i class="fa fa-file-code-o" style="margin-left: 2px;"></i>
-                        @elseif(starts_with($file['mime'], 'image'))
+                        @elseif(Str::startsWith($file['mime'], 'image'))
                             <i class="fa fa-file-image-o" style="margin-left: 2px;"></i>
-                        @elseif(starts_with($file['mime'], 'video'))
+                        @elseif(Str::startsWith($file['mime'], 'video'))
                             <i class="fa fa-file-video-o" style="margin-left: 2px;"></i>
-                        @elseif(starts_with($file['mime'], 'video'))
+                        @elseif(Str::startsWith($file['mime'], 'video'))
                             <i class="fa fa-file-audio-o" style="margin-left: 2px;"></i>
-                        @elseif(starts_with($file['mime'], 'application/vnd.ms-powerpoint'))
+                        @elseif(Str::startsWith($file['mime'], 'application/vnd.ms-powerpoint'))
                             <i class="fa fa-file-powerpoint-o" style="margin-left: 2px;"></i>
                         @elseif(in_array($file['mime'], [
                             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                             'application/vnd.openxmlformats-officedocument.wordprocessingml.template',
                             'application/msword'
-                        ]) || starts_with($file['mime'], 'application/vnd.ms-word'))
+                        ]) || Str::startsWith($file['mime'], 'application/vnd.ms-word'))
                             <i class="fa fa-file-word-o" style="margin-left: 2px;"></i>
                         @elseif(in_array($file['mime'], [
                             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                             'application/vnd.openxmlformats-officedocument.spreadsheetml.template',
-                        ]) || starts_with($file['mime'], 'application/vnd.ms-excel'))
+                        ]) || Str::startsWith($file['mime'], 'application/vnd.ms-excel'))
                             <i class="fa fa-file-excel-o" style="margin-left: 2px;"></i>
                         @elseif($file['mime'] === 'application/pdf')
                             <i class="fa fa-file-pdf-o" style="margin-left: 2px;"></i>

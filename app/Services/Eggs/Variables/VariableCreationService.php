@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Eggs\Variables;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Traits\Services\ValidatesValidationRules;
@@ -58,10 +59,10 @@ class VariableCreationService
      */
     public function handle(int $egg, array $data): EggVariable
     {
-        if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
+        if (in_array(strtoupper(Arr::get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
             throw new ReservedVariableNameException(sprintf(
                 'Cannot use the protected name %s for this environment variable.',
-                array_get($data, 'env_variable')
+                Arr::get($data, 'env_variable')
             ));
         }
 
@@ -69,7 +70,7 @@ class VariableCreationService
             $this->validateRules($data['rules']);
         }
 
-        $options = array_get($data, 'options') ?? [];
+        $options = Arr::get($data, 'options') ?? [];
 
         return $this->repository->create([
             'egg_id' => $egg,

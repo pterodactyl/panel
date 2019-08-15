@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Traits\Services\ReturnsUpdatedModels;
@@ -69,15 +70,15 @@ class DetailsModificationService
         $this->connection->beginTransaction();
 
         $response = $this->repository->setFreshModel($this->getUpdatedModel())->update($server->id, [
-            'external_id' => array_get($data, 'external_id'),
-            'owner_id' => array_get($data, 'owner_id'),
-            'name' => array_get($data, 'name'),
-            'description' => array_get($data, 'description') ?? '',
+            'external_id' => Arr::get($data, 'external_id'),
+            'owner_id' => Arr::get($data, 'owner_id'),
+            'name' => Arr::get($data, 'name'),
+            'description' => Arr::get($data, 'description') ?? '',
         ], true, true);
 
-        if ((int) array_get($data, 'owner_id', 0) !== (int) $server->owner_id) {
+        if ((int) Arr::get($data, 'owner_id', 0) !== (int) $server->owner_id) {
             $this->keyDeletionService->handle($server, $server->owner_id);
-            $this->keyCreationService->handle($server->id, array_get($data, 'owner_id'));
+            $this->keyCreationService->handle($server->id, Arr::get($data, 'owner_id'));
         }
 
         $this->connection->commit();

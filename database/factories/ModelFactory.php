@@ -1,6 +1,7 @@
 <?php
 
 use Cake\Chronos\Chronos;
+use Illuminate\Support\Str;
 use Faker\Generator as Faker;
 use Pterodactyl\Models\ApiKey;
 
@@ -20,7 +21,7 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker $faker) {
         'id' => $faker->unique()->randomNumber(),
         'node_id' => $faker->randomNumber(),
         'uuid' => $faker->unique()->uuid,
-        'uuidShort' => str_random(8),
+        'uuidShort' => Str::random(8),
         'name' => $faker->firstName,
         'description' => implode(' ', $faker->sentences()),
         'skip_scripts' => 0,
@@ -189,8 +190,8 @@ $factory->define(Pterodactyl\Models\Database::class, function (Faker $faker) {
         'id' => $faker->unique()->randomNumber(),
         'server_id' => $faker->randomNumber(),
         'database_host_id' => $faker->randomNumber(),
-        'database' => str_random(10),
-        'username' => str_random(10),
+        'database' => Str::random(10),
+        'username' => Str::random(10),
         'remote' => '%',
         'password' => $password ?: bcrypt('test123'),
         'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
@@ -223,7 +224,7 @@ $factory->define(Pterodactyl\Models\DaemonKey::class, function (Faker $faker) {
         'id' => $faker->unique()->randomNumber(),
         'server_id' => $faker->randomNumber(),
         'user_id' => $faker->randomNumber(),
-        'secret' => 'i_' . str_random(40),
+        'secret' => 'i_' . Str::random(40),
         'expires_at' => \Carbon\Carbon::now()->addMinutes(10)->toDateTimeString(),
     ];
 });
@@ -235,8 +236,8 @@ $factory->define(Pterodactyl\Models\ApiKey::class, function (Faker $faker) {
         'id' => $faker->unique()->randomNumber(),
         'user_id' => $faker->randomNumber(),
         'key_type' => ApiKey::TYPE_APPLICATION,
-        'identifier' => str_random(Pterodactyl\Models\ApiKey::IDENTIFIER_LENGTH),
-        'token' => $token ?: $token = encrypt(str_random(Pterodactyl\Models\ApiKey::KEY_LENGTH)),
+        'identifier' => Str::random(Pterodactyl\Models\ApiKey::IDENTIFIER_LENGTH),
+        'token' => $token ?: $token = encrypt(Str::random(Pterodactyl\Models\ApiKey::KEY_LENGTH)),
         'allowed_ips' => null,
         'memo' => 'Test Function Key',
         'created_at' => \Carbon\Carbon::now()->toDateTimeString(),

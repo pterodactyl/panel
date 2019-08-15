@@ -10,6 +10,8 @@
 namespace Tests\Assertions;
 
 use Illuminate\View\View;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\Assert;
 use Illuminate\Http\JsonResponse;
@@ -87,10 +89,10 @@ trait ControllerAssertionsTrait
      */
     public function assertViewHasKey($attribute, $view)
     {
-        if (str_contains($attribute, '.')) {
+        if (Str::contains($attribute, '.')) {
             Assert::assertNotEquals(
                 '__TEST__FAIL',
-                array_get($view->getData(), $attribute, '__TEST__FAIL')
+                Arr::get($view->getData(), $attribute, '__TEST__FAIL')
             );
         } else {
             Assert::assertArrayHasKey($attribute, $view->getData());
@@ -105,10 +107,10 @@ trait ControllerAssertionsTrait
      */
     public function assertViewNotHasKey($attribute, $view)
     {
-        if (str_contains($attribute, '.')) {
+        if (Str::contains($attribute, '.')) {
             Assert::assertEquals(
                 '__TEST__PASS',
-                array_get($view->getData(), $attribute, '__TEST__PASS')
+                Arr::get($view->getData(), $attribute, '__TEST__PASS')
             );
         } else {
             Assert::assertArrayNotHasKey($attribute, $view->getData());
@@ -124,7 +126,7 @@ trait ControllerAssertionsTrait
      */
     public function assertViewKeyEquals($attribute, $value, $view)
     {
-        Assert::assertEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
+        Assert::assertEquals($value, Arr::get($view->getData(), $attribute, '__TEST__FAIL'));
     }
 
     /**
@@ -136,7 +138,7 @@ trait ControllerAssertionsTrait
      */
     public function assertViewKeyNotEquals($attribute, $value, $view)
     {
-        Assert::assertNotEquals($value, array_get($view->getData(), $attribute, '__TEST__FAIL'));
+        Assert::assertNotEquals($value, Arr::get($view->getData(), $attribute, '__TEST__FAIL'));
     }
 
     /**

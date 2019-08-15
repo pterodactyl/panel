@@ -9,6 +9,8 @@
 
 namespace Pterodactyl\Http\Requests\Server;
 
+use Illuminate\Support\Arr;
+
 class ScheduleCreationFormRequest extends ServerFormRequest
 {
     /**
@@ -68,7 +70,7 @@ class ScheduleCreationFormRequest extends ServerFormRequest
     public function getTasks()
     {
         $restructured = [];
-        foreach (array_get($this->all(), 'tasks', []) as $key => $values) {
+        foreach (Arr::get($this->all(), 'tasks', []) as $key => $values) {
             for ($i = 0; $i < count($values); $i++) {
                 $restructured[$i][$key] = $values[$i];
             }

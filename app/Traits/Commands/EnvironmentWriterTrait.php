@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Traits\Commands;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\PterodactylException;
 
 trait EnvironmentWriterTrait
@@ -30,7 +31,7 @@ trait EnvironmentWriterTrait
         $saveContents = file_get_contents($path);
         collect($values)->each(function ($value, $key) use (&$saveContents) {
             $key = strtoupper($key);
-            if (str_contains($value, ' ') && ! preg_match('/\"(.*)\"/', $value)) {
+            if (Str::contains($value, ' ') && ! preg_match('/\"(.*)\"/', $value)) {
                 $value = sprintf('"%s"', addslashes($value));
             }
 

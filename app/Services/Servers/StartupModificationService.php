@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
@@ -96,9 +97,9 @@ class StartupModificationService
     public function handle(Server $server, array $data): Server
     {
         $this->connection->beginTransaction();
-        if (! is_null(array_get($data, 'environment'))) {
+        if (! is_null(Arr::get($data, 'environment'))) {
             $this->validatorService->setUserLevel($this->getUserLevel());
-            $results = $this->validatorService->handle(array_get($data, 'egg_id', $server->egg_id), array_get($data, 'environment', []));
+            $results = $this->validatorService->handle(Arr::get($data, 'egg_id', $server->egg_id), Arr::get($data, 'environment', []));
 
             $results->each(function ($result) use ($server) {
                 $this->serverVariableRepository->withoutFreshModel()->updateOrCreate([
@@ -146,9 +147,9 @@ class StartupModificationService
     private function updateAdministrativeSettings(array $data, Server &$server, array &$daemonData)
     {
         if (
-            is_digit(array_get($data, 'egg_id'))
+            is_digit(Arr::get($data, 'egg_id'))
             && $data['egg_id'] != $server->egg_id
-            && is_null(array_get($data, 'nest_id'))
+            && is_null(Arr::get($data, 'nest_id'))
         ) {
             $egg = $this->eggRepository->setColumns(['id', 'nest_id'])->find($data['egg_id']);
             $data['nest_id'] = $egg->nest_id;
@@ -156,12 +157,12 @@ class StartupModificationService
 
         $server = $this->repository->update($server->id, [
             'installed' => 0,
-            'startup' => array_get($data, 'startup', $server->startup),
-            'nest_id' => array_get($data, 'nest_id', $server->nest_id),
-            'egg_id' => array_get($data, 'egg_id', $server->egg_id),
-            'pack_id' => array_get($data, 'pack_id', $server->pack_id) > 0 ? array_get($data, 'pack_id', $server->pack_id) : null,
-            'skip_scripts' => array_get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
-            'image' => array_get($data, 'docker_image', $server->image),
+            'startup' => Arr::get($data, 'startup', $server->startup),
+            'nest_id' => Arr::get($data, 'nest_id', $server->nest_id),
+            'egg_id' => Arr::get($data, 'egg_id', $server->egg_id),
+            'pack_id' => Arr::get($data, 'pack_id', $server->pack_id) > 0 ? Arr::get($data, 'pack_id', $server->pack_id) : null,
+            'skip_scripts' => Arr::get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
+            'image' => Arr::get($data, 'docker_image', $server->image),
         ]);
 
         $daemonData = array_merge($daemonData, [

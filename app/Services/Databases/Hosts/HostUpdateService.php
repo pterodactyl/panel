@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Databases\Hosts;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\ConnectionInterface;
@@ -77,7 +78,7 @@ class HostUpdateService
      */
     public function handle(int $hostId, array $data): DatabaseHost
     {
-        if (! empty(array_get($data, 'password'))) {
+        if (! empty(Arr::get($data, 'password'))) {
             $data['password'] = $this->encrypter->encrypt($data['password']);
         } else {
             unset($data['password']);

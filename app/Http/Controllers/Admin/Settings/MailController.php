@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
 use Exception;
 use Illuminate\View\View;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Prologue\Alerts\AlertsMessageBag;
@@ -98,7 +99,7 @@ class MailController extends Controller
         }
 
         $values = $request->normalize();
-        if (array_get($values, 'mail:password') === '!e') {
+        if (Arr::get($values, 'mail:password') === '!e') {
             $values['mail:password'] = '';
         }
 

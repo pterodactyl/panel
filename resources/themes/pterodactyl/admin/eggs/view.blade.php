@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-header')
-    <h1>{{ $egg->name }}<small>{{ str_limit($egg->description, 50) }}</small></h1>
+    <h1>{{ $egg->name }}<small>{{ Str::limit($egg->description, 50) }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li><a href="{{ route('admin.nests') }}">Nests</a></li>

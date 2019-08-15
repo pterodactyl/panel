@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Packs;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Pack;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
@@ -57,7 +58,7 @@ class PackUpdateService
             $pack = $this->repository->setColumns(['id', 'egg_id'])->find($pack);
         }
 
-        if ((int) array_get($data, 'egg_id', $pack->egg_id) !== $pack->egg_id) {
+        if ((int) Arr::get($data, 'egg_id', $pack->egg_id) !== $pack->egg_id) {
             $count = $this->serverRepository->findCountWhere([['pack_id', '=', $pack->id]]);
 
             if ($count !== 0) {

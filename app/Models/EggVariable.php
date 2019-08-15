@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Support\Str;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
 use Illuminate\Database\Eloquent\Model;
@@ -87,7 +88,7 @@ class EggVariable extends Model implements CleansAttributes, ValidableContract
      */
     public function getRequiredAttribute($value)
     {
-        return $this->rules === 'required' || str_contains($this->rules, ['required|', '|required']);
+        return $this->rules === 'required' || Str::contains($this->rules, ['required|', '|required']);
     }
 
     /**

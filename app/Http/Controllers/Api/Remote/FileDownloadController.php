@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote;
 
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
@@ -43,8 +44,8 @@ class FileDownloadController extends Controller
         }
 
         return response()->json([
-            'path' => array_get($download, 'path'),
-            'server' => array_get($download, 'server'),
+            'path' => Arr::get($download, 'path'),
+            'server' => Arr::get($download, 'server'),
         ]);
     }
 }

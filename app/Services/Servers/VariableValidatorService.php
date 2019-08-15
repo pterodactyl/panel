@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
@@ -82,7 +83,7 @@ class VariableValidatorService
                 continue;
             }
 
-            $data['environment'][$variable->env_variable] = array_get($fields, $variable->env_variable);
+            $data['environment'][$variable->env_variable] = Arr::get($fields, $variable->env_variable);
             $rules['environment.' . $variable->env_variable] = $variable->rules;
             $customAttributes['environment.' . $variable->env_variable] = trans('validation.internal.variable_value', ['env' => $variable->name]);
         }
@@ -103,7 +104,7 @@ class VariableValidatorService
             return (object) [
                 'id' => $item->id,
                 'key' => $item->env_variable,
-                'value' => array_get($fields, $item->env_variable),
+                'value' => Arr::get($fields, $item->env_variable),
             ];
         })->filter(function ($item) {
             return is_object($item);

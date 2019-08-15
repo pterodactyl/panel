@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
 use Pterodactyl\Services\Nests\NestCreationService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
@@ -41,10 +42,10 @@ class NestSeeder extends Seeder
             'author' => 'support@pterodactyl.io',
         ])->keyBy('name')->toArray();
 
-        $this->createMinecraftNest(array_get($items, 'Minecraft'));
-        $this->createSourceEngineNest(array_get($items, 'Source Engine'));
-        $this->createVoiceServersNest(array_get($items, 'Voice Servers'));
-        $this->createRustNest(array_get($items, 'Rust'));
+        $this->createMinecraftNest(Arr::get($items, 'Minecraft'));
+        $this->createSourceEngineNest(Arr::get($items, 'Source Engine'));
+        $this->createVoiceServersNest(Arr::get($items, 'Voice Servers'));
+        $this->createRustNest(Arr::get($items, 'Rust'));
     }
 
     /**

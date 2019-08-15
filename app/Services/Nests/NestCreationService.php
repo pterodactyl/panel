@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Nests;
 
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
@@ -44,8 +45,8 @@ class NestCreationService
         return $this->repository->create([
             'uuid' => Uuid::uuid4()->toString(),
             'author' => $author ?? $this->config->get('pterodactyl.service.author'),
-            'name' => array_get($data, 'name'),
-            'description' => array_get($data, 'description'),
+            'name' => Arr::get($data, 'name'),
+            'description' => Arr::get($data, 'description'),
         ], true, true);
     }
 }

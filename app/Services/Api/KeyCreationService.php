@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Api;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -64,8 +65,8 @@ class KeyCreationService
     {
         $data = array_merge($data, [
             'key_type' => $this->keyType,
-            'identifier' => str_random(ApiKey::IDENTIFIER_LENGTH),
-            'token' => $this->encrypter->encrypt(str_random(ApiKey::KEY_LENGTH)),
+            'identifier' => Str::random(ApiKey::IDENTIFIER_LENGTH),
+            'token' => $this->encrypter->encrypt(Str::random(ApiKey::KEY_LENGTH)),
         ]);
 
         if ($this->keyType === ApiKey::TYPE_APPLICATION) {

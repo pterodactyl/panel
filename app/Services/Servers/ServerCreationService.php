@@ -3,6 +3,8 @@
 namespace Pterodactyl\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
@@ -142,18 +144,18 @@ class ServerCreationService
 
         // Auto-configure the node based on the selected allocation
         // if no node was defined.
-        if (is_null(array_get($data, 'node_id'))) {
+        if (is_null(Arr::get($data, 'node_id'))) {
             $data['node_id'] = $this->getNodeFromAllocation($data['allocation_id']);
         }
 
-        if (is_null(array_get($data, 'nest_id'))) {
-            $egg = $this->eggRepository->setColumns(['id', 'nest_id'])->find(array_get($data, 'egg_id'));
+        if (is_null(Arr::get($data, 'nest_id'))) {
+            $egg = $this->eggRepository->setColumns(['id', 'nest_id'])->find(Arr::get($data, 'egg_id'));
             $data['nest_id'] = $egg->nest_id;
         }
 
         $eggVariableData = $this->validatorService
             ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle(array_get($data, 'egg_id'), array_get($data, 'environment', []));
+            ->handle(Arr::get($data, 'egg_id'), Arr::get($data, 'environment', []));
 
         // Create the server and assign any additional allocations to it.
         $server = $this->createModel($data);
@@ -164,7 +166,7 @@ class ServerCreationService
 
         try {
             $this->daemonServerRepository->setServer($server)->create($structure, [
-                'start_on_completion' => (bool) array_get($data, 'start_on_completion', false),
+                'start_on_completion' => (bool) Arr::get($data, 'start_on_completion', false),
             ]);
 
             $this->connection->commit();
@@ -190,8 +192,8 @@ class ServerCreationService
     private function configureDeployment(array $data, DeploymentObject $deployment): Allocation
     {
         $nodes = $this->findViableNodesService->setLocations($deployment->getLocations())
-            ->setDisk(array_get($data, 'disk'))
-            ->setMemory(array_get($data, 'memory'))
+            ->setDisk(Arr::get($data, 'disk'))
+            ->setMemory(Arr::get($data, 'memory'))
             ->handle();
 
         return $this->allocationSelectionService->setDedicated($deployment->isDedicated())
@@ -213,30 +215,30 @@ class ServerCreationService
         $uuid = $this->generateUniqueUuidCombo();
 
         return $this->repository->create([
-            'external_id' => array_get($data, 'external_id'),
+            'external_id' => Arr::get($data, 'external_id'),
             'uuid' => $uuid,
             'uuidShort' => substr($uuid, 0, 8),
-            'node_id' => array_get($data, 'node_id'),
-            'name' => array_get($data, 'name'),
-            'description' => array_get($data, 'description') ?? '',
-            'skip_scripts' => array_get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
+            'node_id' => Arr::get($data, 'node_id'),
+            'name' => Arr::get($data, 'name'),
+            'description' => Arr::get($data, 'description') ?? '',
+            'skip_scripts' => Arr::get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
             'suspended' => false,
-            'owner_id' => array_get($data, 'owner_id'),
-            'memory' => array_get($data, 'memory'),
-            'swap' => array_get($data, 'swap'),
-            'disk' => array_get($data, 'disk'),
-            'io' => array_get($data, 'io'),
-            'cpu' => array_get($data, 'cpu'),
-            'oom_disabled' => array_get($data, 'oom_disabled', true),
-            'allocation_id' => array_get($data, 'allocation_id'),
-            'nest_id' => array_get($data, 'nest_id'),
-            'egg_id' => array_get($data, 'egg_id'),
+            'owner_id' => Arr::get($data, 'owner_id'),
+            'memory' => Arr::get($data, 'memory'),
+            'swap' => Arr::get($data, 'swap'),
+            'disk' => Arr::get($data, 'disk'),
+            'io' => Arr::get($data, 'io'),
+            'cpu' => Arr::get($data, 'cpu'),
+            'oom_disabled' => Arr::get($data, 'oom_disabled', true),
+            'allocation_id' => Arr::get($data, 'allocation_id'),
+            'nest_id' => Arr::get($data, 'nest_id'),
+            'egg_id' => Arr::get($data, 'egg_id'),
             'pack_id' => (! isset($data['pack_id']) || $data['pack_id'] == 0) ? null : $data['pack_id'],
-            'startup' => array_get($data, 'startup'),
-            'daemonSecret' => str_random(Node::DAEMON_SECRET_LENGTH),
-            'image' => array_get($data, 'image'),
-            'database_limit' => array_get($data, 'database_limit'),
-            'allocation_limit' => array_get($data, 'allocation_limit'),
+            'startup' => Arr::get($data, 'startup'),
+            'daemonSecret' => Str::random(Node::DAEMON_SECRET_LENGTH),
+            'image' => Arr::get($data, 'image'),
+            'database_limit' => Arr::get($data, 'database_limit'),
+            'allocation_limit' => Arr::get($data, 'allocation_limit'),
         ]);
     }
 

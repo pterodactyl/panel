@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Databases;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
@@ -83,8 +84,8 @@ class DeployServerDatabaseService
 
         return $this->managementService->create($server->id, [
             'database_host_id' => $host->id,
-            'database' => array_get($data, 'database'),
-            'remote' => array_get($data, 'remote'),
+            'database' => Arr::get($data, 'database'),
+            'remote' => Arr::get($data, 'remote'),
         ]);
     }
 }

@@ -55,7 +55,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
             ],
         ]);
 
-        foreach (array_get($response->json(), 'data') as $datum) {
+        foreach (Arr::get($response->json(), 'data') as $datum) {
             $egg = $eggs->where('id', '=', $datum['attributes']['id'])->first();
 
             $expected = json_encode(Arr::sortRecursive($datum['attributes']));

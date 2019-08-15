@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-header')
-    <h1>{{ $location->short }}<small>{{ str_limit($location->long, 75) }}</small></h1>
+    <h1>{{ $location->short }}<small>{{ Str::limit($location->long, 75) }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li><a href="{{ route('admin.locations') }}">Locations</a></li>

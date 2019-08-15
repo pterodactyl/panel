@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Users;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Hashing\Hasher;
@@ -58,15 +59,15 @@ class UserUpdateService
      */
     public function handle(User $user, array $data): Collection
     {
-        if (! empty(array_get($data, 'password'))) {
+        if (! empty(Arr::get($data, 'password'))) {
             $data['password'] = $this->hasher->make($data['password']);
         } else {
             unset($data['password']);
         }
 
         if ($this->isUserLevel(User::USER_LEVEL_ADMIN)) {
-            if (array_get($data, 'root_admin', 0) == 0 && $user->root_admin) {
-                $this->revocationService->handle($user, array_get($data, 'ignore_connection_error', false));
+            if (Arr::get($data, 'root_admin', 0) == 0 && $user->root_admin) {
+                $this->revocationService->handle($user, Arr::get($data, 'ignore_connection_error', false));
             }
         } else {
             unset($data['root_admin']);

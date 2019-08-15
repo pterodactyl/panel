@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Eggs;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
@@ -46,10 +47,10 @@ class EggUpdateService
             $egg = $this->repository->find($egg);
         }
 
-        if (! is_null(array_get($data, 'config_from'))) {
+        if (! is_null(Arr::get($data, 'config_from'))) {
             $results = $this->repository->findCountWhere([
                 ['nest_id', '=', $egg->nest_id],
-                ['id', '=', array_get($data, 'config_from')],
+                ['id', '=', Arr::get($data, 'config_from')],
             ]);
 
             if ($results !== 1) {

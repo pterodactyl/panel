@@ -24,6 +24,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote;
 
+use Illuminate\Support\Str;
 use Spatie\Fractal\Fractal;
 use Illuminate\Http\Response;
 use Pterodactyl\Http\Controllers\Controller;
@@ -79,7 +80,7 @@ class ValidateKeyController extends Controller
      */
     public function index($token)
     {
-        if (! starts_with($token, DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER)) {
+        if (! Str::startsWith($token, DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER)) {
             throw new HttpException(Response::HTTP_NOT_IMPLEMENTED);
         }
 

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Foundation\Http\FormRequest;
@@ -94,7 +95,7 @@ abstract class ApplicationApiRequest extends FormRequest
      */
     public function getModel(string $model)
     {
-        $parameterKey = array_get(array_flip(ApiSubstituteBindings::getMappings()), $model);
+        $parameterKey = Arr::get(array_flip(ApiSubstituteBindings::getMappings()), $model);
 
         if (is_null($parameterKey)) {
             throw new InvalidParameterException;

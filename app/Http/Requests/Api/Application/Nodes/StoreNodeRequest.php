@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
@@ -44,7 +45,7 @@ class StoreNodeRequest extends ApplicationApiRequest
         ])->mapWithKeys(function ($value, $key) {
             $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
 
-            return [snake_case($key) => $value];
+            return [Str::snake($key) => $value];
         })->toArray();
     }
 

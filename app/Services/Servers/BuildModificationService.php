@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -85,15 +86,15 @@ class BuildModificationService
         }
 
         $server = $this->repository->withFreshModel()->update($server->id, [
-            'oom_disabled' => array_get($data, 'oom_disabled'),
-            'memory' => array_get($data, 'memory'),
-            'swap' => array_get($data, 'swap'),
-            'io' => array_get($data, 'io'),
-            'cpu' => array_get($data, 'cpu'),
-            'disk' => array_get($data, 'disk'),
-            'allocation_id' => array_get($data, 'allocation_id'),
-            'database_limit' => array_get($data, 'database_limit'),
-            'allocation_limit' => array_get($data, 'allocation_limit'),
+            'oom_disabled' => Arr::get($data, 'oom_disabled'),
+            'memory' => Arr::get($data, 'memory'),
+            'swap' => Arr::get($data, 'swap'),
+            'io' => Arr::get($data, 'io'),
+            'cpu' => Arr::get($data, 'cpu'),
+            'disk' => Arr::get($data, 'disk'),
+            'allocation_id' => Arr::get($data, 'allocation_id'),
+            'database_limit' => Arr::get($data, 'database_limit'),
+            'allocation_limit' => Arr::get($data, 'allocation_limit'),
         ]);
 
         $allocations = $this->allocationRepository->findWhere([['server_id', '=', $server->id]]);

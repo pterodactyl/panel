@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Database;
 use Illuminate\Support\Collection;
 use Illuminate\Foundation\Application;
@@ -106,9 +107,9 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     public function createIfNotExists(array $data): Database
     {
         $count = $this->getBuilder()->where([
-            ['server_id', '=', array_get($data, 'server_id')],
-            ['database_host_id', '=', array_get($data, 'database_host_id')],
-            ['database', '=', array_get($data, 'database')],
+            ['server_id', '=', Arr::get($data, 'server_id')],
+            ['database_host_id', '=', Arr::get($data, 'database_host_id')],
+            ['database', '=', Arr::get($data, 'database')],
         ])->count();
 
         if ($count > 0) {

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Application\Users;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
@@ -301,7 +302,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
     {
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => AdminAcl::READ]);
 
-        if (str_contains($url, '{id}')) {
+        if (Str::contains($url, '{id}')) {
             $user = factory(User::class)->create();
             $url = str_replace('{id}', $user->id, $url);
         }

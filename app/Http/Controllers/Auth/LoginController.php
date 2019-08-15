@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use PragmaRX\Google2FA\Google2FA;
@@ -131,7 +133,7 @@ class LoginController extends Controller
         }
 
         if ($user->use_totp) {
-            $token = str_random(64);
+            $token = Str::random(64);
             $this->cache->put($token, ['user_id' => $user->id, 'valid_credentials' => true], 300);
 
             return redirect()->route('auth.totp')->with('authentication_token', $token);
@@ -176,7 +178,7 @@ class LoginController extends Controller
 
         try {
             $cache = $this->cache->pull($request->input('verify_token'), []);
-            $user = $this->repository->find(array_get($cache, 'user_id', 0));
+            $user = $this->repository->find(Arr::get($cache, 'user_id', 0));
         } catch (RecordNotFoundException $exception) {
             return $this->sendFailedLoginResponse($request);
         }
@@ -231,7 +233,7 @@ class LoginController extends Controller
      */
     private function getField(string $input = null): string
     {
-        return str_contains($input, '@') ? 'email' : 'username';
+        return Str::contains($input, '@') ? 'email' : 'username';
     }
 
     /**

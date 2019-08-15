@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Subusers;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Users\UserCreationService;
@@ -120,7 +121,7 @@ class SubuserCreationService
             $username = preg_replace('/([^\w\.-]+)/', '', strtok($email, '@'));
             $user = $this->userCreationService->handle([
                 'email' => $email,
-                'username' => $username . str_random(3),
+                'username' => $username . Str::random(3),
                 'name_first' => 'Server',
                 'name_last' => 'Subuser',
                 'root_admin' => false,

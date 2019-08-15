@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Console\Commands\Environment;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
@@ -73,7 +74,7 @@ class EmailSettingsCommand extends Command
             ], $this->config->get('mail.driver', 'smtp')
         );
 
-        $method = 'setup' . studly_case($this->variables['MAIL_DRIVER']) . 'DriverVariables';
+        $method = 'setup' . Str::studly($this->variables['MAIL_DRIVER']) . 'DriverVariables';
         if (method_exists($this, $method)) {
             $this->{$method}();
         }

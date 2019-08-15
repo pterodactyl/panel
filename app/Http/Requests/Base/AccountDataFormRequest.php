@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Http\Requests\Base;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
@@ -45,7 +46,7 @@ class AccountDataFormRequest extends FrontendUserFormRequest
         switch ($this->input('do_action')) {
             case 'email':
                 $rules = [
-                    'new_email' => array_get($modelRules, 'email'),
+                    'new_email' => Arr::get($modelRules, 'email'),
                 ];
                 break;
             case 'password':
@@ -56,10 +57,10 @@ class AccountDataFormRequest extends FrontendUserFormRequest
                 break;
             case 'identity':
                 $rules = [
-                    'name_first' => array_get($modelRules, 'name_first'),
-                    'name_last' => array_get($modelRules, 'name_last'),
-                    'username' => array_get($modelRules, 'username'),
-                    'language' => array_get($modelRules, 'language'),
+                    'name_first' => Arr::get($modelRules, 'name_first'),
+                    'name_last' => Arr::get($modelRules, 'name_last'),
+                    'username' => Arr::get($modelRules, 'username'),
+                    'language' => Arr::get($modelRules, 'language'),
                 ];
                 break;
             default:

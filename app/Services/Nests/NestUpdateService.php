@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Nests;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
 class NestUpdateService
@@ -38,7 +39,7 @@ class NestUpdateService
      */
     public function handle(int $nest, array $data)
     {
-        if (! is_null(array_get($data, 'author'))) {
+        if (! is_null(Arr::get($data, 'author'))) {
             unset($data['author']);
         }
 

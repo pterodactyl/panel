@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote;
 
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -44,8 +45,8 @@ class SftpController extends Controller
     {
         $parts = explode('.', strrev($request->input('username')), 2);
         $connection = [
-            'username' => strrev(array_get($parts, 1)),
-            'server' => strrev(array_get($parts, 0)),
+            'username' => strrev(Arr::get($parts, 1)),
+            'server' => strrev(Arr::get($parts, 0)),
         ];
 
         $this->incrementLoginAttempts($request);
@@ -86,6 +87,6 @@ class SftpController extends Controller
      */
     protected function throttleKey(Request $request)
     {
-        return strtolower(array_get(explode('.', $request->input('username')), 0) . '|' . $request->ip());
+        return strtolower(Arr::get(explode('.', $request->input('username')), 0) . '|' . $request->ip());
     }
 }

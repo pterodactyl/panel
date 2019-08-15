@@ -4,6 +4,7 @@ namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
 use Tests\TestCase;
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
@@ -100,7 +101,7 @@ class SubuserCreationServiceTest extends TestCase
                 'root_admin' => false,
             ])->match($data);
 
-            $username = substr(array_get($data, 'username', ''), 0, -3) === 'known.1test';
+            $username = substr(Arr::get($data, 'username', ''), 0, -3) === 'known.1test';
 
             return $subset && $username;
         }))->once()->andReturn($user);

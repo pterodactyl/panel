@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-header')
-    <h1>{{ $pack->name }}<small>{{ str_limit($pack->description, 60) }}</small></h1>
+    <h1>{{ $pack->name }}<small>{{ Str::limit($pack->description, 60) }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li><a href="{{ route('admin.packs') }}">Packs</a></li>

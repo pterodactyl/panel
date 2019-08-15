@@ -10,6 +10,7 @@
 namespace Pterodactyl\Console\Commands\Environment;
 
 use DateTimeZone;
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
@@ -97,7 +98,7 @@ class AppSettingsCommand extends Command
     public function handle()
     {
         if (empty($this->config->get('hashids.salt')) || $this->option('new-salt')) {
-            $this->variables['HASHIDS_SALT'] = str_random(20);
+            $this->variables['HASHIDS_SALT'] = Str::random(20);
         }
 
         $this->output->comment(trans('command/messages.environment.app.author_help'));

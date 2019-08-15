@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Traits\Helpers;
 
+use Illuminate\Support\Str;
 use Matriphe\ISO639\ISO639;
 use Illuminate\Filesystem\Filesystem;
 
@@ -30,7 +31,7 @@ trait AvailableLanguages
             $code = basename($path);
             $value = $localize ? $this->getIsoInstance()->nativeByCode1($code) : $this->getIsoInstance()->languageByCode1($code);
 
-            return [$code => title_case($value)];
+            return [$code => Str::title($value)];
         })->toArray();
     }
 

@@ -4,6 +4,8 @@ namespace Pterodactyl\Exceptions;
 
 use Exception;
 use PDOException;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
@@ -109,11 +111,11 @@ class Handler extends ExceptionHandler
             $cleanedStack .= sprintf(
                 "#%d %s(%d): %s%s%s\n",
                 $index,
-                array_get($item, 'file'),
-                array_get($item, 'line'),
-                array_get($item, 'class'),
-                array_get($item, 'type'),
-                array_get($item, 'function')
+                Arr::get($item, 'file'),
+                Arr::get($item, 'line'),
+                Arr::get($item, 'class'),
+                Arr::get($item, 'type'),
+                Arr::get($item, 'function')
             );
         }
 
@@ -190,7 +192,7 @@ class Handler extends ExceptionHandler
         $codes = collect($exception->validator->failed())->mapWithKeys(function ($reasons, $field) {
             $cleaned = [];
             foreach ($reasons as $reason => $attrs) {
-                $cleaned[] = snake_case($reason);
+                $cleaned[] = Str::snake($reason);
             }
 
             return [str_replace('.', '_', $field) => $cleaned];
@@ -200,7 +202,7 @@ class Handler extends ExceptionHandler
             $response = [];
             foreach ($errors as $key => $error) {
                 $response[] = [
-                    'code' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', array_get(
+                    'code' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', Arr::get(
                         $codes, str_replace('.', '_', $field) . '.' . $key
                     )),
                     'detail' => $error,

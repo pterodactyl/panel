@@ -10,6 +10,7 @@
 namespace Pterodactyl\Services\Eggs;
 
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
@@ -51,11 +52,11 @@ class EggCreationService
      */
     public function handle(array $data): Egg
     {
-        $data['config_from'] = array_get($data, 'config_from');
+        $data['config_from'] = Arr::get($data, 'config_from');
         if (! is_null($data['config_from'])) {
             $results = $this->repository->findCountWhere([
-                ['nest_id', '=', array_get($data, 'nest_id')],
-                ['id', '=', array_get($data, 'config_from')],
+                ['nest_id', '=', Arr::get($data, 'nest_id')],
+                ['id', '=', Arr::get($data, 'config_from')],
             ]);
 
             if ($results !== 1) {

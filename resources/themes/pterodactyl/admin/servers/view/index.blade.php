@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-header')
-    <h1>{{ $server->name }}<small>{{ str_limit($server->description) }}</small></h1>
+    <h1>{{ $server->name }}<small>{{ Str::limit($server->description) }}</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li><a href="{{ route('admin.servers') }}">Servers</a></li>
@@ -135,7 +135,7 @@
                     <div class="col-sm-12">
                         <div class="small-box bg-gray">
                             <div class="inner">
-                                <h3>{{ str_limit($server->user->username, 16) }}</h3>
+                                <h3>{{ Str::limit($server->user->username, 16) }}</h3>
                                 <p>Server Owner</p>
                             </div>
                             <div class="icon"><i class="fa fa-user"></i></div>
@@ -147,7 +147,7 @@
                     <div class="col-sm-12">
                         <div class="small-box bg-gray">
                             <div class="inner">
-                                <h3>{{ str_limit($server->node->name, 16) }}</h3>
+                                <h3>{{ Str::limit($server->node->name, 16) }}</h3>
                                 <p>Server Node</p>
                             </div>
                             <div class="icon"><i class="fa fa-codepen"></i></div>

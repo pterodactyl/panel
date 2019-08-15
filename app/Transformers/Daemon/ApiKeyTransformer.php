@@ -3,6 +3,7 @@
 namespace Pterodactyl\Transformers\Daemon;
 
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\DaemonKey;
 use Pterodactyl\Models\Permission;
 use League\Fractal\TransformerAbstract;
@@ -61,8 +62,8 @@ class ApiKeyTransformer extends TransformerAbstract
         $daemonPermissions = ['s:console'];
 
         foreach ($permissions as $permission) {
-            if (! is_null(array_get($mappings, $permission))) {
-                $daemonPermissions[] = array_get($mappings, $permission);
+            if (! is_null(Arr::get($mappings, $permission))) {
+                $daemonPermissions[] = Arr::get($mappings, $permission);
             }
         }
 

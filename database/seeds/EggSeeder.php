@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
@@ -109,7 +110,7 @@ class EggSeeder extends Seeder
      */
     private function parseEggFiles(Nest $nest)
     {
-        $files = $this->filesystem->allFiles(database_path('seeds/eggs/' . kebab_case($nest->name)));
+        $files = $this->filesystem->allFiles(database_path('seeds/eggs/' . Str::kebab($nest->name)));
 
         $this->command->alert('Updating Eggs for Nest: ' . $nest->name);
         collect($files)->each(function ($file) use ($nest) {

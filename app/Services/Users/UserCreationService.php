@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Users;
 
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
@@ -69,7 +70,7 @@ class UserCreationService
         $this->connection->beginTransaction();
         if (! isset($data['password']) || empty($data['password'])) {
             $generateResetToken = true;
-            $data['password'] = $this->hasher->make(str_random(30));
+            $data['password'] = $this->hasher->make(Str::random(30));
         }
 
         /** @var \Pterodactyl\Models\User $user */

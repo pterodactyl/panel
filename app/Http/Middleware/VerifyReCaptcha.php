@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Middleware;
 use Closure;
 use stdClass;
 use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Pterodactyl\Events\Auth\FailedCaptcha;
 use Illuminate\Contracts\Config\Repository;
@@ -78,6 +79,6 @@ class VerifyReCaptcha
 
         $url = parse_url($request->url());
 
-        return $result->hostname === array_get($url, 'host');
+        return $result->hostname === Arr::get($url, 'host');
     }
 }

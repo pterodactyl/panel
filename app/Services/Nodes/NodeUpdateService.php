@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Nodes;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
@@ -62,7 +63,7 @@ class NodeUpdateService
     public function handle(Node $node, array $data, bool $resetToken = false)
     {
         if ($resetToken) {
-            $data['daemonSecret'] = str_random(Node::DAEMON_SECRET_LENGTH);
+            $data['daemonSecret'] = Str::random(Node::DAEMON_SECRET_LENGTH);
         }
 
         $this->connection->beginTransaction();

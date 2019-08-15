@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
@@ -82,26 +83,26 @@ class StoreServerRequest extends ApplicationApiRequest
         $data = parent::validated();
 
         return [
-            'external_id' => array_get($data, 'external_id'),
-            'name' => array_get($data, 'name'),
-            'description' => array_get($data, 'description'),
-            'owner_id' => array_get($data, 'user'),
-            'egg_id' => array_get($data, 'egg'),
-            'pack_id' => array_get($data, 'pack'),
-            'image' => array_get($data, 'docker_image'),
-            'startup' => array_get($data, 'startup'),
-            'environment' => array_get($data, 'environment'),
-            'memory' => array_get($data, 'limits.memory'),
-            'swap' => array_get($data, 'limits.swap'),
-            'disk' => array_get($data, 'limits.disk'),
-            'io' => array_get($data, 'limits.io'),
-            'cpu' => array_get($data, 'limits.cpu'),
-            'skip_scripts' => array_get($data, 'skip_scripts', false),
-            'allocation_id' => array_get($data, 'allocation.default'),
-            'allocation_additional' => array_get($data, 'allocation.additional'),
-            'start_on_completion' => array_get($data, 'start_on_completion', false),
-            'database_limit' => array_get($data, 'feature_limits.databases'),
-            'allocation_limit' => array_get($data, 'feature_limits.allocations'),
+            'external_id' => Arr::get($data, 'external_id'),
+            'name' => Arr::get($data, 'name'),
+            'description' => Arr::get($data, 'description'),
+            'owner_id' => Arr::get($data, 'user'),
+            'egg_id' => Arr::get($data, 'egg'),
+            'pack_id' => Arr::get($data, 'pack'),
+            'image' => Arr::get($data, 'docker_image'),
+            'startup' => Arr::get($data, 'startup'),
+            'environment' => Arr::get($data, 'environment'),
+            'memory' => Arr::get($data, 'limits.memory'),
+            'swap' => Arr::get($data, 'limits.swap'),
+            'disk' => Arr::get($data, 'limits.disk'),
+            'io' => Arr::get($data, 'limits.io'),
+            'cpu' => Arr::get($data, 'limits.cpu'),
+            'skip_scripts' => Arr::get($data, 'skip_scripts', false),
+            'allocation_id' => Arr::get($data, 'allocation.default'),
+            'allocation_additional' => Arr::get($data, 'allocation.additional'),
+            'start_on_completion' => Arr::get($data, 'start_on_completion', false),
+            'database_limit' => Arr::get($data, 'feature_limits.databases'),
+            'allocation_limit' => Arr::get($data, 'feature_limits.allocations'),
         ];
     }
 

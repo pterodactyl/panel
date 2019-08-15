@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Databases;
 
 use Exception;
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Database;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
@@ -62,7 +63,7 @@ class DatabasePasswordService
      */
     public function handle(Database $database): string
     {
-        $password = str_random(24);
+        $password = Str::random(24);
         // Given a random string of characters, randomly loop through the characters and replace some
         // with special characters to avoid issues with MySQL password requirements on some servers.
         try {

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Eggs\Variables;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Exceptions\DisplayException;
@@ -60,10 +61,10 @@ class VariableUpdateService
      */
     public function handle(EggVariable $variable, array $data)
     {
-        if (! is_null(array_get($data, 'env_variable'))) {
-            if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
+        if (! is_null(Arr::get($data, 'env_variable'))) {
+            if (in_array(strtoupper(Arr::get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
                 throw new ReservedVariableNameException(trans('exceptions.service.variables.reserved_name', [
-                    'name' => array_get($data, 'env_variable'),
+                    'name' => Arr::get($data, 'env_variable'),
                 ]));
             }
 
@@ -75,7 +76,7 @@ class VariableUpdateService
 
             if ($search > 0) {
                 throw new DisplayException(trans('exceptions.service.variables.env_not_unique', [
-                    'name' => array_get($data, 'env_variable'),
+                    'name' => Arr::get($data, 'env_variable'),
                 ]));
             }
         }
@@ -84,7 +85,7 @@ class VariableUpdateService
             $this->validateRules($data['rules']);
         }
 
-        $options = array_get($data, 'options') ?? [];
+        $options = Arr::get($data, 'options') ?? [];
 
         return $this->repository->withoutFreshModel()->update($variable->id, [
             'name' => $data['name'] ?? '',

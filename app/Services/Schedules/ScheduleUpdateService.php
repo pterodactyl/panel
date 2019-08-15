@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Schedules;
 
 use Cron\CronExpression;
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
@@ -77,11 +78,11 @@ class ScheduleUpdateService
 
         foreach ($tasks as $index => $task) {
             $this->taskCreationService->handle($schedule, [
-                'time_interval' => array_get($task, 'time_interval'),
-                'time_value' => array_get($task, 'time_value'),
+                'time_interval' => Arr::get($task, 'time_interval'),
+                'time_value' => Arr::get($task, 'time_value'),
                 'sequence_id' => $index + 1,
-                'action' => array_get($task, 'action'),
-                'payload' => array_get($task, 'payload'),
+                'action' => Arr::get($task, 'action'),
+                'payload' => Arr::get($task, 'payload'),
             ], false);
         }
 
@@ -99,10 +100,10 @@ class ScheduleUpdateService
     private function getCronTimestamp(array $data)
     {
         $formattedCron = sprintf('%s %s %s * %s',
-            array_get($data, 'cron_minute', '*'),
-            array_get($data, 'cron_hour', '*'),
-            array_get($data, 'cron_day_of_month', '*'),
-            array_get($data, 'cron_day_of_week', '*')
+            Arr::get($data, 'cron_minute', '*'),
+            Arr::get($data, 'cron_hour', '*'),
+            Arr::get($data, 'cron_day_of_month', '*'),
+            Arr::get($data, 'cron_day_of_week', '*')
         );
 
         return CronExpression::factory($formattedCron)->getNextRunDate();

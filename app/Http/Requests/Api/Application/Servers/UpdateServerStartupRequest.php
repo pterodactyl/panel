@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
@@ -47,9 +48,9 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
         $data = parent::validated();
 
         return collect($data)->only(['startup', 'environment', 'skip_scripts'])->merge([
-            'egg_id' => array_get($data, 'egg'),
-            'pack_id' => array_get($data, 'pack'),
-            'docker_image' => array_get($data, 'image'),
+            'egg_id' => Arr::get($data, 'egg'),
+            'pack_id' => Arr::get($data, 'pack'),
+            'docker_image' => Arr::get($data, 'image'),
         ])->toArray();
     }
 }

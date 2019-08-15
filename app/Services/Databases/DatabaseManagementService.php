@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Databases;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Database;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -68,8 +69,8 @@ class DatabaseManagementService
     {
         $data['server_id'] = $server;
         $data['database'] = sprintf('s%d_%s', $server, $data['database']);
-        $data['username'] = sprintf('u%d_%s', $server, str_random(10));
-        $data['password'] = $this->encrypter->encrypt(str_random(24));
+        $data['username'] = sprintf('u%d_%s', $server, Str::random(10));
+        $data['password'] = $this->encrypter->encrypt(Str::random(24));
 
         $this->database->beginTransaction();
         try {

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Databases\Hosts;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\ConnectionInterface;
@@ -71,13 +72,13 @@ class HostCreationService
     {
         return $this->connection->transaction(function () use ($data) {
             $host = $this->repository->create([
-                'password' => $this->encrypter->encrypt(array_get($data, 'password')),
-                'name' => array_get($data, 'name'),
-                'host' => array_get($data, 'host'),
-                'port' => array_get($data, 'port'),
-                'username' => array_get($data, 'username'),
+                'password' => $this->encrypter->encrypt(Arr::get($data, 'password')),
+                'name' => Arr::get($data, 'name'),
+                'host' => Arr::get($data, 'host'),
+                'port' => Arr::get($data, 'port'),
+                'username' => Arr::get($data, 'username'),
                 'max_databases' => null,
-                'node_id' => array_get($data, 'node_id'),
+                'node_id' => Arr::get($data, 'node_id'),
             ]);
 
             // Confirm access using the provided credentials before saving data.

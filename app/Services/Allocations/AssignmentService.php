@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Allocations;
 
 use IPTools\Network;
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Node;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
@@ -86,7 +87,7 @@ class AssignmentService
                             'node_id' => $node->id,
                             'ip' => $ip->__toString(),
                             'port' => (int) $unit,
-                            'ip_alias' => array_get($data, 'allocation_alias'),
+                            'ip_alias' => Arr::get($data, 'allocation_alias'),
                             'server_id' => null,
                         ];
                     }
@@ -99,7 +100,7 @@ class AssignmentService
                         'node_id' => $node->id,
                         'ip' => $ip->__toString(),
                         'port' => (int) $port,
-                        'ip_alias' => array_get($data, 'allocation_alias'),
+                        'ip_alias' => Arr::get($data, 'allocation_alias'),
                         'server_id' => null,
                     ];
                 }

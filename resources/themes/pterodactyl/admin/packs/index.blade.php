@@ -51,7 +51,7 @@
                                 <td class="middle" data-toggle="tooltip" data-placement="right" title="{{ $pack->uuid }}"><code>{{ $pack->id }}</code></td>
                                 <td class="middle"><a href="{{ route('admin.packs.view', $pack->id) }}">{{ $pack->name }}</a></td>
                                 <td class="middle"><code>{{ $pack->version }}</code></td>
-                                <td class="col-md-6">{{ str_limit($pack->description, 150) }}</td>
+                                <td class="col-md-6">{{ Str::limit($pack->description, 150) }}</td>
                                 <td class="middle"><a href="{{ route('admin.nests.egg.view', $pack->egg->id) }}">{{ $pack->egg->name }}</a></td>
                                 <td class="middle text-center">{{ $pack->servers_count }}</td>
                             </tr>

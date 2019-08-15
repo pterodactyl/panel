@@ -25,6 +25,7 @@
 namespace Pterodactyl\Services\DaemonKeys;
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
@@ -77,7 +78,7 @@ class DaemonKeyUpdateService
     {
         Assert::integerish($key, 'First argument passed to handle must be an integer, received %s.');
 
-        $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40);
+        $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . Str::random(40);
         $this->repository->withoutFreshModel()->update($key, [
             'secret' => $secret,
             'expires_at' => $this->carbon->now()->addMinutes($this->config->get('pterodactyl.api.key_expire_time'))->toDateTimeString(),
