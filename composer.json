@@ -25,6 +25,7 @@
         "igaster/laravel-theme": "^2.0",
         "laracasts/utilities": "^3.0",
         "laravel/framework": "5.8.*",
+        "laravel/helpers": "^1.1",
         "laravel/tinker": "^1.0",
         "lord/laroute": "^2.4",
         "matriphe/iso-639": "^1.2",

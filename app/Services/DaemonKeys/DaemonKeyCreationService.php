@@ -25,7 +25,6 @@
 namespace Pterodactyl\Services\DaemonKeys;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
@@ -74,7 +73,7 @@ class DaemonKeyCreationService
      */
     public function handle(int $server, int $user)
     {
-        $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . Str::random(40);
+        $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40);
 
         $this->repository->withoutFreshModel()->create([
             'user_id' => $user,

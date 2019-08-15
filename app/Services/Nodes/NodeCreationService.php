@@ -9,7 +9,6 @@
 
 namespace Pterodactyl\Services\Nodes;
 
-use Illuminate\Support\Str;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeCreationService
@@ -41,7 +40,7 @@ class NodeCreationService
      */
     public function handle(array $data)
     {
-        $data['daemonSecret'] = Str::random(self::DAEMON_SECRET_LENGTH);
+        $data['daemonSecret'] = str_random(self::DAEMON_SECRET_LENGTH);
 
         return $this->repository->create($data);
     }
