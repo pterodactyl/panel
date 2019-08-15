@@ -12,7 +12,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'Pterodactyl\Models\Server' => 'Pterodactyl\Policies\ServerPolicy',
+        \Pterodactyl\Models\Server::class => \Pterodactyl\Policies\ServerPolicy::class,
     ];
 
     /**
