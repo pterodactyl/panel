@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import { CSSTransition } from 'react-transition-group';
+import FileEditContainer from '@/components/server/files/FileEditContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -50,6 +51,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
                                     <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
+                                    <Route path={`${match.path}/files/edit`} component={FileEditContainer} exact/>
                                     <Route path={`${match.path}/databases`} component={DatabasesContainer}/>
                                 </Switch>
                             </React.Fragment>
