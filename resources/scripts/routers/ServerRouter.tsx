@@ -43,7 +43,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
                         {!server ?
                             <div className={'flex justify-center m-20'}>
-                                <Spinner large={true}/>
+                                <Spinner size={'large'}/>
                             </div>
                             :
                             <React.Fragment>

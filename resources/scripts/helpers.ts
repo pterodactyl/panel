@@ -1,4 +1,8 @@
 export function bytesToHuman (bytes: number): string {
+    if (bytes === 0) {
+        return '0 kB';
+    }
+
     const i = Math.floor(Math.log(bytes) / Math.log(1000));
 
     // @ts-ignore

@@ -38,7 +38,7 @@ export default () => {
         <div className={'my-10 mb-6'}>
             <FlashMessageRender byKey={'databases'}/>
             {loading ?
-                <Spinner large={true} centered={true}/>
+                <Spinner size={'large'} centered={true}/>
                 :
                 <CSSTransition classNames={'fade'} timeout={250}>
                     <React.Fragment>

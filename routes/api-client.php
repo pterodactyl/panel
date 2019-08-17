@@ -29,7 +29,7 @@ Route::group(['prefix' => '/account'], function () {
 */
 Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class]], function () {
     Route::get('/', 'Servers\ServerController@index')->name('api.client.servers.view');
-    Route::get('/utilization', 'Servers\ResourceUtilizationController@index')
+    Route::get('/resources', 'Servers\ResourceUtilizationController')
         ->name('api.client.servers.resources');
 
     Route::post('/command', 'Servers\CommandController@index')->name('api.client.servers.command');

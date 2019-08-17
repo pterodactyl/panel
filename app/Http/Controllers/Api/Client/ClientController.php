@@ -52,7 +52,7 @@ class ClientController extends ClientApiController
                 break;
         }
 
-        $servers = $this->repository->
+        $servers = $this->repository
             ->setSearchTerm($request->input('query'))
             ->filterUserAccessServers(
                 $request->user(), $filter, config('pterodactyl.paginate.frontend.servers')

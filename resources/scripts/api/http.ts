@@ -1,9 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
 
-// This token is set in the bootstrap.js file at the beginning of the request
-// and is carried through from there.
-// const token: string = '';
-
 const http: AxiosInstance = axios.create({
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
@@ -40,4 +36,27 @@ export function httpErrorToHuman (error: any): string {
     }
 
     return error.message;
+}
+
+export interface PaginatedResult<T> {
+    items: T[];
+    pagination: PaginationDataSet;
+}
+
+interface PaginationDataSet {
+    total: number;
+    count: number;
+    perPage: number;
+    currentPage: number;
+    totalPages: number;
+}
+
+export function getPaginationSet (data: any): PaginationDataSet {
+    return {
+        total: data.total,
+        count: data.count,
+        perPage: data.per_page,
+        currentPage: data.current_page,
+        totalPages: data.total_pages,
+    };
 }

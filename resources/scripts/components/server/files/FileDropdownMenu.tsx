@@ -109,7 +109,7 @@ export default ({ uuid }: { uuid: string }) => {
                         setMenuVisible(false);
                     }}
                 />
-                <SpinnerOverlay visible={showSpinner} fixed={true} large={true}/>
+                <SpinnerOverlay visible={showSpinner} fixed={true} size={'large'}/>
             </div>
             <CSSTransition timeout={250} in={menuVisible} unmountOnExit={true} classNames={'fade'}>
                 <div

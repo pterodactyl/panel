@@ -11,6 +11,50 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
+/**
+ * @property int $id
+ * @property string|null $external_id
+ * @property string $uuid
+ * @property string $uuidShort
+ * @property int $node_id
+ * @property string $name
+ * @property string $description
+ * @property bool $skip_scripts
+ * @property bool $suspended
+ * @property int $owner_id
+ * @property int $memory
+ * @property int $swap
+ * @property int $disk
+ * @property int $io
+ * @property int $cpu
+ * @property bool $oom_disabled
+ * @property int $allocation_id
+ * @property int $nest_id
+ * @property int $egg_id
+ * @property int|null $pack_id
+ * @property string $startup
+ * @property string $image
+ * @property int $installed
+ * @property int $allocation_limit
+ * @property int $database_limit
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property \Pterodactyl\Models\User $user
+ * @property \Pterodactyl\Models\User[]|\Illuminate\Support\Collection $subusers
+ * @property \Pterodactyl\Models\Allocation $allocation
+ * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Support\Collection $allocations
+ * @property \Pterodactyl\Models\Pack|null $pack
+ * @property \Pterodactyl\Models\Node $node
+ * @property \Pterodactyl\Models\Nest $nest
+ * @property \Pterodactyl\Models\Egg $egg
+ * @property \Pterodactyl\Models\EggVariable[]|\Illuminate\Support\Collection $variables
+ * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Support\Collection $schedule
+ * @property \Pterodactyl\Models\Database[]|\Illuminate\Support\Collection $databases
+ * @property \Pterodactyl\Models\Location $location
+ * @property \Pterodactyl\Models\DaemonKey $key
+ * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Support\Collection $keys
+ */
 class Server extends Model implements CleansAttributes, ValidableContract
 {
     use BelongsToThrough, Eloquence, Notifiable, Validable;

@@ -70,7 +70,7 @@ export default () => {
                 </div>
                 {
                     loading ?
-                        <Spinner large={true} centered={true}/>
+                        <Spinner size={'large'} centered={true}/>
                         :
                         !files.length ?
                             <p className={'text-sm text-neutral-600 text-center'}>

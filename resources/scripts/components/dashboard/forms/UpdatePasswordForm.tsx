@@ -56,7 +56,7 @@ export default () => {
                 {
                     ({ isSubmitting, isValid }) => (
                         <React.Fragment>
-                            <SpinnerOverlay large={true} visible={isSubmitting}/>
+                            <SpinnerOverlay size={'large'} visible={isSubmitting}/>
                             <Form className={'m-0'}>
                                 <Field
                                     id={'current_password'}

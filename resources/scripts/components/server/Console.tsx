@@ -91,7 +91,7 @@ class Console extends React.PureComponent<Readonly<Props>> {
     render () {
         return (
             <div className={'text-xs font-mono relative'}>
-                <SpinnerOverlay visible={!this.props.connected} large={true}/>
+                <SpinnerOverlay visible={!this.props.connected} size={'large'}/>
                 <div
                     className={'rounded-t p-2 bg-black overflow-scroll w-full'}
                     style={{

@@ -61,7 +61,7 @@ export default (props: Props) => {
                         className={'absolute w-full h-full rounded flex items-center justify-center'}
                         style={{ background: 'hsla(211, 10%, 53%, 0.25)' }}
                     >
-                        <Spinner large={false}/>
+                        <Spinner/>
                     </div>
                     }
                     <div className={'modal-content p-6'}>

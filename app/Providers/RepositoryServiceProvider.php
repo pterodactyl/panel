@@ -51,7 +51,7 @@ use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
-use Pterodactyl\Repositories\Daemon\ServerRepository as DaemonServerRepository;
+use Pterodactyl\Repositories\Wings\WingsServerRepository as DaemonServerRepository;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
