@@ -3,25 +3,18 @@
 namespace Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Middleware\RedirectIfAuthenticated;
 
 class RedirectIfAuthenticatedTest extends MiddlewareTestCase
 {
     /**
-     * @var \Illuminate\Auth\AuthManager|\Mockery\Mock
-     */
-    private $authManager;
-
-    /**
      * Setup tests.
      */
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->authManager = m::mock(AuthManager::class);
     }
 
     /**
@@ -29,8 +22,8 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
      */
     public function testAuthenticatedUserIsRedirected()
     {
-        $this->authManager->shouldReceive('guard')->with(null)->once()->andReturnSelf();
-        $this->authManager->shouldReceive('check')->withNoArgs()->once()->andReturn(true);
+        Auth::shouldReceive('guard')->with(null)->once()->andReturnSelf();
+        Auth::shouldReceive('check')->withNoArgs()->once()->andReturn(true);
 
         $response = $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
         $this->assertInstanceOf(RedirectResponse::class, $response);
@@ -42,8 +35,8 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
      */
     public function testNonAuthenticatedUserIsNotRedirected()
     {
-        $this->authManager->shouldReceive('guard')->with(null)->once()->andReturnSelf();
-        $this->authManager->shouldReceive('check')->withNoArgs()->once()->andReturn(false);
+        Auth::shouldReceive('guard')->with(null)->once()->andReturnSelf();
+        Auth::shouldReceive('check')->withNoArgs()->once()->andReturn(false);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
@@ -55,6 +48,6 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
      */
     private function getMiddleware(): RedirectIfAuthenticated
     {
-        return new RedirectIfAuthenticated($this->authManager);
+        return new RedirectIfAuthenticated();
     }
 }

@@ -96,21 +96,28 @@ class Kernel extends HttpKernel
     /**
      * The application's route middleware.
      *
+     * These middleware may be assigned to groups or used individually.
+     *
      * @var array
      */
     protected $routeMiddleware = [
         'auth' => Authenticate::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
+        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+    	'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => RedirectIfAuthenticated::class,
         'server' => AccessingValidServer::class,
         'subuser.auth' => AuthenticateAsSubuser::class,
         'admin' => AdminAuthenticate::class,
         'daemon-old' => OldDaemonAuthenticate::class,
         'csrf' => VerifyCsrfToken::class,
+	'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
+	'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'node.maintenance' => MaintenanceMiddleware::class,
 
         // Server specific middleware (used for authenticating access to resources)
@@ -123,5 +130,21 @@ class Kernel extends HttpKernel
 
         // API Specific Middleware
         'api..key' => AuthenticateKey::class,
+    ];
+    
+     /**
+     * The priority-sorted list of middleware.
+     *
+     * This forces non-global middleware to always be in the given order.
+     *
+     * @var array
+     */
+    protected $middlewarePriority = [
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\Authenticate::class,
+        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Auth\Middleware\Authorize::class,
     ];
 }
