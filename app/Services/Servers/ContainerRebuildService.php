@@ -1,23 +1,23 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
 class ContainerRebuildService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
      * ContainerRebuildService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $repository
      */
     public function __construct(ServerRepositoryInterface $repository)
     {
@@ -27,9 +27,9 @@ class ContainerRebuildService
     /**
      * Mark a server for rebuild on next boot cycle.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function handle(Server $server)
     {

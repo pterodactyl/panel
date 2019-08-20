@@ -7,17 +7,17 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Console\Commands\User;
+namespace App\Console\Commands\User;
 
 use Webmozart\Assert\Assert;
 use Illuminate\Console\Command;
-use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Services\Users\UserDeletionService;
+use App\Contracts\Repository\UserRepositoryInterface;
 
 class DeleteUserCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Services\Users\UserDeletionService
+     * @var \App\Services\Users\UserDeletionService
      */
     protected $deletionService;
 
@@ -27,7 +27,7 @@ class DeleteUserCommand extends Command
     protected $description = 'Deletes a user from the Panel if no servers are attached to their account.';
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     protected $repository;
 
@@ -39,8 +39,8 @@ class DeleteUserCommand extends Command
     /**
      * DeleteUserCommand constructor.
      *
-     * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \App\Services\Users\UserDeletionService           $deletionService
+     * @param \App\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         UserDeletionService $deletionService,
@@ -54,7 +54,7 @@ class DeleteUserCommand extends Command
 
     /**
      * @return bool
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      */
     public function handle()
     {

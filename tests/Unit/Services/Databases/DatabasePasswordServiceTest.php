@@ -4,12 +4,12 @@ namespace Tests\Unit\Services\Databases;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Database;
+use App\Models\Database;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Extensions\DynamicDatabaseConnection;
+use App\Services\Databases\DatabasePasswordService;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabasePasswordServiceTest extends TestCase
 {
@@ -19,7 +19,7 @@ class DatabasePasswordServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection|\Mockery\Mock
+     * @var \App\Extensions\DynamicDatabaseConnection|\Mockery\Mock
      */
     private $dynamic;
 
@@ -29,7 +29,7 @@ class DatabasePasswordServiceTest extends TestCase
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -82,7 +82,7 @@ class DatabasePasswordServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Databases\DatabasePasswordService
+     * @return \App\Services\Databases\DatabasePasswordService
      */
     private function getService(): DatabasePasswordService
     {

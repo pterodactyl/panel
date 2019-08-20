@@ -4,22 +4,22 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Services\Servers\EnvironmentService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
+use App\Models\Egg;
+use App\Models\Server;
+use App\Models\Allocation;
+use App\Services\Servers\EnvironmentService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Servers\ServerConfigurationStructureService;
 
 class ServerConfigurationStructureServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService|\Mockery\Mock
+     * @var \App\Services\Servers\EnvironmentService|\Mockery\Mock
      */
     private $environment;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -92,7 +92,7 @@ class ServerConfigurationStructureServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     * @return \App\Services\Servers\ServerConfigurationStructureService
      */
     private function getService(): ServerConfigurationStructureService
     {

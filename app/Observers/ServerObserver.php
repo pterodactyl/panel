@@ -7,10 +7,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Observers;
+namespace App\Observers;
 
-use Pterodactyl\Events;
-use Pterodactyl\Models\Server;
+use App\Events;
+use App\Models\Server;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class ServerObserver
@@ -20,7 +20,7 @@ class ServerObserver
     /**
      * Listen to the Server creating event.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function creating(Server $server)
     {
@@ -30,7 +30,7 @@ class ServerObserver
     /**
      * Listen to the Server created event.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function created(Server $server)
     {
@@ -40,7 +40,7 @@ class ServerObserver
     /**
      * Listen to the Server deleting event.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function deleting(Server $server)
     {
@@ -50,7 +50,7 @@ class ServerObserver
     /**
      * Listen to the Server deleted event.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function deleted(Server $server)
     {
@@ -60,7 +60,7 @@ class ServerObserver
     /**
      * Listen to the Server saving event.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function saving(Server $server)
     {
@@ -70,7 +70,7 @@ class ServerObserver
     /**
      * Listen to the Server saved event.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function saved(Server $server)
     {
@@ -80,7 +80,7 @@ class ServerObserver
     /**
      * Listen to the Server updating event.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function updating(Server $server)
     {
@@ -90,7 +90,7 @@ class ServerObserver
     /**
      * Listen to the Server saved event.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function updated(Server $server)
     {

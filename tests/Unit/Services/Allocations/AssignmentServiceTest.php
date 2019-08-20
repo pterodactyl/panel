@@ -4,10 +4,10 @@ namespace Tests\Unit\Services\Allocations;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Allocations\AssignmentService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use App\Services\Allocations\AssignmentService;
+use App\Contracts\Repository\AllocationRepositoryInterface;
 
 class AssignmentServiceTest extends TestCase
 {
@@ -17,12 +17,12 @@ class AssignmentServiceTest extends TestCase
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Models\Node
+     * @var \App\Models\Node
      */
     protected $node;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -191,7 +191,7 @@ class AssignmentServiceTest extends TestCase
     /**
      * Test that a CIDR IP address with a range works properly.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @expectedException \App\Exceptions\Service\Allocation\CidrOutOfRangeException
      * @expectedExceptionMessage CIDR notation only allows masks between /25 and /32.
      */
     public function testCIDRNotatedIPAddressOutsideRangeLimit()
@@ -207,7 +207,7 @@ class AssignmentServiceTest extends TestCase
     /**
      * Test that an exception is thrown if there are too many ports.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @expectedException \App\Exceptions\Service\Allocation\TooManyPortsInRangeException
      * @expectedExceptionMessage Adding more than 1000 ports in a single range at once is not supported.
      */
     public function testAllocationWithPortsExceedingLimit()
@@ -225,7 +225,7 @@ class AssignmentServiceTest extends TestCase
     /**
      * Test that an exception is thrown if an invalid port is provided.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @expectedException \App\Exceptions\Service\Allocation\InvalidPortMappingException
      * @expectedExceptionMessage The mapping provided for test123 was invalid and could not be processed.
      */
     public function testInvalidPortProvided()
@@ -245,7 +245,7 @@ class AssignmentServiceTest extends TestCase
      * @param array $ports
      *
      * @dataProvider invalidPortsDataProvider
-     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @expectedException \App\Exceptions\Service\Allocation\PortOutOfRangeException
      * @expectedExceptionMessage Ports in an allocation must be greater than 1024 and less than or equal to 65535.
      */
     public function testPortRangeOutsideOfRangeLimits(array $ports)
@@ -277,7 +277,7 @@ class AssignmentServiceTest extends TestCase
     /**
      * Returns an instance of the service with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Services\Allocations\AssignmentService
+     * @return \App\Services\Allocations\AssignmentService
      */
     private function getService(): AssignmentService
     {

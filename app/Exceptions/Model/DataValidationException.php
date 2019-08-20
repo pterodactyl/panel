@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Model;
+namespace App\Exceptions\Model;
 
 use Illuminate\Contracts\Validation\Validator;
-use Pterodactyl\Exceptions\PterodactylException;
+use App\Exceptions\PterodactylException;
 use Illuminate\Contracts\Support\MessageProvider;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 

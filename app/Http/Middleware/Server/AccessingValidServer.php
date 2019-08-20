@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Server;
+namespace App\Http\Middleware\Server;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -20,7 +20,7 @@ class AccessingValidServer
     private $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
@@ -39,7 +39,7 @@ class AccessingValidServer
      *
      * @param \Illuminate\Contracts\Config\Repository                     $config
      * @param \Illuminate\Contracts\Routing\ResponseFactory               $response
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Illuminate\Contracts\Session\Session                       $session
      */
     public function __construct(
@@ -62,7 +62,7 @@ class AccessingValidServer
      * @return \Illuminate\Http\Response|mixed
      *
      * @throws \Illuminate\Auth\AuthenticationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */

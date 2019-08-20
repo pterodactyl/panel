@@ -7,19 +7,19 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Observers;
+namespace App\Observers;
 
-use Pterodactyl\Events;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Notifications\AddedToServer;
-use Pterodactyl\Notifications\RemovedFromServer;
+use App\Events;
+use App\Models\Subuser;
+use App\Notifications\AddedToServer;
+use App\Notifications\RemovedFromServer;
 
 class SubuserObserver
 {
     /**
      * Listen to the Subuser creating event.
      *
-     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param \App\Models\Subuser $subuser
      */
     public function creating(Subuser $subuser)
     {
@@ -29,7 +29,7 @@ class SubuserObserver
     /**
      * Listen to the Subuser created event.
      *
-     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param \App\Models\Subuser $subuser
      */
     public function created(Subuser $subuser)
     {
@@ -45,7 +45,7 @@ class SubuserObserver
     /**
      * Listen to the Subuser deleting event.
      *
-     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param \App\Models\Subuser $subuser
      */
     public function deleting(Subuser $subuser)
     {
@@ -55,7 +55,7 @@ class SubuserObserver
     /**
      * Listen to the Subuser deleted event.
      *
-     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param \App\Models\Subuser $subuser
      */
     public function deleted(Subuser $subuser)
     {

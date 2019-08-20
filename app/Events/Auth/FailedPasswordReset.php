@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Events\Auth;
+namespace App\Events\Auth;
 
 use Illuminate\Queue\SerializesModels;
 

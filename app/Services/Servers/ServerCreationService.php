@@ -1,41 +1,41 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
+use App\Models\Node;
+use App\Models\User;
+use App\Models\Server;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\Allocation;
+use App\Models\Allocation;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Services\Deployment\FindViableNodesService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Services\Deployment\AllocationSelectionService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Models\Objects\DeploymentObject;
+use App\Services\Deployment\FindViableNodesService;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Deployment\AllocationSelectionService;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\ServerVariableRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ServerCreationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface
      */
     private $allocationRepository;
 
     /**
-     * @var \Pterodactyl\Services\Deployment\AllocationSelectionService
+     * @var \App\Services\Deployment\AllocationSelectionService
      */
     private $allocationSelectionService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     * @var \App\Services\Servers\ServerConfigurationStructureService
      */
     private $configurationStructureService;
 
@@ -45,48 +45,48 @@ class ServerCreationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     private $daemonServerRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     private $eggRepository;
 
     /**
-     * @var \Pterodactyl\Services\Deployment\FindViableNodesService
+     * @var \App\Services\Deployment\FindViableNodesService
      */
     private $findViableNodesService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
+     * @var \App\Contracts\Repository\ServerVariableRepositoryInterface
      */
     private $serverVariableRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\VariableValidatorService
+     * @var \App\Services\Servers\VariableValidatorService
      */
     private $validatorService;
 
     /**
      * CreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface     $allocationRepository
-     * @param \Pterodactyl\Services\Deployment\AllocationSelectionService         $allocationSelectionService
+     * @param \App\Contracts\Repository\AllocationRepositoryInterface     $allocationRepository
+     * @param \App\Services\Deployment\AllocationSelectionService         $allocationSelectionService
      * @param \Illuminate\Database\ConnectionInterface                            $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface            $eggRepository
-     * @param \Pterodactyl\Services\Deployment\FindViableNodesService             $findViableNodesService
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService   $configurationStructureService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
-     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
-     * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
+     * @param \App\Contracts\Repository\EggRepositoryInterface            $eggRepository
+     * @param \App\Services\Deployment\FindViableNodesService             $findViableNodesService
+     * @param \App\Services\Servers\ServerConfigurationStructureService   $configurationStructureService
+     * @param \App\Contracts\Repository\ServerRepositoryInterface         $repository
+     * @param \App\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
+     * @param \App\Services\Servers\VariableValidatorService              $validatorService
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
@@ -119,16 +119,16 @@ class ServerCreationService
      * no node_id the node_is will be picked from the allocation.
      *
      * @param array                                             $data
-     * @param \Pterodactyl\Models\Objects\DeploymentObject|null $deployment
-     * @return \Pterodactyl\Models\Server
+     * @param \App\Models\Objects\DeploymentObject|null $deployment
+     * @return \App\Models\Server
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Service\Deployment\NoViableAllocationException
      */
     public function handle(array $data, DeploymentObject $deployment = null): Server
     {
@@ -182,12 +182,12 @@ class ServerCreationService
      * Gets an allocation to use for automatic deployment.
      *
      * @param array                                        $data
-     * @param \Pterodactyl\Models\Objects\DeploymentObject $deployment
+     * @param \App\Models\Objects\DeploymentObject $deployment
      *
-     * @return \Pterodactyl\Models\Allocation
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @return \App\Models\Allocation
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \App\Exceptions\Service\Deployment\NoViableNodeException
      */
     private function configureDeployment(array $data, DeploymentObject $deployment): Allocation
     {
@@ -206,9 +206,9 @@ class ServerCreationService
      * Store the server in the database and return the model.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     private function createModel(array $data): Server
     {
@@ -245,7 +245,7 @@ class ServerCreationService
     /**
      * Configure the allocations assigned to this server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param array                      $data
      */
     private function storeAssignedAllocations(Server $server, array $data)
@@ -261,7 +261,7 @@ class ServerCreationService
     /**
      * Process environment variables passed for this server and store them in the database.
      *
-     * @param \Pterodactyl\Models\Server     $server
+     * @param \App\Models\Server     $server
      * @param \Illuminate\Support\Collection $variables
      */
     private function storeEggVariables(Server $server, Collection $variables)
@@ -285,7 +285,7 @@ class ServerCreationService
      * @param int $allocation
      * @return int
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     private function getNodeFromAllocation(int $allocation): int
     {

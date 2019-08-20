@@ -1,24 +1,24 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace App\Transformers\Api\Client;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer as BaseApplicationTransformer;
+use App\Models\Server;
+use App\Exceptions\Transformer\InvalidTransformerLevelException;
+use App\Transformers\Api\Application\BaseTransformer as BaseApplicationTransformer;
 
 abstract class BaseClientTransformer extends BaseApplicationTransformer
 {
     /**
-     * @var \Pterodactyl\Models\User
+     * @var \App\Models\User
      */
     private $user;
 
     /**
      * Return the user model of the user requesting this transformation.
      *
-     * @return \Pterodactyl\Models\User
+     * @return \App\Models\User
      */
     public function getUser(): User
     {
@@ -28,7 +28,7 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
     /**
      * Set the user model of the user requesting this transformation.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      */
     public function setUser(User $user)
     {
@@ -41,7 +41,7 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
      * models on a transformation request.
      *
      * @param string                     $ability
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return bool
      */
     protected function authorize(string $ability, Server $server = null): bool
@@ -59,7 +59,7 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
      * @param array  $parameters
      * @return self
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     protected function makeTransformer(string $abstract, array $parameters = [])
     {

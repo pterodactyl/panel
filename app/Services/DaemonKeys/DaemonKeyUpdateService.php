@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\DaemonKeys;
+namespace App\Services\DaemonKeys;
 
 use Carbon\Carbon;
 use Webmozart\Assert\Assert;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyUpdateService
 {
@@ -42,7 +42,7 @@ class DaemonKeyUpdateService
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface
      */
     protected $repository;
 
@@ -51,7 +51,7 @@ class DaemonKeyUpdateService
      *
      * @param \Carbon\Carbon                                                 $carbon
      * @param \Illuminate\Contracts\Config\Repository                        $config
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
+     * @param \App\Contracts\Repository\DaemonKeyRepositoryInterface $repository
      */
     public function __construct(
         Carbon $carbon,
@@ -70,8 +70,8 @@ class DaemonKeyUpdateService
      * @return string
      *
      * @throws \RuntimeException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($key)
     {

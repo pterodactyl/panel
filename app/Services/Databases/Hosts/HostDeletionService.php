@@ -1,28 +1,28 @@
 <?php
 
-namespace Pterodactyl\Services\Databases\Hosts;
+namespace App\Services\Databases\Hosts;
 
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     private $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     private $repository;
 
     /**
      * HostDeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface     $databaseRepository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface     $databaseRepository
+     * @param \App\Contracts\Repository\DatabaseHostRepositoryInterface $repository
      */
     public function __construct(
         DatabaseRepositoryInterface $databaseRepository,
@@ -39,7 +39,7 @@ class HostDeletionService
      * @param int $host
      * @return int
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Service\HasActiveServersException
      */
     public function handle(int $host): int
     {

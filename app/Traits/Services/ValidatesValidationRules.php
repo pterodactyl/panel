@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Traits\Services;
+namespace App\Traits\Services;
 
 use BadMethodCallException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Contracts\Validation\Factory;
-use Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException;
+use App\Exceptions\Service\Egg\Variable\BadValidationRuleException;
 
 trait ValidatesValidationRules
 {
@@ -21,7 +21,7 @@ trait ValidatesValidationRules
      *
      * @param array|string $rules
      *
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
+     * @throws \App\Exceptions\Service\Egg\Variable\BadValidationRuleException
      */
     public function validateRules($rules)
     {

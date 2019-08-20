@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Services\Databases\Hosts;
+namespace App\Services\Databases\Hosts;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\DatabaseHost;
+use App\Models\DatabaseHost;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Extensions\DynamicDatabaseConnection;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostCreationService
 {
@@ -23,7 +23,7 @@ class HostCreationService
     private $databaseManager;
 
     /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
+     * @var \App\Extensions\DynamicDatabaseConnection
      */
     private $dynamic;
 
@@ -33,7 +33,7 @@ class HostCreationService
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     private $repository;
 
@@ -42,8 +42,8 @@ class HostCreationService
      *
      * @param \Illuminate\Database\ConnectionInterface                          $connection
      * @param \Illuminate\Database\DatabaseManager                              $databaseManager
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection                 $dynamic
+     * @param \App\Contracts\Repository\DatabaseHostRepositoryInterface $repository
+     * @param \App\Extensions\DynamicDatabaseConnection                 $dynamic
      * @param \Illuminate\Contracts\Encryption\Encrypter                        $encrypter
      */
     public function __construct(
@@ -64,7 +64,7 @@ class HostCreationService
      * Create a new database host on the Panel.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\DatabaseHost
+     * @return \App\Models\DatabaseHost
      *
      * @throws \Throwable
      */

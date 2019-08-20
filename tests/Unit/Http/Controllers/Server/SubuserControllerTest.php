@@ -10,18 +10,18 @@
 namespace Tests\Unit\Http\Controllers\Server;
 
 use Mockery as m;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
+use App\Models\Server;
+use App\Models\Subuser;
+use App\Models\Permission;
 use Prologue\Alerts\AlertsMessageBag;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Services\Subusers\SubuserUpdateService;
-use Pterodactyl\Services\Subusers\SubuserCreationService;
-use Pterodactyl\Services\Subusers\SubuserDeletionService;
-use Pterodactyl\Http\Controllers\Server\SubuserController;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Http\Requests\Server\Subuser\SubuserStoreFormRequest;
-use Pterodactyl\Http\Requests\Server\Subuser\SubuserUpdateFormRequest;
+use App\Services\Subusers\SubuserUpdateService;
+use App\Services\Subusers\SubuserCreationService;
+use App\Services\Subusers\SubuserDeletionService;
+use App\Http\Controllers\Server\SubuserController;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Http\Requests\Server\Subuser\SubuserStoreFormRequest;
+use App\Http\Requests\Server\Subuser\SubuserUpdateFormRequest;
 
 class SubuserControllerTest extends ControllerTestCase
 {
@@ -31,22 +31,22 @@ class SubuserControllerTest extends ControllerTestCase
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserCreationService|\Mockery\Mock
+     * @var \App\Services\Subusers\SubuserCreationService|\Mockery\Mock
      */
     protected $subuserCreationService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserDeletionService|\Mockery\Mock
+     * @var \App\Services\Subusers\SubuserDeletionService|\Mockery\Mock
      */
     protected $subuserDeletionService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserUpdateService|\Mockery\Mock
+     * @var \App\Services\Subusers\SubuserUpdateService|\Mockery\Mock
      */
     protected $subuserUpdateService;
 
@@ -211,7 +211,7 @@ class SubuserControllerTest extends ControllerTestCase
     /**
      * Return a mocked instance of the controller to allow access to authorization functionality.
      *
-     * @return \Pterodactyl\Http\Controllers\Server\SubuserController|\Mockery\Mock
+     * @return \App\Http\Controllers\Server\SubuserController|\Mockery\Mock
      */
     private function getController()
     {

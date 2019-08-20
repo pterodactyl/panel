@@ -4,34 +4,34 @@ namespace Tests\Unit\Services\Sftp;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use App\Models\User;
+use App\Models\Server;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Sftp\AuthenticateUsingPasswordService;
+use App\Contracts\Repository\SubuserRepositoryInterface;
 
 class AuthenticateUsingPasswordServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
      */
     private $keyProviderService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     private $subuserRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $userRepository;
 
@@ -100,7 +100,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
     /**
      * Test exception gets thrown if no server is passed into the function.
      *
-     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @expectedException \App\Exceptions\Repository\RecordNotFoundException
      */
     public function testExceptionIsThrownIfNoServerIsProvided()
     {
@@ -111,7 +111,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      * Test that an exception is thrown if the user account exists but the wrong
      * credentials are passed.
      *
-     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @expectedException \App\Exceptions\Repository\RecordNotFoundException
      */
     public function testExceptionIsThrownIfUserDetailsAreIncorrect()
     {
@@ -126,7 +126,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
     /**
      * Test that an exception is thrown if no user account is found.
      *
-     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @expectedException \App\Exceptions\Repository\RecordNotFoundException
      */
     public function testExceptionIsThrownIfNoUserAccountIsFound()
     {
@@ -140,7 +140,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      * Test that an exception is thrown if the user is not the owner of the server,
      * is not a sub user and is not an administrator.
      *
-     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @expectedException \App\Exceptions\Repository\RecordNotFoundException
      */
     public function testExceptionIsThrownIfUserDoesNotOwnServer()
     {
@@ -162,7 +162,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
      * Test that an exception is thrown if the requested server does not belong to
      * the node that the request is made from.
      *
-     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @expectedException \App\Exceptions\Repository\RecordNotFoundException
      */
     public function testExceptionIsThrownIfServerDoesNotExistOnCurrentNode()
     {
@@ -219,7 +219,7 @@ class AuthenticateUsingPasswordServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService
+     * @return \App\Services\Sftp\AuthenticateUsingPasswordService
      */
     private function getService(): AuthenticateUsingPasswordService
     {

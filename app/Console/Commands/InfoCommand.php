@@ -7,10 +7,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Console\Commands;
+namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
+use App\Services\Helpers\SoftwareVersionService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class InfoCommand extends Command
@@ -31,7 +31,7 @@ class InfoCommand extends Command
     protected $signature = 'p:info';
 
     /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
+     * @var \App\Services\Helpers\SoftwareVersionService
      */
     protected $versionService;
 
@@ -39,7 +39,7 @@ class InfoCommand extends Command
      * VersionCommand constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository              $config
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $versionService
+     * @param \App\Services\Helpers\SoftwareVersionService $versionService
      */
     public function __construct(ConfigRepository $config, SoftwareVersionService $versionService)
     {

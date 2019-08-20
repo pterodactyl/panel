@@ -2,9 +2,9 @@
 
 namespace Tests\Unit\Http\Middleware\API;
 
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
+use App\Http\Middleware\Api\AuthenticateIPAccess;
 
 class AuthenticateIPAccessTest extends MiddlewareTestCase
 {
@@ -65,7 +65,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware to be used when testing.
      *
-     * @return \Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess
+     * @return \App\Http\Middleware\Api\AuthenticateIPAccess
      */
     private function getMiddleware(): AuthenticateIPAccess
     {

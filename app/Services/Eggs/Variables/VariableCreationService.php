@@ -1,20 +1,20 @@
 <?php
 
-namespace Pterodactyl\Services\Eggs\Variables;
+namespace App\Services\Eggs\Variables;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\EggVariable;
+use App\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
-use Pterodactyl\Traits\Services\ValidatesValidationRules;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
+use App\Traits\Services\ValidatesValidationRules;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableCreationService
 {
     use ValidatesValidationRules;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface
      */
     private $repository;
 
@@ -26,7 +26,7 @@ class VariableCreationService
     /**
      * VariableCreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
+     * @param \App\Contracts\Repository\EggVariableRepositoryInterface $repository
      * @param \Illuminate\Contracts\Validation\Factory                         $validator
      */
     public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
@@ -51,11 +51,11 @@ class VariableCreationService
      *
      * @param int   $egg
      * @param array $data
-     * @return \Pterodactyl\Models\EggVariable
+     * @return \App\Models\EggVariable
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Egg\Variable\BadValidationRuleException
+     * @throws \App\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function handle(int $egg, array $data): EggVariable
     {

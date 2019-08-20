@@ -6,11 +6,11 @@ use Mockery as m;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Config\Repository;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Services\Users\TwoFactorSetupService;
-use Pterodactyl\Services\Users\ToggleTwoFactorService;
-use Pterodactyl\Http\Controllers\Base\SecurityController;
-use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
-use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
+use App\Services\Users\TwoFactorSetupService;
+use App\Services\Users\ToggleTwoFactorService;
+use App\Http\Controllers\Base\SecurityController;
+use App\Contracts\Repository\SessionRepositoryInterface;
+use App\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 
 class SecurityControllerTest extends ControllerTestCase
 {
@@ -25,17 +25,17 @@ class SecurityControllerTest extends ControllerTestCase
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SessionRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\SessionRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Users\ToggleTwoFactorService|\Mockery\Mock
+     * @var \App\Services\Users\ToggleTwoFactorService|\Mockery\Mock
      */
     protected $toggleTwoFactorService;
 
     /**
-     * @var \Pterodactyl\Services\Users\TwoFactorSetupService|\Mockery\Mock
+     * @var \App\Services\Users\TwoFactorSetupService|\Mockery\Mock
      */
     protected $twoFactorSetupService;
 
@@ -177,7 +177,7 @@ class SecurityControllerTest extends ControllerTestCase
     /**
      * Return an instance of the controller for testing with mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Controllers\Base\SecurityController
+     * @return \App\Http\Controllers\Base\SecurityController
      */
     private function getController(): SecurityController
     {

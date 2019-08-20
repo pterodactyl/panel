@@ -22,44 +22,44 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\DaemonKeys;
+namespace App\Services\DaemonKeys;
 
 use Carbon\Carbon;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Models\User;
+use App\Models\Server;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyProviderService
 {
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService
+     * @var \App\Services\DaemonKeys\DaemonKeyCreationService
      */
     private $keyCreationService;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService
+     * @var \App\Services\DaemonKeys\DaemonKeyUpdateService
      */
     private $keyUpdateService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface
      */
     private $subuserRepository;
 
     /**
      * GetDaemonKeyService constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService      $keyCreationService
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService        $keyUpdateService
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface   $subuserRepository
+     * @param \App\Services\DaemonKeys\DaemonKeyCreationService      $keyCreationService
+     * @param \App\Contracts\Repository\DaemonKeyRepositoryInterface $repository
+     * @param \App\Services\DaemonKeys\DaemonKeyUpdateService        $keyUpdateService
+     * @param \App\Contracts\Repository\SubuserRepositoryInterface   $subuserRepository
      */
     public function __construct(
         DaemonKeyCreationService $keyCreationService,
@@ -76,13 +76,13 @@ class DaemonKeyProviderService
     /**
      * Get the access key for a user on a specific server.
      *
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\User   $user
+     * @param \App\Models\Server $server
+     * @param \App\Models\User   $user
      * @param bool                       $updateIfExpired
      * @return string
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server, User $user, $updateIfExpired = true): string
     {

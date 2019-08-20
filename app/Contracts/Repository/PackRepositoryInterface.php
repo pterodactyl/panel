@@ -1,19 +1,19 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
-use Pterodactyl\Models\Pack;
+use App\Models\Pack;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use App\Contracts\Repository\Attributes\SearchableInterface;
 
 interface PackRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
     /**
      * Return a pack with the associated server models attached to it.
      *
-     * @param \Pterodactyl\Models\Pack $pack
+     * @param \App\Models\Pack $pack
      * @param bool                     $refresh
-     * @return \Pterodactyl\Models\Pack
+     * @return \App\Models\Pack
      */
     public function loadServerData(Pack $pack, bool $refresh = false): Pack;
 

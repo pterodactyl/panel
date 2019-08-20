@@ -3,7 +3,7 @@
 namespace Tests\Unit\Rules;
 
 use Tests\TestCase;
-use Pterodactyl\Rules\Username;
+use App\Rules\Username;
 
 class UsernameTest extends TestCase
 {

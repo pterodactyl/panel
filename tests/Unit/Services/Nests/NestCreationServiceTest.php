@@ -11,23 +11,18 @@ namespace Tests\Unit\Services\Services;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Nest;
+use App\Models\Nest;
 use Tests\Traits\MocksUuids;
-use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Services\Nests\NestCreationService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Illuminate\Support\Facades\Config;
+use App\Services\Nests\NestCreationService;
+use App\Contracts\Repository\NestRepositoryInterface;
 
 class NestCreationServiceTest extends TestCase
 {
     use MocksUuids;
 
     /**
-     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
-     */
-    private $config;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -38,7 +33,6 @@ class NestCreationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->config = m::mock(Repository::class);
         $this->repository = m::mock(NestRepositoryInterface::class);
     }
 
@@ -49,7 +43,8 @@ class NestCreationServiceTest extends TestCase
     {
         $model = factory(Nest::class)->make();
 
-        $this->config->shouldReceive('get')->with('pterodactyl.service.author')->once()->andReturn('testauthor@example.com');
+        Config::shouldReceive('get')->with('pterodactyl.service.author', null)->once()->andReturn('testauthor@example.com');
+
         $this->repository->shouldReceive('create')->with([
             'uuid' => $this->getKnownUuid(),
             'author' => 'testauthor@example.com',
@@ -86,10 +81,10 @@ class NestCreationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Nests\NestCreationService
+     * @return \App\Services\Nests\NestCreationService
      */
     private function getService(): NestCreationService
     {
-        return new NestCreationService($this->config, $this->repository);
+        return new NestCreationService($this->repository);
     }
 }

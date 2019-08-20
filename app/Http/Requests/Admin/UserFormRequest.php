@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace App\Http\Requests\Admin;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 
 class UserFormRequest extends AdminFormRequest
 {

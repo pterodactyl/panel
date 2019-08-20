@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Services\Deployment;
+namespace App\Services\Deployment;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Exceptions\Service\Deployment\NoViableNodeException;
 
 class FindViableNodesService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     private $repository;
 
@@ -31,7 +31,7 @@ class FindViableNodesService
     /**
      * FindViableNodesService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(NodeRepositoryInterface $repository)
     {
@@ -91,7 +91,7 @@ class FindViableNodesService
      * deployments should not be done against them.
      *
      * @return int[]
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws \App\Exceptions\Service\Deployment\NoViableNodeException
      */
     public function handle(): array
     {

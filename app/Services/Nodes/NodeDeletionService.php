@@ -7,23 +7,23 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Nodes;
+namespace App\Services\Nodes;
 
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Contracts\Translation\Translator;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class NodeDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
@@ -35,8 +35,8 @@ class NodeDeletionService
     /**
      * DeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface   $repository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface   $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $serverRepository
      * @param \Illuminate\Contracts\Translation\Translator                $translator
      */
     public function __construct(
@@ -52,10 +52,10 @@ class NodeDeletionService
     /**
      * Delete a node from the panel if no servers are attached to it.
      *
-     * @param int|\Pterodactyl\Models\Node $node
+     * @param int|\App\Models\Node $node
      * @return bool|null
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Service\HasActiveServersException
      */
     public function handle($node)
     {

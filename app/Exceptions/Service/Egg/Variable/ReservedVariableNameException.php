@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Service\Egg\Variable;
+namespace App\Exceptions\Service\Egg\Variable;
 
-use Pterodactyl\Exceptions\DisplayException;
+use App\Exceptions\DisplayException;
 
 class ReservedVariableNameException extends DisplayException
 {

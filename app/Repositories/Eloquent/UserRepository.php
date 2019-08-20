@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Support\Collection;
-use Pterodactyl\Repositories\Concerns\Searchable;
+use App\Repositories\Concerns\Searchable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Contracts\Repository\UserRepositoryInterface;
 
 class UserRepository extends EloquentRepository implements UserRepositoryInterface
 {

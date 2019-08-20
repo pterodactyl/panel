@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
 use Generator;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Support\Collection;
-use Pterodactyl\Repositories\Concerns\Searchable;
+use App\Repositories\Concerns\Searchable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface
 {
@@ -26,7 +26,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     /**
      * Return the usage stats for a single node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return array
      */
     public function getUsageStats(Node $node): array
@@ -57,7 +57,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     /**
      * Return the usage stats for a single node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return array
      */
     public function getUsageStatsRaw(Node $node): array
@@ -100,9 +100,9 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     /**
      * Return a single node with location and server information.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @param bool                     $refresh
-     * @return \Pterodactyl\Models\Node
+     * @return \App\Models\Node
      */
     public function loadLocationAndServerCount(Node $node, bool $refresh = false): Node
     {
@@ -125,9 +125,9 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      * Attach a paginated set of allocations to a node mode including
      * any servers that are also attached to those allocations.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @param bool                     $refresh
-     * @return \Pterodactyl\Models\Node
+     * @return \App\Models\Node
      */
     public function loadNodeAllocations(Node $node, bool $refresh = false): Node
     {

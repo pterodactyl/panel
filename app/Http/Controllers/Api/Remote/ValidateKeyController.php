@@ -22,19 +22,19 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Http\Controllers\Api\Remote;
+namespace App\Http\Controllers\Api\Remote;
 
 use Illuminate\Support\Str;
 use Spatie\Fractal\Fractal;
 use Illuminate\Http\Response;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\HttpException;
 use League\Fractal\Serializer\JsonApiSerializer;
-use Pterodactyl\Transformers\Daemon\ApiKeyTransformer;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use App\Transformers\Daemon\ApiKeyTransformer;
+use App\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class ValidateKeyController extends Controller
 {
@@ -44,7 +44,7 @@ class ValidateKeyController extends Controller
     protected $app;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface
      */
     protected $daemonKeyRepository;
 
@@ -57,7 +57,7 @@ class ValidateKeyController extends Controller
      * ValidateKeyController constructor.
      *
      * @param \Illuminate\Contracts\Foundation\Application                   $app
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $daemonKeyRepository
+     * @param \App\Contracts\Repository\DaemonKeyRepositoryInterface $daemonKeyRepository
      * @param \Spatie\Fractal\Fractal                                        $fractal
      */
     public function __construct(

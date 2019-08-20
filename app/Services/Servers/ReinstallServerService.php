@@ -7,19 +7,19 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ReinstallServerService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonServerRepository;
 
@@ -29,7 +29,7 @@ class ReinstallServerService
     protected $database;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
 
@@ -37,8 +37,8 @@ class ReinstallServerService
      * ReinstallService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $database
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface        $repository
      */
     public function __construct(
         ConnectionInterface $database,
@@ -51,11 +51,11 @@ class ReinstallServerService
     }
 
     /**
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param int|\App\Models\Server $server
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function reinstall($server)
     {

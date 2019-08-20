@@ -5,17 +5,17 @@ namespace Tests\Unit\Services\Allocations;
 use Mockery as m;
 use Tests\TestCase;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
+use App\Models\Server;
+use App\Models\Allocation;
 use Tests\Traits\MocksRequestException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Services\Allocations\SetDefaultAllocationService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonRepositoryInterface;
+use App\Exceptions\PterodactylException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Allocations\SetDefaultAllocationService;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonRepositoryInterface;
 
 class SetDefaultAllocationServiceTest extends TestCase
 {
@@ -27,17 +27,17 @@ class SetDefaultAllocationServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     private $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $serverRepository;
 
@@ -96,7 +96,7 @@ class SetDefaultAllocationServiceTest extends TestCase
     /**
      * Test that an allocation that doesn't belong to a server throws an exception.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\AllocationDoesNotBelongToServerException
+     * @expectedException \App\Exceptions\Service\Allocation\AllocationDoesNotBelongToServerException
      */
     public function testAllocationNotBelongingToServerThrowsException()
     {
@@ -147,7 +147,7 @@ class SetDefaultAllocationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Allocations\SetDefaultAllocationService
+     * @return \App\Services\Allocations\SetDefaultAllocationService
      */
     private function getService(): SetDefaultAllocationService
     {

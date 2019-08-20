@@ -7,34 +7,34 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Traits\Services\HasUserLevels;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Traits\Services\HasUserLevels;
+use App\Contracts\Repository\ServerRepositoryInterface;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class VariableValidatorService
 {
     use HasUserLevels;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface
      */
     private $optionVariableRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $serverRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
+     * @var \App\Contracts\Repository\ServerVariableRepositoryInterface
      */
     private $serverVariableRepository;
 
@@ -46,9 +46,9 @@ class VariableValidatorService
     /**
      * VariableValidatorService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface    $optionVariableRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
+     * @param \App\Contracts\Repository\EggVariableRepositoryInterface    $optionVariableRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface         $serverRepository
+     * @param \App\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Illuminate\Contracts\Validation\Factory                            $validator
      */
     public function __construct(

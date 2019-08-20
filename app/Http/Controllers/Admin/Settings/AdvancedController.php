@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Settings;
+namespace App\Http\Controllers\Admin\Settings;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
+use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
 
 class AdvancedController extends Controller
 {
@@ -29,7 +29,7 @@ class AdvancedController extends Controller
     private $kernel;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
+     * @var \App\Contracts\Repository\SettingsRepositoryInterface
      */
     private $settings;
 
@@ -39,7 +39,7 @@ class AdvancedController extends Controller
      * @param \Prologue\Alerts\AlertsMessageBag                             $alert
      * @param \Illuminate\Contracts\Config\Repository                       $config
      * @param \Illuminate\Contracts\Console\Kernel                          $kernel
-     * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
+     * @param \App\Contracts\Repository\SettingsRepositoryInterface $settings
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -74,10 +74,10 @@ class AdvancedController extends Controller
     }
 
     /**
-     * @param \Pterodactyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest $request
+     * @param \App\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(AdvancedSettingsFormRequest $request): RedirectResponse
     {

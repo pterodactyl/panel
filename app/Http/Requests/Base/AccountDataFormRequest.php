@@ -7,18 +7,18 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Base;
+namespace App\Http\Requests\Base;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\User;
-use Pterodactyl\Http\Requests\FrontendUserFormRequest;
-use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
+use App\Models\User;
+use App\Http\Requests\FrontendUserFormRequest;
+use App\Exceptions\Http\Base\InvalidPasswordProvidedException;
 
 class AccountDataFormRequest extends FrontendUserFormRequest
 {
     /**
      * @return bool
-     * @throws \Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException
+     * @throws \App\Exceptions\Http\Base\InvalidPasswordProvidedException
      */
     public function authorize()
     {

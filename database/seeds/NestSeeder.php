@@ -2,26 +2,26 @@
 
 use Illuminate\Support\Arr;
 use Illuminate\Database\Seeder;
-use Pterodactyl\Services\Nests\NestCreationService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use App\Services\Nests\NestCreationService;
+use App\Contracts\Repository\NestRepositoryInterface;
 
 class NestSeeder extends Seeder
 {
     /**
-     * @var \Pterodactyl\Services\Nests\NestCreationService
+     * @var \App\Services\Nests\NestCreationService
      */
     private $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     private $repository;
 
     /**
      * NestSeeder constructor.
      *
-     * @param \Pterodactyl\Services\Nests\NestCreationService           $creationService
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
+     * @param \App\Services\Nests\NestCreationService           $creationService
+     * @param \App\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(
         NestCreationService $creationService,
@@ -34,7 +34,7 @@ class NestSeeder extends Seeder
     /**
      * Run the seeder to add missing nests to the Panel.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function run()
     {
@@ -53,7 +53,7 @@ class NestSeeder extends Seeder
      *
      * @param array|null $nest
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     private function createMinecraftNest(array $nest = null)
     {
@@ -70,7 +70,7 @@ class NestSeeder extends Seeder
      *
      * @param array|null $nest
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     private function createSourceEngineNest(array $nest = null)
     {
@@ -87,7 +87,7 @@ class NestSeeder extends Seeder
      *
      * @param array|null $nest
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     private function createVoiceServersNest(array $nest = null)
     {
@@ -104,7 +104,7 @@ class NestSeeder extends Seeder
      *
      * @param array|null $nest
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     private function createRustNest(array $nest = null)
     {

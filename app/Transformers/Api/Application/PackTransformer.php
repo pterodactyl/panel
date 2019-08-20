@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
-use Pterodactyl\Models\Pack;
+use App\Models\Pack;
 
 class PackTransformer extends BaseTransformer
 {
@@ -19,7 +19,7 @@ class PackTransformer extends BaseTransformer
     /**
      * Return a transformed User model that can be consumed by external services.
      *
-     * @param \Pterodactyl\Models\Pack $pack
+     * @param \App\Models\Pack $pack
      * @return array
      */
     public function transform(Pack $pack): array

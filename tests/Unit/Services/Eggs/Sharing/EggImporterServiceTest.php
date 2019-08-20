@@ -11,19 +11,19 @@ namespace Tests\Unit\Services\Services\Sharing;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
+use App\Models\Egg;
+use App\Models\Nest;
 use Tests\Traits\MocksUuids;
 use Illuminate\Http\UploadedFile;
-use Pterodactyl\Models\EggVariable;
+use App\Models\EggVariable;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Services\Eggs\Sharing\EggImporterService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Exceptions\PterodactylException;
+use App\Services\Eggs\Sharing\EggImporterService;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Exceptions\Service\Egg\BadJsonFormatException;
+use App\Exceptions\Service\InvalidFileUploadException;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggImporterServiceTest extends TestCase
 {
@@ -35,7 +35,7 @@ class EggImporterServiceTest extends TestCase
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
     protected $eggVariableRepository;
 
@@ -45,17 +45,17 @@ class EggImporterServiceTest extends TestCase
     protected $file;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\NestRepositoryInterface|\Mockery\Mock
      */
     protected $nestRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggImporterService
+     * @var \App\Services\Eggs\Sharing\EggImporterService
      */
     protected $service;
 

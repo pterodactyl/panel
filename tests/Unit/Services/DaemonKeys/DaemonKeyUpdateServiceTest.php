@@ -14,8 +14,8 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyUpdateService;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyUpdateServiceTest extends TestCase
 {
@@ -32,12 +32,12 @@ class DaemonKeyUpdateServiceTest extends TestCase
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService
+     * @var \App\Services\DaemonKeys\DaemonKeyUpdateService
      */
     protected $service;
 
@@ -62,7 +62,7 @@ class DaemonKeyUpdateServiceTest extends TestCase
     {
         $secret = DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . 'random_string';
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\DaemonKeys', 'str_random')
+        $this->getFunctionMock('\\App\\Services\\DaemonKeys', 'str_random')
             ->expects($this->once())->with(40)->willReturn('random_string');
 
         $this->config->shouldReceive('get')->with('pterodactyl.api.key_expire_time')->once()->andReturn(100);

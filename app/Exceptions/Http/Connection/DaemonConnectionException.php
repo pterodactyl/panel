@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Exceptions\Http\Connection;
+namespace App\Exceptions\Http\Connection;
 
 use Illuminate\Http\Response;
 use GuzzleHttp\Exception\GuzzleException;
-use Pterodactyl\Exceptions\DisplayException;
+use App\Exceptions\DisplayException;
 
 class DaemonConnectionException extends DisplayException
 {

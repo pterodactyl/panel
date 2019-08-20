@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Events\Subuser;
+namespace App\Events\Subuser;
 
-use Pterodactyl\Models\Subuser;
+use App\Models\Subuser;
 use Illuminate\Queue\SerializesModels;
 
 class Deleted
@@ -19,14 +19,14 @@ class Deleted
     /**
      * The Eloquent model of the server.
      *
-     * @var \Pterodactyl\Models\Subuser
+     * @var \App\Models\Subuser
      */
     public $subuser;
 
     /**
      * Create a new event instance.
      *
-     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param \App\Models\Subuser $subuser
      */
     public function __construct(Subuser $subuser)
     {

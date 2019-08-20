@@ -1,44 +1,44 @@
 <?php
 
-namespace Pterodactyl\Http;
+namespace App\Http;
 
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
-use Pterodactyl\Http\Middleware\TrimStrings;
-use Pterodactyl\Http\Middleware\TrustProxies;
+use App\Http\Middleware\TrimStrings;
+use App\Http\Middleware\TrustProxies;
 use Illuminate\Session\Middleware\StartSession;
-use Pterodactyl\Http\Middleware\EncryptCookies;
-use Pterodactyl\Http\Middleware\VerifyCsrfToken;
-use Pterodactyl\Http\Middleware\VerifyReCaptcha;
-use Pterodactyl\Http\Middleware\AdminAuthenticate;
+use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\VerifyCsrfToken;
+use App\Http\Middleware\VerifyReCaptcha;
+use App\Http\Middleware\AdminAuthenticate;
 use Illuminate\Routing\Middleware\ThrottleRequests;
-use Pterodactyl\Http\Middleware\LanguageMiddleware;
+use App\Http\Middleware\LanguageMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Pterodactyl\Http\Middleware\Api\AuthenticateKey;
+use App\Http\Middleware\Api\AuthenticateKey;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Pterodactyl\Http\Middleware\Api\SetSessionDriver;
+use App\Http\Middleware\Api\SetSessionDriver;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
-use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\MaintenanceMiddleware;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
-use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
+use App\Http\Middleware\Api\AuthenticateIPAccess;
+use App\Http\Middleware\Api\ApiSubstituteBindings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Pterodactyl\Http\Middleware\Server\AccessingValidServer;
-use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
-use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
-use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
-use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
-use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
-use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
+use App\Http\Middleware\Server\AccessingValidServer;
+use App\Http\Middleware\Server\AuthenticateAsSubuser;
+use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
+use App\Http\Middleware\Server\SubuserBelongsToServer;
+use App\Http\Middleware\RequireTwoFactorAuthentication;
+use App\Http\Middleware\Server\DatabaseBelongsToServer;
+use App\Http\Middleware\Server\ScheduleBelongsToServer;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
-use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
-use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
-use Pterodactyl\Http\Middleware\DaemonAuthenticate as OldDaemonAuthenticate;
+use App\Http\Middleware\Api\Client\SubstituteClientApiBindings;
+use App\Http\Middleware\Api\Application\AuthenticateApplicationUser;
+use App\Http\Middleware\DaemonAuthenticate as OldDaemonAuthenticate;
 
 class Kernel extends HttpKernel
 {

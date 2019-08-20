@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Repositories\Concerns;
+namespace App\Repositories\Concerns;
 
 trait Searchable
 {

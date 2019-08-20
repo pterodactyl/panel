@@ -1,51 +1,51 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
+namespace App\Http\Controllers\Api\Application\Locations;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Location;
+use App\Models\Location;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Services\Locations\LocationUpdateService;
-use Pterodactyl\Services\Locations\LocationCreationService;
-use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Transformers\Api\Application\LocationTransformer;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
-use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
-use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
+use App\Services\Locations\LocationUpdateService;
+use App\Services\Locations\LocationCreationService;
+use App\Services\Locations\LocationDeletionService;
+use App\Contracts\Repository\LocationRepositoryInterface;
+use App\Transformers\Api\Application\LocationTransformer;
+use App\Http\Controllers\Api\Application\ApplicationApiController;
+use App\Http\Requests\Api\Application\Locations\GetLocationRequest;
+use App\Http\Requests\Api\Application\Locations\GetLocationsRequest;
+use App\Http\Requests\Api\Application\Locations\StoreLocationRequest;
+use App\Http\Requests\Api\Application\Locations\DeleteLocationRequest;
+use App\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
 
 class LocationController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Locations\LocationCreationService
+     * @var \App\Services\Locations\LocationCreationService
      */
     private $creationService;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationDeletionService
+     * @var \App\Services\Locations\LocationDeletionService
      */
     private $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationUpdateService
+     * @var \App\Services\Locations\LocationUpdateService
      */
     private $updateService;
 
     /**
      * LocationController constructor.
      *
-     * @param \Pterodactyl\Services\Locations\LocationCreationService       $creationService
-     * @param \Pterodactyl\Services\Locations\LocationDeletionService       $deletionService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Locations\LocationUpdateService         $updateService
+     * @param \App\Services\Locations\LocationCreationService       $creationService
+     * @param \App\Services\Locations\LocationDeletionService       $deletionService
+     * @param \App\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \App\Services\Locations\LocationUpdateService         $updateService
      */
     public function __construct(
         LocationCreationService $creationService,
@@ -64,7 +64,7 @@ class LocationController extends ApplicationApiController
     /**
      * Return all of the locations currently registered on the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest $request
+     * @param \App\Http\Requests\Api\Application\Locations\GetLocationsRequest $request
      * @return array
      */
     public function index(GetLocationsRequest $request): array
@@ -79,7 +79,7 @@ class LocationController extends ApplicationApiController
     /**
      * Return a single location.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest $request
+     * @param \App\Http\Requests\Api\Application\Locations\GetLocationRequest $request
      * @return array
      */
     public function view(GetLocationRequest $request): array
@@ -93,10 +93,10 @@ class LocationController extends ApplicationApiController
      * Store a new location on the Panel and return a HTTP/201 response code with the
      * new location attached.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest $request
+     * @param \App\Http\Requests\Api\Application\Locations\StoreLocationRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function store(StoreLocationRequest $request): JsonResponse
     {
@@ -115,11 +115,11 @@ class LocationController extends ApplicationApiController
     /**
      * Update a location on the Panel and return the updated record to the user.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest $request
+     * @param \App\Http\Requests\Api\Application\Locations\UpdateLocationRequest $request
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UpdateLocationRequest $request): array
     {
@@ -133,10 +133,10 @@ class LocationController extends ApplicationApiController
     /**
      * Delete a location from the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest $request
+     * @param \App\Http\Requests\Api\Application\Locations\DeleteLocationRequest $request
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
+     * @throws \App\Exceptions\Service\Location\HasActiveNodesException
      */
     public function delete(DeleteLocationRequest $request): Response
     {

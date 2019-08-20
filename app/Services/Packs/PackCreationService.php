@@ -7,15 +7,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Packs;
+namespace App\Services\Packs;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
+use App\Contracts\Repository\PackRepositoryInterface;
+use App\Exceptions\Service\InvalidFileUploadException;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
+use App\Exceptions\Service\Pack\InvalidFileMimeTypeException;
 
 class PackCreationService
 {
@@ -30,7 +30,7 @@ class PackCreationService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \App\Contracts\Repository\PackRepositoryInterface
      */
     protected $repository;
 
@@ -44,7 +44,7 @@ class PackCreationService
      *
      * @param \Illuminate\Database\ConnectionInterface                  $connection
      * @param \Illuminate\Contracts\Filesystem\Factory                  $storage
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
+     * @param \App\Contracts\Repository\PackRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -61,11 +61,11 @@ class PackCreationService
      *
      * @param array                              $data
      * @param \Illuminate\Http\UploadedFile|null $file
-     * @return \Pterodactyl\Models\Pack
+     * @return \App\Models\Pack
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Pack\InvalidFileMimeTypeException
+     * @throws \App\Exceptions\Service\InvalidFileUploadException
      */
     public function handle(array $data, UploadedFile $file = null)
     {

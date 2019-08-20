@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Services\Allocations;
+namespace App\Services\Allocations;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
+use App\Models\Server;
+use App\Models\Allocation;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Exceptions\Service\Allocation\AllocationDoesNotBelongToServerException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Exceptions\Service\Allocation\AllocationDoesNotBelongToServerException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonRepositoryInterface;
 
 class SetDefaultAllocationService
 {
@@ -20,27 +20,27 @@ class SetDefaultAllocationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     private $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $serverRepository;
 
     /**
      * SetDefaultAllocationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface    $repository
+     * @param \App\Contracts\Repository\AllocationRepositoryInterface    $repository
      * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface        $serverRepository
      */
     public function __construct(
         AllocationRepositoryInterface $repository,
@@ -58,14 +58,14 @@ class SetDefaultAllocationService
      * Update the default allocation for a server only if that allocation is currently
      * assigned to the specified server.
      *
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param int|\App\Models\Server $server
      * @param int                            $allocation
-     * @return \Pterodactyl\Models\Allocation
+     * @return \App\Models\Allocation
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\AllocationDoesNotBelongToServerException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Allocation\AllocationDoesNotBelongToServerException
      */
     public function handle($server, int $allocation): Allocation
     {

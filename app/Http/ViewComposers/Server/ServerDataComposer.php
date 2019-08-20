@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\ViewComposers\Server;
+namespace App\Http\ViewComposers\Server;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;

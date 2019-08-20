@@ -7,20 +7,20 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Pack;
+use App\Models\Pack;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Packs\ExportPackService;
-use Pterodactyl\Services\Packs\PackUpdateService;
-use Pterodactyl\Services\Packs\PackCreationService;
-use Pterodactyl\Services\Packs\PackDeletionService;
-use Pterodactyl\Http\Requests\Admin\PackFormRequest;
-use Pterodactyl\Services\Packs\TemplateUploadService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Services\Packs\ExportPackService;
+use App\Services\Packs\PackUpdateService;
+use App\Services\Packs\PackCreationService;
+use App\Services\Packs\PackDeletionService;
+use App\Http\Requests\Admin\PackFormRequest;
+use App\Services\Packs\TemplateUploadService;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Contracts\Repository\PackRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class PackController extends Controller
@@ -36,37 +36,37 @@ class PackController extends Controller
     protected $config;
 
     /**
-     * @var \Pterodactyl\Services\Packs\PackCreationService
+     * @var \App\Services\Packs\PackCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Services\Packs\PackDeletionService
+     * @var \App\Services\Packs\PackDeletionService
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Services\Packs\ExportPackService
+     * @var \App\Services\Packs\ExportPackService
      */
     protected $exportService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \App\Contracts\Repository\PackRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Packs\PackUpdateService
+     * @var \App\Services\Packs\PackUpdateService
      */
     protected $updateService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     protected $serviceRepository;
 
     /**
-     * @var \Pterodactyl\Services\Packs\TemplateUploadService
+     * @var \App\Services\Packs\TemplateUploadService
      */
     protected $templateUploadService;
 
@@ -75,13 +75,13 @@ class PackController extends Controller
      *
      * @param \Prologue\Alerts\AlertsMessageBag                         $alert
      * @param \Illuminate\Contracts\Config\Repository                   $config
-     * @param \Pterodactyl\Services\Packs\ExportPackService             $exportService
-     * @param \Pterodactyl\Services\Packs\PackCreationService           $creationService
-     * @param \Pterodactyl\Services\Packs\PackDeletionService           $deletionService
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Packs\PackUpdateService             $updateService
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $serviceRepository
-     * @param \Pterodactyl\Services\Packs\TemplateUploadService         $templateUploadService
+     * @param \App\Services\Packs\ExportPackService             $exportService
+     * @param \App\Services\Packs\PackCreationService           $creationService
+     * @param \App\Services\Packs\PackDeletionService           $deletionService
+     * @param \App\Contracts\Repository\PackRepositoryInterface $repository
+     * @param \App\Services\Packs\PackUpdateService             $updateService
+     * @param \App\Contracts\Repository\NestRepositoryInterface $serviceRepository
+     * @param \App\Services\Packs\TemplateUploadService         $templateUploadService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -123,7 +123,7 @@ class PackController extends Controller
      *
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function create()
     {
@@ -137,7 +137,7 @@ class PackController extends Controller
      *
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function newTemplate()
     {
@@ -149,15 +149,15 @@ class PackController extends Controller
     /**
      * Handle create pack request and route user to location.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\PackFormRequest $request
+     * @param \App\Http\Requests\Admin\PackFormRequest $request
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Pack\InvalidFileMimeTypeException
+     * @throws \App\Exceptions\Service\InvalidFileUploadException
+     * @throws \App\Exceptions\Service\Pack\InvalidPackArchiveFormatException
+     * @throws \App\Exceptions\Service\Pack\UnreadableZipArchiveException
+     * @throws \App\Exceptions\Service\Pack\ZipExtractionException
      */
     public function store(PackFormRequest $request)
     {
@@ -175,9 +175,9 @@ class PackController extends Controller
     /**
      * Display pack view template to user.
      *
-     * @param \Pterodactyl\Models\Pack $pack
+     * @param \App\Models\Pack $pack
      * @return \Illuminate\View\View
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function view(Pack $pack)
     {
@@ -190,13 +190,13 @@ class PackController extends Controller
     /**
      * Handle updating or deleting pack information.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\PackFormRequest $request
-     * @param \Pterodactyl\Models\Pack                         $pack
+     * @param \App\Http\Requests\Admin\PackFormRequest $request
+     * @param \App\Models\Pack                         $pack
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\HasActiveServersException
      */
     public function update(PackFormRequest $request, Pack $pack)
     {
@@ -209,11 +209,11 @@ class PackController extends Controller
     /**
      * Delete a pack if no servers are attached to it currently.
      *
-     * @param \Pterodactyl\Models\Pack $pack
+     * @param \App\Models\Pack $pack
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\HasActiveServersException
      */
     public function destroy(Pack $pack)
     {
@@ -228,12 +228,12 @@ class PackController extends Controller
     /**
      * Creates an archive of the pack and downloads it to the browser.
      *
-     * @param \Pterodactyl\Models\Pack $pack
+     * @param \App\Models\Pack $pack
      * @param bool|string              $files
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Pack\ZipArchiveCreationException
      */
     public function export(Pack $pack, $files = false)
     {

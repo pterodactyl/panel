@@ -7,16 +7,16 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
 use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Services\Databases\DatabaseManagementService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ServerDeletionService
 {
@@ -26,17 +26,17 @@ class ServerDeletionService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonServerRepository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     * @var \App\Services\Databases\DatabaseManagementService
      */
     protected $databaseManagementService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     protected $databaseRepository;
 
@@ -46,7 +46,7 @@ class ServerDeletionService
     protected $force = false;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
 
@@ -59,10 +59,10 @@ class ServerDeletionService
      * DeletionService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface      $databaseRepository
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService          $databaseManagementService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface      $databaseRepository
+     * @param \App\Services\Databases\DatabaseManagementService          $databaseManagementService
+     * @param \App\Contracts\Repository\ServerRepositoryInterface        $repository
      * @param \Psr\Log\LoggerInterface                                           $writer
      */
     public function __construct(
@@ -97,9 +97,9 @@ class ServerDeletionService
     /**
      * Delete a server from the panel and remove any associated databases from hosts.
      *
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param int|\App\Models\Server $server
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      */
     public function handle($server)
     {

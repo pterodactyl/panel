@@ -1,23 +1,23 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Client;
+namespace App\Http\Controllers\Api\Client;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Transformers\Api\Client\ServerTransformer;
-use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Models\User;
+use App\Transformers\Api\Client\ServerTransformer;
+use App\Http\Requests\Api\Client\GetServersRequest;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class ClientController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
      * ClientController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(ServerRepositoryInterface $repository)
     {
@@ -30,7 +30,7 @@ class ClientController extends ClientApiController
      * Return all of the servers available to the client making the API
      * request, including servers the user has access to as a subuser.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\GetServersRequest $request
+     * @param \App\Http\Requests\Api\Client\GetServersRequest $request
      * @return array
      */
     public function index(GetServersRequest $request): array

@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Contracts\Criteria;
+namespace App\Contracts\Criteria;
 
-use Pterodactyl\Repositories\Repository;
+use App\Repositories\Repository;
 
 interface CriteriaInterface
 {
@@ -17,7 +17,7 @@ interface CriteriaInterface
      * Apply selected criteria to a repository call.
      *
      * @param \Illuminate\Database\Eloquent\Model  $model
-     * @param \Pterodactyl\Repositories\Repository $repository
+     * @param \App\Repositories\Repository $repository
      * @return mixed
      */
     public function apply($model, Repository $repository);

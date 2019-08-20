@@ -11,27 +11,27 @@ namespace Tests\Unit\Commands\Schedule;
 
 use Mockery as m;
 use Cake\Chronos\Chronos;
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\Schedule;
+use App\Models\Task;
+use App\Models\Schedule;
 use Tests\Unit\Commands\CommandTestCase;
-use Pterodactyl\Services\Schedules\ProcessScheduleService;
-use Pterodactyl\Console\Commands\Schedule\ProcessRunnableCommand;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Services\Schedules\ProcessScheduleService;
+use App\Console\Commands\Schedule\ProcessRunnableCommand;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessRunnableCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Console\Commands\Schedule\ProcessRunnableCommand
+     * @var \App\Console\Commands\Schedule\ProcessRunnableCommand
      */
     protected $command;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\ProcessScheduleService
+     * @var \App\Services\Schedules\ProcessScheduleService
      */
     protected $processScheduleService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     protected $repository;
 

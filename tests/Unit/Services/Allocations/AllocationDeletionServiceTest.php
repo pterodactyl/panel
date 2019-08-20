@@ -4,14 +4,14 @@ namespace Tests\Unit\Services\Allocations;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Services\Allocations\AllocationDeletionService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use App\Models\Allocation;
+use App\Services\Allocations\AllocationDeletionService;
+use App\Contracts\Repository\AllocationRepositoryInterface;
 
 class AllocationDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -38,7 +38,7 @@ class AllocationDeletionServiceTest extends TestCase
     /**
      * Test that an exception gets thrown if an allocation is currently assigned to a server.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
+     * @expectedException \App\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
     public function testExceptionThrownIfAssignedToServer()
     {
@@ -50,7 +50,7 @@ class AllocationDeletionServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked injections.
      *
-     * @return \Pterodactyl\Services\Allocations\AllocationDeletionService
+     * @return \App\Services\Allocations\AllocationDeletionService
      */
     private function getService(): AllocationDeletionService
     {

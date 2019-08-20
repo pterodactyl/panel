@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Repositories\Daemon;
+namespace App\Repositories\Daemon;
 
 use stdClass;
 use Psr\Http\Message\ResponseInterface;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
+use App\Contracts\Repository\Daemon\FileRepositoryInterface;
 
 class FileRepository extends BaseRepository implements FileRepositoryInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository\Attributes;
+namespace App\Contracts\Repository\Attributes;
 
 interface SearchableInterface
 {

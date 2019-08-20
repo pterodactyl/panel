@@ -13,7 +13,7 @@ use Closure;
 use Mockery as m;
 use Tests\TestCase;
 use GuzzleHttp\Client;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
+use App\Services\Helpers\SoftwareVersionService;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
@@ -44,7 +44,7 @@ class SoftwareVersionServiceTest extends TestCase
     ];
 
     /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
+     * @var \App\Services\Helpers\SoftwareVersionService
      */
     protected $service;
 

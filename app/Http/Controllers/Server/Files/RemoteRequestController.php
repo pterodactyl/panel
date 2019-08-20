@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server\Files;
+namespace App\Http\Controllers\Server\Files;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\FileRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
 
 class RemoteRequestController extends Controller
 {
@@ -19,7 +19,7 @@ class RemoteRequestController extends Controller
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\FileRepositoryInterface
      */
     protected $repository;
 
@@ -27,7 +27,7 @@ class RemoteRequestController extends Controller
      * RemoteRequestController constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository                          $config
-     * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $repository
+     * @param \App\Contracts\Repository\Daemon\FileRepositoryInterface $repository
      */
     public function __construct(ConfigRepository $config, FileRepositoryInterface $repository)
     {
@@ -42,8 +42,8 @@ class RemoteRequestController extends Controller
      * @return \Illuminate\View\View
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function directory(Request $request): View
     {
@@ -86,7 +86,7 @@ class RemoteRequestController extends Controller
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function store(Request $request): Response
     {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Traits\Controllers\PlainJavascriptInjection;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Traits\Controllers\PlainJavascriptInjection;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\AllocationRepositoryInterface;
 
 class StatisticsController extends Controller
 {

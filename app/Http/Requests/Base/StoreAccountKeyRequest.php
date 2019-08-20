@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Base;
+namespace App\Http\Requests\Base;
 
-use Pterodactyl\Http\Requests\FrontendUserFormRequest;
+use App\Http\Requests\FrontendUserFormRequest;
 
 class StoreAccountKeyRequest extends FrontendUserFormRequest
 {

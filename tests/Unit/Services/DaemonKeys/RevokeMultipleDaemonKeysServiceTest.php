@@ -5,26 +5,26 @@ namespace Tests\Unit\Services\DaemonKeys;
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\User;
+use App\Models\Node;
+use App\Models\User;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\DaemonKey;
+use App\Models\DaemonKey;
 use Tests\Traits\MocksRequestException;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
 class RevokeMultipleDaemonKeysServiceTest extends TestCase
 {
     use MocksRequestException;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     private $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -62,7 +62,7 @@ class RevokeMultipleDaemonKeysServiceTest extends TestCase
     /**
      * Test that an exception thrown by a call to the daemon is handled.
      *
-     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @expectedException \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionThrownFromDaemonCallIsHandled()
     {
@@ -108,7 +108,7 @@ class RevokeMultipleDaemonKeysServiceTest extends TestCase
     /**
      * Return an instance of the service for testing.
      *
-     * @return \Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService
+     * @return \App\Services\DaemonKeys\RevokeMultipleDaemonKeysService
      */
     private function getService(): RevokeMultipleDaemonKeysService
     {

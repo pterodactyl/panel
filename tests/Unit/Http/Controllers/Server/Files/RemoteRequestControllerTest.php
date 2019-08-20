@@ -11,15 +11,15 @@ namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Tests\Traits\MocksRequestException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Exceptions\PterodactylException;
+use App\Exceptions\PterodactylException;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Http\Controllers\Server\Files\RemoteRequestController;
+use App\Contracts\Repository\Daemon\FileRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Http\Controllers\Server\Files\RemoteRequestController;
 
 class RemoteRequestControllerTest extends ControllerTestCase
 {
@@ -31,7 +31,7 @@ class RemoteRequestControllerTest extends ControllerTestCase
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\FileRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -149,7 +149,7 @@ class RemoteRequestControllerTest extends ControllerTestCase
     /**
      * Return a mocked instance of the controller to allow access to authorization functionality.
      *
-     * @return \Pterodactyl\Http\Controllers\Server\Files\RemoteRequestController|\Mockery\Mock
+     * @return \App\Http\Controllers\Server\Files\RemoteRequestController|\Mockery\Mock
      */
     private function getController()
     {

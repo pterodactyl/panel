@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server\Settings;
+namespace App\Http\Controllers\Server\Settings;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
+use App\Http\Controllers\Controller;
+use App\Traits\Controllers\JavascriptInjection;
 
 class SftpController extends Controller
 {

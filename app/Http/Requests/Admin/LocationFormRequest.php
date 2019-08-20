@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace App\Http\Requests\Admin;
 
-use Pterodactyl\Models\Location;
+use App\Models\Location;
 
 class LocationFormRequest extends AdminFormRequest
 {

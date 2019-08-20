@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Services\Schedules;
+namespace App\Services\Schedules;
 
 use Cron\CronExpression;
-use Pterodactyl\Models\Schedule;
+use App\Models\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher;
-use Pterodactyl\Jobs\Schedule\RunTaskJob;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Jobs\Schedule\RunTaskJob;
+use App\Contracts\Repository\TaskRepositoryInterface;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessScheduleService
 {
@@ -17,12 +17,12 @@ class ProcessScheduleService
     private $dispatcher;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     private $scheduleRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
+     * @var \App\Contracts\Repository\TaskRepositoryInterface
      */
     private $taskRepository;
 
@@ -30,8 +30,8 @@ class ProcessScheduleService
      * ProcessScheduleService constructor.
      *
      * @param \Illuminate\Contracts\Bus\Dispatcher                          $dispatcher
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $scheduleRepository
-     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface     $taskRepository
+     * @param \App\Contracts\Repository\ScheduleRepositoryInterface $scheduleRepository
+     * @param \App\Contracts\Repository\TaskRepositoryInterface     $taskRepository
      */
     public function __construct(
         Dispatcher $dispatcher,
@@ -46,16 +46,16 @@ class ProcessScheduleService
     /**
      * Process a schedule and push the first task onto the queue worker.
      *
-     * @param \Pterodactyl\Models\Schedule $schedule
+     * @param \App\Models\Schedule $schedule
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Schedule $schedule)
     {
         $this->scheduleRepository->loadTasks($schedule);
 
-        /** @var \Pterodactyl\Models\Task $task */
+        /** @var \App\Models\Task $task */
         $task = $schedule->getRelation('tasks')->where('sequence_id', 1)->first();
 
         $formattedCron = sprintf('%s %s %s * %s',

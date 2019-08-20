@@ -5,24 +5,24 @@ namespace Tests\Unit\Jobs\Schedule;
 use Mockery as m;
 use Tests\TestCase;
 use Cake\Chronos\Chronos;
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\User;
+use App\Models\Task;
+use App\Models\User;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Schedule;
+use App\Models\Server;
+use App\Models\Schedule;
 use Illuminate\Support\Facades\Bus;
-use Pterodactyl\Jobs\Schedule\RunTaskJob;
+use App\Jobs\Schedule\RunTaskJob;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
+use App\Contracts\Repository\TaskRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Contracts\Repository\Daemon\PowerRepositoryInterface;
+use App\Contracts\Repository\Daemon\CommandRepositoryInterface;
 
 class RunTaskJobTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\CommandRepositoryInterface|\Mockery\Mock
      */
     protected $commandRepository;
 
@@ -32,22 +32,22 @@ class RunTaskJobTest extends TestCase
     protected $config;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
      */
     protected $keyProviderService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\PowerRepositoryInterface|\Mockery\Mock
      */
     protected $powerRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
      */
     protected $scheduleRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\TaskRepositoryInterface|\Mockery\Mock
      */
     protected $taskRepository;
 
@@ -217,9 +217,9 @@ class RunTaskJobTest extends TestCase
      * @param int $task
      * @param int $schedule
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\Daemon\InvalidPowerSignalException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     private function getJobInstance($task, $schedule)
     {

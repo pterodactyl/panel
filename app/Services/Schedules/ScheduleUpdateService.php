@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Services\Schedules;
+namespace App\Services\Schedules;
 
 use Cron\CronExpression;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Schedule;
+use App\Models\Schedule;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Services\Schedules\Tasks\TaskCreationService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Contracts\Repository\TaskRepositoryInterface;
+use App\Services\Schedules\Tasks\TaskCreationService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ScheduleUpdateService
 {
@@ -18,17 +18,17 @@ class ScheduleUpdateService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\Tasks\TaskCreationService
+     * @var \App\Services\Schedules\Tasks\TaskCreationService
      */
     private $taskCreationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
+     * @var \App\Contracts\Repository\TaskRepositoryInterface
      */
     private $taskRepository;
 
@@ -36,9 +36,9 @@ class ScheduleUpdateService
      * ScheduleUpdateService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                      $connection
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Schedules\Tasks\TaskCreationService     $taskCreationService
-     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface     $taskRepository
+     * @param \App\Contracts\Repository\ScheduleRepositoryInterface $repository
+     * @param \App\Services\Schedules\Tasks\TaskCreationService     $taskCreationService
+     * @param \App\Contracts\Repository\TaskRepositoryInterface     $taskRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -56,14 +56,14 @@ class ScheduleUpdateService
      * Update an existing schedule by deleting all current tasks and re-inserting the
      * new values.
      *
-     * @param \Pterodactyl\Models\Schedule $schedule
+     * @param \App\Models\Schedule $schedule
      * @param array                        $data
      * @param array                        $tasks
-     * @return \Pterodactyl\Models\Schedule
+     * @return \App\Models\Schedule
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
      */
     public function handle(Schedule $schedule, array $data, array $tasks): Schedule
     {

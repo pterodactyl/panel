@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Support\Collection;
 
 interface ApiKeyRepositoryInterface extends RepositoryInterface
@@ -10,7 +10,7 @@ interface ApiKeyRepositoryInterface extends RepositoryInterface
     /**
      * Get all of the account API keys that exist for a specific user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Support\Collection
      */
     public function getAccountKeys(User $user): Collection;
@@ -18,7 +18,7 @@ interface ApiKeyRepositoryInterface extends RepositoryInterface
     /**
      * Get all of the application API keys that exist for a specific user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Support\Collection
      */
     public function getApplicationKeys(User $user): Collection;
@@ -26,7 +26,7 @@ interface ApiKeyRepositoryInterface extends RepositoryInterface
     /**
      * Delete an account API key from the panel for a specific user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param string                   $identifier
      * @return int
      */
@@ -35,7 +35,7 @@ interface ApiKeyRepositoryInterface extends RepositoryInterface
     /**
      * Delete an application API key from the panel for a specific user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param string                   $identifier
      * @return int
      */

@@ -1,22 +1,22 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Exceptions\DisplayException;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class BuildModificationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface
      */
     private $allocationRepository;
 
@@ -26,22 +26,22 @@ class BuildModificationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     private $daemonServerRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
      * BuildModificationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface    $allocationRepository
+     * @param \App\Contracts\Repository\AllocationRepositoryInterface    $allocationRepository
      * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface        $repository
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
@@ -58,13 +58,13 @@ class BuildModificationService
     /**
      * Change the build details for a specified server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param array                      $data
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server, array $data)
     {
@@ -123,10 +123,10 @@ class BuildModificationService
      * Process the allocations being assigned in the data and ensure they
      * are available for a server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param array                      $data
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      */
     private function processAllocations(Server $server, array &$data)
     {

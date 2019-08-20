@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Server;
+namespace App\Http\Requests\Server;
 
-use Pterodactyl\Http\Requests\FrontendUserFormRequest;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Http\Requests\FrontendUserFormRequest;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
 
 class UpdateStartupParametersFormRequest extends FrontendUserFormRequest
 {

@@ -5,13 +5,13 @@ namespace Tests\Unit\Services\Schedules;
 use Mockery as m;
 use Tests\TestCase;
 use Cron\CronExpression;
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\Schedule;
+use App\Models\Task;
+use App\Models\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher;
-use Pterodactyl\Jobs\Schedule\RunTaskJob;
-use Pterodactyl\Services\Schedules\ProcessScheduleService;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Jobs\Schedule\RunTaskJob;
+use App\Services\Schedules\ProcessScheduleService;
+use App\Contracts\Repository\TaskRepositoryInterface;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessScheduleServiceTest extends TestCase
 {
@@ -21,12 +21,12 @@ class ProcessScheduleServiceTest extends TestCase
     private $dispatcher;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
      */
     private $scheduleRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\TaskRepositoryInterface|\Mockery\Mock
      */
     private $taskRepository;
 
@@ -78,7 +78,7 @@ class ProcessScheduleServiceTest extends TestCase
     /**
      * Return an instance of the service for testing purposes.
      *
-     * @return \Pterodactyl\Services\Schedules\ProcessScheduleService
+     * @return \App\Services\Schedules\ProcessScheduleService
      */
     private function getService(): ProcessScheduleService
     {

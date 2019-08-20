@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Server\Database;
+namespace App\Http\Requests\Server\Database;
 
-use Pterodactyl\Http\Requests\Server\ServerFormRequest;
+use App\Http\Requests\Server\ServerFormRequest;
 
 class StoreServerDatabaseRequest extends ServerFormRequest
 {

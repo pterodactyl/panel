@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
-use Pterodactyl\Models\Egg;
+use App\Models\Egg;
 use Illuminate\Database\Eloquent\Collection;
 
 interface EggRepositoryInterface extends RepositoryInterface
@@ -18,9 +18,9 @@ interface EggRepositoryInterface extends RepositoryInterface
      * Return an egg with the variables relation attached.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\Egg
+     * @return \App\Models\Egg
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithVariables(int $id): Egg;
 
@@ -36,7 +36,7 @@ interface EggRepositoryInterface extends RepositoryInterface
      *
      * @param int|string $value
      * @param string     $column
-     * @return \Pterodactyl\Models\Egg
+     * @return \App\Models\Egg
      */
     public function getWithCopyAttributes($value, string $column = 'id'): Egg;
 
@@ -44,9 +44,9 @@ interface EggRepositoryInterface extends RepositoryInterface
      * Return all of the data needed to export a service.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\Egg
+     * @return \App\Models\Egg
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithExportAttributes(int $id): Egg;
 

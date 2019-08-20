@@ -1,19 +1,19 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server\Tasks;
+namespace App\Http\Controllers\Server\Tasks;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
-use Pterodactyl\Services\Schedules\ScheduleUpdateService;
-use Pterodactyl\Services\Schedules\ScheduleCreationService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
-use Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest;
+use App\Http\Controllers\Controller;
+use App\Contracts\Extensions\HashidsInterface;
+use App\Traits\Controllers\JavascriptInjection;
+use App\Services\Schedules\ScheduleUpdateService;
+use App\Services\Schedules\ScheduleCreationService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Http\Requests\Server\ScheduleCreationFormRequest;
 
 class TaskManagementController extends Controller
 {
@@ -25,22 +25,22 @@ class TaskManagementController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\ScheduleCreationService
+     * @var \App\Services\Schedules\ScheduleCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface
+     * @var \App\Contracts\Extensions\HashidsInterface
      */
     protected $hashids;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\ScheduleUpdateService
+     * @var \App\Services\Schedules\ScheduleUpdateService
      */
     private $updateService;
 
@@ -48,10 +48,10 @@ class TaskManagementController extends Controller
      * TaskManagementController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                             $alert
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface            $hashids
-     * @param \Pterodactyl\Services\Schedules\ScheduleCreationService       $creationService
-     * @param \Pterodactyl\Services\Schedules\ScheduleUpdateService         $updateService
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
+     * @param \App\Contracts\Extensions\HashidsInterface            $hashids
+     * @param \App\Services\Schedules\ScheduleCreationService       $creationService
+     * @param \App\Services\Schedules\ScheduleUpdateService         $updateService
+     * @param \App\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -110,11 +110,11 @@ class TaskManagementController extends Controller
     /**
      * Handle request to store a new schedule and tasks in the database.
      *
-     * @param \Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest $request
+     * @param \App\Http\Requests\Server\ScheduleCreationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
      */
     public function store(ScheduleCreationFormRequest $request): RedirectResponse
     {
@@ -145,7 +145,7 @@ class TaskManagementController extends Controller
 
         $this->setRequest($request)->injectJavascript([
             'tasks' => $schedule->getRelation('tasks')->map(function ($task) {
-                /* @var \Pterodactyl\Models\Task $task */
+                /* @var \App\Models\Task $task */
                 return collect($task->toArray())->only('action', 'time_offset', 'payload')->all();
             }),
         ]);
@@ -156,12 +156,12 @@ class TaskManagementController extends Controller
     /**
      * Update a specific parent task on the system.
      *
-     * @param \Pterodactyl\Http\Requests\Server\ScheduleCreationFormRequest $request
+     * @param \App\Http\Requests\Server\ScheduleCreationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
      */
     public function update(ScheduleCreationFormRequest $request): RedirectResponse
     {

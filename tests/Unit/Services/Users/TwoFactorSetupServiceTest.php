@@ -4,11 +4,11 @@ namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Users\TwoFactorSetupService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Services\Users\TwoFactorSetupService;
+use App\Contracts\Repository\UserRepositoryInterface;
 
 class TwoFactorSetupServiceTest extends TestCase
 {
@@ -23,7 +23,7 @@ class TwoFactorSetupServiceTest extends TestCase
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -72,7 +72,7 @@ class TwoFactorSetupServiceTest extends TestCase
     /**
      * Return an instance of the service to test with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Users\TwoFactorSetupService
+     * @return \App\Services\Users\TwoFactorSetupService
      */
     private function getService(): TwoFactorSetupService
     {

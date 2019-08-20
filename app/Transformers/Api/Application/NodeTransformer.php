@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\Node;
+use App\Services\Acl\Api\AdminAcl;
 
 class NodeTransformer extends BaseTransformer
 {
@@ -29,7 +29,7 @@ class NodeTransformer extends BaseTransformer
      * Return a node transformed into a format that can be consumed by the
      * external administrative API.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return array
      */
     public function transform(Node $node): array
@@ -51,9 +51,9 @@ class NodeTransformer extends BaseTransformer
     /**
      * Return the nodes associated with this location.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeAllocations(Node $node)
     {
@@ -71,9 +71,9 @@ class NodeTransformer extends BaseTransformer
     /**
      * Return the nodes associated with this location.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeLocation(Node $node)
     {
@@ -91,9 +91,9 @@ class NodeTransformer extends BaseTransformer
     /**
      * Return the nodes associated with this location.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Node $node)
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Remote;
+namespace App\Http\Controllers\Api\Remote;
 
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

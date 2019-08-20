@@ -4,12 +4,12 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Services\Servers\DetailsModificationService;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService;
+use App\Repositories\Eloquent\ServerRepository;
+use App\Services\Servers\DetailsModificationService;
+use App\Services\DaemonKeys\DaemonKeyCreationService;
+use App\Services\DaemonKeys\DaemonKeyDeletionService;
 
 class DetailsModificationServiceTest extends TestCase
 {
@@ -19,17 +19,17 @@ class DetailsModificationServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
      */
     private $keyCreationService;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyDeletionService|\Mockery\Mock
      */
     private $keyDeletionService;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository|\Mockery\Mock
+     * @var \App\Repositories\Eloquent\ServerRepository|\Mockery\Mock
      */
     private $repository;
 
@@ -118,7 +118,7 @@ class DetailsModificationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Services\Servers\DetailsModificationService
+     * @return \App\Services\Servers\DetailsModificationService
      */
     private function getService(): DetailsModificationService
     {

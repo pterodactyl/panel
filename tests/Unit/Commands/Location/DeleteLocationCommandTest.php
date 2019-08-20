@@ -10,26 +10,26 @@
 namespace Tests\Unit\Commands\Location;
 
 use Mockery as m;
-use Pterodactyl\Models\Location;
+use App\Models\Location;
 use Tests\Unit\Commands\CommandTestCase;
-use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Console\Commands\Location\DeleteLocationCommand;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use App\Services\Locations\LocationDeletionService;
+use App\Console\Commands\Location\DeleteLocationCommand;
+use App\Contracts\Repository\LocationRepositoryInterface;
 
 class DeleteLocationCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Console\Commands\Location\DeleteLocationCommand
+     * @var \App\Console\Commands\Location\DeleteLocationCommand
      */
     protected $command;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationDeletionService|\Mockery\Mock
+     * @var \App\Services\Locations\LocationDeletionService|\Mockery\Mock
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\LocationRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 

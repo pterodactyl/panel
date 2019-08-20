@@ -10,20 +10,20 @@
 namespace Tests\Unit\Commands\User;
 
 use Mockery as m;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Tests\Unit\Commands\CommandTestCase;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Console\Commands\User\DisableTwoFactorCommand;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Console\Commands\User\DisableTwoFactorCommand;
 
 class DisableTwoFactorCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Console\Commands\User\DisableTwoFactorCommand
+     * @var \App\Console\Commands\User\DisableTwoFactorCommand
      */
     protected $command;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 

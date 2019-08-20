@@ -5,12 +5,12 @@ namespace Tests\Unit\Services\Schedules;
 use Mockery as m;
 use Tests\TestCase;
 use Cron\CronExpression;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Schedule;
+use App\Models\Server;
+use App\Models\Schedule;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Schedules\ScheduleCreationService;
-use Pterodactyl\Services\Schedules\Tasks\TaskCreationService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Services\Schedules\ScheduleCreationService;
+use App\Services\Schedules\Tasks\TaskCreationService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ScheduleCreationServiceTest extends TestCase
 {
@@ -25,17 +25,17 @@ class ScheduleCreationServiceTest extends TestCase
     protected $cron;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\ScheduleCreationService
+     * @var \App\Services\Schedules\ScheduleCreationService
      */
     protected $service;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\Tasks\TaskCreationService
+     * @var \App\Services\Schedules\Tasks\TaskCreationService
      */
     protected $taskCreationService;
 

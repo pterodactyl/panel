@@ -1,21 +1,21 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace App\Transformers\Api\Client;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
+use App\Models\Server;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
 class StatsTransformer extends BaseClientTransformer
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     private $repository;
 
     /**
      * Perform dependency injection.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $repository
      */
     public function handle(ServerRepositoryInterface $repository)
     {
@@ -34,7 +34,7 @@ class StatsTransformer extends BaseClientTransformer
      * Transform stats from the daemon into a result set that can be used in
      * the client API.
      *
-     * @param \Pterodactyl\Models\Server $model
+     * @param \App\Models\Server $model
      * @return array
      */
     public function transform(Server $model)

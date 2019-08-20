@@ -5,21 +5,21 @@ namespace Tests\Unit\Services\Subusers;
 use Mockery as m;
 use Tests\TestCase;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
+use App\Models\User;
+use App\Models\Server;
+use App\Models\Subuser;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Users\UserCreationService;
-use Pterodactyl\Services\Subusers\SubuserCreationService;
-use Pterodactyl\Services\Subusers\PermissionCreationService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
-use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
+use App\Exceptions\DisplayException;
+use App\Services\Users\UserCreationService;
+use App\Services\Subusers\SubuserCreationService;
+use App\Services\Subusers\PermissionCreationService;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyCreationService;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Exceptions\Service\Subuser\UserIsServerOwnerException;
+use App\Exceptions\Service\Subuser\ServerSubuserExistsException;
 
 class SubuserCreationServiceTest extends TestCase
 {
@@ -29,37 +29,37 @@ class SubuserCreationServiceTest extends TestCase
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
      */
     protected $keyCreationService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\PermissionCreationService|\Mockery\Mock
+     * @var \App\Services\Subusers\PermissionCreationService|\Mockery\Mock
      */
     protected $permissionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     protected $subuserRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserCreationService
+     * @var \App\Services\Subusers\SubuserCreationService
      */
     protected $service;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserCreationService|\Mockery\Mock
+     * @var \App\Services\Users\UserCreationService|\Mockery\Mock
      */
     protected $userCreationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     protected $userRepository;
 
@@ -191,7 +191,7 @@ class SubuserCreationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Subusers\SubuserCreationService
+     * @return \App\Services\Subusers\SubuserCreationService
      */
     private function getService(): SubuserCreationService
     {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Services\Eggs\Sharing;
+namespace App\Services\Eggs\Sharing;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Exceptions\Service\Egg\BadJsonFormatException;
+use App\Exceptions\Service\InvalidFileUploadException;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggUpdateImporterService
 {
@@ -17,12 +17,12 @@ class EggUpdateImporterService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface
      */
     protected $variableRepository;
 
@@ -30,8 +30,8 @@ class EggUpdateImporterService
      * EggUpdateImporterService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                         $connection
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
+     * @param \App\Contracts\Repository\EggRepositoryInterface         $repository
+     * @param \App\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -49,10 +49,10 @@ class EggUpdateImporterService
      * @param int                           $egg
      * @param \Illuminate\Http\UploadedFile $file
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Egg\BadJsonFormatException
+     * @throws \App\Exceptions\Service\InvalidFileUploadException
      */
     public function handle(int $egg, UploadedFile $file)
     {

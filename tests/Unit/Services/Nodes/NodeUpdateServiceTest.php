@@ -5,14 +5,14 @@ namespace Tests\Unit\Services\Nodes;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use GuzzleHttp\Psr7\Response;
 use Tests\Traits\MocksRequestException;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Nodes\NodeUpdateService;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
+use App\Services\Nodes\NodeUpdateService;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
 class NodeUpdateServiceTest extends TestCase
 {
@@ -24,12 +24,12 @@ class NodeUpdateServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ConfigurationRepositoryInterface|\Mockery\Mock
      */
     private $configRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -56,7 +56,7 @@ class NodeUpdateServiceTest extends TestCase
             'daemonSecret' => 'abcd1234',
         ]);
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'str_random')
+        $this->getFunctionMock('\\App\\Services\\Nodes', 'str_random')
             ->expects($this->once())->willReturn($updatedModel->daemonSecret);
 
         $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
@@ -105,7 +105,7 @@ class NodeUpdateServiceTest extends TestCase
     /**
      * Test that an exception caused by a connection error is handled.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException
+     * @expectedException \App\Exceptions\Service\Node\ConfigurationNotPersistedException
      */
     public function testExceptionRelatedToConnection()
     {
@@ -124,7 +124,7 @@ class NodeUpdateServiceTest extends TestCase
     /**
      * Test that an exception not caused by a daemon connection error is handled.
      *
-     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @expectedException \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionNotRelatedToConnection()
     {
@@ -142,7 +142,7 @@ class NodeUpdateServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked injections.
      *
-     * @return \Pterodactyl\Services\Nodes\NodeUpdateService
+     * @return \App\Services\Nodes\NodeUpdateService
      */
     private function getService(): NodeUpdateService
     {

@@ -7,23 +7,23 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Subusers;
+namespace App\Services\Subusers;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
+use App\Models\Permission;
+use App\Contracts\Repository\PermissionRepositoryInterface;
 
 class PermissionCreationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
+     * @var \App\Contracts\Repository\PermissionRepositoryInterface
      */
     protected $repository;
 
     /**
      * PermissionCreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface $repository
+     * @param \App\Contracts\Repository\PermissionRepositoryInterface $repository
      */
     public function __construct(PermissionRepositoryInterface $repository)
     {
@@ -36,7 +36,7 @@ class PermissionCreationService
      * @param int   $subuser
      * @param array $permissions
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function handle($subuser, array $permissions)
     {

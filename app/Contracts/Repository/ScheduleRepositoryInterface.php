@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
-use Pterodactyl\Models\Schedule;
+use App\Models\Schedule;
 use Illuminate\Support\Collection;
 
 interface ScheduleRepositoryInterface extends RepositoryInterface
@@ -19,9 +19,9 @@ interface ScheduleRepositoryInterface extends RepositoryInterface
      * Load the tasks relationship onto the Schedule module if they are not
      * already present.
      *
-     * @param \Pterodactyl\Models\Schedule $schedule
+     * @param \App\Models\Schedule $schedule
      * @param bool                         $refresh
-     * @return \Pterodactyl\Models\Schedule
+     * @return \App\Models\Schedule
      */
     public function loadTasks(Schedule $schedule, bool $refresh = false): Schedule;
 
@@ -29,9 +29,9 @@ interface ScheduleRepositoryInterface extends RepositoryInterface
      * Return a schedule model with all of the associated tasks as a relationship.
      *
      * @param int $schedule
-     * @return \Pterodactyl\Models\Schedule
+     * @return \App\Models\Schedule
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getScheduleWithTasks(int $schedule): Schedule;
 

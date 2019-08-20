@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Database;
+use App\Models\Database;
 use Illuminate\Support\Collection;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Exceptions\Repository\DuplicateDatabaseNameException;
 
 class DatabaseRepository extends EloquentRepository implements DatabaseRepositoryInterface
 {
@@ -99,10 +99,10 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
      * the provided details.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\Database
+     * @return \App\Models\Database
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\DuplicateDatabaseNameException
      */
     public function createIfNotExists(array $data): Database
     {

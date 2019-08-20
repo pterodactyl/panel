@@ -7,22 +7,22 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Eggs\Sharing;
+namespace App\Services\Eggs\Sharing;
 
 use Carbon\Carbon;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use App\Contracts\Repository\EggRepositoryInterface;
 
 class EggExporterService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
      * EggExporterService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
+     * @param \App\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(EggRepositoryInterface $repository)
     {
@@ -35,7 +35,7 @@ class EggExporterService
      * @param int $egg
      * @return string
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(int $egg): string
     {

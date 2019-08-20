@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Services\Users;
+namespace App\Services\Users;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Traits\Services\HasUserLevels;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
+use App\Traits\Services\HasUserLevels;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
 
 class UserUpdateService
 {
@@ -20,12 +20,12 @@ class UserUpdateService
     private $hasher;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService
+     * @var \App\Services\DaemonKeys\RevokeMultipleDaemonKeysService
      */
     private $revocationService;
 
@@ -33,8 +33,8 @@ class UserUpdateService
      * UpdateService constructor.
      *
      * @param \Illuminate\Contracts\Hashing\Hasher                             $hasher
-     * @param \Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService $revocationService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface        $repository
+     * @param \App\Services\DaemonKeys\RevokeMultipleDaemonKeysService $revocationService
+     * @param \App\Contracts\Repository\UserRepositoryInterface        $repository
      */
     public function __construct(
         Hasher $hasher,
@@ -50,12 +50,12 @@ class UserUpdateService
      * Update the user model instance. If the user has been removed as an administrator
      * revoke all of the authentication tokens that have been assigned to their account.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param array                    $data
      * @return \Illuminate\Support\Collection
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(User $user, array $data): Collection
     {

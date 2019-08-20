@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Services\Schedules;
+namespace App\Services\Schedules;
 
 use Cron\CronExpression;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Schedules\Tasks\TaskCreationService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Services\Schedules\Tasks\TaskCreationService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ScheduleCreationService
 {
@@ -17,12 +17,12 @@ class ScheduleCreationService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\Tasks\TaskCreationService
+     * @var \App\Services\Schedules\Tasks\TaskCreationService
      */
     protected $taskCreationService;
 
@@ -30,8 +30,8 @@ class ScheduleCreationService
      * ScheduleCreationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                      $connection
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Schedules\Tasks\TaskCreationService     $taskCreationService
+     * @param \App\Contracts\Repository\ScheduleRepositoryInterface $repository
+     * @param \App\Services\Schedules\Tasks\TaskCreationService     $taskCreationService
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -46,13 +46,13 @@ class ScheduleCreationService
     /**
      * Create a new schedule for a specific server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param array                      $data
      * @param array                      $tasks
-     * @return \Pterodactyl\Models\Schedule
+     * @return \App\Models\Schedule
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
      */
     public function handle(Server $server, array $data, array $tasks = [])
     {

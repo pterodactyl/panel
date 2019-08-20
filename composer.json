@@ -63,12 +63,12 @@
             "app/helpers.php"
         ],
         "psr-4": {
-            "Pterodactyl\\": "app/"
+            "App\\": "app/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Pterodactyl\\Tests\\Integration\\": "tests/Integration",
+            "App\\Tests\\Integration\\": "tests/Integration",
             "Tests\\": "tests/"
         }
     },

@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Traits\Controllers;
+namespace App\Traits\Controllers;
 
 use Javascript;
 use Illuminate\Http\Request;

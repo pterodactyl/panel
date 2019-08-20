@@ -7,15 +7,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Console\Commands\User;
+namespace App\Console\Commands\User;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Services\Users\UserCreationService;
+use App\Services\Users\UserCreationService;
 
 class MakeUserCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
+     * @var \App\Services\Users\UserCreationService
      */
     protected $creationService;
 
@@ -32,7 +32,7 @@ class MakeUserCommand extends Command
     /**
      * MakeUserCommand constructor.
      *
-     * @param \Pterodactyl\Services\Users\UserCreationService $creationService
+     * @param \App\Services\Users\UserCreationService $creationService
      */
     public function __construct(UserCreationService $creationService)
     {
@@ -45,7 +45,7 @@ class MakeUserCommand extends Command
      * Handle command request to create a new user.
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function handle()
     {

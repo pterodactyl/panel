@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Http\Base;
+namespace App\Exceptions\Http\Base;
 
-use Pterodactyl\Exceptions\DisplayException;
+use App\Exceptions\DisplayException;
 
 class InvalidPasswordProvidedException extends DisplayException
 {

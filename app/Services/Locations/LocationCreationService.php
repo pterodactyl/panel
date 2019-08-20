@@ -7,21 +7,21 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Locations;
+namespace App\Services\Locations;
 
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use App\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationCreationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
      * LocationCreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \App\Contracts\Repository\LocationRepositoryInterface $repository
      */
     public function __construct(LocationRepositoryInterface $repository)
     {
@@ -32,9 +32,9 @@ class LocationCreationService
      * Create a new location.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\Location
+     * @return \App\Models\Location
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function handle(array $data)
     {

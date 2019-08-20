@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Notifications;
+namespace App\Notifications;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
 class MailTested extends Notification
 {
     /**
-     * @var \Pterodactyl\Models\User
+     * @var \App\Models\User
      */
     private $user;
 

@@ -1,21 +1,21 @@
 <?php
 
-namespace Pterodactyl\Services\Eggs\Variables;
+namespace App\Services\Eggs\Variables;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\EggVariable;
+use App\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Traits\Services\ValidatesValidationRules;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
+use App\Exceptions\DisplayException;
+use App\Traits\Services\ValidatesValidationRules;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableUpdateService
 {
     use ValidatesValidationRules;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface
      */
     private $repository;
 
@@ -27,7 +27,7 @@ class VariableUpdateService
     /**
      * VariableUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
+     * @param \App\Contracts\Repository\EggVariableRepositoryInterface $repository
      * @param \Illuminate\Contracts\Validation\Factory                         $validator
      */
     public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
@@ -50,14 +50,14 @@ class VariableUpdateService
     /**
      * Update a specific egg variable.
      *
-     * @param \Pterodactyl\Models\EggVariable $variable
+     * @param \App\Models\EggVariable $variable
      * @param array                           $data
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function handle(EggVariable $variable, array $data)
     {

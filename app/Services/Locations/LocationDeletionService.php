@@ -7,31 +7,31 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Locations;
+namespace App\Services\Locations;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
+use App\Models\Location;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\LocationRepositoryInterface;
+use App\Exceptions\Service\Location\HasActiveNodesException;
 
 class LocationDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     protected $nodeRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
      * LocationDeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface     $nodeRepository
+     * @param \App\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface     $nodeRepository
      */
     public function __construct(
         LocationRepositoryInterface $repository,
@@ -44,10 +44,10 @@ class LocationDeletionService
     /**
      * Delete an existing location.
      *
-     * @param int|\Pterodactyl\Models\Location $location
+     * @param int|\App\Models\Location $location
      * @return int|null
      *
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
+     * @throws \App\Exceptions\Service\Location\HasActiveNodesException
      */
     public function handle($location)
     {

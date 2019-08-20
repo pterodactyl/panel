@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
 use Generator;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use App\Contracts\Repository\Attributes\SearchableInterface;
 
 interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
@@ -16,7 +16,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return the usage stats for a single node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return array
      */
     public function getUsageStats(Node $node): array;
@@ -24,7 +24,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return the usage stats for a single node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return array
      */
     public function getUsageStatsRaw(Node $node): array;
@@ -39,9 +39,9 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
     /**
      * Return a single node with location and server information.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @param bool                     $refresh
-     * @return \Pterodactyl\Models\Node
+     * @return \App\Models\Node
      */
     public function loadLocationAndServerCount(Node $node, bool $refresh = false): Node;
 
@@ -49,9 +49,9 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
      * Attach a paginated set of allocations to a node mode including
      * any servers that are also attached to those allocations.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @param bool                     $refresh
-     * @return \Pterodactyl\Models\Node
+     * @return \App\Models\Node
      */
     public function loadNodeAllocations(Node $node, bool $refresh = false): Node;
 

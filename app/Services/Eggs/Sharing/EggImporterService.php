@@ -7,17 +7,17 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Eggs\Sharing;
+namespace App\Services\Eggs\Sharing;
 
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\Egg;
+use App\Models\Egg;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Exceptions\Service\Egg\BadJsonFormatException;
+use App\Exceptions\Service\InvalidFileUploadException;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggImporterService
 {
@@ -27,17 +27,17 @@ class EggImporterService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface
      */
     protected $eggVariableRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     protected $nestRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
@@ -45,9 +45,9 @@ class EggImporterService
      * EggImporterService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                         $connection
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $eggVariableRepository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface        $nestRepository
+     * @param \App\Contracts\Repository\EggRepositoryInterface         $repository
+     * @param \App\Contracts\Repository\EggVariableRepositoryInterface $eggVariableRepository
+     * @param \App\Contracts\Repository\NestRepositoryInterface        $nestRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -66,12 +66,12 @@ class EggImporterService
      *
      * @param \Illuminate\Http\UploadedFile $file
      * @param int                           $nest
-     * @return \Pterodactyl\Models\Egg
+     * @return \App\Models\Egg
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Egg\BadJsonFormatException
+     * @throws \App\Exceptions\Service\InvalidFileUploadException
      */
     public function handle(UploadedFile $file, int $nest): Egg
     {

@@ -4,21 +4,21 @@ namespace Tests\Unit\Services\Databases\Hosts;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Exceptions\PterodactylException;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Services\Databases\Hosts\HostDeletionService;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
      */
     private $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -76,7 +76,7 @@ class HostDeletionServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Databases\Hosts\HostDeletionService
+     * @return \App\Services\Databases\Hosts\HostDeletionService
      */
     private function getService(): HostDeletionService
     {

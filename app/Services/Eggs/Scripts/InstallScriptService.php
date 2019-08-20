@@ -7,24 +7,24 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Eggs\Scripts;
+namespace App\Services\Eggs\Scripts;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException;
+use App\Models\Egg;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Exceptions\Service\Egg\InvalidCopyFromException;
 
 class InstallScriptService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
      * InstallScriptService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
+     * @param \App\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(EggRepositoryInterface $repository)
     {
@@ -34,12 +34,12 @@ class InstallScriptService
     /**
      * Modify the install script for a given Egg.
      *
-     * @param int|\Pterodactyl\Models\Egg $egg
+     * @param int|\App\Models\Egg $egg
      * @param array                       $data
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Egg\InvalidCopyFromException
      */
     public function handle($egg, array $data)
     {

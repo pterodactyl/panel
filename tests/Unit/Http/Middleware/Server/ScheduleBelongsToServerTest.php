@@ -3,22 +3,22 @@
 namespace Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Schedule;
+use App\Models\Server;
+use App\Models\Schedule;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Contracts\Extensions\HashidsInterface;
+use App\Http\Middleware\Server\ScheduleBelongsToServer;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ScheduleBelongsToServerTest extends MiddlewareTestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface|\Mockery\Mock
+     * @var \App\Contracts\Extensions\HashidsInterface|\Mockery\Mock
      */
     private $hashids;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -72,7 +72,7 @@ class ScheduleBelongsToServerTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer
+     * @return \App\Http\Middleware\Server\ScheduleBelongsToServer
      */
     private function getMiddleware(): ScheduleBelongsToServer
     {

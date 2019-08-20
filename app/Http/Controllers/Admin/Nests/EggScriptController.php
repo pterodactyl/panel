@@ -7,15 +7,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin\Nests;
+namespace App\Http\Controllers\Admin\Nests;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Eggs\Scripts\InstallScriptService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Egg\EggScriptFormRequest;
+use App\Http\Controllers\Controller;
+use App\Services\Eggs\Scripts\InstallScriptService;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Http\Requests\Admin\Egg\EggScriptFormRequest;
 
 class EggScriptController extends Controller
 {
@@ -25,12 +25,12 @@ class EggScriptController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Scripts\InstallScriptService
+     * @var \App\Services\Eggs\Scripts\InstallScriptService
      */
     protected $installScriptService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
@@ -38,8 +38,8 @@ class EggScriptController extends Controller
      * EggScriptController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                        $alert
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Eggs\Scripts\InstallScriptService  $installScriptService
+     * @param \App\Contracts\Repository\EggRepositoryInterface $repository
+     * @param \App\Services\Eggs\Scripts\InstallScriptService  $installScriptService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -80,13 +80,13 @@ class EggScriptController extends Controller
     /**
      * Handle a request to update the installation script for an Egg.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggScriptFormRequest $request
+     * @param \App\Http\Requests\Admin\Egg\EggScriptFormRequest $request
      * @param int                                                       $egg
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Egg\InvalidCopyFromException
      */
     public function update(EggScriptFormRequest $request, int $egg): RedirectResponse
     {

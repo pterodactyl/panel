@@ -1,44 +1,44 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Servers;
+namespace App\Http\Controllers\Api\Application\Servers;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
+use App\Models\Server;
+use App\Models\Database;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Transformers\Api\Application\ServerDatabaseTransformer;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
-use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest;
-use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest;
-use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest;
-use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest;
+use App\Services\Databases\DatabasePasswordService;
+use App\Services\Databases\DatabaseManagementService;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Transformers\Api\Application\ServerDatabaseTransformer;
+use App\Http\Controllers\Api\Application\ApplicationApiController;
+use App\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest;
+use App\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest;
+use App\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest;
+use App\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest;
 
 class DatabaseController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     * @var \App\Services\Databases\DatabaseManagementService
      */
     private $databaseManagementService;
 
     /**
-     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
+     * @var \App\Services\Databases\DatabasePasswordService
      */
     private $databasePasswordService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     private $repository;
 
     /**
      * DatabaseController constructor.
      *
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService     $databaseManagementService
-     * @param \Pterodactyl\Services\Databases\DatabasePasswordService       $databasePasswordService
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
+     * @param \App\Services\Databases\DatabaseManagementService     $databaseManagementService
+     * @param \App\Services\Databases\DatabasePasswordService       $databasePasswordService
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface $repository
      */
     public function __construct(
         DatabaseManagementService $databaseManagementService,
@@ -56,7 +56,7 @@ class DatabaseController extends ApplicationApiController
      * Return a listing of all databases currently available to a single
      * server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest $request
+     * @param \App\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest $request
      * @return array
      */
     public function index(GetServerDatabasesRequest $request): array
@@ -71,7 +71,7 @@ class DatabaseController extends ApplicationApiController
     /**
      * Return a single server database.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest $request
+     * @param \App\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest $request
      * @return array
      */
     public function view(GetServerDatabaseRequest $request): array
@@ -84,7 +84,7 @@ class DatabaseController extends ApplicationApiController
     /**
      * Reset the password for a specific server database.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
+     * @param \App\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
      * @return \Illuminate\Http\Response
      *
      * @throws \Throwable
@@ -99,7 +99,7 @@ class DatabaseController extends ApplicationApiController
     /**
      * Create a new database on the Panel for a given server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest $request
+     * @param \App\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
@@ -123,10 +123,10 @@ class DatabaseController extends ApplicationApiController
     /**
      * Handle a request to delete a specific server database from the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
+     * @param \App\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function delete(ServerDatabaseWriteRequest $request): Response
     {

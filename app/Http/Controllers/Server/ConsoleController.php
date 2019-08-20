@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server;
+namespace App\Http\Controllers\Server;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
+use App\Http\Controllers\Controller;
+use App\Traits\Controllers\JavascriptInjection;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class ConsoleController extends Controller

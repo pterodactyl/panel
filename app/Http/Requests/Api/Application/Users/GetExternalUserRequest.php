@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Users;
+namespace App\Http\Requests\Api\Application\Users;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use App\Models\User;
+use App\Services\Acl\Api\AdminAcl;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetExternalUserRequest extends ApplicationApiRequest
 {
@@ -47,7 +47,7 @@ class GetExternalUserRequest extends ApplicationApiRequest
 
     /**
      * Return the user model for the requested external user.
-     * @return \Pterodactyl\Models\User
+     * @return \App\Models\User
      */
     public function getUserModel(): User
     {

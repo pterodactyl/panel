@@ -7,34 +7,34 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use Javascript;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Allocation;
+use App\Models\Allocation;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Nodes\NodeUpdateService;
+use App\Http\Controllers\Controller;
+use App\Services\Nodes\NodeUpdateService;
 use Illuminate\Cache\Repository as CacheRepository;
-use Pterodactyl\Services\Nodes\NodeCreationService;
-use Pterodactyl\Services\Nodes\NodeDeletionService;
-use Pterodactyl\Services\Allocations\AssignmentService;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
-use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
-use Pterodactyl\Services\Allocations\AllocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest;
+use App\Services\Nodes\NodeCreationService;
+use App\Services\Nodes\NodeDeletionService;
+use App\Services\Allocations\AssignmentService;
+use App\Services\Helpers\SoftwareVersionService;
+use App\Http\Requests\Admin\Node\NodeFormRequest;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Http\Requests\Admin\Node\AllocationFormRequest;
+use App\Services\Allocations\AllocationDeletionService;
+use App\Contracts\Repository\LocationRepositoryInterface;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Http\Requests\Admin\Node\AllocationAliasFormRequest;
 
 class NodesController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
+     * @var \App\Services\Allocations\AllocationDeletionService
      */
     protected $allocationDeletionService;
 
@@ -44,12 +44,12 @@ class NodesController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface
      */
     protected $allocationRepository;
 
     /**
-     * @var \Pterodactyl\Services\Allocations\AssignmentService
+     * @var \App\Services\Allocations\AssignmentService
      */
     protected $assignmentService;
 
@@ -59,37 +59,37 @@ class NodesController extends Controller
     protected $cache;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeCreationService
+     * @var \App\Services\Nodes\NodeCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeDeletionService
+     * @var \App\Services\Nodes\NodeDeletionService
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $locationRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeUpdateService
+     * @var \App\Services\Nodes\NodeUpdateService
      */
     protected $updateService;
 
     /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
+     * @var \App\Services\Helpers\SoftwareVersionService
      */
     protected $versionService;
 
@@ -97,17 +97,17 @@ class NodesController extends Controller
      * NodesController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                               $alert
-     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService     $allocationDeletionService
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
-     * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
+     * @param \App\Services\Allocations\AllocationDeletionService     $allocationDeletionService
+     * @param \App\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \App\Services\Allocations\AssignmentService             $assignmentService
      * @param \Illuminate\Cache\Repository                                    $cache
-     * @param \Pterodactyl\Services\Nodes\NodeCreationService                 $creationService
-     * @param \Pterodactyl\Services\Nodes\NodeDeletionService                 $deletionService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $repository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $serverRepository
-     * @param \Pterodactyl\Services\Nodes\NodeUpdateService                   $updateService
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService            $versionService
+     * @param \App\Services\Nodes\NodeCreationService                 $creationService
+     * @param \App\Services\Nodes\NodeDeletionService                 $deletionService
+     * @param \App\Contracts\Repository\LocationRepositoryInterface   $locationRepository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface       $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface     $serverRepository
+     * @param \App\Services\Nodes\NodeUpdateService                   $updateService
+     * @param \App\Services\Helpers\SoftwareVersionService            $versionService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -170,10 +170,10 @@ class NodesController extends Controller
     /**
      * Post controller to create a new node on the system.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest $request
+     * @param \App\Http\Requests\Admin\Node\NodeFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function store(NodeFormRequest $request)
     {
@@ -186,7 +186,7 @@ class NodesController extends Controller
     /**
      * Shows the index overview page for a specific node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \Illuminate\View\View
      */
     public function viewIndex(Node $node)
@@ -201,7 +201,7 @@ class NodesController extends Controller
     /**
      * Shows the settings page for a specific node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \Illuminate\View\View
      */
     public function viewSettings(Node $node)
@@ -215,7 +215,7 @@ class NodesController extends Controller
     /**
      * Shows the configuration page for a specific node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \Illuminate\View\View
      */
     public function viewConfiguration(Node $node)
@@ -226,7 +226,7 @@ class NodesController extends Controller
     /**
      * Shows the allocation page for a specific node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \Illuminate\View\View
      */
     public function viewAllocation(Node $node)
@@ -243,7 +243,7 @@ class NodesController extends Controller
     /**
      * Shows the server listing page for a specific node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \Illuminate\View\View
      */
     public function viewServers(Node $node)
@@ -259,13 +259,13 @@ class NodesController extends Controller
     /**
      * Updates settings for a node.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest $request
-     * @param \Pterodactyl\Models\Node                              $node
+     * @param \App\Http\Requests\Admin\Node\NodeFormRequest $request
+     * @param \App\Models\Node                              $node
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function updateSettings(NodeFormRequest $request, Node $node)
     {
@@ -279,10 +279,10 @@ class NodesController extends Controller
      * Removes a single allocation from a node.
      *
      * @param int                            $node
-     * @param \Pterodactyl\Models\Allocation $allocation
+     * @param \App\Models\Allocation $allocation
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
+     * @throws \App\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
     public function allocationRemoveSingle(int $node, Allocation $allocation): Response
     {
@@ -298,7 +298,7 @@ class NodesController extends Controller
      * @param int                      $node
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
+     * @throws \App\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
     public function allocationRemoveMultiple(Request $request, int $node): Response
     {
@@ -336,11 +336,11 @@ class NodesController extends Controller
     /**
      * Sets an alias for a specific allocation on a node.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest $request
+     * @param \App\Http\Requests\Admin\Node\AllocationAliasFormRequest $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function allocationSetAlias(AllocationAliasFormRequest $request)
     {
@@ -354,14 +354,14 @@ class NodesController extends Controller
     /**
      * Creates new allocations on a node.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest $request
-     * @param int|\Pterodactyl\Models\Node                                $node
+     * @param \App\Http\Requests\Admin\Node\AllocationFormRequest $request
+     * @param int|\App\Models\Node                                $node
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @throws \App\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @throws \App\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \App\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @throws \App\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     public function createAllocation(AllocationFormRequest $request, Node $node)
     {
@@ -377,7 +377,7 @@ class NodesController extends Controller
      * @param $node
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      */
     public function delete($node)
     {
@@ -390,7 +390,7 @@ class NodesController extends Controller
     /**
      * Returns the configuration token to auto-deploy a node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return \Illuminate\Http\JsonResponse
      */
     public function setToken(Node $node)

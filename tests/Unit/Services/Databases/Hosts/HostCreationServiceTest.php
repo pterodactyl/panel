@@ -4,13 +4,13 @@ namespace Tests\Unit\Services\Databases\Hosts;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\DatabaseHost;
+use App\Models\DatabaseHost;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Services\Databases\Hosts\HostCreationService;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Extensions\DynamicDatabaseConnection;
+use App\Services\Databases\Hosts\HostCreationService;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostCreationServiceTest extends TestCase
 {
@@ -25,7 +25,7 @@ class HostCreationServiceTest extends TestCase
     private $databaseManager;
 
     /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection|\Mockery\Mock
+     * @var \App\Extensions\DynamicDatabaseConnection|\Mockery\Mock
      */
     private $dynamic;
 
@@ -35,7 +35,7 @@ class HostCreationServiceTest extends TestCase
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -88,7 +88,7 @@ class HostCreationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Databases\Hosts\HostCreationService
+     * @return \App\Services\Databases\Hosts\HostCreationService
      */
     private function getService(): HostCreationService
     {

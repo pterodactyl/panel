@@ -4,18 +4,18 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Server;
+use App\Models\Egg;
+use App\Models\Server;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Services\Servers\StartupCommandViewService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Models\Allocation;
+use App\Models\EggVariable;
+use App\Services\Servers\StartupCommandViewService;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class StartupCommandViewServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -76,7 +76,7 @@ class StartupCommandViewServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Servers\StartupCommandViewService
+     * @return \App\Services\Servers\StartupCommandViewService
      */
     private function getService(): StartupCommandViewService
     {

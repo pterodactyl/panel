@@ -12,10 +12,10 @@ namespace Tests\Unit\Services\Services\Options;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Services\Eggs\Scripts\InstallScriptService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException;
+use App\Models\Egg;
+use App\Services\Eggs\Scripts\InstallScriptService;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Exceptions\Service\Egg\InvalidCopyFromException;
 
 class InstallScriptServiceTest extends TestCase
 {
@@ -31,17 +31,17 @@ class InstallScriptServiceTest extends TestCase
     ];
 
     /**
-     * @var \Pterodactyl\Models\Egg
+     * @var \App\Models\Egg
      */
     protected $model;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Scripts\InstallScriptService
+     * @var \App\Services\Eggs\Scripts\InstallScriptService
      */
     protected $service;
 

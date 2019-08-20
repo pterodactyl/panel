@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\User;
+use App\Services\Acl\Api\AdminAcl;
 
 class UserTransformer extends BaseTransformer
 {
@@ -27,7 +27,7 @@ class UserTransformer extends BaseTransformer
     /**
      * Return a transformed User model that can be consumed by external services.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return array
      */
     public function transform(User $user): array
@@ -51,10 +51,10 @@ class UserTransformer extends BaseTransformer
     /**
      * Return the servers associated with this user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(User $user)
     {

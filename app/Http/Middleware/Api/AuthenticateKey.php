@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api;
+namespace App\Http\Middleware\Api;
 
 use Closure;
 use Cake\Chronos\Chronos;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ApiKeyRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateKey
@@ -26,14 +26,14 @@ class AuthenticateKey
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
+     * @var \App\Contracts\Repository\ApiKeyRepositoryInterface
      */
     private $repository;
 
     /**
      * AuthenticateKey constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
+     * @param \App\Contracts\Repository\ApiKeyRepositoryInterface $repository
      * @param \Illuminate\Auth\AuthManager                                $auth
      * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
      */
@@ -53,8 +53,8 @@ class AuthenticateKey
      * @param int                      $keyType
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Request $request, Closure $next, int $keyType)
     {

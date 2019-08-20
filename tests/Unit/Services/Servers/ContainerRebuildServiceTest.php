@@ -5,15 +5,15 @@ namespace Tests\Unit\Services\Servers;
 use Mockery as m;
 use Tests\TestCase;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Services\Servers\ContainerRebuildService;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
+use App\Services\Servers\ContainerRebuildService;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
 class ContainerRebuildServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -23,12 +23,12 @@ class ContainerRebuildServiceTest extends TestCase
     protected $exception;
 
     /**
-     * @var \Pterodactyl\Models\Server
+     * @var \App\Models\Server
      */
     protected $server;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ContainerRebuildService
+     * @var \App\Services\Servers\ContainerRebuildService
      */
     protected $service;
 
@@ -60,7 +60,7 @@ class ContainerRebuildServiceTest extends TestCase
     /**
      * Test that an exception thrown by guzzle is rendered as a displayable exception.
      *
-     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @expectedException \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionThrownByGuzzle()
     {

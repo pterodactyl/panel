@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Base;
+namespace App\Http\Controllers\Base;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Http\Requests\Base\StoreAccountKeyRequest;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Services\Api\KeyCreationService;
+use App\Http\Requests\Base\StoreAccountKeyRequest;
+use App\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class AccountKeyController extends Controller
 {
@@ -20,12 +20,12 @@ class AccountKeyController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
+     * @var \App\Services\Api\KeyCreationService
      */
     protected $keyService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
+     * @var \App\Contracts\Repository\ApiKeyRepositoryInterface
      */
     protected $repository;
 
@@ -33,8 +33,8 @@ class AccountKeyController extends Controller
      * APIController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                           $alert
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Api\KeyCreationService                $keyService
+     * @param \App\Contracts\Repository\ApiKeyRepositoryInterface $repository
+     * @param \App\Services\Api\KeyCreationService                $keyService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -73,10 +73,10 @@ class AccountKeyController extends Controller
     /**
      * Handle saving new account API key.
      *
-     * @param \Pterodactyl\Http\Requests\Base\StoreAccountKeyRequest $request
+     * @param \App\Http\Requests\Base\StoreAccountKeyRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function store(StoreAccountKeyRequest $request)
     {

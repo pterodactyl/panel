@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Traits\Helpers;
+namespace App\Traits\Helpers;
 
 use Illuminate\Support\Str;
 use Matriphe\ISO639\ISO639;

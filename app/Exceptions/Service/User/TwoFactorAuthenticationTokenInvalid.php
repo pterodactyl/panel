@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Service\User;
+namespace App\Exceptions\Service\User;
 
 class TwoFactorAuthenticationTokenInvalid extends \Exception
 {

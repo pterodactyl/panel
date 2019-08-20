@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Exceptions;
+namespace App\Exceptions;
 
 use Exception;
 use Throwable;

@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Contracts\Core;
+namespace App\Contracts\Core;
 
-use Pterodactyl\Events\Event;
+use App\Events\Event;
 
 interface ReceivesEvents
 {
     /**
      * Handles receiving an event from the application.
      *
-     * @param \Pterodactyl\Events\Event $notification
+     * @param \App\Events\Event $notification
      */
     public function handle(Event $notification): void;
 }

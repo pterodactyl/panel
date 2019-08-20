@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace App\Http\Requests\Admin;
 
-use Pterodactyl\Models\DatabaseHost;
+use App\Models\DatabaseHost;
 
 class DatabaseHostFormRequest extends AdminFormRequest
 {

@@ -5,15 +5,15 @@ namespace Tests\Unit\Services\Eggs\Variables;
 use Mockery as m;
 use Tests\TestCase;
 use BadMethodCallException;
-use Pterodactyl\Models\EggVariable;
+use App\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
-use Pterodactyl\Services\Eggs\Variables\VariableCreationService;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Services\Eggs\Variables\VariableCreationService;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
 
 class VariableCreationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -91,7 +91,7 @@ class VariableCreationServiceTest extends TestCase
      * @param string $variable
      *
      * @dataProvider reservedNamesProvider
-     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
+     * @expectedException \App\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames(string $variable)
     {
@@ -115,7 +115,7 @@ class VariableCreationServiceTest extends TestCase
     /**
      * Test that validation errors due to invalid rules are caught and handled properly.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
+     * @expectedException \App\Exceptions\Service\Egg\Variable\BadValidationRuleException
      * @expectedExceptionMessage The validation rule "hodor_door" is not a valid rule for this application.
      */
     public function testInvalidValidationRulesResultInException()
@@ -173,7 +173,7 @@ class VariableCreationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Services\Eggs\Variables\VariableCreationService
+     * @return \App\Services\Eggs\Variables\VariableCreationService
      */
     private function getService(): VariableCreationService
     {

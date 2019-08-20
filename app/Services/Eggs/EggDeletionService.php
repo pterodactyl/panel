@@ -7,30 +7,30 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Eggs;
+namespace App\Services\Eggs;
 
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\HasChildrenException;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Exceptions\Service\Egg\HasChildrenException;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class EggDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
      * EggDeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface    $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \App\Contracts\Repository\EggRepositoryInterface    $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
@@ -46,8 +46,8 @@ class EggDeletionService
      * @param int $egg
      * @return int
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\HasChildrenException
+     * @throws \App\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Service\Egg\HasChildrenException
      */
     public function handle(int $egg): int
     {

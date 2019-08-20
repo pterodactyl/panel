@@ -5,12 +5,12 @@ namespace Tests\Unit\Services\Schedules;
 use Mockery as m;
 use Tests\TestCase;
 use Cron\CronExpression;
-use Pterodactyl\Models\Schedule;
+use App\Models\Schedule;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Schedules\ScheduleUpdateService;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Services\Schedules\Tasks\TaskCreationService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Services\Schedules\ScheduleUpdateService;
+use App\Contracts\Repository\TaskRepositoryInterface;
+use App\Services\Schedules\Tasks\TaskCreationService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ScheduleUpdateServiceTest extends TestCase
 {
@@ -20,17 +20,17 @@ class ScheduleUpdateServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\Tasks\TaskCreationService|\Mockery\Mock
+     * @var \App\Services\Schedules\Tasks\TaskCreationService|\Mockery\Mock
      */
     private $taskCreationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\TaskRepositoryInterface|\Mockery\Mock
      */
     private $taskRepository;
 
@@ -83,7 +83,7 @@ class ScheduleUpdateServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Schedules\ScheduleUpdateService
+     * @return \App\Services\Schedules\ScheduleUpdateService
      */
     private function getService(): ScheduleUpdateService
     {

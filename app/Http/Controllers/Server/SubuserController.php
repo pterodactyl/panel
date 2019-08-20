@@ -1,21 +1,21 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server;
+namespace App\Http\Controllers\Server;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Permission;
+use App\Models\Permission;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Subusers\SubuserUpdateService;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
-use Pterodactyl\Services\Subusers\SubuserCreationService;
-use Pterodactyl\Services\Subusers\SubuserDeletionService;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Http\Requests\Server\Subuser\SubuserStoreFormRequest;
-use Pterodactyl\Http\Requests\Server\Subuser\SubuserUpdateFormRequest;
+use App\Http\Controllers\Controller;
+use App\Services\Subusers\SubuserUpdateService;
+use App\Traits\Controllers\JavascriptInjection;
+use App\Services\Subusers\SubuserCreationService;
+use App\Services\Subusers\SubuserDeletionService;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Http\Requests\Server\Subuser\SubuserStoreFormRequest;
+use App\Http\Requests\Server\Subuser\SubuserUpdateFormRequest;
 
 class SubuserController extends Controller
 {
@@ -27,22 +27,22 @@ class SubuserController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserCreationService
+     * @var \App\Services\Subusers\SubuserCreationService
      */
     protected $subuserCreationService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserDeletionService
+     * @var \App\Services\Subusers\SubuserDeletionService
      */
     protected $subuserDeletionService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\SubuserUpdateService
+     * @var \App\Services\Subusers\SubuserUpdateService
      */
     protected $subuserUpdateService;
 
@@ -50,10 +50,10 @@ class SubuserController extends Controller
      * SubuserController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                            $alert
-     * @param \Pterodactyl\Services\Subusers\SubuserCreationService        $subuserCreationService
-     * @param \Pterodactyl\Services\Subusers\SubuserDeletionService        $subuserDeletionService
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Subusers\SubuserUpdateService          $subuserUpdateService
+     * @param \App\Services\Subusers\SubuserCreationService        $subuserCreationService
+     * @param \App\Services\Subusers\SubuserDeletionService        $subuserDeletionService
+     * @param \App\Contracts\Repository\SubuserRepositoryInterface $repository
+     * @param \App\Services\Subusers\SubuserUpdateService          $subuserUpdateService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -116,15 +116,15 @@ class SubuserController extends Controller
     /**
      * Handles editing a subuser.
      *
-     * @param \Pterodactyl\Http\Requests\Server\Subuser\SubuserUpdateFormRequest $request
+     * @param \App\Http\Requests\Server\Subuser\SubuserUpdateFormRequest $request
      * @param string                                                             $uuid
      * @param string                                                             $hash
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(SubuserUpdateFormRequest $request, string $uuid, string $hash): RedirectResponse
     {
@@ -153,14 +153,14 @@ class SubuserController extends Controller
     /**
      * Handles creating a new subuser.
      *
-     * @param \Pterodactyl\Http\Requests\Server\Subuser\SubuserStoreFormRequest $request
+     * @param \App\Http\Requests\Server\Subuser\SubuserStoreFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
-     * @throws \Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Subuser\ServerSubuserExistsException
+     * @throws \App\Exceptions\Service\Subuser\UserIsServerOwnerException
      */
     public function store(SubuserStoreFormRequest $request): RedirectResponse
     {
@@ -182,8 +182,8 @@ class SubuserController extends Controller
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function delete(Request $request): Response
     {

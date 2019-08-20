@@ -7,12 +7,12 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Daemon;
+namespace App\Http\Controllers\Daemon;
 
 use Storage;
-use Pterodactyl\Models;
+use App\Models;
 use Illuminate\Http\Request;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 
 class PackController extends Controller
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api\Client;
+namespace App\Http\Middleware\Api\Client;
 
 use Closure;
 use Illuminate\Container\Container;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Http\Middleware\Api\ApiSubstituteBindings;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class SubstituteClientApiBindings extends ApiSubstituteBindings
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Services\Allocations;
+namespace App\Services\Allocations;
 
 use IPTools\Network;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException;
-use Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException;
-use Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException;
-use Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Exceptions\Service\Allocation\CidrOutOfRangeException;
+use App\Exceptions\Service\Allocation\PortOutOfRangeException;
+use App\Exceptions\Service\Allocation\InvalidPortMappingException;
+use App\Exceptions\Service\Allocation\TooManyPortsInRangeException;
 
 class AssignmentService
 {
@@ -27,14 +27,14 @@ class AssignmentService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface
      */
     protected $repository;
 
     /**
      * AssignmentService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
+     * @param \App\Contracts\Repository\AllocationRepositoryInterface $repository
      * @param \Illuminate\Database\ConnectionInterface                        $connection
      */
     public function __construct(AllocationRepositoryInterface $repository, ConnectionInterface $connection)
@@ -46,13 +46,13 @@ class AssignmentService
     /**
      * Insert allocations into the database and link them to a specific node.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @param array                    $data
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @throws \App\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @throws \App\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @throws \App\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \App\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     public function handle(Node $node, array $data)
     {

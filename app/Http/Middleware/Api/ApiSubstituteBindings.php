@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api;
+namespace App\Http\Middleware\Api;
 
 use Closure;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Allocation;
+use App\Models\Egg;
+use App\Models\Nest;
+use App\Models\Node;
+use App\Models\User;
+use App\Models\Server;
+use App\Models\Database;
+use App\Models\Location;
+use App\Models\Allocation;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 

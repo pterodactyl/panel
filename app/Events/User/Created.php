@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Events\User;
+namespace App\Events\User;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Queue\SerializesModels;
 
 class Created
@@ -19,14 +19,14 @@ class Created
     /**
      * The Eloquent model of the server.
      *
-     * @var \Pterodactyl\Models\User
+     * @var \App\Models\User
      */
     public $user;
 
     /**
      * Create a new event instance.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      */
     public function __construct(User $user)
     {

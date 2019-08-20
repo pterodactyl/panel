@@ -7,16 +7,16 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Console\Commands\Location;
+namespace App\Console\Commands\Location;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use App\Services\Locations\LocationDeletionService;
+use App\Contracts\Repository\LocationRepositoryInterface;
 
 class DeleteLocationCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Services\Locations\LocationDeletionService
+     * @var \App\Services\Locations\LocationDeletionService
      */
     protected $deletionService;
 
@@ -31,7 +31,7 @@ class DeleteLocationCommand extends Command
     protected $locations;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
@@ -43,8 +43,8 @@ class DeleteLocationCommand extends Command
     /**
      * DeleteLocationCommand constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Locations\LocationDeletionService       $deletionService
+     * @param \App\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \App\Services\Locations\LocationDeletionService       $deletionService
      */
     public function __construct(
         LocationDeletionService $deletionService,
@@ -59,8 +59,8 @@ class DeleteLocationCommand extends Command
     /**
      * Respond to the command request.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Location\HasActiveNodesException
      */
     public function handle()
     {

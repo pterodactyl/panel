@@ -1,43 +1,43 @@
 <?php
 
-namespace Pterodactyl\Services\Sftp;
+namespace App\Services\Sftp;
 
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\SubuserRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthenticateUsingPasswordService
 {
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService
      */
     private $keyProviderService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     private $userRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface
      */
     private $subuserRepository;
 
     /**
      * AuthenticateUsingPasswordService constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService    $keyProviderService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $repository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
+     * @param \App\Services\DaemonKeys\DaemonKeyProviderService    $keyProviderService
+     * @param \App\Contracts\Repository\ServerRepositoryInterface  $repository
+     * @param \App\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
+     * @param \App\Contracts\Repository\UserRepositoryInterface    $userRepository
      */
     public function __construct(
         DaemonKeyProviderService $keyProviderService,
@@ -66,8 +66,8 @@ class AuthenticateUsingPasswordService
      * @param string|null $server
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
      */
     public function handle(string $username, string $password, int $node, string $server = null): array

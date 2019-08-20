@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use App\Contracts\Repository\Attributes\SearchableInterface;
 
 interface UserRepositoryInterface extends RepositoryInterface, SearchableInterface
 {

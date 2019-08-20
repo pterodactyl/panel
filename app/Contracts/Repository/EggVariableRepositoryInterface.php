@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
 use Illuminate\Support\Collection;
 

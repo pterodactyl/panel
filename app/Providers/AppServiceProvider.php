@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace App\Providers;
 
 use View;
 use Cache;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
+use App\Models\User;
+use App\Models\Server;
+use App\Models\Subuser;
 use Illuminate\Support\Facades\Schema;
 use Igaster\LaravelTheme\Facades\Theme;
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Observers\UserObserver;
-use Pterodactyl\Observers\ServerObserver;
-use Pterodactyl\Observers\SubuserObserver;
+use App\Observers\UserObserver;
+use App\Observers\ServerObserver;
+use App\Observers\SubuserObserver;
 
 class AppServiceProvider extends ServiceProvider
 {

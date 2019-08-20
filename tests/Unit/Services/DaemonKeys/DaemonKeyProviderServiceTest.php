@@ -12,36 +12,36 @@ namespace Tests\Unit\Services\DaemonKeys;
 use Mockery as m;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\DaemonKey;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Models\User;
+use App\Models\Server;
+use App\Models\Subuser;
+use App\Models\DaemonKey;
+use App\Services\DaemonKeys\DaemonKeyUpdateService;
+use App\Services\DaemonKeys\DaemonKeyCreationService;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyProviderServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
      */
     private $keyCreationService;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyUpdateService|\Mockery\Mock
      */
     private $keyUpdateService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     private $subuserRepository;
 
@@ -192,7 +192,7 @@ class DaemonKeyProviderServiceTest extends TestCase
     /**
      * Test that an exception is thrown if the user should not get a key.
      *
-     * @expectedException \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @expectedException \App\Exceptions\Repository\RecordNotFoundException
      */
     public function testExceptionIsThrownIfUserDoesNotDeserveKey()
     {
@@ -215,7 +215,7 @@ class DaemonKeyProviderServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     * @return \App\Services\DaemonKeys\DaemonKeyProviderService
      */
     private function getService(): DaemonKeyProviderService
     {

@@ -7,22 +7,22 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Nests;
+namespace App\Services\Nests;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use App\Contracts\Repository\NestRepositoryInterface;
 
 class NestUpdateService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
      * NestUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
+     * @param \App\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(NestRepositoryInterface $repository)
     {
@@ -34,8 +34,8 @@ class NestUpdateService
      *
      * @param int   $nest
      * @param array $data
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(int $nest, array $data)
     {

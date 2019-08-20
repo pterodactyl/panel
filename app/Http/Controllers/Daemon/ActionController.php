@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Daemon;
+namespace App\Http\Controllers\Daemon;
 
 use Cache;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Events\Server\Installed as ServerInstalled;
+use App\Http\Controllers\Controller;
+use App\Repositories\Eloquent\ServerRepository;
+use App\Events\Server\Installed as ServerInstalled;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use App\Exceptions\Repository\RecordNotFoundException;
 
 class ActionController extends Controller
 {
@@ -21,14 +21,14 @@ class ActionController extends Controller
      */
     private $eventDispatcher;
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     * @var \App\Repositories\Eloquent\ServerRepository
      */
     private $repository;
 
     /**
      * ActionController constructor.
      *
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \App\Repositories\Eloquent\ServerRepository $repository
      * @param \Illuminate\Contracts\Events\Dispatcher             $eventDispatcher
      */
     public function __construct(ServerRepository $repository, EventDispatcher $eventDispatcher)
@@ -43,13 +43,13 @@ class ActionController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function markInstall(Request $request): JsonResponse
     {
         try {
-            /** @var \Pterodactyl\Models\Server $server */
+            /** @var \App\Models\Server $server */
             $server = $this->repository->findFirstWhere([
                 'uuid' => $request->input('server'),
             ]);

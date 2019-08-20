@@ -1,24 +1,24 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Nests;
+namespace App\Http\Controllers\Api\Application\Nests;
 
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Transformers\Api\Application\NestTransformer;
-use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use App\Models\Nest;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Transformers\Api\Application\NestTransformer;
+use App\Http\Requests\Api\Application\Nests\GetNestsRequest;
+use App\Http\Controllers\Api\Application\ApplicationApiController;
 
 class NestController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     private $repository;
 
     /**
      * NestController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
+     * @param \App\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(NestRepositoryInterface $repository)
     {
@@ -30,7 +30,7 @@ class NestController extends ApplicationApiController
     /**
      * Return all Nests that exist on the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest $request
+     * @param \App\Http\Requests\Api\Application\Nests\GetNestsRequest $request
      * @return array
      */
     public function index(GetNestsRequest $request): array
@@ -45,7 +45,7 @@ class NestController extends ApplicationApiController
     /**
      * Return information about a single Nest model.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest $request
+     * @param \App\Http\Requests\Api\Application\Nests\GetNestsRequest $request
      * @return array
      */
     public function view(GetNestsRequest $request): array

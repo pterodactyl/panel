@@ -7,23 +7,23 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Nodes;
+namespace App\Services\Nodes;
 
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeCreationService
 {
     const DAEMON_SECRET_LENGTH = 36;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     protected $repository;
 
     /**
      * CreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(NodeRepositoryInterface $repository)
     {
@@ -34,9 +34,9 @@ class NodeCreationService
      * Create a new node on the panel.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\Node
+     * @return \App\Models\Node
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function handle(array $data)
     {

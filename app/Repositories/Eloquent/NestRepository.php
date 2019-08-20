@@ -7,11 +7,11 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use App\Models\Nest;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Exceptions\Repository\RecordNotFoundException;
 
 class NestRepository extends EloquentRepository implements NestRepositoryInterface
 {
@@ -29,9 +29,9 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
      * Return a nest or all nests with their associated eggs, variables, and packs.
      *
      * @param int $id
-     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Nest
+     * @return \Illuminate\Database\Eloquent\Collection|\App\Models\Nest
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithEggs(int $id = null)
     {
@@ -53,9 +53,9 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
      * Return a nest or all nests and the count of eggs, packs, and servers for that nest.
      *
      * @param int|null $id
-     * @return \Pterodactyl\Models\Nest|\Illuminate\Database\Eloquent\Collection
+     * @return \App\Models\Nest|\Illuminate\Database\Eloquent\Collection
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithCounts(int $id = null)
     {
@@ -77,9 +77,9 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
      * Return a nest along with its associated eggs and the servers relation on those eggs.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\Nest
+     * @return \App\Models\Nest
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithEggServers(int $id): Nest
     {

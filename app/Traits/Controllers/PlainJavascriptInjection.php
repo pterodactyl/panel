@@ -6,7 +6,7 @@
  * Time: 20:56.
  */
 
-namespace Pterodactyl\Traits\Controllers;
+namespace App\Traits\Controllers;
 
 use JavaScript;
 

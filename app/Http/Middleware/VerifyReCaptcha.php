@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace App\Http\Middleware;
 
 use Closure;
 use stdClass;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
-use Pterodactyl\Events\Auth\FailedCaptcha;
+use App\Events\Auth\FailedCaptcha;
 use Illuminate\Contracts\Config\Repository;
 
 class VerifyReCaptcha

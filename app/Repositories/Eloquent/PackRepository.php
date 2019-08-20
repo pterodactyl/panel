@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
-use Pterodactyl\Models\Pack;
-use Pterodactyl\Repositories\Concerns\Searchable;
+use App\Models\Pack;
+use App\Repositories\Concerns\Searchable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use App\Contracts\Repository\PackRepositoryInterface;
 
 class PackRepository extends EloquentRepository implements PackRepositoryInterface
 {
@@ -24,9 +24,9 @@ class PackRepository extends EloquentRepository implements PackRepositoryInterfa
     /**
      * Return a pack with the associated server models attached to it.
      *
-     * @param \Pterodactyl\Models\Pack $pack
+     * @param \App\Models\Pack $pack
      * @param bool                     $refresh
-     * @return \Pterodactyl\Models\Pack
+     * @return \App\Models\Pack
      */
     public function loadServerData(Pack $pack, bool $refresh = false): Pack
     {

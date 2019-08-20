@@ -13,10 +13,10 @@ use ZipArchive;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Models\Pack;
+use App\Models\Pack;
 use Illuminate\Contracts\Filesystem\Factory;
-use Pterodactyl\Services\Packs\ExportPackService;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use App\Services\Packs\ExportPackService;
+use App\Contracts\Repository\PackRepositoryInterface;
 
 class ExportPackServiceTest extends TestCase
 {
@@ -28,12 +28,12 @@ class ExportPackServiceTest extends TestCase
     protected $archive;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \App\Contracts\Repository\PackRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Packs\ExportPackService
+     * @var \App\Services\Packs\ExportPackService
      */
     protected $service;
 
@@ -79,10 +79,10 @@ class ExportPackServiceTest extends TestCase
     {
         $this->setupTestData();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'tempnam')
+        $this->getFunctionMock('\\App\\Services\\Packs', 'tempnam')
             ->expects($this->once())->willReturn('/tmp/myfile.test');
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'fopen')->expects($this->never());
+        $this->getFunctionMock('\\App\\Services\\Packs', 'fopen')->expects($this->never());
 
         $this->archive->shouldReceive('open')->with('/tmp/myfile.test', $this->archive::CREATE)->once()->andReturnSelf();
         $this->storage->shouldReceive('disk->files')->with('packs/' . $this->model->uuid)->once()->andReturn(['file_one']);
@@ -101,12 +101,12 @@ class ExportPackServiceTest extends TestCase
     {
         $this->setupTestData();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'tempnam')
+        $this->getFunctionMock('\\App\\Services\\Packs', 'tempnam')
             ->expects($this->once())->willReturn('/tmp/myfile.test');
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'fopen')->expects($this->once())->wilLReturn('fp');
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'fwrite')
+        $this->getFunctionMock('\\App\\Services\\Packs', 'fopen')->expects($this->once())->wilLReturn('fp');
+        $this->getFunctionMock('\\App\\Services\\Packs', 'fwrite')
             ->expects($this->once())->with('fp', json_encode($this->json, JSON_PRETTY_PRINT))->willReturn(null);
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'fclose')
+        $this->getFunctionMock('\\App\\Services\\Packs', 'fclose')
             ->expects($this->once())->with('fp')->willReturn(null);
 
         $response = $this->service->handle($this->model);
@@ -121,10 +121,10 @@ class ExportPackServiceTest extends TestCase
         $this->setupTestData();
 
         $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'tempnam')->expects($this->once())->willReturn('/tmp/myfile.test');
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'fopen')->expects($this->once())->wilLReturn(null);
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'fwrite')->expects($this->once())->willReturn(null);
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'fclose')->expects($this->once())->willReturn(null);
+        $this->getFunctionMock('\\App\\Services\\Packs', 'tempnam')->expects($this->once())->willReturn('/tmp/myfile.test');
+        $this->getFunctionMock('\\App\\Services\\Packs', 'fopen')->expects($this->once())->wilLReturn(null);
+        $this->getFunctionMock('\\App\\Services\\Packs', 'fwrite')->expects($this->once())->willReturn(null);
+        $this->getFunctionMock('\\App\\Services\\Packs', 'fclose')->expects($this->once())->willReturn(null);
 
         $response = $this->service->handle($this->model->id);
         $this->assertEquals('/tmp/myfile.test', $response);
@@ -133,13 +133,13 @@ class ExportPackServiceTest extends TestCase
     /**
      * Test that an exception is thrown when a ZipArchive cannot be created.
      *
-     * @expectedException  \Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException
+     * @expectedException  \App\Exceptions\Service\Pack\ZipArchiveCreationException
      */
     public function testExceptionIsThrownIfZipArchiveCannotBeCreated()
     {
         $this->setupTestData();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'tempnam')
+        $this->getFunctionMock('\\App\\Services\\Packs', 'tempnam')
             ->expects($this->once())->willReturn('/tmp/myfile.test');
 
         $this->archive->shouldReceive('open')->once()->andReturn(false);

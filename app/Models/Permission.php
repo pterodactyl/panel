@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace App\Models;
 
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
@@ -154,7 +154,7 @@ class Permission extends Model implements CleansAttributes, ValidableContract
      * Filter permission by server.
      *
      * @param \Illuminate\Database\Query\Builder $query
-     * @param \Pterodactyl\Models\Server         $server
+     * @param \App\Models\Server         $server
      * @return \Illuminate\Database\Query\Builder
      */
     public function scopeServer($query, Server $server)

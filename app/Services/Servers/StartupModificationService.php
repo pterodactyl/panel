@@ -1,25 +1,25 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
+use App\Models\User;
+use App\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Traits\Services\HasUserLevels;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Traits\Services\HasUserLevels;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\ServerVariableRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class StartupModificationService
 {
     use HasUserLevels;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     private $daemonServerRepository;
 
@@ -29,27 +29,27 @@ class StartupModificationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     private $eggRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
+     * @var \App\Services\Servers\EnvironmentService
      */
     private $environmentService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
+     * @var \App\Contracts\Repository\ServerVariableRepositoryInterface
      */
     private $serverVariableRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\VariableValidatorService
+     * @var \App\Services\Servers\VariableValidatorService
      */
     private $validatorService;
 
@@ -57,12 +57,12 @@ class StartupModificationService
      * StartupModificationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                            $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface            $eggRepository
-     * @param \Pterodactyl\Services\Servers\EnvironmentService                    $environmentService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
-     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
-     * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
+     * @param \App\Contracts\Repository\EggRepositoryInterface            $eggRepository
+     * @param \App\Services\Servers\EnvironmentService                    $environmentService
+     * @param \App\Contracts\Repository\ServerRepositoryInterface         $repository
+     * @param \App\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
+     * @param \App\Services\Servers\VariableValidatorService              $validatorService
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -85,14 +85,14 @@ class StartupModificationService
     /**
      * Process startup modification for a server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param array                      $data
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server, array $data): Server
     {
@@ -138,11 +138,11 @@ class StartupModificationService
      * Update certain administrative settings for a server in the DB.
      *
      * @param array                      $data
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param array                      $daemonData
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     private function updateAdministrativeSettings(array $data, Server &$server, array &$daemonData)
     {

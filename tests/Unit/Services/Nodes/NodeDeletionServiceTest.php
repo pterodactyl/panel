@@ -11,21 +11,21 @@ namespace Tests\Unit\Services\Nodes;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Contracts\Translation\Translator;
-use Pterodactyl\Services\Nodes\NodeDeletionService;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Nodes\NodeDeletionService;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class NodeDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
@@ -35,7 +35,7 @@ class NodeDeletionServiceTest extends TestCase
     protected $translator;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeDeletionService
+     * @var \App\Services\Nodes\NodeDeletionService
      */
     protected $service;
 
@@ -72,7 +72,7 @@ class NodeDeletionServiceTest extends TestCase
     /**
      * Test that an exception is thrown if servers are attached to the node.
      *
-     * @expectedException \Pterodactyl\Exceptions\DisplayException
+     * @expectedException \App\Exceptions\DisplayException
      */
     public function testExceptionIsThrownIfServersAreAttachedToNode()
     {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Repositories\Daemon;
+namespace App\Repositories\Daemon;
 
 use RuntimeException;
 use GuzzleHttp\Client;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Server;
+use App\Models\Node;
+use App\Models\Server;
 use Illuminate\Foundation\Application;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\BaseRepositoryInterface;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\Daemon\BaseRepositoryInterface;
 
 abstract class BaseRepository implements BaseRepositoryInterface
 {
@@ -18,7 +18,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     private $app;
 
     /**
-     * @var \Pterodactyl\Models\Server
+     * @var \App\Models\Server
      */
     private $server;
 
@@ -28,12 +28,12 @@ abstract class BaseRepository implements BaseRepositoryInterface
     private $token;
 
     /**
-     * @var \Pterodactyl\Models\Node|null
+     * @var \App\Models\Node|null
      */
     private $node;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     private $nodeRepository;
 
@@ -41,7 +41,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
      * BaseRepository constructor.
      *
      * @param \Illuminate\Foundation\Application                        $app
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $nodeRepository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface $nodeRepository
      */
     public function __construct(Application $app, NodeRepositoryInterface $nodeRepository)
     {
@@ -52,7 +52,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Set the node model to be used for this daemon connection.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return $this
      */
     public function setNode(Node $node)
@@ -65,7 +65,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Return the node model being used.
      *
-     * @return \Pterodactyl\Models\Node|null
+     * @return \App\Models\Node|null
      */
     public function getNode()
     {
@@ -75,7 +75,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Set the Server model to use when requesting information from the Daemon.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return $this
      */
     public function setServer(Server $server)
@@ -88,7 +88,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * Return the Server model.
      *
-     * @return \Pterodactyl\Models\Server|null
+     * @return \App\Models\Server|null
      */
     public function getServer()
     {

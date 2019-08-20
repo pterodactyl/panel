@@ -1,6 +1,6 @@
 <?php
 
-use Pterodactyl\Http\Middleware\Api\Client\AuthenticateClientAccess;
+use App\Http\Middleware\Api\Client\AuthenticateClientAccess;
 
 /*
 |--------------------------------------------------------------------------

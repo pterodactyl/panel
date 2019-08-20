@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class EnvironmentService
 {
@@ -19,7 +19,7 @@ class EnvironmentService
     private $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
@@ -27,7 +27,7 @@ class EnvironmentService
      * EnvironmentService constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository                     $config
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(ConfigRepository $config, ServerRepositoryInterface $repository)
     {
@@ -61,10 +61,10 @@ class EnvironmentService
      * Take all of the environment variables configured for this server and return
      * them in an easy to process format.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server): array
     {

@@ -3,8 +3,8 @@
 namespace Tests\Unit\Services\Acl\Api;
 
 use Tests\TestCase;
-use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\ApiKey;
+use App\Services\Acl\Api\AdminAcl;
 
 class AdminAclTest extends TestCase
 {

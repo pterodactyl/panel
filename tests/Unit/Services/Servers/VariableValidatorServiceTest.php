@@ -4,30 +4,30 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\EggVariable;
+use App\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Services\Servers\VariableValidatorService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
+use App\Services\Servers\VariableValidatorService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class VariableValidatorServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
     private $optionVariableRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $serverRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
      */
     private $serverVariableRepository;
 
@@ -161,7 +161,7 @@ class VariableValidatorServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Servers\VariableValidatorService
+     * @return \App\Services\Servers\VariableValidatorService
      */
     private function getService(): VariableValidatorService
     {

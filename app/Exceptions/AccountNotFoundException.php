@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions;
+namespace App\Exceptions;
 
 class AccountNotFoundException extends \Exception
 {

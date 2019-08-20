@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Server;
+namespace App\Http\Requests\Server;
 
 use Illuminate\Support\Arr;
 

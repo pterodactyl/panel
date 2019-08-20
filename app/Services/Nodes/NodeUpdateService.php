@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Services\Nodes;
+namespace App\Services\Nodes;
 
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
-use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Exceptions\Service\Node\ConfigurationNotPersistedException;
+use App\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
 class NodeUpdateService
 {
@@ -19,12 +19,12 @@ class NodeUpdateService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ConfigurationRepositoryInterface
      */
     private $configRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     private $repository;
 
@@ -32,8 +32,8 @@ class NodeUpdateService
      * UpdateService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                                  $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface $configurationRepository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface                 $repository
+     * @param \App\Contracts\Repository\Daemon\ConfigurationRepositoryInterface $configurationRepository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface                 $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -48,16 +48,16 @@ class NodeUpdateService
     /**
      * Update the configuration values for a given node on the machine.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @param array                    $data
      * @param bool                     $resetToken
      *
-     * @return \Pterodactyl\Models\Node
+     * @return \App\Models\Node
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Service\Node\ConfigurationNotPersistedException
      */
     public function handle(Node $node, array $data, bool $resetToken = false)
     {
@@ -67,7 +67,7 @@ class NodeUpdateService
 
         $this->connection->beginTransaction();
 
-        /** @var \Pterodactyl\Models\Node $updatedModel */
+        /** @var \App\Models\Node $updatedModel */
         $updatedModel = $this->repository->update($node->id, $data);
 
         try {

@@ -7,31 +7,31 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Packs;
+namespace App\Services\Packs;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Pack;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Models\Pack;
+use App\Contracts\Repository\PackRepositoryInterface;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class PackUpdateService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \App\Contracts\Repository\PackRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
      * PackUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface   $repository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \App\Contracts\Repository\PackRepositoryInterface   $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $serverRepository
      */
     public function __construct(
         PackRepositoryInterface $repository,
@@ -44,13 +44,13 @@ class PackUpdateService
     /**
      * Update a pack.
      *
-     * @param int|\Pterodactyl\Models\Pack $pack
+     * @param int|\App\Models\Pack $pack
      * @param array                        $data
      * @return bool
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($pack, array $data)
     {

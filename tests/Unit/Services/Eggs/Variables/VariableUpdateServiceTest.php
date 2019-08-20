@@ -6,21 +6,21 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use BadMethodCallException;
-use Pterodactyl\Models\EggVariable;
+use App\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Eggs\Variables\VariableUpdateService;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Exceptions\DisplayException;
+use App\Services\Eggs\Variables\VariableUpdateService;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
 
 class VariableUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Models\EggVariable|\Mockery\Mock
+     * @var \App\Models\EggVariable|\Mockery\Mock
      */
     private $model;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -159,7 +159,7 @@ class VariableUpdateServiceTest extends TestCase
      * Test that all of the reserved variables defined in the model trigger an exception.
      *
      * @dataProvider reservedNamesProvider
-     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
+     * @expectedException \App\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames(string $variable)
     {
@@ -169,7 +169,7 @@ class VariableUpdateServiceTest extends TestCase
     /**
      * Test that validation errors due to invalid rules are caught and handled properly.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
+     * @expectedException \App\Exceptions\Service\Egg\Variable\BadValidationRuleException
      * @expectedExceptionMessage The validation rule "hodor_door" is not a valid rule for this application.
      */
     public function testInvalidValidationRulesResultInException()
@@ -229,7 +229,7 @@ class VariableUpdateServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Services\Eggs\Variables\VariableUpdateService
+     * @return \App\Services\Eggs\Variables\VariableUpdateService
      */
     private function getService(): VariableUpdateService
     {

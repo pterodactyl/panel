@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Base;
+namespace App\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Users\TwoFactorSetupService;
-use Pterodactyl\Services\Users\ToggleTwoFactorService;
+use App\Http\Controllers\Controller;
+use App\Services\Users\TwoFactorSetupService;
+use App\Services\Users\ToggleTwoFactorService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
-use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
+use App\Contracts\Repository\SessionRepositoryInterface;
+use App\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 
 class SecurityController extends Controller
 {
@@ -24,17 +24,17 @@ class SecurityController extends Controller
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SessionRepositoryInterface
+     * @var \App\Contracts\Repository\SessionRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Users\ToggleTwoFactorService
+     * @var \App\Services\Users\ToggleTwoFactorService
      */
     protected $toggleTwoFactorService;
 
     /**
-     * @var \Pterodactyl\Services\Users\TwoFactorSetupService
+     * @var \App\Services\Users\TwoFactorSetupService
      */
     protected $twoFactorSetupService;
 
@@ -43,9 +43,9 @@ class SecurityController extends Controller
      *
      * @param \Prologue\Alerts\AlertsMessageBag                            $alert
      * @param \Illuminate\Contracts\Config\Repository                      $config
-     * @param \Pterodactyl\Contracts\Repository\SessionRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Users\ToggleTwoFactorService           $toggleTwoFactorService
-     * @param \Pterodactyl\Services\Users\TwoFactorSetupService            $twoFactorSetupService
+     * @param \App\Contracts\Repository\SessionRepositoryInterface $repository
+     * @param \App\Services\Users\ToggleTwoFactorService           $toggleTwoFactorService
+     * @param \App\Services\Users\TwoFactorSetupService            $twoFactorSetupService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -85,8 +85,8 @@ class SecurityController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function generateTotp(Request $request)
     {
@@ -103,8 +103,8 @@ class SecurityController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function setTotp(Request $request)
     {
@@ -123,8 +123,8 @@ class SecurityController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function disableTotp(Request $request)
     {

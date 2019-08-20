@@ -7,15 +7,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Exceptions\DisplayException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SuspensionService
 {
@@ -23,7 +23,7 @@ class SuspensionService
     const ACTION_UNSUSPEND = 'unsuspend';
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonServerRepository;
 
@@ -33,7 +33,7 @@ class SuspensionService
     protected $database;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
 
@@ -46,8 +46,8 @@ class SuspensionService
      * SuspensionService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $database
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface        $repository
      * @param \Psr\Log\LoggerInterface                                           $writer
      */
     public function __construct(
@@ -65,13 +65,13 @@ class SuspensionService
     /**
      * Suspends a server on the system.
      *
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param int|\App\Models\Server $server
      * @param string                         $action
      * @return bool
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function toggle($server, $action = self::ACTION_SUSPEND)
     {

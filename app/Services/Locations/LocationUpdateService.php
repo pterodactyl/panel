@@ -7,22 +7,22 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Locations;
+namespace App\Services\Locations;
 
-use Pterodactyl\Models\Location;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use App\Models\Location;
+use App\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationUpdateService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
      * LocationUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \App\Contracts\Repository\LocationRepositoryInterface $repository
      */
     public function __construct(LocationRepositoryInterface $repository)
     {
@@ -32,12 +32,12 @@ class LocationUpdateService
     /**
      * Update an existing location.
      *
-     * @param int|\Pterodactyl\Models\Location $location
+     * @param int|\App\Models\Location $location
      * @param array                            $data
-     * @return \Pterodactyl\Models\Location
+     * @return \App\Models\Location
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($location, array $data)
     {

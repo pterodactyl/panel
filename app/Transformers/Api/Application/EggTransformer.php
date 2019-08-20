@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\Egg;
+use App\Models\Nest;
+use App\Models\Server;
+use App\Models\EggVariable;
+use App\Services\Acl\Api\AdminAcl;
 
 class EggTransformer extends BaseTransformer
 {
@@ -33,7 +33,7 @@ class EggTransformer extends BaseTransformer
      * Transform an Egg model into a representation that can be consumed by
      * the application api.
      *
-     * @param \Pterodactyl\Models\Egg $model
+     * @param \App\Models\Egg $model
      * @return array
      */
     public function transform(Egg $model)
@@ -68,9 +68,9 @@ class EggTransformer extends BaseTransformer
     /**
      * Include the Nest relationship for the given Egg in the transformation.
      *
-     * @param \Pterodactyl\Models\Egg $model
+     * @param \App\Models\Egg $model
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNest(Egg $model)
     {
@@ -86,9 +86,9 @@ class EggTransformer extends BaseTransformer
     /**
      * Include the Servers relationship for the given Egg in the transformation.
      *
-     * @param \Pterodactyl\Models\Egg $model
+     * @param \App\Models\Egg $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Egg $model)
     {
@@ -105,7 +105,7 @@ class EggTransformer extends BaseTransformer
      * Include more detailed information about the configuration if this Egg is
      * extending another.
      *
-     * @param \Pterodactyl\Models\Egg $model
+     * @param \App\Models\Egg $model
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeConfig(Egg $model)
@@ -130,7 +130,7 @@ class EggTransformer extends BaseTransformer
      * Include more detailed information about the script configuration if the
      * Egg is extending another.
      *
-     * @param \Pterodactyl\Models\Egg $model
+     * @param \App\Models\Egg $model
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeScript(Egg $model)
@@ -154,9 +154,9 @@ class EggTransformer extends BaseTransformer
     /**
      * Include the variables that are defined for this Egg.
      *
-     * @param \Pterodactyl\Models\Egg $model
+     * @param \App\Models\Egg $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeVariables(Egg $model)
     {

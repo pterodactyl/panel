@@ -3,16 +3,16 @@
 namespace Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
+use App\Models\Server;
+use App\Models\Database;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Http\Middleware\Server\DatabaseBelongsToServer;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabaseBelongsToServerTest extends MiddlewareTestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -83,7 +83,7 @@ class DatabaseBelongsToServerTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer
+     * @return \App\Http\Middleware\Server\DatabaseBelongsToServer
      */
     private function getMiddleware(): DatabaseBelongsToServer
     {

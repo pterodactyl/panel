@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
-use Pterodactyl\Models\Location;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\Location;
+use App\Services\Acl\Api\AdminAcl;
 
 class LocationTransformer extends BaseTransformer
 {
@@ -27,7 +27,7 @@ class LocationTransformer extends BaseTransformer
     /**
      * Return a generic transformed pack array.
      *
-     * @param \Pterodactyl\Models\Location $location
+     * @param \App\Models\Location $location
      * @return array
      */
     public function transform(Location $location): array
@@ -44,10 +44,10 @@ class LocationTransformer extends BaseTransformer
     /**
      * Return the nodes associated with this location.
      *
-     * @param \Pterodactyl\Models\Location $location
+     * @param \App\Models\Location $location
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Location $location)
     {
@@ -63,10 +63,10 @@ class LocationTransformer extends BaseTransformer
     /**
      * Return the nodes associated with this location.
      *
-     * @param \Pterodactyl\Models\Location $location
+     * @param \App\Models\Location $location
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNodes(Location $location)
     {

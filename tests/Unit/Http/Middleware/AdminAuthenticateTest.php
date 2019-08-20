@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Http\Middleware;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Http\Middleware\AdminAuthenticate;
+use App\Models\User;
+use App\Http\Middleware\AdminAuthenticate;
 
 class AdminAuthenticateTest extends MiddlewareTestCase
 {
@@ -48,7 +48,7 @@ class AdminAuthenticateTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\AdminAuthenticate
+     * @return \App\Http\Middleware\AdminAuthenticate
      */
     private function getMiddleware(): AdminAuthenticate
     {

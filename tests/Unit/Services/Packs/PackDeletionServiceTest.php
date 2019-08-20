@@ -11,13 +11,13 @@ namespace Tests\Unit\Services\Packs;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Pack;
+use App\Models\Pack;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Packs\PackDeletionService;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Packs\PackDeletionService;
+use App\Contracts\Repository\PackRepositoryInterface;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class PackDeletionServiceTest extends TestCase
 {
@@ -27,17 +27,17 @@ class PackDeletionServiceTest extends TestCase
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \App\Contracts\Repository\PackRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Packs\PackDeletionService
+     * @var \App\Services\Packs\PackDeletionService
      */
     protected $service;
 

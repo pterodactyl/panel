@@ -1,16 +1,16 @@
 <?php
 
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Nest;
+use App\Models\Nest;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
-use Pterodactyl\Services\Eggs\Sharing\EggImporterService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService;
+use App\Services\Eggs\Sharing\EggImporterService;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Services\Eggs\Sharing\EggUpdateImporterService;
 
 class EggSeeder extends Seeder
 {
@@ -20,33 +20,33 @@ class EggSeeder extends Seeder
     private $filesystem;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggImporterService
+     * @var \App\Services\Eggs\Sharing\EggImporterService
      */
     private $importerService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     private $nestRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService
+     * @var \App\Services\Eggs\Sharing\EggUpdateImporterService
      */
     private $updateImporterService;
 
     /**
      * EggSeeder constructor.
      *
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService       $importerService
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface    $repository
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService $updateImporterService
+     * @param \App\Services\Eggs\Sharing\EggImporterService       $importerService
+     * @param \App\Contracts\Repository\EggRepositoryInterface    $repository
+     * @param \App\Services\Eggs\Sharing\EggUpdateImporterService $updateImporterService
      * @param \Illuminate\Filesystem\Filesystem                           $filesystem
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface   $nestRepository
+     * @param \App\Contracts\Repository\NestRepositoryInterface   $nestRepository
      */
     public function __construct(
         EggImporterService $importerService,
@@ -91,9 +91,9 @@ class EggSeeder extends Seeder
      * Find the nest that these eggs should be attached to.
      *
      * @param string $nestName
-     * @return \Pterodactyl\Models\Nest
+     * @return \App\Models\Nest
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     private function findMatchingNest(string $nestName): Nest
     {
@@ -106,7 +106,7 @@ class EggSeeder extends Seeder
     /**
      * Loop through the list of egg files and import them.
      *
-     * @param \Pterodactyl\Models\Nest $nest
+     * @param \App\Models\Nest $nest
      */
     private function parseEggFiles(Nest $nest)
     {

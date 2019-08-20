@@ -1,16 +1,16 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Settings;
+namespace App\Http\Controllers\Admin\Settings;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Settings\BaseSettingsFormRequest;
+use App\Http\Controllers\Controller;
+use App\Traits\Helpers\AvailableLanguages;
+use App\Services\Helpers\SoftwareVersionService;
+use App\Contracts\Repository\SettingsRepositoryInterface;
+use App\Http\Requests\Admin\Settings\BaseSettingsFormRequest;
 
 class IndexController extends Controller
 {
@@ -27,12 +27,12 @@ class IndexController extends Controller
     private $kernel;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
+     * @var \App\Contracts\Repository\SettingsRepositoryInterface
      */
     private $settings;
 
     /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
+     * @var \App\Services\Helpers\SoftwareVersionService
      */
     private $versionService;
 
@@ -41,8 +41,8 @@ class IndexController extends Controller
      *
      * @param \Prologue\Alerts\AlertsMessageBag                             $alert
      * @param \Illuminate\Contracts\Console\Kernel                          $kernel
-     * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService          $versionService
+     * @param \App\Contracts\Repository\SettingsRepositoryInterface $settings
+     * @param \App\Services\Helpers\SoftwareVersionService          $versionService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -72,10 +72,10 @@ class IndexController extends Controller
     /**
      * Handle settings update.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Settings\BaseSettingsFormRequest $request
+     * @param \App\Http\Requests\Admin\Settings\BaseSettingsFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(BaseSettingsFormRequest $request): RedirectResponse
     {

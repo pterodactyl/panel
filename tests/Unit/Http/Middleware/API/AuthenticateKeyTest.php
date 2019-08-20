@@ -4,14 +4,14 @@ namespace Tests\Unit\Http\Middleware\API;
 
 use Mockery as m;
 use Cake\Chronos\Chronos;
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\Api\AuthenticateKey;
+use App\Http\Middleware\Api\AuthenticateKey;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class AuthenticateKeyTest extends MiddlewareTestCase
 {
@@ -26,7 +26,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ApiKeyRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -140,7 +140,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Http\Middleware\Api\AuthenticateKey
+     * @return \App\Http\Middleware\Api\AuthenticateKey
      */
     private function getMiddleware(): AuthenticateKey
     {

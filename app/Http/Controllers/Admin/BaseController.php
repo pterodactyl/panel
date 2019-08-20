@@ -1,22 +1,22 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\View\View;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
+use App\Http\Controllers\Controller;
+use App\Services\Helpers\SoftwareVersionService;
 
 class BaseController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
+     * @var \App\Services\Helpers\SoftwareVersionService
      */
     private $version;
 
     /**
      * BaseController constructor.
      *
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $version
+     * @param \App\Services\Helpers\SoftwareVersionService $version
      */
     public function __construct(SoftwareVersionService $version)
     {

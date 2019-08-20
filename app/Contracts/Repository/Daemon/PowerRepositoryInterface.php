@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository\Daemon;
+namespace App\Contracts\Repository\Daemon;
 
 use Psr\Http\Message\ResponseInterface;
 
@@ -17,7 +17,7 @@ interface PowerRepositoryInterface extends BaseRepositoryInterface
      * @param string $signal
      * @return \Psr\Http\Message\ResponseInterface
      *
-     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
+     * @throws \App\Exceptions\Repository\Daemon\InvalidPowerSignalException
      */
     public function sendSignal(string $signal): ResponseInterface;
 }

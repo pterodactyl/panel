@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\Allocation;
+use App\Models\Allocation;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use App\Contracts\Repository\AllocationRepositoryInterface;
 
 class AllocationRepository extends EloquentRepository implements AllocationRepositoryInterface
 {
@@ -130,7 +130,7 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      * @param array $nodes
      * @param array $ports
      * @param bool  $dedicated
-     * @return \Pterodactyl\Models\Allocation|null
+     * @return \App\Models\Allocation|null
      */
     public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false)
     {

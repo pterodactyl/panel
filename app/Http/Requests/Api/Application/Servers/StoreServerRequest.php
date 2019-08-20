@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Servers;
+namespace App\Http\Requests\Api\Application\Servers;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Validation\Rule;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Services\Acl\Api\AdminAcl;
 use Illuminate\Contracts\Validation\Validator;
-use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use App\Models\Objects\DeploymentObject;
+use App\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerRequest extends ApplicationApiRequest
 {
@@ -143,7 +143,7 @@ class StoreServerRequest extends ApplicationApiRequest
     /**
      * Return a deployment object that can be passed to the server creation service.
      *
-     * @return \Pterodactyl\Models\Objects\DeploymentObject|null
+     * @return \App\Models\Objects\DeploymentObject|null
      */
     public function getDeploymentObject()
     {

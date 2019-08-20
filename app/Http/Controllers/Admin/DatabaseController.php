@@ -1,21 +1,21 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use Exception;
 use PDOException;
 use Illuminate\View\View;
-use Pterodactyl\Models\DatabaseHost;
+use App\Models\DatabaseHost;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
-use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
-use Pterodactyl\Services\Databases\Hosts\HostCreationService;
-use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Services\Databases\Hosts\HostUpdateService;
+use App\Http\Requests\Admin\DatabaseHostFormRequest;
+use App\Services\Databases\Hosts\HostCreationService;
+use App\Services\Databases\Hosts\HostDeletionService;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\LocationRepositoryInterface;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseController extends Controller
 {
@@ -25,32 +25,32 @@ class DatabaseController extends Controller
     private $alert;
 
     /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostCreationService
+     * @var \App\Services\Databases\Hosts\HostCreationService
      */
     private $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     private $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostDeletionService
+     * @var \App\Services\Databases\Hosts\HostDeletionService
      */
     private $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     private $locationRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostUpdateService
+     * @var \App\Services\Databases\Hosts\HostUpdateService
      */
     private $updateService;
 
@@ -58,12 +58,12 @@ class DatabaseController extends Controller
      * DatabaseController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                                 $alert
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface     $databaseRepository
-     * @param \Pterodactyl\Services\Databases\Hosts\HostCreationService         $creationService
-     * @param \Pterodactyl\Services\Databases\Hosts\HostDeletionService         $deletionService
-     * @param \Pterodactyl\Services\Databases\Hosts\HostUpdateService           $updateService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface     $locationRepository
+     * @param \App\Contracts\Repository\DatabaseHostRepositoryInterface $repository
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface     $databaseRepository
+     * @param \App\Services\Databases\Hosts\HostCreationService         $creationService
+     * @param \App\Services\Databases\Hosts\HostDeletionService         $deletionService
+     * @param \App\Services\Databases\Hosts\HostUpdateService           $updateService
+     * @param \App\Contracts\Repository\LocationRepositoryInterface     $locationRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -102,7 +102,7 @@ class DatabaseController extends Controller
      * @param int $host
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $host): View
     {
@@ -116,7 +116,7 @@ class DatabaseController extends Controller
     /**
      * Handle request to create a new database host.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
+     * @param \App\Http\Requests\Admin\DatabaseHostFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
@@ -145,8 +145,8 @@ class DatabaseController extends Controller
     /**
      * Handle updating database host.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
-     * @param \Pterodactyl\Models\DatabaseHost                         $host
+     * @param \App\Http\Requests\Admin\DatabaseHostFormRequest $request
+     * @param \App\Models\DatabaseHost                         $host
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
@@ -180,7 +180,7 @@ class DatabaseController extends Controller
      * @param int $host
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Service\HasActiveServersException
      */
     public function delete(int $host): RedirectResponse
     {

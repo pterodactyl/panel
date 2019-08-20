@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\ApiKey;
+use App\Models\User;
+use App\Models\ApiKey;
 use Illuminate\Support\Collection;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use App\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInterface
 {
@@ -22,7 +22,7 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
     /**
      * Get all of the account API keys that exist for a specific user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Support\Collection
      */
     public function getAccountKeys(User $user): Collection
@@ -35,7 +35,7 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
     /**
      * Get all of the application API keys that exist for a specific user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Support\Collection
      */
     public function getApplicationKeys(User $user): Collection
@@ -48,7 +48,7 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
     /**
      * Delete an account API key from the panel for a specific user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param string                   $identifier
      * @return int
      */
@@ -63,7 +63,7 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
     /**
      * Delete an application API key from the panel for a specific user.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param string                   $identifier
      * @return int
      */

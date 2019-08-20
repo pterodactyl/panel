@@ -10,42 +10,42 @@
 namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Http\Controllers\Base\IndexController;
+use App\Http\Controllers\Base\IndexController;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class IndexControllerTest extends ControllerTestCase
 {
     use ControllerAssertionsTrait;
 
     /**
-     * @var \Pterodactyl\Http\Controllers\Base\IndexController
+     * @var \App\Http\Controllers\Base\IndexController
      */
     protected $controller;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
      */
     protected $keyProviderService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 

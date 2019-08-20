@@ -7,13 +7,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Console\Commands\Schedule;
+namespace App\Console\Commands\Schedule;
 
 use Cake\Chronos\Chronos;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Pterodactyl\Services\Schedules\ProcessScheduleService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Services\Schedules\ProcessScheduleService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ProcessRunnableCommand extends Command
 {
@@ -23,12 +23,12 @@ class ProcessRunnableCommand extends Command
     protected $description = 'Process schedules in the database and determine which are ready to run.';
 
     /**
-     * @var \Pterodactyl\Services\Schedules\ProcessScheduleService
+     * @var \App\Services\Schedules\ProcessScheduleService
      */
     protected $processScheduleService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     protected $repository;
 
@@ -40,8 +40,8 @@ class ProcessRunnableCommand extends Command
     /**
      * ProcessRunnableCommand constructor.
      *
-     * @param \Pterodactyl\Services\Schedules\ProcessScheduleService        $processScheduleService
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
+     * @param \App\Services\Schedules\ProcessScheduleService        $processScheduleService
+     * @param \App\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
     public function __construct(ProcessScheduleService $processScheduleService, ScheduleRepositoryInterface $repository)
     {

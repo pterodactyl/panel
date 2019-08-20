@@ -12,20 +12,20 @@ namespace Tests\Unit\Services\Nodes;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Services\Nodes\NodeCreationService;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use App\Services\Nodes\NodeCreationService;
+use App\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeCreationServiceTest extends TestCase
 {
     use PHPMock;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeCreationService
+     * @var \App\Services\Nodes\NodeCreationService
      */
     protected $service;
 
@@ -46,7 +46,7 @@ class NodeCreationServiceTest extends TestCase
      */
     public function testNodeIsCreatedAndDaemonSecretIsGenerated()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'str_random')
+        $this->getFunctionMock('\\App\\Services\\Nodes', 'str_random')
             ->expects($this->once())->willReturn('random_string');
 
         $this->repository->shouldReceive('create')->with([

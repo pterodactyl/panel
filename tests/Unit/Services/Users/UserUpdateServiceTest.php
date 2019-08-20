@@ -4,12 +4,12 @@ namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Services\Users\UserUpdateService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
+use App\Services\Users\UserUpdateService;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
 
 class UserUpdateServiceTest extends TestCase
 {
@@ -19,12 +19,12 @@ class UserUpdateServiceTest extends TestCase
     private $hasher;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\RevokeMultipleDaemonKeysService|\Mockery\Mock
      */
     private $revocationService;
 
@@ -129,7 +129,7 @@ class UserUpdateServiceTest extends TestCase
     /**
      * Return an instance of the service for testing.
      *
-     * @return \Pterodactyl\Services\Users\UserUpdateService
+     * @return \App\Services\Users\UserUpdateService
      */
     private function getService(): UserUpdateService
     {

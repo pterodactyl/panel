@@ -4,11 +4,11 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Location;
+use App\Models\Server;
+use App\Models\Location;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Services\Servers\EnvironmentService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Servers\EnvironmentService;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class EnvironmentServiceTest extends TestCase
 {
@@ -20,7 +20,7 @@ class EnvironmentServiceTest extends TestCase
     private $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -157,7 +157,7 @@ class EnvironmentServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Servers\EnvironmentService
+     * @return \App\Services\Servers\EnvironmentService
      */
     private function getService(): EnvironmentService
     {
@@ -167,7 +167,7 @@ class EnvironmentServiceTest extends TestCase
     /**
      * Return a server model with a location relationship to be used in the tests.
      *
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      */
     private function getServerModel(): Server
     {

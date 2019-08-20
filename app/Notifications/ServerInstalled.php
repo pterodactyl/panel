@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Notifications;
+namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Pterodactyl\Events\Event;
+use App\Events\Event;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Pterodactyl\Contracts\Core\ReceivesEvents;
+use App\Contracts\Core\ReceivesEvents;
 use Illuminate\Contracts\Notifications\Dispatcher;
 use Illuminate\Notifications\Messages\MailMessage;
 
@@ -16,12 +16,12 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
     use Queueable;
 
     /**
-     * @var \Pterodactyl\Models\Server
+     * @var \App\Models\Server
      */
     public $server;
 
     /**
-     * @var \Pterodactyl\Models\User
+     * @var \App\Models\User
      */
     public $user;
 
@@ -29,7 +29,7 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
      * Handle a direct call to this notification from the server installed event. This is configured
      * in the event service provider.
      *
-     * @param \Pterodactyl\Events\Event|\Pterodactyl\Events\Server\Installed $event
+     * @param \App\Events\Event|\App\Events\Server\Installed $event
      */
     public function handle(Event $event): void
     {

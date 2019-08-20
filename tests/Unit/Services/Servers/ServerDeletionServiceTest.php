@@ -5,15 +5,15 @@ namespace Tests\Unit\Services\Servers;
 use Mockery as m;
 use Tests\TestCase;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Psr\Log\LoggerInterface as Writer;
 use Tests\Traits\MocksRequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Services\Servers\ServerDeletionService;
+use App\Services\Databases\DatabaseManagementService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ServerDeletionServiceTest extends TestCase
 {
@@ -25,22 +25,22 @@ class ServerDeletionServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     private $daemonServerRepository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService|\Mockery\Mock
+     * @var \App\Services\Databases\DatabaseManagementService|\Mockery\Mock
      */
     private $databaseManagementService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
      */
     private $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -125,7 +125,7 @@ class ServerDeletionServiceTest extends TestCase
     /**
      * Test that an exception is thrown if a server cannot be deleted from the node and force is not set.
      *
-     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @expectedException \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionShouldBeThrownIfDaemonReturnsAnErrorAndForceIsNotSet()
     {
@@ -140,7 +140,7 @@ class ServerDeletionServiceTest extends TestCase
     /**
      * Return an instance of the class with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Servers\ServerDeletionService
+     * @return \App\Services\Servers\ServerDeletionService
      */
     private function getService(): ServerDeletionService
     {

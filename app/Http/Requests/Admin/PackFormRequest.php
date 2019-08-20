@@ -7,10 +7,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Admin;
+namespace App\Http\Requests\Admin;
 
-use Pterodactyl\Models\Pack;
-use Pterodactyl\Services\Packs\PackCreationService;
+use App\Models\Pack;
+use App\Services\Packs\PackCreationService;
 
 class PackFormRequest extends AdminFormRequest
 {

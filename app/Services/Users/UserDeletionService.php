@@ -7,18 +7,18 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Users;
+namespace App\Services\Users;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Exceptions\DisplayException;
+use App\Models\User;
+use App\Exceptions\DisplayException;
 use Illuminate\Contracts\Translation\Translator;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class UserDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     protected $repository;
 
@@ -28,16 +28,16 @@ class UserDeletionService
     protected $translator;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
      * DeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $serverRepository
      * @param \Illuminate\Contracts\Translation\Translator                $translator
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface   $repository
+     * @param \App\Contracts\Repository\UserRepositoryInterface   $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
@@ -52,10 +52,10 @@ class UserDeletionService
     /**
      * Delete a user from the panel only if they have no servers attached to their account.
      *
-     * @param int|\Pterodactyl\Models\User $user
+     * @param int|\App\Models\User $user
      * @return bool|null
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      */
     public function handle($user)
     {

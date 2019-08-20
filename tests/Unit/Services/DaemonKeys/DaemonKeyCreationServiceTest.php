@@ -29,8 +29,8 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyCreationService;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyCreationServiceTest extends TestCase
 {
@@ -47,12 +47,12 @@ class DaemonKeyCreationServiceTest extends TestCase
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService
+     * @var \App\Services\DaemonKeys\DaemonKeyCreationService
      */
     protected $service;
 
@@ -75,7 +75,7 @@ class DaemonKeyCreationServiceTest extends TestCase
      */
     public function testDaemonKeyIsCreated()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services\\DaemonKeys', 'str_random')
+        $this->getFunctionMock('\\App\\Services\\DaemonKeys', 'str_random')
             ->expects($this->once())->willReturn('random_string');
 
         $this->config->shouldReceive('get')->with('pterodactyl.api.key_expire_time')->once()->andReturn(100);

@@ -7,12 +7,12 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Subusers;
+namespace App\Services\Subusers;
 
-use Pterodactyl\Models\Subuser;
+use App\Models\Subuser;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyDeletionService;
+use App\Contracts\Repository\SubuserRepositoryInterface;
 
 class SubuserDeletionService
 {
@@ -22,12 +22,12 @@ class SubuserDeletionService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService
+     * @var \App\Services\DaemonKeys\DaemonKeyDeletionService
      */
     private $keyDeletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface
      */
     private $repository;
 
@@ -35,8 +35,8 @@ class SubuserDeletionService
      * SubuserDeletionService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                     $connection
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService    $keyDeletionService
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
+     * @param \App\Services\DaemonKeys\DaemonKeyDeletionService    $keyDeletionService
+     * @param \App\Contracts\Repository\SubuserRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -51,10 +51,10 @@ class SubuserDeletionService
     /**
      * Delete a subuser and their associated permissions from the Panel and Daemon.
      *
-     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param \App\Models\Subuser $subuser
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Subuser $subuser)
     {

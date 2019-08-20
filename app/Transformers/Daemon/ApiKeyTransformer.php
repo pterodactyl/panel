@@ -1,32 +1,32 @@
 <?php
 
-namespace Pterodactyl\Transformers\Daemon;
+namespace App\Transformers\Daemon;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\DaemonKey;
-use Pterodactyl\Models\Permission;
+use App\Models\DaemonKey;
+use App\Models\Permission;
 use League\Fractal\TransformerAbstract;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class ApiKeyTransformer extends TransformerAbstract
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface
      */
     private $keyRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface
      */
     private $repository;
 
     /**
      * ApiKeyTransformer constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $keyRepository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface   $repository
+     * @param \App\Contracts\Repository\DaemonKeyRepositoryInterface $keyRepository
+     * @param \App\Contracts\Repository\SubuserRepositoryInterface   $repository
      */
     public function __construct(DaemonKeyRepositoryInterface $keyRepository, SubuserRepositoryInterface $repository)
     {
@@ -37,10 +37,10 @@ class ApiKeyTransformer extends TransformerAbstract
     /**
      * Return a listing of servers that a daemon key can access.
      *
-     * @param \Pterodactyl\Models\DaemonKey $key
+     * @param \App\Models\DaemonKey $key
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function transform(DaemonKey $key)
     {

@@ -7,7 +7,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = require __DIR__ . '/app.php';
 
-/** @var \Pterodactyl\Console\Kernel $kernel */
+/** @var \App\Console\Kernel $kernel */
 $kernel = $app->make(Kernel::class);
 
 /*

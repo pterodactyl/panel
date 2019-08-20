@@ -4,12 +4,12 @@ namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
 use Carbon\Carbon;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Tests\Traits\MocksUuids;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Cache\Repository;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Http\Controllers\Server\Files\DownloadController;
+use App\Http\Controllers\Server\Files\DownloadController;
 
 class DownloadControllerTest extends ControllerTestCase
 {
@@ -64,7 +64,7 @@ class DownloadControllerTest extends ControllerTestCase
     /**
      * Return a mocked instance of the controller to allow access to authorization functionality.
      *
-     * @return \Pterodactyl\Http\Controllers\Server\Files\DownloadController|\Mockery\Mock
+     * @return \App\Http\Controllers\Server\Files\DownloadController|\Mockery\Mock
      */
     private function getController()
     {

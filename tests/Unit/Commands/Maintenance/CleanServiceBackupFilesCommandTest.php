@@ -8,12 +8,12 @@ use Carbon\Carbon;
 use Tests\Unit\Commands\CommandTestCase;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
+use App\Console\Commands\Maintenance\CleanServiceBackupFilesCommand;
 
 class CleanServiceBackupFilesCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand
+     * @var \App\Console\Commands\Maintenance\CleanServiceBackupFilesCommand
      */
     protected $command;
 
@@ -75,7 +75,7 @@ class CleanServiceBackupFilesCommandTest extends CommandTestCase
     /**
      * Return an instance of the command for testing.
      *
-     * @return \Pterodactyl\Console\Commands\Maintenance\CleanServiceBackupFilesCommand
+     * @return \App\Console\Commands\Maintenance\CleanServiceBackupFilesCommand
      */
     private function getCommand(): CleanServiceBackupFilesCommand
     {

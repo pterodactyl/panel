@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Repositories;
+namespace App\Repositories;
 
 use InvalidArgumentException;
 use Illuminate\Foundation\Application;
-use Pterodactyl\Contracts\Repository\RepositoryInterface;
+use App\Contracts\Repository\RepositoryInterface;
 
 abstract class Repository implements RepositoryInterface
 {

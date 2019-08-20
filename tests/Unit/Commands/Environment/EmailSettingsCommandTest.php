@@ -12,12 +12,12 @@ namespace Tests\Unit\Commands\Environment;
 use Mockery as m;
 use Tests\Unit\Commands\CommandTestCase;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Console\Commands\Environment\EmailSettingsCommand;
+use App\Console\Commands\Environment\EmailSettingsCommand;
 
 class EmailSettingsCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Console\Commands\Environment\EmailSettingsCommand|\Mockery\Mock
+     * @var \App\Console\Commands\Environment\EmailSettingsCommand|\Mockery\Mock
      */
     protected $command;
 

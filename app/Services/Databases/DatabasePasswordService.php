@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Services\Databases;
+namespace App\Services\Databases;
 
 use Exception;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Database;
+use App\Models\Database;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Extensions\DynamicDatabaseConnection;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabasePasswordService
 {
@@ -19,7 +19,7 @@ class DatabasePasswordService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
+     * @var \App\Extensions\DynamicDatabaseConnection
      */
     private $dynamic;
 
@@ -29,7 +29,7 @@ class DatabasePasswordService
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     private $repository;
 
@@ -37,8 +37,8 @@ class DatabasePasswordService
      * DatabasePasswordService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                      $connection
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection             $dynamic
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface $repository
+     * @param \App\Extensions\DynamicDatabaseConnection             $dynamic
      * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
      */
     public function __construct(
@@ -56,7 +56,7 @@ class DatabasePasswordService
     /**
      * Updates a password for a given database.
      *
-     * @param \Pterodactyl\Models\Database|int $database
+     * @param \App\Models\Database|int $database
      * @return string
      *
      * @throws \Throwable

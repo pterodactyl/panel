@@ -7,17 +7,17 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
-use Pterodactyl\Models\Location;
+use App\Models\Location;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\LocationFormRequest;
-use Pterodactyl\Services\Locations\LocationUpdateService;
-use Pterodactyl\Services\Locations\LocationCreationService;
-use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use App\Exceptions\DisplayException;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\LocationFormRequest;
+use App\Services\Locations\LocationUpdateService;
+use App\Services\Locations\LocationCreationService;
+use App\Services\Locations\LocationDeletionService;
+use App\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationController extends Controller
 {
@@ -27,22 +27,22 @@ class LocationController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationCreationService
+     * @var \App\Services\Locations\LocationCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationDeletionService
+     * @var \App\Services\Locations\LocationDeletionService
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationUpdateService
+     * @var \App\Services\Locations\LocationUpdateService
      */
     protected $updateService;
 
@@ -50,10 +50,10 @@ class LocationController extends Controller
      * LocationController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                             $alert
-     * @param \Pterodactyl\Services\Locations\LocationCreationService       $creationService
-     * @param \Pterodactyl\Services\Locations\LocationDeletionService       $deletionService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Locations\LocationUpdateService         $updateService
+     * @param \App\Services\Locations\LocationCreationService       $creationService
+     * @param \App\Services\Locations\LocationDeletionService       $deletionService
+     * @param \App\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \App\Services\Locations\LocationUpdateService         $updateService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -87,7 +87,7 @@ class LocationController extends Controller
      * @param int $id
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function view($id)
     {
@@ -99,7 +99,7 @@ class LocationController extends Controller
     /**
      * Handle request to create new location.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
+     * @param \App\Http\Requests\Admin\LocationFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
@@ -115,8 +115,8 @@ class LocationController extends Controller
     /**
      * Handle request to update or delete location.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
-     * @param \Pterodactyl\Models\Location                         $location
+     * @param \App\Http\Requests\Admin\LocationFormRequest $request
+     * @param \App\Models\Location                         $location
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
@@ -136,11 +136,11 @@ class LocationController extends Controller
     /**
      * Delete a location from the system.
      *
-     * @param \Pterodactyl\Models\Location $location
+     * @param \App\Models\Location $location
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      */
     public function delete(Location $location)
     {

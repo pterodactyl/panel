@@ -3,14 +3,14 @@
 namespace Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Http\Middleware\DaemonAuthenticate;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use App\Models\Node;
+use App\Http\Middleware\DaemonAuthenticate;
+use App\Contracts\Repository\NodeRepositoryInterface;
 
 class DaemonAuthenticateTest extends MiddlewareTestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -69,7 +69,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\DaemonAuthenticate
+     * @return \App\Http\Middleware\DaemonAuthenticate
      */
     private function getMiddleware(): DaemonAuthenticate
     {

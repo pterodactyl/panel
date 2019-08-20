@@ -3,14 +3,14 @@
 namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\SessionGuard;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Services\Users\UserUpdateService;
+use App\Services\Users\UserUpdateService;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Http\Controllers\Base\AccountController;
-use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
+use App\Http\Controllers\Base\AccountController;
+use App\Http\Requests\Base\AccountDataFormRequest;
 
 class AccountControllerTest extends ControllerTestCase
 {
@@ -30,7 +30,7 @@ class AccountControllerTest extends ControllerTestCase
     protected $sessionGuard;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService|\Mockery\Mock
+     * @var \App\Services\Users\UserUpdateService|\Mockery\Mock
      */
     protected $updateService;
 
@@ -123,7 +123,7 @@ class AccountControllerTest extends ControllerTestCase
     /**
      * Return an instance of the controller for testing.
      *
-     * @return \Pterodactyl\Http\Controllers\Base\AccountController
+     * @return \App\Http\Controllers\Base\AccountController
      */
     private function getController(): AccountController
     {

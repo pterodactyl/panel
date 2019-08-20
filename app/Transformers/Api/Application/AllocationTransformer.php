@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\Allocation;
+use App\Services\Acl\Api\AdminAcl;
 
 class AllocationTransformer extends BaseTransformer
 {
@@ -27,7 +27,7 @@ class AllocationTransformer extends BaseTransformer
     /**
      * Return a generic transformed allocation array.
      *
-     * @param \Pterodactyl\Models\Allocation $allocation
+     * @param \App\Models\Allocation $allocation
      * @return array
      */
     public function transform(Allocation $allocation)
@@ -44,9 +44,9 @@ class AllocationTransformer extends BaseTransformer
     /**
      * Load the node relationship onto a given transformation.
      *
-     * @param \Pterodactyl\Models\Allocation $allocation
+     * @param \App\Models\Allocation $allocation
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNode(Allocation $allocation)
     {
@@ -64,9 +64,9 @@ class AllocationTransformer extends BaseTransformer
     /**
      * Load the server relationship onto a given transformation.
      *
-     * @param \Pterodactyl\Models\Allocation $allocation
+     * @param \App\Models\Allocation $allocation
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServer(Allocation $allocation)
     {

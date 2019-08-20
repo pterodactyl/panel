@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Traits\Services\ReturnsUpdatedModels;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService;
+use App\Traits\Services\ReturnsUpdatedModels;
+use App\Repositories\Eloquent\ServerRepository;
+use App\Services\DaemonKeys\DaemonKeyCreationService;
+use App\Services\DaemonKeys\DaemonKeyDeletionService;
 
 class DetailsModificationService
 {
@@ -20,17 +20,17 @@ class DetailsModificationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService
+     * @var \App\Services\DaemonKeys\DaemonKeyCreationService
      */
     private $keyCreationService;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService
+     * @var \App\Services\DaemonKeys\DaemonKeyDeletionService
      */
     private $keyDeletionService;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     * @var \App\Repositories\Eloquent\ServerRepository
      */
     private $repository;
 
@@ -38,9 +38,9 @@ class DetailsModificationService
      * DetailsModificationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                  $connection
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService $keyCreationService
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService $keyDeletionService
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository       $repository
+     * @param \App\Services\DaemonKeys\DaemonKeyCreationService $keyCreationService
+     * @param \App\Services\DaemonKeys\DaemonKeyDeletionService $keyDeletionService
+     * @param \App\Repositories\Eloquent\ServerRepository       $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -57,13 +57,13 @@ class DetailsModificationService
     /**
      * Update the details for a single server instance.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param array                      $data
-     * @return bool|\Pterodactyl\Models\Server
+     * @return bool|\App\Models\Server
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server, array $data)
     {

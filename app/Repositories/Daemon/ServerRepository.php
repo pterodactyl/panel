@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Repositories\Daemon;
+namespace App\Repositories\Daemon;
 
 use Webmozart\Assert\Assert;
 use Psr\Http\Message\ResponseInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
 class ServerRepository extends BaseRepository implements ServerRepositoryInterface
 {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
 use Cake\Chronos\Chronos;
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use League\Fractal\TransformerAbstract;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
-use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use App\Services\Acl\Api\AdminAcl;
+use App\Transformers\Api\Client\BaseClientTransformer;
+use App\Exceptions\Transformer\InvalidTransformerLevelException;
 
 /**
  * @method array transform(Model $model)
@@ -19,7 +19,7 @@ abstract class BaseTransformer extends TransformerAbstract
     const RESPONSE_TIMEZONE = 'UTC';
 
     /**
-     * @var \Pterodactyl\Models\ApiKey
+     * @var \App\Models\ApiKey
      */
     private $key;
 
@@ -44,7 +44,7 @@ abstract class BaseTransformer extends TransformerAbstract
     /**
      * Set the HTTP request class being used for this request.
      *
-     * @param \Pterodactyl\Models\ApiKey $key
+     * @param \App\Models\ApiKey $key
      * @return $this
      */
     public function setKey(ApiKey $key)
@@ -57,7 +57,7 @@ abstract class BaseTransformer extends TransformerAbstract
     /**
      * Return the request instance being used for this transformer.
      *
-     * @return \Pterodactyl\Models\ApiKey
+     * @return \App\Models\ApiKey
      */
     public function getKey(): ApiKey
     {
@@ -83,13 +83,13 @@ abstract class BaseTransformer extends TransformerAbstract
      *
      * @param string $abstract
      * @param array  $parameters
-     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     * @return \App\Transformers\Api\Application\BaseTransformer
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     protected function makeTransformer(string $abstract, array $parameters = [])
     {
-        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
+        /** @var \App\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->makeWith($abstract, $parameters);
         $transformer->setKey($this->getKey());
 

@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Service\Server;
+namespace App\Exceptions\Service\Server;
 
-use Pterodactyl\Exceptions\PterodactylException;
+use App\Exceptions\PterodactylException;
 
 class RequiredVariableMissingException extends PterodactylException
 {

@@ -7,15 +7,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Packs;
+namespace App\Services\Packs;
 
 use ZipArchive;
 use Illuminate\Http\UploadedFile;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Exceptions\Service\Pack\ZipExtractionException;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
-use Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException;
-use Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException;
+use App\Exceptions\Service\InvalidFileUploadException;
+use App\Exceptions\Service\Pack\ZipExtractionException;
+use App\Exceptions\Service\Pack\InvalidFileMimeTypeException;
+use App\Exceptions\Service\Pack\UnreadableZipArchiveException;
+use App\Exceptions\Service\Pack\InvalidPackArchiveFormatException;
 
 class TemplateUploadService
 {
@@ -31,14 +31,14 @@ class TemplateUploadService
     protected $archive;
 
     /**
-     * @var \Pterodactyl\Services\Packs\PackCreationService
+     * @var \App\Services\Packs\PackCreationService
      */
     protected $creationService;
 
     /**
      * TemplateUploadService constructor.
      *
-     * @param \Pterodactyl\Services\Packs\PackCreationService $creationService
+     * @param \App\Services\Packs\PackCreationService $creationService
      * @param \ZipArchive                                     $archive
      */
     public function __construct(
@@ -54,14 +54,14 @@ class TemplateUploadService
      *
      * @param int                           $egg
      * @param \Illuminate\Http\UploadedFile $file
-     * @return \Pterodactyl\Models\Pack
+     * @return \App\Models\Pack
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Pack\ZipExtractionException
+     * @throws \App\Exceptions\Service\InvalidFileUploadException
+     * @throws \App\Exceptions\Service\Pack\InvalidFileMimeTypeException
+     * @throws \App\Exceptions\Service\Pack\UnreadableZipArchiveException
+     * @throws \App\Exceptions\Service\Pack\InvalidPackArchiveFormatException
      */
     public function handle($egg, UploadedFile $file)
     {
@@ -90,14 +90,14 @@ class TemplateUploadService
      *
      * @param int                           $egg
      * @param \Illuminate\Http\UploadedFile $file
-     * @return \Pterodactyl\Models\Pack
+     * @return \App\Models\Pack
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\ZipExtractionException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Pack\ZipExtractionException
+     * @throws \App\Exceptions\Service\InvalidFileUploadException
+     * @throws \App\Exceptions\Service\Pack\InvalidFileMimeTypeException
+     * @throws \App\Exceptions\Service\Pack\UnreadableZipArchiveException
+     * @throws \App\Exceptions\Service\Pack\InvalidPackArchiveFormatException
      */
     protected function handleArchive($egg, $file)
     {

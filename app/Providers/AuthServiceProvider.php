@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -12,7 +12,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        \Pterodactyl\Models\Server::class => \Pterodactyl\Policies\ServerPolicy::class,
+        \App\Models\Server::class => \App\Policies\ServerPolicy::class,
     ];
 
     /**

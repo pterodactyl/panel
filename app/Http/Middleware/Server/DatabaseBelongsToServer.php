@@ -1,23 +1,23 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Server;
+namespace App\Http\Middleware\Server;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DatabaseBelongsToServer
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     private $repository;
 
     /**
      * DatabaseAccess constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface $repository
      */
     public function __construct(DatabaseRepositoryInterface $repository)
     {
@@ -33,7 +33,7 @@ class DatabaseBelongsToServer
      * @param \Closure                 $next
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Request $request, Closure $next)
     {

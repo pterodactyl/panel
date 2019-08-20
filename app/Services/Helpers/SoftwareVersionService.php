@@ -7,14 +7,14 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Helpers;
+namespace App\Services\Helpers;
 
 use stdClass;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
+use App\Exceptions\Service\Helper\CdnVersionFetchingException;
 
 class SoftwareVersionService
 {

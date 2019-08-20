@@ -7,35 +7,35 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use Javascript;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
+use App\Models\User;
+use App\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\SuspensionService;
-use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
-use Pterodactyl\Services\Servers\ServerCreationService;
-use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Services\Servers\ReinstallServerService;
-use Pterodactyl\Services\Servers\ContainerRebuildService;
-use Pterodactyl\Services\Servers\BuildModificationService;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
-use Pterodactyl\Services\Servers\DetailsModificationService;
-use Pterodactyl\Services\Servers\StartupModificationService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
+use App\Exceptions\DisplayException;
+use App\Http\Controllers\Controller;
+use App\Services\Servers\SuspensionService;
+use App\Http\Requests\Admin\ServerFormRequest;
+use App\Services\Servers\ServerCreationService;
+use App\Services\Servers\ServerDeletionService;
+use App\Services\Servers\ReinstallServerService;
+use App\Services\Servers\ContainerRebuildService;
+use App\Services\Servers\BuildModificationService;
+use App\Services\Databases\DatabasePasswordService;
+use App\Services\Servers\DetailsModificationService;
+use App\Services\Servers\StartupModificationService;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Repositories\Eloquent\DatabaseHostRepository;
+use App\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\LocationRepositoryInterface;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
 class ServersController extends Controller
 {
@@ -45,12 +45,12 @@ class ServersController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface
      */
     protected $allocationRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\BuildModificationService
+     * @var \App\Services\Servers\BuildModificationService
      */
     protected $buildModificationService;
 
@@ -60,77 +60,77 @@ class ServersController extends Controller
     protected $config;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ContainerRebuildService
+     * @var \App\Services\Servers\ContainerRebuildService
      */
     protected $containerRebuildService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     protected $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     * @var \App\Services\Databases\DatabaseManagementService
      */
     protected $databaseManagementService;
 
     /**
-     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
+     * @var \App\Services\Databases\DatabasePasswordService
      */
     protected $databasePasswordService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     protected $databaseHostRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ServerDeletionService
+     * @var \App\Services\Servers\ServerDeletionService
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\DetailsModificationService
+     * @var \App\Services\Servers\DetailsModificationService
      */
     protected $detailsModificationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $locationRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     protected $nestRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     protected $nodeRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ReinstallServerService
+     * @var \App\Services\Servers\ReinstallServerService
      */
     protected $reinstallService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ServerCreationService
+     * @var \App\Services\Servers\ServerCreationService
      */
     protected $service;
 
     /**
-     * @var \Pterodactyl\Services\Servers\StartupModificationService
+     * @var \App\Services\Servers\StartupModificationService
      */
     private $startupModificationService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\SuspensionService
+     * @var \App\Services\Servers\SuspensionService
      */
     protected $suspensionService;
 
@@ -138,24 +138,24 @@ class ServersController extends Controller
      * ServersController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                               $alert
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
-     * @param \Pterodactyl\Services\Servers\BuildModificationService          $buildModificationService
+     * @param \App\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \App\Services\Servers\BuildModificationService          $buildModificationService
      * @param \Illuminate\Contracts\Config\Repository                         $config
-     * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
-     * @param \Pterodactyl\Services\Servers\ServerCreationService             $service
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService       $databaseManagementService
-     * @param \Pterodactyl\Services\Databases\DatabasePasswordService         $databasePasswordService
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
-     * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
-     * @param \Pterodactyl\Services\Servers\ServerDeletionService             $deletionService
-     * @param \Pterodactyl\Services\Servers\DetailsModificationService        $detailsModificationService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
-     * @param \Pterodactyl\Services\Servers\ReinstallServerService            $reinstallService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface       $nestRepository
-     * @param \Pterodactyl\Services\Servers\StartupModificationService        $startupModificationService
-     * @param \Pterodactyl\Services\Servers\SuspensionService                 $suspensionService
+     * @param \App\Services\Servers\ContainerRebuildService           $containerRebuildService
+     * @param \App\Services\Servers\ServerCreationService             $service
+     * @param \App\Services\Databases\DatabaseManagementService       $databaseManagementService
+     * @param \App\Services\Databases\DatabasePasswordService         $databasePasswordService
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
+     * @param \App\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
+     * @param \App\Services\Servers\ServerDeletionService             $deletionService
+     * @param \App\Services\Servers\DetailsModificationService        $detailsModificationService
+     * @param \App\Contracts\Repository\LocationRepositoryInterface   $locationRepository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
+     * @param \App\Services\Servers\ReinstallServerService            $reinstallService
+     * @param \App\Contracts\Repository\ServerRepositoryInterface     $repository
+     * @param \App\Contracts\Repository\NestRepositoryInterface       $nestRepository
+     * @param \App\Services\Servers\StartupModificationService        $startupModificationService
+     * @param \App\Services\Servers\SuspensionService                 $suspensionService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -250,16 +250,16 @@ class ServersController extends Controller
     /**
      * Handle POST of server creation form.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
+     * @param \App\Http\Requests\Admin\ServerFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \App\Exceptions\Service\Deployment\NoViableNodeException
      */
     public function store(ServerFormRequest $request)
     {
@@ -272,7 +272,7 @@ class ServersController extends Controller
     /**
      * Display the index when viewing a specific server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\View\View
      */
     public function viewIndex(Server $server)
@@ -286,7 +286,7 @@ class ServersController extends Controller
      * @param int $server
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function viewDetails($server)
     {
@@ -304,7 +304,7 @@ class ServersController extends Controller
      * @param int $server
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function viewBuild($server)
     {
@@ -325,10 +325,10 @@ class ServersController extends Controller
     /**
      * Display startup configuration page for a server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function viewStartup(Server $server)
     {
@@ -358,7 +358,7 @@ class ServersController extends Controller
     /**
      * Display the database management page for a specific server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\View\View
      */
     public function viewDatabase(Server $server)
@@ -374,10 +374,10 @@ class ServersController extends Controller
     /**
      * Display the management page when viewing a specific server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      */
     public function viewManage(Server $server)
     {
@@ -391,7 +391,7 @@ class ServersController extends Controller
     /**
      * Display the deletion page for a server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\View\View
      */
     public function viewDelete(Server $server)
@@ -403,12 +403,12 @@ class ServersController extends Controller
      * Update the details for a server.
      *
      * @param \Illuminate\Http\Request   $request
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function setDetails(Request $request, Server $server)
     {
@@ -424,12 +424,12 @@ class ServersController extends Controller
     /**
      * Toggles the install status for a server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function toggleInstall(Server $server)
     {
@@ -449,12 +449,12 @@ class ServersController extends Controller
     /**
      * Reinstalls the server with the currently assigned pack and service.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function reinstallServer(Server $server)
     {
@@ -467,9 +467,9 @@ class ServersController extends Controller
     /**
      * Setup a server to have a container rebuild.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function rebuildContainer(Server $server)
     {
@@ -483,12 +483,12 @@ class ServersController extends Controller
      * Manage the suspension status for a server.
      *
      * @param \Illuminate\Http\Request   $request
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function manageSuspension(Request $request, Server $server)
     {
@@ -504,12 +504,12 @@ class ServersController extends Controller
      * Update the build configuration for a server.
      *
      * @param \Illuminate\Http\Request   $request
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function updateBuild(Request $request, Server $server)
     {
@@ -527,11 +527,11 @@ class ServersController extends Controller
      * Start the server deletion process.
      *
      * @param \Illuminate\Http\Request   $request
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function delete(Request $request, Server $server)
     {
@@ -545,13 +545,13 @@ class ServersController extends Controller
      * Update the startup command as well as variables.
      *
      * @param \Illuminate\Http\Request   $request
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function saveStartup(Request $request, Server $server)
     {
@@ -565,7 +565,7 @@ class ServersController extends Controller
     /**
      * Creates a new database assigned to a specific server.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest $request
+     * @param \App\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest $request
      * @param int                                                                           $server
      * @return \Illuminate\Http\RedirectResponse
      *
@@ -611,7 +611,7 @@ class ServersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function deleteDatabase($server, $database)
     {

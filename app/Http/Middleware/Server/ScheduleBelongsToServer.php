@@ -1,30 +1,30 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Server;
+namespace App\Http\Middleware\Server;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Contracts\Extensions\HashidsInterface;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ScheduleBelongsToServer
 {
     /**
-     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface
+     * @var \App\Contracts\Extensions\HashidsInterface
      */
     private $hashids;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     private $repository;
 
     /**
      * TaskAccess constructor.
      *
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface            $hashids
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
+     * @param \App\Contracts\Extensions\HashidsInterface            $hashids
+     * @param \App\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
     public function __construct(HashidsInterface $hashids, ScheduleRepositoryInterface $repository)
     {
@@ -39,7 +39,7 @@ class ScheduleBelongsToServer
      * @param \Closure                 $next
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function handle(Request $request, Closure $next)

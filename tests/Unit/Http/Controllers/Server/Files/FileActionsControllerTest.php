@@ -10,22 +10,22 @@
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Tests\Traits\MocksRequestException;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Exceptions\PterodactylException;
+use App\Exceptions\PterodactylException;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Http\Requests\Server\UpdateFileContentsFormRequest;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
-use Pterodactyl\Http\Controllers\Server\Files\FileActionsController;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Http\Requests\Server\UpdateFileContentsFormRequest;
+use App\Contracts\Repository\Daemon\FileRepositoryInterface;
+use App\Http\Controllers\Server\Files\FileActionsController;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
 
 class FileActionsControllerTest extends ControllerTestCase
 {
     use MocksRequestException;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\FileRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
@@ -176,7 +176,7 @@ class FileActionsControllerTest extends ControllerTestCase
     /**
      * Return a mocked instance of the controller to allow access to authorization functionality.
      *
-     * @return \Pterodactyl\Http\Controllers\Server\Files\FileActionsController|\Mockery\Mock
+     * @return \App\Http\Controllers\Server\Files\FileActionsController|\Mockery\Mock
      */
     private function getController()
     {

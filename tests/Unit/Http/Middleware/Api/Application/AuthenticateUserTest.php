@@ -3,7 +3,7 @@
 namespace Tests\Unit\Http\Middleware\API\Application;
 
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
+use App\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 
 class AuthenticateUserTest extends MiddlewareTestCase
 {
@@ -44,7 +44,7 @@ class AuthenticateUserTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware for testing.
      *
-     * @return \Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser
+     * @return \App\Http\Middleware\Api\Application\AuthenticateApplicationUser
      */
     private function getMiddleware(): AuthenticateApplicationUser
     {

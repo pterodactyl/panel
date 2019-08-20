@@ -11,18 +11,18 @@ namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Services\Subusers\PermissionCreationService;
-use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
+use App\Services\Subusers\PermissionCreationService;
+use App\Contracts\Repository\PermissionRepositoryInterface;
 
 class PermissionCreationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\PermissionRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
+     * @var \App\Services\Subusers\PermissionCreationService
      */
     protected $service;
 

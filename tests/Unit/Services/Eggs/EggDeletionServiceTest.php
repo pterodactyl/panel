@@ -11,27 +11,27 @@ namespace Tests\Unit\Services\Services\Options;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Services\Eggs\EggDeletionService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\HasChildrenException;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Exceptions\PterodactylException;
+use App\Services\Eggs\EggDeletionService;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Exceptions\Service\Egg\HasChildrenException;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class EggDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\EggDeletionService
+     * @var \App\Services\Eggs\EggDeletionService
      */
     protected $service;
 

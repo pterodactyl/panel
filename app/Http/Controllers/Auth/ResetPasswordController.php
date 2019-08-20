@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -8,9 +8,9 @@ use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Contracts\Repository\UserRepositoryInterface;
 
 class ResetPasswordController extends Controller
 {
@@ -44,7 +44,7 @@ class ResetPasswordController extends Controller
     private $hasher;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     private $userRepository;
 
@@ -54,7 +54,7 @@ class ResetPasswordController extends Controller
      * @param \Prologue\Alerts\AlertsMessageBag                         $alerts
      * @param \Illuminate\Contracts\Events\Dispatcher                   $dispatcher
      * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $userRepository
+     * @param \App\Contracts\Repository\UserRepositoryInterface $userRepository
      */
     public function __construct(AlertsMessageBag $alerts, Dispatcher $dispatcher, Hasher $hasher, UserRepositoryInterface $userRepository)
     {
@@ -83,11 +83,11 @@ class ResetPasswordController extends Controller
      * account do not automatically log them in. In those cases, send the user back to the login
      * form with a note telling them their password was changed and to log back in.
      *
-     * @param \Illuminate\Contracts\Auth\CanResetPassword|\Pterodactyl\Models\User $user
+     * @param \Illuminate\Contracts\Auth\CanResetPassword|\App\Models\User $user
      * @param string                                                               $password
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     protected function resetPassword($user, $password)
     {

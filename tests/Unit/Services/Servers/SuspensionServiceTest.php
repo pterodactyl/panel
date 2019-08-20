@@ -13,19 +13,19 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Servers\SuspensionService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Exceptions\DisplayException;
+use App\Services\Servers\SuspensionService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SuspensionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonServerRepository;
 
@@ -40,17 +40,17 @@ class SuspensionServiceTest extends TestCase
     protected $exception;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Models\Server
+     * @var \App\Models\Server
      */
     protected $server;
 
     /**
-     * @var \Pterodactyl\Services\Servers\SuspensionService
+     * @var \App\Services\Servers\SuspensionService
      */
     protected $service;
 

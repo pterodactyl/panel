@@ -11,26 +11,26 @@ namespace Tests\Unit\Services\Locations;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
+use App\Exceptions\DisplayException;
+use App\Services\Locations\LocationDeletionService;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\LocationRepositoryInterface;
+use App\Exceptions\Service\Location\HasActiveNodesException;
 
 class LocationDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     protected $nodeRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationDeletionService
+     * @var \App\Services\Locations\LocationDeletionService
      */
     protected $service;
 

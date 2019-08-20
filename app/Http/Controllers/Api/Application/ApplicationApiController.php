@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application;
+namespace App\Http\Controllers\Api\Application;
 
 use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
 use Illuminate\Container\Container;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
+use App\Http\Controllers\Controller;
+use App\Extensions\Spatie\Fractalistic\Fractal;
+use App\Transformers\Api\Application\BaseTransformer;
 
 abstract class ApplicationApiController extends Controller
 {
@@ -18,7 +18,7 @@ abstract class ApplicationApiController extends Controller
     protected $request;
 
     /**
-     * @var \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal
+     * @var \App\Extensions\Spatie\Fractalistic\Fractal
      */
     protected $fractal;
 
@@ -42,7 +42,7 @@ abstract class ApplicationApiController extends Controller
      * Perform dependency injection of certain classes needed for core functionality
      * without littering the constructors of classes that extend this abstract.
      *
-     * @param \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal $fractal
+     * @param \App\Extensions\Spatie\Fractalistic\Fractal $fractal
      * @param \Illuminate\Http\Request                            $request
      */
     public function loadDependencies(Fractal $fractal, Request $request)
@@ -55,11 +55,11 @@ abstract class ApplicationApiController extends Controller
      * Return an instance of an application transformer.
      *
      * @param string $abstract
-     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     * @return \App\Transformers\Api\Application\BaseTransformer
      */
     public function getTransformer(string $abstract)
     {
-        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
+        /** @var \App\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->make($abstract);
         $transformer->setKey($this->request->attributes->get('api_key'));
 

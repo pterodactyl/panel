@@ -3,11 +3,11 @@
 namespace Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
+use App\Http\Middleware\MaintenanceMiddleware;
 
 class MaintenanceMiddlewareTest extends MiddlewareTestCase
 {
@@ -61,7 +61,7 @@ class MaintenanceMiddlewareTest extends MiddlewareTestCase
     }
 
     /**
-     * @return \Pterodactyl\Http\Middleware\MaintenanceMiddleware
+     * @return \App\Http\Middleware\MaintenanceMiddleware
      */
     private function getMiddleware(): MaintenanceMiddleware
     {

@@ -1,32 +1,32 @@
 <?php
 
-namespace Pterodactyl\Jobs\Schedule;
+namespace App\Jobs\Schedule;
 
 use Exception;
 use Cake\Chronos\Chronos;
-use Pterodactyl\Jobs\Job;
+use App\Jobs\Job;
 use InvalidArgumentException;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
+use App\Contracts\Repository\TaskRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Contracts\Repository\Daemon\PowerRepositoryInterface;
+use App\Contracts\Repository\Daemon\CommandRepositoryInterface;
 
 class RunTaskJob extends Job implements ShouldQueue
 {
     use DispatchesJobs, InteractsWithQueue, SerializesModels;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\CommandRepositoryInterface
      */
     protected $commandRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\PowerRepositoryInterface
      */
     protected $powerRepository;
 
@@ -41,7 +41,7 @@ class RunTaskJob extends Job implements ShouldQueue
     public $task;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
+     * @var \App\Contracts\Repository\TaskRepositoryInterface
      */
     protected $taskRepository;
 
@@ -61,14 +61,14 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * Run the job and send actions to the daemon running the server.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface $commandRepository
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService           $keyProviderService
-     * @param \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface   $powerRepository
-     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface           $taskRepository
+     * @param \App\Contracts\Repository\Daemon\CommandRepositoryInterface $commandRepository
+     * @param \App\Services\DaemonKeys\DaemonKeyProviderService           $keyProviderService
+     * @param \App\Contracts\Repository\Daemon\PowerRepositoryInterface   $powerRepository
+     * @param \App\Contracts\Repository\TaskRepositoryInterface           $taskRepository
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\Daemon\InvalidPowerSignalException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(
         CommandRepositoryInterface $commandRepository,
@@ -117,8 +117,8 @@ class RunTaskJob extends Job implements ShouldQueue
      *
      * @param null|\Exception $exception
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function failed(Exception $exception = null)
     {
@@ -131,8 +131,8 @@ class RunTaskJob extends Job implements ShouldQueue
      *
      * @param int $sequence
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     private function queueNextTask($sequence)
     {
@@ -150,8 +150,8 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * Marks the parent schedule as being complete.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     private function markScheduleComplete()
     {
@@ -165,8 +165,8 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * Mark a specific task as no longer being queued.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     private function markTaskNotQueued()
     {

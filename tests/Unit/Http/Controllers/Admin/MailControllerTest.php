@@ -7,8 +7,8 @@ use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Http\Controllers\Admin\Settings\MailController;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use App\Http\Controllers\Admin\Settings\MailController;
+use App\Contracts\Repository\SettingsRepositoryInterface;
 
 class MailControllerTest extends ControllerTestCase
 {
@@ -33,7 +33,7 @@ class MailControllerTest extends ControllerTestCase
     private $kernel;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
+     * @var \App\Contracts\Repository\SettingsRepositoryInterface
      */
     private $settingsRepositoryInterface;
 

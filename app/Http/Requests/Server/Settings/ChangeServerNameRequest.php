@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Server\Settings;
+namespace App\Http\Requests\Server\Settings;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Http\Requests\Server\ServerFormRequest;
+use App\Models\Server;
+use App\Http\Requests\Server\ServerFormRequest;
 
 class ChangeServerNameRequest extends ServerFormRequest
 {

@@ -1,27 +1,27 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server\Settings;
+namespace App\Http\Controllers\Server\Settings;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Http\Requests\Server\Settings\ChangeServerNameRequest;
+use App\Http\Controllers\Controller;
+use App\Traits\Controllers\JavascriptInjection;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Http\Requests\Server\Settings\ChangeServerNameRequest;
 
 class NameController extends Controller
 {
     use JavascriptInjection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
      * NameController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(ServerRepositoryInterface $repository)
     {
@@ -44,11 +44,11 @@ class NameController extends Controller
     /**
      * Update the stored name for a specific server.
      *
-     * @param \Pterodactyl\Http\Requests\Server\Settings\ChangeServerNameRequest $request
+     * @param \App\Http\Requests\Server\Settings\ChangeServerNameRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(ChangeServerNameRequest $request): RedirectResponse
     {

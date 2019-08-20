@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Services\Acl\Api;
+namespace App\Services\Acl\Api;
 
 use ReflectionClass;
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 
 class AdminAcl
 {
@@ -56,7 +56,7 @@ class AdminAcl
      * Determine if an API Key model has permission to access a given resource
      * at a specific action level.
      *
-     * @param \Pterodactyl\Models\ApiKey $key
+     * @param \App\Models\ApiKey $key
      * @param string                     $resource
      * @param int                        $action
      * @return bool

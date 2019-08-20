@@ -7,29 +7,29 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Nests;
+namespace App\Services\Nests;
 
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class NestDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
      * NestDeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface   $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \App\Contracts\Repository\NestRepositoryInterface   $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
@@ -45,7 +45,7 @@ class NestDeletionService
      * @param int $nest
      * @return int
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Service\HasActiveServersException
      */
     public function handle(int $nest): int
     {

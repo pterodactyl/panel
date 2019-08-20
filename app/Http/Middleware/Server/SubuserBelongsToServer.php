@@ -1,31 +1,31 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Server;
+namespace App\Http\Middleware\Server;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use App\Exceptions\DisplayException;
+use App\Contracts\Extensions\HashidsInterface;
+use App\Contracts\Repository\SubuserRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SubuserBelongsToServer
 {
     /**
-     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface
+     * @var \App\Contracts\Extensions\HashidsInterface
      */
     private $hashids;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface
      */
     private $repository;
 
     /**
      * SubuserAccess constructor.
      *
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface           $hashids
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
+     * @param \App\Contracts\Extensions\HashidsInterface           $hashids
+     * @param \App\Contracts\Repository\SubuserRepositoryInterface $repository
      */
     public function __construct(HashidsInterface $hashids, SubuserRepositoryInterface $repository)
     {
@@ -40,8 +40,8 @@ class SubuserBelongsToServer
      * @param \Closure                 $next
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
     public function handle(Request $request, Closure $next)

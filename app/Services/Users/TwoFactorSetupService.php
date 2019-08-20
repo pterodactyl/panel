@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\Users;
+namespace App\Services\Users;
 
 use Exception;
 use RuntimeException;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Contracts\Repository\UserRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class TwoFactorSetupService
@@ -24,7 +24,7 @@ class TwoFactorSetupService
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     private $repository;
 
@@ -33,7 +33,7 @@ class TwoFactorSetupService
      *
      * @param \Illuminate\Contracts\Config\Repository                   $config
      * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \App\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         ConfigRepository $config,
@@ -50,11 +50,11 @@ class TwoFactorSetupService
      * QR code URL. This URL will need to be attached to a QR generating service in
      * order to function.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return string
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(User $user): string
     {

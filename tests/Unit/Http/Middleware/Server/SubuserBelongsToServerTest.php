@@ -3,24 +3,24 @@
 namespace Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\PterodactylException;
+use App\Models\Server;
+use App\Models\Subuser;
+use App\Exceptions\DisplayException;
+use App\Exceptions\PterodactylException;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use App\Contracts\Extensions\HashidsInterface;
+use App\Http\Middleware\Server\SubuserBelongsToServer;
+use App\Contracts\Repository\SubuserRepositoryInterface;
 
 class SubuserBelongsToServerTest extends MiddlewareTestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface|\Mockery\Mock
+     * @var \App\Contracts\Extensions\HashidsInterface|\Mockery\Mock
      */
     private $hashids;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -147,7 +147,7 @@ class SubuserBelongsToServerTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer
+     * @return \App\Http\Middleware\Server\SubuserBelongsToServer
      */
     private function getMiddleware(): SubuserBelongsToServer
     {

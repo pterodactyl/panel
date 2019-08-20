@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\ViewComposers;
+namespace App\Http\ViewComposers;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Models\User;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerListComposer
 {
@@ -15,7 +15,7 @@ class ServerListComposer
     private $request;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
@@ -23,7 +23,7 @@ class ServerListComposer
      * ServerListComposer constructor.
      *
      * @param \Illuminate\Http\Request                                    $request
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(Request $request, ServerRepositoryInterface $repository)
     {

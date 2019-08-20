@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Http\Middleware;
 
-use Pterodactyl\Http\Middleware\Authenticate;
+use App\Http\Middleware\Authenticate;
 
 class AuthenticateTest extends MiddlewareTestCase
 {
@@ -31,7 +31,7 @@ class AuthenticateTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\Authenticate
+     * @return \App\Http\Middleware\Authenticate
      */
     private function getMiddleware(): Authenticate
     {

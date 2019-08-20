@@ -3,24 +3,24 @@
 namespace Tests\Unit\Commands\Server;
 
 use Mockery as m;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Validation\Factory;
 use Tests\Unit\Commands\CommandTestCase;
-use Pterodactyl\Console\Commands\Server\BulkPowerActionCommand;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
+use App\Console\Commands\Server\BulkPowerActionCommand;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\Daemon\PowerRepositoryInterface;
 
 class BulkPowerActionCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\PowerRepositoryInterface|\Mockery\Mock
      */
     private $powerRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -40,7 +40,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
      */
     public function testSendAction()
     {
-        /** @var \Pterodactyl\Models\Server[] $servers */
+        /** @var \App\Models\Server[] $servers */
         $servers = factory(Server::class)->times(2)->make();
 
         foreach ($servers as &$server) {
@@ -163,7 +163,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
     /**
      * Return an instance of the command with mocked dependencies.
      *
-     * @return \Pterodactyl\Console\Commands\Server\BulkPowerActionCommand
+     * @return \App\Console\Commands\Server\BulkPowerActionCommand
      */
     private function getCommand(): BulkPowerActionCommand
     {

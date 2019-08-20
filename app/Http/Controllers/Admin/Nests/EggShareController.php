@@ -7,18 +7,18 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin\Nests;
+namespace App\Http\Controllers\Admin\Nests;
 
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Egg;
+use App\Models\Egg;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Symfony\Component\HttpFoundation\Response;
-use Pterodactyl\Services\Eggs\Sharing\EggExporterService;
-use Pterodactyl\Services\Eggs\Sharing\EggImporterService;
-use Pterodactyl\Http\Requests\Admin\Egg\EggImportFormRequest;
-use Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService;
+use App\Services\Eggs\Sharing\EggExporterService;
+use App\Services\Eggs\Sharing\EggImporterService;
+use App\Http\Requests\Admin\Egg\EggImportFormRequest;
+use App\Services\Eggs\Sharing\EggUpdateImporterService;
 
 class EggShareController extends Controller
 {
@@ -28,17 +28,17 @@ class EggShareController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggExporterService
+     * @var \App\Services\Eggs\Sharing\EggExporterService
      */
     protected $exporterService;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggImporterService
+     * @var \App\Services\Eggs\Sharing\EggImporterService
      */
     protected $importerService;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService
+     * @var \App\Services\Eggs\Sharing\EggUpdateImporterService
      */
     protected $updateImporterService;
 
@@ -46,9 +46,9 @@ class EggShareController extends Controller
      * OptionShareController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                           $alert
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService       $exporterService
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService       $importerService
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService $updateImporterService
+     * @param \App\Services\Eggs\Sharing\EggExporterService       $exporterService
+     * @param \App\Services\Eggs\Sharing\EggImporterService       $importerService
+     * @param \App\Services\Eggs\Sharing\EggUpdateImporterService $updateImporterService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -63,10 +63,10 @@ class EggShareController extends Controller
     }
 
     /**
-     * @param \Pterodactyl\Models\Egg $egg
+     * @param \App\Models\Egg $egg
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function export(Egg $egg): Response
     {
@@ -83,13 +83,13 @@ class EggShareController extends Controller
     /**
      * Import a new service option using an XML file.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggImportFormRequest $request
+     * @param \App\Http\Requests\Admin\Egg\EggImportFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Egg\BadJsonFormatException
+     * @throws \App\Exceptions\Service\InvalidFileUploadException
      */
     public function import(EggImportFormRequest $request): RedirectResponse
     {
@@ -102,14 +102,14 @@ class EggShareController extends Controller
     /**
      * Update an existing Egg using a new imported file.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggImportFormRequest $request
+     * @param \App\Http\Requests\Admin\Egg\EggImportFormRequest $request
      * @param int                                                       $egg
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Egg\BadJsonFormatException
+     * @throws \App\Exceptions\Service\InvalidFileUploadException
      */
     public function update(EggImportFormRequest $request, int $egg): RedirectResponse
     {

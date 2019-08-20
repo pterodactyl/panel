@@ -11,26 +11,26 @@ namespace Tests\Unit\Services\Services\Options;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Services\Eggs\EggUpdateService;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
+use App\Models\Egg;
+use App\Services\Eggs\EggUpdateService;
+use App\Exceptions\PterodactylException;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 
 class EggUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Models\Egg
+     * @var \App\Models\Egg
      */
     protected $model;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\EggUpdateService
+     * @var \App\Services\Eggs\EggUpdateService
      */
     protected $service;
 

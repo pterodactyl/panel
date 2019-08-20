@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration;
+namespace App\Tests\Integration;
 
 use Tests\TestCase;
 use Cake\Chronos\Chronos;
 use Illuminate\Database\Eloquent\Model;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
+use App\Transformers\Api\Application\BaseTransformer;
 
 abstract class IntegrationTestCase extends TestCase
 {

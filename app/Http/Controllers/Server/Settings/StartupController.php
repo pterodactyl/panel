@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server\Settings;
+namespace App\Http\Controllers\Server\Settings;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
-use Pterodactyl\Services\Servers\StartupCommandViewService;
-use Pterodactyl\Services\Servers\StartupModificationService;
-use Pterodactyl\Http\Requests\Server\UpdateStartupParametersFormRequest;
+use App\Http\Controllers\Controller;
+use App\Traits\Controllers\JavascriptInjection;
+use App\Services\Servers\StartupCommandViewService;
+use App\Services\Servers\StartupModificationService;
+use App\Http\Requests\Server\UpdateStartupParametersFormRequest;
 
 class StartupController extends Controller
 {
@@ -23,12 +23,12 @@ class StartupController extends Controller
     private $alert;
 
     /**
-     * @var \Pterodactyl\Services\Servers\StartupCommandViewService
+     * @var \App\Services\Servers\StartupCommandViewService
      */
     private $commandViewService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\StartupModificationService
+     * @var \App\Services\Servers\StartupModificationService
      */
     private $modificationService;
 
@@ -36,8 +36,8 @@ class StartupController extends Controller
      * StartupController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                        $alert
-     * @param \Pterodactyl\Services\Servers\StartupCommandViewService  $commandViewService
-     * @param \Pterodactyl\Services\Servers\StartupModificationService $modificationService
+     * @param \App\Services\Servers\StartupCommandViewService  $commandViewService
+     * @param \App\Services\Servers\StartupModificationService $modificationService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -56,7 +56,7 @@ class StartupController extends Controller
      * @return \Illuminate\View\View
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function index(Request $request): View
     {
@@ -77,13 +77,13 @@ class StartupController extends Controller
      * Handle request to update the startup variables for a server. Authorization
      * is handled in the form request.
      *
-     * @param \Pterodactyl\Http\Requests\Server\UpdateStartupParametersFormRequest $request
+     * @param \App\Http\Requests\Server\UpdateStartupParametersFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UpdateStartupParametersFormRequest $request): RedirectResponse
     {

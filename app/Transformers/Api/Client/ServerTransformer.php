@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace App\Transformers\Api\Client;
 
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 
 class ServerTransformer extends BaseClientTransformer
 {
@@ -18,7 +18,7 @@ class ServerTransformer extends BaseClientTransformer
      * Transform a server model into a representation that can be returned
      * to a client.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return array
      */
     public function transform(Server $server): array

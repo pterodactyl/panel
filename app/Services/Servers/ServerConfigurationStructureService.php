@@ -7,30 +7,30 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Servers;
+namespace App\Services\Servers;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Models\Server;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerConfigurationStructureService
 {
     const REQUIRED_RELATIONS = ['allocation', 'allocations', 'pack', 'option'];
 
     /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
+     * @var \App\Services\Servers\EnvironmentService
      */
     private $environment;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
      * ServerConfigurationStructureService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Servers\EnvironmentService            $environment
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \App\Services\Servers\EnvironmentService            $environment
      */
     public function __construct(
         ServerRepositoryInterface $repository,
@@ -43,10 +43,10 @@ class ServerConfigurationStructureService
     /**
      * Return a configuration array for a specific server when passed a server model.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server): array
     {

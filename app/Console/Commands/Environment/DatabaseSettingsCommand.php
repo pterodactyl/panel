@@ -7,13 +7,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Console\Commands\Environment;
+namespace App\Console\Commands\Environment;
 
 use PDOException;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Database\DatabaseManager;
-use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
+use App\Traits\Commands\EnvironmentWriterTrait;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class DatabaseSettingsCommand extends Command
@@ -76,7 +76,7 @@ class DatabaseSettingsCommand extends Command
      *
      * @return int
      *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @throws \App\Exceptions\PterodactylException
      */
     public function handle()
     {

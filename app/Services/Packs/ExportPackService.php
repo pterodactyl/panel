@@ -7,13 +7,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Packs;
+namespace App\Services\Packs;
 
 use ZipArchive;
-use Pterodactyl\Models\Pack;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
+use App\Models\Pack;
+use App\Contracts\Repository\PackRepositoryInterface;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
-use Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException;
+use App\Exceptions\Service\Pack\ZipArchiveCreationException;
 
 class ExportPackService
 {
@@ -23,7 +23,7 @@ class ExportPackService
     protected $archive;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \App\Contracts\Repository\PackRepositoryInterface
      */
     protected $repository;
 
@@ -36,7 +36,7 @@ class ExportPackService
      * ExportPackService constructor.
      *
      * @param \Illuminate\Contracts\Filesystem\Factory                  $storage
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
+     * @param \App\Contracts\Repository\PackRepositoryInterface $repository
      * @param \ZipArchive                                               $archive
      */
     public function __construct(
@@ -52,12 +52,12 @@ class ExportPackService
     /**
      * Prepare a pack for export.
      *
-     * @param int|\Pterodactyl\Models\Pack $pack
+     * @param int|\App\Models\Pack $pack
      * @param bool                         $files
      * @return string
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Pack\ZipArchiveCreationException
      */
     public function handle($pack, $files = false)
     {

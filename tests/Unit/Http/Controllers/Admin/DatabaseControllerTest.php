@@ -11,17 +11,17 @@ namespace Tests\Unit\Http\Controllers\Admin;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\DatabaseHost;
+use App\Models\DatabaseHost;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\Assertions\ControllerAssertionsTrait;
-use Pterodactyl\Http\Controllers\Admin\DatabaseController;
-use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
-use Pterodactyl\Services\Databases\Hosts\HostCreationService;
-use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Http\Controllers\Admin\DatabaseController;
+use App\Services\Databases\Hosts\HostUpdateService;
+use App\Services\Databases\Hosts\HostCreationService;
+use App\Services\Databases\Hosts\HostDeletionService;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\LocationRepositoryInterface;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseControllerTest extends TestCase
 {
@@ -33,32 +33,32 @@ class DatabaseControllerTest extends TestCase
     private $alert;
 
     /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostCreationService|\Mockery\Mock
+     * @var \App\Services\Databases\Hosts\HostCreationService|\Mockery\Mock
      */
     private $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
      */
     private $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostDeletionService|\Mockery\Mock
+     * @var \App\Services\Databases\Hosts\HostDeletionService|\Mockery\Mock
      */
     private $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\LocationRepositoryInterface|\Mockery\Mock
      */
     private $locationRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostUpdateService|\Mockery\Mock
+     * @var \App\Services\Databases\Hosts\HostUpdateService|\Mockery\Mock
      */
     private $updateService;
 
@@ -126,7 +126,7 @@ class DatabaseControllerTest extends TestCase
     /**
      * Return an instance of the DatabaseController with mock dependencies.
      *
-     * @return \Pterodactyl\Http\Controllers\Admin\DatabaseController
+     * @return \App\Http\Controllers\Admin\DatabaseController
      */
     private function getController(): DatabaseController
     {

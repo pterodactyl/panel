@@ -7,17 +7,17 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin\Nests;
+namespace App\Http\Controllers\Admin\Nests;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Nests\NestUpdateService;
-use Pterodactyl\Services\Nests\NestCreationService;
-use Pterodactyl\Services\Nests\NestDeletionService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Nest\StoreNestFormRequest;
+use App\Http\Controllers\Controller;
+use App\Services\Nests\NestUpdateService;
+use App\Services\Nests\NestCreationService;
+use App\Services\Nests\NestDeletionService;
+use App\Contracts\Repository\NestRepositoryInterface;
+use App\Http\Requests\Admin\Nest\StoreNestFormRequest;
 
 class NestController extends Controller
 {
@@ -27,22 +27,22 @@ class NestController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Nests\NestCreationService
+     * @var \App\Services\Nests\NestCreationService
      */
     protected $nestCreationService;
 
     /**
-     * @var \Pterodactyl\Services\Nests\NestDeletionService
+     * @var \App\Services\Nests\NestDeletionService
      */
     protected $nestDeletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var \App\Contracts\Repository\NestRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Nests\NestUpdateService
+     * @var \App\Services\Nests\NestUpdateService
      */
     protected $nestUpdateService;
 
@@ -50,10 +50,10 @@ class NestController extends Controller
      * NestController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param \Pterodactyl\Services\Nests\NestCreationService           $nestCreationService
-     * @param \Pterodactyl\Services\Nests\NestDeletionService           $nestDeletionService
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Nests\NestUpdateService             $nestUpdateService
+     * @param \App\Services\Nests\NestCreationService           $nestCreationService
+     * @param \App\Services\Nests\NestDeletionService           $nestDeletionService
+     * @param \App\Contracts\Repository\NestRepositoryInterface $repository
+     * @param \App\Services\Nests\NestUpdateService             $nestUpdateService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -74,7 +74,7 @@ class NestController extends Controller
      *
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function index(): View
     {
@@ -96,10 +96,10 @@ class NestController extends Controller
     /**
      * Handle the storage of a new nest.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Nest\StoreNestFormRequest $request
+     * @param \App\Http\Requests\Admin\Nest\StoreNestFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function store(StoreNestFormRequest $request): RedirectResponse
     {
@@ -115,7 +115,7 @@ class NestController extends Controller
      * @param int $nest
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $nest): View
     {
@@ -127,12 +127,12 @@ class NestController extends Controller
     /**
      * Handle request to update a nest.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Nest\StoreNestFormRequest $request
+     * @param \App\Http\Requests\Admin\Nest\StoreNestFormRequest $request
      * @param int                                                        $nest
      *
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(StoreNestFormRequest $request, int $nest): RedirectResponse
     {
@@ -148,7 +148,7 @@ class NestController extends Controller
      * @param int $nest
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Service\HasActiveServersException
      */
     public function destroy(int $nest): RedirectResponse
     {

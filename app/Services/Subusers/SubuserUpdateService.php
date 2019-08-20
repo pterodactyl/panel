@@ -7,16 +7,16 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Subusers;
+namespace App\Services\Subusers;
 
-use Pterodactyl\Models\Subuser;
+use App\Models\Subuser;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Contracts\Repository\PermissionRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserUpdateService
 {
@@ -26,27 +26,27 @@ class SubuserUpdateService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     private $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService
      */
     private $keyProviderService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface
+     * @var \App\Contracts\Repository\PermissionRepositoryInterface
      */
     private $permissionRepository;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
+     * @var \App\Services\Subusers\PermissionCreationService
      */
     private $permissionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface
      */
     private $repository;
 
@@ -54,11 +54,11 @@ class SubuserUpdateService
      * SubuserUpdateService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService          $keyProviderService
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Services\Subusers\PermissionCreationService           $permissionService
-     * @param \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface    $permissionRepository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface       $repository
+     * @param \App\Services\DaemonKeys\DaemonKeyProviderService          $keyProviderService
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \App\Services\Subusers\PermissionCreationService           $permissionService
+     * @param \App\Contracts\Repository\PermissionRepositoryInterface    $permissionRepository
+     * @param \App\Contracts\Repository\SubuserRepositoryInterface       $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -79,12 +79,12 @@ class SubuserUpdateService
     /**
      * Update permissions for a given subuser.
      *
-     * @param \Pterodactyl\Models\Subuser $subuser
+     * @param \App\Models\Subuser $subuser
      * @param array                       $permissions
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Subuser $subuser, array $permissions)
     {

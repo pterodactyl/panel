@@ -2,13 +2,13 @@
 
 namespace Tests\Traits\Integration;
 
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Allocation;
+use App\Models\Egg;
+use App\Models\Nest;
+use App\Models\Node;
+use App\Models\User;
+use App\Models\Server;
+use App\Models\Location;
+use App\Models\Allocation;
 use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 
 trait CreatesTestModels
@@ -21,7 +21,7 @@ trait CreatesTestModels
      * The returned server model will have all of the relationships loaded onto it.
      *
      * @param array $attributes
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      */
     public function createServerModel(array $attributes = []): Server
     {

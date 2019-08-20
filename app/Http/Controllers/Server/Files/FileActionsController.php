@@ -7,30 +7,30 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Server\Files;
+namespace App\Http\Controllers\Server\Files;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
-use Pterodactyl\Http\Requests\Server\UpdateFileContentsFormRequest;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Http\Controllers\Controller;
+use App\Traits\Controllers\JavascriptInjection;
+use App\Http\Requests\Server\UpdateFileContentsFormRequest;
+use App\Contracts\Repository\Daemon\FileRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
 
 class FileActionsController extends Controller
 {
     use JavascriptInjection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\FileRepositoryInterface
      */
     protected $repository;
 
     /**
      * FileActionsController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $repository
+     * @param \App\Contracts\Repository\Daemon\FileRepositoryInterface $repository
      */
     public function __construct(FileRepositoryInterface $repository)
     {
@@ -90,12 +90,12 @@ class FileActionsController extends Controller
     /**
      * Display a form to allow for editing of a file.
      *
-     * @param \Pterodactyl\Http\Requests\Server\UpdateFileContentsFormRequest $request
+     * @param \App\Http\Requests\Server\UpdateFileContentsFormRequest $request
      * @param string                                                          $uuid
      * @param string                                                          $file
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function view(UpdateFileContentsFormRequest $request, string $uuid, string $file): View
     {

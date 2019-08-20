@@ -1,31 +1,31 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Remote;
+namespace App\Http\Controllers\Api\Remote;
 
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Services\Sftp\AuthenticateUsingPasswordService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
+use App\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 
 class SftpController extends Controller
 {
     use ThrottlesLogins;
 
     /**
-     * @var \Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService
+     * @var \App\Services\Sftp\AuthenticateUsingPasswordService
      */
     private $authenticationService;
 
     /**
      * SftpController constructor.
      *
-     * @param \Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService $authenticationService
+     * @param \App\Services\Sftp\AuthenticateUsingPasswordService $authenticationService
      */
     public function __construct(AuthenticateUsingPasswordService $authenticationService)
     {
@@ -36,10 +36,10 @@ class SftpController extends Controller
      * Authenticate a set of credentials and return the associated server details
      * for a SFTP connection on the daemon.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest $request
+     * @param \App\Http\Requests\Api\Remote\SftpAuthenticationFormRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function index(SftpAuthenticationFormRequest $request): JsonResponse
     {

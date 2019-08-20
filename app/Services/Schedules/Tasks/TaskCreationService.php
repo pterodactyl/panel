@@ -7,26 +7,26 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Schedules\Tasks;
+namespace App\Services\Schedules\Tasks;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Schedule;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException;
+use App\Models\Schedule;
+use App\Contracts\Repository\TaskRepositoryInterface;
+use App\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException;
 
 class TaskCreationService
 {
     const MAX_INTERVAL_TIME_SECONDS = 900;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
+     * @var \App\Contracts\Repository\TaskRepositoryInterface
      */
     protected $repository;
 
     /**
      * TaskCreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface $repository
+     * @param \App\Contracts\Repository\TaskRepositoryInterface $repository
      */
     public function __construct(TaskRepositoryInterface $repository)
     {
@@ -36,18 +36,18 @@ class TaskCreationService
     /**
      * Create a new task that is assigned to a schedule.
      *
-     * @param int|\Pterodactyl\Models\Schedule $schedule
+     * @param int|\App\Models\Schedule $schedule
      * @param array                            $data
      * @param bool                             $returnModel
-     * @return bool|\Pterodactyl\Models\Task
+     * @return bool|\App\Models\Task
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException
      */
     public function handle($schedule, array $data, $returnModel = true)
     {
         Assert::true(($schedule instanceof Schedule || is_digit($schedule)),
-            'First argument passed to handle must be numeric or instance of \Pterodactyl\Models\Schedule, received %s.'
+            'First argument passed to handle must be numeric or instance of \App\Models\Schedule, received %s.'
         );
 
         $schedule = ($schedule instanceof Schedule) ? $schedule->id : $schedule;

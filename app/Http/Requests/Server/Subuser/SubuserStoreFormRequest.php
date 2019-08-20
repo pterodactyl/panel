@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Server\Subuser;
+namespace App\Http\Requests\Server\Subuser;
 
-use Pterodactyl\Http\Requests\Server\ServerFormRequest;
+use App\Http\Requests\Server\ServerFormRequest;
 
 class SubuserStoreFormRequest extends ServerFormRequest
 {

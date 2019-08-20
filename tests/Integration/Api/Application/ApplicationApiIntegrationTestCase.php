@@ -1,29 +1,29 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Application;
+namespace App\Tests\Integration\Api\Application;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use PHPUnit\Framework\Assert;
-use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\ApiKey;
+use App\Services\Acl\Api\AdminAcl;
 use Tests\Traits\Integration\CreatesTestModels;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use App\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\Traits\Http\IntegrationJsonRequestAssertions;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use App\Transformers\Api\Application\BaseTransformer;
+use App\Transformers\Api\Client\BaseClientTransformer;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 {
     use CreatesTestModels, DatabaseTransactions, IntegrationJsonRequestAssertions;
 
     /**
-     * @var \Pterodactyl\Models\ApiKey
+     * @var \App\Models\ApiKey
      */
     private $key;
 
     /**
-     * @var \Pterodactyl\Models\User
+     * @var \App\Models\User
      */
     private $user;
 
@@ -45,7 +45,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     }
 
     /**
-     * @return \Pterodactyl\Models\User
+     * @return \App\Models\User
      */
     public function getApiUser(): User
     {
@@ -53,7 +53,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     }
 
     /**
-     * @return \Pterodactyl\Models\ApiKey
+     * @return \App\Models\ApiKey
      */
     public function getApiKey(): ApiKey
     {
@@ -63,9 +63,9 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Creates a new default API key and refreshes the headers using it.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param array                    $permissions
-     * @return \Pterodactyl\Models\ApiKey
+     * @return \App\Models\ApiKey
      */
     protected function createNewDefaultApiKey(User $user, array $permissions = []): ApiKey
     {
@@ -78,7 +78,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Refresh the authorization header for a request to use a different API key.
      *
-     * @param \Pterodactyl\Models\ApiKey $key
+     * @param \App\Models\ApiKey $key
      */
     protected function refreshHeaders(ApiKey $key)
     {
@@ -88,7 +88,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Create an administrative user.
      *
-     * @return \Pterodactyl\Models\User
+     * @return \App\Models\User
      */
     protected function createApiUser(): User
     {
@@ -100,9 +100,9 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Create a new application API key for a given user model.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param array                    $permissions
-     * @return \Pterodactyl\Models\ApiKey
+     * @return \App\Models\ApiKey
      */
     protected function createApiKey(User $user, array $permissions = []): ApiKey
     {
@@ -126,11 +126,11 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      * Return a transformer that can be used for testing purposes.
      *
      * @param string $abstract
-     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     * @return \App\Transformers\Api\Application\BaseTransformer
      */
     protected function getTransformer(string $abstract): BaseTransformer
     {
-        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
+        /** @var \App\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = $this->app->make($abstract);
         $transformer->setKey($this->getApiKey());
 

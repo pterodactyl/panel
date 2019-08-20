@@ -11,23 +11,23 @@ namespace Tests\Unit\Services\Schedules\Tasks;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Schedule;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Services\Schedules\Tasks\TaskCreationService;
-use Pterodactyl\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException;
+use App\Models\Task;
+use App\Models\Server;
+use App\Models\Schedule;
+use App\Exceptions\DisplayException;
+use App\Contracts\Repository\TaskRepositoryInterface;
+use App\Services\Schedules\Tasks\TaskCreationService;
+use App\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException;
 
 class TaskCreationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface
+     * @var \App\Contracts\Repository\TaskRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Schedules\Tasks\TaskCreationService
+     * @var \App\Services\Schedules\Tasks\TaskCreationService
      */
     protected $service;
 

@@ -7,15 +7,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Console\Commands\Location;
+namespace App\Console\Commands\Location;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Services\Locations\LocationCreationService;
+use App\Services\Locations\LocationCreationService;
 
 class MakeLocationCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Services\Locations\LocationCreationService
+     * @var \App\Services\Locations\LocationCreationService
      */
     protected $creationService;
 
@@ -34,7 +34,7 @@ class MakeLocationCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @param \Pterodactyl\Services\Locations\LocationCreationService $creationService
+     * @param \App\Services\Locations\LocationCreationService $creationService
      */
     public function __construct(LocationCreationService $creationService)
     {
@@ -46,7 +46,7 @@ class MakeLocationCommand extends Command
     /**
      * Handle the command execution process.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function handle()
     {

@@ -3,10 +3,10 @@
 namespace Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
+use App\Http\Middleware\RequireTwoFactorAuthentication;
 
 class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
 {
@@ -169,7 +169,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication
+     * @return \App\Http\Middleware\RequireTwoFactorAuthentication
      */
     private function getMiddleware(): RequireTwoFactorAuthentication
     {

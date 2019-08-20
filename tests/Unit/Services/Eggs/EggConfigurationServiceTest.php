@@ -4,19 +4,19 @@ namespace Tests\Unit\Services\Eggs;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Services\Eggs\EggConfigurationService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use App\Models\Egg;
+use App\Services\Eggs\EggConfigurationService;
+use App\Contracts\Repository\EggRepositoryInterface;
 
 class EggConfigurationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\EggConfigurationService
+     * @var \App\Services\Eggs\EggConfigurationService
      */
     protected $service;
 

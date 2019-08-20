@@ -12,11 +12,11 @@ namespace Tests\Unit\Services\Eggs\Sharing;
 use Mockery as m;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\EggVariable;
+use App\Models\Egg;
+use App\Models\EggVariable;
 use Tests\Assertions\NestedObjectAssertionsTrait;
-use Pterodactyl\Services\Eggs\Sharing\EggExporterService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use App\Services\Eggs\Sharing\EggExporterService;
+use App\Contracts\Repository\EggRepositoryInterface;
 
 class EggExporterServiceTest extends TestCase
 {
@@ -28,12 +28,12 @@ class EggExporterServiceTest extends TestCase
     protected $carbon;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggExporterService
+     * @var \App\Services\Eggs\Sharing\EggExporterService
      */
     protected $service;
 

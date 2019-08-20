@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository\Daemon;
+namespace App\Contracts\Repository\Daemon;
 
 use GuzzleHttp\Client;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Server;
+use App\Models\Node;
+use App\Models\Server;
 
 interface BaseRepositoryInterface
 {
     /**
      * Set the node model to be used for this daemon connection.
      *
-     * @param \Pterodactyl\Models\Node $node
+     * @param \App\Models\Node $node
      * @return $this
      */
     public function setNode(Node $node);
@@ -19,14 +19,14 @@ interface BaseRepositoryInterface
     /**
      * Return the node model being used.
      *
-     * @return \Pterodactyl\Models\Node|null
+     * @return \App\Models\Node|null
      */
     public function getNode();
 
     /**
      * Set the Server model to use when requesting information from the Daemon.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @return $this
      */
     public function setServer(Server $server);
@@ -34,7 +34,7 @@ interface BaseRepositoryInterface
     /**
      * Return the Server model.
      *
-     * @return \Pterodactyl\Models\Server|null
+     * @return \App\Models\Server|null
      */
     public function getServer();
 
@@ -59,7 +59,7 @@ interface BaseRepositoryInterface
      * @param array $headers
      * @return \GuzzleHttp\Client
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getHttpClient(array $headers = []): Client;
 }

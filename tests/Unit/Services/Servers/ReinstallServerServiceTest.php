@@ -13,17 +13,17 @@ use Exception;
 use Mockery as m;
 use Tests\TestCase;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Servers\ReinstallServerService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Services\Servers\ReinstallServerService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ReinstallServerServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonServerRepository;
 
@@ -38,17 +38,17 @@ class ReinstallServerServiceTest extends TestCase
     protected $exception;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Models\Server
+     * @var \App\Models\Server
      */
     protected $server;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ReinstallServerService
+     * @var \App\Services\Servers\ReinstallServerService
      */
     protected $service;
 
@@ -114,7 +114,7 @@ class ReinstallServerServiceTest extends TestCase
     /**
      * Test that an exception thrown by guzzle is rendered as a displayable exception.
      *
-     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @expectedException \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionThrownByGuzzleShouldBeReRenderedAsDisplayable()
     {

@@ -7,10 +7,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Traits\Commands;
+namespace App\Traits\Commands;
 
 use Illuminate\Support\Str;
-use Pterodactyl\Exceptions\PterodactylException;
+use App\Exceptions\PterodactylException;
 
 trait EnvironmentWriterTrait
 {
@@ -19,7 +19,7 @@ trait EnvironmentWriterTrait
      *
      * @param array $values
      *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @throws \App\Exceptions\PterodactylException
      */
     public function writeToEnvironment(array $values = [])
     {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Base;
+namespace App\Http\Controllers\Base;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Auth\AuthManager;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Session\Session;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Users\UserUpdateService;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
-use Pterodactyl\Http\Requests\Base\AccountDataFormRequest;
+use App\Http\Controllers\Controller;
+use App\Services\Users\UserUpdateService;
+use App\Traits\Helpers\AvailableLanguages;
+use App\Http\Requests\Base\AccountDataFormRequest;
 
 class AccountController extends Controller
 {
@@ -26,7 +26,7 @@ class AccountController extends Controller
     protected $sessionGuard;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
+     * @var \App\Services\Users\UserUpdateService
      */
     protected $updateService;
 
@@ -35,7 +35,7 @@ class AccountController extends Controller
      *
      * @param \Prologue\Alerts\AlertsMessageBag             $alert
      * @param \Illuminate\Auth\AuthManager                  $authManager
-     * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
+     * @param \App\Services\Users\UserUpdateService $updateService
      */
     public function __construct(AlertsMessageBag $alert, AuthManager $authManager, UserUpdateService $updateService)
     {
@@ -59,11 +59,11 @@ class AccountController extends Controller
     /**
      * Update details for a user's account.
      *
-     * @param \Pterodactyl\Http\Requests\Base\AccountDataFormRequest $request
+     * @param \App\Http\Requests\Base\AccountDataFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(AccountDataFormRequest $request)
     {

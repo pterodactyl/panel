@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application;
+namespace App\Http\Requests\Api\Application;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\ApiKey;
+use App\Services\Acl\Api\AdminAcl;
 use Illuminate\Foundation\Http\FormRequest;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
+use App\Exceptions\PterodactylException;
+use App\Http\Middleware\Api\ApiSubstituteBindings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
 
@@ -43,7 +43,7 @@ abstract class ApplicationApiRequest extends FormRequest
      *
      * @return bool
      *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @throws \App\Exceptions\PterodactylException
      */
     public function authorize(): bool
     {
@@ -77,7 +77,7 @@ abstract class ApplicationApiRequest extends FormRequest
     /**
      * Return the API key being used for the request.
      *
-     * @return \Pterodactyl\Models\ApiKey
+     * @return \App\Models\ApiKey
      */
     public function key(): ApiKey
     {

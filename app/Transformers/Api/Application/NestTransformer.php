@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\Egg;
+use App\Models\Nest;
+use App\Models\Server;
+use App\Services\Acl\Api\AdminAcl;
 
 class NestTransformer extends BaseTransformer
 {
@@ -32,7 +32,7 @@ class NestTransformer extends BaseTransformer
      * Transform a Nest model into a representation that can be consumed by the
      * application API.
      *
-     * @param \Pterodactyl\Models\Nest $model
+     * @param \App\Models\Nest $model
      * @return array
      */
     public function transform(Nest $model)
@@ -48,10 +48,10 @@ class NestTransformer extends BaseTransformer
     /**
      * Include the Eggs relationship on the given Nest model transformation.
      *
-     * @param \Pterodactyl\Models\Nest $model
+     * @param \App\Models\Nest $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeEggs(Nest $model)
     {
@@ -67,10 +67,10 @@ class NestTransformer extends BaseTransformer
     /**
      * Include the servers relationship on the given Nest model.
      *
-     * @param \Pterodactyl\Models\Nest $model
+     * @param \App\Models\Nest $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Nest $model)
     {

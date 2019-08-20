@@ -4,27 +4,27 @@ namespace Tests\Unit\Services\Databases;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Services\Databases\DeployServerDatabaseService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Models\Server;
+use App\Models\Database;
+use App\Services\Databases\DatabaseManagementService;
+use App\Services\Databases\DeployServerDatabaseService;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DeployServerDatabaseServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface|\Mockery\Mock
      */
     private $databaseHostRepository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService|\Mockery\Mock
+     * @var \App\Services\Databases\DatabaseManagementService|\Mockery\Mock
      */
     private $managementService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -84,7 +84,7 @@ class DeployServerDatabaseServiceTest extends TestCase
     /**
      * Test that an exception is thrown if in non-random mode and no host is found.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException
+     * @expectedException \App\Exceptions\Service\Database\NoSuitableDatabaseHostException
      */
     public function testNonRandomNoHost()
     {
@@ -145,7 +145,7 @@ class DeployServerDatabaseServiceTest extends TestCase
     /**
      * Test that an exception is thrown when no host is found and random is allowed.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException
+     * @expectedException \App\Exceptions\Service\Database\NoSuitableDatabaseHostException
      */
     public function testRandomNoHost()
     {
@@ -172,7 +172,7 @@ class DeployServerDatabaseServiceTest extends TestCase
      * Test that a server over the database limit throws an exception.
      *
      * @dataProvider databaseExceedingLimitDataProvider
-     * @expectedException \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
+     * @expectedException \App\Exceptions\Service\Database\TooManyDatabasesException
      */
     public function testServerOverDatabaseLimit($limit, $count)
     {
@@ -189,7 +189,7 @@ class DeployServerDatabaseServiceTest extends TestCase
     /**
      * Test that an exception is thrown if the feature is not enabled.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
+     * @expectedException \App\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
      */
     public function testFeatureNotEnabled()
     {
@@ -227,7 +227,7 @@ class DeployServerDatabaseServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Services\Databases\DeployServerDatabaseService
+     * @return \App\Services\Databases\DeployServerDatabaseService
      */
     private function getService(): DeployServerDatabaseService
     {

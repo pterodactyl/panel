@@ -1,39 +1,39 @@
 <?php
 
-namespace Pterodactyl\Services\Databases;
+namespace App\Services\Databases;
 
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException;
-use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
-use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
+use App\Models\Server;
+use App\Models\Database;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Exceptions\Service\Database\TooManyDatabasesException;
+use App\Exceptions\Service\Database\NoSuitableDatabaseHostException;
+use App\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
 
 class DeployServerDatabaseService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     private $databaseHostRepository;
 
     /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     * @var \App\Services\Databases\DatabaseManagementService
      */
     private $managementService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     private $repository;
 
     /**
      * ServerDatabaseCreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface     $repository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $databaseHostRepository
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService         $managementService
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface     $repository
+     * @param \App\Contracts\Repository\DatabaseHostRepositoryInterface $databaseHostRepository
+     * @param \App\Services\Databases\DatabaseManagementService         $managementService
      */
     public function __construct(
         DatabaseRepositoryInterface $repository,
@@ -46,11 +46,11 @@ class DeployServerDatabaseService
     }
 
     /**
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param array                      $data
-     * @return \Pterodactyl\Models\Database
+     * @return \App\Models\Database
      *
-     * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
+     * @throws \App\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
      * @throws \Exception
      */
     public function handle(Server $server, array $data): Database

@@ -1,42 +1,42 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server\Settings;
+namespace App\Http\Controllers\Server\Settings;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Pterodactyl\Traits\Controllers\JavascriptInjection;
-use Pterodactyl\Services\Allocations\SetDefaultAllocationService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Allocation\AllocationDoesNotBelongToServerException;
+use App\Http\Controllers\Controller;
+use App\Contracts\Extensions\HashidsInterface;
+use App\Traits\Controllers\JavascriptInjection;
+use App\Services\Allocations\SetDefaultAllocationService;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Exceptions\Service\Allocation\AllocationDoesNotBelongToServerException;
 
 class AllocationController extends Controller
 {
     use JavascriptInjection;
 
     /**
-     * @var \Pterodactyl\Services\Allocations\SetDefaultAllocationService
+     * @var \App\Services\Allocations\SetDefaultAllocationService
      */
     private $defaultAllocationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface
+     * @var \App\Contracts\Extensions\HashidsInterface
      */
     private $hashids;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface
      */
     private $repository;
 
     /**
      * AllocationController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface              $hashids
-     * @param \Pterodactyl\Services\Allocations\SetDefaultAllocationService   $defaultAllocationService
+     * @param \App\Contracts\Repository\AllocationRepositoryInterface $repository
+     * @param \App\Contracts\Extensions\HashidsInterface              $hashids
+     * @param \App\Services\Allocations\SetDefaultAllocationService   $defaultAllocationService
      */
     public function __construct(
         AllocationRepositoryInterface $repository,
@@ -74,9 +74,9 @@ class AllocationController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(Request $request): JsonResponse
     {

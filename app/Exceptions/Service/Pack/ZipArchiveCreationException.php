@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Service\Pack;
+namespace App\Exceptions\Service\Pack;
 
 class ZipArchiveCreationException extends \Exception
 {

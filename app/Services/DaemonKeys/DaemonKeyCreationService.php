@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\DaemonKeys;
+namespace App\Services\DaemonKeys;
 
 use Carbon\Carbon;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyCreationService
 {
@@ -41,7 +41,7 @@ class DaemonKeyCreationService
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface
      */
     protected $repository;
 
@@ -50,7 +50,7 @@ class DaemonKeyCreationService
      *
      * @param \Carbon\Carbon                                                 $carbon
      * @param \Illuminate\Contracts\Config\Repository                        $config
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
+     * @param \App\Contracts\Repository\DaemonKeyRepositoryInterface $repository
      */
     public function __construct(
         Carbon $carbon,
@@ -69,7 +69,7 @@ class DaemonKeyCreationService
      * @param int $user
      * @return string
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function handle(int $server, int $user)
     {

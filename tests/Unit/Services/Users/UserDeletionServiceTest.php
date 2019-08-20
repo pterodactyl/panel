@@ -11,16 +11,16 @@ namespace Tests\Unit\Services\Users;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Contracts\Translation\Translator;
-use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Users\UserDeletionService;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class UserDeletionServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     protected $repository;
 
@@ -30,12 +30,12 @@ class UserDeletionServiceTest extends TestCase
     protected $translator;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserDeletionService
+     * @var \App\Services\Users\UserDeletionService
      */
     protected $service;
 
@@ -78,7 +78,7 @@ class UserDeletionServiceTest extends TestCase
     /**
      * Test that an exception is thrown if trying to delete a user with servers.
      *
-     * @expectedException \Pterodactyl\Exceptions\DisplayException
+     * @expectedException \App\Exceptions\DisplayException
      */
     public function testExceptionIsThrownIfServersAreAttachedToAccount()
     {

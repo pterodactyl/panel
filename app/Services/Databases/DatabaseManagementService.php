@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Services\Databases;
+namespace App\Services\Databases;
 
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Database;
+use App\Models\Database;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Extensions\DynamicDatabaseConnection;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabaseManagementService
 {
@@ -17,7 +17,7 @@ class DatabaseManagementService
     private $database;
 
     /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
+     * @var \App\Extensions\DynamicDatabaseConnection
      */
     private $dynamic;
 
@@ -27,7 +27,7 @@ class DatabaseManagementService
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface
      */
     private $repository;
 
@@ -40,8 +40,8 @@ class DatabaseManagementService
      * CreationService constructor.
      *
      * @param \Illuminate\Database\DatabaseManager                          $database
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection             $dynamic
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
+     * @param \App\Extensions\DynamicDatabaseConnection             $dynamic
+     * @param \App\Contracts\Repository\DatabaseRepositoryInterface $repository
      * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
      */
     public function __construct(
@@ -61,7 +61,7 @@ class DatabaseManagementService
      *
      * @param int   $server
      * @param array $data
-     * @return \Pterodactyl\Models\Database
+     * @return \App\Models\Database
      *
      * @throws \Exception
      */
@@ -115,7 +115,7 @@ class DatabaseManagementService
      * @param int $id
      * @return bool|null
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function delete($id)
     {

@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Base;
+namespace App\Http\Controllers\Base;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Http\Requests\Base\CreateClientApiKeyRequest;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Services\Api\KeyCreationService;
+use App\Http\Requests\Base\CreateClientApiKeyRequest;
+use App\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class ClientApiController extends Controller
 {
@@ -21,12 +21,12 @@ class ClientApiController extends Controller
     private $alert;
 
     /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
+     * @var \App\Services\Api\KeyCreationService
      */
     private $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
+     * @var \App\Contracts\Repository\ApiKeyRepositoryInterface
      */
     private $repository;
 
@@ -34,8 +34,8 @@ class ClientApiController extends Controller
      * ClientApiController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                           $alert
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Api\KeyCreationService                $creationService
+     * @param \App\Contracts\Repository\ApiKeyRepositoryInterface $repository
+     * @param \App\Services\Api\KeyCreationService                $creationService
      */
     public function __construct(AlertsMessageBag $alert, ApiKeyRepositoryInterface $repository, KeyCreationService $creationService)
     {
@@ -70,10 +70,10 @@ class ClientApiController extends Controller
     /**
      * Create the API key and return the user to the key listing page.
      *
-     * @param \Pterodactyl\Http\Requests\Base\CreateClientApiKeyRequest $request
+     * @param \App\Http\Requests\Base\CreateClientApiKeyRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function store(CreateClientApiKeyRequest $request): RedirectResponse
     {

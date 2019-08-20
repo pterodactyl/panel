@@ -1,30 +1,30 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Server\Tasks;
+namespace App\Http\Controllers\Server\Tasks;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Schedules\ProcessScheduleService;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Services\Schedules\ProcessScheduleService;
+use App\Contracts\Repository\ScheduleRepositoryInterface;
 
 class ActionController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Schedules\ProcessScheduleService
+     * @var \App\Services\Schedules\ProcessScheduleService
      */
     private $processScheduleService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface
+     * @var \App\Contracts\Repository\ScheduleRepositoryInterface
      */
     private $repository;
 
     /**
      * ActionController constructor.
      *
-     * @param \Pterodactyl\Services\Schedules\ProcessScheduleService        $processScheduleService
-     * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
+     * @param \App\Services\Schedules\ProcessScheduleService        $processScheduleService
+     * @param \App\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
     public function __construct(ProcessScheduleService $processScheduleService, ScheduleRepositoryInterface $repository)
     {
@@ -39,8 +39,8 @@ class ActionController extends Controller
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function toggle(Request $request): Response
     {
@@ -62,8 +62,8 @@ class ActionController extends Controller
      * @return \Illuminate\Http\Response
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function trigger(Request $request): Response
     {

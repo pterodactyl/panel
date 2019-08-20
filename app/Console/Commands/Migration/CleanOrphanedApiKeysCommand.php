@@ -1,15 +1,15 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Migration;
+namespace App\Console\Commands\Migration;
 
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Illuminate\Console\Command;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use App\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class CleanOrphanedApiKeysCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
+     * @var \App\Contracts\Repository\ApiKeyRepositoryInterface
      */
     private $repository;
 
@@ -26,7 +26,7 @@ class CleanOrphanedApiKeysCommand extends Command
     /**
      * CleanOrphanedApiKeysCommand constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
+     * @param \App\Contracts\Repository\ApiKeyRepositoryInterface $repository
      */
     public function __construct(ApiKeyRepositoryInterface $repository)
     {

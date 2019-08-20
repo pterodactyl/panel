@@ -4,25 +4,25 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\User;
+use App\Models\Egg;
+use App\Models\User;
 use Tests\Traits\MocksUuids;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Allocation;
+use App\Models\Server;
+use App\Models\Allocation;
 use Tests\Traits\MocksRequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Services\Servers\ServerCreationService;
-use Pterodactyl\Services\Servers\VariableValidatorService;
-use Pterodactyl\Services\Deployment\FindViableNodesService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Services\Deployment\AllocationSelectionService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Models\Objects\DeploymentObject;
+use App\Services\Servers\ServerCreationService;
+use App\Services\Servers\VariableValidatorService;
+use App\Services\Deployment\FindViableNodesService;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Deployment\AllocationSelectionService;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Services\Servers\ServerConfigurationStructureService;
+use App\Contracts\Repository\ServerVariableRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 /**
  * @preserveGlobalState disabled
@@ -32,17 +32,17 @@ class ServerCreationServiceTest extends TestCase
     use MocksRequestException, MocksUuids;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
      */
     private $allocationRepository;
 
     /**
-     * @var \Pterodactyl\Services\Deployment\AllocationSelectionService|\Mockery\Mock
+     * @var \App\Services\Deployment\AllocationSelectionService|\Mockery\Mock
      */
     private $allocationSelectionService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService|\Mockery\Mock
+     * @var \App\Services\Servers\ServerConfigurationStructureService|\Mockery\Mock
      */
     private $configurationStructureService;
 
@@ -52,37 +52,37 @@ class ServerCreationServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     private $daemonServerRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     private $eggRepository;
 
     /**
-     * @var \Pterodactyl\Services\Deployment\FindViableNodesService|\Mockery\Mock
+     * @var \App\Services\Deployment\FindViableNodesService|\Mockery\Mock
      */
     private $findViableNodesService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
      */
     private $serverVariableRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $userRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\VariableValidatorService|\Mockery\Mock
+     * @var \App\Services\Servers\VariableValidatorService|\Mockery\Mock
      */
     private $validatorService;
 
@@ -251,7 +251,7 @@ class ServerCreationServiceTest extends TestCase
     /**
      * Test handling of node timeout or other daemon error.
      *
-     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @expectedException \App\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionShouldBeThrownIfTheRequestFails()
     {
@@ -278,7 +278,7 @@ class ServerCreationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Servers\ServerCreationService
+     * @return \App\Services\Servers\ServerCreationService
      */
     private function getService(): ServerCreationService
     {

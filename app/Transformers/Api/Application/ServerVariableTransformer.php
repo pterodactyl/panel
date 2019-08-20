@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
-use Pterodactyl\Models\ServerVariable;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\ServerVariable;
+use App\Services\Acl\Api\AdminAcl;
 
 class ServerVariableTransformer extends BaseTransformer
 {
@@ -27,7 +27,7 @@ class ServerVariableTransformer extends BaseTransformer
     /**
      * Return a generic transformed server variable array.
      *
-     * @param \Pterodactyl\Models\ServerVariable $variable
+     * @param \App\Models\ServerVariable $variable
      * @return array
      */
     public function transform(ServerVariable $variable)
@@ -38,9 +38,9 @@ class ServerVariableTransformer extends BaseTransformer
     /**
      * Return the parent service variable data.
      *
-     * @param \Pterodactyl\Models\ServerVariable $variable
+     * @param \App\Models\ServerVariable $variable
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeParent(ServerVariable $variable)
     {

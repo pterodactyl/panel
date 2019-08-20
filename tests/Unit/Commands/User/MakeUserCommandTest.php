@@ -10,20 +10,20 @@
 namespace Tests\Unit\Commands\User;
 
 use Mockery as m;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Tests\Unit\Commands\CommandTestCase;
-use Pterodactyl\Services\Users\UserCreationService;
-use Pterodactyl\Console\Commands\User\MakeUserCommand;
+use App\Services\Users\UserCreationService;
+use App\Console\Commands\User\MakeUserCommand;
 
 class MakeUserCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Console\Commands\User\MakeUserCommand
+     * @var \App\Console\Commands\User\MakeUserCommand
      */
     protected $command;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
+     * @var \App\Services\Users\UserCreationService
      */
     protected $creationService;
 

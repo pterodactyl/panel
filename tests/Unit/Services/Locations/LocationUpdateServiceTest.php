@@ -11,19 +11,19 @@ namespace Tests\Unit\Services\Locations;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Services\Locations\LocationUpdateService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use App\Models\Location;
+use App\Services\Locations\LocationUpdateService;
+use App\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationUpdateServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \App\Contracts\Repository\LocationRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationUpdateService
+     * @var \App\Services\Locations\LocationUpdateService
      */
     protected $service;
 

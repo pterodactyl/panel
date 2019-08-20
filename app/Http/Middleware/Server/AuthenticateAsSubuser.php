@@ -7,25 +7,25 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Middleware\Server;
+namespace App\Http\Middleware\Server;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateAsSubuser
 {
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService
      */
     private $keyProviderService;
 
     /**
      * SubuserAccessAuthenticate constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
+     * @param \App\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
      */
     public function __construct(DaemonKeyProviderService $keyProviderService)
     {
@@ -39,7 +39,7 @@ class AuthenticateAsSubuser
      * @param \Closure                 $next
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function handle(Request $request, Closure $next)

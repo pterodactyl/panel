@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Client\Servers;
+namespace App\Http\Requests\Api\Client\Servers;
 
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 
 class SendCommandRequest extends GetServerRequest
 {

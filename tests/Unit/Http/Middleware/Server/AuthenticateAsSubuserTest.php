@@ -3,16 +3,16 @@
 namespace Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use App\Http\Middleware\Server\AuthenticateAsSubuser;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Exceptions\Repository\RecordNotFoundException;
 
 class AuthenticateAsSubuserTest extends MiddlewareTestCase
 {
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
      */
     private $keyProviderService;
 
@@ -62,7 +62,7 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser
+     * @return \App\Http\Middleware\Server\AuthenticateAsSubuser
      */
     public function getMiddleware(): AuthenticateAsSubuser
     {

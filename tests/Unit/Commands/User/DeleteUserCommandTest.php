@@ -3,29 +3,29 @@
 namespace Tests\Unit\Commands\User;
 
 use Mockery as m;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Tests\Unit\Commands\CommandTestCase;
 use Tests\Assertions\CommandAssertionsTrait;
-use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Console\Commands\User\DeleteUserCommand;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Services\Users\UserDeletionService;
+use App\Console\Commands\User\DeleteUserCommand;
+use App\Contracts\Repository\UserRepositoryInterface;
 
 class DeleteUserCommandTest extends CommandTestCase
 {
     use CommandAssertionsTrait;
 
     /**
-     * @var \Pterodactyl\Console\Commands\User\DeleteUserCommand
+     * @var \App\Console\Commands\User\DeleteUserCommand
      */
     protected $command;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserDeletionService|\Mockery\Mock
+     * @var \App\Services\Users\UserDeletionService|\Mockery\Mock
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 

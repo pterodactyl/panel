@@ -7,12 +7,12 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Extensions;
+namespace App\Extensions;
 
-use Pterodactyl\Models\DatabaseHost;
+use App\Models\DatabaseHost;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DynamicDatabaseConnection
 {
@@ -31,7 +31,7 @@ class DynamicDatabaseConnection
     protected $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
+     * @var \App\Contracts\Repository\DatabaseHostRepositoryInterface
      */
     protected $repository;
 
@@ -39,7 +39,7 @@ class DynamicDatabaseConnection
      * DynamicDatabaseConnection constructor.
      *
      * @param \Illuminate\Config\Repository                                     $config
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
+     * @param \App\Contracts\Repository\DatabaseHostRepositoryInterface $repository
      * @param \Illuminate\Contracts\Encryption\Encrypter                        $encrypter
      */
     public function __construct(
@@ -56,10 +56,10 @@ class DynamicDatabaseConnection
      * Adds a dynamic database connection entry to the runtime config.
      *
      * @param string                               $connection
-     * @param \Pterodactyl\Models\DatabaseHost|int $host
+     * @param \App\Models\DatabaseHost|int $host
      * @param string                               $database
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function set($connection, $host, $database = 'mysql')
     {

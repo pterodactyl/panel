@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\DaemonKey;
+use App\Models\User;
+use App\Models\DaemonKey;
 use Illuminate\Support\Collection;
 
 interface DaemonKeyRepositoryInterface extends RepositoryInterface
@@ -16,9 +16,9 @@ interface DaemonKeyRepositoryInterface extends RepositoryInterface
     /**
      * Load the server and user relations onto a key model.
      *
-     * @param \Pterodactyl\Models\DaemonKey $key
+     * @param \App\Models\DaemonKey $key
      * @param bool                          $refresh
-     * @return \Pterodactyl\Models\DaemonKey
+     * @return \App\Models\DaemonKey
      */
     public function loadServerAndUserRelations(DaemonKey $key, bool $refresh = false): DaemonKey;
 
@@ -26,9 +26,9 @@ interface DaemonKeyRepositoryInterface extends RepositoryInterface
      * Return a daemon key with the associated server relation attached.
      *
      * @param string $key
-     * @return \Pterodactyl\Models\DaemonKey
+     * @return \App\Models\DaemonKey
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getKeyWithServer(string $key): DaemonKey;
 
@@ -36,7 +36,7 @@ interface DaemonKeyRepositoryInterface extends RepositoryInterface
      * Get all of the keys for a specific user including the information needed
      * from their server relation for revocation on the daemon.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Support\Collection
      */
     public function getKeysForRevocation(User $user): Collection;

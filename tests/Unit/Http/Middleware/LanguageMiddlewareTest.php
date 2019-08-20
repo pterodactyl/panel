@@ -3,9 +3,9 @@
 namespace Tests\Unit\Http\Middleware;
 
 use Mockery as m;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Foundation\Application;
-use Pterodactyl\Http\Middleware\LanguageMiddleware;
+use App\Http\Middleware\LanguageMiddleware;
 
 class LanguageMiddlewareTest extends MiddlewareTestCase
 {
@@ -51,7 +51,7 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\LanguageMiddleware
+     * @return \App\Http\Middleware\LanguageMiddleware
      */
     private function getMiddleware(): LanguageMiddleware
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Application;
+namespace App\Transformers\Api\Application;
 
 use Cake\Chronos\Chronos;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use App\Models\Database;
+use App\Models\DatabaseHost;
+use App\Services\Acl\Api\AdminAcl;
 
 class DatabaseHostTransformer extends BaseTransformer
 {
@@ -29,7 +29,7 @@ class DatabaseHostTransformer extends BaseTransformer
     /**
      * Transform database host into a representation for the application API.
      *
-     * @param \Pterodactyl\Models\DatabaseHost $model
+     * @param \App\Models\DatabaseHost $model
      * @return array
      */
     public function transform(DatabaseHost $model)
@@ -53,9 +53,9 @@ class DatabaseHostTransformer extends BaseTransformer
     /**
      * Include the databases associated with this host.
      *
-     * @param \Pterodactyl\Models\DatabaseHost $model
+     * @param \App\Models\DatabaseHost $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \App\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeDatabases(DatabaseHost $model)
     {

@@ -12,7 +12,7 @@ abstract class ControllerTestCase extends TestCase
     use ControllerAssertionsTrait, RequestMockHelpers;
 
     /**
-     * @var \Pterodactyl\Http\Controllers\Controller|\Mockery\Mock
+     * @var \App\Http\Controllers\Controller|\Mockery\Mock
      */
     private $controller;
 
@@ -29,7 +29,7 @@ abstract class ControllerTestCase extends TestCase
     /**
      * Set an instance of the controller.
      *
-     * @param \Pterodactyl\Http\Controllers\Controller|\Mockery\Mock $controller
+     * @param \App\Http\Controllers\Controller|\Mockery\Mock $controller
      */
     public function setControllerInstance($controller)
     {
@@ -39,7 +39,7 @@ abstract class ControllerTestCase extends TestCase
     /**
      * Return an instance of the controller.
      *
-     * @return \Mockery\Mock|\Pterodactyl\Http\Controllers\Controller
+     * @return \Mockery\Mock|\App\Http\Controllers\Controller
      */
     public function getControllerInstance()
     {
@@ -71,7 +71,7 @@ abstract class ControllerTestCase extends TestCase
      *
      * @param string $class
      * @param array  $args
-     * @return \Mockery\Mock|\Pterodactyl\Http\Controllers\Controller
+     * @return \Mockery\Mock|\App\Http\Controllers\Controller
      */
     protected function buildMockedController(string $class, array $args = [])
     {

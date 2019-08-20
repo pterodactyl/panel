@@ -11,21 +11,21 @@ namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
+use App\Models\Server;
+use App\Models\Subuser;
 use Tests\Traits\MocksRequestException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Services\Subusers\SubuserUpdateService;
-use Pterodactyl\Services\Subusers\PermissionCreationService;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Exceptions\PterodactylException;
+use App\Services\Subusers\SubuserUpdateService;
+use App\Services\Subusers\PermissionCreationService;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Contracts\Repository\PermissionRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SubuserUpdateServiceTest extends TestCase
 {
@@ -37,27 +37,27 @@ class SubuserUpdateServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     private $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
      */
     private $keyProviderService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\PermissionRepositoryInterface|\Mockery\Mock
      */
     private $permissionRepository;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\PermissionCreationService|\Mockery\Mock
+     * @var \App\Services\Subusers\PermissionCreationService|\Mockery\Mock
      */
     private $permissionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -131,7 +131,7 @@ class SubuserUpdateServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Services\Subusers\SubuserUpdateService
+     * @return \App\Services\Subusers\SubuserUpdateService
      */
     private function getService(): SubuserUpdateService
     {

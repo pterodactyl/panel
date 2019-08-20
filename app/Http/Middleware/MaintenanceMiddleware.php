@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -31,7 +31,7 @@ class MaintenanceMiddleware
      */
     public function handle($request, Closure $next)
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \App\Models\Server $server */
         $server = $request->attributes->get('server');
         $node = $server->getRelation('node');
 

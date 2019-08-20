@@ -11,11 +11,11 @@ namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Subuser;
+use App\Models\Subuser;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Subusers\SubuserDeletionService;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
+use App\Services\Subusers\SubuserDeletionService;
+use App\Services\DaemonKeys\DaemonKeyDeletionService;
+use App\Contracts\Repository\SubuserRepositoryInterface;
 
 class SubuserDeletionServiceTest extends TestCase
 {
@@ -25,12 +25,12 @@ class SubuserDeletionServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService|\Mockery\Mock
+     * @var \App\Services\DaemonKeys\DaemonKeyDeletionService|\Mockery\Mock
      */
     private $keyDeletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -65,7 +65,7 @@ class SubuserDeletionServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Services\Subusers\SubuserDeletionService
+     * @return \App\Services\Subusers\SubuserDeletionService
      */
     private function getService(): SubuserDeletionService
     {

@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Services\Users;
+namespace App\Services\Users;
 
 use Carbon\Carbon;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 
 class ToggleTwoFactorService
 {
@@ -28,7 +28,7 @@ class ToggleTwoFactorService
     private $google2FA;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     private $repository;
 
@@ -38,7 +38,7 @@ class ToggleTwoFactorService
      * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
      * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
      * @param \Illuminate\Contracts\Config\Repository                   $config
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \App\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         Encrypter $encrypter,
@@ -55,14 +55,14 @@ class ToggleTwoFactorService
     /**
      * Toggle 2FA on an account only if the token provided is valid.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param string                   $token
      * @param bool|null                $toggleState
      * @return bool
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
      */
     public function handle(User $user, string $token, bool $toggleState = null): bool
     {

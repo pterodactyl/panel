@@ -1,18 +1,18 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api\Daemon;
+namespace App\Http\Middleware\Api\Daemon;
 
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticate
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     private $repository;
 
@@ -28,7 +28,7 @@ class DaemonAuthenticate
     /**
      * DaemonAuthenticate constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(NodeRepositoryInterface $repository)
     {

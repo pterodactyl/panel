@@ -5,10 +5,10 @@ namespace Tests\Unit\Services\Api;
 use Mockery as m;
 use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use App\Services\Api\KeyCreationService;
+use App\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationServiceTest extends TestCase
 {
@@ -20,7 +20,7 @@ class KeyCreationServiceTest extends TestCase
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ApiKeyRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -42,7 +42,7 @@ class KeyCreationServiceTest extends TestCase
     {
         $model = factory(ApiKey::class)->make();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
+        $this->getFunctionMock('\\App\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
                 return 'str_' . $length;
             });
@@ -70,7 +70,7 @@ class KeyCreationServiceTest extends TestCase
     {
         $model = factory(ApiKey::class)->make();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
+        $this->getFunctionMock('\\App\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
                 return 'str_' . $length;
             });
@@ -97,7 +97,7 @@ class KeyCreationServiceTest extends TestCase
     {
         $model = factory(ApiKey::class)->make();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
+        $this->getFunctionMock('\\App\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
                 return 'str_' . $length;
             });
@@ -127,7 +127,7 @@ class KeyCreationServiceTest extends TestCase
     {
         $model = factory(ApiKey::class)->make();
 
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
+        $this->getFunctionMock('\\App\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
                 return 'str_' . $length;
             });
@@ -162,7 +162,7 @@ class KeyCreationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies for testing.
      *
-     * @return \Pterodactyl\Services\Api\KeyCreationService
+     * @return \App\Services\Api\KeyCreationService
      */
     private function getService(): KeyCreationService
     {

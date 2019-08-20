@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Providers;
+namespace App\Providers;
 
 use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface as Log;
@@ -9,7 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use App\Contracts\Repository\SettingsRepositoryInterface;
 
 class SettingsServiceProvider extends ServiceProvider
 {
@@ -64,7 +64,7 @@ class SettingsServiceProvider extends ServiceProvider
      * @param \Illuminate\Contracts\Config\Repository                       $config
      * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
      * @param \Psr\Log\LoggerInterface                                      $log
-     * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
+     * @param \App\Contracts\Repository\SettingsRepositoryInterface $settings
      */
     public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings)
     {

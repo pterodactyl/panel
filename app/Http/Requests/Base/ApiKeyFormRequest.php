@@ -7,10 +7,10 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Base;
+namespace App\Http\Requests\Base;
 
 use IPTools\Network;
-use Pterodactyl\Http\Requests\FrontendUserFormRequest;
+use App\Http\Requests\FrontendUserFormRequest;
 
 class ApiKeyFormRequest extends FrontendUserFormRequest
 {

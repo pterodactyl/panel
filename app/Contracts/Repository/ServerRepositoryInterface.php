@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
+use App\Models\User;
+use App\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use App\Contracts\Repository\Attributes\SearchableInterface;
 
 interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
@@ -21,9 +21,9 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     /**
      * Load the egg relations onto the server model.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param bool                       $refresh
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      */
     public function loadEggRelations(Server $server, bool $refresh = false): Server;
 
@@ -40,9 +40,9 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Return a server model and all variables associated with the server.
      *
      * @param int $id
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function findWithVariables(int $id): Server;
 
@@ -51,9 +51,9 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * the function, load the allocation relationship onto it. Otherwise, find and
      * return the server from the database.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param bool                       $refresh
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      */
     public function getPrimaryAllocation(Server $server, bool $refresh = false): Server;
 
@@ -65,25 +65,25 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @param bool $returnAsObject
      * @return array|object
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getVariablesWithValues(int $id, bool $returnAsObject = false);
 
     /**
      * Return enough data to be used for the creation of a server via the daemon.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param bool                       $refresh
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      */
     public function getDataForCreation(Server $server, bool $refresh = false): Server;
 
     /**
      * Load associated databases onto the server model.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param bool                       $refresh
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      */
     public function loadDatabaseRelations(Server $server, bool $refresh = false): Server;
 
@@ -92,7 +92,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * the egg and pack UUID which are used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param bool                       $refresh
      * @return array
      */
@@ -101,7 +101,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     /**
      * Return a paginated list of servers that a user can access at a given level.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param int                      $level
      * @param bool|int                 $paginate
      * @return \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
@@ -112,9 +112,9 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Return a server by UUID.
      *
      * @param string $uuid
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getByUuid(string $uuid): Server;
 

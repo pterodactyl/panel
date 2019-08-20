@@ -4,23 +4,23 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\User;
+use App\Models\Egg;
+use App\Models\User;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Servers\EnvironmentService;
-use Pterodactyl\Services\Servers\VariableValidatorService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Services\Servers\StartupModificationService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepository;
+use App\Services\Servers\EnvironmentService;
+use App\Services\Servers\VariableValidatorService;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Services\Servers\StartupModificationService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\ServerVariableRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepository;
 
 class StartupModificationServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     private $daemonServerRepository;
 
@@ -30,27 +30,27 @@ class StartupModificationServiceTest extends TestCase
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     private $eggRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService|\Mockery\Mock
+     * @var \App\Services\Servers\EnvironmentService|\Mockery\Mock
      */
     private $environmentService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
      */
     private $serverVariableRepository;
 
     /**
-     * @var \Pterodactyl\Services\Servers\VariableValidatorService|\Mockery\Mock
+     * @var \App\Services\Servers\VariableValidatorService|\Mockery\Mock
      */
     private $validatorService;
 
@@ -181,7 +181,7 @@ class StartupModificationServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Servers\StartupModificationService
+     * @return \App\Services\Servers\StartupModificationService
      */
     private function getService(): StartupModificationService
     {

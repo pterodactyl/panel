@@ -1,19 +1,19 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Exceptions\DisplayException;
+use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Translation\Translator;
-use Pterodactyl\Services\Users\UserUpdateService;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
-use Pterodactyl\Services\Users\UserCreationService;
-use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Http\Requests\Admin\UserFormRequest;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Services\Users\UserUpdateService;
+use App\Traits\Helpers\AvailableLanguages;
+use App\Services\Users\UserCreationService;
+use App\Services\Users\UserDeletionService;
+use App\Http\Requests\Admin\UserFormRequest;
+use App\Contracts\Repository\UserRepositoryInterface;
 
 class UserController extends Controller
 {
@@ -25,17 +25,17 @@ class UserController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
+     * @var \App\Services\Users\UserCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserDeletionService
+     * @var \App\Services\Users\UserDeletionService
      */
     protected $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     protected $repository;
 
@@ -45,7 +45,7 @@ class UserController extends Controller
     protected $translator;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
+     * @var \App\Services\Users\UserUpdateService
      */
     protected $updateService;
 
@@ -53,11 +53,11 @@ class UserController extends Controller
      * UserController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param \Pterodactyl\Services\Users\UserCreationService           $creationService
-     * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
+     * @param \App\Services\Users\UserCreationService           $creationService
+     * @param \App\Services\Users\UserDeletionService           $deletionService
      * @param \Illuminate\Contracts\Translation\Translator              $translator
-     * @param \Pterodactyl\Services\Users\UserUpdateService             $updateService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \App\Services\Users\UserUpdateService             $updateService
+     * @param \App\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -103,7 +103,7 @@ class UserController extends Controller
     /**
      * Display user view page.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\View\View
      */
     public function view(User $user)
@@ -118,11 +118,11 @@ class UserController extends Controller
      * Delete a user from the system.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \App\Exceptions\DisplayException
      */
     public function delete(Request $request, User $user)
     {
@@ -138,7 +138,7 @@ class UserController extends Controller
     /**
      * Create a user.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
+     * @param \App\Http\Requests\Admin\UserFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -155,12 +155,12 @@ class UserController extends Controller
     /**
      * Update a user on the system.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
-     * @param \Pterodactyl\Models\User                         $user
+     * @param \App\Http\Requests\Admin\UserFormRequest $request
+     * @param \App\Models\User                         $user
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UserFormRequest $request, User $user)
     {

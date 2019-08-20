@@ -1,42 +1,42 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
+namespace App\Http\Controllers\Api\Application\Nodes;
 
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Services\Allocations\AssignmentService;
-use Pterodactyl\Services\Allocations\AllocationDeletionService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Transformers\Api\Application\AllocationTransformer;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
-use Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest;
-use Pterodactyl\Http\Requests\Api\Application\Allocations\StoreAllocationRequest;
-use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest;
+use App\Models\Allocation;
+use App\Services\Allocations\AssignmentService;
+use App\Services\Allocations\AllocationDeletionService;
+use App\Contracts\Repository\AllocationRepositoryInterface;
+use App\Transformers\Api\Application\AllocationTransformer;
+use App\Http\Controllers\Api\Application\ApplicationApiController;
+use App\Http\Requests\Api\Application\Allocations\GetAllocationsRequest;
+use App\Http\Requests\Api\Application\Allocations\StoreAllocationRequest;
+use App\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest;
 
 class AllocationController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Allocations\AssignmentService
+     * @var \App\Services\Allocations\AssignmentService
      */
     private $assignmentService;
 
     /**
-     * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
+     * @var \App\Services\Allocations\AllocationDeletionService
      */
     private $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface
      */
     private $repository;
 
     /**
      * AllocationController constructor.
      *
-     * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
-     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService     $deletionService
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
+     * @param \App\Services\Allocations\AssignmentService             $assignmentService
+     * @param \App\Services\Allocations\AllocationDeletionService     $deletionService
+     * @param \App\Contracts\Repository\AllocationRepositoryInterface $repository
      */
     public function __construct(
         AssignmentService $assignmentService,
@@ -53,7 +53,7 @@ class AllocationController extends ApplicationApiController
     /**
      * Return all of the allocations that exist for a given node.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest $request
+     * @param \App\Http\Requests\Api\Application\Allocations\GetAllocationsRequest $request
      * @return array
      */
     public function index(GetAllocationsRequest $request): array
@@ -70,13 +70,13 @@ class AllocationController extends ApplicationApiController
     /**
      * Store new allocations for a given node.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\StoreAllocationRequest $request
+     * @param \App\Http\Requests\Api\Application\Allocations\StoreAllocationRequest $request
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @throws \App\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @throws \App\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \App\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @throws \App\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     public function store(StoreAllocationRequest $request): Response
     {
@@ -88,10 +88,10 @@ class AllocationController extends ApplicationApiController
     /**
      * Delete a specific allocation from the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest $request
+     * @param \App\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest $request
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
+     * @throws \App\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
     public function delete(DeleteAllocationRequest $request): Response
     {

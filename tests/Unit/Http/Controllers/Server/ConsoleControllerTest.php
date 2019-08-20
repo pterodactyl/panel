@@ -10,10 +10,10 @@
 namespace Tests\Unit\Http\Controllers\Server;
 
 use Mockery as m;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Contracts\Config\Repository;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Http\Controllers\Server\ConsoleController;
+use App\Http\Controllers\Server\ConsoleController;
 
 class ConsoleControllerTest extends ControllerTestCase
 {
@@ -68,7 +68,7 @@ class ConsoleControllerTest extends ControllerTestCase
     /**
      * Return a mocked instance of the controller to allow access to authorization functionality.
      *
-     * @return \Pterodactyl\Http\Controllers\Server\ConsoleController|\Mockery\Mock
+     * @return \App\Http\Controllers\Server\ConsoleController|\Mockery\Mock
      */
     private function getController()
     {

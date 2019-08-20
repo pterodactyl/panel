@@ -4,7 +4,7 @@ namespace Tests\Traits\Http;
 
 use Mockery as m;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
@@ -35,7 +35,7 @@ trait RequestMockHelpers
     /**
      * Configure the user model that the request mock should return with.
      *
-     * @param \Pterodactyl\Models\User|null $user
+     * @param \App\Models\User|null $user
      */
     public function setRequestUserModel(User $user = null)
     {
@@ -46,7 +46,7 @@ trait RequestMockHelpers
      * Generates a new request user model and also returns the generated model.
      *
      * @param array $args
-     * @return \Pterodactyl\Models\User
+     * @return \App\Models\User
      */
     public function generateRequestUserModel(array $args = []): User
     {
@@ -94,8 +94,8 @@ trait RequestMockHelpers
      * Sets the mocked request user. If a user model is not provided, a factory model
      * will be created and returned.
      *
-     * @param \Pterodactyl\Models\User|null $user
-     * @return \Pterodactyl\Models\User
+     * @param \App\Models\User|null $user
+     * @return \App\Models\User
      * @deprecated
      */
     protected function setRequestUser(User $user = null): User

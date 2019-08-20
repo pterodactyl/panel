@@ -7,14 +7,14 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Eggs;
+namespace App\Services\Eggs;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use App\Models\Egg;
+use App\Contracts\Repository\EggRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
+use App\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 
 // When a mommy and a daddy pterodactyl really like each other...
 class EggCreationService
@@ -25,7 +25,7 @@ class EggCreationService
     protected $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
@@ -33,7 +33,7 @@ class EggCreationService
      * EggCreationService constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository                  $config
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
+     * @param \App\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(ConfigRepository $config, EggRepositoryInterface $repository)
     {
@@ -45,10 +45,10 @@ class EggCreationService
      * Create a new service option and assign it to the given service.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\Egg
+     * @return \App\Models\Egg
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
     public function handle(array $data): Egg
     {

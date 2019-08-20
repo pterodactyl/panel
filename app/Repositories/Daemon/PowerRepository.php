@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Repositories\Daemon;
+namespace App\Repositories\Daemon;
 
 use Psr\Http\Message\ResponseInterface;
-use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException;
+use App\Contracts\Repository\Daemon\PowerRepositoryInterface;
+use App\Exceptions\Repository\Daemon\InvalidPowerSignalException;
 
 class PowerRepository extends BaseRepository implements PowerRepositoryInterface
 {

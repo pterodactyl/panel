@@ -7,19 +7,19 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Subusers;
+namespace App\Services\Subusers;
 
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Services\Users\UserCreationService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
-use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
+use App\Services\Users\UserCreationService;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyCreationService;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\SubuserRepositoryInterface;
+use App\Exceptions\Service\Subuser\UserIsServerOwnerException;
+use App\Exceptions\Service\Subuser\ServerSubuserExistsException;
 
 class SubuserCreationService
 {
@@ -29,32 +29,32 @@ class SubuserCreationService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService
+     * @var \App\Services\DaemonKeys\DaemonKeyCreationService
      */
     protected $keyCreationService;
 
     /**
-     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
+     * @var \App\Services\Subusers\PermissionCreationService
      */
     protected $permissionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
+     * @var \App\Contracts\Repository\SubuserRepositoryInterface
      */
     protected $subuserRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
+     * @var \App\Services\Users\UserCreationService
      */
     protected $userCreationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     protected $userRepository;
 
@@ -62,12 +62,12 @@ class SubuserCreationService
      * SubuserCreationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                     $connection
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService    $keyCreationService
-     * @param \Pterodactyl\Services\Subusers\PermissionCreationService     $permissionService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
-     * @param \Pterodactyl\Services\Users\UserCreationService              $userCreationService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
+     * @param \App\Services\DaemonKeys\DaemonKeyCreationService    $keyCreationService
+     * @param \App\Services\Subusers\PermissionCreationService     $permissionService
+     * @param \App\Contracts\Repository\ServerRepositoryInterface  $serverRepository
+     * @param \App\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
+     * @param \App\Services\Users\UserCreationService              $userCreationService
+     * @param \App\Contracts\Repository\UserRepositoryInterface    $userRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -88,16 +88,16 @@ class SubuserCreationService
     }
 
     /**
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param int|\App\Models\Server $server
      * @param string                         $email
      * @param array                          $permissions
-     * @return \Pterodactyl\Models\Subuser
+     * @return \App\Models\Subuser
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
-     * @throws \Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Subuser\ServerSubuserExistsException
+     * @throws \App\Exceptions\Service\Subuser\UserIsServerOwnerException
      */
     public function handle($server, $email, array $permissions)
     {

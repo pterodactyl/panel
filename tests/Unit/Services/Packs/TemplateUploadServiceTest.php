@@ -12,15 +12,15 @@ namespace Tests\Unit\Services\Packs;
 use ZipArchive;
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Pack;
+use App\Models\Pack;
 use Illuminate\Http\UploadedFile;
-use Pterodactyl\Services\Packs\PackCreationService;
-use Pterodactyl\Services\Packs\TemplateUploadService;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Exceptions\Service\Pack\ZipExtractionException;
-use Pterodactyl\Exceptions\Service\Pack\InvalidFileMimeTypeException;
-use Pterodactyl\Exceptions\Service\Pack\UnreadableZipArchiveException;
-use Pterodactyl\Exceptions\Service\Pack\InvalidPackArchiveFormatException;
+use App\Services\Packs\PackCreationService;
+use App\Services\Packs\TemplateUploadService;
+use App\Exceptions\Service\InvalidFileUploadException;
+use App\Exceptions\Service\Pack\ZipExtractionException;
+use App\Exceptions\Service\Pack\InvalidFileMimeTypeException;
+use App\Exceptions\Service\Pack\UnreadableZipArchiveException;
+use App\Exceptions\Service\Pack\InvalidPackArchiveFormatException;
 
 class TemplateUploadServiceTest extends TestCase
 {
@@ -32,7 +32,7 @@ class TemplateUploadServiceTest extends TestCase
     protected $archive;
 
     /**
-     * @var \Pterodactyl\Services\Packs\PackCreationService|\Mockery\Mock
+     * @var \App\Services\Packs\PackCreationService|\Mockery\Mock
      */
     protected $creationService;
 
@@ -42,7 +42,7 @@ class TemplateUploadServiceTest extends TestCase
     protected $file;
 
     /**
-     * @var \Pterodactyl\Services\Packs\TemplateUploadService
+     * @var \App\Services\Packs\TemplateUploadService
      */
     protected $service;
 

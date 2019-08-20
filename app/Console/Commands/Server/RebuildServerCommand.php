@@ -7,24 +7,24 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Console\Commands\Server;
+namespace App\Console\Commands\Server;
 
 use Webmozart\Assert\Assert;
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Services\Servers\ServerConfigurationStructureService;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class RebuildServerCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     * @var \App\Services\Servers\ServerConfigurationStructureService
      */
     protected $configurationStructureService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonRepository;
 
@@ -34,7 +34,7 @@ class RebuildServerCommand extends Command
     protected $description = 'Rebuild a single server, all servers on a node, or all servers on the panel.';
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
 
@@ -48,9 +48,9 @@ class RebuildServerCommand extends Command
     /**
      * RebuildServerCommand constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService  $configurationStructureService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \App\Services\Servers\ServerConfigurationStructureService  $configurationStructureService
+     * @param \App\Contracts\Repository\ServerRepositoryInterface        $repository
      */
     public function __construct(
         DaemonServerRepositoryInterface $daemonRepository,

@@ -12,17 +12,17 @@ namespace Tests\Unit\Services\DaemonKeys;
 use Mockery as m;
 use Tests\TestCase;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\DaemonKey;
+use App\Models\Server;
+use App\Models\DaemonKey;
 use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Exceptions\DisplayException;
+use App\Exceptions\PterodactylException;
+use App\Services\DaemonKeys\DaemonKeyDeletionService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class DaemonKeyDeletionServiceTest extends TestCase
 {
@@ -32,7 +32,7 @@ class DaemonKeyDeletionServiceTest extends TestCase
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $daemonRepository;
 
@@ -42,17 +42,17 @@ class DaemonKeyDeletionServiceTest extends TestCase
     protected $exception;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     protected $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService
+     * @var \App\Services\DaemonKeys\DaemonKeyDeletionService
      */
     protected $service;
 

@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-namespace Pterodactyl\Services\DaemonKeys;
+namespace App\Services\DaemonKeys;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Exceptions\DisplayException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class DaemonKeyDeletionService
 {
@@ -42,17 +42,17 @@ class DaemonKeyDeletionService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
@@ -65,9 +65,9 @@ class DaemonKeyDeletionService
      * DaemonKeyDeletionService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface     $repository
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
+     * @param \App\Contracts\Repository\DaemonKeyRepositoryInterface     $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface        $serverRepository
      * @param \Psr\Log\LoggerInterface                                           $writer
      */
     public function __construct(
@@ -85,11 +85,11 @@ class DaemonKeyDeletionService
     }
 
     /**
-     * @param \Pterodactyl\Models\Server|int $server
+     * @param \App\Models\Server|int $server
      * @param int                            $user
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($server, $user)
     {

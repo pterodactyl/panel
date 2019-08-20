@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
-use Pterodactyl\Models\Location;
+use App\Models\Location;
 use Illuminate\Support\Collection;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
+use App\Contracts\Repository\Attributes\SearchableInterface;
 
 interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
 {
@@ -28,7 +28,7 @@ interface LocationRepositoryInterface extends RepositoryInterface, SearchableInt
      * @param int $id
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithNodes(int $id): Location;
 
@@ -38,7 +38,7 @@ interface LocationRepositoryInterface extends RepositoryInterface, SearchableInt
      * @param int $id
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithNodeCount(int $id): Location;
 }

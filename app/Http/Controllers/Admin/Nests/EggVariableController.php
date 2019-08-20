@@ -7,19 +7,19 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Admin\Nests;
+namespace App\Http\Controllers\Admin\Nests;
 
 use Illuminate\View\View;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\EggVariable;
+use App\Models\Egg;
+use App\Models\EggVariable;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Services\Eggs\Variables\VariableUpdateService;
-use Pterodactyl\Http\Requests\Admin\Egg\EggVariableFormRequest;
-use Pterodactyl\Services\Eggs\Variables\VariableCreationService;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Services\Eggs\Variables\VariableUpdateService;
+use App\Http\Requests\Admin\Egg\EggVariableFormRequest;
+use App\Services\Eggs\Variables\VariableCreationService;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggVariableController extends Controller
 {
@@ -29,22 +29,22 @@ class EggVariableController extends Controller
     protected $alert;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Variables\VariableCreationService
+     * @var \App\Services\Eggs\Variables\VariableCreationService
      */
     protected $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Variables\VariableUpdateService
+     * @var \App\Services\Eggs\Variables\VariableUpdateService
      */
     protected $updateService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface
      */
     protected $variableRepository;
 
@@ -52,10 +52,10 @@ class EggVariableController extends Controller
      * EggVariableController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag                                $alert
-     * @param \Pterodactyl\Services\Eggs\Variables\VariableCreationService     $creationService
-     * @param \Pterodactyl\Services\Eggs\Variables\VariableUpdateService       $updateService
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
+     * @param \App\Services\Eggs\Variables\VariableCreationService     $creationService
+     * @param \App\Services\Eggs\Variables\VariableUpdateService       $updateService
+     * @param \App\Contracts\Repository\EggRepositoryInterface         $repository
+     * @param \App\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -77,7 +77,7 @@ class EggVariableController extends Controller
      * @param int $egg
      * @return \Illuminate\View\View
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $egg): View
     {
@@ -89,13 +89,13 @@ class EggVariableController extends Controller
     /**
      * Handle a request to create a new Egg variable.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggVariableFormRequest $request
-     * @param \Pterodactyl\Models\Egg $egg
+     * @param \App\Http\Requests\Admin\Egg\EggVariableFormRequest $request
+     * @param \App\Models\Egg $egg
      *
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Service\Egg\Variable\BadValidationRuleException
+     * @throws \App\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function store(EggVariableFormRequest $request, Egg $egg): RedirectResponse
     {
@@ -108,15 +108,15 @@ class EggVariableController extends Controller
     /**
      * Handle a request to update an existing Egg variable.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggVariableFormRequest $request
-     * @param \Pterodactyl\Models\Egg                                     $egg
-     * @param \Pterodactyl\Models\EggVariable                             $variable
+     * @param \App\Http\Requests\Admin\Egg\EggVariableFormRequest $request
+     * @param \App\Models\Egg                                     $egg
+     * @param \App\Models\EggVariable                             $variable
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function update(EggVariableFormRequest $request, Egg $egg, EggVariable $variable): RedirectResponse
     {
@@ -132,7 +132,7 @@ class EggVariableController extends Controller
      * Handle a request to delete an existing Egg variable from the Panel.
      *
      * @param int                             $egg
-     * @param \Pterodactyl\Models\EggVariable $variable
+     * @param \App\Models\EggVariable $variable
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(int $egg, EggVariable $variable): RedirectResponse

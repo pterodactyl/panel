@@ -9,48 +9,48 @@
 namespace Tests\Unit\Http\Controllers\Admin;
 
 use Mockery as m;
-use Pterodactyl\Models\Node;
+use App\Models\Node;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Http\Controllers\Admin\StatisticsController;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Http\Controllers\Admin\StatisticsController;
+use App\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\DatabaseRepositoryInterface;
+use App\Contracts\Repository\AllocationRepositoryInterface;
 
 class StatisticsControllerTest extends ControllerTestCase
 {
     use ControllerAssertionsTrait;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
      */
     private $allocationRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\DatabaseRepositoryInterface|\Mockery\Mock
      */
     private $databaseRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     private $eggRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
      */
     private $nodeRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $serverRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $userRepository;
 

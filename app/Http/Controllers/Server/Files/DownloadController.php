@@ -7,13 +7,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Server\Files;
+namespace App\Http\Controllers\Server\Files;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Cache\Repository;
 use Illuminate\Http\RedirectResponse;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 
 class DownloadController extends Controller
 {

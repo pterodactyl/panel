@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Auth;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -9,13 +9,13 @@ use Illuminate\Auth\AuthManager;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Http\RedirectResponse;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\UserRepositoryInterface;
+use App\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class LoginController extends Controller
@@ -45,7 +45,7 @@ class LoginController extends Controller
     private $encrypter;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     * @var \App\Contracts\Repository\UserRepositoryInterface
      */
     private $repository;
 
@@ -83,7 +83,7 @@ class LoginController extends Controller
      * @param \Illuminate\Contracts\Config\Repository                   $config
      * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
      * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param \App\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         AuthManager $auth,

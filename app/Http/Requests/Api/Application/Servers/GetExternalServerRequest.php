@@ -1,17 +1,17 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Servers;
+namespace App\Http\Requests\Api\Application\Servers;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use App\Models\Server;
+use App\Services\Acl\Api\AdminAcl;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetExternalServerRequest extends ApplicationApiRequest
 {
     /**
-     * @var \Pterodactyl\Models\Server
+     * @var \App\Models\Server
      */
     private $serverModel;
 
@@ -48,7 +48,7 @@ class GetExternalServerRequest extends ApplicationApiRequest
     /**
      * Return the server model for the requested external server.
      *
-     * @return \Pterodactyl\Models\Server
+     * @return \App\Models\Server
      */
     public function getServerModel(): Server
     {

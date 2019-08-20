@@ -4,15 +4,15 @@ namespace Tests\Unit\Services;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Tests\Traits\MocksUuids;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Contracts\Auth\PasswordBroker;
-use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Services\Users\UserCreationService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Notifications\AccountCreated;
+use App\Services\Users\UserCreationService;
+use App\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationServiceTest extends TestCase
 {
@@ -34,7 +34,7 @@ class UserCreationServiceTest extends TestCase
     private $passwordBroker;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -148,7 +148,7 @@ class UserCreationServiceTest extends TestCase
     /**
      * Return a new instance of the service using mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Users\UserCreationService
+     * @return \App\Services\Users\UserCreationService
      */
     private function getService(): UserCreationService
     {

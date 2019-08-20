@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository\Daemon;
+namespace App\Contracts\Repository\Daemon;
 
 use Psr\Http\Message\ResponseInterface;
 

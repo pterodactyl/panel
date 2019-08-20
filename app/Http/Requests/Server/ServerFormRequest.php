@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Server;
+namespace App\Http\Requests\Server;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Http\Requests\FrontendUserFormRequest;
+use App\Models\Server;
+use App\Http\Requests\FrontendUserFormRequest;
 
 abstract class ServerFormRequest extends FrontendUserFormRequest
 {

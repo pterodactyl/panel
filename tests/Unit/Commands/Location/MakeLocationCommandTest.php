@@ -10,20 +10,20 @@
 namespace Tests\Unit\Commands\Location;
 
 use Mockery as m;
-use Pterodactyl\Models\Location;
+use App\Models\Location;
 use Tests\Unit\Commands\CommandTestCase;
-use Pterodactyl\Services\Locations\LocationCreationService;
-use Pterodactyl\Console\Commands\Location\MakeLocationCommand;
+use App\Services\Locations\LocationCreationService;
+use App\Console\Commands\Location\MakeLocationCommand;
 
 class MakeLocationCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Console\Commands\Location\MakeLocationCommand
+     * @var \App\Console\Commands\Location\MakeLocationCommand
      */
     protected $command;
 
     /**
-     * @var \Pterodactyl\Services\Locations\LocationCreationService|\Mockery\Mock
+     * @var \App\Services\Locations\LocationCreationService|\Mockery\Mock
      */
     protected $creationService;
 

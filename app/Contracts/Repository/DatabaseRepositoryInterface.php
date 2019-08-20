@@ -1,8 +1,8 @@
 <?php
 
-namespace Pterodactyl\Contracts\Repository;
+namespace App\Contracts\Repository;
 
-use Pterodactyl\Models\Database;
+use App\Models\Database;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -47,10 +47,10 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * the provided details.
      *
      * @param array $data
-     * @return \Pterodactyl\Models\Database
+     * @return \App\Models\Database
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
+     * @throws \App\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Repository\DuplicateDatabaseNameException
      */
     public function createIfNotExists(array $data): Database;
 

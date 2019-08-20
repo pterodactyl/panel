@@ -1,14 +1,14 @@
 <?php
 
-namespace Pterodactyl\Repositories\Eloquent;
+namespace App\Repositories\Eloquent;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\DaemonKey;
+use App\Models\DaemonKey;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Exceptions\Repository\RecordNotFoundException;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyRepository extends EloquentRepository implements DaemonKeyRepositoryInterface
 {
@@ -25,9 +25,9 @@ class DaemonKeyRepository extends EloquentRepository implements DaemonKeyReposit
     /**
      * Load the server and user relations onto a key model.
      *
-     * @param \Pterodactyl\Models\DaemonKey $key
+     * @param \App\Models\DaemonKey $key
      * @param bool                          $refresh
-     * @return \Pterodactyl\Models\DaemonKey
+     * @return \App\Models\DaemonKey
      */
     public function loadServerAndUserRelations(DaemonKey $key, bool $refresh = false): DaemonKey
     {
@@ -46,9 +46,9 @@ class DaemonKeyRepository extends EloquentRepository implements DaemonKeyReposit
      * Return a daemon key with the associated server relation attached.
      *
      * @param string $key
-     * @return \Pterodactyl\Models\DaemonKey
+     * @return \App\Models\DaemonKey
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function getKeyWithServer(string $key): DaemonKey
     {
@@ -65,7 +65,7 @@ class DaemonKeyRepository extends EloquentRepository implements DaemonKeyReposit
      * Get all of the keys for a specific user including the information needed
      * from their server relation for revocation on the daemon.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @return \Illuminate\Support\Collection
      */
     public function getKeysForRevocation(User $user): Collection

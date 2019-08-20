@@ -1,41 +1,41 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Base;
+namespace App\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use Illuminate\Http\Response;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class IndexController extends Controller
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     protected $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService
      */
     protected $keyProviderService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
 
     /**
      * IndexController constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService          $keyProviderService
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \App\Services\DaemonKeys\DaemonKeyProviderService          $keyProviderService
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface        $repository
      */
     public function __construct(
         DaemonKeyProviderService $keyProviderService,

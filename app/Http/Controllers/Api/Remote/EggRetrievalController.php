@@ -7,30 +7,30 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Controllers\Api\Remote;
+namespace App\Http\Controllers\Api\Remote;
 
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Eggs\EggConfigurationService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use App\Http\Controllers\Controller;
+use App\Services\Eggs\EggConfigurationService;
+use App\Contracts\Repository\EggRepositoryInterface;
 
 class EggRetrievalController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Eggs\EggConfigurationService
+     * @var \App\Services\Eggs\EggConfigurationService
      */
     protected $configurationFileService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
+     * @var \App\Contracts\Repository\EggRepositoryInterface
      */
     protected $repository;
 
     /**
      * OptionUpdateController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Eggs\EggConfigurationService       $configurationFileService
+     * @param \App\Contracts\Repository\EggRepositoryInterface $repository
+     * @param \App\Services\Eggs\EggConfigurationService       $configurationFileService
      */
     public function __construct(
         EggRepositoryInterface $repository,
@@ -63,7 +63,7 @@ class EggRetrievalController extends Controller
      * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function download(string $uuid): JsonResponse
     {

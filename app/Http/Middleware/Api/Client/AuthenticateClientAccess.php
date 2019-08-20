@@ -1,25 +1,25 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware\Api\Client;
+namespace App\Http\Middleware\Api\Client;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use App\Services\DaemonKeys\DaemonKeyProviderService;
+use App\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateClientAccess
 {
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService
+     * @var \App\Services\DaemonKeys\DaemonKeyProviderService
      */
     private $keyProviderService;
 
     /**
      * AuthenticateClientAccess constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
+     * @param \App\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
      */
     public function __construct(DaemonKeyProviderService $keyProviderService)
     {
@@ -36,7 +36,7 @@ class AuthenticateClientAccess
      * @param \Closure                 $next
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function handle(Request $request, Closure $next)
     {
@@ -44,7 +44,7 @@ class AuthenticateClientAccess
             throw new AccessDeniedHttpException('A request must be made using an authenticated client.');
         }
 
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var \App\Models\Server $server */
         $server = $request->route()->parameter('server');
 
         try {

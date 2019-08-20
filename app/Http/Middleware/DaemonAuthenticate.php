@@ -7,11 +7,11 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Middleware;
+namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use App\Contracts\Repository\NodeRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticate
@@ -26,14 +26,14 @@ class DaemonAuthenticate
     ];
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \App\Contracts\Repository\NodeRepositoryInterface
      */
     private $repository;
 
     /**
      * Create a new filter instance.
      *
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @param \App\Contracts\Repository\NodeRepositoryInterface $repository
      * @deprecated
      */
     public function __construct(NodeRepositoryInterface $repository)
@@ -48,7 +48,7 @@ class DaemonAuthenticate
      * @param \Closure                 $next
      * @return mixed
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function handle(Request $request, Closure $next)

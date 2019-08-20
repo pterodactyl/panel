@@ -5,12 +5,12 @@ namespace Tests\Unit\Services\Users;
 use Mockery as m;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Pterodactyl\Models\User;
+use App\Models\User;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Users\ToggleTwoFactorService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use App\Services\Users\ToggleTwoFactorService;
+use App\Contracts\Repository\UserRepositoryInterface;
 
 class ToggleTwoFactorServiceTest extends TestCase
 {
@@ -34,7 +34,7 @@ class ToggleTwoFactorServiceTest extends TestCase
     private $google2FA;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -106,7 +106,7 @@ class ToggleTwoFactorServiceTest extends TestCase
     /**
      * Test that an exception is thrown if the token provided is invalid.
      *
-     * @expectedException \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
+     * @expectedException \App\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
      */
     public function testExceptionIsThrownIfTokenIsInvalid()
     {
@@ -119,7 +119,7 @@ class ToggleTwoFactorServiceTest extends TestCase
     /**
      * Return an instance of the service with mocked dependencies.
      *
-     * @return \Pterodactyl\Services\Users\ToggleTwoFactorService
+     * @return \App\Services\Users\ToggleTwoFactorService
      */
     private function getService(): ToggleTwoFactorService
     {

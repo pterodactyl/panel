@@ -1,9 +1,9 @@
 <?php
 
-namespace Pterodactyl\Repositories\Daemon;
+namespace App\Repositories\Daemon;
 
 use Psr\Http\Message\ResponseInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
+use App\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
 class ConfigurationRepository extends BaseRepository implements ConfigurationRepositoryInterface
 {

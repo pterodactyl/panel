@@ -7,15 +7,15 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Http\Requests\Server;
+namespace App\Http\Requests\Server;
 
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
+use App\Exceptions\Http\Server\FileSizeTooLargeException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\FileRepositoryInterface;
+use App\Exceptions\Http\Server\FileTypeNotEditableException;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
 
 class UpdateFileContentsFormRequest extends ServerFormRequest
 {
@@ -34,10 +34,10 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
      *
      * @return bool
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
-     * @throws \Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Http\Server\FileSizeTooLargeException
+     * @throws \App\Exceptions\Http\Server\FileTypeNotEditableException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function authorize()
     {
@@ -62,13 +62,13 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
     /**
      * Checks if a given file can be edited by a user on this server.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      * @param string                     $token
      * @return bool
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
-     * @throws \Pterodactyl\Exceptions\Http\Server\FileTypeNotEditableException
+     * @throws \App\Exceptions\DisplayException
+     * @throws \App\Exceptions\Http\Server\FileSizeTooLargeException
+     * @throws \App\Exceptions\Http\Server\FileTypeNotEditableException
      */
     private function checkFileCanBeEdited($server, $token)
     {

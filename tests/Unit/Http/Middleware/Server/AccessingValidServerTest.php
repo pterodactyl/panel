@@ -3,13 +3,13 @@
 namespace Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Pterodactyl\Http\Middleware\Server\AccessingValidServer;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Http\Middleware\Server\AccessingValidServer;
+use App\Contracts\Repository\ServerRepositoryInterface;
 
 class AccessingValidServerTest extends MiddlewareTestCase
 {
@@ -19,7 +19,7 @@ class AccessingValidServerTest extends MiddlewareTestCase
     private $config;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -141,7 +141,7 @@ class AccessingValidServerTest extends MiddlewareTestCase
     /**
      * Return an instance of the middleware using mocked dependencies.
      *
-     * @return \Pterodactyl\Http\Middleware\AccessingValidServer
+     * @return \App\Http\Middleware\AccessingValidServer
      */
     private function getMiddleware(): AccessingValidServer
     {

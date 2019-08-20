@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Exceptions\Service\Helper;
+namespace App\Exceptions\Service\Helper;
 
 class CdnVersionFetchingException extends \Exception
 {

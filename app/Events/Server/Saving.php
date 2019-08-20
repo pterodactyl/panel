@@ -7,9 +7,9 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Events\Server;
+namespace App\Events\Server;
 
-use Pterodactyl\Models\Server;
+use App\Models\Server;
 use Illuminate\Queue\SerializesModels;
 
 class Saving
@@ -19,14 +19,14 @@ class Saving
     /**
      * The Eloquent model of the server.
      *
-     * @var \Pterodactyl\Models\Server
+     * @var \App\Models\Server
      */
     public $server;
 
     /**
      * Create a new event instance.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \App\Models\Server $server
      */
     public function __construct(Server $server)
     {

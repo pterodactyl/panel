@@ -1,10 +1,10 @@
 <?php
 
-namespace Pterodactyl\Services\Api;
+namespace App\Services\Api;
 
-use Pterodactyl\Models\ApiKey;
+use App\Models\ApiKey;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use App\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
 {
@@ -19,14 +19,14 @@ class KeyCreationService
     private $keyType = ApiKey::TYPE_NONE;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
+     * @var \App\Contracts\Repository\ApiKeyRepositoryInterface
      */
     private $repository;
 
     /**
      * ApiKeyService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
+     * @param \App\Contracts\Repository\ApiKeyRepositoryInterface $repository
      * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
      */
     public function __construct(ApiKeyRepositoryInterface $repository, Encrypter $encrypter)
@@ -40,7 +40,7 @@ class KeyCreationService
      * created. These keys cannot be used for anything, and will not render in the UI.
      *
      * @param int $type
-     * @return \Pterodactyl\Services\Api\KeyCreationService
+     * @return \App\Services\Api\KeyCreationService
      */
     public function setKeyType(int $type)
     {
@@ -56,9 +56,9 @@ class KeyCreationService
      *
      * @param array $data
      * @param array $permissions
-     * @return \Pterodactyl\Models\ApiKey
+     * @return \App\Models\ApiKey
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \App\Exceptions\Model\DataValidationException
      */
     public function handle(array $data, array $permissions = []): ApiKey
     {

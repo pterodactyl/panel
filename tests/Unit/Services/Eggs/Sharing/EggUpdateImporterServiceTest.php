@@ -4,16 +4,16 @@ namespace Tests\Unit\Services\Eggs\Sharing;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
+use App\Models\Egg;
 use Illuminate\Http\UploadedFile;
-use Pterodactyl\Models\EggVariable;
+use App\Models\EggVariable;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use App\Exceptions\PterodactylException;
+use App\Contracts\Repository\EggRepositoryInterface;
+use App\Exceptions\Service\Egg\BadJsonFormatException;
+use App\Exceptions\Service\InvalidFileUploadException;
+use App\Services\Eggs\Sharing\EggUpdateImporterService;
+use App\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggUpdateImporterServiceTest extends TestCase
 {
@@ -28,17 +28,17 @@ class EggUpdateImporterServiceTest extends TestCase
     protected $file;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService
+     * @var \App\Services\Eggs\Sharing\EggUpdateImporterService
      */
     protected $service;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
+     * @var \App\Contracts\Repository\EggVariableRepositoryInterface|\Mockery\Mock
      */
     protected $variableRepository;
 

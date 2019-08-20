@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Services\DaemonKeys;
+namespace App\Services\DaemonKeys;
 
-use Pterodactyl\Models\User;
+use App\Models\User;
 use GuzzleHttp\Exception\RequestException;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepository;
+use App\Contracts\Repository\DaemonKeyRepositoryInterface;
+use App\Exceptions\Http\Connection\DaemonConnectionException;
+use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepository;
 
 class RevokeMultipleDaemonKeysService
 {
@@ -16,20 +16,20 @@ class RevokeMultipleDaemonKeysService
     protected $exceptions = [];
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
     private $daemonRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface
+     * @var \App\Contracts\Repository\DaemonKeyRepositoryInterface
      */
     private $repository;
 
     /**
      * RevokeMultipleDaemonKeysService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface     $repository
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
+     * @param \App\Contracts\Repository\DaemonKeyRepositoryInterface     $repository
+     * @param \App\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
      */
     public function __construct(
         DaemonKeyRepositoryInterface $repository,
@@ -44,7 +44,7 @@ class RevokeMultipleDaemonKeysService
      * daemon's that they are assigned to. If connection fails, this function will
      * return an error.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \App\Models\User $user
      * @param bool                     $ignoreConnectionErrors
      */
     public function handle(User $user, bool $ignoreConnectionErrors = false)

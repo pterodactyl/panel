@@ -1,23 +1,23 @@
 <?php
 
-namespace Pterodactyl\Console\Commands\Server;
+namespace App\Console\Commands\Server;
 
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Factory as ValidatorFactory;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
+use App\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\Daemon\PowerRepositoryInterface;
 
 class BulkPowerActionCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface
+     * @var \App\Contracts\Repository\Daemon\PowerRepositoryInterface
      */
     private $powerRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
@@ -42,8 +42,8 @@ class BulkPowerActionCommand extends Command
     /**
      * BulkPowerActionCommand constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface $powerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface       $repository
+     * @param \App\Contracts\Repository\Daemon\PowerRepositoryInterface $powerRepository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface       $repository
      * @param \Illuminate\Validation\Factory                                    $validator
      */
     public function __construct(
@@ -62,7 +62,7 @@ class BulkPowerActionCommand extends Command
      * Handle the bulk power request.
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
+     * @throws \App\Exceptions\Repository\Daemon\InvalidPowerSignalException
      */
     public function handle()
     {

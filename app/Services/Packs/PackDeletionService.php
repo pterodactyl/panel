@@ -7,13 +7,13 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Pterodactyl\Services\Packs;
+namespace App\Services\Packs;
 
-use Pterodactyl\Models\Pack;
+use App\Models\Pack;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use App\Contracts\Repository\PackRepositoryInterface;
+use App\Exceptions\Service\HasActiveServersException;
+use App\Contracts\Repository\ServerRepositoryInterface;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
 class PackDeletionService
@@ -24,12 +24,12 @@ class PackDeletionService
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\PackRepositoryInterface
+     * @var \App\Contracts\Repository\PackRepositoryInterface
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \App\Contracts\Repository\ServerRepositoryInterface
      */
     protected $serverRepository;
 
@@ -43,8 +43,8 @@ class PackDeletionService
      *
      * @param \Illuminate\Database\ConnectionInterface                    $connection
      * @param \Illuminate\Contracts\Filesystem\Factory                    $storage
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface   $repository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \App\Contracts\Repository\PackRepositoryInterface   $repository
+     * @param \App\Contracts\Repository\ServerRepositoryInterface $serverRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -61,10 +61,10 @@ class PackDeletionService
     /**
      * Delete a pack from the database as well as the archive stored on the server.
      *
-     * @param  int|\Pterodactyl\Models\Pack$pack
+     * @param  int|\App\Models\Pack$pack
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \App\Exceptions\Service\HasActiveServersException
+     * @throws \App\Exceptions\Repository\RecordNotFoundException
      */
     public function handle($pack)
     {
