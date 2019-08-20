@@ -20,10 +20,8 @@ class AddMoreUserData extends Migration
         });
 
         DB::transaction(function () {
-            foreach (User::all() as &$user) {
-                $user->username = $user->email;
-                $user->save();
-            }
+            DB::table('users')
+                ->update(['username' => DB::raw("`email`")]);
         });
 
         Schema::table('users', function (Blueprint $table) {
