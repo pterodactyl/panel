@@ -4,7 +4,7 @@ namespace Tests\Unit\Jobs\Schedule;
 
 use Mockery as m;
 use Tests\TestCase;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use App\Models\Task;
 use App\Models\User;
 use GuzzleHttp\Psr7\Response;
@@ -58,7 +58,7 @@ class RunTaskJobTest extends TestCase
     {
         parent::setUp();
         Bus::fake();
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         $this->commandRepository = m::mock(CommandRepositoryInterface::class);
         $this->config = m::mock(Repository::class);
@@ -94,7 +94,7 @@ class RunTaskJobTest extends TestCase
 
         $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
             'is_processing' => false,
-            'last_run_at' => Chronos::now()->toDateTimeString(),
+            'last_run_at' => CarbonImmutable::now()->toDateTimeString(),
         ])->once()->andReturnNull();
 
         $this->getJobInstance($task->id, $schedule->id);
@@ -124,7 +124,7 @@ class RunTaskJobTest extends TestCase
 
         $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
             'is_processing' => false,
-            'last_run_at' => Chronos::now()->toDateTimeString(),
+            'last_run_at' => CarbonImmutable::now()->toDateTimeString(),
         ])->once()->andReturnNull();
 
         $this->getJobInstance($task->id, $schedule->id);
@@ -202,7 +202,7 @@ class RunTaskJobTest extends TestCase
 
         $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
             'is_processing' => false,
-            'last_run_at' => Chronos::now()->toDateTimeString(),
+            'last_run_at' => CarbonImmutable::now()->toDateTimeString(),
         ])->once()->andReturn(1);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturn(1);

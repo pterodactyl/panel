@@ -3,7 +3,7 @@
 namespace App\Jobs\Schedule;
 
 use Exception;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use App\Jobs\Job;
 use InvalidArgumentException;
 use Illuminate\Queue\SerializesModels;
@@ -158,7 +158,7 @@ class RunTaskJob extends Job implements ShouldQueue
         $repository = app()->make(ScheduleRepositoryInterface::class);
         $repository->withoutFreshModel()->update($this->schedule, [
             'is_processing' => false,
-            'last_run_at' => Chronos::now()->toDateTimeString(),
+            'last_run_at' => CarbonImmutable::now()->toDateTimeString(),
         ]);
     }
 

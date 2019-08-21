@@ -3,7 +3,7 @@
 namespace Tests\Unit\Http\Middleware\API;
 
 use Mockery as m;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use App\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -36,7 +36,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     public function setUp(): void
     {
         parent::setUp();
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         $this->auth = m::mock(AuthManager::class);
         $this->encrypter = m::mock(Encrypter::class);
@@ -87,7 +87,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
         $this->auth->shouldReceive('guard->loginUsingId')->with($model->user_id)->once()->andReturnNull();
 
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
-            'last_used_at' => Chronos::now(),
+            'last_used_at' => CarbonImmutable::now(),
         ])->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions(), ApiKey::TYPE_APPLICATION);
@@ -110,7 +110,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
         $this->auth->shouldReceive('guard->loginUsingId')->with($model->user_id)->once()->andReturnNull();
 
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
-            'last_used_at' => Chronos::now(),
+            'last_used_at' => CarbonImmutable::now(),
         ])->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions(), ApiKey::TYPE_ACCOUNT);

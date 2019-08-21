@@ -9,7 +9,7 @@
 
 namespace App\Console\Commands\Schedule;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use App\Services\Schedules\ProcessScheduleService;
@@ -56,7 +56,7 @@ class ProcessRunnableCommand extends Command
      */
     public function handle()
     {
-        $schedules = $this->repository->getSchedulesToProcess(Chronos::now()->toAtomString());
+        $schedules = $this->repository->getSchedulesToProcess(CarbonImmutable::now()->toAtomString());
         if ($schedules->count() < 1) {
             $this->line('There are no scheduled tasks for servers that need to be run.');
 

@@ -10,7 +10,7 @@
 namespace Tests\Unit\Commands\Schedule;
 
 use Mockery as m;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use App\Models\Task;
 use App\Models\Schedule;
 use Tests\Unit\Commands\CommandTestCase;
@@ -42,7 +42,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
     {
         parent::setUp();
 
-        Chronos::setTestNow(Chronos::now());
+        CarbonImmutable::setTestNow(CarbonImmutable::now());
 
         $this->processScheduleService = m::mock(ProcessScheduleService::class);
         $this->repository = m::mock(ScheduleRepositoryInterface::class);
@@ -58,7 +58,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
         $schedule = factory(Schedule::class)->make();
         $schedule->tasks = collect([factory(Task::class)->make()]);
 
-        $this->repository->shouldReceive('getSchedulesToProcess')->with(Chronos::now()->toAtomString())->once()->andReturn(collect([$schedule]));
+        $this->repository->shouldReceive('getSchedulesToProcess')->with(CarbonImmutable::now()->toAtomString())->once()->andReturn(collect([$schedule]));
         $this->processScheduleService->shouldReceive('handle')->with($schedule)->once()->andReturnNull();
 
         $display = $this->runCommand($this->command);
@@ -78,7 +78,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
         $schedule = factory(Schedule::class)->make();
         $schedule->tasks = collect([]);
 
-        $this->repository->shouldReceive('getSchedulesToProcess')->with(Chronos::now()->toAtomString())->once()->andReturn(collect([$schedule]));
+        $this->repository->shouldReceive('getSchedulesToProcess')->with(CarbonImmutable::now()->toAtomString())->once()->andReturn(collect([$schedule]));
 
         $display = $this->runCommand($this->command);
 
@@ -96,7 +96,7 @@ class ProcessRunnableCommandTest extends CommandTestCase
     {
         $schedule = factory(Schedule::class)->make(['tasks' => null]);
 
-        $this->repository->shouldReceive('getSchedulesToProcess')->with(Chronos::now()->toAtomString())->once()->andReturn(collect([$schedule]));
+        $this->repository->shouldReceive('getSchedulesToProcess')->with(CarbonImmutable::now()->toAtomString())->once()->andReturn(collect([$schedule]));
 
         $display = $this->runCommand($this->command);
 

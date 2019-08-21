@@ -3,7 +3,7 @@
 namespace App\Tests\Integration;
 
 use Tests\TestCase;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use App\Transformers\Api\Application\BaseTransformer;
 
@@ -39,7 +39,7 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function formatTimestamp(string $timestamp): string
     {
-        return Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $timestamp)
+        return CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $timestamp)
             ->setTimezone(BaseTransformer::RESPONSE_TIMEZONE)
             ->toIso8601String();
     }

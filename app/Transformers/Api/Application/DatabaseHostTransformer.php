@@ -2,7 +2,7 @@
 
 namespace App\Transformers\Api\Application;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use App\Models\Database;
 use App\Models\DatabaseHost;
 use App\Services\Acl\Api\AdminAcl;
@@ -41,10 +41,10 @@ class DatabaseHostTransformer extends BaseTransformer
             'port' => $model->port,
             'username' => $model->username,
             'node' => $model->node_id,
-            'created_at' => Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $model->created_at)
+            'created_at' => CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $model->created_at)
                 ->setTimezone(config('app.timezone'))
                 ->toIso8601String(),
-            'updated_at' => Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $model->updated_at)
+            'updated_at' => CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $model->updated_at)
                 ->setTimezone(config('app.timezone'))
                 ->toIso8601String(),
         ];

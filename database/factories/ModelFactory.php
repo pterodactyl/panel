@@ -1,6 +1,6 @@
 <?php
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Faker\Generator as Faker;
 use App\Models\ApiKey;
@@ -59,8 +59,8 @@ $factory->define(App\Models\User::class, function (Faker $faker) {
         'language' => 'en',
         'root_admin' => false,
         'use_totp' => false,
-        'created_at' => Chronos::now(),
-        'updated_at' => Chronos::now(),
+        'created_at' => CarbonImmutable::now(),
+        'updated_at' => CarbonImmutable::now(),
     ];
 });
 

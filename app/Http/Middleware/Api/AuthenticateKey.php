@@ -3,7 +3,7 @@
 namespace App\Http\Middleware\Api;
 
 use Closure;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use App\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
@@ -81,7 +81,7 @@ class AuthenticateKey
 
         $this->auth->guard()->loginUsingId($model->user_id);
         $request->attributes->set('api_key', $model);
-        $this->repository->withoutFreshModel()->update($model->id, ['last_used_at' => Chronos::now()]);
+        $this->repository->withoutFreshModel()->update($model->id, ['last_used_at' => CarbonImmutable::now()]);
 
         return $next($request);
     }

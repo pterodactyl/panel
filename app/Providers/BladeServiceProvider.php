@@ -13,7 +13,7 @@ class BladeServiceProvider extends ServiceProvider
     {
         $this->app->make('blade.compiler')
             ->directive('datetimeHuman', function ($expression) {
-                return "<?php echo \Cake\Chronos\Chronos::createFromFormat(\Cake\Chronos\Chronos::DEFAULT_TO_STRING_FORMAT, $expression)->setTimezone(config('app.timezone'))->toDateTimeString(); ?>";
+                return "<?php echo \Carbon\CarbonImmutable::createFromFormat(\Carbon\CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $expression)->setTimezone(config('app.timezone'))->toDateTimeString(); ?>";
             });
     }
 }

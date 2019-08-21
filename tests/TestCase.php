@@ -2,7 +2,7 @@
 
 namespace Tests;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -26,7 +26,7 @@ abstract class TestCase extends BaseTestCase
     {
         parent::tearDown();
 
-        Chronos::setTestNow();
+        CarbonImmutable::setTestNow();
     }
 
     /**
