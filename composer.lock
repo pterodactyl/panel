@@ -4,75 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fe891e0692d021b83a03213f3c512323",
+    "content-hash": "73b27df48d7e84f21cf371a479c99aeb",
     "packages": [
         {
-            "name": "appstract/laravel-blade-directives",
-            "version": "1.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/appstract/laravel-blade-directives.git",
-                "reference": "552963de8f2f3c56036962f211476647aa2920bc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/appstract/laravel-blade-directives/zipball/552963de8f2f3c56036962f211476647aa2920bc",
-                "reference": "552963de8f2f3c56036962f211476647aa2920bc",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "^5.5",
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "orchestra/testbench": "~3.5",
-                "phpunit/phpunit": "^7.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Appstract\\BladeDirectives\\BladeDirectivesServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Appstract\\BladeDirectives\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Gijs Jorissen",
-                    "role": "Developer",
-                    "email": "hello@appstract.team",
-                    "homepage": "https://appstract.team"
-                }
-            ],
-            "description": "Handy Blade directives",
-            "homepage": "https://github.com/appstract/laravel-blade-directives",
-            "keywords": [
-                "appstract",
-                "laravel-blade-directives"
-            ],
-            "time": "2019-06-24T12:14:57+00:00"
-        },
-        {
             "name": "aws/aws-sdk-php",
-            "version": "3.109.8",
+            "version": "3.110.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "a7948d0de42185cb1af551713a0e99ad593fd962"
+                "reference": "994fc9368f7fb635385b910b9079486fefd666c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/a7948d0de42185cb1af551713a0e99ad593fd962",
-                "reference": "a7948d0de42185cb1af551713a0e99ad593fd962",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/994fc9368f7fb635385b910b9079486fefd666c6",
+                "reference": "994fc9368f7fb635385b910b9079486fefd666c6",
                 "shasum": ""
             },
             "require": {
@@ -142,7 +87,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-08-20T18:42:25+00:00"
+            "time": "2019-08-22T18:31:50+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -4793,22 +4738,22 @@
         },
         {
             "name": "barryvdh/laravel-debugbar",
-            "version": "v3.2.4",
+            "version": "v3.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "2d195779ea4f809f69764a795e2ec371dbb76a96"
+                "reference": "bf19d9362d0efd1e97c67a76f13f8085953bbbbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/2d195779ea4f809f69764a795e2ec371dbb76a96",
-                "reference": "2d195779ea4f809f69764a795e2ec371dbb76a96",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/bf19d9362d0efd1e97c67a76f13f8085953bbbbd",
+                "reference": "bf19d9362d0efd1e97c67a76f13f8085953bbbbd",
                 "shasum": ""
             },
             "require": {
-                "illuminate/routing": "5.5.x|5.6.x|5.7.x|5.8.x",
-                "illuminate/session": "5.5.x|5.6.x|5.7.x|5.8.x",
-                "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x",
+                "illuminate/routing": "^5.5|^6",
+                "illuminate/session": "^5.5|^6",
+                "illuminate/support": "^5.5|^6",
                 "maximebf/debugbar": "~1.15.0",
                 "php": ">=7.0",
                 "symfony/debug": "^3|^4",
@@ -4857,7 +4802,7 @@
                 "profiler",
                 "webprofiler"
             ],
-            "time": "2019-03-25T09:39:08+00:00"
+            "time": "2019-08-22T07:52:30+00:00"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -6964,16 +6909,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "7.5.14",
+            "version": "7.5.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2834789aeb9ac182ad69bfdf9ae91856a59945ff"
+                "reference": "d79c053d972856b8b941bb233e39dc521a5093f0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2834789aeb9ac182ad69bfdf9ae91856a59945ff",
-                "reference": "2834789aeb9ac182ad69bfdf9ae91856a59945ff",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d79c053d972856b8b941bb233e39dc521a5093f0",
+                "reference": "d79c053d972856b8b941bb233e39dc521a5093f0",
                 "shasum": ""
             },
             "require": {
@@ -7044,7 +6989,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-07-15T06:24:08+00:00"
+            "time": "2019-08-21T07:05:16+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -8027,7 +7972,8 @@
         "php": ">=7.2",
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
-        "ext-zip": "*"
+        "ext-zip": "*",
+        "ext-json": "*"
     },
     "platform-dev": []
 }
