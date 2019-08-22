@@ -247,7 +247,7 @@
                 </div>
                 <div class="box-body row" id="appendVariablesTo"></div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <input type="submit" class="btn btn-success pull-right" value="Create Server" />
                 </div>
             </div>

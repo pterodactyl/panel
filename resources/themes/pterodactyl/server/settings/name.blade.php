@@ -35,7 +35,7 @@
                     </div>
                     <div class="box-footer">
                         {{ method_field('PATCH') }}
-                        {{ csrf_field() }}
+                        @csrf
                         <input type="submit" class="btn btn-sm btn-primary pull-right" value="@lang('strings.submit')" />
                     </div>
                 </div>

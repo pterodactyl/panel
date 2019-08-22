@@ -53,7 +53,7 @@
                     <a href="{{ route('auth.password') }}"><button type="button" class="btn pterodactyl-login-button--left"><i class="fa fa-life-ring"></i></button></a>
                 </div>
                 <div class="col-xs-offset-4 col-xs-4">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" class="btn btn-block g-recaptcha pterodactyl-login-button--main" @if(config('recaptcha.enabled')) data-sitekey="{{ config('recaptcha.website_key') }}" data-callback='onSubmit' @endif>@lang('auth.sign_in')</button>
                 </div>
             </div>

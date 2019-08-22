@@ -70,7 +70,7 @@
             <div class="col-xs-12">
                 <div class="box box-primary">
                     <div class="box-footer">
-                        {!! csrf_field() !!}
+                        @csrf
                         {!! method_field('PATCH') !!}
                         <input type="submit" class="btn btn-primary btn-sm pull-right" value="@lang('server.config.startup.update')" />
                     </div>

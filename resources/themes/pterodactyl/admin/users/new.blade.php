@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <input type="submit" value="Create User" class="btn btn-success btn-sm">
                 </div>
             </div>

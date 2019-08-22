@@ -97,7 +97,7 @@
                     </div>
                 </div>
                 <div class="box-footer with-border">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right" type="submit">Save</button>
                     <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover" type="submit"><i class="fa fa-trash-o"></i></button>
                 </div>
@@ -135,11 +135,11 @@
 <div class="row">
     <div class="col-xs-6 col-md-5 col-md-offset-7 col-xs-offset-6">
         <form action="{{ route('admin.packs.view.export', $pack->id) }}" method="POST">
-            {!! csrf_field() !!}
+            @csrf
             <button type="submit" class="btn btn-sm btn-success pull-right">Export</button>
         </form>
         <form action="{{ route('admin.packs.view.export', ['id' => $pack->id, 'files' => 'with-files']) }}" method="POST">
-            {!! csrf_field() !!}
+            @csrf
             <button type="submit" class="btn btn-sm pull-right muted muted-hover" style="margin-right:10px;">Export with Archive</button>
         </form>
     </div>

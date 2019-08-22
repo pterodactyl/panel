@@ -113,7 +113,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" class="btn btn-success btn-sm pull-right">Create</button>
                 </div>
             </div>

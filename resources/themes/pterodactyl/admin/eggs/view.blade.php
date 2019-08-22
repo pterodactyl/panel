@@ -52,7 +52,7 @@
                             </div>
                         </div>
                         <div class="col-xs-4">
-                            {!! csrf_field() !!}
+                            @csrf
                             <button type="submit" name="_method" value="PUT" class="btn btn-sm btn-danger pull-right">Update Egg</button>
                         </div>
                     </div>
@@ -158,7 +158,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
                     <a href="{{ route('admin.nests.egg.export', ['option' => $egg->id]) }}" class="btn btn-sm btn-info pull-right" style="margin-right:10px;">Export</a>
                     <button id="deleteButton" type="submit" name="_method" value="DELETE" class="btn btn-danger btn-sm muted muted-hover">

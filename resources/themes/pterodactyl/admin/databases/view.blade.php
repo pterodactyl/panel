@@ -78,7 +78,7 @@
                     <p class="text-danger small text-left">The account defined for this database host <strong>must</strong> have the <code>WITH GRANT OPTION</code> permission. If the defined account does not have this permission requests to create databases <em>will</em> fail. <strong>Do not use the same account details for MySQL that you have defined for this panel.</strong></p>
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save</button>
                     <button name="_method" value="DELETE" class="btn btn-sm btn-danger pull-left muted muted-hover"><i class="fa fa-trash-o"></i></button>
                 </div>

@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     {!! method_field('PATCH') !!}
                     <input type="submit" class="btn btn-sm btn-primary" value="Update Details" />
                 </div>

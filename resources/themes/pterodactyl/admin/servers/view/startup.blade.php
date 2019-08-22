@@ -55,7 +55,7 @@
                     <input id="pDefaultStartupCommand" class="form-control" type="text" readonly />
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" class="btn btn-primary btn-sm pull-right">Save Modifications</button>
                 </div>
             </div>

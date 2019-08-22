@@ -49,7 +49,7 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                            {!! csrf_field() !!}
+                            @csrf
                             <input type="hidden" name="do_action" value="password" />
                             <input type="submit" class="btn btn-primary btn-sm" value="@lang('base.account.update_pass')" />
                         </div>
@@ -104,7 +104,7 @@
                             </div>
                         </div>
                         <div class="box-footer with-border">
-                            {!! csrf_field() !!}
+                            @csrf
                             <input type="hidden" name="do_action" value="identity" />
                             <button type="submit" class="btn btn-sm btn-primary">@lang('base.account.update_identity')</button>
                         </div>
@@ -134,7 +134,7 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                            {!! csrf_field() !!}
+                            @csrf
                             <input type="hidden" name="do_action" value="email" />
                             <input type="submit" class="btn btn-primary btn-sm" value="@lang('base.account.update_email')" />
                         </div>

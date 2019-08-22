@@ -31,7 +31,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-offset-8 col-xs-4">
-                    {!! csrf_field() !!}
+                    @csrf
                     <input type="hidden" name="verify_token" value="{{ $verify_key }}" />
                     <button type="submit" class="btn btn-primary btn-block btn-flat pterodactyl-login-button--main">@lang('strings.submit')</button>
                 </div>

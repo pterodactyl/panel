@@ -80,7 +80,7 @@
                     </div>
                     <div class="box-footer">
                         <form action="{{ route('admin.nodes.view.delete', $node->id) }}" method="POST">
-                            {!! csrf_field() !!}
+                            @csrf
                             {!! method_field('DELETE') !!}
                             <button type="submit" class="btn btn-danger btn-sm pull-right" {{ ($node->servers_count < 1) ?: 'disabled' }}>Yes, Delete This Node</button>
                         </form>

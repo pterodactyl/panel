@@ -97,7 +97,7 @@
                             </div>
                         </div>
                         <div class="box-footer">
-                            {{ csrf_field() }}
+                            @csrf
                             <div class="pull-right">
                                 <button type="button" id="testButton" class="btn btn-sm btn-success">Test</button>
                                 <button type="button" id="saveButton" class="btn btn-sm btn-primary">Save</button>
@@ -112,7 +112,7 @@
 
 @section('footer-scripts')
     @parent
-    
+
     <script>
         function saveSettings() {
             return $.ajax({

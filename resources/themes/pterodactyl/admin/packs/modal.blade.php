@@ -37,7 +37,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" name="action" value="from_template" class="btn btn-primary btn-sm">Install</button>
                     <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
                 </div>

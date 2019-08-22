@@ -112,7 +112,7 @@
                     </div>
                 </div>
                 <div class="box-footer with-border">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button class="btn btn-sm btn-success pull-right" type="submit">Create Pack</button>
                 </div>
             </div>

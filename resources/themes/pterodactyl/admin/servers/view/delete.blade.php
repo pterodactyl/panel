@@ -50,7 +50,7 @@
             </div>
             <div class="box-footer">
                 <form action="{{ route('admin.servers.view.delete', $server->id) }}" method="POST">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" class="btn btn-danger">Safely Delete This Server</button>
                 </form>
             </div>
@@ -67,7 +67,7 @@
             </div>
             <div class="box-footer">
                 <form action="{{ route('admin.servers.view.delete', $server->id) }}" method="POST">
-                    {!! csrf_field() !!}
+                    @csrf
                     <input type="hidden" name="force_delete" value="1" />
                     <button type="submit" class="btn btn-danger">Forcibly Delete This Server</button>
                 </form>

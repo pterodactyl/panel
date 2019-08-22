@@ -225,7 +225,7 @@
                 </div>
                 <div class="box-footer">
                     {!! method_field('PATCH') !!}
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" class="btn btn-primary pull-right">Save Changes</button>
                 </div>
             </div>

@@ -37,7 +37,7 @@
                         <p class="text-muted">If you would like to limit this API key to specific IP addresses enter them above, one per line. CIDR notation is allowed for each IP address. Leave blank to allow any IP address.</p>
                     </div>
                     <div class="box-footer">
-                        {{ csrf_field() }}
+                        @csrf
                         <button type="submit" class="btn btn-success btn-sm pull-right">Create</button>
                     </div>
                 </div>

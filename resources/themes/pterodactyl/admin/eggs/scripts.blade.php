@@ -87,7 +87,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <textarea name="script_install" class="hidden"></textarea>
                     <button type="submit" name="_method" value="PATCH" class="btn btn-primary btn-sm pull-right">Save</button>
                 </div>

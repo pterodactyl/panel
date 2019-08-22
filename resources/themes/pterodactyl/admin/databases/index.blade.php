@@ -117,7 +117,7 @@
                 </div>
                 <div class="modal-footer">
                     <p class="text-danger small text-left">The account defined for this database host <strong>must</strong> have the <code>WITH GRANT OPTION</code> permission. If the defined account does not have this permission requests to create databases <em>will</em> fail. <strong>Do not use the same account details for MySQL that you have defined for this panel.</strong></p>
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success btn-sm">Create</button>
                 </div>

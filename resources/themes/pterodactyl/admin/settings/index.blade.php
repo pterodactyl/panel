@@ -65,7 +65,7 @@
                         </div>
                     </div>
                     <div class="box-footer">
-                        {!! csrf_field() !!}
+                        @csrf
                         <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save</button>
                     </div>
                 </form>

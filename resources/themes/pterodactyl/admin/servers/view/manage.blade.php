@@ -50,7 +50,7 @@
             <div class="box-footer">
                 @if($server->installed === 1)
                     <form action="{{ route('admin.servers.view.manage.reinstall', $server->id) }}" method="POST">
-                        {!! csrf_field() !!}
+                        @csrf
                         <button type="submit" class="btn btn-danger">Reinstall Server</button>
                     </form>
                 @else
@@ -69,7 +69,7 @@
             </div>
             <div class="box-footer">
                 <form action="{{ route('admin.servers.view.manage.toggle', $server->id) }}" method="POST">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" class="btn btn-primary">Toggle Install Status</button>
                 </form>
             </div>
@@ -85,7 +85,7 @@
             </div>
             <div class="box-footer">
                 <form action="{{ route('admin.servers.view.manage.rebuild', $server->id) }}" method="POST">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" class="btn btn-default">Rebuild Server Container</button>
                 </form>
             </div>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="box-footer">
                     <form action="{{ route('admin.servers.view.manage.suspension', $server->id) }}" method="POST">
-                        {!! csrf_field() !!}
+                        @csrf
                         <input type="hidden" name="action" value="suspend" />
                         <button type="submit" class="btn btn-warning">Suspend Server</button>
                     </form>
@@ -120,7 +120,7 @@
                 </div>
                 <div class="box-footer">
                     <form action="{{ route('admin.servers.view.manage.suspension', $server->id) }}" method="POST">
-                        {!! csrf_field() !!}
+                        @csrf
                         <input type="hidden" name="action" value="unsuspend" />
                         <button type="submit" class="btn btn-success">Unsuspend Server</button>
                     </form>

@@ -54,7 +54,7 @@
                         <p class="text-muted">Once you have assigned permissions and created this set of credentials you will be unable to come back and edit it. If you need to make changes down the road you will need to create a new set of credentials.</p>
                     </div>
                     <div class="box-footer">
-                        {{ csrf_field() }}
+                        @csrf
                         <button type="submit" class="btn btn-success btn-sm pull-right">Create Credentials</button>
                     </div>
                 </div>

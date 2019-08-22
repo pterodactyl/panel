@@ -75,7 +75,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success btn-sm">Create</button>
                 </div>

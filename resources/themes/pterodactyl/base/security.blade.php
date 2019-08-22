@@ -75,7 +75,7 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     {{ method_field('DELETE') }}
                     <button type="submit" class="btn btn-danger btn-sm">@lang('base.security.disable_2fa')</button>
                 </div>
@@ -86,7 +86,7 @@
                     @lang('base.security.2fa_disabled')
                 </div>
                 <div class="box-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="submit" class="btn btn-success btn-sm">@lang('base.security.enable_2fa')</button>
                 </div>
             </form>
@@ -113,7 +113,7 @@
                             <div class="alert alert-info">@lang('base.security.2fa_checkpoint_help')</div>
                             <div class="form-group">
                                 <label class="control-label" for="2fa_token">@lang('strings.2fa_token')</label>
-                                {!! csrf_field() !!}
+                                @csrf
                                 <input class="form-control" type="text" name="2fa_token" id="2fa_token" />
                             </div>
                         </div>

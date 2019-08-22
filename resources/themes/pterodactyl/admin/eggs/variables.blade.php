@@ -85,7 +85,7 @@
                         </div>
                     </div>
                     <div class="box-footer">
-                        {!! csrf_field() !!}
+                        @csrf
                         <button class="btn btn-sm btn-primary pull-right" name="_method" value="PATCH" type="submit">Save</button>
                         <button class="btn btn-sm btn-danger pull-left muted muted-hover" data-action="delete" name="_method" value="DELETE" type="submit"><i class="fa fa-trash-o"></i></button>
                     </div>
@@ -138,7 +138,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    {!! csrf_field() !!}
+                    @csrf
                     <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Create Variable</button>
                 </div>

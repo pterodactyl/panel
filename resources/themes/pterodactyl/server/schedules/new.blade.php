@@ -126,7 +126,7 @@
                         <p class="text-muted small">@lang('server.schedule.task_help')</p>
                     </div>
                     <div class="pull-right">
-                        {!! csrf_field() !!}
+                        @csrf
                         <button type="button" class="btn btn-sm btn-default" data-action="add-new-task"><i class="fa fa-plus"></i> @lang('server.schedule.task.add_more')</button>
                         <button type="submit" class="btn btn-sm btn-success">@lang('server.schedule.new.submit')</button>
                     </div>

@@ -30,7 +30,7 @@
                     <div class="form-group">
                         <label class="control-label">@lang('server.users.new.email')</label>
                         <div>
-                            {!! csrf_field() !!}
+                            @csrf
                             <input type="email" class="form-control" disabled value="{{ $subuser->user->email }}" />
                         </div>
                     </div>
