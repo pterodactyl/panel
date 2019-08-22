@@ -12,8 +12,8 @@ namespace Tests\Unit\Http\Controllers\Server;
 use Mockery as m;
 use App\Models\Server;
 use Illuminate\Contracts\Config\Repository;
-use Tests\Unit\Http\Controllers\ControllerTestCase;
 use App\Http\Controllers\Server\ConsoleController;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 
 class ConsoleControllerTest extends ControllerTestCase
 {

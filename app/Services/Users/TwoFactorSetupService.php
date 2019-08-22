@@ -3,8 +3,8 @@
 namespace App\Services\Users;
 
 use Exception;
-use RuntimeException;
 use App\Models\User;
+use RuntimeException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use App\Contracts\Repository\UserRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;

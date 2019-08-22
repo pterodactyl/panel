@@ -5,8 +5,8 @@ namespace Tests\Unit\Commands\User;
 use Mockery as m;
 use App\Models\User;
 use Tests\Unit\Commands\CommandTestCase;
-use Tests\Assertions\CommandAssertionsTrait;
 use App\Services\Users\UserDeletionService;
+use Tests\Assertions\CommandAssertionsTrait;
 use App\Console\Commands\User\DeleteUserCommand;
 use App\Contracts\Repository\UserRepositoryInterface;
 

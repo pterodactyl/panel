@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\Events\Server\Installed as ServerInstalledEvent;
-use App\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
+use App\Events\Server\Installed as ServerInstalledEvent;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use App\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -17,7 +17,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-    	Registered::class => [
+        Registered::class => [
             SendEmailVerificationNotification::class,
         ],
         ServerInstalledEvent::class => [

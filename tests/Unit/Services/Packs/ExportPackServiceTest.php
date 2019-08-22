@@ -12,10 +12,10 @@ namespace Tests\Unit\Services\Packs;
 use ZipArchive;
 use Mockery as m;
 use Tests\TestCase;
-use phpmock\phpunit\PHPMock;
 use App\Models\Pack;
-use Illuminate\Contracts\Filesystem\Factory;
+use phpmock\phpunit\PHPMock;
 use App\Services\Packs\ExportPackService;
+use Illuminate\Contracts\Filesystem\Factory;
 use App\Contracts\Repository\PackRepositoryInterface;
 
 class ExportPackServiceTest extends TestCase

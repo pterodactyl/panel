@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Eloquent;
 
-use Illuminate\Support\Collection;
 use App\Models\Allocation;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\Repository\AllocationRepositoryInterface;

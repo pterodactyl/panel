@@ -3,14 +3,14 @@
 namespace App\Http\Middleware\Api;
 
 use Closure;
+use App\Models\ApiKey;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use App\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Contracts\Repository\ApiKeyRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateKey

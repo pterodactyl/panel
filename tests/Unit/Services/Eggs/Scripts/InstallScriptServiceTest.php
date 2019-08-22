@@ -11,8 +11,8 @@ namespace Tests\Unit\Services\Services\Options;
 
 use Exception;
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use App\Services\Eggs\Scripts\InstallScriptService;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Exceptions\Service\Egg\InvalidCopyFromException;

@@ -12,8 +12,8 @@ namespace Tests\Unit\Services\Nodes;
 use Mockery as m;
 use Tests\TestCase;
 use App\Models\Node;
-use Illuminate\Contracts\Translation\Translator;
 use App\Services\Nodes\NodeDeletionService;
+use Illuminate\Contracts\Translation\Translator;
 use App\Contracts\Repository\NodeRepositoryInterface;
 use App\Contracts\Repository\ServerRepositoryInterface;
 

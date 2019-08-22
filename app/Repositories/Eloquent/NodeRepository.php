@@ -6,8 +6,8 @@ use Generator;
 use App\Models\Node;
 use Illuminate\Support\Collection;
 use App\Repositories\Concerns\Searchable;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\Repository\NodeRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface
 {

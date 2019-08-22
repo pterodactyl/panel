@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Daemon;
 
 use Cache;
-use Illuminate\Http\Request;
 use App\Models\Node;
-use Illuminate\Http\Response;
 use App\Models\Server;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Repositories\Eloquent\ServerRepository;
 use App\Events\Server\Installed as ServerInstalled;
-use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use App\Exceptions\Repository\RecordNotFoundException;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 
 class ActionController extends Controller
 {

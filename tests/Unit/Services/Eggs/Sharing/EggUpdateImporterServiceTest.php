@@ -3,12 +3,12 @@
 namespace Tests\Unit\Services\Eggs\Sharing;
 
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
-use Illuminate\Http\UploadedFile;
+use Tests\TestCase;
 use App\Models\EggVariable;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Http\UploadedFile;
 use App\Exceptions\PterodactylException;
+use Illuminate\Database\ConnectionInterface;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Exceptions\Service\Egg\BadJsonFormatException;
 use App\Exceptions\Service\InvalidFileUploadException;

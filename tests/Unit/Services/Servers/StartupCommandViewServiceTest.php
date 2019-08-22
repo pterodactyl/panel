@@ -3,12 +3,12 @@
 namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use App\Models\Server;
-use Illuminate\Support\Collection;
 use App\Models\Allocation;
 use App\Models\EggVariable;
+use Illuminate\Support\Collection;
 use App\Services\Servers\StartupCommandViewService;
 use App\Contracts\Repository\ServerRepositoryInterface;
 

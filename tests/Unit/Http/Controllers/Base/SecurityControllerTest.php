@@ -5,10 +5,10 @@ namespace Tests\Unit\Http\Controllers\Base;
 use Mockery as m;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Config\Repository;
-use Tests\Unit\Http\Controllers\ControllerTestCase;
 use App\Services\Users\TwoFactorSetupService;
 use App\Services\Users\ToggleTwoFactorService;
 use App\Http\Controllers\Base\SecurityController;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 use App\Contracts\Repository\SessionRepositoryInterface;
 use App\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 

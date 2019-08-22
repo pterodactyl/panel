@@ -3,12 +3,12 @@
 namespace App\Services\Databases;
 
 use Exception;
-use Illuminate\Support\Str;
 use App\Models\Database;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Extensions\DynamicDatabaseConnection;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabasePasswordService

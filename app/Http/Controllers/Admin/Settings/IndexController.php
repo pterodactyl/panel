@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Admin\Settings;
 
 use Illuminate\View\View;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
-use App\Http\Controllers\Controller;
 use App\Traits\Helpers\AvailableLanguages;
 use App\Services\Helpers\SoftwareVersionService;
 use App\Contracts\Repository\SettingsRepositoryInterface;

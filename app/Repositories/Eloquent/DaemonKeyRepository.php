@@ -3,11 +3,11 @@
 namespace App\Repositories\Eloquent;
 
 use App\Models\User;
-use Webmozart\Assert\Assert;
 use App\Models\DaemonKey;
+use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Exceptions\Repository\RecordNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class DaemonKeyRepository extends EloquentRepository implements DaemonKeyRepositoryInterface

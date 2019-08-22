@@ -2,8 +2,8 @@
 
 namespace App\Repositories\Eloquent;
 
-use Illuminate\Support\Collection;
 use App\Models\DatabaseHost;
+use Illuminate\Support\Collection;
 use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseHostRepository extends EloquentRepository implements DatabaseHostRepositoryInterface

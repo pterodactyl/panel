@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Api\Application\Nodes;
 
-use Illuminate\Support\Str;
 use App\Models\Node;
+use Illuminate\Support\Str;
 use App\Services\Acl\Api\AdminAcl;
 use App\Http\Requests\Api\Application\ApplicationApiRequest;
 

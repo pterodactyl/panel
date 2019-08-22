@@ -5,9 +5,9 @@ namespace Tests\Unit\Http\Middleware\API;
 use Mockery as m;
 use Barryvdh\Debugbar\LaravelDebugbar;
 use Illuminate\Contracts\Config\Repository;
+use App\Http\Middleware\Api\SetSessionDriver;
 use Illuminate\Contracts\Foundation\Application;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use App\Http\Middleware\Api\SetSessionDriver;
 
 class SetSessionDriverTest extends MiddlewareTestCase
 {

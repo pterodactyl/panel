@@ -2,9 +2,9 @@
 
 namespace App\Services\Allocations;
 
+use App\Models\Node;
 use IPTools\Network;
 use Illuminate\Support\Arr;
-use App\Models\Node;
 use Illuminate\Database\ConnectionInterface;
 use App\Contracts\Repository\AllocationRepositoryInterface;
 use App\Exceptions\Service\Allocation\CidrOutOfRangeException;

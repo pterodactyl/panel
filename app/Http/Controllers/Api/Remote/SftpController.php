@@ -10,8 +10,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Services\Sftp\AuthenticateUsingPasswordService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class SftpController extends Controller
 {

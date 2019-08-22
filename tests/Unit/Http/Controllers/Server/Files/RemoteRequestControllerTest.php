@@ -10,12 +10,12 @@
 namespace Tests\Unit\Http\Controllers\Server\Files;
 
 use Mockery as m;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
+use GuzzleHttp\Psr7\Response;
 use Tests\Traits\MocksRequestException;
+use App\Exceptions\PterodactylException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
-use App\Exceptions\PterodactylException;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
 use App\Contracts\Repository\Daemon\FileRepositoryInterface;
 use App\Exceptions\Http\Connection\DaemonConnectionException;

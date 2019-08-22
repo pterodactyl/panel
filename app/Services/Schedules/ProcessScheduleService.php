@@ -2,10 +2,10 @@
 
 namespace App\Services\Schedules;
 
-use Cron\CronExpression;
 use App\Models\Schedule;
-use Illuminate\Contracts\Bus\Dispatcher;
+use Cron\CronExpression;
 use App\Jobs\Schedule\RunTaskJob;
+use Illuminate\Contracts\Bus\Dispatcher;
 use App\Contracts\Repository\TaskRepositoryInterface;
 use App\Contracts\Repository\ScheduleRepositoryInterface;
 

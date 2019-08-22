@@ -9,9 +9,9 @@
 
 namespace App\Services\Eggs;
 
+use App\Models\Egg;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
-use App\Models\Egg;
 use App\Contracts\Repository\EggRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Exceptions\Service\Egg\NoParentConfigurationFoundException;

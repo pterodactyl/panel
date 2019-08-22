@@ -10,12 +10,12 @@
 namespace App\Http\Controllers\Admin;
 
 use Javascript;
-use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Server;
-use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Http\Request;
 use App\Exceptions\DisplayException;
 use App\Http\Controllers\Controller;
+use Prologue\Alerts\AlertsMessageBag;
 use App\Services\Servers\SuspensionService;
 use App\Http\Requests\Admin\ServerFormRequest;
 use App\Services\Servers\ServerCreationService;
@@ -30,11 +30,11 @@ use App\Contracts\Repository\NestRepositoryInterface;
 use App\Contracts\Repository\NodeRepositoryInterface;
 use App\Repositories\Eloquent\DatabaseHostRepository;
 use App\Services\Databases\DatabaseManagementService;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Contracts\Repository\DatabaseRepositoryInterface;
 use App\Contracts\Repository\LocationRepositoryInterface;
 use App\Contracts\Repository\AllocationRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
 class ServersController extends Controller

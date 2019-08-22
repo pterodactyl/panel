@@ -26,8 +26,8 @@ namespace App\Services\DaemonKeys;
 
 use Carbon\Carbon;
 use Webmozart\Assert\Assert;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Contracts\Repository\DaemonKeyRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class DaemonKeyUpdateService
 {

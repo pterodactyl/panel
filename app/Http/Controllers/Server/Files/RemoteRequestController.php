@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Server\Files;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use GuzzleHttp\Exception\RequestException;
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use GuzzleHttp\Exception\RequestException;
 use App\Contracts\Repository\Daemon\FileRepositoryInterface;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class RemoteRequestController extends Controller
 {

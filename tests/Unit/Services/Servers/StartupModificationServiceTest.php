@@ -3,13 +3,13 @@
 namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use App\Models\User;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
-use Illuminate\Database\ConnectionInterface;
+use GuzzleHttp\Psr7\Response;
 use App\Services\Servers\EnvironmentService;
+use Illuminate\Database\ConnectionInterface;
 use App\Services\Servers\VariableValidatorService;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Services\Servers\StartupModificationService;

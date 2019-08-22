@@ -9,8 +9,8 @@
 
 namespace App\Services\Locations;
 
-use Webmozart\Assert\Assert;
 use App\Models\Location;
+use Webmozart\Assert\Assert;
 use App\Contracts\Repository\NodeRepositoryInterface;
 use App\Contracts\Repository\LocationRepositoryInterface;
 use App\Exceptions\Service\Location\HasActiveNodesException;

@@ -3,8 +3,8 @@
 namespace Tests\Unit\Services\Eggs;
 
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use App\Services\Eggs\EggConfigurationService;
 use App\Contracts\Repository\EggRepositoryInterface;
 

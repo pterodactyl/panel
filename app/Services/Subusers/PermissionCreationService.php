@@ -9,8 +9,8 @@
 
 namespace App\Services\Subusers;
 
-use Webmozart\Assert\Assert;
 use App\Models\Permission;
+use Webmozart\Assert\Assert;
 use App\Contracts\Repository\PermissionRepositoryInterface;
 
 class PermissionCreationService

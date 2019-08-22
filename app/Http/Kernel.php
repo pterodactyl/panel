@@ -3,42 +3,42 @@
 namespace App\Http;
 
 use App\Models\ApiKey;
-use Illuminate\Auth\Middleware\Authorize;
-use Illuminate\Auth\Middleware\Authenticate;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
-use Illuminate\Session\Middleware\StartSession;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\VerifyReCaptcha;
+use Illuminate\Auth\Middleware\Authorize;
 use App\Http\Middleware\AdminAuthenticate;
-use Illuminate\Routing\Middleware\ThrottleRequests;
 use App\Http\Middleware\LanguageMiddleware;
-use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\Api\AuthenticateKey;
-use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Auth\Middleware\Authenticate;
 use App\Http\Middleware\Api\SetSessionDriver;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\MaintenanceMiddleware;
+use Illuminate\Session\Middleware\StartSession;
 use App\Http\Middleware\RedirectIfAuthenticated;
-use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use App\Http\Middleware\Api\AuthenticateIPAccess;
 use App\Http\Middleware\Api\ApiSubstituteBindings;
-use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use App\Http\Middleware\Server\AccessingValidServer;
+use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use App\Http\Middleware\Server\AuthenticateAsSubuser;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use App\Http\Middleware\Server\SubuserBelongsToServer;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Http\Middleware\RequireTwoFactorAuthentication;
 use App\Http\Middleware\Server\DatabaseBelongsToServer;
 use App\Http\Middleware\Server\ScheduleBelongsToServer;
-use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
-use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Http\Middleware\Api\Client\SubstituteClientApiBindings;
+use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 use App\Http\Middleware\DaemonAuthenticate as OldDaemonAuthenticate;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 
 class Kernel extends HttpKernel
 {
@@ -105,19 +105,19 @@ class Kernel extends HttpKernel
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-    	'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => RedirectIfAuthenticated::class,
         'server' => AccessingValidServer::class,
         'subuser.auth' => AuthenticateAsSubuser::class,
         'admin' => AdminAuthenticate::class,
         'daemon-old' => OldDaemonAuthenticate::class,
         'csrf' => VerifyCsrfToken::class,
-	'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+    'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => ThrottleRequests::class,
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
-	'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+    'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'node.maintenance' => MaintenanceMiddleware::class,
 
         // Server specific middleware (used for authenticating access to resources)
@@ -131,8 +131,8 @@ class Kernel extends HttpKernel
         // API Specific Middleware
         'api..key' => AuthenticateKey::class,
     ];
-    
-     /**
+
+    /**
      * The priority-sorted list of middleware.
      *
      * This forces non-global middleware to always be in the given order.

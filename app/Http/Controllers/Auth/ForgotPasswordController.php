@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Password;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use App\Events\Auth\FailedPasswordReset;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 class ForgotPasswordController extends Controller

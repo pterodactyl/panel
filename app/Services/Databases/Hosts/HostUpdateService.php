@@ -13,8 +13,8 @@ use Illuminate\Support\Arr;
 use App\Models\DatabaseHost;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Extensions\DynamicDatabaseConnection;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostUpdateService

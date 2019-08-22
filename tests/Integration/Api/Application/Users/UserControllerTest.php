@@ -2,8 +2,8 @@
 
 namespace App\Tests\Integration\Api\Application\Users;
 
-use Illuminate\Support\Str;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use App\Services\Acl\Api\AdminAcl;
 use App\Transformers\Api\Application\UserTransformer;

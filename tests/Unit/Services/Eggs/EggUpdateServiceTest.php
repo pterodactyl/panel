@@ -10,8 +10,8 @@
 namespace Tests\Unit\Services\Services\Options;
 
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use App\Services\Eggs\EggUpdateService;
 use App\Exceptions\PterodactylException;
 use App\Contracts\Repository\EggRepositoryInterface;

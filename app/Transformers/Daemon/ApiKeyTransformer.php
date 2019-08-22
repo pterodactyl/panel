@@ -3,9 +3,9 @@
 namespace App\Transformers\Daemon;
 
 use Carbon\Carbon;
-use Illuminate\Support\Arr;
 use App\Models\DaemonKey;
 use App\Models\Permission;
+use Illuminate\Support\Arr;
 use League\Fractal\TransformerAbstract;
 use App\Contracts\Repository\SubuserRepositoryInterface;
 use App\Contracts\Repository\DaemonKeyRepositoryInterface;

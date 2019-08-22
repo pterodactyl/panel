@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -21,7 +20,7 @@ class AddMoreUserData extends Migration
 
         DB::transaction(function () {
             DB::table('users')
-                ->update(['username' => DB::raw("`email`")]);
+                ->update(['username' => DB::raw('`email`')]);
         });
 
         Schema::table('users', function (Blueprint $table) {

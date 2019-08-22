@@ -5,8 +5,8 @@ namespace Tests\Unit\Http\Middleware\Server;
 use Mockery as m;
 use App\Models\Server;
 use App\Models\Schedule;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use App\Contracts\Extensions\HashidsInterface;
+use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use App\Http\Middleware\Server\ScheduleBelongsToServer;
 use App\Contracts\Repository\ScheduleRepositoryInterface;
 

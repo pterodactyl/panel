@@ -4,13 +4,13 @@ namespace Tests\Unit\Services\Subusers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Illuminate\Support\Arr;
 use App\Models\User;
 use App\Models\Server;
 use App\Models\Subuser;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Support\Arr;
 use App\Exceptions\DisplayException;
 use App\Services\Users\UserCreationService;
+use Illuminate\Database\ConnectionInterface;
 use App\Services\Subusers\SubuserCreationService;
 use App\Services\Subusers\PermissionCreationService;
 use App\Contracts\Repository\UserRepositoryInterface;

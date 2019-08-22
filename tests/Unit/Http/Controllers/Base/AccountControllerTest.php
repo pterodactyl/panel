@@ -8,9 +8,9 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Auth\SessionGuard;
 use Prologue\Alerts\AlertsMessageBag;
 use App\Services\Users\UserUpdateService;
-use Tests\Unit\Http\Controllers\ControllerTestCase;
 use App\Http\Controllers\Base\AccountController;
 use App\Http\Requests\Base\AccountDataFormRequest;
+use Tests\Unit\Http\Controllers\ControllerTestCase;
 
 class AccountControllerTest extends ControllerTestCase
 {

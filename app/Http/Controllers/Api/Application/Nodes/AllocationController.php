@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Application\Nodes;
 
 use App\Models\Node;
-use Illuminate\Http\Response;
 use App\Models\Allocation;
+use Illuminate\Http\Response;
 use App\Services\Allocations\AssignmentService;
 use App\Services\Allocations\AllocationDeletionService;
 use App\Contracts\Repository\AllocationRepositoryInterface;

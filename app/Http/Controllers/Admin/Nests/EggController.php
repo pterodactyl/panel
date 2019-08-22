@@ -10,11 +10,11 @@
 namespace App\Http\Controllers\Admin\Nests;
 
 use Javascript;
-use Illuminate\View\View;
 use App\Models\Egg;
+use Illuminate\View\View;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use App\Http\Controllers\Controller;
 use App\Services\Eggs\EggUpdateService;
 use App\Services\Eggs\EggCreationService;
 use App\Services\Eggs\EggDeletionService;

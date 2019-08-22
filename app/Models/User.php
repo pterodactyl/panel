@@ -2,22 +2,22 @@
 
 namespace App\Models;
 
+use App\Rules\Username;
 use Sofa\Eloquence\Eloquence;
 use Sofa\Eloquence\Validable;
-use App\Rules\Username;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use App\Traits\Helpers\AvailableLanguages;
 use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use App\Traits\Helpers\AvailableLanguages;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Sofa\Eloquence\Contracts\Validable as ValidableContract;
+use App\Notifications\SendPasswordReset as ResetPasswordNotification;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use App\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 class User extends Model implements
     AuthenticatableContract,

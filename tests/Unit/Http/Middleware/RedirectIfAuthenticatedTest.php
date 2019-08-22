@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Http\Middleware;
 
-use Mockery as m;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Middleware\RedirectIfAuthenticated;

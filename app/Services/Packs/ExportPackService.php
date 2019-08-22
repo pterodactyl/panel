@@ -12,8 +12,8 @@ namespace App\Services\Packs;
 use ZipArchive;
 use App\Models\Pack;
 use App\Contracts\Repository\PackRepositoryInterface;
-use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use App\Exceptions\Service\Pack\ZipArchiveCreationException;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
 class ExportPackService
 {

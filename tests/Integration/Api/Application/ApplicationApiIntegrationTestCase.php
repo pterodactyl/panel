@@ -3,15 +3,15 @@
 namespace App\Tests\Integration\Api\Application;
 
 use App\Models\User;
-use PHPUnit\Framework\Assert;
 use App\Models\ApiKey;
+use PHPUnit\Framework\Assert;
 use App\Services\Acl\Api\AdminAcl;
-use Tests\Traits\Integration\CreatesTestModels;
 use App\Tests\Integration\IntegrationTestCase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\Traits\Http\IntegrationJsonRequestAssertions;
+use Tests\Traits\Integration\CreatesTestModels;
 use App\Transformers\Api\Application\BaseTransformer;
 use App\Transformers\Api\Client\BaseClientTransformer;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 {

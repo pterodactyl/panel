@@ -3,8 +3,8 @@
 namespace App\Jobs\Schedule;
 
 use Exception;
-use Carbon\CarbonImmutable;
 use App\Jobs\Job;
+use Carbon\CarbonImmutable;
 use InvalidArgumentException;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;

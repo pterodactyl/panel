@@ -2,11 +2,11 @@
 
 namespace App\Services\Servers;
 
-use Illuminate\Support\Arr;
 use App\Models\Server;
+use Illuminate\Support\Arr;
+use App\Exceptions\DisplayException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use App\Exceptions\DisplayException;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Contracts\Repository\AllocationRepositoryInterface;

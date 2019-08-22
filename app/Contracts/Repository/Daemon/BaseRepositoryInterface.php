@@ -2,9 +2,9 @@
 
 namespace App\Contracts\Repository\Daemon;
 
-use GuzzleHttp\Client;
 use App\Models\Node;
 use App\Models\Server;
+use GuzzleHttp\Client;
 
 interface BaseRepositoryInterface
 {

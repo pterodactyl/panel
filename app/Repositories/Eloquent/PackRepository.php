@@ -4,8 +4,8 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Pack;
 use App\Repositories\Concerns\Searchable;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\Repository\PackRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class PackRepository extends EloquentRepository implements PackRepositoryInterface
 {

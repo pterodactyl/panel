@@ -5,10 +5,10 @@ namespace Tests\Unit\Http\Middleware\Api\Daemon;
 use Mockery as m;
 use App\Models\Node;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Contracts\Repository\NodeRepositoryInterface;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Http\Middleware\Api\Daemon\DaemonAuthenticate;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class DaemonAuthenticateTest extends MiddlewareTestCase
 {

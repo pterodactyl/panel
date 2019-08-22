@@ -10,12 +10,12 @@
 namespace Tests\Unit\Services\Services\Options;
 
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use Tests\Traits\MocksUuids;
-use Illuminate\Contracts\Config\Repository;
 use App\Exceptions\PterodactylException;
 use App\Services\Eggs\EggCreationService;
+use Illuminate\Contracts\Config\Repository;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 

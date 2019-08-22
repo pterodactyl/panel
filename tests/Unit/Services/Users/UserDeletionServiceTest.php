@@ -12,8 +12,8 @@ namespace Tests\Unit\Services\Users;
 use Mockery as m;
 use Tests\TestCase;
 use App\Models\User;
-use Illuminate\Contracts\Translation\Translator;
 use App\Services\Users\UserDeletionService;
+use Illuminate\Contracts\Translation\Translator;
 use App\Contracts\Repository\UserRepositoryInterface;
 use App\Contracts\Repository\ServerRepositoryInterface;
 

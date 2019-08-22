@@ -10,9 +10,9 @@
 namespace Tests\Unit\Commands\Schedule;
 
 use Mockery as m;
-use Carbon\CarbonImmutable;
 use App\Models\Task;
 use App\Models\Schedule;
+use Carbon\CarbonImmutable;
 use Tests\Unit\Commands\CommandTestCase;
 use App\Services\Schedules\ProcessScheduleService;
 use App\Console\Commands\Schedule\ProcessRunnableCommand;

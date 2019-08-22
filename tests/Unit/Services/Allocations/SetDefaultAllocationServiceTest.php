@@ -4,13 +4,13 @@ namespace Tests\Unit\Services\Allocations;
 
 use Mockery as m;
 use Tests\TestCase;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
 use App\Models\Allocation;
+use GuzzleHttp\Psr7\Response;
 use Tests\Traits\MocksRequestException;
+use App\Exceptions\PterodactylException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use App\Exceptions\PterodactylException;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Services\Allocations\SetDefaultAllocationService;
 use App\Contracts\Repository\AllocationRepositoryInterface;

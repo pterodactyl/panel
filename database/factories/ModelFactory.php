@@ -1,9 +1,9 @@
 <?php
 
+use App\Models\ApiKey;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Faker\Generator as Faker;
-use App\Models\ApiKey;
 
 /*
 |--------------------------------------------------------------------------

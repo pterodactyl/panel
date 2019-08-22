@@ -3,8 +3,8 @@
 namespace Tests\Traits\Http;
 
 use Mockery as m;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\ParameterBag;
 

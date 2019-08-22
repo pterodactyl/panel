@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\Application\Locations;
 
-use Illuminate\Http\Response;
 use App\Models\Location;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Services\Locations\LocationUpdateService;
 use App\Services\Locations\LocationCreationService;

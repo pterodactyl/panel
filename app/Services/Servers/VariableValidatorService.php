@@ -9,15 +9,15 @@
 
 namespace App\Services\Servers;
 
-use Illuminate\Support\Arr;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\ValidationException;
 use App\Traits\Services\HasUserLevels;
+use Illuminate\Validation\ValidationException;
 use App\Contracts\Repository\ServerRepositoryInterface;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use App\Contracts\Repository\EggVariableRepositoryInterface;
 use App\Contracts\Repository\ServerVariableRepositoryInterface;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class VariableValidatorService
 {

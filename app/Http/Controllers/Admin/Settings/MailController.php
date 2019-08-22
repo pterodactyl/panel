@@ -7,17 +7,17 @@ use Illuminate\View\View;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Console\Kernel;
 use App\Notifications\MailTested;
-use Illuminate\Support\Facades\Notification;
 use App\Exceptions\DisplayException;
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Encryption\Encrypter;
+use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Contracts\Console\Kernel;
 use App\Providers\SettingsServiceProvider;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Contracts\Repository\SettingsRepositoryInterface;
 use App\Http\Requests\Admin\Settings\MailSettingsFormRequest;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class MailController extends Controller
 {

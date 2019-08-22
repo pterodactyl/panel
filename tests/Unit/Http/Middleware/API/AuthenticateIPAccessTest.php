@@ -3,8 +3,8 @@
 namespace Tests\Unit\Http\Middleware\API;
 
 use App\Models\ApiKey;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use App\Http\Middleware\Api\AuthenticateIPAccess;
+use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 
 class AuthenticateIPAccessTest extends MiddlewareTestCase
 {

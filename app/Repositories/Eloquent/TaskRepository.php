@@ -3,9 +3,9 @@
 namespace App\Repositories\Eloquent;
 
 use App\Models\Task;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Contracts\Repository\TaskRepositoryInterface;
 use App\Exceptions\Repository\RecordNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TaskRepository extends EloquentRepository implements TaskRepositoryInterface
 {

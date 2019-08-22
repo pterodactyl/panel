@@ -2,11 +2,10 @@
 
 namespace App\Services\Nests;
 
+use App\Models\Nest;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
-use App\Models\Nest;
 use App\Contracts\Repository\NestRepositoryInterface;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class NestCreationService
 {

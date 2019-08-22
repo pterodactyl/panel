@@ -11,18 +11,18 @@ namespace Tests\Unit\Http\Controllers\Base;
 
 use Mockery as m;
 use App\Models\User;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
+use App\Http\Controllers\Base\IndexController;
 use Tests\Assertions\ControllerAssertionsTrait;
 use Tests\Unit\Http\Controllers\ControllerTestCase;
-use App\Http\Controllers\Base\IndexController;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Services\DaemonKeys\DaemonKeyProviderService;
 use App\Contracts\Repository\ServerRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class IndexControllerTest extends ControllerTestCase

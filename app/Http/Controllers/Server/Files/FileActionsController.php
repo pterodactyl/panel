@@ -11,8 +11,8 @@ namespace App\Http\Controllers\Server\Files;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use GuzzleHttp\Exception\RequestException;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Exception\RequestException;
 use App\Traits\Controllers\JavascriptInjection;
 use App\Http\Requests\Server\UpdateFileContentsFormRequest;
 use App\Contracts\Repository\Daemon\FileRepositoryInterface;

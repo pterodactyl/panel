@@ -14,8 +14,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
 use App\Contracts\Repository\PackRepositoryInterface;
 use App\Exceptions\Service\InvalidFileUploadException;
-use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 use App\Exceptions\Service\Pack\InvalidFileMimeTypeException;
+use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
 class PackCreationService
 {

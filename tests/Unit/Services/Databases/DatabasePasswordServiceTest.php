@@ -6,8 +6,8 @@ use Mockery as m;
 use Tests\TestCase;
 use App\Models\Database;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Extensions\DynamicDatabaseConnection;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Services\Databases\DatabasePasswordService;
 use App\Contracts\Repository\DatabaseRepositoryInterface;
 

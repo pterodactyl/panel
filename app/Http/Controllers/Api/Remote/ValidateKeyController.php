@@ -28,13 +28,13 @@ use Illuminate\Support\Str;
 use Spatie\Fractal\Fractal;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
+use App\Transformers\Daemon\ApiKeyTransformer;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\HttpException;
 use League\Fractal\Serializer\JsonApiSerializer;
-use App\Transformers\Daemon\ApiKeyTransformer;
 use App\Exceptions\Repository\RecordNotFoundException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Contracts\Repository\DaemonKeyRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ValidateKeyController extends Controller
 {

@@ -9,8 +9,8 @@
 
 namespace App\Services\Packs;
 
-use Illuminate\Support\Arr;
 use App\Models\Pack;
+use Illuminate\Support\Arr;
 use App\Contracts\Repository\PackRepositoryInterface;
 use App\Exceptions\Service\HasActiveServersException;
 use App\Contracts\Repository\ServerRepositoryInterface;

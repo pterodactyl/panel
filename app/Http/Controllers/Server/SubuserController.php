@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Server;
 
 use Illuminate\View\View;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Permission;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use App\Http\Controllers\Controller;
 use App\Services\Subusers\SubuserUpdateService;
 use App\Traits\Controllers\JavascriptInjection;
 use App\Services\Subusers\SubuserCreationService;

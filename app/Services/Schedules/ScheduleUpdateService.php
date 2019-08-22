@@ -2,9 +2,9 @@
 
 namespace App\Services\Schedules;
 
+use App\Models\Schedule;
 use Cron\CronExpression;
 use Illuminate\Support\Arr;
-use App\Models\Schedule;
 use Illuminate\Database\ConnectionInterface;
 use App\Contracts\Repository\TaskRepositoryInterface;
 use App\Services\Schedules\Tasks\TaskCreationService;

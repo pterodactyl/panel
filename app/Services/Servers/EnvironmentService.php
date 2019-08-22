@@ -3,8 +3,8 @@
 namespace App\Services\Servers;
 
 use App\Models\Server;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Contracts\Repository\ServerRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class EnvironmentService
 {

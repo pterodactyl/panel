@@ -2,12 +2,12 @@
 
 namespace App\Transformers\Api\Application;
 
-use Carbon\CarbonImmutable;
 use App\Models\ApiKey;
+use Carbon\CarbonImmutable;
+use App\Services\Acl\Api\AdminAcl;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use League\Fractal\TransformerAbstract;
-use App\Services\Acl\Api\AdminAcl;
 use App\Transformers\Api\Client\BaseClientTransformer;
 use App\Exceptions\Transformer\InvalidTransformerLevelException;
 

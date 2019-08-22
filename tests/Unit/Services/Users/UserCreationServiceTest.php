@@ -6,12 +6,12 @@ use Mockery as m;
 use Tests\TestCase;
 use App\Models\User;
 use Tests\Traits\MocksUuids;
+use App\Notifications\AccountCreated;
 use Illuminate\Contracts\Hashing\Hasher;
+use App\Services\Users\UserCreationService;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Contracts\Auth\PasswordBroker;
-use App\Notifications\AccountCreated;
-use App\Services\Users\UserCreationService;
 use App\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationServiceTest extends TestCase

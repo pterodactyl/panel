@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Base;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
-use App\Http\Controllers\Controller;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Services\DaemonKeys\DaemonKeyProviderService;
 use App\Contracts\Repository\ServerRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class IndexController extends Controller

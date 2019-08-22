@@ -2,11 +2,11 @@
 
 namespace App\Services\Users;
 
-use Illuminate\Support\Arr;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Contracts\Hashing\Hasher;
 use App\Traits\Services\HasUserLevels;
+use Illuminate\Contracts\Hashing\Hasher;
 use App\Contracts\Repository\UserRepositoryInterface;
 use App\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
 

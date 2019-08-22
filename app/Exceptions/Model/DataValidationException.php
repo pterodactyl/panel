@@ -2,8 +2,8 @@
 
 namespace App\Exceptions\Model;
 
-use Illuminate\Contracts\Validation\Validator;
 use App\Exceptions\PterodactylException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Contracts\Support\MessageProvider;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 

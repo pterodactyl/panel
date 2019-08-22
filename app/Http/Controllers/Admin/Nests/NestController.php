@@ -10,9 +10,9 @@
 namespace App\Http\Controllers\Admin\Nests;
 
 use Illuminate\View\View;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use App\Http\Controllers\Controller;
 use App\Services\Nests\NestUpdateService;
 use App\Services\Nests\NestCreationService;
 use App\Services\Nests\NestDeletionService;

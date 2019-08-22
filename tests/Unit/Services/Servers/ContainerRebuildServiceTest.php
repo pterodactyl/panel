@@ -4,8 +4,8 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
 use App\Services\Servers\ContainerRebuildService;
 use App\Contracts\Repository\Daemon\ServerRepositoryInterface;

@@ -10,10 +10,10 @@
 namespace App\Services\Servers;
 
 use App\Models\Server;
+use App\Exceptions\DisplayException;
 use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use App\Exceptions\DisplayException;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 

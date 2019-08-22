@@ -10,14 +10,14 @@
 namespace Tests\Unit\Services\Services\Sharing;
 
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use App\Models\Nest;
+use App\Models\EggVariable;
 use Tests\Traits\MocksUuids;
 use Illuminate\Http\UploadedFile;
-use App\Models\EggVariable;
-use Illuminate\Database\ConnectionInterface;
 use App\Exceptions\PterodactylException;
+use Illuminate\Database\ConnectionInterface;
 use App\Services\Eggs\Sharing\EggImporterService;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Contracts\Repository\NestRepositoryInterface;

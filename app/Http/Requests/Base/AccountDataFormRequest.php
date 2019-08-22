@@ -9,8 +9,8 @@
 
 namespace App\Http\Requests\Base;
 
-use Illuminate\Support\Arr;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use App\Http\Requests\FrontendUserFormRequest;
 use App\Exceptions\Http\Base\InvalidPasswordProvidedException;
 

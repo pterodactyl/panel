@@ -7,8 +7,8 @@ use App\Models\Server;
 use App\Models\Subuser;
 use App\Exceptions\DisplayException;
 use App\Exceptions\PterodactylException;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use App\Contracts\Extensions\HashidsInterface;
+use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use App\Http\Middleware\Server\SubuserBelongsToServer;
 use App\Contracts\Repository\SubuserRepositoryInterface;
 

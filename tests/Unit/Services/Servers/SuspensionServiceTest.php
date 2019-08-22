@@ -12,13 +12,13 @@ namespace Tests\Unit\Services\Servers;
 use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
+use GuzzleHttp\Psr7\Response;
+use App\Exceptions\DisplayException;
 use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
-use Illuminate\Database\ConnectionInterface;
-use App\Exceptions\DisplayException;
 use App\Services\Servers\SuspensionService;
+use Illuminate\Database\ConnectionInterface;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 

@@ -9,8 +9,8 @@
 
 namespace App\Services\Schedules\Tasks;
 
-use Webmozart\Assert\Assert;
 use App\Models\Schedule;
+use Webmozart\Assert\Assert;
 use App\Contracts\Repository\TaskRepositoryInterface;
 use App\Exceptions\Service\Schedule\Task\TaskIntervalTooLongException;
 

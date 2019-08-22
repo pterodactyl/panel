@@ -2,9 +2,9 @@
 
 namespace App\Http\ViewComposers;
 
+use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use App\Models\User;
 use App\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerListComposer

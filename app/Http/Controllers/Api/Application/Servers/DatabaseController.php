@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\Application\Servers;
 
-use Illuminate\Http\Response;
 use App\Models\Server;
 use App\Models\Database;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use App\Services\Databases\DatabasePasswordService;
 use App\Services\Databases\DatabaseManagementService;

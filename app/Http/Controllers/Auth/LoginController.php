@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Auth\Events\Failed;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use App\Contracts\Repository\UserRepositoryInterface;
 use App\Exceptions\Repository\RecordNotFoundException;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class LoginController extends Controller

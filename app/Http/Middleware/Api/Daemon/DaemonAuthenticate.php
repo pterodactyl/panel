@@ -4,9 +4,9 @@ namespace App\Http\Middleware\Api\Daemon;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Contracts\Repository\NodeRepositoryInterface;
 use App\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticate

@@ -10,9 +10,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Location;
-use Prologue\Alerts\AlertsMessageBag;
 use App\Exceptions\DisplayException;
 use App\Http\Controllers\Controller;
+use Prologue\Alerts\AlertsMessageBag;
 use App\Http\Requests\Admin\LocationFormRequest;
 use App\Services\Locations\LocationUpdateService;
 use App\Services\Locations\LocationCreationService;

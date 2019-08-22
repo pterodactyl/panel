@@ -9,8 +9,8 @@
 
 namespace App\Services\Eggs\Scripts;
 
-use Illuminate\Support\Arr;
 use App\Models\Egg;
+use Illuminate\Support\Arr;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Exceptions\Service\Egg\InvalidCopyFromException;
 

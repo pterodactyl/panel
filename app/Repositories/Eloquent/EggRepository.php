@@ -5,9 +5,9 @@ namespace App\Repositories\Eloquent;
 use App\Models\Egg;
 use Webmozart\Assert\Assert;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Exceptions\Repository\RecordNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class EggRepository extends EloquentRepository implements EggRepositoryInterface
 {

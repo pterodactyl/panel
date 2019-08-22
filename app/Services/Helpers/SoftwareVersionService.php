@@ -13,8 +13,8 @@ use stdClass;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Exceptions\Service\Helper\CdnVersionFetchingException;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class SoftwareVersionService
 {

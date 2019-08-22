@@ -4,9 +4,9 @@ namespace Tests\Unit\Services\Schedules;
 
 use Mockery as m;
 use Tests\TestCase;
-use Cron\CronExpression;
 use App\Models\Server;
 use App\Models\Schedule;
+use Cron\CronExpression;
 use Illuminate\Database\ConnectionInterface;
 use App\Services\Schedules\ScheduleCreationService;
 use App\Services\Schedules\Tasks\TaskCreationService;

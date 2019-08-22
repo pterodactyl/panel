@@ -4,8 +4,8 @@ namespace Tests\Unit\Commands\Server;
 
 use Mockery as m;
 use App\Models\Node;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
+use GuzzleHttp\Psr7\Response;
 use Illuminate\Validation\Factory;
 use Tests\Unit\Commands\CommandTestCase;
 use App\Console\Commands\Server\BulkPowerActionCommand;

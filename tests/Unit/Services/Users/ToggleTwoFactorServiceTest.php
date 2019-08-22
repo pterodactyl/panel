@@ -8,8 +8,8 @@ use Tests\TestCase;
 use App\Models\User;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Services\Users\ToggleTwoFactorService;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Contracts\Repository\UserRepositoryInterface;
 
 class ToggleTwoFactorServiceTest extends TestCase

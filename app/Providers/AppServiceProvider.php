@@ -7,12 +7,12 @@ use Cache;
 use App\Models\User;
 use App\Models\Server;
 use App\Models\Subuser;
-use Illuminate\Support\Facades\Schema;
-use Igaster\LaravelTheme\Facades\Theme;
-use Illuminate\Support\ServiceProvider;
 use App\Observers\UserObserver;
 use App\Observers\ServerObserver;
 use App\Observers\SubuserObserver;
+use Illuminate\Support\Facades\Schema;
+use Igaster\LaravelTheme\Facades\Theme;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {

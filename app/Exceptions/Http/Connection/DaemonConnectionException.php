@@ -3,8 +3,8 @@
 namespace App\Exceptions\Http\Connection;
 
 use Illuminate\Http\Response;
-use GuzzleHttp\Exception\GuzzleException;
 use App\Exceptions\DisplayException;
+use GuzzleHttp\Exception\GuzzleException;
 
 class DaemonConnectionException extends DisplayException
 {

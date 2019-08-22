@@ -9,8 +9,8 @@
 
 namespace App\Services\Eggs\Sharing;
 
-use Ramsey\Uuid\Uuid;
 use App\Models\Egg;
+use Ramsey\Uuid\Uuid;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
 use App\Contracts\Repository\EggRepositoryInterface;

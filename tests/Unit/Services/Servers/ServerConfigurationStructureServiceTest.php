@@ -3,8 +3,8 @@
 namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use App\Models\Server;
 use App\Models\Allocation;
 use App\Services\Servers\EnvironmentService;

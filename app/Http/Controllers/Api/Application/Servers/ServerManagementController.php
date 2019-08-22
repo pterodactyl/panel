@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\Application\Servers;
 
-use Illuminate\Http\Response;
 use App\Models\Server;
+use Illuminate\Http\Response;
 use App\Services\Servers\SuspensionService;
 use App\Services\Servers\ReinstallServerService;
 use App\Services\Servers\ContainerRebuildService;

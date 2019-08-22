@@ -2,12 +2,12 @@
 
 namespace App\Services\Servers;
 
-use Illuminate\Support\Arr;
 use App\Models\User;
 use App\Models\Server;
+use Illuminate\Support\Arr;
+use App\Traits\Services\HasUserLevels;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use App\Traits\Services\HasUserLevels;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Exceptions\Http\Connection\DaemonConnectionException;

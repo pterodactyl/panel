@@ -2,8 +2,8 @@
 
 namespace App\Services\Eggs\Variables;
 
-use Illuminate\Support\Arr;
 use App\Models\EggVariable;
+use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Factory;
 use App\Traits\Services\ValidatesValidationRules;
 use App\Contracts\Repository\EggVariableRepositoryInterface;

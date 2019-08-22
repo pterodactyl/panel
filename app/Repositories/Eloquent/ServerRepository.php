@@ -4,14 +4,14 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Node;
 use App\Models\User;
-use Webmozart\Assert\Assert;
 use App\Models\Server;
+use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
 use App\Repositories\Concerns\Searchable;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Contracts\Repository\ServerRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ServerRepository extends EloquentRepository implements ServerRepositoryInterface
 {

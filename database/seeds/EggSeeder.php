@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Str;
 use App\Models\Nest;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;

@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
-use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use App\Contracts\Repository\UserRepositoryInterface;
 

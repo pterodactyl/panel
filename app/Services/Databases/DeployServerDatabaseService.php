@@ -2,9 +2,9 @@
 
 namespace App\Services\Databases;
 
-use Illuminate\Support\Arr;
 use App\Models\Server;
 use App\Models\Database;
+use Illuminate\Support\Arr;
 use App\Contracts\Repository\DatabaseRepositoryInterface;
 use App\Contracts\Repository\DatabaseHostRepositoryInterface;
 use App\Exceptions\Service\Database\TooManyDatabasesException;

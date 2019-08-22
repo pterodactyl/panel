@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Api\Application\Servers\Databases;
 
 use Illuminate\Validation\Rule;
-use Illuminate\Database\Query\Builder;
 use App\Services\Acl\Api\AdminAcl;
+use Illuminate\Database\Query\Builder;
 use App\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerDatabaseRequest extends ApplicationApiRequest

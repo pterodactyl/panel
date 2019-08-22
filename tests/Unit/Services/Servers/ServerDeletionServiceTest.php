@@ -4,8 +4,8 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
+use GuzzleHttp\Psr7\Response;
 use Psr\Log\LoggerInterface as Writer;
 use Tests\Traits\MocksRequestException;
 use Illuminate\Database\ConnectionInterface;

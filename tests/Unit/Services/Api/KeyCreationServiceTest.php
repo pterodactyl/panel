@@ -4,10 +4,10 @@ namespace Tests\Unit\Services\Api;
 
 use Mockery as m;
 use Tests\TestCase;
-use phpmock\phpunit\PHPMock;
 use App\Models\ApiKey;
-use Illuminate\Contracts\Encryption\Encrypter;
+use phpmock\phpunit\PHPMock;
 use App\Services\Api\KeyCreationService;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationServiceTest extends TestCase

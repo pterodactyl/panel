@@ -4,14 +4,14 @@ namespace Tests\Unit\Jobs\Schedule;
 
 use Mockery as m;
 use Tests\TestCase;
-use Carbon\CarbonImmutable;
 use App\Models\Task;
 use App\Models\User;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
 use App\Models\Schedule;
-use Illuminate\Support\Facades\Bus;
+use Carbon\CarbonImmutable;
+use GuzzleHttp\Psr7\Response;
 use App\Jobs\Schedule\RunTaskJob;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Contracts\Config\Repository;
 use App\Contracts\Repository\TaskRepositoryInterface;
 use App\Services\DaemonKeys\DaemonKeyProviderService;

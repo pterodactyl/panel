@@ -2,17 +2,17 @@
 
 namespace App\Services\Servers;
 
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use App\Models\Node;
 use App\Models\User;
+use Ramsey\Uuid\Uuid;
 use App\Models\Server;
-use Illuminate\Support\Collection;
 use App\Models\Allocation;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
+use App\Models\Objects\DeploymentObject;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use App\Models\Objects\DeploymentObject;
 use App\Services\Deployment\FindViableNodesService;
 use App\Contracts\Repository\EggRepositoryInterface;
 use App\Contracts\Repository\ServerRepositoryInterface;

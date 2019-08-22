@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Server\Settings;
 
+use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use App\Http\Controllers\Controller;
 use App\Traits\Controllers\JavascriptInjection;
 use App\Services\Servers\StartupCommandViewService;
 use App\Services\Servers\StartupModificationService;

@@ -12,10 +12,10 @@ namespace App\Http\Requests\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Config\Repository;
 use App\Exceptions\Http\Server\FileSizeTooLargeException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Contracts\Repository\Daemon\FileRepositoryInterface;
 use App\Exceptions\Http\Server\FileTypeNotEditableException;
 use App\Exceptions\Http\Connection\DaemonConnectionException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UpdateFileContentsFormRequest extends ServerFormRequest
 {

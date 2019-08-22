@@ -3,15 +3,15 @@
 namespace Tests\Unit\Http\Middleware\API;
 
 use Mockery as m;
-use Carbon\CarbonImmutable;
 use App\Models\ApiKey;
+use Carbon\CarbonImmutable;
 use Illuminate\Auth\AuthManager;
+use App\Http\Middleware\Api\AuthenticateKey;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
-use App\Http\Middleware\Api\AuthenticateKey;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Exceptions\Repository\RecordNotFoundException;
 use App\Contracts\Repository\ApiKeyRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthenticateKeyTest extends MiddlewareTestCase
 {

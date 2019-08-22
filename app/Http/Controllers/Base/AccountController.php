@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Base;
 
 use App\Models\User;
 use Illuminate\Auth\AuthManager;
-use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Session\Session;
 use App\Http\Controllers\Controller;
+use Prologue\Alerts\AlertsMessageBag;
 use App\Services\Users\UserUpdateService;
+use Illuminate\Contracts\Session\Session;
 use App\Traits\Helpers\AvailableLanguages;
 use App\Http\Requests\Base\AccountDataFormRequest;
 

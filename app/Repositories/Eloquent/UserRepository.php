@@ -5,8 +5,8 @@ namespace App\Repositories\Eloquent;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use App\Repositories\Concerns\Searchable;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\Repository\UserRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class UserRepository extends EloquentRepository implements UserRepositoryInterface
 {

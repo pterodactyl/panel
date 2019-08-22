@@ -4,13 +4,13 @@ namespace Tests\Unit\Services\Nodes;
 
 use Mockery as m;
 use Tests\TestCase;
-use phpmock\phpunit\PHPMock;
 use App\Models\Node;
+use phpmock\phpunit\PHPMock;
 use GuzzleHttp\Psr7\Response;
 use Tests\Traits\MocksRequestException;
+use App\Services\Nodes\NodeUpdateService;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Database\ConnectionInterface;
-use App\Services\Nodes\NodeUpdateService;
 use App\Contracts\Repository\NodeRepositoryInterface;
 use App\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 

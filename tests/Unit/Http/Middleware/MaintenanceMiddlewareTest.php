@@ -4,10 +4,10 @@ namespace Tests\Unit\Http\Middleware;
 
 use Mockery as m;
 use App\Models\Node;
-use Illuminate\Http\Response;
 use App\Models\Server;
-use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Response;
 use App\Http\Middleware\MaintenanceMiddleware;
+use Illuminate\Contracts\Routing\ResponseFactory;
 
 class MaintenanceMiddlewareTest extends MiddlewareTestCase
 {

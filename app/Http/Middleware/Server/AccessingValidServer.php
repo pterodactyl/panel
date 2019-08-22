@@ -3,12 +3,12 @@
 namespace App\Http\Middleware\Server;
 
 use Closure;
-use Illuminate\Http\Request;
 use App\Models\Server;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Contracts\Repository\ServerRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

@@ -2,8 +2,8 @@
 
 namespace App\Services\Servers;
 
-use Illuminate\Support\Arr;
 use App\Models\Server;
+use Illuminate\Support\Arr;
 use Illuminate\Database\ConnectionInterface;
 use App\Traits\Services\ReturnsUpdatedModels;
 use App\Repositories\Eloquent\ServerRepository;

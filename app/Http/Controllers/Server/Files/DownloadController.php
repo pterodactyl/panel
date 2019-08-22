@@ -12,8 +12,8 @@ namespace App\Http\Controllers\Server\Files;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Cache\Repository;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
 class DownloadController extends Controller
 {

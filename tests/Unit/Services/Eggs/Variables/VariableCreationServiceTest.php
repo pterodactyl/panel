@@ -4,8 +4,8 @@ namespace Tests\Unit\Services\Eggs\Variables;
 
 use Mockery as m;
 use Tests\TestCase;
-use BadMethodCallException;
 use App\Models\EggVariable;
+use BadMethodCallException;
 use Illuminate\Contracts\Validation\Factory;
 use App\Services\Eggs\Variables\VariableCreationService;
 use App\Contracts\Repository\EggVariableRepositoryInterface;

@@ -11,11 +11,11 @@ namespace Tests\Unit\Services\Eggs\Sharing;
 
 use Mockery as m;
 use Carbon\Carbon;
-use Tests\TestCase;
 use App\Models\Egg;
+use Tests\TestCase;
 use App\Models\EggVariable;
-use Tests\Assertions\NestedObjectAssertionsTrait;
 use App\Services\Eggs\Sharing\EggExporterService;
+use Tests\Assertions\NestedObjectAssertionsTrait;
 use App\Contracts\Repository\EggRepositoryInterface;
 
 class EggExporterServiceTest extends TestCase

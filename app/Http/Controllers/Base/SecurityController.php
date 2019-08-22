@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
-use Prologue\Alerts\AlertsMessageBag;
 use App\Http\Controllers\Controller;
+use Prologue\Alerts\AlertsMessageBag;
 use App\Services\Users\TwoFactorSetupService;
 use App\Services\Users\ToggleTwoFactorService;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Contracts\Repository\SessionRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 
 class SecurityController extends Controller

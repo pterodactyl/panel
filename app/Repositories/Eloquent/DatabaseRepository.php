@@ -2,13 +2,13 @@
 
 namespace App\Repositories\Eloquent;
 
-use Illuminate\Support\Arr;
 use App\Models\Database;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\Repository\DatabaseRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Exceptions\Repository\DuplicateDatabaseNameException;
 
 class DatabaseRepository extends EloquentRepository implements DatabaseRepositoryInterface

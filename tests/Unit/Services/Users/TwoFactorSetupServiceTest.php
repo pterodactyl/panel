@@ -6,8 +6,8 @@ use Mockery as m;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Contracts\Config\Repository;
-use Illuminate\Contracts\Encryption\Encrypter;
 use App\Services\Users\TwoFactorSetupService;
+use Illuminate\Contracts\Encryption\Encrypter;
 use App\Contracts\Repository\UserRepositoryInterface;
 
 class TwoFactorSetupServiceTest extends TestCase

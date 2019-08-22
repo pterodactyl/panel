@@ -11,14 +11,14 @@ namespace Tests\Unit\Services\DaemonKeys;
 
 use Mockery as m;
 use Tests\TestCase;
-use GuzzleHttp\Psr7\Response;
 use App\Models\Server;
 use App\Models\DaemonKey;
+use GuzzleHttp\Psr7\Response;
+use App\Exceptions\DisplayException;
 use Psr\Log\LoggerInterface as Writer;
+use App\Exceptions\PterodactylException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use App\Exceptions\DisplayException;
-use App\Exceptions\PterodactylException;
 use App\Services\DaemonKeys\DaemonKeyDeletionService;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Contracts\Repository\DaemonKeyRepositoryInterface;

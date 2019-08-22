@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Server\Settings;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use App\Traits\Controllers\JavascriptInjection;
 use App\Contracts\Repository\ServerRepositoryInterface;
 use App\Http\Requests\Server\Settings\ChangeServerNameRequest;

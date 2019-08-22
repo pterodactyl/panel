@@ -4,8 +4,8 @@ namespace Tests\Unit\Services\Schedules;
 
 use Mockery as m;
 use Tests\TestCase;
-use Cron\CronExpression;
 use App\Models\Schedule;
+use Cron\CronExpression;
 use Illuminate\Database\ConnectionInterface;
 use App\Services\Schedules\ScheduleUpdateService;
 use App\Contracts\Repository\TaskRepositoryInterface;

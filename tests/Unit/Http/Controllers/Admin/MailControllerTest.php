@@ -6,9 +6,9 @@ use Mockery as m;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use App\Http\Controllers\Admin\Settings\MailController;
 use App\Contracts\Repository\SettingsRepositoryInterface;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class MailControllerTest extends ControllerTestCase
 {

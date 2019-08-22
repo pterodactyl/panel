@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Base;
 
+use App\Models\ApiKey;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\ApiKey;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use App\Http\Controllers\Controller;
 use App\Services\Api\KeyCreationService;
 use App\Http\Requests\Base\CreateClientApiKeyRequest;
 use App\Contracts\Repository\ApiKeyRepositoryInterface;

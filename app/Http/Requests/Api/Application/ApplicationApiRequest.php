@@ -2,11 +2,11 @@
 
 namespace App\Http\Requests\Api\Application;
 
-use Illuminate\Support\Arr;
 use App\Models\ApiKey;
+use Illuminate\Support\Arr;
 use App\Services\Acl\Api\AdminAcl;
-use Illuminate\Foundation\Http\FormRequest;
 use App\Exceptions\PterodactylException;
+use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Middleware\Api\ApiSubstituteBindings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\InvalidParameterException;

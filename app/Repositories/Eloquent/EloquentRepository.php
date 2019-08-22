@@ -4,14 +4,14 @@ namespace App\Repositories\Eloquent;
 
 use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
-use Illuminate\Support\Collection;
 use App\Repositories\Repository;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Query\Expression;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\Repository\RepositoryInterface;
 use App\Exceptions\Model\DataValidationException;
 use App\Exceptions\Repository\RecordNotFoundException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\Contracts\Repository\Attributes\SearchableInterface;
 
 abstract class EloquentRepository extends Repository implements RepositoryInterface
