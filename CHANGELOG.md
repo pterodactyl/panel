@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.16 (Derelict Dermodactylus)
+### Added
+* The application API now includes the egg's name in the egg model's response.
+
 ## v0.7.15 (Derelict Dermodactylus)
 ### Fixed
 * Fixes support for PHP 7.3 when running `composer install` commands due to a dependency that needed updating.
