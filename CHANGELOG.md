@@ -4,8 +4,12 @@ This file is a running track of new features and fixes to each version of the pa
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v0.7.16 (Derelict Dermodactylus)
+### Fixed
+* Fixed the /api/application/servers endpoint erroring when including subusers or egg
+
 ### Added
 * The application API now includes the egg's name in the egg model's response.
+* The /api/application/servers endpoint can now include server's databases and subusers
 
 ## v0.7.15 (Derelict Dermodactylus)
 ### Fixed
