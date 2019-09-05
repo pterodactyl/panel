@@ -12,9 +12,9 @@ namespace Pterodactyl\Console\Commands\Server;
 use Webmozart\Assert\Assert;
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Repositories\Wings\WingsServerRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class RebuildServerCommand extends Command
 {
@@ -24,7 +24,7 @@ class RebuildServerCommand extends Command
     protected $configurationStructureService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\WingsServerRepository
      */
     protected $daemonRepository;
 
@@ -48,12 +48,12 @@ class RebuildServerCommand extends Command
     /**
      * RebuildServerCommand constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService  $configurationStructureService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \Pterodactyl\Repositories\Wings\WingsServerRepository             $daemonRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface       $repository
      */
     public function __construct(
-        DaemonServerRepositoryInterface $daemonRepository,
+        WingsServerRepository $daemonRepository,
         ServerConfigurationStructureService $configurationStructureService,
         ServerRepositoryInterface $repository
     ) {

@@ -12,9 +12,9 @@ namespace Pterodactyl\Console\Commands\Server;
 use Webmozart\Assert\Assert;
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Repositories\Wings\WingsServerRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class BulkReinstallActionCommand extends Command
 {
@@ -34,7 +34,7 @@ class BulkReinstallActionCommand extends Command
     protected $description = 'Reinstall a single server, all servers on a node, or all servers on the panel.';
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\WingsServerRepository
      */
     protected $repository;
 
@@ -48,12 +48,12 @@ class BulkReinstallActionCommand extends Command
     /**
      * BulkReinstallActionCommand constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService  $configurationStructureService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \Pterodactyl\Repositories\Wings\WingsServerRepository             $daemonRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface       $repository
      */
     public function __construct(
-        DaemonServerRepositoryInterface $daemonRepository,
+        WingsServerRepository $daemonRepository,
         ServerConfigurationStructureService $configurationStructureService,
         ServerRepositoryInterface $repository
     ) {
