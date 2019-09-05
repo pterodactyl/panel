@@ -10,6 +10,7 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Javascript;
+use Cake\Chronos\Chronos;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
@@ -396,7 +397,7 @@ class NodesController extends Controller
     public function setToken(Node $node)
     {
         $token = bin2hex(random_bytes(16));
-        $this->cache->put('Node:Configuration:' . $token, $node->id, 5);
+        $this->cache->put('Node:Configuration:' . $token, $node->id, Chronos::now()->addMinutes(5));
 
         return response()->json(['token' => $token]);
     }

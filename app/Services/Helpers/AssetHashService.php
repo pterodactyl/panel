@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Helpers;
 
+use Cake\Chronos\Chronos;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -134,7 +135,7 @@ class AssetHashService
         }
 
         $contents = json_decode($this->filesystem->get(self::MANIFEST_PATH), true);
-        $this->cache->put('Core:AssetManifest', $contents, 1440);
+        $this->cache->put('Core:AssetManifest', $contents, Chronos::now()->addMinutes(1440));
 
         return self::$manifest = $contents;
     }
