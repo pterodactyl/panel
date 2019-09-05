@@ -26,7 +26,7 @@ class StoreNodeRequest extends ApplicationApiRequest
      */
     public function rules(array $rules = null): array
     {
-        return collect($rules ?? Node::getCreateRules())->only([
+        return collect($rules ?? Node::getRules())->only([
             'public',
             'name',
             'location_id',

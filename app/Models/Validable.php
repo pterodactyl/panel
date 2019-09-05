@@ -79,14 +79,24 @@ abstract class Validable extends Model
     }
 
     /**
+     * Returns the rules associated with this model.
+     *
      * @return array
      */
     public static function getRules()
     {
-        return static::$validationRules;
+        $rules = static::$validationRules;
+        foreach ($rules as $key => &$rule) {
+            $rule = is_array($rule) ? $rule : explode('|', $rule);
+        }
+
+        return $rules;
     }
 
     /**
+     * Returns the rules associated with the model, specifically for updating the given model
+     * rather than just creating it.
+     *
      * @param \Illuminate\Database\Eloquent\Model|int|string $id
      * @param string                                         $primaryKey
      * @return array
@@ -98,17 +108,13 @@ abstract class Validable extends Model
         }
 
         $rules = static::getRules();
-        foreach ($rules as $key => &$rule) {
-            $rule = is_array($rule) ? $rule : explode('|', $rule);
-        }
-
         foreach ($rules as $key => &$data) {
             // For each rule in a given field, iterate over it and confirm if the rule
             // is one for a unique field. If that is the case, append the ID of the current
             // working model so we don't run into errors due to the way that field validation
             // works.
             foreach ($data as &$datum) {
-                if (! Str::startsWith($datum, 'unique')) {
+                if (! is_string($datum) || ! Str::startsWith($datum, 'unique')) {
                     continue;
                 }
 

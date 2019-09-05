@@ -32,7 +32,7 @@ class UpdateEmailRequest extends ClientApiRequest
      */
     public function rules(): array
     {
-        $rules = User::getUpdateRulesForId($this->user()->id);
+        $rules = User::getRulesForUpdate($this->user());
 
         return ['email' => $rules['email']];
     }

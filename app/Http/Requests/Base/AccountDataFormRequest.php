@@ -40,7 +40,7 @@ class AccountDataFormRequest extends FrontendUserFormRequest
      */
     public function rules()
     {
-        $modelRules = User::getUpdateRulesForId($this->user()->id);
+        $modelRules = User::getRulesForUpdate($this->user());
 
         switch ($this->input('do_action')) {
             case 'email':

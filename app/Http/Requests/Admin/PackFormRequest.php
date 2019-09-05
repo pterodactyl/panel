@@ -20,10 +20,10 @@ class PackFormRequest extends AdminFormRequest
     public function rules()
     {
         if ($this->method() === 'PATCH') {
-            return Pack::getUpdateRulesForId($this->route()->parameter('pack')->id);
+            return Pack::getRulesForUpdate($this->route()->parameter('pack')->id);
         }
 
-        return Pack::getCreateRules();
+        return Pack::getRules();
     }
 
     /**

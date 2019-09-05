@@ -20,10 +20,10 @@ class NodeFormRequest extends AdminFormRequest
     public function rules()
     {
         if ($this->method() === 'PATCH') {
-            return Node::getUpdateRulesForId($this->route()->parameter('node')->id);
+            return Node::getRulesForUpdate($this->route()->parameter('node'));
         }
 
-        return Node::getCreateRules();
+        return Node::getRules();
     }
 
     /**

@@ -25,7 +25,7 @@ class ChangeServerNameRequest extends ServerFormRequest
     public function rules()
     {
         return [
-            'name' => Server::getCreateRules()['name'],
+            'name' => Server::getRules()['name'],
         ];
     }
 }

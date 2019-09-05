@@ -12,9 +12,9 @@ class UserFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        $rules = collect(User::getCreateRules());
+        $rules = collect(User::getRules());
         if ($this->method() === 'PATCH') {
-            $rules = collect(User::getUpdateRulesForId($this->route()->parameter('user')->id))->merge([
+            $rules = collect(User::getRulesForUpdate($this->route()->parameter('user')))->merge([
                 'ignore_connection_error' => ['sometimes', 'nullable', 'boolean'],
             ]);
         }

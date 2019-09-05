@@ -28,7 +28,7 @@ class StoreServerRequest extends ApplicationApiRequest
      */
     public function rules(): array
     {
-        $rules = Server::getCreateRules();
+        $rules = Server::getRules();
 
         return [
             'external_id' => $rules['external_id'],

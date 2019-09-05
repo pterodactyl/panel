@@ -144,8 +144,10 @@ class User extends Validable implements
      * Implement language verification by overriding Eloquence's gather
      * rules function.
      */
-    protected static function gatherRules()
+    public static function getRules()
     {
+        $rules = self::getRules();
+
         $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
         $rules['username'][] = new Username;
 
