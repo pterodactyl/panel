@@ -75,29 +75,16 @@ class ApiKey extends Validable
     protected $hidden = ['token'];
 
     /**
-     * Rules defining what fields must be passed when making a model.
-     *
-     * @var array
-     */
-    protected static $applicationRules = [
-        'identifier' => 'required',
-        'memo' => 'required',
-        'user_id' => 'required',
-        'token' => 'required',
-        'key_type' => 'present',
-    ];
-
-    /**
      * Rules to protect against invalid data entry to DB.
      *
      * @var array
      */
-    protected static $dataIntegrityRules = [
-        'user_id' => 'exists:users,id',
-        'key_type' => 'integer|min:0|max:4',
-        'identifier' => 'string|size:16|unique:api_keys,identifier',
-        'token' => 'string',
-        'memo' => 'nullable|string|max:500',
+    public static $validationRules = [
+        'user_id' => 'required|exists:users,id',
+        'key_type' => 'present|integer|min:0|max:4',
+        'identifier' => 'required|string|size:16|unique:api_keys,identifier',
+        'token' => 'required|string',
+        'memo' => 'required|nullable|string|max:500',
         'allowed_ips' => 'nullable|json',
         'last_used_at' => 'nullable|date',
         'r_' . AdminAcl::RESOURCE_USERS => 'integer|min:0|max:3',

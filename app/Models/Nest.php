@@ -30,19 +30,10 @@ class Nest extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'author' => 'required',
-        'name' => 'required',
-        'description' => 'sometimes',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'author' => 'string|email',
-        'name' => 'string|max:255',
-        'description' => 'nullable|string',
+    public static $validationRules = [
+        'author' => 'required|string|email',
+        'name' => 'required|string|max:255',
+        'description' => 'sometimes|nullable|string',
     ];
 
     /**

@@ -45,30 +45,17 @@ class DatabaseHost extends Validable
     ];
 
     /**
-     * Application validation rules.
-     *
-     * @var array
-     */
-    protected static $applicationRules = [
-        'name' => 'required',
-        'host' => 'required',
-        'port' => 'required',
-        'username' => 'required',
-        'node_id' => 'sometimes',
-    ];
-
-    /**
      * Validation rules to assign to this model.
      *
      * @var array
      */
-    protected static $dataIntegrityRules = [
-        'name' => 'string|max:255',
-        'host' => 'ip|unique:database_hosts,host',
-        'port' => 'numeric|between:1,65535',
-        'username' => 'string|max:32',
+    public static $validationRules = [
+        'name' => 'required|string|max:255',
+        'host' => 'required|ip|unique:database_hosts,host',
+        'port' => 'required|numeric|between:1,65535',
+        'username' => 'required|string|max:32',
         'password' => 'nullable|string',
-        'node_id' => 'nullable|integer|exists:nodes,id',
+        'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
     ];
 
     /**

@@ -54,37 +54,19 @@ class Egg extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'nest_id' => 'required',
-        'uuid' => 'required',
-        'name' => 'required',
-        'description' => 'required',
-        'author' => 'required',
-        'docker_image' => 'required',
-        'startup' => 'required',
-        'config_from' => 'sometimes',
-        'config_stop' => 'required_without:config_from',
-        'config_startup' => 'required_without:config_from',
-        'config_logs' => 'required_without:config_from',
-        'config_files' => 'required_without:config_from',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'nest_id' => 'bail|numeric|exists:nests,id',
-        'uuid' => 'string|size:36',
-        'name' => 'string|max:255',
-        'description' => 'string',
-        'author' => 'string|email',
-        'docker_image' => 'string|max:255',
-        'startup' => 'nullable|string',
-        'config_from' => 'bail|nullable|numeric|exists:eggs,id',
-        'config_stop' => 'nullable|string|max:255',
-        'config_startup' => 'nullable|json',
-        'config_logs' => 'nullable|json',
-        'config_files' => 'nullable|json',
+    public static $validationRules = [
+        'nest_id' => 'required|bail|numeric|exists:nests,id',
+        'uuid' => 'required|string|size:36',
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'author' => 'required|string|email',
+        'docker_image' => 'required|string|max:255',
+        'startup' => 'required|nullable|string',
+        'config_from' => 'sometimes|bail|nullable|numeric|exists:eggs,id',
+        'config_stop' => 'required_without:config_from|nullable|string|max:255',
+        'config_startup' => 'required_without:config_from|nullable|json',
+        'config_logs' => 'required_without:config_from|nullable|json',
+        'config_files' => 'required_without:config_from|nullable|json',
     ];
 
     /**

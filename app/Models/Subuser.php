@@ -41,17 +41,9 @@ class Subuser extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'user_id' => 'required',
-        'server_id' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'user_id' => 'numeric|exists:users,id',
-        'server_id' => 'numeric|exists:servers,id',
+    public static $validationRules = [
+        'user_id' => 'required|numeric|exists:users,id',
+        'server_id' => 'required|numeric|exists:servers,id',
     ];
 
     /**

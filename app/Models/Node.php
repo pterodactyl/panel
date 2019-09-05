@@ -77,37 +77,21 @@ class Node extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'name' => 'required',
-        'location_id' => 'required',
-        'fqdn' => 'required',
-        'scheme' => 'required',
-        'memory' => 'required',
-        'memory_overallocate' => 'required',
-        'disk' => 'required',
-        'disk_overallocate' => 'required',
-        'daemonBase' => 'sometimes|required',
-        'daemonSFTP' => 'required',
-        'daemonListen' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'name' => 'regex:/^([\w .-]{1,100})$/',
+    public static $validationRules = [
+        'name' => 'required|regex:/^([\w .-]{1,100})$/',
         'description' => 'string',
-        'location_id' => 'exists:locations,id',
+        'location_id' => 'required|exists:locations,id',
         'public' => 'boolean',
-        'fqdn' => 'string',
+        'fqdn' => 'required|string',
+        'scheme' => 'required',
         'behind_proxy' => 'boolean',
-        'memory' => 'numeric|min:1',
-        'memory_overallocate' => 'numeric|min:-1',
-        'disk' => 'numeric|min:1',
-        'disk_overallocate' => 'numeric|min:-1',
-        'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
-        'daemonSFTP' => 'numeric|between:1,65535',
-        'daemonListen' => 'numeric|between:1,65535',
+        'memory' => 'required|numeric|min:1',
+        'memory_overallocate' => 'required|numeric|min:-1',
+        'disk' => 'required|numeric|min:1',
+        'disk_overallocate' => 'required|numeric|min:-1',
+        'daemonBase' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
+        'daemonSFTP' => 'required|numeric|between:1,65535',
+        'daemonListen' => 'required|numeric|between:1,65535',
         'maintenance_mode' => 'boolean',
         'upload_size' => 'int|between:1,1024',
     ];

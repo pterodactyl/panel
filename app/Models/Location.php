@@ -25,23 +25,13 @@ class Location extends Validable
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     /**
-     * Validation rules to apply to this model.
-     *
-     * @var array
-     */
-    protected static $applicationRules = [
-        'short' => 'required',
-        'long' => 'required',
-    ];
-
-    /**
      * Rules ensuring that the raw data stored in the database meets expectations.
      *
      * @var array
      */
-    protected static $dataIntegrityRules = [
-        'short' => 'string|between:1,60|unique:locations,short',
-        'long' => 'string|between:1,255',
+    public static $validationRules = [
+        'short' => 'required|string|between:1,60|unique:locations,short',
+        'long' => 'required|string|between:1,255',
     ];
 
     /**

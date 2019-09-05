@@ -45,24 +45,15 @@ class EggVariable extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'name' => 'required',
-        'env_variable' => 'required',
-        'rules' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
+    public static $validationRules = [
         'egg_id' => 'exists:eggs,id',
-        'name' => 'string|between:1,255',
+        'name' => 'required|string|between:1,255',
         'description' => 'string',
-        'env_variable' => 'regex:/^[\w]{1,255}$/|notIn:' . self::RESERVED_ENV_NAMES,
+        'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . self::RESERVED_ENV_NAMES,
         'default_value' => 'string',
         'user_viewable' => 'boolean',
         'user_editable' => 'boolean',
-        'rules' => 'string',
+        'rules' => 'required|string',
     ];
 
     /**

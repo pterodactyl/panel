@@ -43,17 +43,9 @@ class Permission extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'subuser_id' => 'required',
-        'permission' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'subuser_id' => 'numeric|min:1',
-        'permission' => 'string',
+    public static $validationRules = [
+        'subuser_id' => 'required|numeric|min:1',
+        'permission' => 'required|string',
     ];
 
     /**

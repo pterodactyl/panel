@@ -43,19 +43,15 @@ class Database extends Validable
         'database_host_id' => 'integer',
     ];
 
-    protected static $applicationRules = [
-        'server_id' => 'required',
-        'database_host_id' => 'required',
-        'database' => 'required',
-        'remote' => 'required',
-    ];
-
-    protected static $dataIntegrityRules = [
-        'server_id' => 'numeric|exists:servers,id',
-        'database_host_id' => 'exists:database_hosts,id',
-        'database' => 'string|alpha_dash|between:3,100',
+    /**
+     * @var array
+     */
+    public static $validationRules = [
+        'server_id' => 'required|numeric|exists:servers,id',
+        'database_host_id' => 'required|exists:database_hosts,id',
+        'database' => 'required|string|alpha_dash|between:3,100',
         'username' => 'string|alpha_dash|between:3,100',
-        'remote' => 'string|regex:/^[0-9%.]{1,15}$/',
+        'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
         'password' => 'string',
     ];
 

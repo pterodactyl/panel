@@ -24,7 +24,7 @@ class Setting extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
+    public static $validationRules = [
         'key' => 'required|string|between:1,255',
         'value' => 'string',
     ];

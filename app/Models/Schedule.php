@@ -73,24 +73,13 @@ class Schedule extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'server_id' => 'required',
-        'cron_day_of_week' => 'required',
-        'cron_day_of_month' => 'required',
-        'cron_hour' => 'required',
-        'cron_minute' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'server_id' => 'exists:servers,id',
+    public static $validationRules = [
+        'server_id' => 'required|exists:servers,id',
         'name' => 'nullable|string|max:255',
-        'cron_day_of_week' => 'string',
-        'cron_day_of_month' => 'string',
-        'cron_hour' => 'string',
-        'cron_minute' => 'string',
+        'cron_day_of_week' => 'required|string',
+        'cron_day_of_month' => 'required|string',
+        'cron_hour' => 'required|string',
+        'cron_minute' => 'required|string',
         'is_active' => 'boolean',
         'is_processing' => 'boolean',
         'last_run_at' => 'nullable|date',

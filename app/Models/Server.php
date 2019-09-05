@@ -95,53 +95,28 @@ class Server extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'external_id' => 'sometimes',
-        'owner_id' => 'required',
-        'name' => 'required',
-        'memory' => 'required',
-        'swap' => 'required',
-        'io' => 'required',
-        'cpu' => 'required',
-        'oom_disabled' => 'sometimes',
-        'disk' => 'required',
-        'nest_id' => 'required',
-        'egg_id' => 'required',
-        'node_id' => 'required',
-        'allocation_id' => 'required',
-        'pack_id' => 'sometimes',
-        'skip_scripts' => 'sometimes',
-        'image' => 'required',
-        'startup' => 'required',
-        'database_limit' => 'present',
-        'allocation_limit' => 'sometimes',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'external_id' => 'nullable|string|between:1,191|unique:servers',
-        'owner_id' => 'integer|exists:users,id',
-        'name' => 'string|min:1|max:255',
-        'node_id' => 'exists:nodes,id',
+    public static $validationRules = [
+        'external_id' => 'sometimes|nullable|string|between:1,191|unique:servers',
+        'owner_id' => 'required|integer|exists:users,id',
+        'name' => 'required|string|min:1|max:255',
+        'node_id' => 'required|exists:nodes,id',
         'description' => 'string',
-        'memory' => 'numeric|min:0',
-        'swap' => 'numeric|min:-1',
-        'io' => 'numeric|between:10,1000',
-        'cpu' => 'numeric|min:0',
-        'oom_disabled' => 'boolean',
-        'disk' => 'numeric|min:0',
-        'allocation_id' => 'bail|unique:servers|exists:allocations,id',
-        'nest_id' => 'exists:nests,id',
-        'egg_id' => 'exists:eggs,id',
-        'pack_id' => 'nullable|numeric|min:0',
-        'startup' => 'string',
-        'skip_scripts' => 'boolean',
-        'image' => 'string|max:255',
+        'memory' => 'required|numeric|min:0',
+        'swap' => 'required|numeric|min:-1',
+        'io' => 'required|numeric|between:10,1000',
+        'cpu' => 'required|numeric|min:0',
+        'oom_disabled' => 'sometimes|boolean',
+        'disk' => 'required|numeric|min:0',
+        'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
+        'nest_id' => 'required|exists:nests,id',
+        'egg_id' => 'required|exists:eggs,id',
+        'pack_id' => 'sometimes|nullable|numeric|min:0',
+        'startup' => 'required|string',
+        'skip_scripts' => 'sometimes|boolean',
+        'image' => 'required|string|max:255',
         'installed' => 'in:0,1,2',
-        'database_limit' => 'nullable|integer|min:0',
-        'allocation_limit' => 'nullable|integer|min:0',
+        'database_limit' => 'present|nullable|integer|min:0',
+        'allocation_limit' => 'sometimes|nullable|integer|min:0',
     ];
 
     /**

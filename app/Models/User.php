@@ -122,37 +122,20 @@ class User extends Validable implements
     ];
 
     /**
-     * Rules verifying that the data passed in forms is valid and meets application logic rules.
-     *
-     * @var array
-     */
-    protected static $applicationRules = [
-        'uuid' => 'required',
-        'email' => 'required',
-        'external_id' => 'sometimes',
-        'username' => 'required',
-        'name_first' => 'required',
-        'name_last' => 'required',
-        'password' => 'sometimes',
-        'language' => 'sometimes',
-        'use_totp' => 'sometimes',
-    ];
-
-    /**
      * Rules verifying that the data being stored matches the expectations of the database.
      *
      * @var array
      */
-    protected static $dataIntegrityRules = [
-        'uuid' => 'string|size:36|unique:users,uuid',
-        'email' => 'email|unique:users,email',
-        'external_id' => 'nullable|string|max:255|unique:users,external_id',
-        'username' => 'between:1,255|unique:users,username',
-        'name_first' => 'string|between:1,255',
-        'name_last' => 'string|between:1,255',
-        'password' => 'nullable|string',
+    public static $validationRules = [
+        'uuid' => 'required|string|size:36|unique:users,uuid',
+        'email' => 'required|email|unique:users,email',
+        'external_id' => 'sometimes|nullable|string|max:255|unique:users,external_id',
+        'username' => 'required|between:1,255|unique:users,username',
+        'name_first' => 'required|string|between:1,255',
+        'name_last' => 'required|string|between:1,255',
+        'password' => 'required|nullable|string',
         'root_admin' => 'boolean',
-        'language' => 'string',
+        'language' => 'required|string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
     ];

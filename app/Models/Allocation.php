@@ -38,19 +38,10 @@ class Allocation extends Validable
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'node_id' => 'required',
-        'ip' => 'required',
-        'port' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'node_id' => 'exists:nodes,id',
-        'ip' => 'ip',
-        'port' => 'numeric|between:1024,65553',
+    public static $validationRules = [
+        'node_id' => 'required|exists:nodes,id',
+        'ip' => 'required|ip',
+        'port' => 'required|numeric|between:1024,65553',
         'ip_alias' => 'nullable|string',
         'server_id' => 'nullable|exists:servers,id',
     ];
