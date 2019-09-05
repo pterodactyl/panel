@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Generator;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
@@ -172,9 +172,9 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      * @param array $locations
      * @param int   $disk
      * @param int   $memory
-     * @return \Generator
+     * @return \Illuminate\Support\LazyCollection
      */
-    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): Generator
+    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): LazyCollection
     {
         $instance = $this->getBuilder()
             ->select(['nodes.id', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])

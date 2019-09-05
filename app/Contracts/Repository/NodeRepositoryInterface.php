@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-use Generator;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
@@ -69,7 +69,7 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
      * @param array $locations
      * @param int   $disk
      * @param int   $memory
-     * @return \Generator
+     * @return \Illuminate\Support\LazyCollection
      */
-    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): Generator;
+    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): LazyCollection;
 }

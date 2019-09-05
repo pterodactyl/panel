@@ -98,7 +98,7 @@ class BulkPowerActionCommand extends Command
         $bar = $this->output->createProgressBar($count);
         $servers = $this->repository->getServersForPowerAction($servers, $nodes);
 
-        foreach ($servers as $server) {
+        $servers->each(function ($server) use ($action, &$bar) {
             $bar->clear();
 
             try {
@@ -117,7 +117,7 @@ class BulkPowerActionCommand extends Command
 
             $bar->advance();
             $bar->display();
-        }
+        });
 
         $this->line('');
     }

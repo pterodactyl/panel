@@ -291,7 +291,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      * @param int[] $servers
      * @param int[] $nodes
      * @param bool  $returnCount
-     * @return int|\Generator
+     * @return int|\Illuminate\Support\LazyCollection
      */
     public function getServersForPowerAction(array $servers = [], array $nodes = [], bool $returnCount = false)
     {
