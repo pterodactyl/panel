@@ -3,13 +3,8 @@
 namespace Pterodactyl\Models;
 
 use Schema;
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Znck\Eloquent\Traits\BelongsToThrough;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
 /**
  * @property int $id
@@ -55,9 +50,9 @@ use Sofa\Eloquence\Contracts\Validable as ValidableContract;
  * @property \Pterodactyl\Models\DaemonKey $key
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Support\Collection $keys
  */
-class Server extends Model implements CleansAttributes, ValidableContract
+class Server extends Validable
 {
-    use BelongsToThrough, Eloquence, Notifiable, Validable;
+    use BelongsToThrough, Notifiable;
 
     /**
      * The resource name for this model when it is transformed into an

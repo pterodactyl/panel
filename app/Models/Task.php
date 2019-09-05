@@ -2,16 +2,11 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
 use Znck\Eloquent\Traits\BelongsToThrough;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Task extends Model implements CleansAttributes, ValidableContract
+class Task extends Validable
 {
-    use BelongsToThrough, Eloquence, Validable;
+    use BelongsToThrough;
 
     /**
      * The resource name for this model when it is transformed into an

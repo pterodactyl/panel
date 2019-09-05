@@ -2,34 +2,25 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
 use Pterodactyl\Rules\Username;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Sofa\Eloquence\Contracts\CleansAttributes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Foundation\Auth\Access\Authorizable;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
-class User extends Model implements
+class User extends Validable implements
     AuthenticatableContract,
     AuthorizableContract,
-    CanResetPasswordContract,
-    CleansAttributes,
-    ValidableContract
+    CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Eloquence, Notifiable, Validable {
-        gatherRules as eloquenceGatherRules;
-    }
+    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Notifiable;
 
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;
@@ -171,7 +162,6 @@ class User extends Model implements
      */
     protected static function gatherRules()
     {
-        $rules = self::eloquenceGatherRules();
         $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
         $rules['username'][] = new Username;
 

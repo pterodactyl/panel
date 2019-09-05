@@ -2,17 +2,10 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class ApiKey extends Model implements CleansAttributes, ValidableContract
+class ApiKey extends Validable
 {
-    use Eloquence, Validable;
-
     /**
      * Different API keys that can exist on the system.
      */

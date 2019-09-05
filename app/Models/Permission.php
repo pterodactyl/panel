@@ -2,16 +2,8 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
-
-class Permission extends Model implements CleansAttributes, ValidableContract
+class Permission extends Validable
 {
-    use Eloquence, Validable;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
