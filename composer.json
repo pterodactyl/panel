@@ -25,6 +25,7 @@
         "igaster/laravel-theme": "^2.0.6",
         "laracasts/utilities": "^3.0",
         "laravel/framework": "^5.8",
+        "laravel/helpers": "^1.1",
         "laravel/tinker": "^1.0",
         "lord/laroute": "^2.4",
         "matriphe/iso-639": "^1.2",
@@ -47,7 +48,7 @@
         "laravel/dusk": "^5.5",
         "mockery/mockery": "^1.2",
         "php-mock/php-mock-phpunit": "^2.4",
-        "phpunit/phpunit": "^8.3"
+        "phpunit/phpunit": "^7"
     },
     "autoload": {
         "classmap": [
