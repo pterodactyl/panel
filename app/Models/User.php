@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Pterodactyl\Models\Traits\Searchable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -20,7 +21,7 @@ class User extends Validable implements
     AuthorizableContract,
     CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Notifiable;
+    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Notifiable, Searchable;
 
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;

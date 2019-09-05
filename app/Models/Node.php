@@ -3,10 +3,11 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Notifications\Notifiable;
+use Pterodactyl\Models\Traits\Searchable;
 
 class Node extends Validable
 {
-    use Notifiable;
+    use Notifiable, Searchable;
 
     /**
      * The resource name for this model when it is transformed into an

@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Schema;
 use Illuminate\Notifications\Notifiable;
+use Pterodactyl\Models\Traits\Searchable;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
@@ -52,7 +53,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  */
 class Server extends Validable
 {
-    use BelongsToThrough, Notifiable;
+    use BelongsToThrough, Notifiable, Searchable;
 
     /**
      * The resource name for this model when it is transformed into an

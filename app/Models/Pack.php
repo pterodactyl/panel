@@ -2,8 +2,12 @@
 
 namespace Pterodactyl\Models;
 
+use Pterodactyl\Models\Traits\Searchable;
+
 class Pack extends Validable
 {
+    use Searchable;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
