@@ -34,11 +34,11 @@ class LoginController extends AbstractLoginController
     /**
      * LoginController constructor.
      *
-     * @param \Illuminate\Auth\AuthManager                              $auth
-     * @param \Illuminate\Contracts\Config\Repository                   $config
-     * @param \Illuminate\Contracts\Cache\Repository                    $cache
+     * @param \Illuminate\Auth\AuthManager $auth
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Illuminate\Contracts\Cache\Repository $cache
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
-     * @param \Illuminate\Contracts\View\Factory                        $view
+     * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(
         AuthManager $auth,

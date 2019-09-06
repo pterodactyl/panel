@@ -56,10 +56,10 @@ class DaemonKeyProviderService
     /**
      * GetDaemonKeyService constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService      $keyCreationService
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService $keyCreationService
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService        $keyUpdateService
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface   $subuserRepository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyUpdateService $keyUpdateService
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
      */
     public function __construct(
         DaemonKeyCreationService $keyCreationService,
@@ -77,8 +77,8 @@ class DaemonKeyProviderService
      * Get the access key for a user on a specific server.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\User   $user
-     * @param bool                       $updateIfExpired
+     * @param \Pterodactyl\Models\User $user
+     * @param bool $updateIfExpired
      * @return string
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

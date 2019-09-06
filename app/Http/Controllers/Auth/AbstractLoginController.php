@@ -51,7 +51,7 @@ abstract class AbstractLoginController extends Controller
     /**
      * LoginController constructor.
      *
-     * @param \Illuminate\Auth\AuthManager            $auth
+     * @param \Illuminate\Auth\AuthManager $auth
      * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct(AuthManager $auth, Repository $config)
@@ -66,7 +66,7 @@ abstract class AbstractLoginController extends Controller
     /**
      * Get the failed login response instance.
      *
-     * @param \Illuminate\Http\Request                        $request
+     * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Contracts\Auth\Authenticatable|null $user
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -123,7 +123,7 @@ abstract class AbstractLoginController extends Controller
      * Fire a failed login event.
      *
      * @param \Illuminate\Contracts\Auth\Authenticatable|null $user
-     * @param array                                           $credentials
+     * @param array $credentials
      */
     protected function fireFailedLoginEvent(Authenticatable $user = null, array $credentials = [])
     {

@@ -62,9 +62,9 @@ class RunTaskJob extends Job implements ShouldQueue
      * Run the job and send actions to the daemon running the server.
      *
      * @param \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface $commandRepository
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService           $keyProviderService
-     * @param \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface   $powerRepository
-     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface           $taskRepository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
+     * @param \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface $powerRepository
+     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface $taskRepository
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException

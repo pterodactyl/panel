@@ -38,8 +38,8 @@ class AssetHashService
      * AssetHashService constructor.
      *
      * @param \Illuminate\Contracts\Foundation\Application $application
-     * @param \Illuminate\Contracts\Cache\Repository       $cache
-     * @param \Illuminate\Filesystem\FilesystemManager     $filesystem
+     * @param \Illuminate\Contracts\Cache\Repository $cache
+     * @param \Illuminate\Filesystem\FilesystemManager $filesystem
      */
     public function __construct(Application $application, CacheRepository $cache, FilesystemManager $filesystem)
     {

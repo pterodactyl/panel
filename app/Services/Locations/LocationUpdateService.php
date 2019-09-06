@@ -33,7 +33,7 @@ class LocationUpdateService
      * Update an existing location.
      *
      * @param int|\Pterodactyl\Models\Location $location
-     * @param array                            $data
+     * @param array $data
      * @return \Pterodactyl\Models\Location
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

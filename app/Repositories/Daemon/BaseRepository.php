@@ -40,7 +40,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     /**
      * BaseRepository constructor.
      *
-     * @param \Illuminate\Foundation\Application                        $app
+     * @param \Illuminate\Foundation\Application $app
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $nodeRepository
      */
     public function __construct(Application $app, NodeRepositoryInterface $nodeRepository)
@@ -129,7 +129,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
         // If no node is set, load the relationship onto the Server model
         // and pass that to the setNode function.
         if (! $this->getNode() instanceof Node) {
-            if (! $this->getServer() instanceof  Server) {
+            if (! $this->getServer() instanceof Server) {
                 throw new RuntimeException('An instance of ' . Node::class . ' or ' . Server::class . ' must be set on this repository in order to return a client.');
             }
 

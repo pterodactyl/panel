@@ -37,10 +37,10 @@ class SetDefaultAllocationService
     /**
      * SetDefaultAllocationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface    $repository
-     * @param \Illuminate\Database\ConnectionInterface                           $connection
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
      */
     public function __construct(
         AllocationRepositoryInterface $repository,
@@ -59,7 +59,7 @@ class SetDefaultAllocationService
      * assigned to the specified server.
      *
      * @param int|\Pterodactyl\Models\Server $server
-     * @param int                            $allocation
+     * @param int $allocation
      * @return \Pterodactyl\Models\Allocation
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException

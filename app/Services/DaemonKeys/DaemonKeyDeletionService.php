@@ -64,11 +64,11 @@ class DaemonKeyDeletionService
     /**
      * DaemonKeyDeletionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface     $repository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $serverRepository
-     * @param \Psr\Log\LoggerInterface                                           $writer
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \Psr\Log\LoggerInterface $writer
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -86,7 +86,7 @@ class DaemonKeyDeletionService
 
     /**
      * @param \Pterodactyl\Models\Server|int $server
-     * @param int                            $user
+     * @param int $user
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

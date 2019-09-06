@@ -48,9 +48,9 @@ class BulkReinstallActionCommand extends Command
     /**
      * BulkReinstallActionCommand constructor.
      *
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository            $daemonRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonRepository
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface       $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         DaemonServerRepository $daemonRepository,

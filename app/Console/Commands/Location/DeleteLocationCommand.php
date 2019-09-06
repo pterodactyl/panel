@@ -44,7 +44,7 @@ class DeleteLocationCommand extends Command
      * DeleteLocationCommand constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Locations\LocationDeletionService       $deletionService
+     * @param \Pterodactyl\Services\Locations\LocationDeletionService $deletionService
      */
     public function __construct(
         LocationDeletionService $deletionService,
@@ -66,8 +66,8 @@ class DeleteLocationCommand extends Command
     {
         $this->locations = $this->locations ?? $this->repository->all();
         $short = $this->option('short') ?? $this->anticipate(
-            trans('command/messages.location.ask_short'), $this->locations->pluck('short')->toArray()
-        );
+                trans('command/messages.location.ask_short'), $this->locations->pluck('short')->toArray()
+            );
 
         $location = $this->locations->where('short', $short)->first();
         if (is_null($location)) {

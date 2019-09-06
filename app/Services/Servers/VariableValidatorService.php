@@ -45,10 +45,10 @@ class VariableValidatorService
     /**
      * VariableValidatorService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface    $optionVariableRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $serverRepository
+     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $optionVariableRepository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
-     * @param \Illuminate\Contracts\Validation\Factory                            $validator
+     * @param \Illuminate\Contracts\Validation\Factory $validator
      */
     public function __construct(
         EggVariableRepositoryInterface $optionVariableRepository,
@@ -65,7 +65,7 @@ class VariableValidatorService
     /**
      * Validate all of the passed data against the given service option variables.
      *
-     * @param int   $egg
+     * @param int $egg
      * @param array $fields
      * @return \Illuminate\Support\Collection
      * @throws \Illuminate\Validation\ValidationException

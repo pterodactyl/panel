@@ -97,8 +97,8 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      * call.
      *
      * @param string $field
-     * @param array  $rules
-     * @param bool   $limits
+     * @param array $rules
+     * @param bool $limits
      * @return array
      *
      * @see https://github.com/pterodactyl/panel/issues/1500

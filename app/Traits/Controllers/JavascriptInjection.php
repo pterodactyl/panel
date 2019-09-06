@@ -36,7 +36,7 @@ trait JavascriptInjection
      * Injects server javascript into the page to be used by other services.
      *
      * @param array $args
-     * @param bool  $overwrite
+     * @param bool $overwrite
      * @return array
      */
     public function injectJavascript($args = [], $overwrite = false)

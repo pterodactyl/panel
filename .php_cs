@@ -39,7 +39,7 @@ return PhpCsFixer\Config::create()
         'ordered_imports' => [
             'sortAlgorithm' => 'length',
         ],
-        'phpdoc_align' => ['tags' => ['param']],
+        'phpdoc_align' => false,
         'phpdoc_separation' => false,
         'protected_to_private' => false,
         'psr0' => ['dir' => 'app'],

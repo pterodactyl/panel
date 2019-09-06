@@ -34,10 +34,10 @@ class ScheduleUpdateService
     /**
      * ScheduleUpdateService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                      $connection
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Schedules\Tasks\TaskCreationService     $taskCreationService
-     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface     $taskRepository
+     * @param \Pterodactyl\Services\Schedules\Tasks\TaskCreationService $taskCreationService
+     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface $taskRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -56,8 +56,8 @@ class ScheduleUpdateService
      * new values.
      *
      * @param \Pterodactyl\Models\Schedule $schedule
-     * @param array                        $data
-     * @param array                        $tasks
+     * @param array $data
+     * @param array $tasks
      * @return \Pterodactyl\Models\Schedule
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

@@ -35,10 +35,10 @@ class DatabasePasswordService
     /**
      * DatabasePasswordService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                      $connection
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection             $dynamic
-     * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
+     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         ConnectionInterface $connection,

@@ -30,9 +30,9 @@ class DeployServerDatabaseService
     /**
      * ServerDatabaseCreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface     $repository
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $databaseHostRepository
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService         $managementService
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $managementService
      */
     public function __construct(
         DatabaseRepositoryInterface $repository,
@@ -46,7 +46,7 @@ class DeployServerDatabaseService
 
     /**
      * @param \Pterodactyl\Models\Server $server
-     * @param array                      $data
+     * @param array $data
      * @return \Pterodactyl\Models\Database
      *
      * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException

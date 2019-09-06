@@ -36,7 +36,7 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
      * already present.
      *
      * @param \Pterodactyl\Models\Schedule $schedule
-     * @param bool                         $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Schedule
      */
     public function loadTasks(Schedule $schedule, bool $refresh = false): Schedule

@@ -32,9 +32,9 @@ class AccountKeyController extends Controller
     /**
      * APIController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                           $alert
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Api\KeyCreationService                $keyService
+     * @param \Pterodactyl\Services\Api\KeyCreationService $keyService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -95,7 +95,7 @@ class AccountKeyController extends Controller
      * Delete an account API key from the Panel via an AJAX request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string                   $identifier
+     * @param string $identifier
      * @return \Illuminate\Http\Response
      */
     public function revoke(Request $request, string $identifier): Response

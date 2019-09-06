@@ -29,9 +29,9 @@ class ProcessScheduleService
     /**
      * ProcessScheduleService constructor.
      *
-     * @param \Illuminate\Contracts\Bus\Dispatcher                          $dispatcher
+     * @param \Illuminate\Contracts\Bus\Dispatcher $dispatcher
      * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $scheduleRepository
-     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface     $taskRepository
+     * @param \Pterodactyl\Contracts\Repository\TaskRepositoryInterface $taskRepository
      */
     public function __construct(
         Dispatcher $dispatcher,

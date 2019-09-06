@@ -73,15 +73,15 @@ class PackController extends Controller
     /**
      * PackController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param \Illuminate\Contracts\Config\Repository                   $config
-     * @param \Pterodactyl\Services\Packs\ExportPackService             $exportService
-     * @param \Pterodactyl\Services\Packs\PackCreationService           $creationService
-     * @param \Pterodactyl\Services\Packs\PackDeletionService           $deletionService
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Pterodactyl\Services\Packs\ExportPackService $exportService
+     * @param \Pterodactyl\Services\Packs\PackCreationService $creationService
+     * @param \Pterodactyl\Services\Packs\PackDeletionService $deletionService
      * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Packs\PackUpdateService             $updateService
+     * @param \Pterodactyl\Services\Packs\PackUpdateService $updateService
      * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $serviceRepository
-     * @param \Pterodactyl\Services\Packs\TemplateUploadService         $templateUploadService
+     * @param \Pterodactyl\Services\Packs\TemplateUploadService $templateUploadService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -191,7 +191,7 @@ class PackController extends Controller
      * Handle updating or deleting pack information.
      *
      * @param \Pterodactyl\Http\Requests\Admin\PackFormRequest $request
-     * @param \Pterodactyl\Models\Pack                         $pack
+     * @param \Pterodactyl\Models\Pack $pack
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -229,7 +229,7 @@ class PackController extends Controller
      * Creates an archive of the pack and downloads it to the browser.
      *
      * @param \Pterodactyl\Models\Pack $pack
-     * @param bool|string              $files
+     * @param bool|string $files
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

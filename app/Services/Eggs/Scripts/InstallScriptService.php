@@ -34,7 +34,7 @@ class InstallScriptService
      * Modify the install script for a given Egg.
      *
      * @param int|\Pterodactyl\Models\Egg $egg
-     * @param array                       $data
+     * @param array $data
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

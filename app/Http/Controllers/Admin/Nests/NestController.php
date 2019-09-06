@@ -49,11 +49,11 @@ class NestController extends Controller
     /**
      * NestController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param \Pterodactyl\Services\Nests\NestCreationService           $nestCreationService
-     * @param \Pterodactyl\Services\Nests\NestDeletionService           $nestDeletionService
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Services\Nests\NestCreationService $nestCreationService
+     * @param \Pterodactyl\Services\Nests\NestDeletionService $nestDeletionService
      * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Nests\NestUpdateService             $nestUpdateService
+     * @param \Pterodactyl\Services\Nests\NestUpdateService $nestUpdateService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -128,7 +128,7 @@ class NestController extends Controller
      * Handle request to update a nest.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Nest\StoreNestFormRequest $request
-     * @param int                                                        $nest
+     * @param int $nest
      *
      * @return \Illuminate\Http\RedirectResponse
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

@@ -37,9 +37,9 @@ class EggScriptController extends Controller
     /**
      * EggScriptController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                        $alert
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Eggs\Scripts\InstallScriptService  $installScriptService
+     * @param \Pterodactyl\Services\Eggs\Scripts\InstallScriptService $installScriptService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -81,7 +81,7 @@ class EggScriptController extends Controller
      * Handle a request to update the installation script for an Egg.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Egg\EggScriptFormRequest $request
-     * @param int                                                       $egg
+     * @param int $egg
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

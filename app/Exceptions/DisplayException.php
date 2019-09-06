@@ -24,10 +24,10 @@ class DisplayException extends PterodactylException
     /**
      * Exception constructor.
      *
-     * @param string         $message
+     * @param string $message
      * @param Throwable|null $previous
-     * @param string         $level
-     * @param int            $code
+     * @param string $level
+     * @param int $code
      */
     public function __construct($message, Throwable $previous = null, $level = self::LEVEL_ERROR, $code = 0)
     {

@@ -22,7 +22,7 @@ class ServerListComposer
     /**
      * ServerListComposer constructor.
      *
-     * @param \Illuminate\Http\Request                                    $request
+     * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(Request $request, ServerRepositoryInterface $repository)

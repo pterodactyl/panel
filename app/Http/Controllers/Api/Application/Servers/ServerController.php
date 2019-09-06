@@ -35,8 +35,8 @@ class ServerController extends ApplicationApiController
     /**
      * ServerController constructor.
      *
-     * @param \Pterodactyl\Services\Servers\ServerCreationService         $creationService
-     * @param \Pterodactyl\Services\Servers\ServerDeletionService         $deletionService
+     * @param \Pterodactyl\Services\Servers\ServerCreationService $creationService
+     * @param \Pterodactyl\Services\Servers\ServerDeletionService $deletionService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
@@ -104,8 +104,8 @@ class ServerController extends ApplicationApiController
 
     /**
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
-     * @param \Pterodactyl\Models\Server                                            $server
-     * @param string                                                                $force
+     * @param \Pterodactyl\Models\Server $server
+     * @param string $force
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

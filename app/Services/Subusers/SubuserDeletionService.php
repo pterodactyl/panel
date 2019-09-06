@@ -34,8 +34,8 @@ class SubuserDeletionService
     /**
      * SubuserDeletionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                     $connection
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService    $keyDeletionService
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService $keyDeletionService
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
      */
     public function __construct(

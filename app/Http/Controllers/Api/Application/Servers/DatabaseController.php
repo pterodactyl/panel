@@ -36,8 +36,8 @@ class DatabaseController extends ApplicationApiController
     /**
      * DatabaseController constructor.
      *
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService     $databaseManagementService
-     * @param \Pterodactyl\Services\Databases\DatabasePasswordService       $databasePasswordService
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
+     * @param \Pterodactyl\Services\Databases\DatabasePasswordService $databasePasswordService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
      */
     public function __construct(

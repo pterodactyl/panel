@@ -27,7 +27,7 @@ class KeyCreationService
      * ApiKeyService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(ApiKeyRepositoryInterface $repository, Encrypter $encrypter)
     {

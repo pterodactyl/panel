@@ -36,7 +36,7 @@ class CommandController extends ClientApiController
      * Send a command to a running server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\SendCommandRequest $request
-     * @param \Pterodactyl\Models\Server                                       $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException

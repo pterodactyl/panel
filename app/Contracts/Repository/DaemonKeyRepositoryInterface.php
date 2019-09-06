@@ -17,7 +17,7 @@ interface DaemonKeyRepositoryInterface extends RepositoryInterface
      * Load the server and user relations onto a key model.
      *
      * @param \Pterodactyl\Models\DaemonKey $key
-     * @param bool                          $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\DaemonKey
      */
     public function loadServerAndUserRelations(DaemonKey $key, bool $refresh = false): DaemonKey;

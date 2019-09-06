@@ -42,8 +42,8 @@ class PackCreationService
     /**
      * PackCreationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                  $connection
-     * @param \Illuminate\Contracts\Filesystem\Factory                  $storage
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Illuminate\Contracts\Filesystem\Factory $storage
      * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
      */
     public function __construct(
@@ -59,7 +59,7 @@ class PackCreationService
     /**
      * Add a new service pack to the system.
      *
-     * @param array                              $data
+     * @param array $data
      * @param \Illuminate\Http\UploadedFile|null $file
      * @return \Pterodactyl\Models\Pack
      *

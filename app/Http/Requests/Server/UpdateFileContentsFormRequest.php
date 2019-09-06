@@ -63,7 +63,7 @@ class UpdateFileContentsFormRequest extends ServerFormRequest
      * Checks if a given file can be edited by a user on this server.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param string                     $token
+     * @param string $token
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

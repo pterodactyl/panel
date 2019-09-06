@@ -28,9 +28,9 @@ class ScheduleCreationService
     /**
      * ScheduleCreationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                      $connection
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Schedules\Tasks\TaskCreationService     $taskCreationService
+     * @param \Pterodactyl\Services\Schedules\Tasks\TaskCreationService $taskCreationService
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -46,8 +46,8 @@ class ScheduleCreationService
      * Create a new schedule for a specific server.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param array                      $data
-     * @param array                      $tasks
+     * @param array $data
+     * @param array $tasks
      * @return \Pterodactyl\Models\Schedule
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

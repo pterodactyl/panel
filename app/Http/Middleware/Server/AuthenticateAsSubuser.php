@@ -36,7 +36,7 @@ class AuthenticateAsSubuser
      * Determine if a subuser has permissions to access a server, if so set their access token.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

@@ -49,7 +49,7 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
      * Delete an account API key from the panel for a specific user.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param string                   $identifier
+     * @param string $identifier
      * @return int
      */
     public function deleteAccountKey(User $user, string $identifier): int
@@ -64,7 +64,7 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
      * Delete an application API key from the panel for a specific user.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param string                   $identifier
+     * @param string $identifier
      * @return int
      */
     public function deleteApplicationKey(User $user, string $identifier): int

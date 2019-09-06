@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Databases;
 
+use Exception;
 use Pterodactyl\Models\Database;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -38,10 +39,10 @@ class DatabaseManagementService
     /**
      * CreationService constructor.
      *
-     * @param \Illuminate\Database\DatabaseManager                          $database
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection             $dynamic
+     * @param \Illuminate\Database\DatabaseManager $database
+     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         DatabaseManager $database,
@@ -58,7 +59,7 @@ class DatabaseManagementService
     /**
      * Create a new database that is linked to a specific host.
      *
-     * @param int   $server
+     * @param int $server
      * @param array $data
      * @return \Pterodactyl\Models\Database
      *
@@ -90,14 +91,14 @@ class DatabaseManagementService
             $this->repository->flush();
 
             $this->database->commit();
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             try {
                 if (isset($database) && $database instanceof Database) {
                     $this->repository->dropDatabase($database->database);
                     $this->repository->dropUser($database->username, $database->remote);
                     $this->repository->flush();
                 }
-            } catch (\Exception $exTwo) {
+            } catch (Exception $exTwo) {
                 // ignore an exception
             }
 

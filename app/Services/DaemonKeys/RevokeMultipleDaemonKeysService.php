@@ -28,7 +28,7 @@ class RevokeMultipleDaemonKeysService
     /**
      * RevokeMultipleDaemonKeysService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface     $repository
+     * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
      */
     public function __construct(
@@ -45,7 +45,7 @@ class RevokeMultipleDaemonKeysService
      * return an error.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param bool                     $ignoreConnectionErrors
+     * @param bool $ignoreConnectionErrors
      */
     public function handle(User $user, bool $ignoreConnectionErrors = false)
     {
@@ -79,7 +79,7 @@ class RevokeMultipleDaemonKeysService
     /**
      * Add an exception for a node to the array.
      *
-     * @param int                                    $node
+     * @param int $node
      * @param \GuzzleHttp\Exception\RequestException $exception
      */
     protected function setConnectionException(int $node, RequestException $exception)

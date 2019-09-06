@@ -40,7 +40,7 @@ class ProcessRunnableCommand extends Command
     /**
      * ProcessRunnableCommand constructor.
      *
-     * @param \Pterodactyl\Services\Schedules\ProcessScheduleService        $processScheduleService
+     * @param \Pterodactyl\Services\Schedules\ProcessScheduleService $processScheduleService
      * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
     public function __construct(ProcessScheduleService $processScheduleService, ScheduleRepositoryInterface $repository)

@@ -31,8 +31,8 @@ class TwoFactorSetupService
     /**
      * TwoFactorSetupService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                   $config
-     * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(

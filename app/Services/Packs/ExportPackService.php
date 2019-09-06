@@ -35,9 +35,9 @@ class ExportPackService
     /**
      * ExportPackService constructor.
      *
-     * @param \Illuminate\Contracts\Filesystem\Factory                  $storage
+     * @param \Illuminate\Contracts\Filesystem\Factory $storage
      * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
-     * @param \ZipArchive                                               $archive
+     * @param \ZipArchive $archive
      */
     public function __construct(
         FilesystemFactory $storage,
@@ -53,7 +53,7 @@ class ExportPackService
      * Prepare a pack for export.
      *
      * @param int|\Pterodactyl\Models\Pack $pack
-     * @param bool                         $files
+     * @param bool $files
      * @return string
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

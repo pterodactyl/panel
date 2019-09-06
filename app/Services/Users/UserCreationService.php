@@ -34,9 +34,9 @@ class UserCreationService
     /**
      * CreationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                  $connection
-     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
-     * @param \Illuminate\Contracts\Auth\PasswordBroker                 $passwordBroker
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Illuminate\Contracts\Hashing\Hasher $hasher
+     * @param \Illuminate\Contracts\Auth\PasswordBroker $passwordBroker
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(

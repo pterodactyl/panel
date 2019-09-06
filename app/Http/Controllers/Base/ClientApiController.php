@@ -33,9 +33,9 @@ class ClientApiController extends Controller
     /**
      * ClientApiController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                           $alert
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Api\KeyCreationService                $creationService
+     * @param \Pterodactyl\Services\Api\KeyCreationService $creationService
      */
     public function __construct(AlertsMessageBag $alert, ApiKeyRepositoryInterface $repository, KeyCreationService $creationService)
     {

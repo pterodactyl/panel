@@ -34,7 +34,7 @@ class AssignmentService
      * AssignmentService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
-     * @param \Illuminate\Database\ConnectionInterface                        $connection
+     * @param \Illuminate\Database\ConnectionInterface $connection
      */
     public function __construct(AllocationRepositoryInterface $repository, ConnectionInterface $connection)
     {
@@ -46,7 +46,7 @@ class AssignmentService
      * Insert allocations into the database and link them to a specific node.
      *
      * @param \Pterodactyl\Models\Node $node
-     * @param array                    $data
+     * @param array $data
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException

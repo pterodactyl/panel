@@ -20,7 +20,7 @@ class PackController extends Controller
      * Pulls an install pack archive from the system.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string                   $uuid
+     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
      */
     public function pull(Request $request, $uuid)
@@ -42,7 +42,7 @@ class PackController extends Controller
      * Returns the hash information for a pack.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string                   $uuid
+     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      */
     public function hash(Request $request, $uuid)

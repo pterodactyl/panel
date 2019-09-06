@@ -75,16 +75,16 @@ class ServerCreationService
     /**
      * CreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface     $allocationRepository
-     * @param \Pterodactyl\Services\Deployment\AllocationSelectionService         $allocationSelectionService
-     * @param \Illuminate\Database\ConnectionInterface                            $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface            $eggRepository
-     * @param \Pterodactyl\Services\Deployment\FindViableNodesService             $findViableNodesService
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService   $configurationStructureService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \Pterodactyl\Services\Deployment\AllocationSelectionService $allocationSelectionService
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $eggRepository
+     * @param \Pterodactyl\Services\Deployment\FindViableNodesService $findViableNodesService
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
-     * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
+     * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
@@ -116,7 +116,7 @@ class ServerCreationService
      * as possible given the input data. For example, if an allocation_id is passed with
      * no node_id the node_is will be picked from the allocation.
      *
-     * @param array                                             $data
+     * @param array $data
      * @param \Pterodactyl\Models\Objects\DeploymentObject|null $deployment
      * @return \Pterodactyl\Models\Server
      *
@@ -179,7 +179,7 @@ class ServerCreationService
     /**
      * Gets an allocation to use for automatic deployment.
      *
-     * @param array                                        $data
+     * @param array $data
      * @param \Pterodactyl\Models\Objects\DeploymentObject $deployment
      *
      * @return \Pterodactyl\Models\Allocation
@@ -244,7 +244,7 @@ class ServerCreationService
      * Configure the allocations assigned to this server.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param array                      $data
+     * @param array $data
      */
     private function storeAssignedAllocations(Server $server, array $data)
     {
@@ -259,7 +259,7 @@ class ServerCreationService
     /**
      * Process environment variables passed for this server and store them in the database.
      *
-     * @param \Pterodactyl\Models\Server     $server
+     * @param \Pterodactyl\Models\Server $server
      * @param \Illuminate\Support\Collection $variables
      */
     private function storeEggVariables(Server $server, Collection $variables)

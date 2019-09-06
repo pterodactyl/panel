@@ -30,7 +30,7 @@ class VerifyReCaptcha
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return \Illuminate\Http\RedirectResponse|mixed
      */
     public function handle($request, Closure $next)
@@ -66,7 +66,7 @@ class VerifyReCaptcha
     /**
      * Determine if the response from the recaptcha servers was valid.
      *
-     * @param stdClass                 $result
+     * @param stdClass $result
      * @param \Illuminate\Http\Request $request
      * @return bool
      */

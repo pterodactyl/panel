@@ -31,9 +31,9 @@ class UserUpdateService
     /**
      * UpdateService constructor.
      *
-     * @param \Illuminate\Contracts\Hashing\Hasher                             $hasher
+     * @param \Illuminate\Contracts\Hashing\Hasher $hasher
      * @param \Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService $revocationService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface        $repository
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         Hasher $hasher,
@@ -50,7 +50,7 @@ class UserUpdateService
      * revoke all of the authentication tokens that have been assigned to their account.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param array                    $data
+     * @param array $data
      * @return \Illuminate\Support\Collection
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

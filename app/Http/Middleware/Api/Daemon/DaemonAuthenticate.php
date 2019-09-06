@@ -39,7 +39,7 @@ class DaemonAuthenticate
      * Check if a request from the daemon can be properly attributed back to a single node instance.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return mixed
      *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException

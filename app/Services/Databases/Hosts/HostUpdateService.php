@@ -46,11 +46,11 @@ class HostUpdateService
     /**
      * DatabaseHostService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                          $connection
-     * @param \Illuminate\Database\DatabaseManager                              $databaseManager
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Illuminate\Database\DatabaseManager $databaseManager
      * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection                 $dynamic
-     * @param \Illuminate\Contracts\Encryption\Encrypter                        $encrypter
+     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -69,7 +69,7 @@ class HostUpdateService
     /**
      * Update a database host and persist to the database.
      *
-     * @param int   $hostId
+     * @param int $hostId
      * @param array $data
      * @return \Pterodactyl\Models\DatabaseHost
      *

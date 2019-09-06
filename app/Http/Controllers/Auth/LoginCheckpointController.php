@@ -37,11 +37,11 @@ class LoginCheckpointController extends AbstractLoginController
     /**
      * LoginCheckpointController constructor.
      *
-     * @param \Illuminate\Auth\AuthManager                              $auth
-     * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
-     * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
-     * @param \Illuminate\Contracts\Config\Repository                   $config
-     * @param \Illuminate\Contracts\Cache\Repository                    $cache
+     * @param \Illuminate\Auth\AuthManager $auth
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
+     * @param \PragmaRX\Google2FA\Google2FA $google2FA
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Illuminate\Contracts\Cache\Repository $cache
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(

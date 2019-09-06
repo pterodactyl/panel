@@ -25,7 +25,7 @@ class ApiKeyTransformer extends TransformerAbstract
      * ApiKeyTransformer constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $keyRepository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface   $repository
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
      */
     public function __construct(DaemonKeyRepositoryInterface $keyRepository, SubuserRepositoryInterface $repository)
     {

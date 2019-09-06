@@ -53,12 +53,12 @@ class SubuserUpdateService
     /**
      * SubuserUpdateService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService          $keyProviderService
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonRepository
-     * @param \Pterodactyl\Services\Subusers\PermissionCreationService           $permissionService
-     * @param \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface    $permissionRepository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface       $repository
+     * @param \Pterodactyl\Services\Subusers\PermissionCreationService $permissionService
+     * @param \Pterodactyl\Contracts\Repository\PermissionRepositoryInterface $permissionRepository
+     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -80,7 +80,7 @@ class SubuserUpdateService
      * Update permissions for a given subuser.
      *
      * @param \Pterodactyl\Models\Subuser $subuser
-     * @param array                       $permissions
+     * @param array $permissions
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

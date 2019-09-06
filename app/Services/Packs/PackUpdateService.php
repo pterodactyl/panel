@@ -29,7 +29,7 @@ class PackUpdateService
     /**
      * PackUpdateService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface   $repository
+     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
      */
     public function __construct(
@@ -44,7 +44,7 @@ class PackUpdateService
      * Update a pack.
      *
      * @param int|\Pterodactyl\Models\Pack $pack
-     * @param array                        $data
+     * @param array $data
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

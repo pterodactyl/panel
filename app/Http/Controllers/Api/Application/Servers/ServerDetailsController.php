@@ -25,7 +25,7 @@ class ServerDetailsController extends ApplicationApiController
     /**
      * ServerDetailsController constructor.
      *
-     * @param \Pterodactyl\Services\Servers\BuildModificationService   $buildModificationService
+     * @param \Pterodactyl\Services\Servers\BuildModificationService $buildModificationService
      * @param \Pterodactyl\Services\Servers\DetailsModificationService $detailsModificationService
      */
     public function __construct(

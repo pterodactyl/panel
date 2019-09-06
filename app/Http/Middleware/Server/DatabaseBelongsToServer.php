@@ -30,7 +30,7 @@ class DatabaseBelongsToServer
      * and set an attribute with the database.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

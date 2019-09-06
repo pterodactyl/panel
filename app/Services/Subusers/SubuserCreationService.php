@@ -60,13 +60,13 @@ class SubuserCreationService
     /**
      * SubuserCreationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                     $connection
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService    $keyCreationService
-     * @param \Pterodactyl\Services\Subusers\PermissionCreationService     $permissionService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $serverRepository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService $keyCreationService
+     * @param \Pterodactyl\Services\Subusers\PermissionCreationService $permissionService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
-     * @param \Pterodactyl\Services\Users\UserCreationService              $userCreationService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
+     * @param \Pterodactyl\Services\Users\UserCreationService $userCreationService
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $userRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -88,8 +88,8 @@ class SubuserCreationService
 
     /**
      * @param int|\Pterodactyl\Models\Server $server
-     * @param string                         $email
-     * @param array                          $permissions
+     * @param string $email
+     * @param array $permissions
      * @return \Pterodactyl\Models\Subuser
      *
      * @throws \Exception

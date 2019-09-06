@@ -30,7 +30,7 @@ class EggRetrievalController extends Controller
      * OptionUpdateController constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Eggs\EggConfigurationService       $configurationFileService
+     * @param \Pterodactyl\Services\Eggs\EggConfigurationService $configurationFileService
      */
     public function __construct(
         EggRepositoryInterface $repository,

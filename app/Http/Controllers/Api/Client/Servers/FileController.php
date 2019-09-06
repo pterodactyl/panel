@@ -43,9 +43,9 @@ class FileController extends ClientApiController
     /**
      * FileController constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                          $config
+     * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $fileRepository
-     * @param \Illuminate\Contracts\Cache\Repository                           $cache
+     * @param \Illuminate\Contracts\Cache\Repository $cache
      */
     public function __construct(ConfigRepository $config, FileRepositoryInterface $fileRepository, CacheRepository $cache)
     {

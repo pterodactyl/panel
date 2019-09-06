@@ -29,8 +29,8 @@ class EggUpdateImporterService
     /**
      * EggUpdateImporterService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                         $connection
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
      */
     public function __construct(
@@ -46,7 +46,7 @@ class EggUpdateImporterService
     /**
      * Update an existing Egg using an uploaded JSON file.
      *
-     * @param int                           $egg
+     * @param int $egg
      * @param \Illuminate\Http\UploadedFile $file
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

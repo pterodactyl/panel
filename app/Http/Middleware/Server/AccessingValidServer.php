@@ -31,8 +31,8 @@ class AccessingValidServer
     /**
      * AccessingValidServer constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                     $config
-     * @param \Illuminate\Contracts\Routing\ResponseFactory               $response
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Illuminate\Contracts\Routing\ResponseFactory $response
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
@@ -49,7 +49,7 @@ class AccessingValidServer
      * Determine if a given user has permission to access a server.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return \Illuminate\Http\Response|mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

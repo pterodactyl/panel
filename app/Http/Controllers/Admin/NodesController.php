@@ -97,18 +97,18 @@ class NodesController extends Controller
     /**
      * NodesController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                               $alert
-     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService     $allocationDeletionService
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService $allocationDeletionService
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
-     * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
-     * @param \Illuminate\Cache\Repository                                    $cache
-     * @param \Pterodactyl\Services\Nodes\NodeCreationService                 $creationService
-     * @param \Pterodactyl\Services\Nodes\NodeDeletionService                 $deletionService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $repository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $serverRepository
-     * @param \Pterodactyl\Services\Nodes\NodeUpdateService                   $updateService
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService            $versionService
+     * @param \Pterodactyl\Services\Allocations\AssignmentService $assignmentService
+     * @param \Illuminate\Cache\Repository $cache
+     * @param \Pterodactyl\Services\Nodes\NodeCreationService $creationService
+     * @param \Pterodactyl\Services\Nodes\NodeDeletionService $deletionService
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $locationRepository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \Pterodactyl\Services\Nodes\NodeUpdateService $updateService
+     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $versionService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -261,7 +261,7 @@ class NodesController extends Controller
      * Updates settings for a node.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest $request
-     * @param \Pterodactyl\Models\Node                              $node
+     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -279,7 +279,7 @@ class NodesController extends Controller
     /**
      * Removes a single allocation from a node.
      *
-     * @param int                            $node
+     * @param int $node
      * @param \Pterodactyl\Models\Allocation $allocation
      * @return \Illuminate\Http\Response
      *
@@ -296,7 +296,7 @@ class NodesController extends Controller
      * Removes multiple individual allocations from a node.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $node
+     * @param int $node
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
@@ -317,7 +317,7 @@ class NodesController extends Controller
      * Remove all allocations for a specific IP at once on a node.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $node
+     * @param int $node
      * @return \Illuminate\Http\RedirectResponse
      */
     public function allocationRemoveBlock(Request $request, $node)
@@ -356,7 +356,7 @@ class NodesController extends Controller
      * Creates new allocations on a node.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest $request
-     * @param int|\Pterodactyl\Models\Node                                $node
+     * @param int|\Pterodactyl\Models\Node $node
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException

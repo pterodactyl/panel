@@ -24,7 +24,7 @@ class DatabaseTransformer extends BaseClientTransformer
     /**
      * Handle dependency injection.
      *
-     * @param \Illuminate\Contracts\Encryption\Encrypter         $encrypter
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      * @param \Pterodactyl\Contracts\Extensions\HashidsInterface $hashids
      */
     public function handle(Encrypter $encrypter, HashidsInterface $hashids)

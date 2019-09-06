@@ -82,7 +82,7 @@ abstract class BaseTransformer extends TransformerAbstract
      * set API key.
      *
      * @param string $abstract
-     * @param array  $parameters
+     * @param array $parameters
      * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException

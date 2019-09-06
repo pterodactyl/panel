@@ -48,8 +48,8 @@ class DaemonKeyCreationService
     /**
      * DaemonKeyCreationService constructor.
      *
-     * @param \Carbon\Carbon                                                 $carbon
-     * @param \Illuminate\Contracts\Config\Repository                        $config
+     * @param \Carbon\Carbon $carbon
+     * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $repository
      */
     public function __construct(

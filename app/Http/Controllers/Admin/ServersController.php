@@ -137,25 +137,25 @@ class ServersController extends Controller
     /**
      * ServersController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                               $alert
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
-     * @param \Pterodactyl\Services\Servers\BuildModificationService          $buildModificationService
-     * @param \Illuminate\Contracts\Config\Repository                         $config
-     * @param \Pterodactyl\Services\Servers\ContainerRebuildService           $containerRebuildService
-     * @param \Pterodactyl\Services\Servers\ServerCreationService             $service
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService       $databaseManagementService
-     * @param \Pterodactyl\Services\Databases\DatabasePasswordService         $databasePasswordService
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface   $databaseRepository
-     * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository       $databaseHostRepository
-     * @param \Pterodactyl\Services\Servers\ServerDeletionService             $deletionService
-     * @param \Pterodactyl\Services\Servers\DetailsModificationService        $detailsModificationService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $nodeRepository
-     * @param \Pterodactyl\Services\Servers\ReinstallServerService            $reinstallService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $repository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface       $nestRepository
-     * @param \Pterodactyl\Services\Servers\StartupModificationService        $startupModificationService
-     * @param \Pterodactyl\Services\Servers\SuspensionService                 $suspensionService
+     * @param \Pterodactyl\Services\Servers\BuildModificationService $buildModificationService
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Pterodactyl\Services\Servers\ContainerRebuildService $containerRebuildService
+     * @param \Pterodactyl\Services\Servers\ServerCreationService $service
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
+     * @param \Pterodactyl\Services\Databases\DatabasePasswordService $databasePasswordService
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
+     * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository $databaseHostRepository
+     * @param \Pterodactyl\Services\Servers\ServerDeletionService $deletionService
+     * @param \Pterodactyl\Services\Servers\DetailsModificationService $detailsModificationService
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $locationRepository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $nodeRepository
+     * @param \Pterodactyl\Services\Servers\ReinstallServerService $reinstallService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $nestRepository
+     * @param \Pterodactyl\Services\Servers\StartupModificationService $startupModificationService
+     * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -402,7 +402,7 @@ class ServersController extends Controller
     /**
      * Update the details for a server.
      *
-     * @param \Illuminate\Http\Request   $request
+     * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
@@ -482,7 +482,7 @@ class ServersController extends Controller
     /**
      * Manage the suspension status for a server.
      *
-     * @param \Illuminate\Http\Request   $request
+     * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
@@ -503,7 +503,7 @@ class ServersController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @param \Illuminate\Http\Request   $request
+     * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
@@ -526,7 +526,7 @@ class ServersController extends Controller
     /**
      * Start the server deletion process.
      *
-     * @param \Illuminate\Http\Request   $request
+     * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
@@ -544,7 +544,7 @@ class ServersController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @param \Illuminate\Http\Request   $request
+     * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
@@ -566,7 +566,7 @@ class ServersController extends Controller
      * Creates a new database assigned to a specific server.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest $request
-     * @param int                                                                           $server
+     * @param int $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Exception
@@ -586,7 +586,7 @@ class ServersController extends Controller
      * Resets the database password for a specific database on this server.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $server
+     * @param int $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable

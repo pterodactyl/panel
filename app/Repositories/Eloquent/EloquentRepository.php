@@ -40,8 +40,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Create a new record in the database and return the associated model.
      *
      * @param array $fields
-     * @param bool  $validate
-     * @param bool  $force
+     * @param bool $validate
+     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model|bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -121,7 +121,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Delete a given record from the database.
      *
-     * @param int  $id
+     * @param int $id
      * @param bool $destroy
      * @return int
      */
@@ -134,7 +134,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Delete records matching the given attributes.
      *
      * @param array $attributes
-     * @param bool  $force
+     * @param bool $force
      * @return int
      */
     public function deleteWhere(array $attributes, bool $force = false): int
@@ -147,10 +147,10 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Update a given ID with the passed array of fields.
      *
-     * @param int   $id
+     * @param int $id
      * @param array $fields
-     * @param bool  $validate
-     * @param bool  $force
+     * @param bool $validate
+     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model|bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -182,8 +182,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * This does not perform any model data validation.
      *
      * @param string $column
-     * @param array  $values
-     * @param array  $fields
+     * @param array $values
+     * @param array $fields
      * @return int
      */
     public function updateWhereIn(string $column, array $values, array $fields): int
@@ -198,8 +198,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      *
      * @param array $where
      * @param array $fields
-     * @param bool  $validate
-     * @param bool  $force
+     * @param bool $validate
+     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

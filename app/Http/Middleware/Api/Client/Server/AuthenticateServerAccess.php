@@ -31,7 +31,7 @@ class AuthenticateServerAccess
      * Authenticate that this server exists and is not suspended or marked as installing.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)

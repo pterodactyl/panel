@@ -34,8 +34,8 @@ class AllocationController extends ApplicationApiController
     /**
      * AllocationController constructor.
      *
-     * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
-     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService     $deletionService
+     * @param \Pterodactyl\Services\Allocations\AssignmentService $assignmentService
+     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService $deletionService
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
      */
     public function __construct(

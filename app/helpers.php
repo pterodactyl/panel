@@ -11,7 +11,7 @@ if (! function_exists('human_readable')) {
      * Generate a human-readable filesize for a given file path.
      *
      * @param string $path
-     * @param int    $precision
+     * @param int $precision
      * @return string
      */
     function human_readable($path, $precision = 2)
@@ -51,7 +51,7 @@ if (! function_exists('object_get_strict')) {
      *
      * @param object $object
      * @param string $key
-     * @param null   $default
+     * @param null $default
      * @return mixed
      */
     function object_get_strict($object, $key, $default = null)

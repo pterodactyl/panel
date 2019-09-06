@@ -43,8 +43,8 @@ class BulkPowerActionCommand extends Command
      * BulkPowerActionCommand constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface $powerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface       $repository
-     * @param \Illuminate\Validation\Factory                                    $validator
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Illuminate\Validation\Factory $validator
      */
     public function __construct(
         PowerRepositoryInterface $powerRepository,

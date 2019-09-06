@@ -30,7 +30,7 @@ class ServerConfigurationStructureService
      * ServerConfigurationStructureService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Servers\EnvironmentService            $environment
+     * @param \Pterodactyl\Services\Servers\EnvironmentService $environment
      */
     public function __construct(
         ServerRepositoryInterface $repository,

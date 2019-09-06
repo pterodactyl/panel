@@ -22,7 +22,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Load the egg relations onto the server model.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Server
      */
     public function loadEggRelations(Server $server, bool $refresh = false): Server;
@@ -61,7 +61,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * return the server from the database.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Server
      */
     public function getPrimaryAllocation(Server $server, bool $refresh = false): Server;
@@ -70,7 +70,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Return all of the server variables possible and default to the variable
      * default if there is no value defined for the specific server requested.
      *
-     * @param int  $id
+     * @param int $id
      * @param bool $returnAsObject
      * @return array|object
      *
@@ -82,7 +82,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Return enough data to be used for the creation of a server via the daemon.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Server
      */
     public function getDataForCreation(Server $server, bool $refresh = false): Server;
@@ -91,7 +91,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Load associated databases onto the server model.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Server
      */
     public function loadDatabaseRelations(Server $server, bool $refresh = false): Server;
@@ -102,7 +102,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * if they are missing, or refresh is set to true.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return array
      */
     public function getDaemonServiceData(Server $server, bool $refresh = false): array;
@@ -111,8 +111,8 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Return a paginated list of servers that a user can access at a given level.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param int                      $level
-     * @param bool|int                 $paginate
+     * @param int $level
+     * @param bool|int $paginate
      * @return \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
      */
     public function filterUserAccessServers(User $user, int $level, $paginate = 25);
@@ -132,7 +132,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      *
      * @param int[] $servers
      * @param int[] $nodes
-     * @param bool  $returnCount
+     * @param bool $returnCount
      * @return int|\Illuminate\Support\LazyCollection
      */
     public function getServersForPowerAction(array $servers = [], array $nodes = [], bool $returnCount = false);

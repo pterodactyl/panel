@@ -44,9 +44,9 @@ class EggShareController extends Controller
     /**
      * OptionShareController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                           $alert
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService       $exporterService
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService       $importerService
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService $exporterService
+     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService $importerService
      * @param \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService $updateImporterService
      */
     public function __construct(
@@ -102,7 +102,7 @@ class EggShareController extends Controller
      * Update an existing Egg using a new imported file.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Egg\EggImportFormRequest $request
-     * @param int                                                       $egg
+     * @param int $egg
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

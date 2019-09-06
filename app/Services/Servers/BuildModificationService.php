@@ -37,10 +37,10 @@ class BuildModificationService
     /**
      * BuildModificationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface    $allocationRepository
-     * @param \Illuminate\Database\ConnectionInterface                           $connection
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
@@ -58,7 +58,7 @@ class BuildModificationService
      * Change the build details for a specified server.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param array                      $data
+     * @param array $data
      * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -123,7 +123,7 @@ class BuildModificationService
      * are available for a server.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param array                      $data
+     * @param array $data
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */

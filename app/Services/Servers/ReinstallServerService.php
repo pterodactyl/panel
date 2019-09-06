@@ -36,9 +36,9 @@ class ReinstallServerService
     /**
      * ReinstallService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $database
+     * @param \Illuminate\Database\ConnectionInterface $database
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $database,

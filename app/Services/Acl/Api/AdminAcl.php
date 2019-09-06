@@ -57,8 +57,8 @@ class AdminAcl
      * at a specific action level.
      *
      * @param \Pterodactyl\Models\ApiKey $key
-     * @param string                     $resource
-     * @param int                        $action
+     * @param string $resource
+     * @param int $action
      * @return bool
      */
     public static function check(ApiKey $key, string $resource, int $action = self::READ)

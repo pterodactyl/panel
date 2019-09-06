@@ -32,9 +32,9 @@ class ServerVariable extends Model
      * @var array
      */
     protected $casts = [
-         'server_id' => 'integer',
-         'variable_id' => 'integer',
-     ];
+        'server_id' => 'integer',
+        'variable_id' => 'integer',
+    ];
 
     /**
      * Determine if variable is viewable by users.

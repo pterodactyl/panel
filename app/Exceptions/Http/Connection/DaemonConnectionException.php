@@ -17,7 +17,7 @@ class DaemonConnectionException extends DisplayException
      * Throw a displayable exception caused by a daemon connection error.
      *
      * @param \GuzzleHttp\Exception\GuzzleException $previous
-     * @param bool                                  $useStatusCode
+     * @param bool $useStatusCode
      */
     public function __construct(GuzzleException $previous, bool $useStatusCode = false)
     {

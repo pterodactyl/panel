@@ -27,7 +27,7 @@ class VariableUpdateService
      * VariableUpdateService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Validation\Factory                         $validator
+     * @param \Illuminate\Contracts\Validation\Factory $validator
      */
     public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
     {
@@ -50,7 +50,7 @@ class VariableUpdateService
      * Update a specific egg variable.
      *
      * @param \Pterodactyl\Models\EggVariable $variable
-     * @param array                           $data
+     * @param array $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

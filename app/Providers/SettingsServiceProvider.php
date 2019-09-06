@@ -60,9 +60,9 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Boot the service provider.
      *
-     * @param \Illuminate\Contracts\Config\Repository                       $config
-     * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
-     * @param \Psr\Log\LoggerInterface                                      $log
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
+     * @param \Psr\Log\LoggerInterface $log
      * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
      */
     public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings)

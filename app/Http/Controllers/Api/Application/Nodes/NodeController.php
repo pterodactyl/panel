@@ -42,9 +42,9 @@ class NodeController extends ApplicationApiController
     /**
      * NodeController constructor.
      *
-     * @param \Pterodactyl\Services\Nodes\NodeCreationService           $creationService
-     * @param \Pterodactyl\Services\Nodes\NodeDeletionService           $deletionService
-     * @param \Pterodactyl\Services\Nodes\NodeUpdateService             $updateService
+     * @param \Pterodactyl\Services\Nodes\NodeCreationService $creationService
+     * @param \Pterodactyl\Services\Nodes\NodeDeletionService $deletionService
+     * @param \Pterodactyl\Services\Nodes\NodeUpdateService $updateService
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(

@@ -126,7 +126,7 @@ class Permission extends Validable
      * Find permission by permission node.
      *
      * @param \Illuminate\Database\Query\Builder $query
-     * @param string                             $permission
+     * @param string $permission
      * @return \Illuminate\Database\Query\Builder
      */
     public function scopePermission($query, $permission)
@@ -138,7 +138,7 @@ class Permission extends Validable
      * Filter permission by server.
      *
      * @param \Illuminate\Database\Query\Builder $query
-     * @param \Pterodactyl\Models\Server         $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Database\Query\Builder
      */
     public function scopeServer($query, Server $server)

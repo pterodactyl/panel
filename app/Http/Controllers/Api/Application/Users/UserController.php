@@ -42,9 +42,9 @@ class UserController extends ApplicationApiController
      * UserController constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Users\UserCreationService           $creationService
-     * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
-     * @param \Pterodactyl\Services\Users\UserUpdateService             $updateService
+     * @param \Pterodactyl\Services\Users\UserCreationService $creationService
+     * @param \Pterodactyl\Services\Users\UserDeletionService $deletionService
+     * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
      */
     public function __construct(
         UserRepositoryInterface $repository,

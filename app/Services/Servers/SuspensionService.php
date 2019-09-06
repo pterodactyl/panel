@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use InvalidArgumentException;
 use Pterodactyl\Models\Server;
 use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
@@ -45,10 +46,10 @@ class SuspensionService
     /**
      * SuspensionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $database
+     * @param \Illuminate\Database\ConnectionInterface $database
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
-     * @param \Psr\Log\LoggerInterface                                           $writer
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Psr\Log\LoggerInterface $writer
      */
     public function __construct(
         ConnectionInterface $database,
@@ -66,7 +67,7 @@ class SuspensionService
      * Suspends a server on the system.
      *
      * @param int|\Pterodactyl\Models\Server $server
-     * @param string                         $action
+     * @param string $action
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -80,7 +81,7 @@ class SuspensionService
         }
 
         if (! in_array($action, [self::ACTION_SUSPEND, self::ACTION_UNSUSPEND])) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Action must be either ' . self::ACTION_SUSPEND . ' or ' . self::ACTION_UNSUSPEND . ', %s passed.',
                 $action
             ));

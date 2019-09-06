@@ -35,8 +35,8 @@ class AuthenticateKey
      * AuthenticateKey constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Illuminate\Auth\AuthManager                                $auth
-     * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
+     * @param \Illuminate\Auth\AuthManager $auth
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(ApiKeyRepositoryInterface $repository, AuthManager $auth, Encrypter $encrypter)
     {
@@ -50,8 +50,8 @@ class AuthenticateKey
      * is in a valid format and exists in the database.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
-     * @param int                      $keyType
+     * @param \Closure $next
+     * @param int $keyType
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -86,7 +86,7 @@ class AuthenticateKey
      * Authenticate an API key.
      *
      * @param string $key
-     * @param int    $keyType
+     * @param int $keyType
      * @return \Pterodactyl\Models\ApiKey
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

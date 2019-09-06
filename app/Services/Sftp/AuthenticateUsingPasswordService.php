@@ -34,10 +34,10 @@ class AuthenticateUsingPasswordService
     /**
      * AuthenticateUsingPasswordService constructor.
      *
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService    $keyProviderService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $repository
+     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $userRepository
      */
     public function __construct(
         DaemonKeyProviderService $keyProviderService,
@@ -60,9 +60,9 @@ class AuthenticateUsingPasswordService
      * Server must exist on the node that the API call is being made from in order for a
      * valid response to be provided.
      *
-     * @param string      $username
-     * @param string      $password
-     * @param int         $node
+     * @param string $username
+     * @param string $password
+     * @param int $node
      * @param string|null $server
      * @return array
      *

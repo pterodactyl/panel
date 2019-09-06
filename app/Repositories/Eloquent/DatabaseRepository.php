@@ -25,7 +25,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     /**
      * DatabaseRepository constructor.
      *
-     * @param \Illuminate\Foundation\Application   $application
+     * @param \Illuminate\Foundation\Application $application
      * @param \Illuminate\Database\DatabaseManager $database
      */
     public function __construct(Application $application, DatabaseManager $database)

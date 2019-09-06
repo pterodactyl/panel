@@ -9,6 +9,8 @@
 
 namespace Pterodactyl\Exceptions\Service\User;
 
-class TwoFactorAuthenticationTokenInvalid extends \Exception
+use Exception;
+
+class TwoFactorAuthenticationTokenInvalid extends Exception
 {
 }

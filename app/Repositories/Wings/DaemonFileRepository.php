@@ -28,7 +28,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Return the contents of a given file.
      *
-     * @param string   $path
+     * @param string $path
      * @param int|null $notLargerThan the maximum content length in bytes
      * @return string
      *

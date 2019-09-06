@@ -35,9 +35,9 @@ class ToggleTwoFactorService
     /**
      * ToggleTwoFactorService constructor.
      *
-     * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
-     * @param \PragmaRX\Google2FA\Google2FA                             $google2FA
-     * @param \Illuminate\Contracts\Config\Repository                   $config
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
+     * @param \PragmaRX\Google2FA\Google2FA $google2FA
+     * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
@@ -56,8 +56,8 @@ class ToggleTwoFactorService
      * Toggle 2FA on an account only if the token provided is valid.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param string                   $token
-     * @param bool|null                $toggleState
+     * @param string $token
+     * @param bool|null $toggleState
      * @return bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

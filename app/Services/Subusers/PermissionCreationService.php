@@ -33,7 +33,7 @@ class PermissionCreationService
     /**
      * Assign permissions to a given subuser.
      *
-     * @param int   $subuser
+     * @param int $subuser
      * @param array $permissions
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

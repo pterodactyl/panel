@@ -131,7 +131,7 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Exception               $exception
+     * @param \Exception $exception
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Exception
@@ -160,7 +160,7 @@ class Handler extends ExceptionHandler
      * Transform a validation exception into a consistent format to be returned for
      * calls to the API.
      *
-     * @param \Illuminate\Http\Request                   $request
+     * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Validation\ValidationException $exception
      * @return \Illuminate\Http\JsonResponse
      */
@@ -199,7 +199,7 @@ class Handler extends ExceptionHandler
      * Return the exception as a JSONAPI representation for use on API requests.
      *
      * @param \Exception $exception
-     * @param array      $override
+     * @param array $override
      * @return array
      */
     public static function convertToArray(Exception $exception, array $override = []): array
@@ -240,7 +240,7 @@ class Handler extends ExceptionHandler
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
-     * @param \Illuminate\Http\Request                 $request
+     * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Auth\AuthenticationException $exception
      * @return \Illuminate\Http\Response
      */

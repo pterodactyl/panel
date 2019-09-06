@@ -39,7 +39,7 @@ class DeleteUserCommand extends Command
     /**
      * DeleteUserCommand constructor.
      *
-     * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
+     * @param \Pterodactyl\Services\Users\UserDeletionService $deletionService
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(

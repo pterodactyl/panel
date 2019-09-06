@@ -30,7 +30,7 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
     /**
      * Store a new persistent setting in the database.
      *
-     * @param string      $key
+     * @param string $key
      * @param string|null $value
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -49,7 +49,7 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
      * Retrieve a persistent setting from the database.
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      * @return mixed
      */
     public function get(string $key, $default = null)

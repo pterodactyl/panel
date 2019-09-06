@@ -52,11 +52,11 @@ class UserController extends Controller
     /**
      * UserController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                         $alert
-     * @param \Pterodactyl\Services\Users\UserCreationService           $creationService
-     * @param \Pterodactyl\Services\Users\UserDeletionService           $deletionService
-     * @param \Illuminate\Contracts\Translation\Translator              $translator
-     * @param \Pterodactyl\Services\Users\UserUpdateService             $updateService
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Services\Users\UserCreationService $creationService
+     * @param \Pterodactyl\Services\Users\UserDeletionService $deletionService
+     * @param \Illuminate\Contracts\Translation\Translator $translator
+     * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
@@ -156,7 +156,7 @@ class UserController extends Controller
      * Update a user on the system.
      *
      * @param \Pterodactyl\Http\Requests\Admin\UserFormRequest $request
-     * @param \Pterodactyl\Models\User                         $user
+     * @param \Pterodactyl\Models\User $user
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

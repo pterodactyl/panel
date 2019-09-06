@@ -40,7 +40,7 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
      * to access a different resource. This is used when including other
      * models on a transformation request.
      *
-     * @param string                     $ability
+     * @param string $ability
      * @param \Pterodactyl\Models\Server $server
      * @return bool
      */
@@ -56,7 +56,7 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
      * set API key.
      *
      * @param string $abstract
-     * @param array  $parameters
+     * @param array $parameters
      * @return self
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException

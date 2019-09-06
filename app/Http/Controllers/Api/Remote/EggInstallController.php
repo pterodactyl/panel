@@ -23,7 +23,7 @@ class EggInstallController extends Controller
     /**
      * EggInstallController constructor.
      *
-     * @param \Pterodactyl\Services\Servers\EnvironmentService            $environment
+     * @param \Pterodactyl\Services\Servers\EnvironmentService $environment
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(EnvironmentService $environment, ServerRepositoryInterface $repository)
@@ -37,7 +37,7 @@ class EggInstallController extends Controller
      * that is being created on the node.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string                   $uuid
+     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

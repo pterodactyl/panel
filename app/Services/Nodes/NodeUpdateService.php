@@ -31,9 +31,9 @@ class NodeUpdateService
     /**
      * UpdateService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                                  $connection
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface $configurationRepository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface                 $repository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -49,8 +49,8 @@ class NodeUpdateService
      * Update the configuration values for a given node on the machine.
      *
      * @param \Pterodactyl\Models\Node $node
-     * @param array                    $data
-     * @param bool                     $resetToken
+     * @param array $data
+     * @param bool $resetToken
      *
      * @return \Pterodactyl\Models\Node
      *

@@ -24,7 +24,7 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      * Set an array of allocation IDs to be assigned to a specific server.
      *
      * @param int|null $server
-     * @param array    $ids
+     * @param array $ids
      * @return int
      */
     public function assignAllocationsToServer(int $server = null, array $ids): int
@@ -129,7 +129,7 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      *
      * @param array $nodes
      * @param array $ports
-     * @param bool  $dedicated
+     * @param bool $dedicated
      * @return \Pterodactyl\Models\Allocation|null
      */
     public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false)

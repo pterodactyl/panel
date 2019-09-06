@@ -42,11 +42,11 @@ class SecurityController extends Controller
     /**
      * SecurityController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                            $alert
-     * @param \Illuminate\Contracts\Config\Repository                      $config
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Pterodactyl\Contracts\Repository\SessionRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Users\ToggleTwoFactorService           $toggleTwoFactorService
-     * @param \Pterodactyl\Services\Users\TwoFactorSetupService            $twoFactorSetupService
+     * @param \Pterodactyl\Services\Users\ToggleTwoFactorService $toggleTwoFactorService
+     * @param \Pterodactyl\Services\Users\TwoFactorSetupService $twoFactorSetupService
      */
     public function __construct(
         AlertsMessageBag $alert,

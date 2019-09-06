@@ -36,10 +36,10 @@ class DetailsModificationService
     /**
      * DetailsModificationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                  $connection
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService $keyCreationService
      * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyDeletionService $keyDeletionService
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository       $repository
+     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -57,7 +57,7 @@ class DetailsModificationService
      * Update the details for a single server instance.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param array                      $data
+     * @param array $data
      * @return bool|\Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

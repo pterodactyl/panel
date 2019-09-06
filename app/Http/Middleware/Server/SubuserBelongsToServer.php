@@ -24,7 +24,7 @@ class SubuserBelongsToServer
     /**
      * SubuserAccess constructor.
      *
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface           $hashids
+     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface $hashids
      * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $repository
      */
     public function __construct(HashidsInterface $hashids, SubuserRepositoryInterface $repository)
@@ -37,7 +37,7 @@ class SubuserBelongsToServer
      * Determine if a user has permission to access and modify subuser.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

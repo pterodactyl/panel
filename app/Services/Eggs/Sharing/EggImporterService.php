@@ -44,10 +44,10 @@ class EggImporterService
     /**
      * EggImporterService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                         $connection
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $eggVariableRepository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface        $nestRepository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $nestRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -65,7 +65,7 @@ class EggImporterService
      * Take an uploaded JSON file and parse it into a new egg.
      *
      * @param \Illuminate\Http\UploadedFile $file
-     * @param int                           $nest
+     * @param int $nest
      * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

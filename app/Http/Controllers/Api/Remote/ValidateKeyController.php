@@ -55,9 +55,9 @@ class ValidateKeyController extends Controller
     /**
      * ValidateKeyController constructor.
      *
-     * @param \Illuminate\Contracts\Foundation\Application                   $app
+     * @param \Illuminate\Contracts\Foundation\Application $app
      * @param \Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface $daemonKeyRepository
-     * @param \Spatie\Fractal\Fractal                                        $fractal
+     * @param \Spatie\Fractal\Fractal $fractal
      */
     public function __construct(
         Application $app,

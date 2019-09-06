@@ -55,13 +55,13 @@ class StartupModificationService
     /**
      * StartupModificationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                            $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface  $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface            $eggRepository
-     * @param \Pterodactyl\Services\Servers\EnvironmentService                    $environmentService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface         $repository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $eggRepository
+     * @param \Pterodactyl\Services\Servers\EnvironmentService $environmentService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
-     * @param \Pterodactyl\Services\Servers\VariableValidatorService              $validatorService
+     * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -85,7 +85,7 @@ class StartupModificationService
      * Process startup modification for a server.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param array                      $data
+     * @param array $data
      * @return \Pterodactyl\Models\Server
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -136,9 +136,9 @@ class StartupModificationService
     /**
      * Update certain administrative settings for a server in the DB.
      *
-     * @param array                      $data
+     * @param array $data
      * @param \Pterodactyl\Models\Server $server
-     * @param array                      $daemonData
+     * @param array $daemonData
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

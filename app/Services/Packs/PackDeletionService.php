@@ -41,9 +41,9 @@ class PackDeletionService
     /**
      * PackDeletionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                    $connection
-     * @param \Illuminate\Contracts\Filesystem\Factory                    $storage
-     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface   $repository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Illuminate\Contracts\Filesystem\Factory $storage
+     * @param \Pterodactyl\Contracts\Repository\PackRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
      */
     public function __construct(
@@ -61,7 +61,7 @@ class PackDeletionService
     /**
      * Delete a pack from the database as well as the archive stored on the server.
      *
-     * @param  int|\Pterodactyl\Models\Pack$pack
+     * @param int|\Pterodactyl\Models\Pack $pack
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

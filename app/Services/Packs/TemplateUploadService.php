@@ -39,7 +39,7 @@ class TemplateUploadService
      * TemplateUploadService constructor.
      *
      * @param \Pterodactyl\Services\Packs\PackCreationService $creationService
-     * @param \ZipArchive                                     $archive
+     * @param \ZipArchive $archive
      */
     public function __construct(
         PackCreationService $creationService,
@@ -52,7 +52,7 @@ class TemplateUploadService
     /**
      * Process an uploaded file to create a new pack from a JSON or ZIP format.
      *
-     * @param int                           $egg
+     * @param int $egg
      * @param \Illuminate\Http\UploadedFile $file
      * @return \Pterodactyl\Models\Pack
      *
@@ -88,7 +88,7 @@ class TemplateUploadService
     /**
      * Process a ZIP file to create a pack and stored archive.
      *
-     * @param int                           $egg
+     * @param int $egg
      * @param \Illuminate\Http\UploadedFile $file
      * @return \Pterodactyl\Models\Pack
      *

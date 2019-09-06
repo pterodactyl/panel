@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Http\Requests\Base;
 
+use Exception;
 use IPTools\Network;
 use Pterodactyl\Http\Requests\FrontendUserFormRequest;
 
@@ -65,7 +66,7 @@ class ApiKeyFormRequest extends FrontendUserFormRequest
 
                 try {
                     Network::parse($ip);
-                } catch (\Exception $ex) {
+                } catch (Exception $ex) {
                     $validator->errors()->add('allowed_ips', 'Could not parse IP ' . $ip . ' because it is in an invalid format.');
                 }
             }

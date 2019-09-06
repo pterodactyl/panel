@@ -23,7 +23,7 @@ class ScheduleBelongsToServer
     /**
      * TaskAccess constructor.
      *
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface            $hashids
+     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface $hashids
      * @param \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface $repository
      */
     public function __construct(HashidsInterface $hashids, ScheduleRepositoryInterface $repository)
@@ -36,7 +36,7 @@ class ScheduleBelongsToServer
      * Determine if a task is assigned to the active server.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

@@ -52,7 +52,7 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
      * Return an egg with the scriptFrom and configFrom relations loaded onto the model.
      *
      * @param int|string $value
-     * @param string     $column
+     * @param string $column
      * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

@@ -98,7 +98,7 @@ abstract class Validable extends Model
      * rather than just creating it.
      *
      * @param \Illuminate\Database\Eloquent\Model|int|string $id
-     * @param string                                         $primaryKey
+     * @param string $primaryKey
      * @return array
      */
     public static function getRulesForUpdate($id, string $primaryKey = 'id')

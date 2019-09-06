@@ -39,8 +39,8 @@ class SoftwareVersionService
     /**
      * SoftwareVersionService constructor.
      *
-     * @param \Illuminate\Contracts\Cache\Repository  $cache
-     * @param \GuzzleHttp\Client                      $client
+     * @param \Illuminate\Contracts\Cache\Repository $cache
+     * @param \GuzzleHttp\Client $client
      * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct(

@@ -51,10 +51,10 @@ class EggVariableController extends Controller
     /**
      * EggVariableController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                                $alert
-     * @param \Pterodactyl\Services\Eggs\Variables\VariableCreationService     $creationService
-     * @param \Pterodactyl\Services\Eggs\Variables\VariableUpdateService       $updateService
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Services\Eggs\Variables\VariableCreationService $creationService
+     * @param \Pterodactyl\Services\Eggs\Variables\VariableUpdateService $updateService
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
      */
     public function __construct(
@@ -109,8 +109,8 @@ class EggVariableController extends Controller
      * Handle a request to update an existing Egg variable.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Egg\EggVariableFormRequest $request
-     * @param \Pterodactyl\Models\Egg                                     $egg
-     * @param \Pterodactyl\Models\EggVariable                             $variable
+     * @param \Pterodactyl\Models\Egg $egg
+     * @param \Pterodactyl\Models\EggVariable $variable
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -131,7 +131,7 @@ class EggVariableController extends Controller
     /**
      * Handle a request to delete an existing Egg variable from the Panel.
      *
-     * @param int                             $egg
+     * @param int $egg
      * @param \Pterodactyl\Models\EggVariable $variable
      * @return \Illuminate\Http\RedirectResponse
      */

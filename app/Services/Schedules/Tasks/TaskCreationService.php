@@ -37,8 +37,8 @@ class TaskCreationService
      * Create a new task that is assigned to a schedule.
      *
      * @param int|\Pterodactyl\Models\Schedule $schedule
-     * @param array                            $data
-     * @param bool                             $returnModel
+     * @param array $data
+     * @param bool $returnModel
      * @return bool|\Pterodactyl\Models\Task
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

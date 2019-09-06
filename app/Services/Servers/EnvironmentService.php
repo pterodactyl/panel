@@ -26,7 +26,7 @@ class EnvironmentService
     /**
      * EnvironmentService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                     $config
+     * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(ConfigRepository $config, ServerRepositoryInterface $repository)
@@ -39,7 +39,7 @@ class EnvironmentService
      * Dynamically configure additional environment variables to be assigned
      * with a specific server.
      *
-     * @param string   $key
+     * @param string $key
      * @param callable $closure
      */
     public function setEnvironmentKey(string $key, callable $closure)

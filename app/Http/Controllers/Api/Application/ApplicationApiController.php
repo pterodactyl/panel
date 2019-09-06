@@ -47,7 +47,7 @@ abstract class ApplicationApiController extends Controller
      * without littering the constructors of classes that extend this abstract.
      *
      * @param \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal $fractal
-     * @param \Illuminate\Http\Request                            $request
+     * @param \Illuminate\Http\Request $request
      */
     public function loadDependencies(Fractal $fractal, Request $request)
     {

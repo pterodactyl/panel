@@ -58,12 +58,12 @@ class ServerDeletionService
     /**
      * DeletionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $connection
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface      $databaseRepository
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService          $databaseManagementService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
-     * @param \Psr\Log\LoggerInterface                                           $writer
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Psr\Log\LoggerInterface $writer
      */
     public function __construct(
         ConnectionInterface $connection,

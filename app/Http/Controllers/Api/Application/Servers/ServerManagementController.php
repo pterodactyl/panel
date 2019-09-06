@@ -31,8 +31,8 @@ class ServerManagementController extends ApplicationApiController
      * SuspensionController constructor.
      *
      * @param \Pterodactyl\Services\Servers\ContainerRebuildService $rebuildService
-     * @param \Pterodactyl\Services\Servers\ReinstallServerService  $reinstallServerService
-     * @param \Pterodactyl\Services\Servers\SuspensionService       $suspensionService
+     * @param \Pterodactyl\Services\Servers\ReinstallServerService $reinstallServerService
+     * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
      */
     public function __construct(
         ContainerRebuildService $rebuildService,

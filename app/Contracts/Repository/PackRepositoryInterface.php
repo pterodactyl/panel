@@ -12,7 +12,7 @@ interface PackRepositoryInterface extends RepositoryInterface, SearchableInterfa
      * Return a pack with the associated server models attached to it.
      *
      * @param \Pterodactyl\Models\Pack $pack
-     * @param bool                     $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Pack
      */
     public function loadServerData(Pack $pack, bool $refresh = false): Pack;

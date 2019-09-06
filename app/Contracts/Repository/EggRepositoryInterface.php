@@ -35,7 +35,7 @@ interface EggRepositoryInterface extends RepositoryInterface
      * Return an egg with the scriptFrom and configFrom relations loaded onto the model.
      *
      * @param int|string $value
-     * @param string     $column
+     * @param string $column
      * @return \Pterodactyl\Models\Egg
      */
     public function getWithCopyAttributes($value, string $column = 'id'): Egg;

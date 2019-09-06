@@ -48,8 +48,8 @@ class ResetPasswordController extends Controller
     /**
      * ResetPasswordController constructor.
      *
-     * @param \Illuminate\Contracts\Events\Dispatcher                   $dispatcher
-     * @param \Illuminate\Contracts\Hashing\Hasher                      $hasher
+     * @param \Illuminate\Contracts\Events\Dispatcher $dispatcher
+     * @param \Illuminate\Contracts\Hashing\Hasher $hasher
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $userRepository
      */
     public function __construct(Dispatcher $dispatcher, Hasher $hasher, UserRepositoryInterface $userRepository)
@@ -94,7 +94,7 @@ class ResetPasswordController extends Controller
      * form with a note telling them their password was changed and to log back in.
      *
      * @param \Illuminate\Contracts\Auth\CanResetPassword|\Pterodactyl\Models\User $user
-     * @param string                                                               $password
+     * @param string $password
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
