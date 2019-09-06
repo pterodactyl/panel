@@ -2,16 +2,15 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Services\Databases\DeployServerDatabaseService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest;
@@ -25,7 +24,7 @@ class DatabaseController extends ClientApiController
     private $deployDatabaseService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
+     * @var \Pterodactyl\Repositories\Eloquent\DatabaseRepository
      */
     private $repository;
 
@@ -42,15 +41,15 @@ class DatabaseController extends ClientApiController
     /**
      * DatabaseController constructor.
      *
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService     $managementService
-     * @param \Pterodactyl\Services\Databases\DatabasePasswordService       $passwordService
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Databases\DeployServerDatabaseService   $deployDatabaseService
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $managementService
+     * @param \Pterodactyl\Services\Databases\DatabasePasswordService $passwordService
+     * @param \Pterodactyl\Repositories\Eloquent\DatabaseRepository $repository
+     * @param \Pterodactyl\Services\Databases\DeployServerDatabaseService $deployDatabaseService
      */
     public function __construct(
         DatabaseManagementService $managementService,
         DatabasePasswordService $passwordService,
-        DatabaseRepositoryInterface $repository,
+        DatabaseRepository $repository,
         DeployServerDatabaseService $deployDatabaseService
     ) {
         parent::__construct();
@@ -62,12 +61,15 @@ class DatabaseController extends ClientApiController
     }
 
     /**
+     * Return all of the databases that belong to the given server.
+     *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
-    public function index(GetDatabasesRequest $request): array
+    public function index(GetDatabasesRequest $request, Server $server): array
     {
-        $databases = $this->repository->getDatabasesForServer($request->getModel(Server::class)->id);
+        $databases = $this->repository->getDatabasesForServer($server->id);
 
         return $this->fractal->collection($databases)
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
@@ -78,13 +80,14 @@ class DatabaseController extends ClientApiController
      * Create a new database for the given server and return it.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
      */
-    public function store(StoreDatabaseRequest $request): array
+    public function store(StoreDatabaseRequest $request, Server $server): array
     {
-        $database = $this->deployDatabaseService->handle($request->getModel(Server::class), $request->validated());
+        $database = $this->deployDatabaseService->handle($server, $request->validated());
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
@@ -97,17 +100,15 @@ class DatabaseController extends ClientApiController
      * the caller.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Database $database
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
-    public function rotatePassword(RotatePasswordRequest $request)
+    public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database)
     {
-        $database = $request->getModel(Database::class);
-
-        $this->passwordService->handle($database, Str::random(24));
-
+        $this->passwordService->handle($database);
         $database->refresh();
 
         return $this->fractal->item($database)
@@ -117,14 +118,18 @@ class DatabaseController extends ClientApiController
     }
 
     /**
+     * Removes a database from the server.
+     *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Database $database
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function delete(DeleteDatabaseRequest $request): Response
+    public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
     {
-        $this->managementService->delete($request->getModel(Database::class)->id);
+        $this->managementService->delete($database->id);
 
         return Response::create('', Response::HTTP_NO_CONTENT);
     }

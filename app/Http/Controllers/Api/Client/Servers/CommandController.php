@@ -36,14 +36,13 @@ class CommandController extends ClientApiController
      * Send a command to a running server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\SendCommandRequest $request
+     * @param \Pterodactyl\Models\Server                                       $server
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function index(SendCommandRequest $request): Response
+    public function index(SendCommandRequest $request, Server $server): Response
     {
-        $server = $request->getModel(Server::class);
-
         try {
             $this->repository->setServer($server)->send($request->input('command'));
         } catch (RequestException $exception) {
