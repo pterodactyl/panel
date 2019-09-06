@@ -3,24 +3,24 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Models\Server;
-use Pterodactyl\Repositories\Wings\WingsServerRepository;
 use Pterodactyl\Transformers\Api\Client\StatsTransformer;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 
 class ResourceUtilizationController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\WingsServerRepository
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
     private $repository;
 
     /**
      * ResourceUtilizationController constructor.
      *
-     * @param \Pterodactyl\Repositories\Wings\WingsServerRepository $repository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $repository
      */
-    public function __construct(WingsServerRepository $repository)
+    public function __construct(DaemonServerRepository $repository)
     {
         parent::__construct();
 

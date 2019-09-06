@@ -3,28 +3,27 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Repositories\Wings\FileRepository;
-use Pterodactyl\Repositories\Daemon\PowerRepository;
 use Pterodactyl\Repositories\Eloquent\EggRepository;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\PackRepository;
 use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Repositories\Eloquent\UserRepository;
-use Pterodactyl\Repositories\Daemon\CommandRepository;
 use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Eloquent\SessionRepository;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
+use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
 use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
 use Pterodactyl\Repositories\Eloquent\SettingsRepository;
+use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Repositories\Eloquent\DaemonKeyRepository;
 use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Repositories\Eloquent\PermissionRepository;
+use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
 use Pterodactyl\Repositories\Eloquent\EggVariableRepository;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
@@ -41,6 +40,7 @@ use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\PermissionRepositoryInterface;
@@ -51,7 +51,7 @@ use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
-use Pterodactyl\Repositories\Wings\WingsServerRepository as DaemonServerRepository;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository as DaemonServerRepository;
 use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -84,10 +84,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
 
         // Daemon Repositories
-        $this->app->bind(ConfigurationRepositoryInterface::class, ConfigurationRepository::class);
-        $this->app->bind(CommandRepositoryInterface::class, CommandRepository::class);
+        $this->app->bind(ConfigurationRepositoryInterface::class, DaemonConfigurationRepository::class);
+        $this->app->bind(CommandRepositoryInterface::class, DaemonCommandRepository::class);
         $this->app->bind(DaemonServerRepositoryInterface::class, DaemonServerRepository::class);
-        $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
-        $this->app->bind(PowerRepositoryInterface::class, PowerRepository::class);
+        $this->app->bind(FileRepositoryInterface::class, DaemonFileRepository::class);
+        $this->app->bind(PowerRepositoryInterface::class, DaemonPowerRepository::class);
     }
 }

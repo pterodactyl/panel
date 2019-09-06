@@ -4,11 +4,12 @@ namespace Pterodactyl\Repositories\Wings;
 
 use stdClass;
 use Exception;
+use Webmozart\Assert\Assert;
+use Pterodactyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 
-class FileRepository extends BaseWingsRepository implements FileRepositoryInterface
+class DaemonFileRepository extends DaemonRepository
 {
     /**
      * Return stat information for a given file.
@@ -36,8 +37,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      */
     public function getContent(string $path, int $notLargerThan = null): string
     {
+        Assert::isInstanceOf(Server::class, $this->server);
+
         $response = $this->getHttpClient()->get(
-            sprintf('/api/servers/%s/files/contents', $this->getServer()->uuid),
+            sprintf('/api/servers/%s/files/contents', $this->server->uuid),
             [
                 'query' => ['file' => $path],
             ]
@@ -66,8 +69,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      */
     public function putContent(string $path, string $content): ResponseInterface
     {
+        Assert::isInstanceOf(Server::class, $this->server);
+
         return $this->getHttpClient()->post(
-            sprintf('/api/servers/%s/files/write', $this->getServer()->uuid),
+            sprintf('/api/servers/%s/files/write', $this->server->uuid),
             [
                 'query' => ['file' => $path],
                 'body' => $content,
@@ -85,8 +90,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      */
     public function getDirectory(string $path): array
     {
+        Assert::isInstanceOf(Server::class, $this->server);
+
         $response = $this->getHttpClient()->get(
-            sprintf('/api/servers/%s/files/list-directory', $this->getServer()->uuid),
+            sprintf('/api/servers/%s/files/list-directory', $this->server->uuid),
             [
                 'query' => ['directory' => $path],
             ]
@@ -104,8 +111,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      */
     public function createDirectory(string $name, string $path): ResponseInterface
     {
+        Assert::isInstanceOf(Server::class, $this->server);
+
         return $this->getHttpClient()->post(
-            sprintf('/api/servers/%s/files/create-directory', $this->getServer()->uuid),
+            sprintf('/api/servers/%s/files/create-directory', $this->server->uuid),
             [
                 'json' => [
                     'name' => $name,
@@ -124,8 +133,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      */
     public function renameFile(string $from, string $to): ResponseInterface
     {
+        Assert::isInstanceOf(Server::class, $this->server);
+
         return $this->getHttpClient()->put(
-            sprintf('/api/servers/%s/files/rename', $this->getServer()->uuid),
+            sprintf('/api/servers/%s/files/rename', $this->server->uuid),
             [
                 'json' => [
                     'rename_from' => $from,
@@ -143,8 +154,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      */
     public function copyFile(string $location): ResponseInterface
     {
+        Assert::isInstanceOf(Server::class, $this->server);
+
         return $this->getHttpClient()->post(
-            sprintf('/api/servers/%s/files/copy', $this->getServer()->uuid),
+            sprintf('/api/servers/%s/files/copy', $this->server->uuid),
             [
                 'json' => [
                     'location' => $location,
@@ -161,8 +174,10 @@ class FileRepository extends BaseWingsRepository implements FileRepositoryInterf
      */
     public function deleteFile(string $location): ResponseInterface
     {
+        Assert::isInstanceOf(Server::class, $this->server);
+
         return $this->getHttpClient()->post(
-            sprintf('/api/servers/%s/files/delete', $this->getServer()->uuid),
+            sprintf('/api/servers/%s/files/delete', $this->server->uuid),
             [
                 'json' => [
                     'location' => $location,

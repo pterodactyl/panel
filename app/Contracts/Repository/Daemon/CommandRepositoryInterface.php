@@ -4,6 +4,9 @@ namespace Pterodactyl\Contracts\Repository\Daemon;
 
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @deprecated
+ */
 interface CommandRepositoryInterface extends BaseRepositoryInterface
 {
     /**
