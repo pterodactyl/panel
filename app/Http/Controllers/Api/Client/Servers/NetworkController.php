@@ -3,24 +3,24 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Transformers\Api\Client\AllocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\GetNetworkRequest;
 
 class NetworkController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     * @var \Pterodactyl\Repositories\Eloquent\AllocationRepository
      */
     private $repository;
 
     /**
      * NetworkController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Eloquent\AllocationRepository $repository
      */
-    public function __construct(AllocationRepositoryInterface $repository)
+    public function __construct(AllocationRepository $repository)
     {
         parent::__construct();
 
@@ -32,12 +32,11 @@ class NetworkController extends ClientApiController
      * not they are currently assigned as the primary for this server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\GetNetworkRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
-    public function index(GetNetworkRequest $request): array
+    public function index(GetNetworkRequest $request, Server $server): array
     {
-        $server = $request->getModel(Server::class);
-
         $allocations = $this->repository->findWhere([
             ['server_id', '=', $server->id],
         ]);

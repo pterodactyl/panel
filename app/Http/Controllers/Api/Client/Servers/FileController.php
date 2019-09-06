@@ -8,11 +8,10 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use GuzzleHttp\Exception\TransferException;
+use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 use Pterodactyl\Transformers\Daemon\FileObjectTransformer;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
@@ -31,28 +30,21 @@ class FileController extends ClientApiController
     private $cache;
 
     /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $config;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\DaemonFileRepository
      */
     private $fileRepository;
 
     /**
      * FileController constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Pterodactyl\Contracts\Repository\Daemon\FileRepositoryInterface $fileRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonFileRepository $fileRepository
      * @param \Illuminate\Contracts\Cache\Repository $cache
      */
-    public function __construct(ConfigRepository $config, FileRepositoryInterface $fileRepository, CacheRepository $cache)
+    public function __construct(DaemonFileRepository $fileRepository, CacheRepository $cache)
     {
         parent::__construct();
 
         $this->cache = $cache;
-        $this->config = $config;
         $this->fileRepository = $fileRepository;
     }
 
@@ -60,15 +52,16 @@ class FileController extends ClientApiController
      * Returns a listing of files in a given directory.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function listDirectory(ListFilesRequest $request): array
+    public function listDirectory(ListFilesRequest $request, Server $server): array
     {
         try {
             $contents = $this->fileRepository
-                ->setServer($request->getModel(Server::class))
+                ->setServer($server)
                 ->getDirectory($request->get('directory') ?? '/');
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception, true);
@@ -83,13 +76,15 @@ class FileController extends ClientApiController
      * Return the contents of a specified file for the user.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
+     * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
      */
-    public function getFileContents(GetFileContentsRequest $request): Response
+    public function getFileContents(GetFileContentsRequest $request, Server $server): Response
     {
         return Response::create(
-            $this->fileRepository->setServer($request->getModel(Server::class))->getContent(
-                $request->get('file'), $this->config->get('pterodactyl.files.max_edit_size')
+            $this->fileRepository->setServer($server)->getContent(
+                $request->get('file'), config('pterodactyl.files.max_edit_size')
             )
         );
     }
@@ -98,11 +93,12 @@ class FileController extends ClientApiController
      * Writes the contents of the specified file to the server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
      */
-    public function writeFileContents(WriteFileContentRequest $request): Response
+    public function writeFileContents(WriteFileContentRequest $request, Server $server): Response
     {
-        $this->fileRepository->setServer($request->getModel(Server::class))->putContent(
+        $this->fileRepository->setServer($server)->putContent(
             $request->get('file'),
             $request->getContent()
         );
@@ -114,12 +110,13 @@ class FileController extends ClientApiController
      * Creates a new folder on the server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
      */
-    public function createFolder(CreateFolderRequest $request): Response
+    public function createFolder(CreateFolderRequest $request, Server $server): Response
     {
         $this->fileRepository
-            ->setServer($request->getModel(Server::class))
+            ->setServer($server)
             ->createDirectory($request->input('name'), $request->input('directory', '/'));
 
         return Response::create('', Response::HTTP_NO_CONTENT);
@@ -129,12 +126,13 @@ class FileController extends ClientApiController
      * Renames a file on the remote machine.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
      */
-    public function renameFile(RenameFileRequest $request): Response
+    public function renameFile(RenameFileRequest $request, Server $server): Response
     {
         $this->fileRepository
-            ->setServer($request->getModel(Server::class))
+            ->setServer($server)
             ->renameFile($request->input('rename_from'), $request->input('rename_to'));
 
         return Response::create('', Response::HTTP_NO_CONTENT);
@@ -144,12 +142,13 @@ class FileController extends ClientApiController
      * Copies a file on the server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
      */
-    public function copyFile(CopyFileRequest $request): Response
+    public function copyFile(CopyFileRequest $request, Server $server): Response
     {
         $this->fileRepository
-            ->setServer($request->getModel(Server::class))
+            ->setServer($server)
             ->copyFile($request->input('location'));
 
         return Response::create('', Response::HTTP_NO_CONTENT);
@@ -159,12 +158,13 @@ class FileController extends ClientApiController
      * Deletes a file or folder from the server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
      */
-    public function delete(DeleteFileRequest $request): Response
+    public function delete(DeleteFileRequest $request, Server $server): Response
     {
         $this->fileRepository
-            ->setServer($request->getModel(Server::class))
+            ->setServer($server)
             ->deleteFile($request->input('location'));
 
         return Response::create('', Response::HTTP_NO_CONTENT);
@@ -178,13 +178,12 @@ class FileController extends ClientApiController
      * Returns the token that needs to be used when downloading the file.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DownloadFileRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function download(DownloadFileRequest $request): JsonResponse
+    public function download(DownloadFileRequest $request, Server $server): JsonResponse
     {
-        /** @var \Pterodactyl\Models\Server $server */
-        $server = $request->getModel(Server::class);
         $token = Uuid::uuid4()->toString();
 
         $this->cache->put(

@@ -14,11 +14,12 @@ class ServerController extends ClientApiController
      * client using the API.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
-    public function index(GetServerRequest $request): array
+    public function index(GetServerRequest $request, Server $server): array
     {
-        return $this->fractal->item($request->getModel(Server::class))
+        return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }

@@ -31,15 +31,14 @@ class ResourceUtilizationController extends ClientApiController
      * Return the current resource utilization for a server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function __invoke(GetServerRequest $request): array
+    public function __invoke(GetServerRequest $request, Server $server): array
     {
-        $stats = $this->repository
-            ->setServer($request->getModel(Server::class))
-            ->getDetails();
+        $stats = $this->repository->setServer($server)->getDetails();
 
         return $this->fractal->item($stats)
             ->transformWith($this->getTransformer(StatsTransformer::class))

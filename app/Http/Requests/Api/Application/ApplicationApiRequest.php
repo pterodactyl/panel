@@ -89,6 +89,7 @@ abstract class ApplicationApiRequest extends FormRequest
      *
      * @param string $model
      * @return mixed
+     * @deprecated
      *
      * @throws \Symfony\Component\Routing\Exception\InvalidParameterException
      */

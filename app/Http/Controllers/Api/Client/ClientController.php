@@ -3,23 +3,23 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\User;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ClientController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
      */
     private $repository;
 
     /**
      * ClientController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      */
-    public function __construct(ServerRepositoryInterface $repository)
+    public function __construct(ServerRepository $repository)
     {
         parent::__construct();
 
