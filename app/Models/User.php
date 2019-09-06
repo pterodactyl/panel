@@ -16,6 +16,31 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
+/**
+ * @property int $id
+ * @property string|null $external_id
+ * @property string $uuid
+ * @property string $username
+ * @property string $email
+ * @property string|null $name_first
+ * @property string|null $name_last
+ * @property string $password
+ * @property string|null $remeber_token
+ * @property string $language
+ * @property bool $root_admin
+ * @property bool $use_totp
+ * @property string|null $totp_secret
+ * @property \Carbon\Carbon|null $totp_authenticated_at
+ * @property bool $gravatar
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property string $name
+ * @property \Pterodactyl\Models\Permission[]|\Illuminate\Support\Collection $permissions
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Support\Collection $servers
+ * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Support\Collection $subuserOf
+ * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Support\Collection $keys
+ */
 class User extends Validable implements
     AuthenticatableContract,
     AuthorizableContract,
@@ -85,7 +110,7 @@ class User extends Validable implements
     /**
      * @var array
      */
-    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'totp_authenticated_at'];
+    protected $dates = ['totp_authenticated_at'];
 
     /**
      * The attributes excluded from the model's JSON form.

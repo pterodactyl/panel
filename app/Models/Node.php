@@ -5,6 +5,32 @@ namespace Pterodactyl\Models;
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Models\Traits\Searchable;
 
+/**
+ * @property int $id
+ * @property bool $public
+ * @property string $name
+ * @property string $description
+ * @property int $location_id
+ * @property string $fqdn
+ * @property string $scheme
+ * @property bool $behind_proxy
+ * @property bool $maintenance_mode
+ * @property int $memory
+ * @property int $memory_overallocate
+ * @property int $disk
+ * @property int $disk_overallocate
+ * @property int $upload_size
+ * @property string $daemonSecret
+ * @property int $daemonListen
+ * @property int $daemonSFTP
+ * @property string $daemonBase
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property \Pterodactyl\Models\Location $location
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Support\Collection $servers
+ * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Support\Collection $allocations
+ */
 class Node extends Validable
 {
     use Notifiable, Searchable;
