@@ -1,10 +1,8 @@
-import React, { createRef } from 'react';
+import React, { createRef, useEffect } from 'react';
 import { Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { connect } from 'react-redux';
-import { Websocket } from '@/plugins/Websocket';
-import { ServerStore } from '@/state/server';
+import { ServerContext } from '@/state/server';
 
 const theme = {
     background: 'transparent',
@@ -27,94 +25,71 @@ const theme = {
     brightWhite: '#ffffff',
 };
 
-interface Props {
-    connected: boolean;
-    instance: Websocket | null;
-}
+const terminal = new Terminal({
+    disableStdin: true,
+    cursorStyle: 'underline',
+    allowTransparency: true,
+    fontSize: 12,
+    fontFamily: 'Menlo, Monaco, Consolas, monospace',
+    rows: 30,
+    theme: theme,
+});
 
-class Console extends React.PureComponent<Readonly<Props>> {
-    ref = createRef<HTMLDivElement>();
-    terminal = new Terminal({
-        disableStdin: true,
-        cursorStyle: 'underline',
-        allowTransparency: true,
-        fontSize: 12,
-        fontFamily: 'Menlo, Monaco, Consolas, monospace',
-        rows: 30,
-        theme: theme,
-    });
+export default () => {
+    const ref = createRef<HTMLDivElement>();
+    const connected = ServerContext.useStoreState(state => state.socket.connected);
+    const instance = ServerContext.useStoreState(state => state.socket.instance);
 
-    componentDidMount () {
-        if (this.ref.current) {
-            this.terminal.open(this.ref.current);
-            this.terminal.clear();
+    const handleConsoleOutput = (line: string) => terminal.writeln(
+        line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
+    );
+
+    useEffect(() => {
+        if (ref.current) {
+            terminal.open(ref.current);
 
             // @see https://github.com/xtermjs/xterm.js/issues/2265
             // @see https://github.com/xtermjs/xterm.js/issues/2230
-            TerminalFit.fit(this.terminal);
+            TerminalFit.fit(terminal);
+        }
+    }, [ ref.current ]);
+
+    useEffect(() => {
+        if (connected && instance) {
+            terminal.clear();
+
+            instance
+                .addListener('stats', data => console.log(JSON.parse(data)))
+                .addListener('console output', handleConsoleOutput);
+
+            instance.send('send logs');
         }
 
-        if (this.props.connected && this.props.instance) {
-            this.listenForEvents();
-        }
-    }
+        return () => {
+            instance && instance
+                .removeListener('console output', handleConsoleOutput)
+                .removeAllListeners('stats');
+        };
+    }, [ connected, instance ]);
 
-    componentDidUpdate (prevProps: Readonly<Readonly<Props>>) {
-        if (!prevProps.connected && this.props.connected) {
-            this.listenForEvents();
-        }
-    }
-
-    componentWillUnmount () {
-        if (this.props.instance) {
-            this.props.instance.removeListener('server log', this.handleServerLog);
-            this.props.instance.removeListener('server log', this.handleConsoleOutput);
-        }
-    }
-
-    listenForEvents () {
-        const instance = this.props.instance!;
-
-        instance.addListener('server log', this.handleServerLog);
-        instance.addListener('console output', this.handleConsoleOutput);
-        instance.send('send logs');
-    }
-
-    handleServerLog = (lines: string[]) => lines.forEach(data => {
-        return data.split(/\n/g).forEach(line => this.terminal.writeln(line + '\u001b[0m'));
-    });
-
-    handleConsoleOutput = (line: string) => this.terminal.writeln(
-        line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
-    );
-
-    render () {
-        return (
-            <div className={'text-xs font-mono relative'}>
-                <SpinnerOverlay visible={!this.props.connected} size={'large'}/>
-                <div
-                    className={'rounded-t p-2 bg-black overflow-scroll w-full'}
-                    style={{
-                        minHeight: '16rem',
-                        maxHeight: '64rem',
-                    }}
-                >
-                    <div id={'terminal'} ref={this.ref}/>
-                </div>
-                <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
-                    <div className={'flex-no-shrink p-2 font-bold'}>$</div>
-                    <div className={'w-full'}>
-                        <input type={'text'} className={'bg-transparent text-neutral-100 p-2 pl-0 w-full'}/>
-                    </div>
+    return (
+        <div className={'text-xs font-mono relative'}>
+            <SpinnerOverlay visible={!connected} size={'large'}/>
+            <div
+                className={'rounded-t p-2 bg-black overflow-scroll w-full'}
+                style={{
+                    minHeight: '16rem',
+                    maxHeight: '64rem',
+                }}
+            >
+                <div id={'terminal'} ref={ref}/>
+            </div>
+            <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
+                <div className={'flex-no-shrink p-2 font-bold'}>$</div>
+                <div className={'w-full'}>
+                    <input type={'text'} className={'bg-transparent text-neutral-100 p-2 pl-0 w-full'}/>
                 </div>
             </div>
-        );
-    }
-}
-
-export default connect(
-    (state: ServerStore) => ({
-        connected: state.socket.connected,
-        instance: state.socket.instance,
-    }),
-)(Console);
+        </div>
+    );
+};
