@@ -37,7 +37,7 @@ class DaemonFileRepository extends DaemonRepository
      */
     public function getContent(string $path, int $notLargerThan = null): string
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         $response = $this->getHttpClient()->get(
             sprintf('/api/servers/%s/files/contents', $this->server->uuid),
@@ -69,7 +69,7 @@ class DaemonFileRepository extends DaemonRepository
      */
     public function putContent(string $path, string $content): ResponseInterface
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         return $this->getHttpClient()->post(
             sprintf('/api/servers/%s/files/write', $this->server->uuid),
@@ -90,7 +90,7 @@ class DaemonFileRepository extends DaemonRepository
      */
     public function getDirectory(string $path): array
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         $response = $this->getHttpClient()->get(
             sprintf('/api/servers/%s/files/list-directory', $this->server->uuid),
@@ -111,7 +111,7 @@ class DaemonFileRepository extends DaemonRepository
      */
     public function createDirectory(string $name, string $path): ResponseInterface
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         return $this->getHttpClient()->post(
             sprintf('/api/servers/%s/files/create-directory', $this->server->uuid),
@@ -133,7 +133,7 @@ class DaemonFileRepository extends DaemonRepository
      */
     public function renameFile(string $from, string $to): ResponseInterface
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         return $this->getHttpClient()->put(
             sprintf('/api/servers/%s/files/rename', $this->server->uuid),
@@ -154,7 +154,7 @@ class DaemonFileRepository extends DaemonRepository
      */
     public function copyFile(string $location): ResponseInterface
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         return $this->getHttpClient()->post(
             sprintf('/api/servers/%s/files/copy', $this->server->uuid),
@@ -174,7 +174,7 @@ class DaemonFileRepository extends DaemonRepository
      */
     public function deleteFile(string $location): ResponseInterface
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         return $this->getHttpClient()->post(
             sprintf('/api/servers/%s/files/delete', $this->server->uuid),

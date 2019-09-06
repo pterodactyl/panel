@@ -17,7 +17,7 @@ class DaemonServerRepository extends DaemonRepository
      */
     public function getDetails(): array
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         try {
             $response = $this->getHttpClient()->get(

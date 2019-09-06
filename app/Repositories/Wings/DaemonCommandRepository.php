@@ -16,7 +16,7 @@ class DaemonCommandRepository extends DaemonRepository
      */
     public function send($command): ResponseInterface
     {
-        Assert::isInstanceOf(Server::class, $this->server);
+        Assert::isInstanceOf($this->server, Server::class);
 
         return $this->getHttpClient()->post(
             sprintf('/api/servers/%s/commands', $this->server->uuid),

@@ -71,7 +71,7 @@ abstract class DaemonRepository
      */
     public function getHttpClient(array $headers = []): Client
     {
-        Assert::isInstanceOf(Node::class, $this->node);
+        Assert::isInstanceOf($this->node, Node::class);
 
         return new Client([
             'verify' => $this->app->environment('production'),
