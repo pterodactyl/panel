@@ -104,7 +104,7 @@ abstract class Validable extends Model
     public static function getRulesForUpdate($id, string $primaryKey = 'id')
     {
         if ($id instanceof Model) {
-            list($primaryKey, $id) = [$id->getKeyName(), $id->getKey()];
+            [$primaryKey, $id] = [$id->getKeyName(), $id->getKey()];
         }
 
         $rules = static::getRules();
@@ -118,7 +118,7 @@ abstract class Validable extends Model
                     continue;
                 }
 
-                list(, $args) = explode(':', $datum);
+                [, $args] = explode(':', $datum);
                 $args = explode(',', $args);
 
                 $datum = Rule::unique($args[0], $args[1] ?? $key)->ignore($id, $primaryKey)->__toString();
