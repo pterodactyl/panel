@@ -59,7 +59,7 @@ export default () => {
             terminal.clear();
 
             instance
-                .addListener('stats', data => console.log(JSON.parse(data)))
+                // .addListener('stats', data => console.log(JSON.parse(data)))
                 .addListener('console output', handleConsoleOutput);
 
             instance.send('send logs');
@@ -67,7 +67,7 @@ export default () => {
 
         return () => {
             instance && instance
-                .removeListener('console output', handleConsoleOutput)
+                .removeAllListeners('console output')
                 .removeAllListeners('stats');
         };
     }, [ connected, instance ]);

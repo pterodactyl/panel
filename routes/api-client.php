@@ -29,6 +29,7 @@ Route::group(['prefix' => '/account'], function () {
 */
 Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class]], function () {
     Route::get('/', 'Servers\ServerController@index')->name('api.client.servers.view');
+    Route::get('/websocket', 'Servers\WebsocketController')->name('api.client.servers.websocket');
     Route::get('/resources', 'Servers\ResourceUtilizationController')
         ->name('api.client.servers.resources');
 

@@ -19,7 +19,7 @@ class DaemonPowerRepository extends DaemonRepository
         Assert::isInstanceOf($this->server, Server::class);
 
         return $this->getHttpClient()->post(
-            sprintf('/api/servers/%s/power', $this->server->id),
+            sprintf('/api/servers/%s/power', $this->server->uuid),
             ['json' => ['action' => $action]]
         );
     }

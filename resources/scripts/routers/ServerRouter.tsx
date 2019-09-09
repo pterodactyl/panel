@@ -39,6 +39,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                 </div>
             </CSSTransition>
             <Provider store={ServerContext.useStore()}>
+                <WebsocketHandler/>
                 <TransitionRouter>
                     <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
                         {!server ?
@@ -47,7 +48,6 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             </div>
                             :
                             <React.Fragment>
-                                <WebsocketHandler/>
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
                                     <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>

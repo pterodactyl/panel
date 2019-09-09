@@ -1,6 +1,7 @@
 <?php
 
 Route::get('/authenticate/{token}', 'ValidateKeyController@index')->name('api.remote.authenticate');
+Route::post('/websocket/{token}', 'ValidateWebsocketController')->name('api.remote.authenticate_websocket');
 Route::post('/download-file', 'FileDownloadController@index')->name('api.remote.download_file');
 
 Route::group(['prefix' => '/eggs'], function () {

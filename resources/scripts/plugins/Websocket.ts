@@ -1,4 +1,5 @@
 import Sockette from 'sockette';
+import getWebsocketToken from '@/api/server/getWebsocketToken';
 import { EventEmitter } from 'events';
 
 export const SOCKET_EVENTS = [
@@ -9,42 +10,53 @@ export const SOCKET_EVENTS = [
 ];
 
 export class Websocket extends EventEmitter {
-    socket: Sockette;
+    private socket: Sockette | null;
+    private readonly uuid: string;
 
-    constructor (url: string, protocol: string) {
+    constructor (uuid: string) {
         super();
 
-        this.socket = new Sockette(url, {
-            protocols: protocol,
-            onmessage: e => {
-                try {
-                    let { event, args } = JSON.parse(e.data);
-                    this.emit(event, ...args);
-                } catch (ex) {
-                    console.warn('Failed to parse incoming websocket message.', ex);
-                }
-            },
-            onopen: () => this.emit('SOCKET_OPEN'),
-            onreconnect: () => this.emit('SOCKET_RECONNECT'),
-            onclose: () => this.emit('SOCKET_CLOSE'),
-            onerror: () => this.emit('SOCKET_ERROR'),
-        });
+        this.socket = null;
+        this.uuid = uuid;
+    }
+
+    async connect (): Promise<void> {
+        getWebsocketToken(this.uuid)
+            .then(url => {
+                this.socket = new Sockette(url, {
+                    onmessage: e => {
+                        try {
+                            let { event, args } = JSON.parse(e.data);
+                            this.emit(event, ...args);
+                        } catch (ex) {
+                            console.warn('Failed to parse incoming websocket message.', ex);
+                        }
+                    },
+                    onopen: () => this.emit('SOCKET_OPEN'),
+                    onreconnect: () => this.emit('SOCKET_RECONNECT'),
+                    onclose: () => this.emit('SOCKET_CLOSE'),
+                    onerror: () => this.emit('SOCKET_ERROR'),
+                });
+
+                return Promise.resolve();
+            })
+            .catch(error => Promise.reject(error));
     }
 
     close (code?: number, reason?: string) {
-        this.socket.close(code, reason);
+        this.socket && this.socket.close(code, reason);
     }
 
     open () {
-        this.socket.open();
+        this.socket && this.socket.open();
     }
 
     reconnect () {
-        this.socket.reconnect();
+        this.socket && this.socket.reconnect();
     }
 
     send (event: string, payload?: string | string[]) {
-        this.socket.send(JSON.stringify({
+        this.socket && this.socket.send(JSON.stringify({
             event, args: Array.isArray(payload) ? payload : [ payload ],
         }));
     }
