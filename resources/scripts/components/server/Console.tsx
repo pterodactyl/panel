@@ -45,7 +45,7 @@ export default () => {
     );
 
     useEffect(() => {
-        if (ref.current) {
+        if (ref.current && !terminal.element) {
             terminal.open(ref.current);
 
             // @see https://github.com/xtermjs/xterm.js/issues/2265
