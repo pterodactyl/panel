@@ -45,6 +45,15 @@ export default () => {
         line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
 
+    const handleCommandKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key !== 'Enter' || (e.key === 'Enter' && e.currentTarget.value.length < 1)) {
+            return;
+        }
+
+        instance && instance.send('send command', e.currentTarget.value);
+        e.currentTarget.value = '';
+    };
+
     useEffect(() => {
         if (ref.current && !terminal.element) {
             terminal.open(ref.current);
@@ -59,17 +68,12 @@ export default () => {
         if (connected && instance) {
             terminal.clear();
 
-            instance
-                // .addListener('stats', data => console.log(JSON.parse(data)))
-                .addListener('console output', handleConsoleOutput);
-
+            instance.addListener('console output', handleConsoleOutput);
             instance.send('send logs');
         }
 
         return () => {
-            instance && instance
-                .removeAllListeners('console output')
-                .removeAllListeners('stats');
+            instance && instance.removeListener('console output', handleConsoleOutput);
         };
     }, [ connected, instance ]);
 
@@ -88,7 +92,12 @@ export default () => {
             <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
                 <div className={'flex-no-shrink p-2 font-bold'}>$</div>
                 <div className={'w-full'}>
-                    <input type={'text'} className={'bg-transparent text-neutral-100 p-2 pl-0 w-full'}/>
+                    <input
+                        type={'text'}
+                        disabled={!instance || !connected}
+                        className={'bg-transparent text-neutral-100 p-2 pl-0 w-full'}
+                        onKeyDown={e => handleCommandKeydown(e)}
+                    />
                 </div>
             </div>
         </div>
