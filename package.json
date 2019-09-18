@@ -8,7 +8,7 @@
         "axios": "^0.18.0",
         "classnames": "^2.2.6",
         "date-fns": "^1.29.0",
-        "easy-peasy": "^2.5.0",
+        "easy-peasy": "^3.0.2",
         "events": "^3.0.0",
         "formik": "^1.5.7",
         "jquery": "^3.3.1",

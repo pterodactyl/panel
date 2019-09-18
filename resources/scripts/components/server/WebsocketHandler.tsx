@@ -4,7 +4,7 @@ import { ServerContext } from '@/state/server';
 
 export default () => {
     const server = ServerContext.useStoreState(state => state.server.data);
-    const instance = ServerContext.useStoreState(state => state.socket.instance);
+    const { instance, connected } = ServerContext.useStoreState(state => state.socket);
     const setServerStatus = ServerContext.useStoreActions(actions => actions.status.setServerStatus);
     const { setInstance, setConnectionState } = ServerContext.useStoreActions(actions => actions.socket);
 
@@ -31,6 +31,16 @@ export default () => {
             instance && instance!.removeAllListeners();
         };
     }, [ server ]);
+
+    // Prevent issues with HMR in development environments. This might need to also
+    // exist outside of dev? Will need to see how things go.
+    if (process.env.NODE_ENV === 'development') {
+        useEffect(() => {
+            if (!connected && instance) {
+                instance.connect();
+            }
+        }, [ connected ]);
+    }
 
     return null;
 };

@@ -79,7 +79,7 @@ export default () => {
                 className={'rounded-t p-2 bg-black overflow-scroll w-full'}
                 style={{
                     minHeight: '16rem',
-                    maxHeight: '64rem',
+                    maxHeight: '32rem',
                 }}
             >
                 <div id={'terminal'} ref={ref}/>
