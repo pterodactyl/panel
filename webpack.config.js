@@ -71,22 +71,19 @@ module.exports = {
                         loader: 'babel-loader',
                         options: {
                             cacheDirectory: !isProduction,
-                            presets: ['@babel/env', '@babel/react'],
-                            plugins: [
-                                'react-hot-loader/babel',
-                                '@babel/plugin-syntax-dynamic-import',
-                                ['styled-components', {
-                                    displayName: true,
-                                }],
-                                'tailwind-components',
+                            presets: [
+                                '@babel/typescript',
+                                '@babel/env',
+                                '@babel/react',
                             ],
-                        },
-                    },
-                    {
-                        loader: 'ts-loader',
-                        options: {
-                            experimentalWatchApi: true,
-                            transpileOnly: true,
+                            plugins: [
+                                'tailwind-components',
+                                'react-hot-loader/babel',
+                                '@babel/transform-runtime',
+                                '@babel/proposal-class-properties',
+                                '@babel/proposal-object-rest-spread',
+                                '@babel/syntax-dynamic-import',
+                            ],
                         },
                     },
                 ],
@@ -97,7 +94,12 @@ module.exports = {
                     path.resolve(__dirname, 'resources'),
                 ],
                 use: [
-                    { loader: MiniCssExtractPlugin.loader },
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: !isProduction,
+                        },
+                    },
                     {
                         loader: 'css-loader',
                         options: {
@@ -156,6 +158,9 @@ module.exports = {
                 },
             }),
         ],
+    },
+    watchOptions: {
+        ignored: /node_modules/,
     },
     devServer: {
         contentBase: path.join(__dirname, 'public'),
