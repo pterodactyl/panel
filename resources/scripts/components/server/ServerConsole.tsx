@@ -37,6 +37,10 @@ export default () => {
         setCpu(stats.cpu_absolute);
     };
 
+    const sendPowerCommand = (command: 'start' | 'stop' | 'restart' | 'kill') => {
+        instance && instance.send('set state', command);
+    };
+
     useEffect(() => {
         if (!connected || !instance) {
             return;
@@ -91,9 +95,35 @@ export default () => {
                     </div>
                 </div>
                 <GreyBox className={'justify-center'}>
-                    <button className={'btn btn-secondary btn-xs mr-2'}>Start</button>
-                    <button className={'btn btn-secondary btn-xs mr-2'}>Restart</button>
-                    <button className={'btn btn-red btn-xs'}>Stop</button>
+                    <button
+                        className={'btn btn-secondary btn-xs mr-2'}
+                        disabled={status !== 'offline'}
+                        onClick={e => {
+                            e.preventDefault();
+                            sendPowerCommand('start');
+                        }}
+                    >
+                        Start
+                    </button>
+                    <button
+                        className={'btn btn-secondary btn-xs mr-2'}
+                        onClick={e => {
+                            e.preventDefault();
+                            sendPowerCommand('restart');
+                        }}
+                    >
+                        Restart
+                    </button>
+                    <button
+                        className={'btn btn-red btn-xs'}
+                        disabled={status === 'offline'}
+                        onClick={e => {
+                            e.preventDefault();
+                            sendPowerCommand(status === 'stopping' ? 'kill' : 'stop');
+                        }}
+                    >
+                        Stop
+                    </button>
                 </GreyBox>
             </div>
             <React.Suspense
