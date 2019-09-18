@@ -1,5 +1,5 @@
-import React, { createRef, useEffect } from 'react';
-import { Terminal } from 'xterm';
+import React, { createRef, useEffect, useMemo } from 'react';
+import { ITerminalOptions, Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
@@ -25,7 +25,7 @@ const theme = {
     brightWhite: '#ffffff',
 };
 
-const terminal = new Terminal({
+const terminalProps: ITerminalOptions = {
     disableStdin: true,
     cursorStyle: 'underline',
     allowTransparency: true,
@@ -33,10 +33,11 @@ const terminal = new Terminal({
     fontFamily: 'Menlo, Monaco, Consolas, monospace',
     rows: 30,
     theme: theme,
-});
+};
 
 export default () => {
     const ref = createRef<HTMLDivElement>();
+    const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
     const instance = ServerContext.useStoreState(state => state.socket.instance);
 
