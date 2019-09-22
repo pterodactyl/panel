@@ -2,6 +2,43 @@
 
 namespace Pterodactyl\Models;
 
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property int $nest_id
+ * @property string $author
+ * @property string $name
+ * @property string $description
+ * @property string $docker_image
+ * @property string|null $config_files
+ * @property string|null $config_startup
+ * @property string|null $config_logs
+ * @property string|null $config_stop
+ * @property int|null $config_from
+ * @property string|null $startup
+ * @property bool $script_is_privileged
+ * @property string|null $script_install
+ * @property string $script_entry
+ * @property string $script_container
+ * @property int|null $copy_script_from
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property string|null $copy_script_install
+ * @property string $copy_script_entry
+ * @property string $copy_script_container
+ * @property string|null $inherit_config_files
+ * @property string|null $inherit_config_startup
+ * @property string|null $inherit_config_logs
+ * @property string|null $inherit_config_stop
+ *
+ * @property \Pterodactyl\Models\Nest $nest
+ * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Server[] $servers
+ * @property \Illuminate\Support\Collection|\Pterodactyl\Models\EggVariable[] $variables
+ * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Pack[] $packs
+ * @property \Pterodactyl\Models\Egg|null $scriptFrom
+ * @property \Pterodactyl\Models\Egg|null $configFrom
+ */
 class Egg extends Validable
 {
     /**

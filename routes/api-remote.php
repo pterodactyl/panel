@@ -1,13 +1,10 @@
 <?php
 
-Route::get('/authenticate/{token}', 'ValidateKeyController@index')->name('api.remote.authenticate');
-Route::post('/websocket/{token}', 'ValidateWebsocketController')->name('api.remote.authenticate_websocket');
-Route::post('/download-file', 'FileDownloadController@index')->name('api.remote.download_file');
+use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => '/eggs'], function () {
-    Route::get('/', 'EggRetrievalController@index')->name('api.remote.eggs');
-    Route::get('/{uuid}', 'EggRetrievalController@download')->name('api.remote.eggs.download');
-});
+Route::get('/authenticate/{token}', 'ValidateKeyController@index');
+Route::post('/websocket/{token}', 'ValidateWebsocketController');
+Route::post('/download-file', 'FileDownloadController@index');
 
 Route::group(['prefix' => '/scripts'], function () {
     Route::get('/{uuid}', 'EggInstallController@index')->name('api.remote.scripts');
@@ -15,4 +12,8 @@ Route::group(['prefix' => '/scripts'], function () {
 
 Route::group(['prefix' => '/sftp'], function () {
     Route::post('/', 'SftpController@index')->name('api.remote.sftp');
+});
+
+Route::group(['prefix' => '/servers/{uuid}'], function () {
+    Route::get('/configuration', 'Servers\ServerConfigurationController');
 });

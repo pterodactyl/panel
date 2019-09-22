@@ -14,7 +14,7 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerConfigurationStructureService
 {
-    const REQUIRED_RELATIONS = ['allocation', 'allocations', 'pack', 'option'];
+    const REQUIRED_RELATIONS = ['allocation', 'allocations', 'pack', 'egg'];
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
@@ -43,6 +43,9 @@ class ServerConfigurationStructureService
     /**
      * Return a configuration array for a specific server when passed a server model.
      *
+     * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Wings
+     * daemon, if you modify the structure eggs will break unexpectedly.
+     *
      * @param \Pterodactyl\Models\Server $server
      * @return array
      *
@@ -50,14 +53,7 @@ class ServerConfigurationStructureService
      */
     public function handle(Server $server): array
     {
-        if (array_diff(self::REQUIRED_RELATIONS, $server->getRelations())) {
-            $server = $this->repository->getDataForCreation($server);
-        }
-
-        $pack = $server->getRelation('pack');
-        if (! is_null($pack)) {
-            $pack = $server->getRelation('pack')->uuid;
-        }
+        $server->loadMissing(self::REQUIRED_RELATIONS);
 
         return [
             'uuid' => $server->uuid,
@@ -80,7 +76,7 @@ class ServerConfigurationStructureService
             ],
             'service' => [
                 'egg' => $server->egg->uuid,
-                'pack' => $pack,
+                'pack' => $server->pack ? $server->pack->uuid : null,
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,

@@ -2,10 +2,16 @@
 
 namespace Pterodactyl\Transformers\Api\Client;
 
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 
 class ServerTransformer extends BaseClientTransformer
 {
+    /**
+     * @var array
+     */
+    protected $availableIncludes = ['egg'];
+
     /**
      * @return string
      */
@@ -46,5 +52,17 @@ class ServerTransformer extends BaseClientTransformer
                 'allocations' => $server->allocation_limit,
             ],
         ];
+    }
+
+    /**
+     * Returns the egg associated with this server.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Item
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     */
+    public function includeEgg(Server $server)
+    {
+        return $this->item($server->egg, $this->makeTransformer(EggTransformer::class), Egg::RESOURCE_NAME);
     }
 }

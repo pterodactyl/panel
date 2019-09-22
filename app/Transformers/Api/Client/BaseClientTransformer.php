@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api\Client;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
+use Illuminate\Container\Container;
 use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer as BaseApplicationTransformer;
 
@@ -63,7 +64,9 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
      */
     protected function makeTransformer(string $abstract, array $parameters = [])
     {
-        $transformer = parent::makeTransformer($abstract, $parameters);
+        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
+        $transformer = Container::getInstance()->makeWith($abstract, $parameters);
+        $transformer->setKey($this->getKey());
 
         if (! $transformer instanceof self) {
             throw new InvalidTransformerLevelException('Calls to ' . __METHOD__ . ' must return a transformer that is an instance of ' . __CLASS__);
