@@ -9,7 +9,7 @@ class Username implements Rule
     /**
      * Regex to use when validating usernames.
      */
-    public const VALIDATION_REGEX = '/^[a-z0-9]([\w\.-]+)[a-z0-9]$/';
+    public const VALIDATION_REGEX = '/^[a-zA-Z0-9_\-.]{3,16}$/';
 
     /**
      * Validate that a username contains only the allowed characters and starts/ends
@@ -23,7 +23,7 @@ class Username implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        return preg_match(self::VALIDATION_REGEX, mb_strtolower($value));
+        return preg_match(self::VALIDATION_REGEX, $value);
     }
 
     /**
@@ -33,8 +33,8 @@ class Username implements Rule
      */
     public function message(): string
     {
-        return 'The :attribute must start and end with alpha-numeric characters and
-                contain only letters, numbers, dashes, underscores, and periods.';
+        return 'The :attribute must be consisting of alpha-numeric characters and
+                can only contain letters, numbers, dashes, underscores, and periods.';
     }
 
     /**
