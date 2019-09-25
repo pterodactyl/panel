@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/authenticate/{token}', 'ValidateKeyController@index');
-Route::post('/websocket/{token}', 'ValidateWebsocketController');
 Route::post('/download-file', 'FileDownloadController@index');
 
 Route::group(['prefix' => '/scripts'], function () {

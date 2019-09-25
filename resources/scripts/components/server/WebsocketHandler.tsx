@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
+import getWebsocketToken from '@/api/server/getWebsocketToken';
 
 export default () => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -15,15 +16,18 @@ export default () => {
             return;
         }
 
-        const socket = new Websocket(server.uuid);
+        const socket = new Websocket();
 
         socket.on('SOCKET_OPEN', () => setConnectionState(true));
         socket.on('SOCKET_CLOSE', () => setConnectionState(false));
         socket.on('SOCKET_ERROR', () => setConnectionState(false));
         socket.on('status', (status) => setServerStatus(status));
 
-        socket.connect()
-            .then(() => setInstance(socket))
+        getWebsocketToken(server.uuid)
+            .then(data => {
+                socket.setToken(data.token).connect(data.socket);
+                setInstance(socket);
+            })
             .catch(error => console.error(error));
 
         return () => {
@@ -36,8 +40,8 @@ export default () => {
     // exist outside of dev? Will need to see how things go.
     if (process.env.NODE_ENV === 'development') {
         useEffect(() => {
-            if (!connected && instance) {
-                instance.connect();
+            if (!connected && instance && instance.getToken() && instance.getSocketUrl()) {
+                instance.connect(instance.getSocketUrl()!);
             }
         }, [ connected ]);
     }

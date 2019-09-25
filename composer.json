@@ -26,6 +26,7 @@
         "laravel/framework": "^6.0.0",
         "laravel/helpers": "^1.1",
         "laravel/tinker": "^1.0",
+        "lcobucci/jwt": "^3.3",
         "matriphe/iso-639": "^1.2",
         "pragmarx/google2fa": "^5.0",
         "predis/predis": "^1.1",

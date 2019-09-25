@@ -3,11 +3,13 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Cake\Chronos\Chronos;
-use Illuminate\Support\Str;
+use Lcobucci\JWT\Builder;
 use Illuminate\Http\Request;
+use Lcobucci\JWT\Signer\Key;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Illuminate\Contracts\Cache\Repository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -32,12 +34,10 @@ class WebsocketController extends ClientApiController
     }
 
     /**
-     * Generates a one-time token that is sent along in the request to the Daemon. The
-     * daemon then connects back to the Panel to verify that the token is valid when it
-     * is used.
-     *
-     * This token is valid for 30 seconds from time of generation, it is not designed
-     * to be stored and used over and over.
+     * Generates a one-time token that is sent along in every websocket call to the Daemon.
+     * This is a signed JWT that the Daemon then uses the verify the user's identity, and
+     * allows us to continually renew this token and avoid users mainitaining sessions wrongly,
+     * as well as ensure that user's only perform actions they're allowed to.
      *
      * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Models\Server $server
@@ -51,20 +51,26 @@ class WebsocketController extends ClientApiController
             );
         }
 
-        $token = Str::random(32);
+        $now = Chronos::now();
 
-        $this->cache->put('ws:' . $token, [
-            'user_id' => $request->user()->id,
-            'server_id' => $server->id,
-            'request_ip' => $request->ip(),
-            'timestamp' => Chronos::now()->toIso8601String(),
-        ], Chronos::now()->addSeconds(30));
+        $signer = new Sha256;
+
+        $token = (new Builder)->issuedBy(config('app.url'))
+            ->permittedFor($server->node->getConnectionAddress())
+            ->identifiedBy(hash('sha256', $request->user()->id . $server->uuid), true)
+            ->issuedAt($now->getTimestamp())
+            ->canOnlyBeUsedAfter($now->getTimestamp())
+            ->expiresAt($now->addMinutes(15)->getTimestamp())
+            ->withClaim('user_id', $request->user()->id)
+            ->withClaim('server_uuid', $server->uuid)
+            ->getToken($signer, new Key($server->node->daemonSecret));
 
         $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $server->node->getConnectionAddress());
 
         return JsonResponse::create([
             'data' => [
-                'socket' => $socket . sprintf('/api/servers/%s/ws/%s', $server->uuid, $token),
+                'token' => $token->__toString(),
+                'socket' => $socket . sprintf('/api/servers/%s/ws', $server->uuid),
             ],
         ]);
     }

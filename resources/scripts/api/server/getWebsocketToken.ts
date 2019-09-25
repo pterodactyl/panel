@@ -1,9 +1,17 @@
 import http from '@/api/http';
 
-export default (server: string): Promise<string> => {
+interface Response {
+    token: string;
+    socket: string;
+}
+
+export default (server: string): Promise<Response> => {
     return new Promise((resolve, reject) => {
         http.get(`/api/client/servers/${server}/websocket`)
-            .then(response => resolve(response.data.data.socket))
+            .then(({ data }) => resolve({
+                token: data.data.token,
+                socket: data.data.socket,
+            }))
             .catch(reject);
     });
 };
