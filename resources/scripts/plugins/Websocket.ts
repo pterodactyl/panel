@@ -25,7 +25,7 @@ export class Websocket extends EventEmitter {
     // Connects to the websocket instance and sets the token for the initial request.
     connect (url: string) {
         this.url = url;
-        this.socket = new Sockette(url, {
+        this.socket = new Sockette(`${this.url}?token=${this.token}`, {
             onmessage: e => {
                 try {
                     let { event, args } = JSON.parse(e.data);
@@ -75,7 +75,6 @@ export class Websocket extends EventEmitter {
         this.socket && this.socket.send(JSON.stringify({
             event,
             args: Array.isArray(payload) ? payload : [ payload ],
-            token: this.token || '',
         }));
     }
 }

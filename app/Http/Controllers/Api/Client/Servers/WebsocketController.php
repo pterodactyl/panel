@@ -63,6 +63,7 @@ class WebsocketController extends ClientApiController
             ->expiresAt($now->addMinutes(15)->getTimestamp())
             ->withClaim('user_id', $request->user()->id)
             ->withClaim('server_uuid', $server->uuid)
+            ->withClaim('permissions', ['connect', 'send-command', 'send-power'])
             ->getToken($signer, new Key($server->node->daemonSecret));
 
         $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $server->node->getConnectionAddress());
