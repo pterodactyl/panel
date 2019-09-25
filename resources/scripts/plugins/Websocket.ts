@@ -29,7 +29,7 @@ export class Websocket extends EventEmitter {
             onmessage: e => {
                 try {
                     let { event, args } = JSON.parse(e.data);
-                    this.emit(event, ...args);
+                    args ? this.emit(event, ...args) : this.emit(event);
                 } catch (ex) {
                     console.warn('Failed to parse incoming websocket message.', ex);
                 }
