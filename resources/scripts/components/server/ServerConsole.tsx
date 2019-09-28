@@ -10,13 +10,15 @@ import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
 import { bytesToHuman } from '@/helpers';
 import Spinner from '@/components/elements/Spinner';
 
+type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
+
 const GreyBox = styled.div`
     ${tw`mt-4 shadow-md bg-neutral-700 rounded p-3 flex text-xs`}   
 `;
 
 const ChunkedConsole = lazy(() => import('@/components/server/Console'));
 
-const StopOrKillButton = ({ onPress }: { onPress: (action: string) => void }) => {
+const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void }) => {
     const [ clicked, setClicked ] = useState(false);
     const status = ServerContext.useStoreState(state => state.status.value);
 
@@ -60,7 +62,7 @@ export default () => {
         setCpu(stats.cpu_absolute);
     };
 
-    const sendPowerCommand = (command: 'start' | 'stop' | 'restart' | 'kill') => {
+    const sendPowerCommand = (command: PowerAction) => {
         instance && instance.send('set state', command);
     };
 
