@@ -11,7 +11,7 @@ return [
         'header_sub' => 'Gérer toutes les planifications de ce serveur en un seul endroit.',
         'current' => 'Planification actuels',
         'new' => [
-            'header' => 'Créer une nouvel planification',
+            'header' => 'Créer une nouvelle planification',
             'header_sub' => 'Créez un nouvel ensemble de tâches planifiées pour ce serveur.',
             'submit' => 'Créer une planification',
         ],
