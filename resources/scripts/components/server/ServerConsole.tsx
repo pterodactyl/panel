@@ -16,6 +16,29 @@ const GreyBox = styled.div`
 
 const ChunkedConsole = lazy(() => import('@/components/server/Console'));
 
+const StopOrKillButton = ({ onPress }: { onPress: (action: string) => void }) => {
+    const [ clicked, setClicked ] = useState(false);
+    const status = ServerContext.useStoreState(state => state.status.value);
+
+    useEffect(() => {
+        setClicked(state => ['stopping'].indexOf(status) < 0 ? false : state);
+    }, [status]);
+
+    return (
+        <button
+            className={'btn btn-red btn-xs'}
+            disabled={status === 'offline'}
+            onClick={e => {
+                e.preventDefault();
+                onPress(clicked ? 'kill' : 'stop');
+                setClicked(true);
+            }}
+        >
+            {clicked ? 'Kill' : 'Stop'}
+        </button>
+    );
+};
+
 export default () => {
     const [ memory, setMemory ] = useState(0);
     const [ cpu, setCpu ] = useState(0);
@@ -114,16 +137,7 @@ export default () => {
                     >
                         Restart
                     </button>
-                    <button
-                        className={'btn btn-red btn-xs'}
-                        disabled={status === 'offline'}
-                        onClick={e => {
-                            e.preventDefault();
-                            sendPowerCommand(status === 'stopping' ? 'kill' : 'stop');
-                        }}
-                    >
-                        Stop
-                    </button>
+                    <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
                 </GreyBox>
             </div>
             <React.Suspense
