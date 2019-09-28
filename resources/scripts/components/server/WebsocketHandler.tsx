@@ -5,9 +5,15 @@ import getWebsocketToken from '@/api/server/getWebsocketToken';
 
 export default () => {
     const server = ServerContext.useStoreState(state => state.server.data);
-    const { instance, connected } = ServerContext.useStoreState(state => state.socket);
+    const { instance } = ServerContext.useStoreState(state => state.socket);
     const setServerStatus = ServerContext.useStoreActions(actions => actions.status.setServerStatus);
     const { setInstance, setConnectionState } = ServerContext.useStoreActions(actions => actions.socket);
+
+    const updateToken = (uuid: string, socket: Websocket) => {
+        getWebsocketToken(uuid)
+            .then(data => socket.setToken(data.token))
+            .catch(error => console.error(error));
+    };
 
     useEffect(() => {
         // If there is already an instance or there is no server, just exit out of this process
@@ -23,6 +29,13 @@ export default () => {
         socket.on('SOCKET_ERROR', () => setConnectionState(false));
         socket.on('status', (status) => setServerStatus(status));
 
+        socket.on('daemon error', message => {
+            console.warn('Got error message from daemon socket:', message);
+        });
+
+        socket.on('token expiring', () => updateToken(server.uuid, socket));
+        socket.on('token expired', () => updateToken(server.uuid, socket));
+
         getWebsocketToken(server.uuid)
             .then(data => {
                 socket.setToken(data.token).connect(data.socket);
@@ -35,16 +48,6 @@ export default () => {
             instance && instance!.removeAllListeners();
         };
     }, [ server ]);
-
-    // Prevent issues with HMR in development environments. This might need to also
-    // exist outside of dev? Will need to see how things go.
-    if (process.env.NODE_ENV === 'development') {
-        useEffect(() => {
-            if (!connected && instance && instance.getToken() && instance.getSocketUrl()) {
-                instance.connect(instance.getSocketUrl()!);
-            }
-        }, [ connected ]);
-    }
 
     return null;
 };

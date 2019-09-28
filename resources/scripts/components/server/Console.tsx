@@ -45,6 +45,10 @@ export default () => {
         line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
 
+    const handleDaemonErrorOutput = (line: string) => terminal.writeln(
+        '\u001b[1m\u001b[41m[Internal] ' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
+    );
+
     const handleCommandKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key !== 'Enter' || (e.key === 'Enter' && e.currentTarget.value.length < 1)) {
             return;
@@ -69,11 +73,13 @@ export default () => {
             terminal.clear();
 
             instance.addListener('console output', handleConsoleOutput);
+            instance.addListener('daemon error', handleDaemonErrorOutput);
             instance.send('send logs');
         }
 
         return () => {
-            instance && instance.removeListener('console output', handleConsoleOutput);
+            instance && instance.removeListener('console output', handleConsoleOutput)
+                .removeListener('daemon error', handleDaemonErrorOutput);
         };
     }, [ connected, instance ]);
 
