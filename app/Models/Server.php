@@ -44,7 +44,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Node $node
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Pterodactyl\Models\Egg $egg
- * @property \Pterodactyl\Models\EggVariable[]|\Illuminate\Support\Collection $variables
+ * @property \Pterodactyl\Models\ServerVariable[]|\Illuminate\Support\Collection $variables
  * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Support\Collection $schedule
  * @property \Pterodactyl\Models\Database[]|\Illuminate\Support\Collection $databases
  * @property \Pterodactyl\Models\Location $location

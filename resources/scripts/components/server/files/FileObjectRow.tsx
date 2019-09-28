@@ -10,10 +10,13 @@ import React from 'react';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
 import { ServerContext } from '@/state/server';
+import { NavLink } from 'react-router-dom';
+import useRouter from 'use-react-router';
 
 export default ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
+    const { match } = useRouter();
 
     return (
         <div
@@ -23,18 +26,18 @@ export default ({ file }: { file: FileObject }) => {
                 hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600
             `}
         >
-            <a
-                href={file.isFile ? undefined : `#${directory}/${file.name}`}
+            <NavLink
+                to={`${match.url}/${file.isFile ? 'edit/' : ''}#${directory}/${file.name}`}
                 className={'flex flex-1 text-neutral-300 no-underline p-3'}
                 onClick={e => {
-                    e.preventDefault();
-
                     // Don't rely on the onClick to work with the generated URL. Because of the way this
                     // component re-renders you'll get redirected into a nested directory structure since
                     // it'll cause the directory variable to update right away when you click.
                     //
                     // Just trust me future me, leave this be.
                     if (!file.isFile) {
+                        e.preventDefault();
+
                         window.location.hash = `#${directory}/${file.name}`;
                         setDirectory(`${directory}/${file.name}`);
                     }
@@ -65,7 +68,7 @@ export default ({ file }: { file: FileObject }) => {
                         distanceInWordsToNow(file.modifiedAt, { addSuffix: true })
                     }
                 </div>
-            </a>
+            </NavLink>
             <FileDropdownMenu uuid={file.uuid}/>
         </div>
     );

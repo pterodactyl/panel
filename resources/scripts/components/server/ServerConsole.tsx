@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
 import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
 import { bytesToHuman } from '@/helpers';
-import Spinner from '@/components/elements/Spinner';
+import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 
 type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -23,8 +23,8 @@ const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void 
     const status = ServerContext.useStoreState(state => state.status.value);
 
     useEffect(() => {
-        setClicked(state => ['stopping'].indexOf(status) < 0 ? false : state);
-    }, [status]);
+        setClicked(state => [ 'stopping' ].indexOf(status) < 0 ? false : state);
+    }, [ status ]);
 
     return (
         <button
@@ -142,17 +142,11 @@ export default () => {
                     <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
                 </GreyBox>
             </div>
-            <React.Suspense
-                fallback={
-                    <div className={'mx-4 w-3/4 mr-4 flex items-center justify-center'}>
-                        <Spinner centered={true} size={'normal'}/>
-                    </div>
-                }
-            >
+            <SuspenseSpinner>
                 <div className={'mx-4 w-3/4 mr-4'}>
                     <ChunkedConsole/>
                 </div>
-            </React.Suspense>
+            </SuspenseSpinner>
         </div>
     );
 };

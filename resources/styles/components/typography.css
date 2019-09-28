@@ -1,5 +1,5 @@
 @import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
-@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Sans:500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans:500&display=swap');
 
 body {
     @apply .text-neutral-200;
