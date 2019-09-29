@@ -17,10 +17,7 @@ const chartDefaults: ChartConfiguration = {
             enabled: false,
         },
         animation: {
-            duration: 0,
-        },
-        hover: {
-            animationDuration: 0,
+            duration: 250,
         },
         elements: {
             point: {
@@ -58,7 +55,6 @@ const chartDefaults: ChartConfiguration = {
                 },
             } ],
         },
-        responsiveAnimationDuration: 0,
     },
 };
 
@@ -133,7 +129,7 @@ export default () => {
             data.push(bytesToMegabytes(stats.memory_bytes));
             data.shift();
 
-            memory.update();
+            memory.update({ lazy: true });
         }
 
         if (cpu && cpu.data.datasets) {
@@ -142,7 +138,7 @@ export default () => {
             data.push(stats.cpu_absolute);
             data.shift();
 
-            cpu.update();
+            cpu.update({ lazy: true });
         }
     };
 
