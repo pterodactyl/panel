@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { lazy, useEffect } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
@@ -10,7 +10,11 @@ import { Provider } from 'react-redux';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import { CSSTransition } from 'react-transition-group';
-import FileEditContainer from '@/components/server/files/FileEditContainer';
+import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
+
+const LazyFileEditContainer = lazy<React.ComponentType<RouteComponentProps<any>>>(
+    () => import('@/components/server/files/FileEditContainer')
+);
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -51,7 +55,15 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
                                     <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
-                                    <Route path={`${match.path}/files/edit`} component={FileEditContainer} exact/>
+                                    <Route
+                                        path={`${match.path}/files/edit`}
+                                        render={props => (
+                                            <SuspenseSpinner>
+                                                <LazyFileEditContainer {...props}/>
+                                            </SuspenseSpinner>
+                                        )}
+                                        exact
+                                    />
                                     <Route path={`${match.path}/databases`} component={DatabasesContainer}/>
                                 </Switch>
                             </React.Fragment>

@@ -45,6 +45,14 @@ export default () => {
         line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
 
+    const handleDaemonErrorOutput = (line: string) => terminal.writeln(
+        '\u001b[1m\u001b[41m[Internal] ' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
+    );
+
+    const handlePowerChangeEvent = (state: string) => terminal.writeln(
+        '\u001b[1m\u001b[33m[Status Change] Server marked as ' + state + '...\u001b[0m',
+    );
+
     const handleCommandKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key !== 'Enter' || (e.key === 'Enter' && e.currentTarget.value.length < 1)) {
             return;
@@ -68,12 +76,16 @@ export default () => {
         if (connected && instance) {
             terminal.clear();
 
+            instance.addListener('status', handlePowerChangeEvent);
             instance.addListener('console output', handleConsoleOutput);
+            instance.addListener('daemon error', handleDaemonErrorOutput);
             instance.send('send logs');
         }
 
         return () => {
-            instance && instance.removeListener('console output', handleConsoleOutput);
+            instance && instance.removeListener('console output', handleConsoleOutput)
+                .removeListener('daemon error', handleDaemonErrorOutput)
+                .removeListener('status', handlePowerChangeEvent);
         };
     }, [ connected, instance ]);
 

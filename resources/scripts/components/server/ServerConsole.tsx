@@ -8,13 +8,38 @@ import styled from 'styled-components';
 import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
 import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
 import { bytesToHuman } from '@/helpers';
-import Spinner from '@/components/elements/Spinner';
+import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
+
+type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
 const GreyBox = styled.div`
     ${tw`mt-4 shadow-md bg-neutral-700 rounded p-3 flex text-xs`}   
 `;
 
 const ChunkedConsole = lazy(() => import('@/components/server/Console'));
+
+const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void }) => {
+    const [ clicked, setClicked ] = useState(false);
+    const status = ServerContext.useStoreState(state => state.status.value);
+
+    useEffect(() => {
+        setClicked(state => [ 'stopping' ].indexOf(status) < 0 ? false : state);
+    }, [ status ]);
+
+    return (
+        <button
+            className={'btn btn-red btn-xs'}
+            disabled={status === 'offline'}
+            onClick={e => {
+                e.preventDefault();
+                onPress(clicked ? 'kill' : 'stop');
+                setClicked(true);
+            }}
+        >
+            {clicked ? 'Kill' : 'Stop'}
+        </button>
+    );
+};
 
 export default () => {
     const [ memory, setMemory ] = useState(0);
@@ -37,7 +62,7 @@ export default () => {
         setCpu(stats.cpu_absolute);
     };
 
-    const sendPowerCommand = (command: 'start' | 'stop' | 'restart' | 'kill') => {
+    const sendPowerCommand = (command: PowerAction) => {
         instance && instance.send('set state', command);
     };
 
@@ -114,29 +139,14 @@ export default () => {
                     >
                         Restart
                     </button>
-                    <button
-                        className={'btn btn-red btn-xs'}
-                        disabled={status === 'offline'}
-                        onClick={e => {
-                            e.preventDefault();
-                            sendPowerCommand(status === 'stopping' ? 'kill' : 'stop');
-                        }}
-                    >
-                        Stop
-                    </button>
+                    <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
                 </GreyBox>
             </div>
-            <React.Suspense
-                fallback={
-                    <div className={'mx-4 w-3/4 mr-4 flex items-center justify-center'}>
-                        <Spinner centered={true} size={'normal'}/>
-                    </div>
-                }
-            >
+            <SuspenseSpinner>
                 <div className={'mx-4 w-3/4 mr-4'}>
                     <ChunkedConsole/>
                 </div>
-            </React.Suspense>
+            </SuspenseSpinner>
         </div>
     );
 };

@@ -51,6 +51,10 @@ export class Websocket extends EventEmitter {
     setToken (token: string): this {
         this.token = token;
 
+        if (this.url) {
+            this.send('auth', token);
+        }
+
         return this;
     }
 
@@ -60,6 +64,8 @@ export class Websocket extends EventEmitter {
     }
 
     close (code?: number, reason?: string) {
+        this.url = null;
+        this.token = '';
         this.socket && this.socket.close(code, reason);
     }
 
