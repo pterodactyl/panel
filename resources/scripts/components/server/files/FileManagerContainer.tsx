@@ -79,7 +79,21 @@ export default () => {
                             :
                             <CSSTransition classNames={'fade'} timeout={250} appear={true} in={true}>
                                 <div>
-                                    {
+                                    {files.length > 250 ?
+                                        <React.Fragment>
+                                            <div className={'rounded bg-yellow-400 mb-px p-3'}>
+                                                <p className={'text-yellow-900 text-sm text-center'}>
+                                                    This directory is too large to display in the browser, limiting
+                                                    the output to the first 250 files.
+                                                </p>
+                                            </div>
+                                            {
+                                                files.slice(0, 500).map(file => (
+                                                    <FileObjectRow key={file.uuid} file={file}/>
+                                                ))
+                                            }
+                                        </React.Fragment>
+                                        :
                                         files.map(file => (
                                             <FileObjectRow key={file.uuid} file={file}/>
                                         ))
