@@ -7,7 +7,7 @@
 
 # Pterodactyl Panel
 
-Pterodactyl is the open-source game server management panel built with PHP7, Nodejs, and Go. Designed with security in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive UI to administrators and users.
+Pterodactyl is the open-source game server management panel built with PHP 7, Node.js, and Golang. Designed with security in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive UI to administrators and users.
 What more are you waiting for? Make game servers a first class citizen on your platform today.
 
 ![Image](https://cdn.pterodactyl.io/site-assets/mockup-macbook-grey.png)
@@ -53,7 +53,7 @@ Some Javascript and CSS used within the panel is licensed under a `MIT` or `Apac
 
 ## License
 ```
-Copyright (c) 2015 - 2018 Dane Everitt <dane@daneeveritt.com>.
+Copyright (c) 2015 - 2019 Dane Everitt <dane@daneeveritt.com>.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
