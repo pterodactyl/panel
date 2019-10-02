@@ -85,7 +85,9 @@ class FileController extends ClientApiController
         return Response::create(
             $this->fileRepository->setServer($server)->getContent(
                 $request->get('file'), config('pterodactyl.files.max_edit_size')
-            )
+            ),
+            Response::HTTP_OK,
+            ['Content-Type' => 'text/plain']
         );
     }
 

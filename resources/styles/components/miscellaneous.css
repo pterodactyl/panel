@@ -19,3 +19,7 @@ code.clean {
         @apply .rounded-full .bg-neutral-500 .p-3;
     }
 }
+
+.grey-box {
+    @apply .mt-4 .shadow-md .bg-neutral-700 .rounded .p-3 .flex .text-xs;
+}
