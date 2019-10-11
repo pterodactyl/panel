@@ -101,13 +101,44 @@
                     currentCpu = parseFloat(((info.proc.cpu.total / cpuMax) * 100).toFixed(2).toString());
                 }
                 element.find('[data-action="memory"]').html(parseInt(info.proc.memory.total / (1024 * 1024)));
+                totalRamArray[uuid] = parseInt(info.proc.memory.total / (1024 * 1024));
                 element.find('[data-action="disk"]').html(parseInt(info.proc.disk.used));
+                totalDiskArray[uuid] = parseInt(info.proc.disk.used);
                 element.find('[data-action="cpu"]').html(currentCpu);
+                totalCPUArray[uuid] = currentCpu;
             } else {
                 element.find('[data-action="memory"]').html('--');
                 element.find('[data-action="disk"]').html('--');
                 element.find('[data-action="cpu"]').html('--');
             }
         });
+        updateInfoBox();
     });
 })();
+function updateInfoBox() {
+
+var CurrentDiskValue = 0;
+var CurrentRamValue = 0;
+var CurrentCPUValue = 0;
+for (var key in totalDiskArray) {
+  CurrentDiskValue=CurrentDiskValue+totalDiskArray[key];
+}
+for (var key in totalRamArray) {
+  CurrentRamValue=CurrentRamValue+totalRamArray[key];
+}
+for (var key in totalCPUArray) {
+  CurrentCPUValue=CurrentCPUValue+totalCPUArray[key];
+}
+if(CurrentDiskValue >9999){
+$("#diskUsage").text("Usage: "+CurrentDiskValue/1000 +"GB");
+}else{
+$("#diskUsage").text("Usage: "+CurrentDiskValue +"MB");
+}
+
+if(CurrentRamValue >9999){
+$("#ramUsage").text("Usage: "+CurrentRamValue/1000 +"GB");
+}else{
+$("#ramUsage").text("Usage: "+CurrentRamValue +"MB");
+}
+$("#cpuUsage").text("Usage: "+CurrentCPUValue.toFixed(4) +"%");
+}
