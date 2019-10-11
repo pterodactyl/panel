@@ -34,6 +34,35 @@
     </div>
 </div>
 <div class="row">
+    <div class="col-xs-12 col-md-4">
+        <div class="info-box bg-blue">
+            <span class="info-box-icon"><i class="ion ion-ios-barcode-outline"></i></span>
+            <div class="info-box-content number-info-box-content">
+                <span class="info-box-text">Total RAM</span>
+                <span class="info-box-number" id="ramUsage">Waiting for data</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-4">
+        <div class="info-box bg-blue">
+            <span class="info-box-icon"><i class="ion ion-stats-bars"></i></span>
+            <div class="info-box-content number-info-box-content">
+                <span class="info-box-text">Total Disk Space</span>
+                <span class="info-box-number" id="diskUsage">Waiting for data</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-md-4">
+        <div class="info-box bg-blue">
+            <span class="info-box-icon"><i class="fa fa-microchip"></i></span>
+            <div class="info-box-content number-info-box-content">
+                <span class="info-box-text">Total CPU usage</span>
+                <span class="info-box-number" id="cpuUsage">Waiting for data</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-sm-12">
         <div class="box box-primary">
             <div class="box-header with-border">
