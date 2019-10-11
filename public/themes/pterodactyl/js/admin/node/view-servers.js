@@ -121,28 +121,28 @@ var totalCPUArray = [];
 })();
 function updateInfoBox() {
 
-var CurrentDiskValue = 0;
-var CurrentRamValue = 0;
-var CurrentCPUValue = 0;
-for (var key in totalDiskArray) {
-  CurrentDiskValue=CurrentDiskValue+totalDiskArray[key];
-}
-for (var key in totalRamArray) {
-  CurrentRamValue=CurrentRamValue+totalRamArray[key];
-}
-for (var key in totalCPUArray) {
-  CurrentCPUValue=CurrentCPUValue+totalCPUArray[key];
-}
-if(CurrentDiskValue >9999){
-$("#diskUsage").text("Usage: "+CurrentDiskValue/1000 +"GB");
-}else{
-$("#diskUsage").text("Usage: "+CurrentDiskValue +"MB");
-}
+    var CurrentDiskValue = 0;
+    var CurrentRamValue = 0;
+    var CurrentCPUValue = 0;
+    for (var key in totalDiskArray) {
+        CurrentDiskValue = CurrentDiskValue + totalDiskArray[key];
+    }
+    for (var key in totalRamArray) {
+        CurrentRamValue = CurrentRamValue + totalRamArray[key];
+    }
+    for (var key in totalCPUArray) {
+        CurrentCPUValue = CurrentCPUValue + totalCPUArray[key];
+    }
+    if (CurrentDiskValue > 9999) {
+        $("#diskUsage").text("Usage: " + CurrentDiskValue / 1000 + "GB");
+    } else {
+        $("#diskUsage").text("Usage: " + CurrentDiskValue + "MB");
+    }
 
-if(CurrentRamValue >9999){
-$("#ramUsage").text("Usage: "+CurrentRamValue/1000 +"GB");
-}else{
-$("#ramUsage").text("Usage: "+CurrentRamValue +"MB");
-}
-$("#cpuUsage").text("Usage: "+CurrentCPUValue.toFixed(4) +"%");
+    if (CurrentRamValue > 9999) {
+        $("#ramUsage").text("Usage: " + CurrentRamValue / 1000 + "GB");
+    } else {
+        $("#ramUsage").text("Usage: " + CurrentRamValue + "MB");
+    }
+    $("#cpuUsage").text("Usage: " + CurrentCPUValue.toFixed(4) + "%");
 }
