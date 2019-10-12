@@ -13,7 +13,7 @@ import { CSSTransition } from 'react-transition-group';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 
 const LazyFileEditContainer = lazy<React.ComponentType<RouteComponentProps<any>>>(
-    () => import('@/components/server/files/FileEditContainer')
+    () => import(/* webpackChunkName: "editor" */'@/components/server/files/FileEditContainer')
 );
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {

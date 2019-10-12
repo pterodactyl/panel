@@ -15,7 +15,7 @@ input[type=number] {
 /**
  * Styling for other forms throughout the Panel.
  */
-.input, .input-dark {
+.input:not(select), .input-dark:not(select) {
     @apply .appearance-none .w-full;
     min-width: 0;
 
@@ -24,7 +24,7 @@ input[type=number] {
     }
 }
 
-.input {
+.input:not(select) {
     @apply .p-3 .rounded .border .border-neutral-200 .text-neutral-800;
     transition: border 150ms linear;
 
@@ -35,21 +35,21 @@ input[type=number] {
     &.error {
         @apply .text-red-600 .border-red-500;
     }
-}
 
-.input:disabled {
-    @apply .bg-neutral-100 .border-neutral-200;
-}
+    &:disabled {
+        @apply .bg-neutral-100 .border-neutral-200;
+    }
 
-.input + .input-help {
-    @apply .text-xs .text-neutral-400 .pt-2;
+    & + .input-help {
+        @apply .text-xs .text-neutral-400 .pt-2;
 
-    &.error {
-        @apply .text-red-600;
+        &.error {
+            @apply .text-red-600;
+        }
     }
 }
 
-.input-dark {
+.input-dark:not(select) {
     @apply .p-3 .bg-neutral-600 .border .border-neutral-500 .text-sm .rounded .text-neutral-200 .shadow-none;
     transition: border 150ms linear, box-shaodw 150ms ease-in;
 
@@ -83,23 +83,47 @@ label {
 }
 
 select:not(.appearance-none) {
-    @apply .outline-none .appearance-none .block .bg-white .border .border-neutral-200 .text-neutral-400 .p-3 .pr-8 rounded;
-    transition: border-color 150ms linear, color 150ms linear;
+    @apply .shadow-none .block .p-3 .pr-8 .rounded .border .w-full .text-sm;
+    transition: border-color 150ms linear;
 
-    &:hover:not(:disabled), &:focus {
-        @apply .outline-none .border-primary-500 .text-neutral-700;
+    &, &:hover:not(:disabled), &:focus {
+        @apply .outline-none;
     }
 
     -webkit-appearance: none;
     -moz-appearance: none;
+    background-size: 1rem;
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 0.75rem);
+    background-position-y: center;
 
     &::-ms-expand {
         display: none;
     }
+}
 
-    background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ") no-repeat center center;
-    background-size: 1rem;
-    background-position-x: calc(100% - 0.75rem);
+select.input:not(.appearance-none) {
+    @apply .bg-white .border-neutral-200 .text-neutral-400;
+    transition: color 150ms linear;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ");
+
+    &:hover:not(:disabled), &:focus {
+        @apply .border-primary-500 .text-neutral-700;
+    }
+}
+
+select.input-dark:not(.appearance-none) {
+    @apply .bg-neutral-600 .border-neutral-500 .text-neutral-200;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='%23C3D1DF' d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z'/%3e%3c/svg%3e ");
+
+    &:hover:not(:disabled), &:focus {
+        @apply .border-neutral-400;
+    }
+
+    /* fix for Firefox trying to be cool with dark colors */
+    &:focus {
+        @apply .bg-white .text-neutral-800;
+    }
 }
 
 .input-dark-label {

@@ -12,8 +12,8 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
-const ChunkedConsole = lazy(() => import('@/components/server/Console'));
-const ChunkedStatGraphs = lazy(() => import('@/components/server/StatGraphs'));
+const ChunkedConsole = lazy(() => import(/* webpackChunkName: "console" */'@/components/server/Console'));
+const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/components/server/StatGraphs'));
 
 const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void }) => {
     const [ clicked, setClicked ] = useState(false);
