@@ -16,7 +16,7 @@ class AddForeignKeysServers extends Migration
             MODIFY COLUMN owner INT(10) UNSIGNED NOT NULL,
             MODIFY COLUMN allocation INT(10) UNSIGNED NOT NULL,
             MODIFY COLUMN service INT(10) UNSIGNED NOT NULL,
-            MODIFY COLUMN servers.option INT(10) UNSIGNED NOT NULL
+            MODIFY COLUMN `option` INT(10) UNSIGNED NOT NULL
         ');
 
         Schema::table('servers', function (Blueprint $table) {
@@ -55,7 +55,7 @@ class AddForeignKeysServers extends Migration
             MODIFY COLUMN owner MEDIUMINT(8) UNSIGNED NOT NULL,
             MODIFY COLUMN allocation MEDIUMINT(8) UNSIGNED NOT NULL,
             MODIFY COLUMN service MEDIUMINT(8) UNSIGNED NOT NULL,
-            MODIFY COLUMN servers.option MEDIUMINT(8) UNSIGNED NOT NULL
+            MODIFY COLUMN `option` MEDIUMINT(8) UNSIGNED NOT NULL
         ');
     }
 }
