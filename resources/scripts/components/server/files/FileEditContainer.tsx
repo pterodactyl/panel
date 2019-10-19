@@ -6,6 +6,7 @@ import ace, { Editor } from 'brace';
 import styled from 'styled-components';
 
 const EditorContainer = styled.div`
+    min-height: 16rem;
     height: calc(100vh - 16rem);
     ${tw`relative`};
     
