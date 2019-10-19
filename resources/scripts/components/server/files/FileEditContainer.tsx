@@ -5,6 +5,10 @@ import getFileContents from '@/api/server/files/getFileContents';
 import ace, { Editor } from 'brace';
 import styled from 'styled-components';
 
+// @ts-ignore
+require('brace/ext/modelist');
+require('ayu-ace/mirage');
+
 const EditorContainer = styled.div`
     min-height: 16rem;
     height: calc(100vh - 16rem);
@@ -36,16 +40,20 @@ const modes: { [k: string]: string } = {
     properties: 'Properties',
     python: 'Python',
     ruby: 'Ruby',
-    text: 'Plaintext',
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    plain_text: 'Plaintext',
     toml: 'TOML',
     typescript: 'Typescript',
     xml: 'XML',
     yaml: 'YAML',
 };
 
+Object.keys(modes).forEach(mode => require(`brace/mode/${mode}`));
+
 export default () => {
     const { location: { hash } } = useRouter();
     const [ content, setContent ] = useState('');
+    const [ mode, setMode ] = useState('plain_text');
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
     const [ editor, setEditor ] = useState<Editor>();
@@ -56,16 +64,25 @@ export default () => {
     }, []);
 
     useEffect(() => {
-        Object.keys(modes).forEach(mode => {
-            import(/* webpackMode: "lazy-once", webpackChunkName: "ace_mode" */`brace/mode/${mode}`);
-        });
-    }, []);
-
-    useEffect(() => {
         getFileContents(uuid, hash.replace(/^#/, ''))
             .then(setContent)
             .catch(error => console.error(error));
     }, [ uuid, hash ]);
+
+    useEffect(() => {
+        if (!hash.length) {
+            return;
+        }
+
+        const modelist = ace.acequire('ace/ext/modelist');
+        if (modelist) {
+            setMode(modelist.getModeForPath(hash.replace(/^#/, '')).mode);
+        }
+    }, [hash]);
+
+    useEffect(() => {
+        editor && editor.session.setMode(mode);
+    }, [editor, mode]);
 
     useEffect(() => {
         editor && editor.session.setValue(content);
@@ -76,7 +93,6 @@ export default () => {
             return;
         }
 
-        require('ayu-ace/mirage');
         editor.setTheme('ace/theme/ayu-mirage');
 
         editor.$blockScrolling = Infinity;
@@ -96,11 +112,8 @@ export default () => {
                     <div className={'m-3 rounded bg-neutral-900 border border-black'}>
                         <select
                             className={'input-dark'}
-                            onChange={e => {
-                                if (editor) {
-                                    editor.session.setMode(`ace/mode/${e.currentTarget.value}`);
-                                }
-                            }}
+                            defaultValue={mode}
+                            onChange={e => setMode(`ace/mode/${e.currentTarget.value}`)}
                         >
                             {
                                 Object.keys(modes).map(key => (
