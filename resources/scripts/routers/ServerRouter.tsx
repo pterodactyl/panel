@@ -11,10 +11,7 @@ import DatabasesContainer from '@/components/server/databases/DatabasesContainer
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import { CSSTransition } from 'react-transition-group';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
-
-const LazyFileEditContainer = lazy<React.ComponentType<RouteComponentProps<any>>>(
-    () => import(/* webpackChunkName: "editor" */'@/components/server/files/FileEditContainer')
-);
+import FileEditContainer from '@/components/server/files/FileEditContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -25,7 +22,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
         getServer(match.params.id);
     }
 
-    useEffect(() => () => clearServerState(), []);
+    useEffect(() => () => clearServerState(), [ clearServerState ]);
 
     return (
         <React.Fragment>
@@ -59,7 +56,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                         path={`${match.path}/files/edit`}
                                         render={props => (
                                             <SuspenseSpinner>
-                                                <LazyFileEditContainer {...props}/>
+                                                <FileEditContainer {...props as any}/>
                                             </SuspenseSpinner>
                                         )}
                                         exact
