@@ -6,6 +6,7 @@
     "babel-preset-es2015": "6.18.0"
   },
   "scripts": {
-    "build": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js"
+    "build": "./node_modules/babel-cli/bin/babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/pterodactyl/js/frontend/files/filemanager.min.js",
+    "buildWindows": "cd node_modules/babel-cli/bin && node babel.js public/themes/pterodactyl/js/frontend/files/src --source-maps --out-file public/themes/light/js/frontend/files/filemanager.min.js"
   }
 }
