@@ -52,15 +52,14 @@ Object.keys(modes).forEach(mode => require(`brace/mode/${mode}`));
 
 export interface Props {
     style?: React.CSSProperties;
+    initialContent?: string;
+    initialModePath?: string;
     fetchContent: (callback: () => Promise<string>) => void;
     onContentSaved: (content: string) => void;
 }
 
-export default ({ fetchContent, onContentSaved }: Props) => {
-    const { location: { hash } } = useRouter();
-    const [ content, setContent ] = useState('');
+export default ({ style, initialContent, initialModePath, fetchContent, onContentSaved }: Props) => {
     const [ mode, setMode ] = useState('plain_text');
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
     const [ editor, setEditor ] = useState<Editor>();
     const ref = useCallback(node => {
@@ -70,29 +69,21 @@ export default ({ fetchContent, onContentSaved }: Props) => {
     }, []);
 
     useEffect(() => {
-        getFileContents(uuid, hash.replace(/^#/, ''))
-            .then(setContent)
-            .catch(error => console.error(error));
-    }, [ uuid, hash ]);
-
-    useEffect(() => {
-        if (!hash.length) {
-            return;
-        }
-
-        const modelist = ace.acequire('ace/ext/modelist');
-        if (modelist) {
-            setMode(modelist.getModeForPath(hash.replace(/^#/, '')).mode);
-        }
-    }, [hash]);
-
-    useEffect(() => {
         editor && editor.session.setMode(mode);
     }, [editor, mode]);
 
     useEffect(() => {
-        editor && editor.session.setValue(content);
-    }, [ editor, content ]);
+        editor && editor.session.setValue(initialContent || '');
+    }, [ editor, initialContent ]);
+
+    useEffect(() => {
+        if (initialModePath) {
+            const modelist = ace.acequire('ace/ext/modelist');
+            if (modelist) {
+                setMode(modelist.getModeForPath(initialModePath).mode);
+            }
+        }
+    }, [ initialModePath ]);
 
     useEffect(() => {
         if (!editor) {
@@ -120,7 +111,7 @@ export default ({ fetchContent, onContentSaved }: Props) => {
     }, [ editor, fetchContent, onContentSaved ]);
 
     return (
-        <EditorContainer>
+        <EditorContainer style={style}>
             <div id={'editor'} ref={ref}/>
             <div className={'absolute pin-r pin-t z-50'}>
                 <div className={'m-3 rounded bg-neutral-900 border border-black'}>
