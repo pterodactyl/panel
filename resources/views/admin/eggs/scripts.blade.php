@@ -13,7 +13,7 @@
     <h1>{{ $egg->name }}<small>Manage install and upgrade scripts for this Egg.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nests') }}">Service</a></li>
+        <li><a href="{{ route('admin.nests') }}">Nests</a></li>
         <li><a href="{{ route('admin.nests.view', $egg->nest->id) }}">{{ $egg->nest->name }}</a></li>
         <li class="active">{{ $egg->name }}</li>
     </ol>
