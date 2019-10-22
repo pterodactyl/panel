@@ -27,7 +27,7 @@
             <ul class="nav nav-tabs">
                 <li><a href="{{ route('admin.nests.egg.view', $egg->id) }}">Configuration</a></li>
                 <li class="active"><a href="{{ route('admin.nests.egg.variables', $egg->id) }}">Variables</a></li>
-                <li><a href="{{ route('admin.nests.egg.scripts', $egg->id) }}">Scripts</a></li>
+                <li><a href="{{ route('admin.nests.egg.scripts', $egg->id) }}">Install Script</a></li>
             </ul>
         </div>
     </div>
