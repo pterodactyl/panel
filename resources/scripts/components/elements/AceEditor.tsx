@@ -113,7 +113,7 @@ export default ({ style, initialContent, initialModePath, fetchContent, onConten
     return (
         <EditorContainer style={style}>
             <div id={'editor'} ref={ref}/>
-            <div className={'absolute pin-r pin-t z-50'}>
+            <div className={'absolute pin-r pin-b z-50'}>
                 <div className={'m-3 rounded bg-neutral-900 border border-black'}>
                     <select
                         className={'input-dark'}
