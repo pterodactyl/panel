@@ -46,15 +46,12 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     Route::group(['prefix' => '/files'], function () {
         Route::get('/list', 'Servers\FileController@listDirectory')->name('api.client.servers.files.list');
         Route::get('/contents', 'Servers\FileController@getFileContents')->name('api.client.servers.files.contents');
+        Route::get('/download', 'Servers\FileController@download');
         Route::put('/rename', 'Servers\FileController@renameFile')->name('api.client.servers.files.rename');
         Route::post('/copy', 'Servers\FileController@copyFile')->name('api.client.servers.files.copy');
         Route::post('/write', 'Servers\FileController@writeFileContents')->name('api.client.servers.files.write');
         Route::post('/delete', 'Servers\FileController@delete')->name('api.client.servers.files.delete');
         Route::post('/create-folder', 'Servers\FileController@createFolder')->name('api.client.servers.files.create-folder');
-
-        Route::post('/download/{file}', 'Servers\FileController@download')
-            ->where('file', '.*')
-            ->name('api.client.servers.files.download');
     });
 
     Route::group(['prefix' => '/network'], function () {

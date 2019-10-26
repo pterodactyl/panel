@@ -13,7 +13,7 @@ import { join } from 'path';
 import deleteFile from '@/api/server/files/deleteFile';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import copyFile from '@/api/server/files/copyFile';
-import { httpErrorToHuman } from '@/api/http';
+import http, { httpErrorToHuman } from '@/api/http';
 
 type ModalType = 'rename' | 'move';
 
@@ -67,6 +67,10 @@ export default ({ uuid }: { uuid: string }) => {
                 alert(httpErrorToHuman(error));
                 setShowSpinner(false);
             });
+    };
+
+    const doDownload = () => {
+        window.location = `/api/client/servers/${server.uuid}/files/download?file=${join(directory, file.name)}` as unknown as Location;
     };
 
     useEffect(() => {
@@ -138,7 +142,10 @@ export default ({ uuid }: { uuid: string }) => {
                         <FontAwesomeIcon icon={faCopy} className={'text-xs'}/>
                         <span className={'ml-2'}>Copy</span>
                     </div>
-                    <div className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}>
+                    <div
+                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                        onClick={() => doDownload()}
+                    >
                         <FontAwesomeIcon icon={faFileDownload} className={'text-xs'}/>
                         <span className={'ml-2'}>Download</span>
                     </div>

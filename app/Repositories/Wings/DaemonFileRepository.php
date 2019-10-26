@@ -58,6 +58,29 @@ class DaemonFileRepository extends DaemonRepository
     }
 
     /**
+     * Returns a stream of a file's contents back to the calling function to allow
+     * proxying the request through the Panel rather than needing a direct call to
+     * the Daemon in order to work.
+     *
+     * @param string $path
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function streamContent(string $path): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        $response = $this->getHttpClient()->get(
+            sprintf('/api/servers/%s/files/contents', $this->server->uuid),
+            [
+                'query' => ['file' => $path, 'download' => true],
+                'stream' => true,
+            ]
+        );
+
+        return $response;
+    }
+
+    /**
      * Save new contents to a given file. This works for both creating and updating
      * a file.
      *
