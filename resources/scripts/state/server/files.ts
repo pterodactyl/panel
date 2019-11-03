@@ -24,7 +24,7 @@ const files: ServerFileStore = {
 
         const contents = await loadDirectory(server.uuid, payload);
 
-        actions.setDirectory(payload);
+        actions.setDirectory(payload.length === 0 ? '/' : payload);
         actions.setContents(contents);
     }),
 
@@ -47,7 +47,7 @@ const files: ServerFileStore = {
     }),
 
     setDirectory: action((state, payload) => {
-        state.directory = payload;
+        state.directory = payload.length === 0 ? '/' : payload;
     }),
 };
 
