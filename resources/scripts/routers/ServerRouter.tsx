@@ -12,6 +12,7 @@ import FileManagerContainer from '@/components/server/files/FileManagerContainer
 import { CSSTransition } from 'react-transition-group';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
+import UsersContainer from '@/components/server/users/UsersContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -61,7 +62,8 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                         )}
                                         exact
                                     />
-                                    <Route path={`${match.path}/databases`} component={DatabasesContainer}/>
+                                    <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
+                                    <Route path={`${match.path}/users`} component={UsersContainer} exact/>
                                 </Switch>
                             </React.Fragment>
                         }

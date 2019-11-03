@@ -216,7 +216,7 @@ class User extends Validable implements
      */
     public function getNameAttribute()
     {
-        return $this->name_first . ' ' . $this->name_last;
+        return trim($this->name_first . ' ' . $this->name_last);
     }
 
     /**

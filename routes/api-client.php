@@ -57,4 +57,8 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     Route::group(['prefix' => '/network'], function () {
         Route::get('/', 'Servers\NetworkController@index')->name('api.client.servers.network');
     });
+
+    Route::group(['prefix' => '/users'], function () {
+        Route::get('/', 'Servers\SubuserController@index');
+    });
 });

@@ -38,6 +38,16 @@ export function httpErrorToHuman (error: any): string {
     return error.message;
 }
 
+export interface FractalResponseData {
+    object: string;
+    attributes: {
+        [k: string]: any;
+        relationships?: {
+            [k: string]: FractalResponseData;
+        };
+    };
+}
+
 export interface PaginatedResult<T> {
     items: T[];
     pagination: PaginationDataSet;

@@ -21,5 +21,9 @@ code.clean {
 }
 
 .grey-box {
-    @apply .mt-4 .shadow-md .bg-neutral-700 .rounded .p-3 .flex .text-xs;
+    @apply .shadow-md .bg-neutral-700 .rounded .p-3 .flex .text-xs;
+
+    &:not(.mt-0) {
+        @apply .mt-4;
+    }
 }
