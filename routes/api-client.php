@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 
 /*
@@ -11,6 +12,7 @@ use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 |
 */
 Route::get('/', 'ClientController@index')->name('api.client.index');
+Route::get('/permissions', 'ClientController@permissions');
 
 Route::group(['prefix' => '/account'], function () {
     Route::get('/', 'AccountController@index')->name('api.client.account');

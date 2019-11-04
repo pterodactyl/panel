@@ -3,6 +3,8 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\User;
+use Illuminate\Support\Collection;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
@@ -61,5 +63,26 @@ class ClientController extends ClientApiController
         return $this->fractal->collection($servers)
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
+    }
+
+    /**
+     * Returns all of the subuser permissions available on the system.
+     *
+     * @return array
+     */
+    public function permissions()
+    {
+        $permissions = Permission::permissions()->map(function ($values, $key) {
+            return Collection::make($values)->map(function ($permission) use ($key) {
+                return $key . '.' . $permission;
+            })->values()->toArray();
+        })->flatten();
+
+        return [
+            'object' => 'system_permissions',
+            'attributes' => [
+                'permissions' => $permissions,
+            ],
+        ];
     }
 }

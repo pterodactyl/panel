@@ -5,6 +5,10 @@ import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
 import { Subuser } from '@/state/server/subusers';
 import { CSSTransition } from 'react-transition-group';
+import classNames from 'classnames';
+import PermissionEditor from '@/components/server/users/PermissionEditor';
+import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
+import { ApplicationStore } from '@/state';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -13,6 +17,15 @@ export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const subusers = ServerContext.useStoreState(state => state.subusers.data);
     const getSubusers = ServerContext.useStoreActions(actions => actions.subusers.getSubusers);
+
+    const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
+    const getPermissions = useStoreActions((actions: Actions<ApplicationStore>) => actions.permissions.getPermissions);
+
+    useEffect(() => {
+        if (!permissions.length) {
+            getPermissions().catch(error => console.error(error));
+        }
+    }, [ permissions, getPermissions ]);
 
     useEffect(() => {
         getSubusers(uuid)
@@ -32,8 +45,11 @@ export default () => {
         <div className={'flex my-10'}>
             <div className={'w-1/2'}>
                 <h2 className={'text-neutral-300 mb-4'}>Subusers</h2>
-                <div className={'border-t-4 border-primary-400 grey-box mt-0'}>
-                    {loading ?
+                <div className={classNames('border-t-4 grey-box mt-0', {
+                    'border-cyan-400': editSubuser === null,
+                    'border-neutral-400': editSubuser !== null,
+                })}>
+                    {(loading || !permissions.length) ?
                         <div className={'w-full'}>
                             <Spinner centered={true}/>
                         </div>
@@ -78,8 +94,10 @@ export default () => {
             <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
                 <div className={'flex-1 ml-6'}>
                     <h2 className={'text-neutral-300 mb-4'}>Edit {editSubuser.email}</h2>
-                    <div className={'border-t-4 border-primary-400 grey-box mt-0'}>
-                        <p>Edit permissions here.</p>
+                    <div className={'border-t-4 border-cyan-400 grey-box mt-0'}>
+                        <PermissionEditor
+                            defaultPermissions={editSubuser.permissions}
+                        />
                     </div>
                 </div>
             </CSSTransition>

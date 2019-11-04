@@ -1,7 +1,16 @@
 import { action, Action, thunk, Thunk } from 'easy-peasy';
 import getServerSubusers from '@/api/server/users/getServerSubusers';
 
-export type SubuserPermission = string;
+export type SubuserPermission =
+    'websocket.*' |
+    'control.console' | 'control.start' | 'control.stop' | 'control.restart' | 'control.kill' |
+    'user.create' | 'user.read' | 'user.update' | 'user.delete' |
+    'file.create' | 'file.read' | 'file.update' | 'file.delete' | 'file.archive' | 'file.sftp' |
+    'allocation.read' | 'allocation.update' |
+    'startup.read' | 'startup.update' |
+    'database.create' | 'database.read' | 'database.update' | 'database.delete' | 'database.view_password' |
+    'schedule.create' | 'schedule.read' | 'schedule.update' | 'schedule.delete'
+    ;
 
 export interface Subuser {
     uuid: string;
@@ -30,7 +39,7 @@ const subusers: ServerSubuserStore = {
     }),
 
     appendSubuser: action((state, payload) => {
-        state.data = [...state.data, payload];
+        state.data = [ ...state.data, payload ];
     }),
 
     getSubusers: thunk(async (actions, payload) => {
