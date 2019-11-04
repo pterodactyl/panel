@@ -12,7 +12,7 @@ class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissions
      */
     public function permission(): string
     {
-        return 'create-database';
+        return 'database.create';
     }
 
     /**

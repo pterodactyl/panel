@@ -16,7 +16,7 @@ class GetFileContentsRequest extends ClientApiRequest implements ClientPermissio
      */
     public function permission(): string
     {
-        return 'edit-files';
+        return 'file.read';
     }
 
     /**

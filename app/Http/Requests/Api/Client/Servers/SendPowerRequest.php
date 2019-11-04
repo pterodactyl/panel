@@ -14,7 +14,7 @@ class SendPowerRequest extends ClientApiRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('power-' . $this->input('signal', '_undefined'), $this->getModel(Server::class));
+        return $this->user()->can('control.' . $this->input('signal', ''), $this->getModel(Server::class));
     }
 
     /**

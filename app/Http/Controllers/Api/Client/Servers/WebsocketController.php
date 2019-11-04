@@ -45,7 +45,7 @@ class WebsocketController extends ClientApiController
      */
     public function __invoke(Request $request, Server $server)
     {
-        if (! $request->user()->can('connect-to-ws', $server)) {
+        if (! $request->user()->can('websocket.*', $server)) {
             throw new HttpException(
                 Response::HTTP_FORBIDDEN, 'You do not have permission to connect to this server\'s websocket.'
             );

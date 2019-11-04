@@ -13,6 +13,6 @@ class GetSubuserRequest extends ClientApiRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('view-subusers', $this->route()->parameter('server'));
+        return $this->user()->can('user.read', $this->route()->parameter('server'));
     }
 }

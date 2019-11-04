@@ -15,6 +15,6 @@ class GetNetworkRequest extends ClientApiRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('view-allocations', $this->getModel(Server::class));
+        return $this->user()->can('allocation.read', $this->getModel(Server::class));
     }
 }

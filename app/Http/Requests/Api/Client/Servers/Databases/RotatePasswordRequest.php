@@ -14,6 +14,6 @@ class RotatePasswordRequest extends ClientApiRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('reset-db-password', $this->getModel(Server::class));
+        return $this->user()->can('database.update', $this->getModel(Server::class));
     }
 }

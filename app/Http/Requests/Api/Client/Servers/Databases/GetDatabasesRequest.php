@@ -12,6 +12,6 @@ class GetDatabasesRequest extends ClientApiRequest implements ClientPermissionsR
      */
     public function permission(): string
     {
-        return 'view-databases';
+        return 'database.read';
     }
 }

@@ -12,7 +12,7 @@ class DeleteFileRequest extends ClientApiRequest implements ClientPermissionsReq
      */
     public function permission(): string
     {
-        return 'delete-files';
+        return 'file.delete';
     }
 
     /**

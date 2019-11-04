@@ -13,7 +13,7 @@ class SendCommandRequest extends GetServerRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('send-command', $this->getModel(Server::class));
+        return $this->user()->can('control.console', $this->getModel(Server::class));
     }
 
     /**
