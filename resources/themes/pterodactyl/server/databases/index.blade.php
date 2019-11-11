@@ -82,7 +82,7 @@
         <div class="col-xs-12 col-sm-4">
             <div class="box box-success">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Create New Database</h3>
+                    <h3 class="box-title">@lang('server.config.database.add_db')</h3>
                 </div>
                 @if($overLimit)
                     <div class="box-body">
