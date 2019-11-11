@@ -131,7 +131,7 @@ class DatabaseController extends Controller
                     sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage())
                 )->flash();
 
-                redirect()->route('admin.databases')->withInput($request->validated());
+                return redirect()->route('admin.databases')->withInput($request->validated());
             } else {
                 throw $exception;
             }
@@ -165,7 +165,7 @@ class DatabaseController extends Controller
                 $this->alert->danger(
                     sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage())
                 )->flash();
-                $redirect->withInput($request->normalize());
+                return $redirect->withInput($request->normalize());
             } else {
                 throw $exception;
             }
