@@ -23,6 +23,7 @@ return [
         'task' => [
             'time' => 'After',
             'action' => 'Perform Action',
+            'actions' => 'Power Actions',
             'payload' => 'With Payload',
             'add_more' => 'Add Another Task',
         ],

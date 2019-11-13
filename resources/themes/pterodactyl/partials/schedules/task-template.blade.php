@@ -29,9 +29,26 @@
             </div>
         </div>
         <div class="form-group col-md-6">
-            <label class="control-label">@lang('server.schedule.task.payload')</label>
-            <div data-attribute="remove-task-element">
-                <input type="text" name="tasks[payload][]" class="form-control">
+        <label class="control-label">@lang('server.schedule.task.payload')</label>
+      <div data-attribute="remove-task-element">
+        <input type="text" name="tasks[payload][]" class="form-control" id="cmdtextbox">
+        <label class="control-label">@lang('server.schedule.task.actions')</label>
+        <select class="form-control" id="actions" onchange="func()">
+          <option value="">Select</option>
+          <option value="stop">Stop</option>
+          <option value="start">Start</option>
+          <option value="restart">Restart</option>
+          <option value="kill">Kill</option>
+        </select>
+      </div>
+      <script>
+        function func() {
+          var dropdown = document.getElementById("actions");
+          var selection = dropdown.value;
+          console.log(selection);
+          var cmdtextbox = document.getElementById("cmdtextbox");
+          cmdtextbox.value = selection;
+        }</script>
                 <div class="input-group-btn hidden">
                     <button type="button" class="btn btn-danger" data-action="remove-task"><i class="fa fa-close"></i></button>
                 </div>
