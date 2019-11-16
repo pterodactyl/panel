@@ -102,7 +102,7 @@ Route::group(['prefix' => 'users'], function () {
 */
 Route::group(['prefix' => 'servers'], function () {
     Route::get('/', 'ServersController@index')->name('admin.servers');
-    Route::get('/new', 'ServersController@create')->name('admin.servers.new');
+    Route::get('/new', 'Servers\CreateServerController@index')->name('admin.servers.new');
     Route::get('/view/{server}', 'ServersController@viewIndex')->name('admin.servers.view');
     Route::get('/view/{server}/details', 'ServersController@viewDetails')->name('admin.servers.view.details');
     Route::get('/view/{server}/build', 'ServersController@viewBuild')->name('admin.servers.view.build');
@@ -111,7 +111,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::get('/view/{server}/manage', 'ServersController@viewManage')->name('admin.servers.view.manage');
     Route::get('/view/{server}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
 
-    Route::post('/new', 'ServersController@store');
+    Route::post('/new', 'Servers\CreateServerController@store');
     Route::post('/view/{server}/build', 'ServersController@updateBuild');
     Route::post('/view/{server}/startup', 'ServersController@saveStartup');
     Route::post('/view/{server}/database', 'ServersController@newDatabase');
