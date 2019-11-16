@@ -29,4 +29,26 @@ class DaemonServerRepository extends DaemonRepository
 
         return json_decode($response->getBody()->__toString(), true);
     }
+
+    /**
+     * Creates a new server on the Wings daemon.
+     *
+     * @param array $data
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function create(array $data): void
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            $this->getHttpClient()->post(
+                '/api/servers', [
+                    'json' => $data,
+                ]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
 }

@@ -47,14 +47,76 @@ class ServerConfigurationStructureService
      * daemon, if you modify the structure eggs will break unexpectedly.
      *
      * @param \Pterodactyl\Models\Server $server
+     * @param bool $legacy
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle(Server $server): array
+    public function handle(Server $server, bool $legacy = false): array
     {
         $server->loadMissing(self::REQUIRED_RELATIONS);
 
+        return $legacy ?
+            $this->returnLegacyFormat($server)
+            : $this->returnCurrentFormat($server);
+    }
+
+    /**
+     * Returns the new data format used for the Wings daemon.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    protected function returnCurrentFormat(Server $server)
+    {
+        return [
+            'uuid' => $server->uuid,
+            'suspended' => $server->suspended,
+            'environment' => $this->environment->handle($server),
+            'build' => [
+                'oom_disabled' => $server->oom_disabled,
+                'memory' => $server->memory,
+                'swap' => $server->swap,
+                'io' => $server->io,
+                'cpu' => $server->cpu,
+                'disk' => $server->disk,
+            ],
+            'service' => [
+                'egg' => $server->egg->uuid,
+                'pack' => $server->pack ? $server->pack->uuid : null,
+                'skip_scripts' => $server->skip_scripts,
+            ],
+            'container' => [
+                'image' => $server->image,
+                'requires_rebuild' => false,
+            ],
+            'allocations' => [
+                'default' => [
+                    'ip' => $server->allocation->ip,
+                    'port' => $server->allocation->port,
+                ],
+                'mappings' => [
+                    $server->allocations->groupBy('ip')->map(function ($item) {
+                        return $item->pluck('port');
+                    })->toArray(),
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Returns the legacy server data format to continue support for old egg configurations
+     * that have not yet been updated.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    protected function returnLegacyFormat(Server $server)
+    {
         return [
             'uuid' => $server->uuid,
             'build' => [
