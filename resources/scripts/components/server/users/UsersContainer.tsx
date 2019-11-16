@@ -9,6 +9,7 @@ import classNames from 'classnames';
 import PermissionEditor from '@/components/server/users/PermissionEditor';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -45,10 +46,12 @@ export default () => {
         <div className={'flex my-10'}>
             <div className={'w-1/2'}>
                 <h2 className={'text-neutral-300 mb-4'}>Subusers</h2>
-                <div className={classNames('border-t-4 grey-box mt-0', {
-                    'border-cyan-400': editSubuser === null,
-                    'border-neutral-400': editSubuser !== null,
-                })}>
+                <div
+                    className={classNames('border-t-4 grey-box mt-0', {
+                        'border-cyan-400': editSubuser === null,
+                        'border-neutral-400': editSubuser !== null,
+                    })}
+                >
                     {(loading || !permissions.length) ?
                         <div className={'w-full'}>
                             <Spinner centered={true}/>
@@ -93,11 +96,21 @@ export default () => {
             {editSubuser &&
             <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
                 <div className={'flex-1 ml-6'}>
-                    <h2 className={'text-neutral-300 mb-4'}>Edit {editSubuser.email}</h2>
-                    <div className={'border-t-4 border-cyan-400 grey-box mt-0'}>
-                        <PermissionEditor
-                            defaultPermissions={editSubuser.permissions}
-                        />
+                    <h2 className={'flex items-center text-neutral-300 mb-4'}>
+                        <span onClick={() => setEditSubuser(null)}>
+                            <FontAwesomeIcon
+                                icon={faArrowLeft}
+                                className={'text-base mr-2 text-neutral-200 hover:text-neutral-100 cursor-pointer'}
+                            />
+                        </span>
+                        Edit {editSubuser.email}
+                    </h2>
+                    <div className={'border-t-4 border-cyan-400 grey-box mt-0 p-4'}>
+                        <React.Suspense fallback={'Loading...'}>
+                            <PermissionEditor
+                                defaultPermissions={editSubuser.permissions}
+                            />
+                        </React.Suspense>
                     </div>
                 </div>
             </CSSTransition>

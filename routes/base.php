@@ -3,6 +3,9 @@
 Route::get('/', 'IndexController@index')->name('index')->fallback();
 Route::get('/account', 'IndexController@index')->name('account');
 
+Route::get('/locales/{locale}/{namespace}.json', 'LocaleController')
+    ->where('namespace', '.*');
+
 /*
 |--------------------------------------------------------------------------
 | Account API Controller Routes
