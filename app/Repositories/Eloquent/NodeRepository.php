@@ -31,27 +31,31 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getUsageStats(Node $node): array
     {
-        $stats = $this->getBuilder()->select(
-            $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-        )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
+        $stats = $this->getBuilder()
+            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->join('servers', 'servers.node_id', '=', 'nodes.id')
+            ->where('node_id', '=', $node->id)
+            ->first();
 
-        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($node) {
-            $maxUsage = $node->{$key};
-            if ($node->{$key . '_overallocate'} > 0) {
-                $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
-            }
+        return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
+            ->mapWithKeys(function ($value, $key) use ($node) {
+                $maxUsage = $node->{$key};
+                if ($node->{$key . '_overallocate'} > 0) {
+                    $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
+                }
 
-            $percent = ($value / $maxUsage) * 100;
+                $percent = ($value / $maxUsage) * 100;
 
-            return [
-                $key => [
-                    'value' => number_format($value),
-                    'max' => number_format($maxUsage),
-                    'percent' => $percent,
-                    'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
-                ],
-            ];
-        })->toArray();
+                return [
+                    $key => [
+                        'value' => number_format($value),
+                        'max' => number_format($maxUsage),
+                        'percent' => $percent,
+                        'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
+                    ],
+                ];
+            })
+            ->toArray();
     }
 
     /**
@@ -132,7 +136,12 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     public function loadNodeAllocations(Node $node, bool $refresh = false): Node
     {
         $node->setRelation('allocations',
-            $node->allocations()->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')->orderByRaw('INET_ATON(ip) ASC')->orderBy('port', 'asc')->with('server:id,name')->paginate(50)
+            $node->allocations()
+                ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
+                ->orderByRaw('INET_ATON(ip) ASC')
+                ->orderBy('port', 'asc')
+                ->with('server:id,name')
+                ->paginate(50)
         );
 
         return $node;

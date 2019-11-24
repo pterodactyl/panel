@@ -76,7 +76,6 @@ class ServerConfigurationStructureService
             'suspended' => (bool) $server->suspended,
             'environment' => $this->environment->handle($server),
             'build' => [
-                'oom_disabled' => $server->oom_disabled,
                 'memory' => $server->memory,
                 'swap' => $server->swap,
                 'io' => $server->io,
@@ -90,6 +89,7 @@ class ServerConfigurationStructureService
             ],
             'container' => [
                 'image' => $server->image,
+                'oom_disabled' => $server->oom_disabled,
                 'requires_rebuild' => false,
             ],
             'allocations' => [
@@ -97,11 +97,7 @@ class ServerConfigurationStructureService
                     'ip' => $server->allocation->ip,
                     'port' => $server->allocation->port,
                 ],
-                'mappings' => [
-                    $server->allocations->groupBy('ip')->map(function ($item) {
-                        return $item->pluck('port');
-                    })->toArray(),
-                ],
+                'mappings' => [$server->getAllocationMappings()],
             ],
         ];
     }

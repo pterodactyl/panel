@@ -171,6 +171,18 @@ class Server extends Validable
     }
 
     /**
+     * Returns the format for server allocations when communicating with the Daemon.
+     *
+     * @return array
+     */
+    public function getAllocationMappings(): array
+    {
+        return $this->allocations->groupBy('ip')->map(function ($item) {
+            return $item->pluck('port');
+        })->toArray();
+    }
+
+    /**
      * @return bool
      */
     public function isInstalled(): bool

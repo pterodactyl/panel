@@ -143,13 +143,13 @@ Route::group(['prefix' => 'servers'], function () {
 |
 */
 Route::group(['prefix' => 'nodes'], function () {
-    Route::get('/', 'NodesController@index')->name('admin.nodes');
+    Route::get('/', 'Nodes\NodeController@index')->name('admin.nodes');
     Route::get('/new', 'NodesController@create')->name('admin.nodes.new');
-    Route::get('/view/{node}', 'NodesController@viewIndex')->name('admin.nodes.view');
-    Route::get('/view/{node}/settings', 'NodesController@viewSettings')->name('admin.nodes.view.settings');
-    Route::get('/view/{node}/configuration', 'NodesController@viewConfiguration')->name('admin.nodes.view.configuration');
-    Route::get('/view/{node}/allocation', 'NodesController@viewAllocation')->name('admin.nodes.view.allocation');
-    Route::get('/view/{node}/servers', 'NodesController@viewServers')->name('admin.nodes.view.servers');
+    Route::get('/view/{node}', 'Nodes\NodeViewController@index')->name('admin.nodes.view');
+    Route::get('/view/{node}/settings', 'Nodes\NodeViewController@settings')->name('admin.nodes.view.settings');
+    Route::get('/view/{node}/configuration', 'Nodes\NodeViewController@configuration')->name('admin.nodes.view.configuration');
+    Route::get('/view/{node}/allocation', 'Nodes\NodeViewController@allocations')->name('admin.nodes.view.allocation');
+    Route::get('/view/{node}/servers', 'Nodes\NodeViewController@servers')->name('admin.nodes.view.servers');
     Route::get('/view/{node}/settings/token', 'NodesController@setToken')->name('admin.nodes.view.configuration.token');
 
     Route::post('/new', 'NodesController@store');
