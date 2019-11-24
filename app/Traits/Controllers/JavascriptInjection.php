@@ -61,4 +61,15 @@ trait JavascriptInjection
 
         return Javascript::put($overwrite ? $args : $response);
     }
+
+    /**
+     * Injects the exact array passed in, nothing more.
+     *
+     * @param array $args
+     * @return array
+     */
+    public function plainInject($args = [])
+    {
+        return Javascript::put($args);
+    }
 }

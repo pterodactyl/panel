@@ -73,7 +73,7 @@ class ServerConfigurationStructureService
     {
         return [
             'uuid' => $server->uuid,
-            'suspended' => $server->suspended,
+            'suspended' => (bool) $server->suspended,
             'environment' => $this->environment->handle($server),
             'build' => [
                 'oom_disabled' => $server->oom_disabled,

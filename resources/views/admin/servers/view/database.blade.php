@@ -41,7 +41,7 @@
 <div class="row">
     <div class="col-sm-7">
         <div class="alert alert-info">
-            Database passwords can be viewed when <a href="{{ route('server.databases.index', ['server' => $server->uuidShort]) }}">visiting this server</a> on the front-end.
+            Database passwords can be viewed when <a href="/server/{{ $server->uuidShort }}/databases">visiting this server</a> on the front-end.
         </div>
         <div class="box box-primary">
             <div class="box-header with-border">

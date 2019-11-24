@@ -2,6 +2,19 @@
 
 namespace Pterodactyl\Models;
 
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property string $author
+ * @property string $name
+ * @property string $description
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Server[] $servers
+ * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Egg[] $eggs
+ * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Pack[] $packs
+ */
 class Nest extends Validable
 {
     /**

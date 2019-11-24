@@ -16,7 +16,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property string $name
  * @property string $description
  * @property bool $skip_scripts
- * @property bool $suspended
+ * @property int $suspended
  * @property int $owner_id
  * @property int $memory
  * @property int $swap

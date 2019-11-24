@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Pterodactyl\Http\Middleware\Admin\Servers\ServerInstalled;
+
 Route::get('/', 'BaseController@index')->name('admin.index');
 Route::get('/statistics', 'StatisticsController@index')->name('admin.statistics');
 
@@ -101,15 +104,19 @@ Route::group(['prefix' => 'users'], function () {
 |
 */
 Route::group(['prefix' => 'servers'], function () {
-    Route::get('/', 'ServersController@index')->name('admin.servers');
+    Route::get('/', 'Servers\ServerController@index')->name('admin.servers');
     Route::get('/new', 'Servers\CreateServerController@index')->name('admin.servers.new');
-    Route::get('/view/{server}', 'ServersController@viewIndex')->name('admin.servers.view');
-    Route::get('/view/{server}/details', 'ServersController@viewDetails')->name('admin.servers.view.details');
-    Route::get('/view/{server}/build', 'ServersController@viewBuild')->name('admin.servers.view.build');
-    Route::get('/view/{server}/startup', 'ServersController@viewStartup')->name('admin.servers.view.startup');
-    Route::get('/view/{server}/database', 'ServersController@viewDatabase')->name('admin.servers.view.database');
-    Route::get('/view/{server}/manage', 'ServersController@viewManage')->name('admin.servers.view.manage');
-    Route::get('/view/{server}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
+    Route::get('/view/{server}', 'Servers\ServerViewController@index')->name('admin.servers.view');
+
+    Route::group(['middleware' => [ServerInstalled::class]], function () {
+        Route::get('/view/{server}/details', 'Servers\ServerViewController@details')->name('admin.servers.view.details');
+        Route::get('/view/{server}/build', 'Servers\ServerViewController@build')->name('admin.servers.view.build');
+        Route::get('/view/{server}/startup', 'Servers\ServerViewController@startup')->name('admin.servers.view.startup');
+        Route::get('/view/{server}/database', 'Servers\ServerViewController@database')->name('admin.servers.view.database');
+    });
+
+    Route::get('/view/{server}/manage', 'Servers\ServerViewController@manage')->name('admin.servers.view.manage');
+    Route::get('/view/{server}/delete', 'Servers\ServerViewController@delete')->name('admin.servers.view.delete');
 
     Route::post('/new', 'Servers\CreateServerController@store');
     Route::post('/view/{server}/build', 'ServersController@updateBuild');
