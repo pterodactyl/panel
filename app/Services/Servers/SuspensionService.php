@@ -1,22 +1,15 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
+use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 use Pterodactyl\Models\Server;
-use Psr\Log\LoggerInterface as Writer;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class SuspensionService
 {
@@ -24,43 +17,43 @@ class SuspensionService
     const ACTION_UNSUSPEND = 'unsuspend';
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
-     */
-    protected $daemonServerRepository;
-
-    /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $database;
+    private $database;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
-    protected $writer;
+    private $writer;
+
+    /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     */
+    private $daemonServerRepository;
 
     /**
      * SuspensionService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $database
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Psr\Log\LoggerInterface $writer
      */
     public function __construct(
         ConnectionInterface $database,
-        DaemonServerRepositoryInterface $daemonServerRepository,
+        DaemonServerRepository $daemonServerRepository,
         ServerRepositoryInterface $repository,
-        Writer $writer
+        LoggerInterface $writer
     ) {
-        $this->daemonServerRepository = $daemonServerRepository;
         $this->database = $database;
         $this->repository = $repository;
         $this->writer = $writer;
+        $this->daemonServerRepository = $daemonServerRepository;
     }
 
     /**

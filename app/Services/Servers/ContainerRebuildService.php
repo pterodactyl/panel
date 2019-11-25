@@ -4,28 +4,30 @@ namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
 
 class ContainerRebuildService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
     private $repository;
 
     /**
      * ContainerRebuildService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $repository
      */
-    public function __construct(ServerRepositoryInterface $repository)
+    public function __construct(DaemonServerRepository $repository)
     {
         $this->repository = $repository;
     }
 
     /**
-     * Mark a server for rebuild on next boot cycle.
+     * Mark a server for rebuild on next boot cycle. This just makes an empty patch
+     * request to Wings which will automatically mark the container as requiring a rebuild
+     * on the next boot as a result.
      *
      * @param \Pterodactyl\Models\Server $server
      *
@@ -34,7 +36,7 @@ class ContainerRebuildService
     public function handle(Server $server)
     {
         try {
-            $this->repository->setServer($server)->rebuild();
+            $this->repository->setServer($server)->update([]);
         } catch (RequestException $exception) {
             throw new DaemonConnectionException($exception);
         }

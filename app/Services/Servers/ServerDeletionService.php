@@ -1,82 +1,76 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
-use Psr\Log\LoggerInterface as Writer;
+use Psr\Log\LoggerInterface;
+use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ServerDeletionService
 {
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    protected $connection;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
-     */
-    protected $daemonServerRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    protected $databaseManagementService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    protected $databaseRepository;
-
     /**
      * @var bool
      */
     protected $force = false;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $repository;
+    private $connection;
+
+    /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     */
+    private $daemonServerRepository;
+
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\DatabaseRepository
+     */
+    private $databaseRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     */
+    private $databaseManagementService;
+
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     */
+    private $repository;
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
-    protected $writer;
+    private $writer;
 
     /**
      * DeletionService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
+     * @param \Pterodactyl\Repositories\Eloquent\DatabaseRepository $databaseRepository
      * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      * @param \Psr\Log\LoggerInterface $writer
      */
     public function __construct(
         ConnectionInterface $connection,
-        DaemonServerRepositoryInterface $daemonServerRepository,
-        DatabaseRepositoryInterface $databaseRepository,
+        DaemonServerRepository $daemonServerRepository,
+        DatabaseRepository $databaseRepository,
         DatabaseManagementService $databaseManagementService,
-        ServerRepositoryInterface $repository,
-        Writer $writer
+        ServerRepository $repository,
+        LoggerInterface $writer
     ) {
-        $this->daemonServerRepository = $daemonServerRepository;
         $this->connection = $connection;
-        $this->databaseManagementService = $databaseManagementService;
+        $this->daemonServerRepository = $daemonServerRepository;
         $this->databaseRepository = $databaseRepository;
+        $this->databaseManagementService = $databaseManagementService;
         $this->repository = $repository;
         $this->writer = $writer;
     }
@@ -97,11 +91,12 @@ class ServerDeletionService
     /**
      * Delete a server from the panel and remove any associated databases from hosts.
      *
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      *
+     * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle($server)
+    public function handle(Server $server)
     {
         try {
             $this->daemonServerRepository->setServer($server)->delete();
@@ -119,12 +114,12 @@ class ServerDeletionService
             }
         }
 
-        $this->connection->beginTransaction();
-        $this->databaseRepository->setColumns('id')->findWhere([['server_id', '=', $server->id]])->each(function ($item) {
-            $this->databaseManagementService->delete($item->id);
-        });
+        $this->connection->transaction(function () use ($server) {
+            $this->databaseRepository->setColumns('id')->findWhere([['server_id', '=', $server->id]])->each(function ($item) {
+                $this->databaseManagementService->delete($item->id);
+            });
 
-        $this->repository->delete($server->id);
-        $this->connection->commit();
+            $this->repository->delete($server->id);
+        });
     }
 }

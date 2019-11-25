@@ -7,20 +7,15 @@ use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Traits\Services\HasUserLevels;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class StartupModificationService
 {
     use HasUserLevels;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
-     */
-    private $daemonServerRepository;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -53,10 +48,15 @@ class StartupModificationService
     private $validatorService;
 
     /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     */
+    private $daemonServerRepository;
+
+    /**
      * StartupModificationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $eggRepository
      * @param \Pterodactyl\Services\Servers\EnvironmentService $environmentService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
@@ -65,20 +65,20 @@ class StartupModificationService
      */
     public function __construct(
         ConnectionInterface $connection,
-        DaemonServerRepositoryInterface $daemonServerRepository,
+        DaemonServerRepository $daemonServerRepository,
         EggRepositoryInterface $eggRepository,
         EnvironmentService $environmentService,
         ServerRepositoryInterface $repository,
         ServerVariableRepositoryInterface $serverVariableRepository,
         VariableValidatorService $validatorService
     ) {
-        $this->daemonServerRepository = $daemonServerRepository;
         $this->connection = $connection;
         $this->eggRepository = $eggRepository;
         $this->environmentService = $environmentService;
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->validatorService = $validatorService;
+        $this->daemonServerRepository = $daemonServerRepository;
     }
 
     /**

@@ -1,48 +1,41 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ReinstallServerService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
-    protected $daemonServerRepository;
+    private $daemonServerRepository;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $database;
+    private $database;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
      * ReinstallService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $database
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $database,
-        DaemonServerRepositoryInterface $daemonServerRepository,
+        DaemonServerRepository $daemonServerRepository,
         ServerRepositoryInterface $repository
     ) {
         $this->daemonServerRepository = $daemonServerRepository;

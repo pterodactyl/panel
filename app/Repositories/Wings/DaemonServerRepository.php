@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
+use BadMethodCallException;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\TransferException;
@@ -68,5 +69,31 @@ class DaemonServerRepository extends DaemonRepository
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }
+    }
+
+    /**
+     * Delete a server from the daemon.
+     */
+    public function delete(): void
+    {
+        throw new BadMethodCallException('Method is not implemented.');
+    }
+
+    /**
+     * Reinstall a server on the daemon.
+     */
+    public function reinstall(): void
+    {
+        throw new BadMethodCallException('Method is not implemented.');
+    }
+
+    public function suspend(): void
+    {
+        throw new BadMethodCallException('Method is not implemented.');
+    }
+
+    public function unsuspend(): void
+    {
+        throw new BadMethodCallException('Method is not implemented.');
     }
 }
