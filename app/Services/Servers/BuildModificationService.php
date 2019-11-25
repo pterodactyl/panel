@@ -101,7 +101,7 @@ class BuildModificationService
                     'ip' => $server->allocation->ip,
                     'port' => $server->allocation->port,
                 ],
-                'mappings' => [$server->getAllocationMappings()],
+                'mappings' => $server->getAllocationMappings(),
             ],
             'build' => [
                 'memory' => $server->memory,

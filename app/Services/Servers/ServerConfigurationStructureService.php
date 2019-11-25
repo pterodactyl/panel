@@ -97,7 +97,7 @@ class ServerConfigurationStructureService
                     'ip' => $server->allocation->ip,
                     'port' => $server->allocation->port,
                 ],
-                'mappings' => [$server->getAllocationMappings()],
+                'mappings' => $server->getAllocationMappings(),
             ],
         ];
     }
