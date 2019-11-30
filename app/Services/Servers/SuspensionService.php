@@ -3,11 +3,9 @@
 namespace Pterodactyl\Services\Servers;
 
 use Psr\Log\LoggerInterface;
-use InvalidArgumentException;
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
@@ -19,7 +17,7 @@ class SuspensionService
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    private $database;
+    private $connection;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
@@ -39,18 +37,18 @@ class SuspensionService
     /**
      * SuspensionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface $database
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Psr\Log\LoggerInterface $writer
      */
     public function __construct(
-        ConnectionInterface $database,
+        ConnectionInterface $connection,
         DaemonServerRepository $daemonServerRepository,
         ServerRepositoryInterface $repository,
         LoggerInterface $writer
     ) {
-        $this->database = $database;
+        $this->connection = $connection;
         $this->repository = $repository;
         $this->writer = $writer;
         $this->daemonServerRepository = $daemonServerRepository;
@@ -61,49 +59,26 @@ class SuspensionService
      *
      * @param int|\Pterodactyl\Models\Server $server
      * @param string $action
-     * @return bool
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
-    public function toggle($server, $action = self::ACTION_SUSPEND)
+    public function toggle(Server $server, $action = self::ACTION_SUSPEND)
     {
-        if (! $server instanceof Server) {
-            $server = $this->repository->find($server);
-        }
-
-        if (! in_array($action, [self::ACTION_SUSPEND, self::ACTION_UNSUSPEND])) {
-            throw new InvalidArgumentException(sprintf(
-                'Action must be either ' . self::ACTION_SUSPEND . ' or ' . self::ACTION_UNSUSPEND . ', %s passed.',
-                $action
-            ));
-        }
+        Assert::oneOf($action, [self::ACTION_SUSPEND, self::ACTION_UNSUSPEND]);
 
         if (
             $action === self::ACTION_SUSPEND && $server->suspended ||
             $action === self::ACTION_UNSUSPEND && ! $server->suspended
         ) {
-            return true;
+            return;
         }
 
-        $this->database->beginTransaction();
-        $this->repository->withoutFreshModel()->update($server->id, [
-            'suspended' => $action === self::ACTION_SUSPEND,
-        ]);
+        $this->connection->transaction(function () use ($action, $server) {
+            $this->repository->withoutFreshModel()->update($server->id, [
+                'suspended' => $action === self::ACTION_SUSPEND,
+            ]);
 
-        try {
-            $this->daemonServerRepository->setServer($server)->$action();
-            $this->database->commit();
-
-            return true;
-        } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-            $this->writer->warning($exception);
-
-            throw new DisplayException(trans('admin/server.exceptions.daemon_exception', [
-                'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-            ]));
-        }
+            $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
+        });
     }
 }

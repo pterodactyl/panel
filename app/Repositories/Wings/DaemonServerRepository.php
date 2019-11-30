@@ -87,13 +87,25 @@ class DaemonServerRepository extends DaemonRepository
         throw new BadMethodCallException('Method is not implemented.');
     }
 
-    public function suspend(): void
+    /**
+     * By default this function will suspend a server instance on the daemon. However, passing
+     * "true" as the first argument will unsuspend the server.
+     *
+     * @param bool $unsuspend
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function suspend(bool $unsuspend = false): void
     {
-        throw new BadMethodCallException('Method is not implemented.');
-    }
+        Assert::isInstanceOf($this->server, Server::class);
 
-    public function unsuspend(): void
-    {
-        throw new BadMethodCallException('Method is not implemented.');
+        try {
+            $this->getHttpClient()->patch(
+                '/api/servers/' . $this->server->uuid,
+                ['json' => ['suspended' => ! $unsuspend]]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
     }
 }
