@@ -117,7 +117,7 @@ export default ({ style, initialContent, initialModePath, fetchContent, onConten
                 <div className={'m-3 rounded bg-neutral-900 border border-black'}>
                     <select
                         className={'input-dark'}
-                        defaultValue={mode}
+                        value={mode.split('/').pop()}
                         onChange={e => setMode(`ace/mode/${e.currentTarget.value}`)}
                     >
                         {

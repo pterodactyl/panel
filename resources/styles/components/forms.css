@@ -119,11 +119,6 @@ select.input-dark:not(.appearance-none) {
     &:hover:not(:disabled), &:focus {
         @apply .border-neutral-400;
     }
-
-    /* fix for Firefox trying to be cool with dark colors */
-    &:focus {
-        @apply .bg-white .text-neutral-800;
-    }
 }
 
 .input-dark-label {
