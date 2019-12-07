@@ -73,7 +73,7 @@ export default () => {
         return () => {
             instance.removeListener('stats', statsListener);
         };
-    }, [ connected ]);
+    }, [ instance, connected ]);
 
     return (
         <div className={'my-10 flex'}>
@@ -135,7 +135,7 @@ export default () => {
             <div className={'flex-1 mx-4 mr-4'}>
                 <SuspenseSpinner>
                     <ChunkedConsole/>
-                    {status !== 'offline' && <ChunkedStatGraphs/>}
+                    <ChunkedStatGraphs/>
                 </SuspenseSpinner>
             </div>
         </div>

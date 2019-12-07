@@ -72,7 +72,8 @@ const createDefaultChart = (ctx: CanvasRenderingContext2D, options?: ChartConfig
 });
 
 export default () => {
-    const { limits } = ServerContext.useStoreState(state => state.server.data!);
+    const status = ServerContext.useStoreState(state => state.status.value);
+    const limits = ServerContext.useStoreState(state => state.server.data!.limits);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 
     const [ memory, setMemory ] = useState<Chart>();
@@ -152,15 +153,28 @@ export default () => {
         return () => {
             instance.removeListener('stats', statsListener);
         };
-    }, [ connected, memory, cpu ]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ instance, connected, memory, cpu ]);
 
     return (
         <div className={'flex mt-4'}>
             <TitledGreyBox title={'Memory usage'} icon={faMemory} className={'flex-1 mr-2'}>
-                <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
+                {status !== 'offline' ?
+                    <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
+                    :
+                    <p className={'text-xs text-neutral-400 text-center p-3'}>
+                        Server is offline.
+                    </p>
+                }
             </TitledGreyBox>
             <TitledGreyBox title={'CPU usage'} icon={faMicrochip} className={'flex-1 ml-2'}>
-                <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
+                {status !== 'offline' ?
+                    <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
+                    :
+                    <p className={'text-xs text-neutral-400 text-center p-3'}>
+                        Server is offline.
+                    </p>
+                }
             </TitledGreyBox>
         </div>
     );
