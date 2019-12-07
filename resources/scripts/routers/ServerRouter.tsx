@@ -13,6 +13,8 @@ import { CSSTransition } from 'react-transition-group';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
 import UsersContainer from '@/components/server/users/UsersContainer';
+import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
+import SettingsContainer from '@/components/server/settings/SettingsContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -36,6 +38,8 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             <NavLink to={`${match.url}/files`}>File Manager</NavLink>
                             <NavLink to={`${match.url}/databases`}>Databases</NavLink>
                             <NavLink to={`${match.url}/users`}>User Management</NavLink>
+                            <NavLink to={`${match.url}/schedules`}>Schedules</NavLink>
+                            <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                         </div>
                     </div>
                 </div>
@@ -64,6 +68,8 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     />
                                     <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
                                     <Route path={`${match.path}/users`} component={UsersContainer} exact/>
+                                    <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
+                                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
                                 </Switch>
                             </React.Fragment>
                         }
