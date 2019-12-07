@@ -5,7 +5,7 @@ export default (server: string, file: string): Promise<string> => {
         http.get(`/api/client/servers/${server}/files/contents`, {
             params: { file },
             transformResponse: res => res,
-            responseType: 'text/plain',
+            responseType: 'text',
         })
             .then(({ data }) => resolve(data))
             .catch(reject);

@@ -53,7 +53,11 @@ module.exports = {
     performance: {
         hints: false,
     },
-    entry: ['./resources/styles/main.css', './resources/scripts/index.tsx'],
+    entry: [
+        'react-hot-loader/patch',
+        './resources/styles/main.css',
+        './resources/scripts/index.tsx',
+    ],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
         filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
@@ -138,7 +142,6 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
             '@': path.join(__dirname, 'resources/scripts'),
-            'react-dom': '@hot-loader/react-dom',
         },
         symlinks: false,
     },
