@@ -38,8 +38,7 @@ const terminalProps: ITerminalOptions = {
 export default () => {
     const ref = createRef<HTMLDivElement>();
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
-    const connected = ServerContext.useStoreState(state => state.socket.connected);
-    const instance = ServerContext.useStoreState(state => state.socket.instance);
+    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 
     const handleConsoleOutput = (line: string) => terminal.writeln(
         line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -70,7 +69,7 @@ export default () => {
             // @see https://github.com/xtermjs/xterm.js/issues/2230
             TerminalFit.fit(terminal);
         }
-    }, [ ref.current ]);
+    }, [terminal, ref]);
 
     useEffect(() => {
         if (connected && instance) {
@@ -87,6 +86,7 @@ export default () => {
                 .removeListener('daemon error', handleDaemonErrorOutput)
                 .removeListener('status', handlePowerChangeEvent);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ connected, instance ]);
 
     return (
