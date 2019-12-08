@@ -12,7 +12,7 @@ use Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 
-class SftpController extends Controller
+class SftpAuthenticationController extends Controller
 {
     use ThrottlesLogins;
 
@@ -40,9 +40,12 @@ class SftpController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function index(SftpAuthenticationFormRequest $request): JsonResponse
+    public function __invoke(SftpAuthenticationFormRequest $request): JsonResponse
     {
+        // Reverse the string to avoid issues with usernames that contain periods.
         $parts = explode('.', strrev($request->input('username')), 2);
+
+        // Unreverse the strings after parsing them apart.
         $connection = [
             'username' => strrev(array_get($parts, 1)),
             'server' => strrev(array_get($parts, 0)),
@@ -86,6 +89,8 @@ class SftpController extends Controller
      */
     protected function throttleKey(Request $request)
     {
-        return strtolower(array_get(explode('.', $request->input('username')), 0) . '|' . $request->ip());
+        $username = explode('.', strrev($request->input('username', '')));
+
+        return strtolower(strrev($username[0] ?? '') . '|' . $request->ip());
     }
 }
