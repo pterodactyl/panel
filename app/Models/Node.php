@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Models\Traits\Searchable;
 
@@ -151,71 +152,58 @@ class Node extends Validable
     /**
      * Returns the configuration in JSON format.
      *
-     * @param bool $pretty
      * @return string
      */
-    public function getConfigurationAsJson($pretty = false)
+    public function getYamlConfiguration()
     {
         $config = [
-            'web' => [
+            'debug' => false,
+            'api' => [
                 'host' => '0.0.0.0',
-                'listen' => $this->daemonListen,
+                'port' => $this->daemonListen,
                 'ssl' => [
                     'enabled' => (! $this->behind_proxy && $this->scheme === 'https'),
                     'certificate' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
                     'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
                 ],
+                'upload_limit' => $this->upload_size,
+            ],
+            'system' => [
+                'data' => $this->daemonBase,
+                'username' => 'pterodactyl',
+                'timezone_path' => '/etc/timezone',
+                'set_permissions_on_boot' => true,
+                'detect_clean_exit_as_crash' => false,
+                'sftp' => [
+                    'use_internal' => true,
+                    'disable_disk_checking' => false,
+                    'bind_address' => '0.0.0.0',
+                    'bind_port' => $this->daemonSFTP,
+                    'read_only' => false,
+                ],
             ],
             'docker' => [
-                'container' => [
-                    'user' => null,
-                ],
                 'network' => [
+                    'interface' => '172.18.0.1',
                     'name' => 'pterodactyl_nw',
+                    'driver' => 'bridge',
                 ],
+                'update_images' => true,
                 'socket' => '/var/run/docker.sock',
-                'autoupdate_images' => true,
+                'timezone_path' => '/etc/timezone',
             ],
-            'filesystem' => [
-                'server_logs' => '/tmp/pterodactyl',
+            'disk_check_timeout' => 30,
+            'throttles' => [
+                'kill_at_count' => 5,
+                'decay' => 10,
+                'bytes' => 4096,
+                'check_interval' => 100,
             ],
-            'internals' => [
-                'disk_use_seconds' => 30,
-                'set_permissions_on_boot' => true,
-                'throttle' => [
-                    'enabled' => true,
-                    'kill_at_count' => 5,
-                    'decay' => 10,
-                    'lines' => 1000,
-                    'check_interval_ms' => 100,
-                ],
-            ],
-            'sftp' => [
-                'path' => $this->daemonBase,
-                'ip' => '0.0.0.0',
-                'port' => $this->daemonSFTP,
-                'keypair' => [
-                    'bits' => 2048,
-                    'e' => 65537,
-                ],
-            ],
-            'logger' => [
-                'path' => 'logs/',
-                'src' => false,
-                'level' => 'info',
-                'period' => '1d',
-                'count' => 3,
-            ],
-            'remote' => [
-                'base' => route('index'),
-            ],
-            'uploads' => [
-                'size_limit' => $this->upload_size,
-            ],
-            'keys' => [$this->daemonSecret],
+            'remote' => route('index'),
+            'token' => $this->daemonSecret,
         ];
 
-        return json_encode($config, ($pretty) ? JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_SLASHES);
+        return Yaml::dump($config, 4, 2);
     }
 
     /**

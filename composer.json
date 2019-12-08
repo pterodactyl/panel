@@ -34,12 +34,13 @@
         "s1lentium/iptools": "^1.1",
         "spatie/laravel-fractal": "^5.6",
         "staudenmeir/belongs-to-through": "^2.6",
+        "symfony/yaml": "^4.0",
         "webmozart/assert": "^1.5"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-ide-helper": "^2.6",
-        "codedungeon/phpunit-result-printer": "^0.26",
+        "codedungeon/phpunit-result-printer": "0.25.1",
         "friendsofphp/php-cs-fixer": "^2.15.1",
         "laravel/dusk": "^5.5",
         "php-mock/php-mock-phpunit": "^2.4",
