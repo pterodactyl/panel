@@ -158,7 +158,7 @@ class User extends Validable implements
         'username' => 'required|between:1,255|unique:users,username',
         'name_first' => 'required|string|between:1,255',
         'name_last' => 'required|string|between:1,255',
-        'password' => 'required|nullable|string',
+        'password' => 'sometimes|nullable|string',
         'root_admin' => 'boolean',
         'language' => 'required|string',
         'use_totp' => 'boolean',

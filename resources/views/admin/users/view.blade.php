@@ -102,55 +102,11 @@
                             </select>
                             <p class="text-muted"><small>Setting this to 'Yes' gives a user full administrative access.</small></p>
                         </div>
-                        <div class="checkbox checkbox-primary">
-                            <input type="checkbox" id="pIgnoreConnectionError" value="1" name="ignore_connection_error">
-                            <label for="pIgnoreConnectionError"> Ignore exceptions raised while revoking keys.</label>
-                            <p class="text-muted small">If checked, any errors thrown while revoking keys across nodes will be ignored. You should avoid this checkbox if possible as any non-revoked keys could continue to be active for up to 24 hours after this account is changed. If you are needing to revoke account permissions immediately and are facing node issues, you should check this box and then restart any nodes that failed to be updated to clear out any stored keys.</p>
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </form>
-    {{--<div class="col-xs-12">--}}
-        {{--<div class="box">--}}
-            {{--<div class="box-header with-border">--}}
-                {{--<h3 class="box-title">Associated Servers</h3>--}}
-            {{--</div>--}}
-            {{--<div class="box-body table-responsive no-padding">--}}
-                {{--<table class="table table-hover">--}}
-                    {{--<thead>--}}
-                        {{--<tr>--}}
-                            {{--<th style="width:2%;"></th>--}}
-                            {{--<th>Identifier</th>--}}
-                            {{--<th>Server Name</th>--}}
-                            {{--<th>Access</th>--}}
-                            {{--<th>Node</th>--}}
-                            {{--<th style="width:10%;"></th>--}}
-                        {{--</tr>--}}
-                    {{--</thead>--}}
-                    {{--<tbody>--}}
-                        {{--@foreach($user->setAccessLevel('subuser')->access()->get() as $server)--}}
-                            {{--<tr>--}}
-                                {{--<td><a href="{{ route('server.index', $server->uuidShort) }}/"><i class="fa fa-tachometer"></i></a></td>--}}
-                                {{--<td><code>{{ $server->uuidShort }}</code></td>--}}
-                                {{--<td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>--}}
-                                {{--<td>--}}
-                                    {{--@if($server->owner_id === $user->id)--}}
-                                        {{--<span class="label bg-purple">Owner</span>--}}
-                                    {{--@else--}}
-                                        {{--<span class="label bg-blue">Subuser</span>--}}
-                                    {{--@endif--}}
-                                {{--</td>--}}
-                                {{--<td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>--}}
-                                {{--<td class="centered">@if($server->suspended === 0)<span class="label muted muted-hover label-success">Active</span>@else<span class="label label-warning">Suspended</span>@endif</td>--}}
-                            {{--</td>--}}
-                        {{--@endforeach--}}
-                    {{--</tbody>--}}
-                {{--</table>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
     <div class="col-xs-12">
         <div class="box box-danger">
             <div class="box-header with-border">
