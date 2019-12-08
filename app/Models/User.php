@@ -171,7 +171,7 @@ class User extends Validable implements
      */
     public static function getRules()
     {
-        $rules = self::getRules();
+        $rules = parent::getRules();
 
         $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
         $rules['username'][] = new Username;
