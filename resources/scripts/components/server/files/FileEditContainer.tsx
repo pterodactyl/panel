@@ -59,13 +59,11 @@ export default () => {
                     onContentSaved={() => null}
                 />
             </div>
-            {content &&
             <div className={'flex justify-end mt-4'}>
                 <button className={'btn btn-primary btn-sm'} onClick={save}>
                     Save Content
                 </button>
             </div>
-            }
         </div>
     );
 };
