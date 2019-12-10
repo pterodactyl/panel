@@ -4,14 +4,15 @@ import { ServerContext } from '@/state/server';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { UserData } from '@/state/user';
+import RenameServerBox from '@/components/server/settings/RenameServerBox';
 
 export default () => {
     const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);
     const server = ServerContext.useStoreState(state => state.server.data!);
 
     return (
-        <div className={'my-10 mb-6 flex'}>
-            <TitledGreyBox title={'SFTP Details'} className={'w-full md:w-1/2'}>
+        <div className={'my-10 mb-6 md:flex'}>
+            <TitledGreyBox title={'SFTP Details'} className={'w-full md:flex-1 md:mr-6'}>
                 <div>
                     <label className={'input-dark-label'}>Server Address</label>
                     <input
@@ -38,6 +39,9 @@ export default () => {
                     </div>
                 </div>
             </TitledGreyBox>
+            <div className={'w-full mt-6 md:flex-1 md:mt-0'}>
+                <RenameServerBox/>
+            </div>
         </div>
     );
 };

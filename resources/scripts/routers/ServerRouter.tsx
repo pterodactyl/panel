@@ -47,7 +47,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
             <Provider store={ServerContext.useStore()}>
                 <WebsocketHandler/>
                 <TransitionRouter>
-                    <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
+                    <div className={'w-full mx-auto px-3'} style={{ maxWidth: '1200px' }}>
                         {!server ?
                             <div className={'flex justify-center m-20'}>
                                 <Spinner size={'large'}/>

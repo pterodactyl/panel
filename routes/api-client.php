@@ -63,4 +63,8 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     Route::group(['prefix' => '/users'], function () {
         Route::get('/', 'Servers\SubuserController@index');
     });
+
+    Route::group(['prefix' => '/settings'], function () {
+        Route::post('/rename', 'Servers\SettingsController@rename');
+    });
 });
