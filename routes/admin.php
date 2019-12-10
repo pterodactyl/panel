@@ -150,6 +150,7 @@ Route::group(['prefix' => 'nodes'], function () {
     Route::get('/view/{node}/configuration', 'Nodes\NodeViewController@configuration')->name('admin.nodes.view.configuration');
     Route::get('/view/{node}/allocation', 'Nodes\NodeViewController@allocations')->name('admin.nodes.view.allocation');
     Route::get('/view/{node}/servers', 'Nodes\NodeViewController@servers')->name('admin.nodes.view.servers');
+    Route::get('/view/{node}/system-information', 'Nodes\SystemInformationController');
     Route::get('/view/{node}/settings/token', 'NodesController@setToken')->name('admin.nodes.view.configuration.token');
 
     Route::post('/new', 'NodesController@store');
