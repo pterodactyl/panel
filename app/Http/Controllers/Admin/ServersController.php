@@ -9,33 +9,33 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Javascript;
-use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\SuspensionService;
-use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
-use Pterodactyl\Services\Servers\ServerCreationService;
-use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Services\Servers\ReinstallServerService;
-use Pterodactyl\Services\Servers\ContainerRebuildService;
-use Pterodactyl\Services\Servers\BuildModificationService;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
-use Pterodactyl\Services\Servers\DetailsModificationService;
-use Pterodactyl\Services\Servers\StartupModificationService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Illuminate\Http\Request;
+use Javascript;
+use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
 use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
+use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
+use Pterodactyl\Services\Databases\DatabaseManagementService;
+use Pterodactyl\Services\Databases\DatabasePasswordService;
+use Pterodactyl\Services\Servers\BuildModificationService;
+use Pterodactyl\Services\Servers\ContainerRebuildService;
+use Pterodactyl\Services\Servers\DetailsModificationService;
+use Pterodactyl\Services\Servers\ReinstallServerService;
+use Pterodactyl\Services\Servers\ServerCreationService;
+use Pterodactyl\Services\Servers\ServerDeletionService;
+use Pterodactyl\Services\Servers\StartupModificationService;
+use Pterodactyl\Services\Servers\SuspensionService;
 
 class ServersController extends Controller
 {
