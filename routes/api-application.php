@@ -32,6 +32,7 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::get('/{node}', 'Nodes\NodeController@view')->name('api.application.nodes.view');
 
     Route::post('/', 'Nodes\NodeController@store');
+    Route::post('/{node}/token', 'Nodes\NodeController@token');
     Route::patch('/{node}', 'Nodes\NodeController@update');
 
     Route::delete('/{node}', 'Nodes\NodeController@delete');
