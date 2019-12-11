@@ -1,8 +1,5 @@
-import React, { useCallback, useEffect, useState, lazy } from 'react';
-import useRouter from 'use-react-router';
-import { ServerContext } from '@/state/server';
+import React, { useCallback, useEffect, useState } from 'react';
 import ace, { Editor } from 'brace';
-import getFileContents from '@/api/server/files/getFileContents';
 import styled from 'styled-components';
 
 // @ts-ignore

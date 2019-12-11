@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import getServerDatabases, { ServerDatabase } from '@/api/server/getServerDatabases';
+import getServerDatabases from '@/api/server/getServerDatabases';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';

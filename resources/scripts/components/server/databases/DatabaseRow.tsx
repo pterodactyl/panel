@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ServerDatabase } from '@/api/server/getServerDatabases';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';

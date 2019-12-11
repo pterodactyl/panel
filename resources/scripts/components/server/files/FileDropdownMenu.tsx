@@ -13,7 +13,7 @@ import { join } from 'path';
 import deleteFile from '@/api/server/files/deleteFile';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import copyFile from '@/api/server/files/copyFile';
-import http, { httpErrorToHuman } from '@/api/http';
+import { httpErrorToHuman } from '@/api/http';
 
 type ModalType = 'rename' | 'move';
 

@@ -1,4 +1,4 @@
-import React, { lazy, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
@@ -12,8 +12,6 @@ import FileManagerContainer from '@/components/server/files/FileManagerContainer
 import { CSSTransition } from 'react-transition-group';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
-import UsersContainer from '@/components/server/users/UsersContainer';
-import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
