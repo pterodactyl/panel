@@ -15,6 +15,7 @@ use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\StoreNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\UpdateNodeRequest;
+use Pterodactyl\Http\Requests\Api\Application\Nodes\TokenNodeRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class NodeController extends ApplicationApiController
@@ -30,14 +31,14 @@ class NodeController extends ApplicationApiController
     private $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * @var \Pterodactyl\Services\Nodes\NodeUpdateService
      */
     private $updateService;
+    
+    /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
+    private $repository;
 
     /**
      * NodeController constructor.
@@ -147,5 +148,23 @@ class NodeController extends ApplicationApiController
         $this->deletionService->handle($request->getModel(Node::class));
 
         return response('', 204);
+    }
+    
+    /**
+     * Generate a new token for the specified node.
+     *
+     * @param  \Pterodactyl\Http\Requests\Api\Application\Nodes\TokenNodeRequest $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException
+     */
+    public function token(TokenNodeRequest $request): JsonResponse
+    {
+        $node = $this->updateService->handle($request->getModel(Node::class), [], true);
+
+        return response()->json(['token' => $node->daemonSecret]);
     }
 }
