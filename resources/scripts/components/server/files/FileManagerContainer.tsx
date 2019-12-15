@@ -53,7 +53,7 @@ export default () => {
                                                 </p>
                                             </div>
                                             {
-                                                files.slice(0, 500).map(file => (
+                                                files.slice(0, 250).map(file => (
                                                     <FileObjectRow key={file.uuid} file={file}/>
                                                 ))
                                             }
