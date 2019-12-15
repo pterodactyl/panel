@@ -27,8 +27,8 @@ if (isProduction) {
     plugins = plugins.concat([
         new PurgeCssPlugin({
             paths: glob.sync([
-                path.join(__dirname, 'resources/scripts/**/*.ts'),
-                path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
+                path.join(__dirname, 'resources/scripts/**/*.tsx'),
+                path.join(__dirname, 'resources/views/templates/**/*.blade.php'),
             ]),
             whitelistPatterns: [/^xterm/],
             extractors: [
