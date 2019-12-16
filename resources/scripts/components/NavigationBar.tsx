@@ -11,13 +11,14 @@ import { ApplicationStore } from '@/state';
 
 export default () => {
     const user = useStoreState((state: ApplicationStore) => state.user.data!);
+    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
     return (
         <div id={'navigation'}>
             <div className={'mx-auto w-full flex items-center'} style={{ maxWidth: '1200px', height: '3.5rem' }}>
                 <div id={'logo'}>
                     <Link to={'/'}>
-                        Pterodactyl
+                        {name}
                     </Link>
                 </div>
                 <div className={'right-navigation'}>
