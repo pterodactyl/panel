@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { Form } from 'formik';
 
 export default ({ className, ...props }: React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>) => (
-    <form
+    <Form
         className={'flex items-center justify-center login-box'}
         {...props}
         style={{
@@ -14,5 +15,5 @@ export default ({ className, ...props }: React.DetailedHTMLProps<React.FormHTMLA
         <div className={'flex-1'}>
             {props.children}
         </div>
-    </form>
+    </Form>
 );
