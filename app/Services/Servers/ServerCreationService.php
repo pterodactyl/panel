@@ -4,7 +4,6 @@ namespace Pterodactyl\Services\Servers;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
@@ -228,7 +227,6 @@ class ServerCreationService
             'egg_id' => Arr::get($data, 'egg_id'),
             'pack_id' => empty($data['pack_id']) ? null : $data['pack_id'],
             'startup' => Arr::get($data, 'startup'),
-            'daemonSecret' => Str::random(Node::DAEMON_SECRET_LENGTH),
             'image' => Arr::get($data, 'image'),
             'database_limit' => Arr::get($data, 'database_limit'),
             'allocation_limit' => Arr::get($data, 'allocation_limit'),
