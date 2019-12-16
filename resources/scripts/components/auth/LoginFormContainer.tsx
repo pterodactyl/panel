@@ -1,8 +1,10 @@
-import * as React from 'react';
-import { Form } from 'formik';
+import React, { forwardRef } from 'react';
 
-export default ({ className, ...props }: React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>) => (
-    <Form
+type Props = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement>;
+
+export default forwardRef<any, Props>(({ className, ...props }, ref) => (
+    <form
+        ref={ref}
         className={'flex items-center justify-center login-box'}
         {...props}
         style={{
@@ -15,5 +17,5 @@ export default ({ className, ...props }: React.DetailedHTMLProps<React.FormHTMLA
         <div className={'flex-1'}>
             {props.children}
         </div>
-    </Form>
-);
+    </form>
+));

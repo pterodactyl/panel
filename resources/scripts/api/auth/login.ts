@@ -6,9 +6,19 @@ export interface LoginResponse {
     confirmationToken?: string;
 }
 
-export default (user: string, password: string): Promise<LoginResponse> => {
+export interface LoginData {
+    username: string;
+    password: string;
+    recaptchaData?: string | null;
+}
+
+export default ({ username, password, recaptchaData }: LoginData): Promise<LoginResponse> => {
     return new Promise((resolve, reject) => {
-        http.post('/auth/login', { user, password })
+        http.post('/auth/login', {
+            user: username,
+            password,
+            'g-recaptcha-response': recaptchaData,
+        })
             .then(response => {
                 if (!(response.data instanceof Object)) {
                     return reject(new Error('An error occurred while processing the login request.'));

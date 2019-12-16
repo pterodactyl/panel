@@ -1,78 +1,107 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
-import login from '@/api/auth/login';
+import login, { LoginData } from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Actions, useStoreActions } from 'easy-peasy';
+import { ActionCreator, Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { FormikProps, withFormik } from 'formik';
 import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
-
-interface Values {
-    username: string;
-    password: string;
-}
+import { FlashMessage } from '@/state/flashes';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 type OwnProps = RouteComponentProps & {
-    clearFlashes: any;
-    addFlash: any;
+    clearFlashes: ActionCreator<void>;
+    addFlash: ActionCreator<FlashMessage>;
 }
 
-const LoginContainer = ({ isSubmitting }: OwnProps & FormikProps<Values>) => (
-    <React.Fragment>
-        <h2 className={'text-center text-neutral-100 font-medium py-4'}>
-            Login to Continue
-        </h2>
-        <FlashMessageRender className={'mb-2'}/>
-        <LoginFormContainer>
-            <label htmlFor={'username'}>Username or Email</label>
-            <Field
-                type={'text'}
-                id={'username'}
-                name={'username'}
-                className={'input'}
-            />
-            <div className={'mt-6'}>
-                <label htmlFor={'password'}>Password</label>
+const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handleSubmit }: OwnProps & FormikProps<LoginData>) => {
+    const ref = useRef<ReCAPTCHA | null>(null);
+    const { enabled: recaptchaEnabled, siteKey } = useStoreState<ApplicationStore, any>(state => state.settings.data!.recaptcha);
+
+    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (ref.current && !values.recaptchaData) {
+            return ref.current.execute();
+        }
+
+        handleSubmit(e);
+    };
+
+    console.log(values.recaptchaData);
+
+    return (
+        <React.Fragment>
+            {ref.current && ref.current.render()}
+            <h2 className={'text-center text-neutral-100 font-medium py-4'}>
+                Login to Continue
+            </h2>
+            <FlashMessageRender className={'mb-2'}/>
+            <LoginFormContainer onSubmit={submit}>
+                <label htmlFor={'username'}>Username or Email</label>
                 <Field
-                    type={'password'}
-                    id={'password'}
-                    name={'password'}
+                    type={'text'}
+                    id={'username'}
+                    name={'username'}
                     className={'input'}
                 />
-            </div>
-            <div className={'mt-6'}>
-                <button
-                    type={'submit'}
-                    className={'btn btn-primary btn-jumbo'}
-                >
-                    {isSubmitting ?
-                        <span className={'spinner white'}>&nbsp;</span>
-                        :
-                        'Login'
-                    }
-                </button>
-            </div>
-            <div className={'mt-6 text-center'}>
-                <Link
-                    to={'/auth/password'}
-                    className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
-                >
-                    Forgot password?
-                </Link>
-            </div>
-        </LoginFormContainer>
-    </React.Fragment>
-);
+                <div className={'mt-6'}>
+                    <label htmlFor={'password'}>Password</label>
+                    <Field
+                        type={'password'}
+                        id={'password'}
+                        name={'password'}
+                        className={'input'}
+                    />
+                </div>
+                <div className={'mt-6'}>
+                    <button
+                        type={'submit'}
+                        className={'btn btn-primary btn-jumbo'}
+                    >
+                        {isSubmitting ?
+                            <span className={'spinner white'}>&nbsp;</span>
+                            :
+                            'Login'
+                        }
+                    </button>
+                </div>
+                {recaptchaEnabled &&
+                <ReCAPTCHA
+                    ref={ref}
+                    size={'invisible'}
+                    sitekey={siteKey || '_invalid_key'}
+                    onChange={token => {
+                        ref.current && ref.current.reset();
+                        setFieldValue('recaptchaData', token);
+                        submitForm();
+                    }}
+                    onExpired={() => setFieldValue('recaptchaData', null)}
+                />
+                }
+                <div className={'mt-6 text-center'}>
+                    <Link
+                        to={'/auth/password'}
+                        className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
+                    >
+                        Forgot password?
+                    </Link>
+                </div>
+            </LoginFormContainer>
+        </React.Fragment>
+    );
+};
 
-const EnhancedForm = withFormik<OwnProps, Values>({
+const EnhancedForm = withFormik<OwnProps, LoginData>({
     displayName: 'LoginContainerForm',
 
     mapPropsToValues: (props) => ({
         username: '',
         password: '',
+        recaptchaData: null,
     }),
 
     validationSchema: () => object().shape({
@@ -80,9 +109,9 @@ const EnhancedForm = withFormik<OwnProps, Values>({
         password: string().required('Please enter your account password.'),
     }),
 
-    handleSubmit: ({ username, password }, { props, setSubmitting }) => {
+    handleSubmit: (values, { props, setFieldValue, setSubmitting }) => {
         props.clearFlashes();
-        login(username, password)
+        login(values)
             .then(response => {
                 if (response.complete) {
                     // @ts-ignore
@@ -96,6 +125,7 @@ const EnhancedForm = withFormik<OwnProps, Values>({
                 console.error(error);
 
                 setSubmitting(false);
+                setFieldValue('recaptchaData', null);
                 props.addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
             });
     },
