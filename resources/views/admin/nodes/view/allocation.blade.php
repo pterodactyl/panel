@@ -218,7 +218,7 @@
         }, function () {
             $.ajax({
                 method: 'DELETE',
-                url: Router.route('admin.nodes.view.allocation.removeSingle', { node: Pterodactyl.node.id, allocation: allocation }),
+                url: '/admin/nodes/view/' + Pterodactyl.node.id + '/allocation/remove/' + allocation,
                 headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             }).done(function (data) {
                 element.parent().parent().addClass('warning').delay(100).fadeOut();
@@ -247,7 +247,7 @@
         clearTimeout(fadeTimers[element.data('id')]);
         $.ajax({
             method: 'POST',
-            url: Router.route('admin.nodes.view.allocation.setAlias', { id: Pterodactyl.node.id }),
+            url: '/admin/nodes/view/' + Pterodactyl.node.id + '/allocation/alias',
             headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             data: {
                 alias: element.val(),
@@ -321,9 +321,7 @@
             }, function () {
                 $.ajax({
                     method: 'DELETE',
-                    url: Router.route('admin.nodes.view.allocation.removeMultiple', {
-                        node: Pterodactyl.node.id
-                    }),
+                    url: '/admin/nodes/view/' + Pterodactyl.node.id + '/allocations',
                     headers: {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
                     data: JSON.stringify({
                         allocations: selectedIds

@@ -77,7 +77,7 @@
                 }, function () {
                     $.ajax({
                         method: 'DELETE',
-                        url: Router.route('admin.api.delete', { identifier: self.data('attr') }),
+                        url: '/admin/api/revoke/' + self.data('attr'),
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         }

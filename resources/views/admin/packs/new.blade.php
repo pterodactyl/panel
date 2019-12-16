@@ -130,7 +130,7 @@
 
             $.ajax({
                 method: 'GET',
-                url: Router.route('admin.packs.new.template'),
+                url: '/admin/packs/new/template',
                 headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
             }).fail(function (jqXhr) {
                 console.error(jqXhr);
