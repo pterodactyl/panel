@@ -20,7 +20,6 @@ let plugins = [
         integrity: true,
         integrityHashes: ['sha384'],
     }),
-    new ForkTsCheckerWebpackPlugin(),
 ];
 
 if (isProduction) {
@@ -43,6 +42,8 @@ if (isProduction) {
             ],
         }),
     ]);
+} else {
+    plugins.concat([new ForkTsCheckerWebpackPlugin()]);
 }
 
 module.exports = {
