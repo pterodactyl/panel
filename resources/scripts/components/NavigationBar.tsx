@@ -38,9 +38,9 @@ export default () => {
                         <FontAwesomeIcon icon={faSwatchbook}/>
                     </NavLink>
                     }
-                    <NavLink to={'/auth/logout'}>
+                    <a href={'/auth/logout'}>
                         <FontAwesomeIcon icon={faSignOutAlt}/>
-                    </NavLink>
+                    </a>
                 </div>
             </div>
         </div>
