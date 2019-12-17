@@ -111,16 +111,16 @@ class CreateServerController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws \Throwable
      */
     public function store(ServerFormRequest $request)
     {
         $server = $this->creationService->handle(
-            $request->validated()
+            $request->except(['_token'])
         );
 
         $this->alert->success(

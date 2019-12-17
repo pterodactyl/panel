@@ -18,6 +18,7 @@ use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
 use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
 use Pterodactyl\Services\Deployment\AllocationSelectionService;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerCreationService
 {
@@ -72,6 +73,11 @@ class ServerCreationService
     private $daemonServerRepository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ServerDeletionService
+     */
+    private $serverDeletionService;
+
+    /**
      * CreationService constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\AllocationRepository $allocationRepository
@@ -81,6 +87,7 @@ class ServerCreationService
      * @param \Pterodactyl\Repositories\Eloquent\EggRepository $eggRepository
      * @param \Pterodactyl\Services\Deployment\FindViableNodesService $findViableNodesService
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
+     * @param \Pterodactyl\Services\Servers\ServerDeletionService $serverDeletionService
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      * @param \Pterodactyl\Repositories\Eloquent\ServerVariableRepository $serverVariableRepository
      * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
@@ -93,6 +100,7 @@ class ServerCreationService
         EggRepository $eggRepository,
         FindViableNodesService $findViableNodesService,
         ServerConfigurationStructureService $configurationStructureService,
+        ServerDeletionService $serverDeletionService,
         ServerRepository $repository,
         ServerVariableRepository $serverVariableRepository,
         VariableValidatorService $validatorService
@@ -107,6 +115,7 @@ class ServerCreationService
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->daemonServerRepository = $daemonServerRepository;
+        $this->serverDeletionService = $serverDeletionService;
     }
 
     /**
@@ -157,14 +166,26 @@ class ServerCreationService
 
         // Create the server and assign any additional allocations to it.
         $server = $this->createModel($data);
+
         $this->storeAssignedAllocations($server, $data);
         $this->storeEggVariables($server, $eggVariableData);
 
+        // Due to the design of the Daemon, we need to persist this server to the disk
+        // before we can actually create it on the Daemon.
+        //
+        // If that connection fails out we will attempt to perform a cleanup by just
+        // deleting the server itself from the system.
+        $this->connection->commit();
+
         $structure = $this->configurationStructureService->handle($server);
 
-        $this->connection->transaction(function () use ($server, $structure) {
+        try {
             $this->daemonServerRepository->setServer($server)->create($structure);
-        });
+        } catch (DaemonConnectionException $exception) {
+            $this->serverDeletionService->withForce(true)->handle($server);
+
+            throw $exception;
+        }
 
         return $server;
     }
