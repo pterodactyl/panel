@@ -34,9 +34,6 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
             return { name: directory, path: `/${dirs.slice(0, index + 1).join('/')}` };
         });
 
-    if (withinFileEditor)
-        console.log(breadcrumbs());
-
     return (
         <div className={'flex items-center text-sm mb-4 text-neutral-500'}>
             /<span className={'px-1 text-neutral-300'}>home</span>/
