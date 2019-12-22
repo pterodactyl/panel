@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ITerminalOptions, Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -36,7 +36,8 @@ const terminalProps: ITerminalOptions = {
 };
 
 export default () => {
-    const ref = createRef<HTMLDivElement>();
+    const [ terminalElement, setTerminalElement ] = useState<HTMLDivElement | null>(null);
+    const useRef = useCallback(node => setTerminalElement(node), []);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 
@@ -62,14 +63,14 @@ export default () => {
     };
 
     useEffect(() => {
-        if (ref.current && !terminal.element) {
-            terminal.open(ref.current);
+        if (connected && terminalElement && !terminal.element) {
+            terminal.open(terminalElement);
 
             // @see https://github.com/xtermjs/xterm.js/issues/2265
             // @see https://github.com/xtermjs/xterm.js/issues/2230
             TerminalFit.fit(terminal);
         }
-    }, [terminal, ref]);
+    }, [ terminal, connected, terminalElement ]);
 
     useEffect(() => {
         if (connected && instance) {
@@ -99,7 +100,7 @@ export default () => {
                     maxHeight: '32rem',
                 }}
             >
-                <div id={'terminal'} ref={ref}/>
+                <div id={'terminal'} ref={useRef}/>
             </div>
             <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
                 <div className={'flex-no-shrink p-2 font-bold'}>$</div>
