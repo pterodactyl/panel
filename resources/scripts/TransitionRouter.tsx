@@ -17,7 +17,9 @@ export default ({ children }: Props) => (
                             <p className={'text-right text-neutral-500 text-xs'}>
                                 &copy; 2015 - 2019&nbsp;
                                 <a
+                                    rel={'noopener nofollow'}
                                     href={'https://pterodactyl.io'}
+                                    target={'_blank'}
                                     className={'no-underline text-neutral-500 hover:text-neutral-300'}
                                 >
                                     Pterodactyl Software
