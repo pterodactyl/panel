@@ -46,7 +46,7 @@ export default () => {
             })
             .then(() => {
                 if (name) {
-                    history.push(`/server/${id}/files/edit#${hash.replace(/^#/, '')}/${name}`);
+                    history.push(`/server/${id}/files/edit#/${name}`);
                     return;
                 }
 
