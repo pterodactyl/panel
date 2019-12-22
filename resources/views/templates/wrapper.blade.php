@@ -38,6 +38,14 @@
         @include('layouts.scripts')
     </head>
     <body class="{{ $css['body'] ?? 'bg-neutral-50' }}">
+        @if(\Illuminate\Support\Str::contains(config('app.version'), ['-alpha', '-beta']))
+            <div class="bg-red-500">
+                <p class="text-center text-white text-sm p-3">
+                    You are running a pre-release version of Pterodactyl. Please report any issues
+                    <a href="https://github.com/pterodactyl/panel/issues" class="text-red-100">via GitHub</a>.
+                </p>
+            </div>
+        @endif
         @section('content')
             @yield('above-container')
             @yield('container')
