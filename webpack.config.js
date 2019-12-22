@@ -50,7 +50,7 @@ module.exports = {
     cache: true,
     target: 'web',
     mode: process.env.NODE_ENV,
-    devtool: isProduction ? false : 'eval-source-map',
+    devtool: isProduction ? false : process.env.DEVTOOL || 'source-map',
     performance: {
         hints: false,
     },

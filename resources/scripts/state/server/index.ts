@@ -4,6 +4,7 @@ import socket, { SocketStore } from './socket';
 import { ServerDatabase } from '@/api/server/getServerDatabases';
 import files, { ServerFileStore } from '@/state/server/files';
 import subusers, { ServerSubuserStore } from '@/state/server/subusers';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
@@ -88,4 +89,9 @@ export const ServerContext = createContextStore<ServerStore>({
         state.socket.instance = null;
         state.socket.connected = false;
     }),
-}, { name: 'ServerStore' });
+}, {
+    compose: composeWithDevTools({
+        name: 'ServerStore',
+        trace: true,
+    }),
+});
