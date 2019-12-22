@@ -7,6 +7,7 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import { StaticContext } from 'react-router';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ApplicationStore } from '@/state';
+import Spinner from '@/components/elements/Spinner';
 
 export default ({ history, location: { state } }: RouteComponentProps<{}, StaticContext, { token?: string }>) => {
     const [ code, setCode ] = useState('');
@@ -71,7 +72,7 @@ export default ({ history, location: { state } }: RouteComponentProps<{}, Static
                         disabled={isLoading || code.length !== 6}
                     >
                         {isLoading ?
-                            <span className={'spinner white'}>&nbsp;</span>
+                            <Spinner size={'tiny'} className={'mx-auto'}/>
                             :
                             'Continue'
                         }

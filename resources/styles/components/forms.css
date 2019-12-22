@@ -1,5 +1,9 @@
 textarea, select, input, button {
-    outline: none;
+    @apply .outline-none;
+}
+
+button:focus, button:focus-visible {
+    @apply .outline-none;
 }
 
 input[type=number]::-webkit-outer-spin-button,

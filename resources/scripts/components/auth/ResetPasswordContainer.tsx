@@ -8,6 +8,7 @@ import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
+import Spinner from '@/components/elements/Spinner';
 
 type Props = Readonly<RouteComponentProps<{ token: string }> & {}>;
 
@@ -89,7 +90,7 @@ export default (props: Props) => {
                         disabled={isLoading || !canSubmit()}
                     >
                         {isLoading ?
-                            <span className={'spinner white'}>&nbsp;</span>
+                            <Spinner size={'tiny'} className={'mx-auto'}/>
                             :
                             'Reset Password'
                         }

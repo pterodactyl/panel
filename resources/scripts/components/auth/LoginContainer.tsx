@@ -11,6 +11,7 @@ import Field from '@/components/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
 import { FlashMessage } from '@/state/flashes';
 import ReCAPTCHA from 'react-google-recaptcha';
+import Spinner from '@/components/elements/Spinner';
 
 type OwnProps = RouteComponentProps & {
     clearFlashes: ActionCreator<void>;
@@ -63,7 +64,7 @@ const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handl
                         className={'btn btn-primary btn-jumbo'}
                     >
                         {isSubmitting ?
-                            <span className={'spinner white'}>&nbsp;</span>
+                            <Spinner size={'tiny'} className={'mx-auto'}/>
                             :
                             'Login'
                         }
