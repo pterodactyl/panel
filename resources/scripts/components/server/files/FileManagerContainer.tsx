@@ -48,7 +48,7 @@ export default () => {
                         :
                         <React.Fragment>
                             {!files.length ?
-                                <p className={'text-sm text-neutral-600 text-center'}>
+                                <p className={'text-sm text-neutral-400 text-center'}>
                                     This directory seems to be empty.
                                 </p>
                                 :
@@ -60,8 +60,7 @@ export default () => {
                                                     <div className={'rounded bg-yellow-400 mb-px p-3'}>
                                                         <p className={'text-yellow-900 text-sm text-center'}>
                                                             This directory is too large to display in the browser,
-                                                            limiting
-                                                            the output to the first 250 files.
+                                                            limiting the output to the first 250 files.
                                                         </p>
                                                     </div>
                                                     {
