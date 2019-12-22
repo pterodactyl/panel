@@ -45,11 +45,6 @@ export default () => {
                 setInstance(socket);
             })
             .catch(error => console.error(error));
-
-        return () => {
-            socket && socket.close();
-            instance && instance!.removeAllListeners();
-        };
     }, [ server ]);
 
     return null;
