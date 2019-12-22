@@ -19,10 +19,14 @@ export default () => {
 
     return (
         <div className={'my-10'}>
-            {
+            {servers.length === 0 ?
                 servers.map(server => (
                     <ServerRow key={server.uuid} server={server} className={'mt-2'}/>
                 ))
+                :
+                <p className={'text-center text-sm text-neutral-400'}>
+                    It looks like you have no servers.
+                </p>
             }
         </div>
     );
