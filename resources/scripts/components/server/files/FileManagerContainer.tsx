@@ -10,6 +10,7 @@ import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
+import { Link } from 'react-router-dom';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -19,6 +20,7 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 export default () => {
     const [ loading, setLoading ] = useState(true);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { id } = ServerContext.useStoreState(state => state.server.data!);
     const { contents: files, directory } = ServerContext.useStoreState(state => state.files);
     const { getDirectoryContents } = ServerContext.useStoreActions(actions => actions.files);
 
@@ -79,9 +81,9 @@ export default () => {
                             }
                             <div className={'flex justify-end mt-8'}>
                                 <NewDirectoryButton/>
-                                <button className={'btn btn-sm btn-primary'}>
+                                <Link to={`/server/${id}/files/new${window.location.hash}`} className={'btn btn-sm btn-primary'}>
                                     New File
-                                </button>
+                                </Link>
                             </div>
                         </React.Fragment>
                 }

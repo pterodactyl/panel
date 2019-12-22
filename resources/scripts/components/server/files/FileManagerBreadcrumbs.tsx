@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 
-export default ({ withinFileEditor }: { withinFileEditor?: boolean }) => {
+interface Props {
+    withinFileEditor?: boolean;
+    isNewFile?: boolean;
+}
+
+export default ({ withinFileEditor, isNewFile }: Props) => {
+    const { action } = useParams();
     const [ file, setFile ] = useState<string | null>(null);
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const directory = ServerContext.useStoreState(state => state.files.directory);
@@ -11,12 +17,12 @@ export default ({ withinFileEditor }: { withinFileEditor?: boolean }) => {
     useEffect(() => {
         const parts = window.location.hash.replace(/^#(\/)*/, '/').split('/');
 
-        if (withinFileEditor) {
+        if (withinFileEditor && !isNewFile) {
             setFile(parts.pop() || null);
         }
 
         setDirectory(parts.join('/'));
-    }, [ withinFileEditor, setDirectory ]);
+    }, [ withinFileEditor, isNewFile, setDirectory ]);
 
     const breadcrumbs = (): { name: string; path?: string }[] => directory.split('/')
         .filter(directory => !!directory)
@@ -27,6 +33,9 @@ export default ({ withinFileEditor }: { withinFileEditor?: boolean }) => {
 
             return { name: directory, path: `/${dirs.slice(0, index + 1).join('/')}` };
         });
+
+    if (withinFileEditor)
+        console.log(breadcrumbs());
 
     return (
         <div className={'flex items-center text-sm mb-4 text-neutral-500'}>

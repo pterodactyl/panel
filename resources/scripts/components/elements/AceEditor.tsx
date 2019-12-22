@@ -59,7 +59,7 @@ export interface Props {
 }
 
 export default ({ style, initialContent, initialModePath, fetchContent, onContentSaved }: Props) => {
-    const [ mode, setMode ] = useState('plain_text');
+    const [ mode, setMode ] = useState('ace/mode/plain_text');
 
     const [ editor, setEditor ] = useState<Editor>();
     const ref = useCallback(node => {

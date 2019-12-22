@@ -58,7 +58,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
                                     <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
                                     <Route
-                                        path={`${match.path}/files/edit`}
+                                        path={`${match.path}/files/:action(edit|new)`}
                                         render={props => (
                                             <SuspenseSpinner>
                                                 <FileEditContainer {...props as any}/>
