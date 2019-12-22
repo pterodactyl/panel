@@ -72,11 +72,19 @@ class DaemonServerRepository extends DaemonRepository
     }
 
     /**
-     * Delete a server from the daemon.
+     * Delete a server from the daemon, forcibly if passed.
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function delete(): void
     {
-        throw new BadMethodCallException('Method is not implemented.');
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            $this->getHttpClient()->delete('/api/servers/' . $this->server->uuid);
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
     }
 
     /**
