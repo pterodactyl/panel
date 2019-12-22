@@ -2,16 +2,12 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Support\Arr;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Traits\Services\HasUserLevels;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class StartupModificationService
@@ -49,11 +45,6 @@ class StartupModificationService
     private $validatorService;
 
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $daemonServerRepository;
-
-    /**
      * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
      */
     private $structureService;
@@ -62,7 +53,6 @@ class StartupModificationService
      * StartupModificationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $eggRepository
      * @param \Pterodactyl\Services\Servers\EnvironmentService $environmentService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
@@ -72,7 +62,6 @@ class StartupModificationService
      */
     public function __construct(
         ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository,
         EggRepositoryInterface $eggRepository,
         EnvironmentService $environmentService,
         ServerRepositoryInterface $repository,
@@ -86,7 +75,6 @@ class StartupModificationService
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->validatorService = $validatorService;
-        $this->daemonServerRepository = $daemonServerRepository;
         $this->structureService = $structureService;
     }
 
@@ -98,7 +86,6 @@ class StartupModificationService
      * @return \Pterodactyl\Models\Server
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -121,17 +108,6 @@ class StartupModificationService
 
         if ($this->isUserLevel(User::USER_LEVEL_ADMIN)) {
             $this->updateAdministrativeSettings($data, $server);
-        }
-
-        $updateData = $this->structureService->handle($server);
-
-        try {
-            $this->daemonServerRepository->setServer($server)->update(
-                Arr::only($updateData, ['environment', 'invocation', 'service'])
-            );
-        } catch (RequestException $exception) {
-            $this->connection->rollBack();
-            throw new DaemonConnectionException($exception);
         }
 
         $this->connection->commit();

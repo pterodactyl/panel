@@ -18,7 +18,6 @@ use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Servers\ReinstallServerService;
-use Pterodactyl\Services\Servers\ContainerRebuildService;
 use Pterodactyl\Services\Servers\BuildModificationService;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
@@ -53,11 +52,6 @@ class ServersController extends Controller
      * @var \Illuminate\Contracts\Config\Repository
      */
     protected $config;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ContainerRebuildService
-     */
-    protected $containerRebuildService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
@@ -121,7 +115,6 @@ class ServersController extends Controller
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
      * @param \Pterodactyl\Services\Servers\BuildModificationService $buildModificationService
      * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Pterodactyl\Services\Servers\ContainerRebuildService $containerRebuildService
      * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
      * @param \Pterodactyl\Services\Databases\DatabasePasswordService $databasePasswordService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
@@ -139,7 +132,6 @@ class ServersController extends Controller
         AllocationRepositoryInterface $allocationRepository,
         BuildModificationService $buildModificationService,
         ConfigRepository $config,
-        ContainerRebuildService $containerRebuildService,
         DatabaseManagementService $databaseManagementService,
         DatabasePasswordService $databasePasswordService,
         DatabaseRepositoryInterface $databaseRepository,
@@ -156,7 +148,6 @@ class ServersController extends Controller
         $this->allocationRepository = $allocationRepository;
         $this->buildModificationService = $buildModificationService;
         $this->config = $config;
-        $this->containerRebuildService = $containerRebuildService;
         $this->databaseHostRepository = $databaseHostRepository;
         $this->databaseManagementService = $databaseManagementService;
         $this->databasePasswordService = $databasePasswordService;
@@ -236,21 +227,6 @@ class ServersController extends Controller
     }
 
     /**
-     * Setup a server to have a container rebuild.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     */
-    public function rebuildContainer(Server $server)
-    {
-        $this->containerRebuildService->handle($server);
-        $this->alert->success(trans('admin/server.alerts.rebuild_on_boot'))->flash();
-
-        return redirect()->route('admin.servers.view.manage', $server->id);
-    }
-
-    /**
      * Manage the suspension status for a server.
      *
      * @param \Illuminate\Http\Request $request
@@ -302,7 +278,7 @@ class ServersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function delete(Request $request, Server $server)
     {
@@ -320,7 +296,6 @@ class ServersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

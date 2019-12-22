@@ -107,9 +107,10 @@ class BuildModificationService
         $updateData = $this->structureService->handle($server);
 
         try {
-            $this->daemonServerRepository->setServer($server)->update(
-                Arr::only($updateData, ['allocations', 'build', 'container'])
-            );
+            $this->daemonServerRepository
+                ->setServer($server)
+                ->update(Arr::only($updateData, ['build']));
+
             $this->connection->commit();
         } catch (RequestException $exception) {
             throw new DaemonConnectionException($exception);
