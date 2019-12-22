@@ -75,12 +75,13 @@ class ServerConfigurationStructureService
             'uuid' => $server->uuid,
             'suspended' => (bool) $server->suspended,
             'environment' => $this->environment->handle($server),
+            'invocation' => $server->startup,
             'build' => [
-                'memory' => $server->memory,
+                'memory_limit' => $server->memory,
                 'swap' => $server->swap,
-                'io' => $server->io,
-                'cpu' => $server->cpu,
-                'disk' => $server->disk,
+                'io_weight' => $server->io,
+                'cpu_limit' => $server->cpu,
+                'disk_space' => $server->disk,
             ],
             'service' => [
                 'egg' => $server->egg->uuid,

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
@@ -35,15 +36,22 @@ class BuildModificationService
     private $repository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    private $structureService;
+
+    /**
      * BuildModificationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $structureService
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
+        ServerConfigurationStructureService $structureService,
         ConnectionInterface $connection,
         DaemonServerRepository $daemonServerRepository,
         ServerRepositoryInterface $repository
@@ -52,6 +60,7 @@ class BuildModificationService
         $this->daemonServerRepository = $daemonServerRepository;
         $this->connection = $connection;
         $this->repository = $repository;
+        $this->structureService = $structureService;
     }
 
     /**
@@ -95,28 +104,12 @@ class BuildModificationService
             'allocation_limit' => array_get($data, 'allocation_limit'),
         ]);
 
-        $updateData = [
-            'allocations' => [
-                'default' => [
-                    'ip' => $server->allocation->ip,
-                    'port' => $server->allocation->port,
-                ],
-                'mappings' => $server->getAllocationMappings(),
-            ],
-            'build' => [
-                'memory' => $server->memory,
-                'swap' => $server->swap,
-                'io' => $server->io,
-                'cpu' => $server->cpu,
-                'disk' => $server->disk,
-            ],
-            'container' => [
-                'oom_disabled' => $server->oom_disabled,
-            ],
-        ];
+        $updateData = $this->structureService->handle($server);
 
         try {
-            $this->daemonServerRepository->setServer($server)->update($updateData);
+            $this->daemonServerRepository->setServer($server)->update(
+                Arr::only($updateData, ['allocations', 'build', 'container'])
+            );
             $this->connection->commit();
         } catch (RequestException $exception) {
             throw new DaemonConnectionException($exception);
