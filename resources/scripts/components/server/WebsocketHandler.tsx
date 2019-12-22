@@ -11,7 +11,7 @@ export default () => {
 
     const updateToken = (uuid: string, socket: Websocket) => {
         getWebsocketToken(uuid)
-            .then(data => socket.setToken(data.token))
+            .then(data => socket.setToken(data.token, true))
             .catch(error => console.error(error));
     };
 
@@ -24,7 +24,7 @@ export default () => {
 
         const socket = new Websocket();
 
-        socket.on('SOCKET_OPEN', () => setConnectionState(true));
+        socket.on('auth success', () => setConnectionState(true));
         socket.on('SOCKET_CLOSE', () => setConnectionState(false));
         socket.on('SOCKET_ERROR', () => setConnectionState(false));
         socket.on('status', (status) => setServerStatus(status));
@@ -38,7 +38,10 @@ export default () => {
 
         getWebsocketToken(server.uuid)
             .then(data => {
+                // Connect and then set the authentication token.
                 socket.setToken(data.token).connect(data.socket);
+
+                // Once that is done, set the instance.
                 setInstance(socket);
             })
             .catch(error => console.error(error));
