@@ -58,22 +58,6 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-4">
-        <div class="box">
-            <div class="box-header with-border">
-                <h3 class="box-title">Rebuild Container</h3>
-            </div>
-            <div class="box-body">
-                <p>This will trigger a rebuild of the server container when it next starts up. This is useful if you modified the server configuration file manually, or something just didn't work out correctly.</p>
-            </div>
-            <div class="box-footer">
-                <form action="{{ route('admin.servers.view.manage.rebuild', $server->id) }}" method="POST">
-                    {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-default">Rebuild Server Container</button>
-                </form>
-            </div>
-        </div>
-    </div>
     @if(! $server->suspended)
         <div class="col-sm-4">
             <div class="box box-warning">
