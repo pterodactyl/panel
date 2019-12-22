@@ -31,11 +31,21 @@ export default () => {
                         readOnly={true}
                     />
                 </div>
-                <div className={'mt-6'}>
-                    <div className={'border-l-4 border-cyan-500 p-3'}>
-                        <p className={'text-xs text-neutral-200'}>
-                            Your SFTP password is the same as the password you use to access this panel.
-                        </p>
+                <div className={'mt-6 flex items-center'}>
+                    <div className={'flex-1'}>
+                        <div className={'border-l-4 border-cyan-500 p-3'}>
+                            <p className={'text-xs text-neutral-200'}>
+                                Your SFTP password is the same as the password you use to access this panel.
+                            </p>
+                        </div>
+                    </div>
+                    <div className={'ml-4'}>
+                        <a
+                            href={`sftp://${user.username}.${server.id}@${server.sftpDetails.ip}:${server.sftpDetails.port}`}
+                            className={'btn btn-sm btn-secondary'}
+                        >
+                            Launch SFTP
+                        </a>
                     </div>
                 </div>
             </TitledGreyBox>
