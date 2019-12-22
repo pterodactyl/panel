@@ -7,8 +7,9 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
-class ServerConfigurationController extends Controller
+class ServerDetailsController extends Controller
 {
     /**
      * @var \Pterodactyl\Services\Eggs\EggConfigurationService
@@ -21,20 +22,33 @@ class ServerConfigurationController extends Controller
     private $repository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    private $configurationStructureService;
+
+    /**
      * ServerConfigurationController constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
      * @param \Pterodactyl\Services\Eggs\EggConfigurationService $eggConfigurationService
      */
-    public function __construct(ServerRepository $repository, EggConfigurationService $eggConfigurationService)
-    {
+    public function __construct(
+        ServerRepository $repository,
+        ServerConfigurationStructureService $configurationStructureService,
+        EggConfigurationService $eggConfigurationService
+    ) {
         $this->eggConfigurationService = $eggConfigurationService;
         $this->repository = $repository;
+        $this->configurationStructureService = $configurationStructureService;
     }
 
     /**
+     * Returns details about the server that allows Wings to self-recover and ensure
+     * that the state of the server matches the Panel at all times.
+     *
      * @param \Illuminate\Http\Request $request
-     * @param $uuid
+     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -43,8 +57,9 @@ class ServerConfigurationController extends Controller
     {
         $server = $this->repository->getByUuid($uuid);
 
-        return JsonResponse::create(
-            $this->eggConfigurationService->handle($server)
-        );
+        return JsonResponse::create([
+            'settings' => $this->configurationStructureService->handle($server),
+            'process_configuration' => $this->eggConfigurationService->handle($server),
+        ]);
     }
 }

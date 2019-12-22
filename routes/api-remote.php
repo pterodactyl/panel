@@ -12,5 +12,5 @@ Route::group(['prefix' => '/scripts'], function () {
 // Routes for the Wings daemon.
 Route::post('/sftp/auth', 'SftpAuthenticationController');
 Route::group(['prefix' => '/servers/{uuid}'], function () {
-    Route::get('/configuration', 'Servers\ServerConfigurationController');
+    Route::get('/', 'Servers\ServerDetailsController');
 });
