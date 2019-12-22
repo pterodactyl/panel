@@ -4,7 +4,6 @@ namespace Pterodactyl\Services\Servers;
 
 use Psr\Log\LoggerInterface;
 use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
@@ -100,17 +99,11 @@ class ServerDeletionService
     {
         try {
             $this->daemonServerRepository->setServer($server)->delete();
-        } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-
-            if (is_null($response) || (! is_null($response) && $response->getStatusCode() !== 404)) {
-                // If not forcing the deletion, throw an exception, otherwise just log it and
-                // continue with server deletion process in the panel.
-                if (! $this->force) {
-                    throw new DaemonConnectionException($exception);
-                } else {
-                    $this->writer->warning($exception);
-                }
+        } catch (DaemonConnectionException $exception) {
+            if ($this->force) {
+                $this->writer->warning($exception);
+            } else {
+                throw $exception;
             }
         }
 
