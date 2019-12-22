@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const _ = require('lodash');
 const path = require('path');
 const tailwind = require('tailwindcss');
 const glob = require('glob-all');
@@ -34,7 +33,7 @@ if (isProduction) {
                 {
                     extractor: class {
                         static extract (content) {
-                            return content.match(/[A-z0-9-:\/]+/g) || [];
+                            return content.match(/[A-Za-z0-9-_:\\/]+/g) || [];
                         }
                     },
                     extensions: ['html', 'ts', 'tsx', 'js', 'php'],
@@ -63,7 +62,7 @@ module.exports = {
         path: path.resolve(__dirname, 'public/assets'),
         filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
         chunkFilename: isProduction ? '[name].[chunkhash:8].js' : '[name].[hash:8].js',
-        publicPath: _.get(process.env, 'PUBLIC_PATH', '') + '/assets/',
+        publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
         crossOriginLoading: 'anonymous',
     },
     module: {
@@ -168,7 +167,7 @@ module.exports = {
     },
     devServer: {
         contentBase: path.join(__dirname, 'public'),
-        publicPath: _.get(process.env, 'PUBLIC_PATH', '') + '/assets/',
+        publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
         allowedHosts: [
             '.pterodactyl.test',
         ],

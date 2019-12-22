@@ -25,6 +25,7 @@
             @apply .flex .items-center .h-full .no-underline .text-neutral-300 .px-6;
             transition: background-color 150ms linear, color 150ms linear, box-shadow 150ms ease-in;
 
+            /*! purgecss start ignore */
             &.active, &:hover {
                 @apply .text-neutral-100 .bg-black;
                 box-shadow: inset 0 -2px config('colors.cyan-700');
@@ -33,6 +34,7 @@
             &.active {
                 box-shadow: inset 0 -2px config('colors.cyan-500');
             }
+            /*! purgecss end ignore */
         }
     }
 }
@@ -43,6 +45,7 @@
     .items {
         @apply .flex .items-center .text-sm .mx-2;
 
+        /*! purgecss start ignore */
         & > a, & > div {
             @apply .inline-block .py-3 .px-4 .text-neutral-300 .no-underline;
             transition: color 150ms linear, box-shadow 150ms ease-in;
@@ -60,5 +63,6 @@
                 box-shadow: inset 0 -2px config('colors.cyan-500');
             }
         }
+        /*! purgecss end ignore */
     }
 }

@@ -3,6 +3,7 @@ import { ITerminalOptions, Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
+import styled from 'styled-components';
 
 const theme = {
     background: 'transparent',
@@ -34,6 +35,16 @@ const terminalProps: ITerminalOptions = {
     rows: 30,
     theme: theme,
 };
+
+const TerminalDiv = styled.div`
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        ${tw`bg-neutral-900`};
+    }
+`;
 
 export default () => {
     const [ terminalElement, setTerminalElement ] = useState<HTMLDivElement | null>(null);
@@ -94,13 +105,13 @@ export default () => {
         <div className={'text-xs font-mono relative'}>
             <SpinnerOverlay visible={!connected} size={'large'}/>
             <div
-                className={'rounded-t p-2 bg-black overflow-scroll w-full'}
+                className={'rounded-t p-2 bg-black w-full'}
                 style={{
                     minHeight: '16rem',
                     maxHeight: '32rem',
                 }}
             >
-                <div id={'terminal'} ref={useRef}/>
+                <TerminalDiv id={'terminal'} ref={useRef}/>
             </div>
             <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
                 <div className={'flex-no-shrink p-2 font-bold'}>$</div>
