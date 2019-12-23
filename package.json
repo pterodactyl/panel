@@ -108,10 +108,10 @@
         "yarn-deduplicate": "^1.1.1"
     },
     "scripts": {
-        "clean": "rm -rf public/assets/*.js && rm -rf public/assets/*.css",
+        "clean": "rm -rf public/assets/*.{js,css,map}",
         "watch": "NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "NODE_ENV=development ./node_modules/.bin/webpack --progress",
-        "build:production": "NODE_ENV=production ./node_modules/.bin/webpack --mode production",
+        "build:production": "yarn run clean && NODE_ENV=production ./node_modules/.bin/webpack --mode production",
         "serve": "yarn run clean && PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
     },
     "browserslist": [
