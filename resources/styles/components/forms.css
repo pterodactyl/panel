@@ -1,3 +1,7 @@
+form {
+    @apply .m-0;
+}
+
 textarea, select, input, button {
     @apply .outline-none;
 }

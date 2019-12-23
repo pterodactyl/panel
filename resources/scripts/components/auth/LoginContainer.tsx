@@ -32,8 +32,6 @@ const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handl
         handleSubmit(e);
     };
 
-    console.log(values.recaptchaData);
-
     return (
         <React.Fragment>
             {ref.current && ref.current.render()}
