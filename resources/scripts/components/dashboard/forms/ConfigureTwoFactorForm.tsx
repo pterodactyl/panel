@@ -20,7 +20,7 @@ export default () => {
         </div>
         :
         <div>
-            <SetupTwoFactorModal visible={visible} onDismissed={() => setVisible(false)}/>
+            {visible && <SetupTwoFactorModal visible={visible} onDismissed={() => setVisible(false)}/>}
             <p className={'text-sm'}>
                 You do not currently have two-factor authentication enabled on your account. Click
                 the button below to begin configuring it.

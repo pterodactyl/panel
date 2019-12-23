@@ -14,29 +14,28 @@ interface Values {
     code: string;
 }
 
-export default ({ visible, onDismissed }: RequiredModalProps) => {
+export default ({ ...props }: RequiredModalProps) => {
     const [ token, setToken ] = useState('');
     const [ loading, setLoading ] = useState(true);
+
+    const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     useEffect(() => {
-        if (!visible) {
-            clearFlashes('account:two-factor');
-            getTwoFactorTokenUrl()
-                .then(setToken)
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-    }, [ visible ]);
+        clearFlashes('account:two-factor');
+        getTwoFactorTokenUrl()
+            .then(setToken)
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
 
-    const submit = ({ code }: Values, { resetForm, setSubmitting }: FormikActions<Values>) => {
+    const submit = ({ code }: Values, { setSubmitting }: FormikActions<Values>) => {
         clearFlashes('account:two-factor');
         enableAccountTwoFactor(code)
             .then(() => {
-                resetForm();
-                setToken('');
-                setLoading(true);
+                updateUserData({ useTotp: true });
+                props.onDismissed();
             })
             .catch(error => {
                 console.error(error);
@@ -56,15 +55,9 @@ export default ({ visible, onDismissed }: RequiredModalProps) => {
                     .matches(/^(\d){6}$/, 'Authenticator code must be 6 digits.'),
             })}
         >
-            {({ isSubmitting, isValid, resetForm }) => (
+            {({ isSubmitting, isValid }) => (
                 <Modal
-                    visible={visible}
-                    onDismissed={() => {
-                        resetForm();
-                        setToken('');
-                        setLoading(true);
-                        onDismissed();
-                    }}
+                    {...props}
                     dismissable={!isSubmitting}
                     showSpinnerOverlay={loading || isSubmitting}
                 >
