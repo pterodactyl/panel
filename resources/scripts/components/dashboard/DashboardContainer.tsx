@@ -19,7 +19,7 @@ export default () => {
 
     return (
         <div className={'my-10'}>
-            {servers.length === 0 ?
+            {servers.length > 0 ?
                 servers.map(server => (
                     <ServerRow key={server.uuid} server={server} className={'mt-2'}/>
                 ))
