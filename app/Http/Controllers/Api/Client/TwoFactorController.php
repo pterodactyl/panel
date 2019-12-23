@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -100,7 +101,29 @@ class TwoFactorController extends ClientApiController
         return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }
 
-    public function delete()
+    /**
+     * Disables two-factor authentication on an account if the password provided
+     * is valid.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(Request $request)
     {
+        if (! password_verify($request->input('password') ?? '', $request->user()->password)) {
+            throw new BadRequestHttpException(
+                'The password provided was not valid.'
+            );
+        }
+
+        /** @var \Pterodactyl\Models\User $user */
+        $user = $request->user();
+
+        $user->update([
+            'totp_authenticated_at' => Carbon::now(),
+            'use_totp' => false,
+        ]);
+
+        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }
 }
