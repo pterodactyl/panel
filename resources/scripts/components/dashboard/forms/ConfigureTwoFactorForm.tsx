@@ -10,7 +10,13 @@ export default () => {
 
     return user.useTotp ?
         <div>
-            {visible && <DisableTwoFactorModal visible={visible} onDismissed={() => setVisible(false)}/>}
+            {visible &&
+            <DisableTwoFactorModal
+                appear={true}
+                visible={visible}
+                onDismissed={() => setVisible(false)}
+            />
+            }
             <p className={'text-sm'}>
                 Two-factor authentication is currently enabled on your account.
             </p>
@@ -25,7 +31,13 @@ export default () => {
         </div>
         :
         <div>
-            {visible && <SetupTwoFactorModal visible={visible} onDismissed={() => setVisible(false)}/>}
+            {visible &&
+            <SetupTwoFactorModal
+                appear={true}
+                visible={visible}
+                onDismissed={() => setVisible(false)}
+            />
+            }
             <p className={'text-sm'}>
                 You do not currently have two-factor authentication enabled on your account. Click
                 the button below to begin configuring it.

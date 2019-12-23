@@ -63,9 +63,9 @@ export default ({ ...props }: RequiredModalProps) => {
                 >
                     <Form className={'mb-0'}>
                         <FlashMessageRender className={'mb-6'} byKey={'account:two-factor'}/>
-                        <div className={'flex'}>
-                            <div className={'flex-1'}>
-                                <div className={'w-64 h-64 bg-neutral-600 p-2 rounded'}>
+                        <div className={'flex flex-wrap'}>
+                            <div className={'w-full md:flex-1'}>
+                                <div className={'w-32 h-32 md:w-64 md:w-64 bg-neutral-600 p-2 rounded mx-auto'}>
                                     {!token || !token.length ?
                                         <img
                                             src={'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='}
@@ -80,7 +80,7 @@ export default ({ ...props }: RequiredModalProps) => {
                                     }
                                 </div>
                             </div>
-                            <div className={'flex-1 flex flex-col'}>
+                            <div className={'w-full mt-6 md:mt-0 md:flex-1 md:flex md:flex-col'}>
                                 <div className={'flex-1'}>
                                     <Field
                                         id={'code'}
@@ -91,7 +91,7 @@ export default ({ ...props }: RequiredModalProps) => {
                                         autoFocus={!loading}
                                     />
                                 </div>
-                                <div className={'text-right'}>
+                                <div className={'mt-6 md:mt-0 text-right'}>
                                     <button className={'btn btn-primary btn-sm'} disabled={!isValid}>
                                         Setup
                                     </button>
