@@ -77,7 +77,7 @@ export default () => {
 
     return (
         <div className={'my-10 flex'}>
-            <div className={'w-1/4 ml-4'}>
+            <div className={'w-1/4'}>
                 <TitledGreyBox title={server.name} icon={faServer}>
                     <p className={'text-xs uppercase'}>
                         <FontAwesomeIcon

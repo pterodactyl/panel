@@ -43,7 +43,8 @@
     @apply .w-full .bg-neutral-700 .shadow;
 
     .items {
-        @apply .flex .items-center .text-sm .mx-2;
+        @apply .flex .items-center .text-sm .mx-auto .px-2;
+        max-width: 1200px;
 
         /*! purgecss start ignore */
         & > a, & > div {
