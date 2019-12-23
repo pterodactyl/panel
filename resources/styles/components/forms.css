@@ -145,32 +145,29 @@ a.btn {
     @apply .rounded .p-2 .uppercase .tracking-wide .text-sm;
     transition: all 150ms linear;
 
-    /**
-     * Button Colors
-     */
-    &.btn-primary {
-        @apply .bg-primary-500 .border-primary-600 .border .text-primary-50;
+    &.btn-secondary {
+        @apply .border .border-neutral-600 .bg-transparent .text-neutral-200;
 
         &:hover:not(:disabled) {
-            @apply .bg-primary-600 .border-primary-700;
+            @apply .border-neutral-500 .text-neutral-100;
         }
-    }
 
-    &.btn-green {
-        @apply .bg-green-500 .border-green-600 .border .text-green-50;
-
-        &:hover:not(:disabled) {
-            @apply .bg-green-600 .border-green-700;
-        }
-    }
-
-    &.btn-red {
-        &:not(.btn-secondary) {
+        &.btn-red:hover:not(:disabled) {
             @apply .bg-red-500 .border-red-600 .text-red-50;
         }
 
+        &.btn-green:hover:not(:disabled) {
+            @apply .bg-green-500 .border-green-600 .text-green-50;
+        }
+    }
+
+    &.btn-primary {
+        &:not(.btn-secondary) {
+            @apply .bg-primary-500 .border-primary-600 .border .text-primary-50;
+        }
+
         &:hover:not(:disabled) {
-            @apply .bg-red-600 .border-red-700;
+            @apply .bg-primary-600 .border-primary-700;
         }
     }
 
@@ -182,15 +179,23 @@ a.btn {
         }
     }
 
-    &.btn-secondary {
-        @apply .border .border-neutral-600 .bg-transparent .text-neutral-200;
-
-        &:hover:not(:disabled) {
-            @apply .border-neutral-500 .text-neutral-100;
+    &.btn-green {
+        &:not(.btn-secondary) {
+            @apply .bg-green-500 .border-green-600 .border .text-green-50;
         }
 
-        &.btn-red:hover:not(:disabled) {
+        &:hover:not(:disabled), &.btn-secondary:active:not(:disabled) {
+            @apply .bg-green-600 .border-green-700;
+        }
+    }
+
+    &.btn-red {
+        &:not(.btn-secondary) {
             @apply .bg-red-500 .border-red-600 .text-red-50;
+        }
+
+        &:hover:not(:disabled), &.btn-secondary:active:not(:disabled) {
+            @apply .bg-red-600 .border-red-700;
         }
     }
 

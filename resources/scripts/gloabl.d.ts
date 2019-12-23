@@ -1,1 +1,1 @@
-declare function tw(a: TemplateStringsArray | string): any;
+declare function tw (a: TemplateStringsArray | string): any;

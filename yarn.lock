@@ -6857,6 +6857,10 @@ style-loader@^0.23.1:
     loader-utils "^1.1.0"
     schema-utils "^1.0.0"
 
+styled-components-breakpoint@^3.0.0-preview.20:
+  version "3.0.0-preview.20"
+  resolved "https://registry.yarnpkg.com/styled-components-breakpoint/-/styled-components-breakpoint-3.0.0-preview.20.tgz#877e88a00c0cf66976f610a1d347839a1a0b6d70"
+
 styled-components@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/styled-components/-/styled-components-4.4.1.tgz#e0631e889f01db67df4de576fedaca463f05c2f2"

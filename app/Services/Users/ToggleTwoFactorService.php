@@ -65,7 +65,9 @@ class ToggleTwoFactorService
         $isValidToken = $this->google2FA->verifyKey($secret, $token, config()->get('pterodactyl.auth.2fa.window'));
 
         if (! $isValidToken) {
-            throw new TwoFactorAuthenticationTokenInvalid;
+            throw new TwoFactorAuthenticationTokenInvalid(
+                'The token provided is not valid.'
+            );
         }
 
         $this->repository->withoutFreshModel()->update($user->id, [

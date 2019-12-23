@@ -16,6 +16,9 @@ Route::get('/permissions', 'ClientController@permissions');
 
 Route::group(['prefix' => '/account'], function () {
     Route::get('/', 'AccountController@index')->name('api.client.account');
+    Route::get('/two-factor', 'TwoFactorController@index');
+    Route::post('/two-factor', 'TwoFactorController@store');
+    Route::delete('/two-factor', 'TwoFactorController@delete');
 
     Route::put('/email', 'AccountController@updateEmail')->name('api.client.account.update-email');
     Route::put('/password', 'AccountController@updatePassword')->name('api.client.account.update-password');
