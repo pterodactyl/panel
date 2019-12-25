@@ -163,7 +163,7 @@ class Node extends Validable
                 'port' => $this->daemonListen,
                 'ssl' => [
                     'enabled' => (! $this->behind_proxy && $this->scheme === 'https'),
-                    'certificate' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
+                    'cert' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
                     'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
                 ],
                 'upload_limit' => $this->upload_size,
