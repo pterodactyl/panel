@@ -73,7 +73,7 @@ class NestDeletionServiceTest extends TestCase
             $this->service->handle(1);
         } catch (PterodactylException $exception) {
             $this->assertInstanceOf(HasActiveServersException::class, $exception);
-            $this->assertEquals(trans('exceptions.service.delete_has_servers'), $exception->getMessage());
+            $this->assertEquals(trans('exceptions.nest.delete_has_servers'), $exception->getMessage());
         }
     }
 

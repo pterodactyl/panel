@@ -60,7 +60,7 @@ class DatabasePasswordServiceTest extends TestCase
         $this->dynamic->shouldReceive('set')->with('dynamic', $model->database_host_id)->once()->andReturnNull();
 
         $this->encrypter->expects('encrypt')->with(m::on(function ($string) {
-            preg_match_all('/[!@+=^-]/', $string, $matches, PREG_SET_ORDER);
+            preg_match_all('/[!@+=.^-]/', $string, $matches, PREG_SET_ORDER);
             $this->assertTrue(count($matches) >= 2 && count($matches) <= 6, "Failed asserting that [{$string}] contains 2 to 6 special characters.");
             $this->assertTrue(strlen($string) === 24, "Failed asserting that [{$string}] is 24 characters in length.");
 
