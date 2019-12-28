@@ -29,8 +29,8 @@ use Pterodactyl\Models\Traits\Searchable;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Support\Collection $servers
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Support\Collection $allocations
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
 class Node extends Validable
 {

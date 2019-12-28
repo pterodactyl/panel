@@ -36,10 +36,10 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Carbon\Carbon $updated_at
  *
  * @property string $name
- * @property \Pterodactyl\Models\Permission[]|\Illuminate\Support\Collection $permissions
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Support\Collection $servers
- * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Support\Collection $subuserOf
- * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Support\Collection $keys
+ * @property \Pterodactyl\Models\Permission[]|\Illuminate\Database\Eloquent\Collection $permissions
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subuserOf
+ * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  */
 class User extends Validable implements
     AuthenticatableContract,

@@ -37,19 +37,19 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Pterodactyl\Models\User $user
- * @property \Pterodactyl\Models\User[]|\Illuminate\Support\Collection $subusers
+ * @property \Pterodactyl\Models\User[]|\Illuminate\Database\Eloquent\Collection $subusers
  * @property \Pterodactyl\Models\Allocation $allocation
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Support\Collection $allocations
+ * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  * @property \Pterodactyl\Models\Pack|null $pack
  * @property \Pterodactyl\Models\Node $node
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Pterodactyl\Models\Egg $egg
- * @property \Pterodactyl\Models\ServerVariable[]|\Illuminate\Support\Collection $variables
- * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Support\Collection $schedule
- * @property \Pterodactyl\Models\Database[]|\Illuminate\Support\Collection $databases
+ * @property \Pterodactyl\Models\ServerVariable[]|\Illuminate\Database\Eloquent\Collection $variables
+ * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection $schedule
+ * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
  * @property \Pterodactyl\Models\Location $location
  * @property \Pterodactyl\Models\DaemonKey $key
- * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Support\Collection $keys
+ * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  */
 class Server extends Validable
 {

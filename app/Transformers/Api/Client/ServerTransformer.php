@@ -4,13 +4,14 @@ namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 
 class ServerTransformer extends BaseClientTransformer
 {
     /**
      * @var array
      */
-    protected $availableIncludes = ['egg'];
+    protected $availableIncludes = ['egg', 'subusers'];
 
     /**
      * @return string
@@ -68,5 +69,17 @@ class ServerTransformer extends BaseClientTransformer
     public function includeEgg(Server $server)
     {
         return $this->item($server->egg, $this->makeTransformer(EggTransformer::class), Egg::RESOURCE_NAME);
+    }
+
+    /**
+     * Returns the subusers associated with this server.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Collection
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     */
+    public function includeSubusers(Server $server)
+    {
+        return $this->collection($server->subusers, $this->makeTransformer(SubuserTransformer::class), Subuser::RESOURCE_NAME);
     }
 }

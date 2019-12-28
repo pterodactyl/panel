@@ -13,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
  *
  * @property \Pterodactyl\Models\User $user
  * @property \Pterodactyl\Models\Server $server
- * @property \Pterodactyl\Models\Permission[]|\Illuminate\Support\Collection $permissions
+ * @property \Pterodactyl\Models\Permission[]|\Illuminate\Database\Eloquent\Collection $permissions
  */
 class Subuser extends Validable
 {

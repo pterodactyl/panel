@@ -160,7 +160,7 @@ class Permission extends Validable
      * Returns all of the permissions available on the system for a user to
      * have when controlling a server.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function permissions(): Collection
     {
@@ -229,7 +229,7 @@ class Permission extends Validable
      * Return a collection of permissions available.
      *
      * @param bool $array
-     * @return array|\Illuminate\Support\Collection
+     * @return array|\Illuminate\Database\Eloquent\Collection
      * @deprecated
      */
     public static function getPermissions($array = false)

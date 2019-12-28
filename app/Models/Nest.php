@@ -11,9 +11,9 @@ namespace Pterodactyl\Models;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
- * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Server[] $servers
- * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Egg[] $eggs
- * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Pack[] $packs
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Egg[] $eggs
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Pack[] $packs
  */
 class Nest extends Validable
 {

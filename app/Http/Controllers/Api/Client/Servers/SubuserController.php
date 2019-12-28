@@ -36,9 +36,9 @@ class SubuserController extends ClientApiController
      */
     public function index(GetSubuserRequest $request, Server $server)
     {
-        $users = $this->repository->getSubusersForServer($server->id);
+        $server->subusers->load('user');
 
-        return $this->fractal->collection($users)
+        return $this->fractal->collection($server->subusers)
             ->transformWith($this->getTransformer(SubuserTransformer::class))
             ->toArray();
     }

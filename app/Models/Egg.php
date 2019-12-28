@@ -33,9 +33,9 @@ namespace Pterodactyl\Models;
  * @property string|null $inherit_config_stop
  *
  * @property \Pterodactyl\Models\Nest $nest
- * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Server[] $servers
- * @property \Illuminate\Support\Collection|\Pterodactyl\Models\EggVariable[] $variables
- * @property \Illuminate\Support\Collection|\Pterodactyl\Models\Pack[] $packs
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\EggVariable[] $variables
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Pack[] $packs
  * @property \Pterodactyl\Models\Egg|null $scriptFrom
  * @property \Pterodactyl\Models\Egg|null $configFrom
  */
