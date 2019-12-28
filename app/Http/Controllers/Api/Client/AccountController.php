@@ -4,6 +4,8 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Auth\AuthManager;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -17,15 +19,22 @@ class AccountController extends ClientApiController
     private $updateService;
 
     /**
+     * @var \Illuminate\Auth\SessionGuard
+     */
+    private $sessionGuard;
+
+    /**
      * AccountController constructor.
      *
+     * @param \Illuminate\Auth\AuthManager $sessionGuard
      * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
      */
-    public function __construct(UserUpdateService $updateService)
+    public function __construct(AuthManager $sessionGuard, UserUpdateService $updateService)
     {
         parent::__construct();
 
         $this->updateService = $updateService;
+        $this->sessionGuard = $sessionGuard;
     }
 
     /**
@@ -56,18 +65,21 @@ class AccountController extends ClientApiController
     }
 
     /**
-     * Update the authenticated user's password.
+     * Update the authenticated user's password. All existing sessions will be logged
+     * out immediately.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updatePassword(UpdatePasswordRequest $request): Response
+    public function updatePassword(UpdatePasswordRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->updateService->handle($request->user(), $request->validated());
 
-        return response('', Response::HTTP_CREATED);
+        $this->sessionGuard->logoutOtherDevices($request->input('current_password'));
+
+        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }
 }

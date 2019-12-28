@@ -34,8 +34,8 @@ export default () => {
         clearFlashes('account:password');
         updateAccountPassword({ ...values })
             .then(() => {
-                resetForm();
-                addFlash({ key: 'account:password', type: 'success', message: 'Your password has been updated.' });
+                // @ts-ignore
+                window.location = '/auth/login';
             })
             .catch(error => addFlash({
                 key: 'account:password',
