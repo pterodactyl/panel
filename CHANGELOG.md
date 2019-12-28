@@ -6,6 +6,10 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v0.7.16 (Derelict Dermodactylus)
 ### Fixed
 * Fixed the /api/application/servers endpoint erroring when including subusers or egg
+* Fixed bug in migration files causing failures when using MySQL 8.
+* Fixed missing redirect return when an error occurs while modifying database information.
+* Fixes bug in login attempt tracking.
+* Fixes a bug where certain URL encoded files would not be editable in the file manager.
 
 ### Added
 * The application API now includes the egg's name in the egg model's response.
