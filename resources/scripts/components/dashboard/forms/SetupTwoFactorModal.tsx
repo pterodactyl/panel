@@ -65,7 +65,7 @@ export default ({ ...props }: RequiredModalProps) => {
                         <FlashMessageRender className={'mb-6'} byKey={'account:two-factor'}/>
                         <div className={'flex flex-wrap'}>
                             <div className={'w-full md:flex-1'}>
-                                <div className={'w-32 h-32 md:w-64 md:w-64 bg-neutral-600 p-2 rounded mx-auto'}>
+                                <div className={'w-32 h-32 md:w-64 md:h-64 bg-neutral-600 p-2 rounded mx-auto'}>
                                     {!token || !token.length ?
                                         <img
                                             src={'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='}
