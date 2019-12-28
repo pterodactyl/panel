@@ -5,6 +5,7 @@ namespace Pterodactyl\Exceptions;
 use Exception;
 use PDOException;
 use Psr\Log\LoggerInterface;
+use Swift_TransportException;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
 use Illuminate\Auth\AuthenticationException;
@@ -48,6 +49,7 @@ class Handler extends ExceptionHandler
      */
     protected $cleanStacks = [
         PDOException::class,
+        Swift_TransportException::class,
     ];
 
     /**
