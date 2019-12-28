@@ -16,7 +16,7 @@ class WriteFileContentRequest extends ClientApiRequest implements ClientPermissi
      */
     public function permission(): string
     {
-        return 'save-files';
+        return 'file.create';
     }
 
     /**

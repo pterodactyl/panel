@@ -36,6 +36,13 @@ export default class DesignElementsContainer extends React.PureComponent {
                                 <label className={'uppercase text-neutral-200'}>Disabled Field</label>
                                 <input type={'text'} className={'input-dark'} disabled={true}/>
                                 <div className={'mt-6'}/>
+                                <label className={'uppercase text-neutral-200'}>Select</label>
+                                <select className={'input-dark'}>
+                                    <option>Option 1</option>
+                                    <option>Option 2</option>
+                                    <option>Option 3</option>
+                                </select>
+                                <div className={'mt-6'}/>
                                 <label className={'uppercase text-neutral-200'}>Textarea</label>
                                 <textarea className={'input-dark h-32'}></textarea>
                                 <div className={'mt-6'}/>

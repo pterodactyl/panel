@@ -7,14 +7,24 @@ import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
+import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
+import { FileObject } from '@/api/server/files/loadDirectory';
+import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
+import { Link } from 'react-router-dom';
+
+const sortFiles = (files: FileObject[]): FileObject[] => {
+    return files.sort((a, b) => a.name.localeCompare(b.name))
+        .sort((a, b) => a.isFile === b.isFile ? 0 : (a.isFile ? 1 : -1));
+};
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { id } = ServerContext.useStoreState(state => state.server.data!);
     const { contents: files, directory } = ServerContext.useStoreState(state => state.files);
-    const { setDirectory, getDirectoryContents } = ServerContext.useStoreActions(actions => actions.files);
+    const { getDirectoryContents } = ServerContext.useStoreActions(actions => actions.files);
 
-    const load = () => {
+    useEffect(() => {
         setLoading(true);
         clearFlashes();
 
@@ -24,68 +34,57 @@ export default () => {
                 console.error(error.message, { error });
                 addError({ message: httpErrorToHuman(error), key: 'files' });
             });
-    };
-
-    const breadcrumbs = (): { name: string; path?: string }[] => directory.split('/')
-        .filter(directory => !!directory)
-        .map((directory, index, dirs) => {
-            if (index === dirs.length - 1) {
-                return { name: directory };
-            }
-
-            return { name: directory, path: `/${dirs.slice(0, index + 1).join('/')}` };
-        });
-
-    useEffect(() => load(), [ directory ]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ directory ]);
 
     return (
         <div className={'my-10 mb-6'}>
             <FlashMessageRender byKey={'files'} className={'mb-4'}/>
             <React.Fragment>
-                <div className={'flex items-center text-sm mb-4 text-neutral-500'}>
-                    /<span className={'px-1 text-neutral-300'}>home</span>/
-                    <a
-                        href={'#'}
-                        onClick={() => setDirectory('/')}
-                        className={'px-1 text-neutral-200 no-underline hover:text-neutral-100'}
-                    >
-                        container
-                    </a>/
-                    {
-                        breadcrumbs().map((crumb, index) => (
-                            crumb.path ?
-                                <React.Fragment key={index}>
-                                    <a
-                                        href={`#${crumb.path}`}
-                                        onClick={() => setDirectory(crumb.path!)}
-                                        className={'px-1 text-neutral-200 no-underline hover:text-neutral-100'}
-                                    >
-                                        {crumb.name}
-                                    </a>/
-                                </React.Fragment>
-                                :
-                                <span key={index} className={'px-1 text-neutral-300'}>{crumb.name}</span>
-                        ))
-                    }
-                </div>
+                <FileManagerBreadcrumbs/>
                 {
                     loading ?
                         <Spinner size={'large'} centered={true}/>
                         :
-                        !files.length ?
-                            <p className={'text-sm text-neutral-600 text-center'}>
-                                This directory seems to be empty.
-                            </p>
-                            :
-                            <CSSTransition classNames={'fade'} timeout={250} appear={true} in={true}>
-                                <div>
-                                    {
-                                        files.map(file => (
-                                            <FileObjectRow key={file.uuid} file={file}/>
-                                        ))
-                                    }
-                                </div>
-                            </CSSTransition>
+                        <React.Fragment>
+                            {!files.length ?
+                                <p className={'text-sm text-neutral-400 text-center'}>
+                                    This directory seems to be empty.
+                                </p>
+                                :
+                                <CSSTransition classNames={'fade'} timeout={250} appear={true} in={true}>
+                                    <React.Fragment>
+                                        <div>
+                                            {files.length > 250 ?
+                                                <React.Fragment>
+                                                    <div className={'rounded bg-yellow-400 mb-px p-3'}>
+                                                        <p className={'text-yellow-900 text-sm text-center'}>
+                                                            This directory is too large to display in the browser,
+                                                            limiting the output to the first 250 files.
+                                                        </p>
+                                                    </div>
+                                                    {
+                                                        sortFiles(files.slice(0, 250)).map(file => (
+                                                            <FileObjectRow key={file.uuid} file={file}/>
+                                                        ))
+                                                    }
+                                                </React.Fragment>
+                                                :
+                                                sortFiles(files).map(file => (
+                                                    <FileObjectRow key={file.uuid} file={file}/>
+                                                ))
+                                            }
+                                        </div>
+                                    </React.Fragment>
+                                </CSSTransition>
+                            }
+                            <div className={'flex justify-end mt-8'}>
+                                <NewDirectoryButton/>
+                                <Link to={`/server/${id}/files/new${window.location.hash}`} className={'btn btn-sm btn-primary'}>
+                                    New File
+                                </Link>
+                            </div>
+                        </React.Fragment>
                 }
             </React.Fragment>
         </div>

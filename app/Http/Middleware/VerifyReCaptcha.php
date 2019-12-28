@@ -6,8 +6,11 @@ use Closure;
 use stdClass;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Pterodactyl\Events\Auth\FailedCaptcha;
 use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Events\Dispatcher;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class VerifyReCaptcha
 {
@@ -17,13 +20,20 @@ class VerifyReCaptcha
     private $config;
 
     /**
+     * @var \Illuminate\Contracts\Events\Dispatcher
+     */
+    private $dispatcher;
+
+    /**
      * VerifyReCaptcha constructor.
      *
+     * @param \Illuminate\Contracts\Events\Dispatcher $dispatcher
      * @param \Illuminate\Contracts\Config\Repository $config
      */
-    public function __construct(Repository $config)
+    public function __construct(Dispatcher $dispatcher, Repository $config)
     {
         $this->config = $config;
+        $this->dispatcher = $dispatcher;
     }
 
     /**
@@ -57,10 +67,15 @@ class VerifyReCaptcha
             }
         }
 
-        // Emit an event and return to the previous view with an error (only the captcha error will be shown!)
-        event(new FailedCaptcha($request->ip(), (! isset($result) ?: object_get($result, 'hostname'))));
+        $this->dispatcher->dispatch(
+            new FailedCaptcha(
+                $request->ip(), ! empty($result) ? ($result->hostname ?? null) : null
+            )
+        );
 
-        return redirect()->back()->withErrors(['g-recaptcha-response' => trans('strings.captcha_invalid')])->withInput();
+        throw new HttpException(
+            Response::HTTP_BAD_REQUEST, 'Failed to validate reCAPTCHA data.'
+        );
     }
 
     /**

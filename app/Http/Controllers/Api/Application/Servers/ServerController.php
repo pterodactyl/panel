@@ -72,9 +72,9 @@ class ServerController extends ApplicationApiController
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\StoreServerRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
+     * @throws \Throwable
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException

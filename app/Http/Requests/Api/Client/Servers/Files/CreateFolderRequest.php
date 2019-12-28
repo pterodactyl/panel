@@ -14,7 +14,7 @@ class CreateFolderRequest extends ClientApiRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create-files', $this->getModel(Server::class));
+        return $this->user()->can('file.create', $this->getModel(Server::class));
     }
 
     /**

@@ -8,6 +8,7 @@ env:
   es6: true
 plugins:
   - "@typescript-eslint"
+  - "react-hooks"
 extends:
   - "standard"
   - "plugin:@typescript-eslint/recommended"
@@ -20,6 +21,10 @@ rules:
   comma-dangle:
     - error
     - always-multiline
+  "react-hooks/rules-of-hooks":
+    - error
+  "react-hooks/exhaustive-deps":
+    - warn
   "@typescript-eslint/explicit-function-return-type": 0
   "@typescript-eslint/explicit-member-accessibility": 0
   "@typescript-eslint/no-unused-vars": 0

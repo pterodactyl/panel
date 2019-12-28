@@ -211,6 +211,9 @@ module.exports = {
             'serif',
         ],
         'mono': [
+            '"IBM Plex Mono"',
+            '"Source Code Pro"',
+            'SourceCodePro',
             'Menlo',
             'Monaco',
             'Consolas',

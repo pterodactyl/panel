@@ -3,9 +3,9 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\User;
-use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -273,12 +273,16 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getByUuid(string $uuid): Server
     {
-        Assert::notEmpty($uuid, 'Expected non-empty string as first argument passed to ' . __METHOD__);
-
         try {
-            return $this->getBuilder()->with('nest', 'node')->where(function ($query) use ($uuid) {
-                $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
-            })->firstOrFail($this->getColumns());
+            /** @var \Pterodactyl\Models\Server $model */
+            $model = $this->getBuilder()
+                ->with('nest', 'node')
+                ->where(function (Builder $query) use ($uuid) {
+                    $query->where('uuidShort', $uuid)->orWhere('uuid', $uuid);
+                })
+                ->firstOrFail($this->getColumns());
+
+            return $model;
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }

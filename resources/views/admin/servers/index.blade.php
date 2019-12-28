@@ -66,8 +66,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a class="btn btn-xs btn-default" href="{{ route('server.index', $server->uuidShort) }}"><i class="fa fa-wrench"></i></a>
-                                    <a class="btn btn-xs btn-default console-popout" href="{{ route('server.console', $server->uuidShort) }}"><i class="fa fa-terminal"></i></a>
+                                    <a class="btn btn-xs btn-default" href="/server/{{ $server->uuidShort }}"><i class="fa fa-wrench"></i></a>
                                 </td>
                             </tr>
                         @endforeach

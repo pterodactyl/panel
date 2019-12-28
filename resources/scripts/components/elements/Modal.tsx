@@ -7,6 +7,7 @@ import Spinner from '@/components/elements/Spinner';
 export interface RequiredModalProps {
     visible: boolean;
     onDismissed: () => void;
+    appear?: boolean;
 }
 
 type Props = RequiredModalProps & {
@@ -38,6 +39,7 @@ export default (props: Props) => {
         <CSSTransition
             timeout={250}
             classNames={'fade'}
+            appear={props.appear}
             in={render}
             unmountOnExit={true}
             onExited={() => props.onDismissed()}

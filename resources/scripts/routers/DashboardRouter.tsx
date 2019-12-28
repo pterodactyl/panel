@@ -10,13 +10,11 @@ export default ({ location }: RouteComponentProps) => (
     <React.Fragment>
         <NavigationBar/>
         <TransitionRouter>
-            <div className={'w-full mx-auto'} style={{ maxWidth: '1200px' }}>
-                <Switch location={location}>
-                    <Route path={'/'} component={DashboardContainer} exact/>
-                    <Route path={'/account'} component={AccountOverviewContainer}/>
-                    <Route path={'/design'} component={DesignElementsContainer}/>
-                </Switch>
-            </div>
+            <Switch location={location}>
+                <Route path={'/'} component={DashboardContainer} exact/>
+                <Route path={'/account'} component={AccountOverviewContainer}/>
+                <Route path={'/design'} component={DesignElementsContainer}/>
+            </Switch>
         </TransitionRouter>
     </React.Fragment>
 );

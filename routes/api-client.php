@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 
 /*
@@ -11,9 +12,13 @@ use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 |
 */
 Route::get('/', 'ClientController@index')->name('api.client.index');
+Route::get('/permissions', 'ClientController@permissions');
 
 Route::group(['prefix' => '/account'], function () {
     Route::get('/', 'AccountController@index')->name('api.client.account');
+    Route::get('/two-factor', 'TwoFactorController@index');
+    Route::post('/two-factor', 'TwoFactorController@store');
+    Route::delete('/two-factor', 'TwoFactorController@delete');
 
     Route::put('/email', 'AccountController@updateEmail')->name('api.client.account.update-email');
     Route::put('/password', 'AccountController@updatePassword')->name('api.client.account.update-password');
@@ -46,18 +51,23 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     Route::group(['prefix' => '/files'], function () {
         Route::get('/list', 'Servers\FileController@listDirectory')->name('api.client.servers.files.list');
         Route::get('/contents', 'Servers\FileController@getFileContents')->name('api.client.servers.files.contents');
+        Route::get('/download', 'Servers\FileController@download');
         Route::put('/rename', 'Servers\FileController@renameFile')->name('api.client.servers.files.rename');
         Route::post('/copy', 'Servers\FileController@copyFile')->name('api.client.servers.files.copy');
         Route::post('/write', 'Servers\FileController@writeFileContents')->name('api.client.servers.files.write');
         Route::post('/delete', 'Servers\FileController@delete')->name('api.client.servers.files.delete');
         Route::post('/create-folder', 'Servers\FileController@createFolder')->name('api.client.servers.files.create-folder');
-
-        Route::post('/download/{file}', 'Servers\FileController@download')
-            ->where('file', '.*')
-            ->name('api.client.servers.files.download');
     });
 
     Route::group(['prefix' => '/network'], function () {
         Route::get('/', 'Servers\NetworkController@index')->name('api.client.servers.network');
+    });
+
+    Route::group(['prefix' => '/users'], function () {
+        Route::get('/', 'Servers\SubuserController@index');
+    });
+
+    Route::group(['prefix' => '/settings'], function () {
+        Route::post('/rename', 'Servers\SettingsController@rename');
     });
 });

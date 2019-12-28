@@ -60,7 +60,6 @@
             </footer>
         </div>
         @section('footer-scripts')
-            {!! Theme::js('js/laroute.js?t={cache-version}') !!}
             {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/bootstrap/bootstrap.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js?t={cache-version}') !!}

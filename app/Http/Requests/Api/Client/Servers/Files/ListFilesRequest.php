@@ -15,7 +15,7 @@ class ListFilesRequest extends ClientApiRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('list-files', $this->getModel(Server::class));
+        return $this->user()->can('file.read', $this->getModel(Server::class));
     }
 
     /**

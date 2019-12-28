@@ -6,7 +6,7 @@ import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
 import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer';
 
 export default ({ match }: RouteComponentProps) => (
-    <div className={'mt-32'}>
+    <div className={'mt-8 xl:mt-32'}>
         <Route path={`${match.path}/login`} component={LoginContainer} exact/>
         <Route path={`${match.path}/login/checkpoint`} component={LoginCheckpointContainer}/>
         <Route path={`${match.path}/password`} component={ForgotPasswordContainer} exact/>

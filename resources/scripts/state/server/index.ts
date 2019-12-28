@@ -3,6 +3,8 @@ import { action, Action, createContextStore, thunk, Thunk } from 'easy-peasy';
 import socket, { SocketStore } from './socket';
 import { ServerDatabase } from '@/api/server/getServerDatabases';
 import files, { ServerFileStore } from '@/state/server/files';
+import subusers, { ServerSubuserStore } from '@/state/server/subusers';
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
@@ -56,6 +58,7 @@ const databases: ServerDatabaseStore = {
 
 export interface ServerStore {
     server: ServerDataStore;
+    subusers: ServerSubuserStore;
     databases: ServerDatabaseStore;
     files: ServerFileStore;
     socket: SocketStore;
@@ -69,9 +72,14 @@ export const ServerContext = createContextStore<ServerStore>({
     status,
     databases,
     files,
+    subusers,
     clearServerState: action(state => {
         state.server.data = undefined;
         state.databases.items = [];
+        state.subusers.data = [];
+
+        state.files.directory = '/';
+        state.files.contents = [];
 
         if (state.socket.instance) {
             state.socket.instance.removeAllListeners();
@@ -81,4 +89,9 @@ export const ServerContext = createContextStore<ServerStore>({
         state.socket.instance = null;
         state.socket.connected = false;
     }),
-}, { name: 'ServerStore' });
+}, {
+    compose: composeWithDevTools({
+        name: 'ServerStore',
+        trace: true,
+    }),
+});

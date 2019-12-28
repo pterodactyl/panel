@@ -52,7 +52,7 @@ export default () => {
                                 />
                             ))
                             :
-                            <p className={'text-center text-sm text-neutral-200'}>
+                            <p className={'text-center text-sm text-neutral-400'}>
                                 It looks like you have no databases. Click the button below to create one now.
                             </p>
                         }

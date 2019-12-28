@@ -17,7 +17,7 @@ type Props = RequiredModalProps & { file: FileObject; useMoveTerminology?: boole
 export default ({ file, useMoveTerminology, ...props }: Props) => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const directory = ServerContext.useStoreState(state => state.files.directory);
-    const pushFile = ServerContext.useStoreActions(actions => actions.files.pushFile);
+    const { pushFile, removeFile } = ServerContext.useStoreActions(actions => actions.files);
 
     const submit = (values: FormikValues, { setSubmitting }: FormikActions<FormikValues>) => {
         const renameFrom = join(directory, file.name);
@@ -25,7 +25,14 @@ export default ({ file, useMoveTerminology, ...props }: Props) => {
 
         renameFile(uuid, { renameFrom, renameTo })
             .then(() => {
-                pushFile({ ...file, name: values.name });
+                if (!useMoveTerminology && values.name.split('/').length === 1) {
+                    pushFile({ ...file, name: values.name });
+                }
+
+                if ((useMoveTerminology || values.name.split('/').length > 1) && file.uuid.length > 0) {
+                    removeFile(file.uuid);
+                }
+
                 props.onDismissed();
             })
             .catch(error => {

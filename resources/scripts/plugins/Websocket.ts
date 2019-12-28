@@ -23,9 +23,9 @@ export class Websocket extends EventEmitter {
     private token: string = '';
 
     // Connects to the websocket instance and sets the token for the initial request.
-    connect (url: string) {
+    connect (url: string): this {
         this.url = url;
-        this.socket = new Sockette(`${this.url}?token=${this.token}`, {
+        this.socket = new Sockette(`${this.url}`, {
             onmessage: e => {
                 try {
                     let { event, args } = JSON.parse(e.data);
@@ -34,11 +34,19 @@ export class Websocket extends EventEmitter {
                     console.warn('Failed to parse incoming websocket message.', ex);
                 }
             },
-            onopen: () => this.emit('SOCKET_OPEN'),
-            onreconnect: () => this.emit('SOCKET_RECONNECT'),
+            onopen: () => {
+                this.emit('SOCKET_OPEN');
+                this.authenticate();
+            },
+            onreconnect: () => {
+                this.emit('SOCKET_RECONNECT');
+                this.authenticate();
+            },
             onclose: () => this.emit('SOCKET_CLOSE'),
             onerror: () => this.emit('SOCKET_ERROR'),
         });
+
+        return this;
     }
 
     // Returns the URL connected to for the socket.
@@ -48,8 +56,12 @@ export class Websocket extends EventEmitter {
 
     // Sets the authentication token to use when sending commands back and forth
     // between the websocket instance.
-    setToken (token: string): this {
+    setToken (token: string, isUpdate = false): this {
         this.token = token;
+
+        if (isUpdate) {
+            this.authenticate();
+        }
 
         return this;
     }
@@ -59,7 +71,15 @@ export class Websocket extends EventEmitter {
         return this.token;
     }
 
+    authenticate () {
+        if (this.url && this.token) {
+            this.send('auth', this.token);
+        }
+    }
+
     close (code?: number, reason?: string) {
+        this.url = null;
+        this.token = '';
         this.socket && this.socket.close(code, reason);
     }
 

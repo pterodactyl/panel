@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Pterodactyl\Http\Middleware\Admin\Servers\ServerInstalled;
+
 Route::get('/', 'BaseController@index')->name('admin.index');
 Route::get('/statistics', 'StatisticsController@index')->name('admin.statistics');
 
@@ -101,22 +104,25 @@ Route::group(['prefix' => 'users'], function () {
 |
 */
 Route::group(['prefix' => 'servers'], function () {
-    Route::get('/', 'ServersController@index')->name('admin.servers');
-    Route::get('/new', 'ServersController@create')->name('admin.servers.new');
-    Route::get('/view/{server}', 'ServersController@viewIndex')->name('admin.servers.view');
-    Route::get('/view/{server}/details', 'ServersController@viewDetails')->name('admin.servers.view.details');
-    Route::get('/view/{server}/build', 'ServersController@viewBuild')->name('admin.servers.view.build');
-    Route::get('/view/{server}/startup', 'ServersController@viewStartup')->name('admin.servers.view.startup');
-    Route::get('/view/{server}/database', 'ServersController@viewDatabase')->name('admin.servers.view.database');
-    Route::get('/view/{server}/manage', 'ServersController@viewManage')->name('admin.servers.view.manage');
-    Route::get('/view/{server}/delete', 'ServersController@viewDelete')->name('admin.servers.view.delete');
+    Route::get('/', 'Servers\ServerController@index')->name('admin.servers');
+    Route::get('/new', 'Servers\CreateServerController@index')->name('admin.servers.new');
+    Route::get('/view/{server}', 'Servers\ServerViewController@index')->name('admin.servers.view');
 
-    Route::post('/new', 'ServersController@store');
+    Route::group(['middleware' => [ServerInstalled::class]], function () {
+        Route::get('/view/{server}/details', 'Servers\ServerViewController@details')->name('admin.servers.view.details');
+        Route::get('/view/{server}/build', 'Servers\ServerViewController@build')->name('admin.servers.view.build');
+        Route::get('/view/{server}/startup', 'Servers\ServerViewController@startup')->name('admin.servers.view.startup');
+        Route::get('/view/{server}/database', 'Servers\ServerViewController@database')->name('admin.servers.view.database');
+    });
+
+    Route::get('/view/{server}/manage', 'Servers\ServerViewController@manage')->name('admin.servers.view.manage');
+    Route::get('/view/{server}/delete', 'Servers\ServerViewController@delete')->name('admin.servers.view.delete');
+
+    Route::post('/new', 'Servers\CreateServerController@store');
     Route::post('/view/{server}/build', 'ServersController@updateBuild');
     Route::post('/view/{server}/startup', 'ServersController@saveStartup');
     Route::post('/view/{server}/database', 'ServersController@newDatabase');
     Route::post('/view/{server}/manage/toggle', 'ServersController@toggleInstall')->name('admin.servers.view.manage.toggle');
-    Route::post('/view/{server}/manage/rebuild', 'ServersController@rebuildContainer')->name('admin.servers.view.manage.rebuild');
     Route::post('/view/{server}/manage/suspension', 'ServersController@manageSuspension')->name('admin.servers.view.manage.suspension');
     Route::post('/view/{server}/manage/reinstall', 'ServersController@reinstallServer')->name('admin.servers.view.manage.reinstall');
     Route::post('/view/{server}/delete', 'ServersController@delete');
@@ -136,13 +142,14 @@ Route::group(['prefix' => 'servers'], function () {
 |
 */
 Route::group(['prefix' => 'nodes'], function () {
-    Route::get('/', 'NodesController@index')->name('admin.nodes');
+    Route::get('/', 'Nodes\NodeController@index')->name('admin.nodes');
     Route::get('/new', 'NodesController@create')->name('admin.nodes.new');
-    Route::get('/view/{node}', 'NodesController@viewIndex')->name('admin.nodes.view');
-    Route::get('/view/{node}/settings', 'NodesController@viewSettings')->name('admin.nodes.view.settings');
-    Route::get('/view/{node}/configuration', 'NodesController@viewConfiguration')->name('admin.nodes.view.configuration');
-    Route::get('/view/{node}/allocation', 'NodesController@viewAllocation')->name('admin.nodes.view.allocation');
-    Route::get('/view/{node}/servers', 'NodesController@viewServers')->name('admin.nodes.view.servers');
+    Route::get('/view/{node}', 'Nodes\NodeViewController@index')->name('admin.nodes.view');
+    Route::get('/view/{node}/settings', 'Nodes\NodeViewController@settings')->name('admin.nodes.view.settings');
+    Route::get('/view/{node}/configuration', 'Nodes\NodeViewController@configuration')->name('admin.nodes.view.configuration');
+    Route::get('/view/{node}/allocation', 'Nodes\NodeViewController@allocations')->name('admin.nodes.view.allocation');
+    Route::get('/view/{node}/servers', 'Nodes\NodeViewController@servers')->name('admin.nodes.view.servers');
+    Route::get('/view/{node}/system-information', 'Nodes\SystemInformationController');
     Route::get('/view/{node}/settings/token', 'NodesController@setToken')->name('admin.nodes.view.configuration.token');
 
     Route::post('/new', 'NodesController@store');

@@ -15,7 +15,7 @@ class RenameFileRequest extends ClientApiRequest implements ClientPermissionsReq
      */
     public function permission(): string
     {
-        return 'move-files';
+        return 'file.update';
     }
 
     /**

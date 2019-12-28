@@ -40,10 +40,10 @@
                 <h3 class="box-title">Configuration File</h3>
             </div>
             <div class="box-body">
-                <pre class="no-margin">{{ $node->getConfigurationAsJson(true) }}</pre>
+                <pre class="no-margin">{{ $node->getYamlConfiguration() }}</pre>
             </div>
             <div class="box-footer">
-                <p class="no-margin">This file should be placed in your daemon's <code>config</code> directory in a file called <code>core.json</code>.</p>
+                <p class="no-margin">This file should be placed in your daemon's root directory (usually <code>/srv/wings</code>) in a file called <code>config.yml</code>.</p>
             </div>
         </div>
     </div>

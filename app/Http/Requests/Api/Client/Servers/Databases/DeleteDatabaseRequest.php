@@ -14,7 +14,7 @@ class DeleteDatabaseRequest extends ClientApiRequest implements ClientPermission
      */
     public function permission(): string
     {
-        return 'delete-database';
+        return 'database.delete';
     }
 
     /**

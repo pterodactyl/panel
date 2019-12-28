@@ -45,7 +45,7 @@ class WebsocketController extends ClientApiController
      */
     public function __invoke(Request $request, Server $server)
     {
-        if (! $request->user()->can('connect-to-ws', $server)) {
+        if (! $request->user()->can('websocket.*', $server)) {
             throw new HttpException(
                 Response::HTTP_FORBIDDEN, 'You do not have permission to connect to this server\'s websocket.'
             );
@@ -63,7 +63,11 @@ class WebsocketController extends ClientApiController
             ->expiresAt($now->addMinutes(15)->getTimestamp())
             ->withClaim('user_id', $request->user()->id)
             ->withClaim('server_uuid', $server->uuid)
-            ->withClaim('permissions', ['connect', 'send-command', 'send-power'])
+            ->withClaim('permissions', array_merge([
+                'connect',
+                'send-command',
+                'send-power',
+            ], $request->user()->root_admin ? ['receive-errors'] : []))
             ->getToken($signer, new Key($server->node->daemonSecret));
 
         $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $server->node->getConnectionAddress());

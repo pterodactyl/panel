@@ -2,15 +2,16 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class BuildModificationService
 {
@@ -25,7 +26,7 @@ class BuildModificationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
     private $daemonServerRepository;
 
@@ -35,23 +36,31 @@ class BuildModificationService
     private $repository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    private $structureService;
+
+    /**
      * BuildModificationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $structureService
      * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         AllocationRepositoryInterface $allocationRepository,
+        ServerConfigurationStructureService $structureService,
         ConnectionInterface $connection,
-        DaemonServerRepositoryInterface $daemonServerRepository,
+        DaemonServerRepository $daemonServerRepository,
         ServerRepositoryInterface $repository
     ) {
         $this->allocationRepository = $allocationRepository;
         $this->daemonServerRepository = $daemonServerRepository;
         $this->connection = $connection;
         $this->repository = $repository;
+        $this->structureService = $structureService;
     }
 
     /**
@@ -67,23 +76,22 @@ class BuildModificationService
      */
     public function handle(Server $server, array $data)
     {
-        $build = [];
         $this->connection->beginTransaction();
 
         $this->processAllocations($server, $data);
+
         if (isset($data['allocation_id']) && $data['allocation_id'] != $server->allocation_id) {
             try {
-                $allocation = $this->allocationRepository->findFirstWhere([
+                $this->allocationRepository->findFirstWhere([
                     ['id', '=', $data['allocation_id']],
                     ['server_id', '=', $server->id],
                 ]);
             } catch (RecordNotFoundException $ex) {
                 throw new DisplayException(trans('admin/server.exceptions.default_allocation_not_found'));
             }
-
-            $build['default'] = ['ip' => $allocation->ip, 'port' => $allocation->port];
         }
 
+        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->repository->withFreshModel()->update($server->id, [
             'oom_disabled' => array_get($data, 'oom_disabled'),
             'memory' => array_get($data, 'memory'),
@@ -96,20 +104,13 @@ class BuildModificationService
             'allocation_limit' => array_get($data, 'allocation_limit'),
         ]);
 
-        $allocations = $this->allocationRepository->findWhere([['server_id', '=', $server->id]]);
-
-        $build['oom_disabled'] = $server->oom_disabled;
-        $build['memory'] = (int) $server->memory;
-        $build['swap'] = (int) $server->swap;
-        $build['io'] = (int) $server->io;
-        $build['cpu'] = (int) $server->cpu;
-        $build['disk'] = (int) $server->disk;
-        $build['ports|overwrite'] = $allocations->groupBy('ip')->map(function ($item) {
-            return $item->pluck('port');
-        })->toArray();
+        $updateData = $this->structureService->handle($server);
 
         try {
-            $this->daemonServerRepository->setServer($server)->update(['build' => $build]);
+            $this->daemonServerRepository
+                ->setServer($server)
+                ->update(Arr::only($updateData, ['build']));
+
             $this->connection->commit();
         } catch (RequestException $exception) {
             throw new DaemonConnectionException($exception);

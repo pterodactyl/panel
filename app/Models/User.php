@@ -158,7 +158,7 @@ class User extends Validable implements
         'username' => 'required|between:1,255|unique:users,username',
         'name_first' => 'required|string|between:1,255',
         'name_last' => 'required|string|between:1,255',
-        'password' => 'required|nullable|string',
+        'password' => 'sometimes|nullable|string',
         'root_admin' => 'boolean',
         'language' => 'required|string',
         'use_totp' => 'boolean',
@@ -171,7 +171,7 @@ class User extends Validable implements
      */
     public static function getRules()
     {
-        $rules = self::getRules();
+        $rules = parent::getRules();
 
         $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
         $rules['username'][] = new Username;
@@ -216,7 +216,7 @@ class User extends Validable implements
      */
     public function getNameAttribute()
     {
-        return $this->name_first . ' ' . $this->name_last;
+        return trim($this->name_first . ' ' . $this->name_last);
     }
 
     /**

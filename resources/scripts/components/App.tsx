@@ -7,8 +7,11 @@ import DashboardRouter from '@/routers/DashboardRouter';
 import ServerRouter from '@/routers/ServerRouter';
 import AuthenticationRouter from '@/routers/AuthenticationRouter';
 import { Provider } from 'react-redux';
+import { SiteSettings } from '@/state/settings';
+import { DefaultTheme, ThemeProvider } from 'styled-components';
 
-interface WindowWithUser extends Window {
+interface ExtendedWindow extends Window {
+    SiteConfiguration?: SiteSettings;
     PterodactylUser?: {
         uuid: string;
         username: string;
@@ -21,37 +24,53 @@ interface WindowWithUser extends Window {
     };
 }
 
+const theme: DefaultTheme = {
+    breakpoints: {
+        xs: 0,
+        sm: 576,
+        md: 768,
+        lg: 992,
+        xl: 1200,
+    },
+};
+
 const App = () => {
-    const data = (window as WindowWithUser).PterodactylUser;
-    if (data && !store.getState().user.data) {
+    const { PterodactylUser, SiteConfiguration } = (window as ExtendedWindow);
+    if (PterodactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
-            uuid: data.uuid,
-            username: data.username,
-            email: data.email,
-            language: data.language,
-            rootAdmin: data.root_admin,
-            useTotp: data.use_totp,
-            createdAt: new Date(data.created_at),
-            updatedAt: new Date(data.updated_at),
+            uuid: PterodactylUser.uuid,
+            username: PterodactylUser.username,
+            email: PterodactylUser.email,
+            language: PterodactylUser.language,
+            rootAdmin: PterodactylUser.root_admin,
+            useTotp: PterodactylUser.use_totp,
+            createdAt: new Date(PterodactylUser.created_at),
+            updatedAt: new Date(PterodactylUser.updated_at),
         });
     }
 
+    if (!store.getState().settings.data) {
+        store.getActions().settings.setSettings(SiteConfiguration!);
+    }
+
     return (
-        <StoreProvider store={store}>
-            <Provider store={store}>
-                <Router basename={'/'}>
-                    <div className={'mx-auto w-auto'}>
-                        <BrowserRouter basename={'/'}>
-                            <Switch>
-                                <Route path="/server/:id" component={ServerRouter}/>
-                                <Route path="/auth" component={AuthenticationRouter}/>
-                                <Route path="/" component={DashboardRouter}/>
-                            </Switch>
-                        </BrowserRouter>
-                    </div>
-                </Router>
-            </Provider>
-        </StoreProvider>
+        <ThemeProvider theme={theme}>
+            <StoreProvider store={store}>
+                <Provider store={store}>
+                    <Router basename={'/'}>
+                        <div className={'mx-auto w-auto'}>
+                            <BrowserRouter basename={'/'}>
+                                <Switch>
+                                    <Route path="/server/:id" component={ServerRouter}/>
+                                    <Route path="/auth" component={AuthenticationRouter}/>
+                                    <Route path="/" component={DashboardRouter}/>
+                                </Switch>
+                            </BrowserRouter>
+                        </div>
+                    </Router>
+                </Provider>
+            </StoreProvider>
+        </ThemeProvider>
     );
 };
 

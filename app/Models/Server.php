@@ -16,7 +16,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property string $name
  * @property string $description
  * @property bool $skip_scripts
- * @property bool $suspended
+ * @property int $suspended
  * @property int $owner_id
  * @property int $memory
  * @property int $swap
@@ -44,7 +44,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Node $node
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Pterodactyl\Models\Egg $egg
- * @property \Pterodactyl\Models\EggVariable[]|\Illuminate\Support\Collection $variables
+ * @property \Pterodactyl\Models\ServerVariable[]|\Illuminate\Support\Collection $variables
  * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Support\Collection $schedule
  * @property \Pterodactyl\Models\Database[]|\Illuminate\Support\Collection $databases
  * @property \Pterodactyl\Models\Location $location
@@ -168,6 +168,18 @@ class Server extends Validable
     public function getTableColumns()
     {
         return Schema::getColumnListing($this->getTable());
+    }
+
+    /**
+     * Returns the format for server allocations when communicating with the Daemon.
+     *
+     * @return array
+     */
+    public function getAllocationMappings(): array
+    {
+        return $this->allocations->groupBy('ip')->map(function ($item) {
+            return $item->pluck('port');
+        })->toArray();
     }
 
     /**

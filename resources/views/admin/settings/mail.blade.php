@@ -112,12 +112,12 @@
 
 @section('footer-scripts')
     @parent
-    
+
     <script>
         function saveSettings() {
             return $.ajax({
                 method: 'PATCH',
-                url: Router.route('admin.settings.mail'),
+                url: '/admin/settings/mail',
                 contentType: 'application/json',
                 data: JSON.stringify({
                     'mail:host': $('input[name="mail:host"]').val(),
@@ -146,7 +146,7 @@
             }, function () {
                 $.ajax({
                     method: 'GET',
-                    url: Router.route('admin.settings.mail.test'),
+                    url: '/admin/settings/mail/test',
                     headers: { 'X-CSRF-Token': $('input[name="_token"]').val() }
                 }).fail(function (jqXHR) {
                     showErrorDialog(jqXHR, 'test');

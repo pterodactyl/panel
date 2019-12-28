@@ -147,7 +147,7 @@ class UserController extends Controller
     public function store(UserFormRequest $request)
     {
         $user = $this->creationService->handle($request->normalize());
-        $this->alert->success($this->translator->trans('admin/user.notices.account_created'))->flash();
+        $this->alert->success($this->translator->get('admin/user.notices.account_created'))->flash();
 
         return redirect()->route('admin.users.view', $user->id);
     }
@@ -164,27 +164,11 @@ class UserController extends Controller
      */
     public function update(UserFormRequest $request, User $user)
     {
-        $this->updateService->setUserLevel(User::USER_LEVEL_ADMIN);
-        $data = $this->updateService->handle($user, $request->normalize());
+        $this->updateService
+            ->setUserLevel(User::USER_LEVEL_ADMIN)
+            ->handle($user, $request->normalize());
 
-        if (! empty($data->get('exceptions'))) {
-            foreach ($data->get('exceptions') as $node => $exception) {
-                /** @var \GuzzleHttp\Exception\RequestException $exception */
-                /** @var \GuzzleHttp\Psr7\Response|null $response */
-                $response = method_exists($exception, 'getResponse') ? $exception->getResponse() : null;
-                $message = trans('admin/server.exceptions.daemon_exception', [
-                    'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
-                ]);
-
-                $this->alert->danger(trans('exceptions.users.node_revocation_failed', [
-                    'node' => $node,
-                    'error' => $message,
-                    'link' => route('admin.nodes.view', $node),
-                ]))->flash();
-            }
-        }
-
-        $this->alert->success($this->translator->trans('admin/user.notices.account_updated'))->flash();
+        $this->alert->success(trans('admin/user.notices.account_updated'))->flash();
 
         return redirect()->route('admin.users.view', $user->id);
     }
@@ -193,7 +177,7 @@ class UserController extends Controller
      * Get a JSON response of users on the system.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function json(Request $request)
     {

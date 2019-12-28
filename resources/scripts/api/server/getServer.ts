@@ -12,6 +12,10 @@ export interface Server {
     uuid: string;
     name: string;
     node: string;
+    sftpDetails: {
+        ip: string;
+        port: number;
+    };
     description: string;
     allocations: Allocation[];
     limits: {
@@ -32,6 +36,10 @@ export const rawDataToServerObject = (data: any): Server => ({
     uuid: data.uuid,
     name: data.name,
     node: data.node,
+    sftpDetails: {
+        ip: data.sftp_details.ip,
+        port: data.sftp_details.port,
+    },
     description: data.description ? ((data.description.length > 0) ? data.description : null) : null,
     allocations: [{
         ip: data.allocation.ip,

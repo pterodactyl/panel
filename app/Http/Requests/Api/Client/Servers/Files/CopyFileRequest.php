@@ -12,7 +12,7 @@ class CopyFileRequest extends ClientApiRequest implements ClientPermissionsReque
      */
     public function permission(): string
     {
-        return 'copy-files';
+        return 'file.create';
     }
 
     /**

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const _ = require('lodash');
 const path = require('path');
 const tailwind = require('tailwindcss');
 const glob = require('glob-all');
@@ -20,22 +19,21 @@ let plugins = [
         integrity: true,
         integrityHashes: ['sha384'],
     }),
-    new ForkTsCheckerWebpackPlugin(),
 ];
 
 if (isProduction) {
     plugins = plugins.concat([
         new PurgeCssPlugin({
             paths: glob.sync([
-                path.join(__dirname, 'resources/scripts/**/*.ts'),
-                path.join(__dirname, 'resources/themes/pterodactyl/**/*.blade.php'),
+                path.join(__dirname, 'resources/scripts/**/*.tsx'),
+                path.join(__dirname, 'resources/views/templates/**/*.blade.php'),
             ]),
             whitelistPatterns: [/^xterm/],
             extractors: [
                 {
                     extractor: class {
                         static extract (content) {
-                            return content.match(/[A-z0-9-:\/]+/g) || [];
+                            return content.match(/[A-Za-z0-9-_:\\/]+/g) || [];
                         }
                     },
                     extensions: ['html', 'ts', 'tsx', 'js', 'php'],
@@ -43,22 +41,28 @@ if (isProduction) {
             ],
         }),
     ]);
+} else {
+    plugins.concat([new ForkTsCheckerWebpackPlugin()]);
 }
 
 module.exports = {
     cache: true,
     target: 'web',
     mode: process.env.NODE_ENV,
-    devtool: isProduction ? false : 'eval-source-map',
+    devtool: isProduction ? false : process.env.DEVTOOL || 'source-map',
     performance: {
         hints: false,
     },
-    entry: ['./resources/styles/main.css', './resources/scripts/index.tsx'],
+    entry: [
+        'react-hot-loader/patch',
+        './resources/styles/main.css',
+        './resources/scripts/index.tsx',
+    ],
     output: {
         path: path.resolve(__dirname, 'public/assets'),
         filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
         chunkFilename: isProduction ? '[name].[chunkhash:8].js' : '[name].[hash:8].js',
-        publicPath: _.get(process.env, 'PUBLIC_PATH', '') + '/assets/',
+        publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
         crossOriginLoading: 'anonymous',
     },
     module: {
@@ -138,7 +142,6 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
             '@': path.join(__dirname, 'resources/scripts'),
-            'react-dom': '@hot-loader/react-dom',
         },
         symlinks: false,
     },
@@ -164,7 +167,7 @@ module.exports = {
     },
     devServer: {
         contentBase: path.join(__dirname, 'public'),
-        publicPath: _.get(process.env, 'PUBLIC_PATH', '') + '/assets/',
+        publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
         allowedHosts: [
             '.pterodactyl.test',
         ],

@@ -107,7 +107,7 @@ class EggConfigurationService
     {
         // Get the legacy configuration structure for the server so that we
         // can property map the egg placeholders to values.
-        $structure = $this->configurationStructureService->handle($server);
+        $structure = $this->configurationStructureService->handle($server, true);
 
         foreach ($configs as $file => $data) {
             foreach ($data->find ?? [] as &$value) {
