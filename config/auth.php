@@ -12,7 +12,7 @@ return [
     |
     */
     'lockout' => [
-        'time' => 120,
+        'time' => 2,
         'attempts' => 3,
     ],
 
