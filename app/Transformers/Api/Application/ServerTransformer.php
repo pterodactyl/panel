@@ -132,7 +132,7 @@ class ServerTransformer extends BaseTransformer
 
         $server->loadMissing('subusers');
 
-        return $this->collection($server->getRelation('subusers'), $this->makeTransformer(SubuserTransformer::class), 'user');
+        return $this->collection($server->getRelation('subusers'), $this->makeTransformer(SubuserTransformer::class), 'subuser');
     }
 
     /**
