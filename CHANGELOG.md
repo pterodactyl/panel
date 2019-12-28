@@ -13,7 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ### Added
 * The application API now includes the egg's name in the egg model's response.
-* The /api/application/servers endpoint can now include server's databases and subusers
+* The /api/application/servers endpoint can now include server's databases and subusers.
 
 ## v0.7.15 (Derelict Dermodactylus)
 ### Fixed

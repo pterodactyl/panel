@@ -3,6 +3,7 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class SubuserTransformer extends BaseTransformer
@@ -34,7 +35,11 @@ class SubuserTransformer extends BaseTransformer
     {
         return [
             'id' => $subuser->id,
-            'permissions' => $subuser->permissions->toArray(),
+            'user_id' => $subuser->user_id,
+            'server_id' => $subuser->server_id,
+            'permissions' => $subuser->permissions->map(function (Permission $permission) {
+                return $permission->permission;
+            }),
             'created_at' => $this->formatTimestamp($subuser->created_at),
             'updated_at' => $this->formatTimestamp($subuser->updated_at),
         ];
