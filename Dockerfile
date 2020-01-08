@@ -1,9 +1,19 @@
-FROM alpine:3.8
+FROM php:7.2-fpm-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache --update ca-certificates certbot nginx dcron curl tini php7 php7-bcmath php7-common php7-dom php7-fpm php7-gd php7-mbstring php7-openssl php7-zip php7-pdo php7-phar php7-json php7-pdo_mysql php7-session php7-ctype php7-tokenizer php7-zlib php7-simplexml php7-fileinfo supervisor \
-    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip; \
+    docker-php-ext-install bcmath; \
+    apk add --no-cache libpng-dev; \
+    docker-php-ext-install gd; \
+    docker-php-ext-install mbstring; \
+    docker-php-ext-install pdo; \
+    docker-php-ext-install pdo_mysql; \
+    docker-php-ext-install tokenizer; \
+    apk add --no-cache libxml2-dev; \
+    docker-php-ext-install xml; \
+    docker-php-ext-install zip; \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY . ./
 
