@@ -67,7 +67,7 @@ class WebsocketController extends ClientApiController
                 'connect',
                 'send-command',
                 'send-power',
-            ], $request->user()->root_admin ? ['receive-errors'] : []))
+            ], $request->user()->root_admin ? ['receive-errors', 'receive-install'] : []))
             ->getToken($signer, new Key($server->node->daemonSecret));
 
         $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $server->node->getConnectionAddress());

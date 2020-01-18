@@ -253,11 +253,11 @@ class Server extends Validable
     /**
      * Gets information for the egg associated with this server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function egg()
     {
-        return $this->belongsTo(Egg::class);
+        return $this->hasOne(Egg::class, 'id', 'egg_id');
     }
 
     /**

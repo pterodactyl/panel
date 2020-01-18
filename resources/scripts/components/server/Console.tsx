@@ -47,21 +47,22 @@ const TerminalDiv = styled.div`
 `;
 
 export default () => {
+    const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const [ terminalElement, setTerminalElement ] = useState<HTMLDivElement | null>(null);
     const useRef = useCallback(node => setTerminalElement(node), []);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 
-    const handleConsoleOutput = (line: string) => terminal.writeln(
-        line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
+    const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
+        (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
 
     const handleDaemonErrorOutput = (line: string) => terminal.writeln(
-        '\u001b[1m\u001b[41m[Internal] ' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
+        TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
 
     const handlePowerChangeEvent = (state: string) => terminal.writeln(
-        '\u001b[1m\u001b[33m[Status Change] Server marked as ' + state + '...\u001b[0m',
+        TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
     );
 
     const handleCommandKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -89,12 +90,16 @@ export default () => {
 
             instance.addListener('status', handlePowerChangeEvent);
             instance.addListener('console output', handleConsoleOutput);
+            instance.addListener('install output', handleConsoleOutput);
+            instance.addListener('daemon message', line => handleConsoleOutput(line, true));
             instance.addListener('daemon error', handleDaemonErrorOutput);
             instance.send('send logs');
         }
 
         return () => {
             instance && instance.removeListener('console output', handleConsoleOutput)
+                .removeListener('install output', handleConsoleOutput)
+                .removeListener('daemon message', line => handleConsoleOutput(line, true))
                 .removeListener('daemon error', handleDaemonErrorOutput)
                 .removeListener('status', handlePowerChangeEvent);
         };

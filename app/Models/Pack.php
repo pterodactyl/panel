@@ -4,6 +4,22 @@ namespace Pterodactyl\Models;
 
 use Pterodactyl\Models\Traits\Searchable;
 
+/**
+ * @property int $id
+ * @property int $egg_id
+ * @property string $uuid
+ * @property string $name
+ * @property string $version
+ * @property string $description
+ * @property bool $selectable
+ * @property bool $visible
+ * @property bool $locked
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property \Pterodactyl\Models\Egg|null $egg
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
+ */
 class Pack extends Validable
 {
     use Searchable;
