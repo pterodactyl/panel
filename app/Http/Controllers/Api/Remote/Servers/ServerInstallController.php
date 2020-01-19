@@ -62,8 +62,8 @@ class ServerInstallController extends Controller
         $server = $this->repository->getByUuid($uuid);
 
         $this->repository->update($server->id, [
-            'installed' => ((bool) $request->input('successful', false)) ? 1 : 2,
-        ]);
+            'installed' => (string) $request->input('successful') === '1' ? 1 : 2,
+        ], true, true);
 
         return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }
