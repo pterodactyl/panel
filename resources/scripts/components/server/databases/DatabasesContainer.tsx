@@ -53,12 +53,18 @@ export default () => {
                             ))
                             :
                             <p className={'text-center text-sm text-neutral-400'}>
-                                It looks like you have no databases. Click the button below to create one now.
+                                {server.featureLimits.databases > 0 ?
+                                    `It looks like you have no databases. Click the button below to create one now.`
+                                    :
+                                    `Databases cannot be created for this server.`
+                                }
                             </p>
                         }
+                        {server.featureLimits.databases > 0 &&
                         <div className={'mt-6 flex justify-end'}>
                             <CreateDatabaseButton onCreated={appendDatabase}/>
                         </div>
+                        }
                     </React.Fragment>
                 </CSSTransition>
             }
