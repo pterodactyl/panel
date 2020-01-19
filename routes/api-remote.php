@@ -9,5 +9,6 @@ Route::post('/download-file', 'FileDownloadController@index');
 Route::post('/sftp/auth', 'SftpAuthenticationController');
 Route::group(['prefix' => '/servers/{uuid}'], function () {
     Route::get('/', 'Servers\ServerDetailsController');
-    Route::get('/install', 'Servers\ServerInstallController');
+    Route::get('/install', 'Servers\ServerInstallController@index');
+    Route::post('/install', 'Servers\ServerInstallController@store');
 });

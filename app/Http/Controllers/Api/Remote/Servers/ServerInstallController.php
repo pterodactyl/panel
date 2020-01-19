@@ -3,9 +3,11 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
 
 class ServerInstallController extends Controller
 {
@@ -33,7 +35,7 @@ class ServerInstallController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function __invoke(Request $request, string $uuid)
+    public function index(Request $request, string $uuid)
     {
         $server = $this->repository->getByUuid($uuid);
         $egg = $server->egg;
@@ -43,5 +45,26 @@ class ServerInstallController extends Controller
             'entrypoint' => $egg->copy_script_entry,
             'script' => $egg->copy_script_install,
         ]);
+    }
+
+    /**
+     * Updates the installation state of a server.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest $request
+     * @param string $uuid
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     */
+    public function store(InstallationDataRequest $request, string $uuid)
+    {
+        $server = $this->repository->getByUuid($uuid);
+
+        $this->repository->update($server->id, [
+            'installed' => ((bool) $request->input('successful', false)) ? 1 : 2,
+        ]);
+
+        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }
 }
