@@ -9,7 +9,7 @@ interface Props {
     children: React.ReactNode;
 }
 
-export default ({ icon, title, children, className }: Props) => (
+const TitledGreyBox = ({ icon, title, children, className }: Props) => (
     <div className={`rounded shadow-md bg-neutral-700 ${className}`}>
         <div className={'bg-neutral-900 rounded-t p-3 border-b border-black'}>
             <p className={'text-sm uppercase'}>
@@ -21,3 +21,5 @@ export default ({ icon, title, children, className }: Props) => (
         </div>
     </div>
 );
+
+export default TitledGreyBox;

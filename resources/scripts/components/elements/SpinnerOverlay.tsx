@@ -10,7 +10,7 @@ interface Props {
     backgroundOpacity?: number;
 }
 
-export default ({ size, fixed, visible, backgroundOpacity }: Props) => (
+const SpinnerOverlay = ({ size, fixed, visible, backgroundOpacity }: Props) => (
     <CSSTransition timeout={150} classNames={'fade'} in={visible} unmountOnExit={true}>
         <div
             className={classNames('z-50 pin-t pin-l flex items-center justify-center w-full h-full rounded', {
@@ -23,3 +23,5 @@ export default ({ size, fixed, visible, backgroundOpacity }: Props) => (
         </div>
     </CSSTransition>
 );
+
+export default SpinnerOverlay;

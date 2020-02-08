@@ -9,7 +9,7 @@ interface Props {
     className?: string;
 }
 
-export default ({ size, centered, className }: Props) => (
+const Spinner = ({ size, centered, className }: Props) => (
     centered ?
         <div className={classNames(`flex justify-center ${className}`, { 'm-20': size === 'large', 'm-6': size !== 'large' })}>
             <div
@@ -27,3 +27,5 @@ export default ({ size, centered, className }: Props) => (
             })}
         />
 );
+
+export default Spinner;

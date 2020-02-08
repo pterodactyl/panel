@@ -135,7 +135,7 @@ export default ({ databaseId, className, onDelete }: Props) => {
             </Modal>
             <div className={classNames('grey-row-box no-hover', className)}>
                 <div className={'icon'}>
-                    <FontAwesomeIcon icon={faDatabase}/>
+                    <FontAwesomeIcon icon={faDatabase} fixedWidth={true}/>
                 </div>
                 <div className={'flex-1 ml-4'}>
                     <p className={'text-lg'}>{database.name}</p>

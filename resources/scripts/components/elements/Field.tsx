@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, FieldProps } from 'formik';
+import { Field as FormikField, FieldProps } from 'formik';
 import classNames from 'classnames';
 
 interface OwnProps {
@@ -11,8 +11,8 @@ interface OwnProps {
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
-export default ({ id, name, label, description, validate, className, ...props }: Props) => (
-    <Field name={name} validate={validate}>
+const Field = ({ id, name, label, description, validate, className, ...props }: Props) => (
+    <FormikField name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
                 <React.Fragment>
@@ -37,5 +37,7 @@ export default ({ id, name, label, description, validate, className, ...props }:
                 </React.Fragment>
             )
         }
-    </Field>
+    </FormikField>
 );
+
+export default Field;

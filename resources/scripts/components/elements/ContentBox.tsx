@@ -8,7 +8,7 @@ type Props = Readonly<React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElemen
     showFlashes?: string | boolean;
 }>;
 
-export default ({ title, borderColor, showFlashes, children, ...props }: Props) => (
+const ContentBox = ({ title, borderColor, showFlashes, children, ...props }: Props) => (
     <div {...props}>
         {title && <h2 className={'text-neutral-300 mb-4 px-4'}>{title}</h2>}
         {showFlashes &&
@@ -24,3 +24,5 @@ export default ({ title, borderColor, showFlashes, children, ...props }: Props) 
         </div>
     </div>
 );
+
+export default ContentBox;

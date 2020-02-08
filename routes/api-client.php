@@ -59,6 +59,10 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/create-folder', 'Servers\FileController@createFolder')->name('api.client.servers.files.create-folder');
     });
 
+    Route::group(['prefix' => '/schedules'], function () {
+        Route::get('/', 'Servers\ScheduleController@index');
+    });
+
     Route::group(['prefix' => '/network'], function () {
         Route::get('/', 'Servers\NetworkController@index')->name('api.client.servers.network');
     });
