@@ -71,7 +71,7 @@ class BulkReinstallActionCommand extends Command
     {
         $servers = $this->getServersToProcess();
 
-        if (! $this->confirm(trans('command/messages.server.reinstall.confirm'))) {
+        if (! $this->confirm(trans('command/messages.server.reinstall.confirm')) && $this->input->isInteractive()) {
             return;
         }
 

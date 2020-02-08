@@ -91,7 +91,7 @@ class BulkPowerActionCommand extends Command
         }
 
         $count = $this->repository->getServersForPowerActionCount($servers, $nodes);
-        if (! $this->confirm(trans('command/messages.server.power.confirm', ['action' => $action, 'count' => $count]))) {
+        if (! $this->confirm(trans('command/messages.server.power.confirm', ['action' => $action, 'count' => $count])) && $this->input->isInteractive()) {
             return;
         }
 
