@@ -81,6 +81,17 @@ export default () => {
             // @see https://github.com/xtermjs/xterm.js/issues/2265
             // @see https://github.com/xtermjs/xterm.js/issues/2230
             TerminalFit.fit(terminal);
+
+            // Add support for copying terminal text.
+            terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
+                // Ctrl + C
+                if (e.ctrlKey && (e.key === 'c')) {
+                    document.execCommand('copy');
+                    return false;
+                }
+
+                return true;
+            });
         }
     }, [ terminal, connected, terminalElement ]);
 
