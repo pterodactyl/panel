@@ -15,6 +15,9 @@ extends:
 globals:
   tw: "readonly"
 rules:
+  indent:
+    - error
+    - 4
   semi:
     - error
     - always
