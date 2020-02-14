@@ -2,21 +2,21 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
-use Pterodactyl\Models\Node;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Services\Nodes\NodeUpdateService;
-use Pterodactyl\Services\Nodes\NodeCreationService;
-use Pterodactyl\Services\Nodes\NodeDeletionService;
+use Illuminate\Http\Response;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Transformers\Api\Application\NodeTransformer;
+use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\StoreNodeRequest;
-use Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest;
-use Pterodactyl\Http\Requests\Api\Application\Nodes\UpdateNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\TokenNodeRequest;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Pterodactyl\Http\Requests\Api\Application\Nodes\UpdateNodeRequest;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Services\Nodes\NodeCreationService;
+use Pterodactyl\Services\Nodes\NodeDeletionService;
+use Pterodactyl\Services\Nodes\NodeUpdateService;
+use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 
 class NodeController extends ApplicationApiController
 {
@@ -34,7 +34,7 @@ class NodeController extends ApplicationApiController
      * @var \Pterodactyl\Services\Nodes\NodeUpdateService
      */
     private $updateService;
-    
+
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
@@ -149,7 +149,7 @@ class NodeController extends ApplicationApiController
 
         return response('', 204);
     }
-    
+
     /**
      * Generate a new token for the specified node.
      *

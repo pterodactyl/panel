@@ -10,8 +10,8 @@
 namespace Pterodactyl\Services\Nests;
 
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
 
 class NestDeletionService
 {

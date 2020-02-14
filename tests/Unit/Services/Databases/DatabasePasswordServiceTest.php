@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Services\Databases;
 
-use Mockery as m;
-use Tests\TestCase;
-use Pterodactyl\Models\Database;
-use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
+use Illuminate\Database\ConnectionInterface;
+use Mockery as m;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
+use Pterodactyl\Extensions\DynamicDatabaseConnection;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Services\Databases\DatabasePasswordService;
+use Tests\TestCase;
 
 class DatabasePasswordServiceTest extends TestCase
 {

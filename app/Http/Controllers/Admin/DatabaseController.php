@@ -3,19 +3,19 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Exception;
-use PDOException;
-use Illuminate\View\View;
-use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
+use PDOException;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
-use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
-use Pterodactyl\Services\Databases\Hosts\HostCreationService;
-use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
+use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
+use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Services\Databases\Hosts\HostCreationService;
+use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
+use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 
 class DatabaseController extends Controller
 {
@@ -165,6 +165,7 @@ class DatabaseController extends Controller
                 $this->alert->danger(
                     sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage())
                 )->flash();
+
                 return $redirect->withInput($request->normalize());
             } else {
                 throw $exception;
