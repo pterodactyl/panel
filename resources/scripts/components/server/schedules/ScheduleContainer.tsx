@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import getServerSchedules, { Schedule } from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import { httpErrorToHuman } from '@/api/http';
@@ -14,8 +14,9 @@ interface Params {
     schedule?: string;
 }
 
-export default ({ history, match, location: { hash } }: RouteComponentProps<Params>) => {
+export default ({ history, match }: RouteComponentProps<Params>) => {
     const { id, uuid } = ServerContext.useStoreState(state => state.server.data!);
+    const [ active, setActive ] = useState(0);
     const [ schedules, setSchedules ] = useState<Schedule[] | null>(null);
     const { clearFlashes, addError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -29,7 +30,9 @@ export default ({ history, match, location: { hash } }: RouteComponentProps<Para
             });
     }, [ setSchedules ]);
 
-    const matched = (schedules || []).find(schedule => schedule.id === Number(hash.match(/\d+$/) || 0));
+    const matched = useMemo(() => {
+        return schedules?.find(schedule => schedule.id === active);
+    }, [ active ]);
 
     return (
         <div className={'my-10 mb-6'}>
@@ -38,13 +41,13 @@ export default ({ history, match, location: { hash } }: RouteComponentProps<Para
                 <Spinner size={'large'} centered={true}/>
                 :
                 schedules.map(schedule => (
-                    <Link
+                    <div
                         key={schedule.id}
-                        to={`/server/${id}/schedules/#/schedule/${schedule.id}`}
-                        className={'grey-row-box'}
+                        onClick={() => setActive(schedule.id)}
+                        className={'grey-row-box cursor-pointer'}
                     >
                         <ScheduleRow schedule={schedule}/>
-                    </Link>
+                    </div>
                 ))
             }
             {matched &&
@@ -52,7 +55,7 @@ export default ({ history, match, location: { hash } }: RouteComponentProps<Para
                 schedule={matched}
                 visible={true}
                 appear={true}
-                onDismissed={() => history.push(match.url)}
+                onDismissed={() => setActive(0)}
             />
             }
         </div>

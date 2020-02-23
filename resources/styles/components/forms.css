@@ -47,14 +47,6 @@ input[type=number] {
     &:disabled {
         @apply .bg-neutral-100 .border-neutral-200;
     }
-
-    & + .input-help {
-        @apply .text-xs .text-neutral-400 .pt-2;
-
-        &.error {
-            @apply .text-red-600;
-        }
-    }
 }
 
 .input-dark:not(select) {
@@ -70,7 +62,7 @@ input[type=number] {
     }
 
     & + .input-help {
-        @apply .text-xs .text-neutral-400 .mt-2
+        @apply .text-xs .text-neutral-400;
     }
 
     &.error {
@@ -83,6 +75,14 @@ input[type=number] {
 
     &:disabled {
         @apply .opacity-75;
+    }
+}
+
+.input-help {
+    @apply .text-xs .text-neutral-400 .pt-2;
+
+    &.error {
+        @apply .text-red-400;
     }
 }
 

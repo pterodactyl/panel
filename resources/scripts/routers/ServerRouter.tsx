@@ -6,7 +6,6 @@ import TransitionRouter from '@/TransitionRouter';
 import Spinner from '@/components/elements/Spinner';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { ServerContext } from '@/state/server';
-import { Provider } from 'react-redux';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import { CSSTransition } from 'react-transition-group';
@@ -41,36 +40,34 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     </div>
                 </div>
             </CSSTransition>
-            <Provider store={ServerContext.useStore()}>
-                <WebsocketHandler/>
-                <TransitionRouter>
-                    {!server ?
-                        <div className={'flex justify-center m-20'}>
-                            <Spinner size={'large'}/>
-                        </div>
-                        :
-                        <React.Fragment>
-                            <Switch location={location}>
-                                <Route path={`${match.path}`} component={ServerConsole} exact/>
-                                <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
-                                <Route
-                                    path={`${match.path}/files/:action(edit|new)`}
-                                    render={props => (
-                                        <SuspenseSpinner>
-                                            <FileEditContainer {...props as any}/>
-                                        </SuspenseSpinner>
-                                    )}
-                                    exact
-                                />
-                                <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
-                                {/* <Route path={`${match.path}/users`} component={UsersContainer} exact/> */}
-                                <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
-                                <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
-                            </Switch>
-                        </React.Fragment>
-                    }
-                </TransitionRouter>
-            </Provider>
+            <WebsocketHandler/>
+            <TransitionRouter>
+                {!server ?
+                    <div className={'flex justify-center m-20'}>
+                        <Spinner size={'large'}/>
+                    </div>
+                    :
+                    <React.Fragment>
+                        <Switch location={location}>
+                            <Route path={`${match.path}`} component={ServerConsole} exact/>
+                            <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
+                            <Route
+                                path={`${match.path}/files/:action(edit|new)`}
+                                render={props => (
+                                    <SuspenseSpinner>
+                                        <FileEditContainer {...props as any}/>
+                                    </SuspenseSpinner>
+                                )}
+                                exact
+                            />
+                            <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
+                            {/* <Route path={`${match.path}/users`} component={UsersContainer} exact/> */}
+                            <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
+                            <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                        </Switch>
+                    </React.Fragment>
+                }
+            </TransitionRouter>
         </React.Fragment>
     );
 };
