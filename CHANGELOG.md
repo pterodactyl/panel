@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.17 (Derelict Dermodactylus)
+### Fixed
+* Fixes database passwords not being generated with the proper requirements for some MySQL setups.
+
 ## v0.7.16 (Derelict Dermodactylus)
 ### Fixed
 * Fixed the /api/application/servers endpoint erroring when including subusers or egg
