@@ -3,6 +3,12 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.17 (Derelict Dermodactylus)
+### Fixed
+* Limited accounts to 5 API keys at a time.
+* Fixes database passwords not being generated with the proper requirements for some MySQL setups.
+* Hostnames that are not FQDNs/IP addresses can now be used for connecting to a MySQL host.
+
 ## v0.7.16 (Derelict Dermodactylus)
 ### Fixed
 * Fixed the /api/application/servers endpoint erroring when including subusers or egg

@@ -6,7 +6,7 @@
 @extends('layouts.master')
 
 @section('title')
-    @lang('server.schedules.new.header')
+    @lang('server.schedule.new.header')
 @endsection
 
 @section('scripts')

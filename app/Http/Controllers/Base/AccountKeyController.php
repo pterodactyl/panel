@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\ApiKey;
 use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Http\Requests\Base\StoreAccountKeyRequest;
@@ -76,10 +77,17 @@ class AccountKeyController extends Controller
      * @param \Pterodactyl\Http\Requests\Base\StoreAccountKeyRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function store(StoreAccountKeyRequest $request)
     {
+        if ($this->repository->findCountWhere(['user_id' => $request->user()->id]) >= 5) {
+            throw new DisplayException(
+                'Cannot assign more than 5 API keys to an account.'
+            );
+        }
+
         $this->keyService->setKeyType(ApiKey::TYPE_ACCOUNT)->handle([
             'user_id' => $request->user()->id,
             'allowed_ips' => $request->input('allowed_ips'),
