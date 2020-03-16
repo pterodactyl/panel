@@ -4,6 +4,7 @@ namespace Pterodactyl\Services\Databases;
 
 use Exception;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Helpers\Utilities;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
@@ -70,7 +71,9 @@ class DatabaseManagementService
         $data['server_id'] = $server;
         $data['database'] = sprintf('s%d_%s', $server, $data['database']);
         $data['username'] = sprintf('u%d_%s', $server, str_random(10));
-        $data['password'] = $this->encrypter->encrypt(str_random(24));
+        $data['password'] = $this->encrypter->encrypt(
+            Utilities::randomStringWithSpecialCharacters(24)
+        );
 
         $this->database->beginTransaction();
         try {

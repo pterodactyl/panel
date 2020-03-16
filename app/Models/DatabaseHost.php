@@ -51,7 +51,7 @@ class DatabaseHost extends Validable
      */
     public static $validationRules = [
         'name' => 'required|string|max:255',
-        'host' => 'required|ip|unique:database_hosts,host',
+        'host' => 'required|unique:database_hosts,host',
         'port' => 'required|numeric|between:1,65535',
         'username' => 'required|string|max:32',
         'password' => 'nullable|string',
