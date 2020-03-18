@@ -837,6 +837,23 @@ module.exports = {
         'current': 'currentColor',
     },
 
+    transitionDuration: {
+        '75': '75ms',
+        '100': '100ms',
+        '150': '150ms',
+        '250': '250ms',
+        '500': '500ms',
+        '750': '750ms',
+        '1000': '1000ms',
+    },
+
+    transitionTimingFunction: {
+        'linear': 'linear',
+        'in': 'cubic-bezier(0.4, 0, 1, 1)',
+        'out': 'cubic-bezier(0, 0, 0.2, 1)',
+        'in-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
+    },
+
     /*
     |-----------------------------------------------------------------------------
     | Modules                  https://tailwindcss.com/docs/configuration#modules
@@ -925,6 +942,52 @@ module.exports = {
         require('tailwindcss/plugins/container')({
             center: true,
         }),
+
+        function ({ addUtilities }) {
+            addUtilities({
+                '.transition-none': {
+                    'transition-property': 'none',
+                },
+                '.transition-all': {
+                    'transition-property': 'all',
+                },
+                '.transition': {
+                    'transition-property': 'background-color, border-color, color, fill, stroke, opacity, box-shadow, transform',
+                },
+                '.transition-colors': {
+                    'transition-property': 'background-color, border-color, color, fill, stroke',
+                },
+                '.transition-opacity': {
+                    'transition-property': 'opacity',
+                },
+                '.transition-shadow': {
+                    'transition-property': 'box-shadow',
+                },
+                '.transition-transform': {
+                    'transition-property': 'transform',
+                },
+            }, ['hover', 'focus']);
+        },
+
+        function ({ addUtilities, config }) {
+            const durations = config('transitionDuration', {});
+
+            addUtilities(Object.keys(durations).map(key => ({
+                [`.duration-${key}`]: {
+                    'transition-duration': durations[key],
+                },
+            })), ['hover', 'focus']);
+        },
+
+        function ({ addUtilities, config }) {
+            const timingFunctions = config('transitionTimingFunction', {});
+
+            addUtilities(Object.keys(timingFunctions).map(key => ({
+                [`.ease-${key}`]: {
+                    'transition-timing-function': timingFunctions[key],
+                },
+            })));
+        },
     ],
 
     /*

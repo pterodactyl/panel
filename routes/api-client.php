@@ -61,6 +61,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
 
     Route::group(['prefix' => '/schedules'], function () {
         Route::get('/', 'Servers\ScheduleController@index');
+        Route::get('/{schedule}', 'Servers\ScheduleController@view');
     });
 
     Route::group(['prefix' => '/network'], function () {

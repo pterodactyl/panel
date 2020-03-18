@@ -2,21 +2,15 @@ import React, { useMemo, useState } from 'react';
 import getServerSchedules, { Schedule } from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, Link } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import { httpErrorToHuman } from '@/api/http';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 
-interface Params {
-    schedule?: string;
-}
-
-export default ({ history, match }: RouteComponentProps<Params>) => {
-    const { id, uuid } = ServerContext.useStoreState(state => state.server.data!);
-    const [ active, setActive ] = useState(0);
+export default ({ match, history }: RouteComponentProps) => {
+    const { uuid } = ServerContext.useStoreState(state => state.server.data!);
     const [ schedules, setSchedules ] = useState<Schedule[] | null>(null);
     const { clearFlashes, addError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -30,10 +24,6 @@ export default ({ history, match }: RouteComponentProps<Params>) => {
             });
     }, [ setSchedules ]);
 
-    const matched = useMemo(() => {
-        return schedules?.find(schedule => schedule.id === active);
-    }, [ active ]);
-
     return (
         <div className={'my-10 mb-6'}>
             <FlashMessageRender byKey={'schedules'} className={'mb-4'}/>
@@ -41,22 +31,18 @@ export default ({ history, match }: RouteComponentProps<Params>) => {
                 <Spinner size={'large'} centered={true}/>
                 :
                 schedules.map(schedule => (
-                    <div
+                    <a
                         key={schedule.id}
-                        onClick={() => setActive(schedule.id)}
+                        href={`${match.url}/${schedule.id}`}
                         className={'grey-row-box cursor-pointer'}
+                        onClick={e => {
+                            e.preventDefault();
+                            history.push(`${match.url}/${schedule.id}`, { schedule });
+                        }}
                     >
                         <ScheduleRow schedule={schedule}/>
-                    </div>
+                    </a>
                 ))
-            }
-            {matched &&
-            <EditScheduleModal
-                schedule={matched}
-                visible={true}
-                appear={true}
-                onDismissed={() => setActive(0)}
-            />
             }
         </div>
     );

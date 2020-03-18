@@ -13,6 +13,7 @@ import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
+import ScheduleEditContainer from '@/components/server/schedules/ScheduleEditContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -63,6 +64,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
                             {/* <Route path={`${match.path}/users`} component={UsersContainer} exact/> */}
                             <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
+                            <Route path={`${match.path}/schedules/:id`} component={ScheduleEditContainer} exact/>
                             <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
                         </Switch>
                     </React.Fragment>
