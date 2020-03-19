@@ -75,22 +75,22 @@ export default ({ schedule, task, onTaskUpdated, onTaskRemoved }: Props) => {
                 </p>
             </div>
             }
-            <a
-                href={'#'}
+            <button
+                type={'button'}
                 aria-label={'Edit scheduled task'}
                 className={'block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-color duration-150 mr-4'}
                 onClick={() => setIsEditing(true)}
             >
                 <FontAwesomeIcon icon={faPencilAlt}/>
-            </a>
-            <a
-                href={'#'}
+            </button>
+            <button
+                type={'button'}
                 aria-label={'Delete scheduled task'}
                 className={'block text-sm p-2 text-neutral-500 hover:text-red-600 transition-color duration-150'}
                 onClick={() => setVisible(true)}
             >
                 <FontAwesomeIcon icon={faTrashAlt}/>
-            </a>
+            </button>
         </div>
     );
 };
