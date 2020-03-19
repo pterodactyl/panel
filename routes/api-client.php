@@ -62,6 +62,8 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     Route::group(['prefix' => '/schedules'], function () {
         Route::get('/', 'Servers\ScheduleController@index');
         Route::get('/{schedule}', 'Servers\ScheduleController@view');
+        Route::post('/{schedule}/tasks', 'Servers\ScheduleTaskController@store');
+        Route::post('/{schedule}/tasks/{task}', 'Servers\ScheduleTaskController@update');
         Route::delete('/{schedule}/tasks/{task}', 'Servers\ScheduleTaskController@delete');
     });
 

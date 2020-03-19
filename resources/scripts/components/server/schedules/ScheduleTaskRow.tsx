@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
+import { Task } from '@/api/server/schedules/getServerSchedules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import { faCode } from '@fortawesome/free-solid-svg-icons/faCode';
@@ -11,16 +11,20 @@ import { ApplicationStore } from '@/state';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
 
 interface Props {
     schedule: number;
     task: Task;
+    onTaskUpdated: (task: Task) => void;
     onTaskRemoved: () => void;
 }
 
-export default ({ schedule, task, onTaskRemoved }: Props) => {
-    const [visible, setVisible] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+export default ({ schedule, task, onTaskUpdated, onTaskRemoved }: Props) => {
+    const [ visible, setVisible ] = useState(false);
+    const [ isLoading, setIsLoading ] = useState(false);
+    const [ isEditing, setIsEditing ] = useState(false);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, addError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -37,8 +41,16 @@ export default ({ schedule, task, onTaskRemoved }: Props) => {
     };
 
     return (
-        <div className={'flex items-center'}>
+        <div className={'flex items-center bg-neutral-700 border border-neutral-600 mb-2 px-6 py-4 rounded'}>
             <SpinnerOverlay visible={isLoading} fixed={true} size={'large'}/>
+            {isEditing && <TaskDetailsModal
+                scheduleId={schedule}
+                task={task}
+                onDismissed={task => {
+                    task && onTaskUpdated(task);
+                    setIsEditing(false);
+                }}
+            />}
             <ConfirmTaskDeletionModal
                 visible={visible}
                 onDismissed={() => setVisible(false)}
@@ -63,16 +75,22 @@ export default ({ schedule, task, onTaskRemoved }: Props) => {
                 </p>
             </div>
             }
-            <div>
-                <a
-                    href={'#'}
-                    aria-label={'Delete scheduled task'}
-                    className={'text-sm p-2 text-neutral-500 hover:text-red-600 transition-color duration-150'}
-                    onClick={() => setVisible(true)}
-                >
-                    <FontAwesomeIcon icon={faTrashAlt}/>
-                </a>
-            </div>
+            <a
+                href={'#'}
+                aria-label={'Edit scheduled task'}
+                className={'block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-color duration-150 mr-4'}
+                onClick={() => setIsEditing(true)}
+            >
+                <FontAwesomeIcon icon={faPencilAlt}/>
+            </a>
+            <a
+                href={'#'}
+                aria-label={'Delete scheduled task'}
+                className={'block text-sm p-2 text-neutral-500 hover:text-red-600 transition-color duration-150'}
+                onClick={() => setVisible(true)}
+            >
+                <FontAwesomeIcon icon={faTrashAlt}/>
+            </a>
         </div>
     );
 };

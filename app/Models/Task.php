@@ -79,6 +79,7 @@ class Task extends Validable
      * @var array
      */
     protected $attributes = [
+        'time_offset' => 0,
         'is_queued' => false,
     ];
 
