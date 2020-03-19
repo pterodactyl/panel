@@ -11,6 +11,7 @@ import { httpErrorToHuman } from '@/api/http';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
+import NewTaskButton from '@/components/server/schedules/NewTaskButton';
 
 interface Params {
     id: string;
@@ -65,9 +66,12 @@ export default ({ match, location: { state } }: RouteComponentProps<Params, {}, 
                         <button className={'btn btn-secondary btn-sm'} onClick={() => setShowEditModal(true)}>
                             Edit
                         </button>
-                        <button className={'btn btn-primary btn-sm ml-4'}>
-                            New Task
-                        </button>
+                        <NewTaskButton
+                            scheduleId={schedule.id}
+                            onTaskAdded={task => setSchedule(s => ({
+                                ...s!, tasks: [ ...s!.tasks, task ],
+                            }))}
+                        />
                     </div>
                     {schedule?.tasks.length > 0 ?
                         <>

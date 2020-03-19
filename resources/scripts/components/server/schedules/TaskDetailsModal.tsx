@@ -10,6 +10,7 @@ import { httpErrorToHuman } from '@/api/http';
 import Field from '@/components/elements/Field';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import { number, object, string } from 'yup';
 
 interface Props {
     scheduleId: number;
@@ -52,6 +53,14 @@ export default ({ task, scheduleId, onDismissed }: Props) => {
                 payload: task?.payload || '',
                 timeOffset: task?.timeOffset.toString() || '0',
             }}
+            validationSchema={object().shape({
+                action: string().required().oneOf(['command', 'power']),
+                payload: string().required('A task payload must be provided.'),
+                timeOffset: number().typeError('The time offset must be a valid number between 0 and 900.')
+                    .required('A time offset value must be provided.')
+                    .min(0, 'The time offset must be at least 0 seconds.')
+                    .max(900, 'The time offset must be less than 900 seconds.'),
+            })}
         >
             {({ values, isSubmitting }) => (
                 <Modal
