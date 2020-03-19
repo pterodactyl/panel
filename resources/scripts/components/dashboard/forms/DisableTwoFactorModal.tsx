@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Formik, FormikActions } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Field from '@/components/elements/Field';
@@ -17,7 +17,7 @@ export default ({ ...props }: RequiredModalProps) => {
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
 
-    const submit = ({ password }: Values, { setSubmitting }: FormikActions<Values>) => {
+    const submit = ({ password }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('account:two-factor');
         disableAccountTwoFactor(password)
             .then(() => {

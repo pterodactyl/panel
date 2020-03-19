@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ServerDatabase } from '@/api/server/getServerDatabases';
 import Modal from '@/components/elements/Modal';
-import { Form, Formik, FormikActions } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { object, string } from 'yup';
 import createServerDatabase from '@/api/server/createServerDatabase';
@@ -32,7 +32,7 @@ export default ({ onCreated }: { onCreated: (database: ServerDatabase) => void }
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const server = ServerContext.useStoreState(state => state.server.data!);
 
-    const submit = (values: Values, { setSubmitting }: FormikActions<Values>) => {
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
         createServerDatabase(server.uuid, { ...values })
             .then(database => {

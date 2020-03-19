@@ -13,7 +13,7 @@
         "date-fns": "^1.29.0",
         "easy-peasy": "^3.2.3",
         "events": "^3.0.0",
-        "formik": "^1.5.7",
+        "formik": "^2.1.4",
         "i18next": "^19.0.0",
         "i18next-chained-backend": "^2.0.0",
         "i18next-localstorage-backend": "^3.0.0",

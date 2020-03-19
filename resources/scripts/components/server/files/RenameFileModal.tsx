@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikActions } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { join } from 'path';
 import renameFile from '@/api/server/files/renameFile';
@@ -19,7 +19,7 @@ export default ({ file, useMoveTerminology, ...props }: Props) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const { pushFile, removeFile } = ServerContext.useStoreActions(actions => actions.files);
 
-    const submit = (values: FormikValues, { setSubmitting }: FormikActions<FormikValues>) => {
+    const submit = (values: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
         const renameFrom = join(directory, file.name);
         const renameTo = join(directory, values.name);
 

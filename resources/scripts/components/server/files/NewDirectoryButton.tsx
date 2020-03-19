@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from '@/components/elements/Modal';
 import { ServerContext } from '@/state/server';
-import { Form, Formik, FormikActions } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { join } from 'path';
 import { object, string } from 'yup';
@@ -22,7 +22,7 @@ export default () => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const pushFile = ServerContext.useStoreActions(actions => actions.files.pushFile);
 
-    const submit = (values: Values, { setSubmitting }: FormikActions<Values>) => {
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, values.directoryName)
             .then(() => {
                 pushFile({

@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikActions } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import { ServerContext } from '@/state/server';
@@ -17,7 +17,7 @@ interface Values {
 export default ({ onFileNamed, onDismissed, ...props }: Props) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
-    const submit = (values: Values, { setSubmitting }: FormikActions<Values>) => {
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         onFileNamed(join(directory, values.fileName));
         setSubmitting(false);
     };

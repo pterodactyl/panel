@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikActions } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import getTwoFactorTokenUrl from '@/api/account/getTwoFactorTokenUrl';
@@ -30,7 +30,7 @@ export default ({ ...props }: RequiredModalProps) => {
             });
     }, []);
 
-    const submit = ({ code }: Values, { setSubmitting }: FormikActions<Values>) => {
+    const submit = ({ code }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('account:two-factor');
         enableAccountTwoFactor(code)
             .then(() => {

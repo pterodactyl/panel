@@ -6,7 +6,7 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
 import classNames from 'classnames';
 import Modal from '@/components/elements/Modal';
-import { Form, Formik, FormikActions } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { object, string } from 'yup';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -41,7 +41,7 @@ export default ({ databaseId, className, onDelete }: Props) => {
             .oneOf([database.name.split('_', 2)[1], database.name], 'The database name must be provided.'),
     });
 
-    const submit = (values: { confirm: string }, { setSubmitting }: FormikActions<{ confirm: string }>) => {
+    const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
         clearFlashes();
         deleteServerDatabase(server.uuid, database.id)
             .then(() => {

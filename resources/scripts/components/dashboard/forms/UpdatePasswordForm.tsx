@@ -1,6 +1,6 @@
 import React from 'react';
 import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
-import { Form, Formik, FormikActions } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import * as Yup from 'yup';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -30,7 +30,7 @@ export default () => {
         return null;
     }
 
-    const submit = (values: Values, { resetForm, setSubmitting }: FormikActions<Values>) => {
+    const submit = (values: Values, { resetForm, setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('account:password');
         updateAccountPassword({ ...values })
             .then(() => {
