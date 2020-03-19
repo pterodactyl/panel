@@ -13,6 +13,14 @@ class Permission extends Validable
     const RESOURCE_NAME = 'subuser_permission';
 
     /**
+     * Constants defining different permissions available.
+     */
+    const ACTION_SCHEDULE_READ = 'schedule.read';
+    const ACTION_SCHEDULE_CREATE = 'schedule.create';
+    const ACTION_SCHEDULE_UPDATE = 'schedule.update';
+    const ACTION_SCHEDULE_DELETE = 'schedule.delete';
+
+    /**
      * Should timestamps be used on this model.
      *
      * @var bool

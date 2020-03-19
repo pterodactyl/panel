@@ -79,7 +79,14 @@ export default ({ match, location: { state } }: RouteComponentProps<Params, {}, 
                                             key={task.id}
                                             className={'bg-neutral-700 border border-neutral-600 mb-2 px-6 py-4 rounded'}
                                         >
-                                            <ScheduleTaskRow task={task}/>
+                                            <ScheduleTaskRow
+                                                task={task}
+                                                schedule={schedule.id}
+                                                onTaskRemoved={() => setSchedule(s => ({
+                                                    ...s!,
+                                                    tasks: s!.tasks.filter(t => t.id !== task.id),
+                                                }))}
+                                            />
                                         </div>
                                     ))
                             }
