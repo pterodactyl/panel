@@ -140,21 +140,19 @@ export default ({ databaseId, className, onDelete }: Props) => {
                 <div className={'flex-1 ml-4'}>
                     <p className={'text-lg'}>{database.name}</p>
                 </div>
-                <div className={'ml-6'}>
-                    <p className={'text-center text-xs text-neutral-500 uppercase mb-1 select-none'}>Endpoint:</p>
-                    <p className={'text-center text-sm'}>{database.connectionString}</p>
+                <div className={'ml-8 text-center'}>
+                    <p className={'text-sm'}>{database.connectionString}</p>
+                    <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Endpoint</p>
                 </div>
-                <div className={'ml-6'}>
-                    <p className={'text-center text-xs text-neutral-500 uppercase mb-1 select-none'}>
-                        Connections From:
-                    </p>
-                    <p className={'text-center text-sm'}>{database.allowConnectionsFrom}</p>
+                <div className={'ml-8 text-center'}>
+                    <p className={'text-sm'}>{database.allowConnectionsFrom}</p>
+                    <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Connections from</p>
                 </div>
-                <div className={'ml-6'}>
-                    <p className={'text-center text-xs text-neutral-500 uppercase mb-1 select-none'}>Username:</p>
-                    <p className={'text-center text-sm'}>{database.username}</p>
+                <div className={'ml-8 text-center'}>
+                    <p className={'text-sm'}>{database.username}</p>
+                    <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Username</p>
                 </div>
-                <div className={'ml-6'}>
+                <div className={'ml-8'}>
                     <button className={'btn btn-sm btn-secondary mr-2'} onClick={() => setConnectionVisible(true)}>
                         <FontAwesomeIcon icon={faEye} fixedWidth={true}/>
                     </button>
