@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Databases;
 
-use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class RotatePasswordRequest extends ClientApiRequest
@@ -10,10 +10,10 @@ class RotatePasswordRequest extends ClientApiRequest
     /**
      * Check that the user has permission to rotate the password.
      *
-     * @return bool
+     * @return string
      */
-    public function authorize(): bool
+    public function permission(): string
     {
-        return $this->user()->can('database.update', $this->getModel(Server::class));
+        return Permission::ACTION_DATABASE_UPDATE;
     }
 }

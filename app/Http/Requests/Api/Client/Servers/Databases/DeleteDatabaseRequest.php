@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Requests\Api\Client\Servers\Databases;
 
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
@@ -14,7 +15,7 @@ class DeleteDatabaseRequest extends ClientApiRequest implements ClientPermission
      */
     public function permission(): string
     {
-        return 'database.delete';
+        return Permission::ACTION_DATABASE_DELETE;
     }
 
     /**

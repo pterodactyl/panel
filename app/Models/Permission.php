@@ -15,10 +15,41 @@ class Permission extends Validable
     /**
      * Constants defining different permissions available.
      */
+    const ACTION_WEBSOCKET = 'websocket.*';
+    const ACTION_CONTROL_CONSOLE = 'control.console';
+    const ACTION_CONTROL_START = 'control.start';
+    const ACTION_CONTROL_STOP = 'control.stop';
+    const ACTION_CONTROL_RESTART = 'control.restart';
+    const ACTION_CONTROL_KILL = 'control.kill';
+
+    const ACTION_DATABASE_READ = 'database.read';
+    const ACTION_DATABASE_CREATE = 'database.create';
+    const ACTION_DATABASE_UPDATE = 'database.update';
+    const ACTION_DATABASE_DELETE = 'database.delete';
+    const ACTION_DATABASE_VIEW_PASSWORD = 'database.view_password';
+
     const ACTION_SCHEDULE_READ = 'schedule.read';
     const ACTION_SCHEDULE_CREATE = 'schedule.create';
     const ACTION_SCHEDULE_UPDATE = 'schedule.update';
     const ACTION_SCHEDULE_DELETE = 'schedule.delete';
+
+    const ACTION_USER_READ = 'user.read';
+    const ACTION_USER_CREATE = 'user.create';
+    const ACTION_USER_UPDATE = 'user.update';
+    const ACTION_USER_DELETE = 'user.delete';
+
+    const ACTION_ALLOCATION_READ = 'allocation.read';
+    const ACTION_ALLOCIATION_UPDATE = 'allocation.update';
+
+    const ACTION_FILE_READ = 'file.read';
+    const ACTION_FILE_CREATE = 'file.create';
+    const ACTION_FILE_UPDATE = 'file.update';
+    const ACTION_FILE_DELETE = 'file.delete';
+    const ACTION_FILE_ARCHIVE = 'file.archive';
+    const ACTION_FILE_SFTP = 'file.sftp';
+
+    const ACTION_SETTINGS_RENAME = 'settings.rename';
+    const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
 
     /**
      * Should timestamps be used on this model.
@@ -161,6 +192,11 @@ class Permission extends Validable
             'read', // task.view-schedule, task.list-schedules
             'update', // task.edit-schedule, task.queue-schedule, task.toggle-schedule
             'delete', // task.delete-schedule
+        ],
+
+        'settings' => [
+            'rename',
+            'reinstall',
         ],
     ];
 

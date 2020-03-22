@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
@@ -16,7 +17,7 @@ class GetFileContentsRequest extends ClientApiRequest implements ClientPermissio
      */
     public function permission(): string
     {
-        return 'file.read';
+        return Permission::ACTION_FILE_READ;
     }
 
     /**

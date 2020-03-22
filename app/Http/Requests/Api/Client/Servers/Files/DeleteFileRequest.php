@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
@@ -12,7 +13,7 @@ class DeleteFileRequest extends ClientApiRequest implements ClientPermissionsReq
      */
     public function permission(): string
     {
-        return 'file.delete';
+        return Permission::ACTION_FILE_DELETE;
     }
 
     /**

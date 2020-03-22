@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Network;
 
-use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class GetNetworkRequest extends ClientApiRequest
@@ -11,10 +11,10 @@ class GetNetworkRequest extends ClientApiRequest
      * Check that the user has permission to view the allocations for
      * this server.
      *
-     * @return bool
+     * @return string
      */
-    public function authorize(): bool
+    public function permission(): string
     {
-        return $this->user()->can('allocation.read', $this->getModel(Server::class));
+        return Permission::ACTION_ALLOCATION_READ;
     }
 }

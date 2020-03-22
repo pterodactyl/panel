@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
@@ -15,7 +16,7 @@ class RenameFileRequest extends ClientApiRequest implements ClientPermissionsReq
      */
     public function permission(): string
     {
-        return 'file.update';
+        return Permission::ACTION_FILE_UPDATE;
     }
 
     /**

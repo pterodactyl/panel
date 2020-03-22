@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Databases;
 
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
@@ -12,7 +13,7 @@ class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissions
      */
     public function permission(): string
     {
-        return 'database.create';
+        return Permission::ACTION_DATABASE_CREATE;
     }
 
     /**

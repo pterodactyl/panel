@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Databases;
 
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
@@ -12,6 +13,6 @@ class GetDatabasesRequest extends ClientApiRequest implements ClientPermissionsR
      */
     public function permission(): string
     {
-        return 'database.read';
+        return Permission::ACTION_DATABASE_READ;
     }
 }

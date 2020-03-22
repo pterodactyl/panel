@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
@@ -12,7 +13,7 @@ class CopyFileRequest extends ClientApiRequest implements ClientPermissionsReque
      */
     public function permission(): string
     {
-        return 'file.create';
+        return Permission::ACTION_FILE_CREATE;
     }
 
     /**

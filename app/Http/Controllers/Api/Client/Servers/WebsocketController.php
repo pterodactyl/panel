@@ -4,14 +4,15 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Cake\Chronos\Chronos;
 use Lcobucci\JWT\Builder;
-use Illuminate\Http\Request;
 use Lcobucci\JWT\Signer\Key;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\Permission;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Illuminate\Contracts\Cache\Repository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 
 class WebsocketController extends ClientApiController
@@ -39,13 +40,13 @@ class WebsocketController extends ClientApiController
      * allows us to continually renew this token and avoid users mainitaining sessions wrongly,
      * as well as ensure that user's only perform actions they're allowed to.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Http\Requests\Api\Client\ClientApiRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke(Request $request, Server $server)
+    public function __invoke(ClientApiRequest $request, Server $server)
     {
-        if (! $request->user()->can('websocket.*', $server)) {
+        if ($request->user()->cannot(Permission::ACTION_WEBSOCKET, $server)) {
             throw new HttpException(
                 Response::HTTP_FORBIDDEN, 'You do not have permission to connect to this server\'s websocket.'
             );
