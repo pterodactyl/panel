@@ -14,6 +14,11 @@ class ScheduleTransformer extends BaseClientTransformer
     protected $availableIncludes = ['tasks'];
 
     /**
+     * @var array
+     */
+    protected $defaultIncludes = ['tasks'];
+
+    /**
      * {@inheritdoc}
      */
     public function getResourceName(): string

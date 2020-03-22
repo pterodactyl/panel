@@ -41,6 +41,13 @@ class Schedule extends Validable
     protected $table = 'schedules';
 
     /**
+     * Always return the tasks associated with this schedule.
+     *
+     * @var array
+     */
+    protected $with = ['tasks'];
+
+    /**
      * Mass assignable attributes on this model.
      *
      * @var array
