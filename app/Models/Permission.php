@@ -286,28 +286,4 @@ class Permission extends Validable
 
         return collect(self::$deprecatedPermissions);
     }
-
-    /**
-     * Find permission by permission node.
-     *
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param string $permission
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function scopePermission($query, $permission)
-    {
-        return $query->where('permission', $permission);
-    }
-
-    /**
-     * Filter permission by server.
-     *
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function scopeServer($query, Server $server)
-    {
-        return $query->where('server_id', $server->id);
-    }
 }

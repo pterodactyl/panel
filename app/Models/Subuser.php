@@ -8,12 +8,12 @@ use Illuminate\Notifications\Notifiable;
  * @property int $id
  * @property int $user_id
  * @property int $server_id
+ * @property array $permissions
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Pterodactyl\Models\User $user
  * @property \Pterodactyl\Models\Server $server
- * @property \Pterodactyl\Models\Permission[]|\Illuminate\Database\Eloquent\Collection $permissions
  */
 class Subuser extends Validable
 {
@@ -45,8 +45,9 @@ class Subuser extends Validable
      * @var array
      */
     protected $casts = [
-        'user_id' => 'integer',
-        'server_id' => 'integer',
+        'user_id' => 'int',
+        'server_id' => 'int',
+        'permissions' => 'array',
     ];
 
     /**
@@ -55,6 +56,8 @@ class Subuser extends Validable
     public static $validationRules = [
         'user_id' => 'required|numeric|exists:users,id',
         'server_id' => 'required|numeric|exists:servers,id',
+        'permissions' => 'nullable|array',
+        'permissions.*' => 'string',
     ];
 
     /**
