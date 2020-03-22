@@ -1,21 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import Field from '@/components/elements/Field';
-import { connect } from 'react-redux';
-import { Form, FormikProps, withFormik } from 'formik';
-import { Actions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
+import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import Switch from '@/components/elements/Switch';
-import { boolean, object, string } from 'yup';
+import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedule';
+import { ServerContext } from '@/state/server';
+import { Actions, useStoreActions } from 'easy-peasy';
+import { ApplicationStore } from '@/state';
+import { httpErrorToHuman } from '@/api/http';
+import FlashMessageRender from '@/components/FlashMessageRender';
 
-type OwnProps = { schedule: Schedule } & RequiredModalProps;
-
-interface ReduxProps {
-    addError: ApplicationStore['flashes']['addError'];
-}
-
-type ComponentProps = OwnProps & ReduxProps;
+type Props = {
+    schedule?: Schedule;
+    onScheduleUpdated: (schedule: Schedule) => void;
+} & RequiredModalProps;
 
 interface Values {
     name: string;
@@ -26,9 +25,13 @@ interface Values {
     enabled: boolean;
 }
 
-const EditScheduleModal = ({ values, schedule, ...props }: ComponentProps & FormikProps<Values>) => {
+const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdated'>) => {
+    const { isSubmitting } = useFormikContext();
+
     return (
-        <Modal {...props}>
+        <Modal {...props} showSpinnerOverlay={isSubmitting}>
+            <h3 className={'mb-6'}>{schedule ? 'Edit schedule' : 'Create new schedule'}</h3>
+            <FlashMessageRender byKey={'schedule:edit'} className={'mb-6'}/>
             <Form>
                 <Field
                     name={'name'}
@@ -61,8 +64,8 @@ const EditScheduleModal = ({ values, schedule, ...props }: ComponentProps & Form
                     />
                 </div>
                 <div className={'mt-6 text-right'}>
-                    <button className={'btn btn-lg btn-primary'} type={'button'}>
-                        Save
+                    <button className={'btn btn-sm btn-primary'} type={'submit'}>
+                        {schedule ? 'Save changes' : 'Create schedule'}
                     </button>
                 </div>
             </Form>
@@ -70,29 +73,60 @@ const EditScheduleModal = ({ values, schedule, ...props }: ComponentProps & Form
     );
 };
 
-export default connect(
-    null,
-    // @ts-ignore
-    (dispatch: Actions<ApplicationStore>) => ({
-        addError: dispatch.flashes.addError,
-    }),
-)(
-    withFormik<ComponentProps, Values>({
-        handleSubmit: (values, { props }) => {
-        },
+export default ({ schedule, onScheduleUpdated, visible, ...props }: Props) => {
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const [ modalVisible, setModalVisible ] = useState(visible);
 
-        mapPropsToValues: ({ schedule }) => ({
-            name: schedule.name,
-            dayOfWeek: schedule.cron.dayOfWeek,
-            dayOfMonth: schedule.cron.dayOfMonth,
-            hour: schedule.cron.hour,
-            minute: schedule.cron.minute,
-            enabled: schedule.isActive,
-        }),
+    useEffect(() => {
+        setModalVisible(visible);
+        clearFlashes('schedule:edit');
+    }, [visible]);
 
-        validationSchema: object().shape({
-            name: string().required(),
-            enabled: boolean().required(),
-        }),
-    })(EditScheduleModal),
-);
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('schedule:edit');
+        createOrUpdateSchedule(uuid, {
+            id: schedule?.id,
+            name: values.name,
+            cron: {
+                minute: values.minute,
+                hour: values.hour,
+                dayOfWeek: values.dayOfWeek,
+                dayOfMonth: values.dayOfMonth,
+            },
+            isActive: values.enabled,
+        })
+            .then(schedule => {
+                setSubmitting(false);
+                onScheduleUpdated(schedule);
+                setModalVisible(false);
+            })
+            .catch(error => {
+                console.error(error);
+
+                setSubmitting(false);
+                addError({ key: 'schedule:edit', message: httpErrorToHuman(error) });
+            });
+    };
+
+    return (
+        <Formik
+            onSubmit={submit}
+            initialValues={{
+                name: schedule?.name || '',
+                dayOfWeek: schedule?.cron.dayOfWeek || '*',
+                dayOfMonth: schedule?.cron.dayOfMonth || '*',
+                hour: schedule?.cron.hour || '*',
+                minute: schedule?.cron.minute || '*/5',
+                enabled: schedule ? schedule.isActive : true,
+            } as Values}
+            validationSchema={null}
+        >
+            <EditScheduleModal
+                visible={modalVisible}
+                schedule={schedule}
+                {...props}
+            />
+        </Formik>
+    );
+};

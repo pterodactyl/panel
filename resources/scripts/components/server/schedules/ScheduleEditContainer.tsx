@@ -12,6 +12,7 @@ import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import NewTaskButton from '@/components/server/schedules/NewTaskButton';
+import DeleteScheduleButton from '@/components/server/schedules/DeleteScheduleButton';
 
 interface Params {
     id: string;
@@ -21,8 +22,8 @@ interface State {
     schedule?: Schedule;
 }
 
-export default ({ match, location: { state } }: RouteComponentProps<Params, {}, State>) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+export default ({ match, history, location: { state } }: RouteComponentProps<Params, {}, State>) => {
+    const { id, uuid } = ServerContext.useStoreState(state => state.server.data!);
     const [ isLoading, setIsLoading ] = useState(true);
     const [ showEditModal, setShowEditModal ] = useState(false);
     const [ schedule, setSchedule ] = useState<Schedule | undefined>(state?.schedule);
@@ -57,21 +58,13 @@ export default ({ match, location: { state } }: RouteComponentProps<Params, {}, 
                     <EditScheduleModal
                         visible={showEditModal}
                         schedule={schedule}
+                        onScheduleUpdated={schedule => setSchedule(schedule)}
                         onDismissed={() => setShowEditModal(false)}
                     />
-                    <div className={'flex items-center my-4'}>
+                    <div className={'flex items-center mt-8 mb-4'}>
                         <div className={'flex-1'}>
-                            <h2>Schedule Tasks</h2>
+                            <h2>Configured Tasks</h2>
                         </div>
-                        <button className={'btn btn-secondary btn-sm'} onClick={() => setShowEditModal(true)}>
-                            Edit
-                        </button>
-                        <NewTaskButton
-                            scheduleId={schedule.id}
-                            onTaskAdded={task => setSchedule(s => ({
-                                ...s!, tasks: [ ...s!.tasks, task ],
-                            }))}
-                        />
                     </div>
                     {schedule?.tasks.length > 0 ?
                         <>
@@ -101,9 +94,24 @@ export default ({ match, location: { state } }: RouteComponentProps<Params, {}, 
                         :
                         <p className={'text-sm text-neutral-400'}>
                             There are no tasks configured for this schedule. Consider adding a new one using the
-                            button above.
+                            button below.
                         </p>
                     }
+                    <div className={'mt-8 flex justify-end'}>
+                        <DeleteScheduleButton
+                            scheduleId={schedule.id}
+                            onDeleted={() => history.push(`/server/${id}/schedules`)}
+                        />
+                        <button className={'btn btn-primary btn-sm mr-4'} onClick={() => setShowEditModal(true)}>
+                            Edit
+                        </button>
+                        <NewTaskButton
+                            scheduleId={schedule.id}
+                            onTaskAdded={task => setSchedule(s => ({
+                                ...s!, tasks: [ ...s!.tasks, task ],
+                            }))}
+                        />
+                    </div>
                 </>
             }
         </div>

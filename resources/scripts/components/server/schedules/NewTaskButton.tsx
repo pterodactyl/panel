@@ -21,7 +21,7 @@ export default ({ scheduleId, onTaskAdded }: Props) => {
                     }}
                 />
             }
-            <button className={'btn btn-primary btn-sm ml-4'} onClick={() => setVisible(true)}>
+            <button className={'btn btn-primary btn-sm'} onClick={() => setVisible(true)}>
                 New Task
             </button>
         </>

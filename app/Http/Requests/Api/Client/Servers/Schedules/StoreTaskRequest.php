@@ -3,9 +3,8 @@
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Schedules;
 
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class StoreTaskRequest extends ClientApiRequest
+class StoreTaskRequest extends ViewScheduleRequest
 {
     /**
      * Determine if the user is allowed to create a new task for this schedule. We simply
@@ -14,7 +13,7 @@ class StoreTaskRequest extends ClientApiRequest
      *
      * @return string
      */
-    public function permission()
+    public function permission(): string
     {
         return Permission::ACTION_SCHEDULE_UPDATE;
     }

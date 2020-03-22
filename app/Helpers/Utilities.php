@@ -3,6 +3,8 @@
 namespace Pterodactyl\Helpers;
 
 use Exception;
+use Carbon\Carbon;
+use Cron\CronExpression;
 use Illuminate\Support\Facades\Log;
 
 class Utilities
@@ -31,5 +33,21 @@ class Utilities
         }
 
         return $string;
+    }
+
+    /**
+     * Converts schedule cron data into a carbon object.
+     *
+     * @param string $minute
+     * @param string $hour
+     * @param string $dayOfMonth
+     * @param string $dayOfWeek
+     * @return \Carbon\Carbon
+     */
+    public static function getScheduleNextRunDate(string $minute, string $hour, string $dayOfMonth, string $dayOfWeek)
+    {
+        return Carbon::instance(CronExpression::factory(
+            sprintf('%s %s %s * %s', $minute, $hour, $dayOfMonth, $dayOfWeek)
+        )->getNextRunDate());
     }
 }
