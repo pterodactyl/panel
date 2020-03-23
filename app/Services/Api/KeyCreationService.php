@@ -72,8 +72,6 @@ class KeyCreationService
             $data = array_merge($data, $permissions);
         }
 
-        $instance = $this->repository->create($data, true, true);
-
-        return $instance;
+        return $this->repository->create($data, true, true);
     }
 }

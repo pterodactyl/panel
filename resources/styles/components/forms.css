@@ -65,12 +65,8 @@ input[type=number] {
         @apply .text-xs .text-neutral-400;
     }
 
-    &.error {
-        @apply .text-red-100 .border-red-400;
-    }
-
     &.error + .input-help {
-        @apply .text-red-400;
+        @apply .text-red-400 !important;
     }
 
     &:disabled {
@@ -78,11 +74,15 @@ input[type=number] {
     }
 }
 
+.has-error .input-dark:not(select), .input-dark.error {
+    @apply .text-red-100 .border-red-400;
+}
+
 .input-help {
     @apply .text-xs .text-neutral-400 .pt-2;
 
     &.error {
-        @apply .text-red-400;
+        @apply .text-red-400 !important;
     }
 }
 

@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import InputError from '@/components/elements/InputError';
 
 interface Props {
+    id?: string;
     name: string;
     children: React.ReactNode;
     className?: string;
@@ -12,12 +13,12 @@ interface Props {
     validate?: (value: any) => undefined | string | Promise<any>;
 }
 
-const FormikFieldWrapper = ({ name, label, className, description, validate, children }: Props) => (
+const FormikFieldWrapper = ({ id, name, label, className, description, validate, children }: Props) => (
     <Field name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
                 <div className={classNames(className, { 'has-error': touched[field.name] && errors[field.name] })}>
-                    {label && <label htmlFor={name}>{label}</label>}
+                    {label && <label htmlFor={id} className={'input-dark-label'}>{label}</label>}
                     {children}
                     <InputError errors={errors} touched={touched} name={field.name}>
                         {description ? <p className={'input-help'}>{description}</p> : null}
