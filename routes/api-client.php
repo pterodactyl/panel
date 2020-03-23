@@ -22,6 +22,10 @@ Route::group(['prefix' => '/account'], function () {
 
     Route::put('/email', 'AccountController@updateEmail')->name('api.client.account.update-email');
     Route::put('/password', 'AccountController@updatePassword')->name('api.client.account.update-password');
+
+    Route::get('/api-keys', 'ApiKeyController@index');
+    Route::post('/api-keys', 'ApiKeyController@store');
+    Route::delete('/api-keys/{identifier}', 'ApiKeyController@delete');
 });
 
 /*

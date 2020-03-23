@@ -36,6 +36,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Carbon\Carbon $updated_at
  *
  * @property string $name
+ * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
  * @property \Pterodactyl\Models\Permission[]|\Illuminate\Database\Eloquent\Collection $permissions
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subuserOf
@@ -257,5 +258,14 @@ class User extends Validable implements
     public function keys()
     {
         return $this->hasMany(DaemonKey::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function apiKeys()
+    {
+        return $this->hasMany(ApiKey::class)
+            ->where('key_type', ApiKey::TYPE_ACCOUNT);
     }
 }

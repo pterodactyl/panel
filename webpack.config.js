@@ -87,6 +87,7 @@ module.exports = {
                                 '@babel/proposal-class-properties',
                                 '@babel/proposal-object-rest-spread',
                                 '@babel/proposal-optional-chaining',
+                                '@babel/proposal-nullish-coalescing-operator',
                                 '@babel/syntax-dynamic-import',
                             ],
                         },
@@ -164,6 +165,7 @@ module.exports = {
         ],
     },
     watchOptions: {
+        poll: 1000,
         ignored: /node_modules/,
     },
     devServer: {
