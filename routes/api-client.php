@@ -25,7 +25,7 @@ Route::group(['prefix' => '/account'], function () {
 
     Route::get('/api-keys', 'ApiKeyController@index');
     Route::post('/api-keys', 'ApiKeyController@store');
-    Route::delete('/api-keys/{key}', 'ApiKeyController@delete');
+    Route::delete('/api-keys/{identifier}', 'ApiKeyController@delete');
 });
 
 /*

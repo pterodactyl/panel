@@ -3,11 +3,14 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\ApiKey;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
+use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 
 class ApiKeyController extends ClientApiController
@@ -23,17 +26,27 @@ class ApiKeyController extends ClientApiController
     private $encrypter;
 
     /**
+     * @var \Pterodactyl\Repositories\Eloquent\ApiKeyRepository
+     */
+    private $repository;
+
+    /**
      * ApiKeyController constructor.
      *
      * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      * @param \Pterodactyl\Services\Api\KeyCreationService $keyCreationService
+     * @param \Pterodactyl\Repositories\Eloquent\ApiKeyRepository $repository
      */
-    public function __construct(Encrypter $encrypter, KeyCreationService $keyCreationService)
-    {
+    public function __construct(
+        Encrypter $encrypter,
+        KeyCreationService $keyCreationService,
+        ApiKeyRepository $repository
+    ) {
         parent::__construct();
 
         $this->encrypter = $encrypter;
         $this->keyCreationService = $keyCreationService;
+        $this->repository = $repository;
     }
 
     /**
@@ -80,7 +93,24 @@ class ApiKeyController extends ClientApiController
             ->toArray();
     }
 
-    public function delete()
+    /**
+     * Deletes a given API key.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\ClientApiRequest $request
+     * @param string $identifier
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete(ClientApiRequest $request, string $identifier)
     {
+        $response = $this->repository->deleteWhere([
+            'user_id' => $request->user()->id,
+            'identifier' => $identifier,
+        ]);
+
+        if (! $response) {
+            throw new NotFoundHttpException;
+        }
+
+        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

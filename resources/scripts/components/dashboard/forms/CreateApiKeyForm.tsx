@@ -8,23 +8,25 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { ApiKey } from '@/api/account/getApiKeys';
 
 interface Values {
     description: string;
     allowedIps: string;
 }
 
-export default () => {
+export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
     const [ apiKey, setApiKey ] = useState('');
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const submit = (values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes('account');
         createApiKey(values.description, values.allowedIps)
-            .then(key => {
+            .then(({ secretToken, ...key }) => {
                 resetForm();
                 setSubmitting(false);
-                setApiKey(`${key.identifier}.${key.secretToken}`);
+                setApiKey(`${key.identifier}${secretToken}`);
+                onKeyCreated(key);
             })
             .catch(error => {
                 console.error(error);
