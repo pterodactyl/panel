@@ -98,105 +98,90 @@ class Permission extends Validable
      */
     protected static $permissions = [
         'websocket' => [
-            // Allows the user to connect to the server websocket, this will give them
-            // access to view the console output as well as realtime server stats (CPU
-            // and Memory usage).
-            '*',
+            'description' => 'Allows the user to connect to the server websocket, giving them access to view console output and realtime server stats.',
+            'keys' => [
+                '*' => 'Gives user full read access to the websocket.',
+            ],
         ],
 
         'control' => [
-            // Allows the user to send data to the server console process. A user with this
-            // permission will not be able to stop the server directly by issuing the specified
-            // stop command for the Egg, however depending on plugins and server configuration
-            // they may still be able to control the server power state.
-            'console', // power.send-command
-
-            // Allows the user to start/stop/restart/kill the server process.
-            'start', // power.power-start
-            'stop', // power.power-stop
-            'restart', // power.power-restart
-            'kill', // power.power-kill
+            'description' => 'Permissions that control a user\'s ability to control the power state of a server, or send commands.',
+            'keys' => [
+                'console' => 'Allows a user to send commands to the server instance via the console.',
+                'start' => 'Allows a user to start the server if it is stopped.',
+                'stop' => 'Allows a user to stop a server if it is running.',
+                'restart' => 'Allows a user to perform a server restart. This allows them to start the server if it is offline, but not put the server in a completely stopped state.',
+                'kill' => 'Allows a user to terminate a server process.',
+            ],
         ],
 
         'user' => [
-            // Allows a user to create a new user assigned to the server. They will not be able
-            // to assign any permissions they do not already have on their account as well.
-            'create', // subuser.create-subuser
-            'read', // subuser.list-subusers, subuser.view-subuser
-            'update', // subuser.edit-subuser
-            'delete', // subuser.delete-subuser
+            'description' => 'Permissions that allow a user to manage other subusers on a server. They will never be able to edit their own account, or assign permissions they do not have themselves.',
+            'keys' => [
+                'create' => 'Allows a user to create new subusers for the server.',
+                'read' => 'Allows the user to view subusers and their permissions for the server.',
+                'update' => 'Allows a user to modify other subusers.',
+                'delete' => 'Allows a user to delete a subuser from the server.',
+            ],
         ],
 
         'file' => [
-            // Allows a user to create additional files and folders either via the Panel,
-            // or via a direct upload.
-            'create', // files.create-files, files.upload-files, files.copy-files, files.move-files
-
-            // Allows a user to view the contents of a directory as well as read the contents
-            // of a given file. A user with this permission will be able to download files
-            // as well.
-            'read', // files.list-files, files.download-files
-
-            // Allows a user to update the contents of an existing file or directory.
-            'update', // files.edit-files, files.save-files
-
-            // Allows a user to delete a file or directory.
-            'delete', // files.delete-files
-
-            // Allows a user to archive the contents of a directory as well as decompress existing
-            // archives on the system.
-            'archive', // files.compress-files, files.decompress-files
-
-            // Allows the user to connect and manage server files using their account
-            // credentials and a SFTP client.
-            'sftp', // files.access-sftp
+            'description' => 'Permissions that control a user\'s ability to modify the filesystem for this server.',
+            'keys' => [
+                'create' => 'Allows a user to create additional files and folders via the Panel or direct upload.',
+                'read' => 'Allows a user to view the contents of a directory and read the contents of a file. Users with this permission can also download files.',
+                'update' => 'Allows a user to update the contents of an existing file or directory.',
+                'delete' => 'Allows a user to delete files or directories.',
+                'archive' => 'Allows a user to archive the contents of a directory as well as decompress existing archives on the system.',
+                'sftp' => 'Allows a user to connect to SFTP and manage server files using the other assigned file permissions.',
+            ],
         ],
 
         // Controls permissions for editing or viewing a server's allocations.
         'allocation' => [
-            'read', // server.view-allocations
-            'update', // server.edit-allocation
+            'description' => 'Permissions that control a user\'s ability to modify the port allocations for this server.',
+            'keys' => [
+                'read' => 'Allows a user to view the allocations assigned to this server.',
+                'update' => 'Allows a user to modify the allocations assigned to this server.',
+            ],
         ],
 
         // Controls permissions for editing or viewing a server's startup parameters.
         'startup' => [
-            'read', // server.view-startup
-            'update', // server.edit-startup
+            'description' => 'Permissions that control a user\'s ability to view this server\'s startup parameters.',
+            'keys' => [
+                'read' => '',
+                'update' => '',
+            ],
         ],
 
         'database' => [
-            // Allows a user to create a new database for a server.
-            'create', // database.create-database
-
-            // Allows a user to view the databases associated with the server. If they do not also
-            // have the view_password permission they will only be able to see the connection address
-            // and the name of the user.
-            'read', // database.view-databases
-
-            // Allows a user to rotate the password on a database instance. If the user does not
-            // alow have the view_password permission they will not be able to see the updated password
-            // anywhere, but it will still be rotated.
-            'update', // database.reset-db-password
-
-            // Allows a user to delete a database instance.
-            'delete', // database.delete-database
-
-            // Allows a user to view the password associated with a database instance for the
-            // server. Note that a user without this permission may still be able to access these
-            // credentials by viewing files or the console.
-            'view_password', // database.reset-db-password
+            'description' => 'Permissions that control a user\'s access to the database management for this server.',
+            'keys' => [
+                'create' => 'Allows a user to create a new database for this server.',
+                'read' => 'Allows a user to view the database associated with this server.',
+                'update' => 'Allows a user to rotate the password on a database instance. If the user does not have the view_password permission they will not see the updated password.',
+                'delete' => 'Allows a user to remove a database instance from this server.',
+                'view_password' => 'Allows a user to view the password associated with a database instance for this server.',
+            ],
         ],
 
         'schedule' => [
-            'create', // task.create-schedule
-            'read', // task.view-schedule, task.list-schedules
-            'update', // task.edit-schedule, task.queue-schedule, task.toggle-schedule
-            'delete', // task.delete-schedule
+            'description' => 'Permissions that control a user\'s access to the schedule management for this server.',
+            'keys' => [
+                'create' => '', // task.create-schedule
+                'read' => '', // task.view-schedule, task.list-schedules
+                'update' => '', // task.edit-schedule, task.queue-schedule, task.toggle-schedule
+                'delete' => '', // task.delete-schedule
+            ],
         ],
 
         'settings' => [
-            'rename',
-            'reinstall',
+            'description' => 'Permissions that control a user\'s access to the settings for this server.',
+            'keys' => [
+                'rename' => '',
+                'reinstall' => '',
+            ],
         ],
     ];
 

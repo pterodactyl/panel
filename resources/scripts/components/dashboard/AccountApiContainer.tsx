@@ -95,7 +95,7 @@ export default () => {
                                 >
                                     <FontAwesomeIcon
                                         icon={faTrashAlt}
-                                        className={'text-neutral-400 hover:text-red-400 transition-color duration-150'}
+                                        className={'text-neutral-400 hover:text-red-400 transition-colors duration-150'}
                                     />
                                 </button>
                             </div>

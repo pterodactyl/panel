@@ -78,7 +78,7 @@ export default ({ schedule, task, onTaskUpdated, onTaskRemoved }: Props) => {
             <button
                 type={'button'}
                 aria-label={'Edit scheduled task'}
-                className={'block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-color duration-150 mr-4'}
+                className={'block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mr-4'}
                 onClick={() => setIsEditing(true)}
             >
                 <FontAwesomeIcon icon={faPencilAlt}/>
@@ -86,7 +86,7 @@ export default ({ schedule, task, onTaskUpdated, onTaskRemoved }: Props) => {
             <button
                 type={'button'}
                 aria-label={'Delete scheduled task'}
-                className={'block text-sm p-2 text-neutral-500 hover:text-red-600 transition-color duration-150'}
+                className={'block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150'}
                 onClick={() => setVisible(true)}
             >
                 <FontAwesomeIcon icon={faTrashAlt}/>

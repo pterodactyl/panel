@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\User;
-use Illuminate\Support\Collection;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
@@ -72,16 +71,10 @@ class ClientController extends ClientApiController
      */
     public function permissions()
     {
-        $permissions = Permission::permissions()->map(function ($values, $key) {
-            return Collection::make($values)->map(function ($permission) use ($key) {
-                return $key . '.' . $permission;
-            })->values()->toArray();
-        })->flatten();
-
         return [
             'object' => 'system_permissions',
             'attributes' => [
-                'permissions' => $permissions,
+                'permissions' => Permission::permissions(),
             ],
         ];
     }

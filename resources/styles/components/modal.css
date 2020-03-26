@@ -6,9 +6,9 @@
   & > .modal-container {
     @apply .relative .w-full .max-w-md .m-auto .flex-col .flex;
 
-    &.top {
+    /*&.top {
       margin-top: 10%;
-    }
+    }*/
 
     & > .modal-close-icon {
       @apply .absolute .pin-r .p-2 .text-white .cursor-pointer .opacity-50;
@@ -22,7 +22,8 @@
     }
 
     & > .modal-content {
-      @apply .bg-neutral-800 .rounded .shadow-md;
+      @apply .bg-neutral-800 .rounded .shadow-md .overflow-y-scroll;
+      max-height: calc(100vh - 16rem);
       transition: all 250ms ease;
     }
 
@@ -39,7 +40,7 @@
   }
 
   & > .modal-container.full-screen {
-    @apply .w-3/4 .mt-32;
+    @apply .w-3/4;
     height: calc(100vh - 16rem);
     max-width: none;
   }
