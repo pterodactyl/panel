@@ -73,8 +73,8 @@ return [
             'sat' => '土',
             'submit' => 'タスクを作成',
             'type' => 'タスクの種類',
-            'chain_then' => '後に',//Although it is grammatically incorrect, it cannot be resolved due to the language file specification.
-            'chain_do' => '行う',//Likewise
+            'chain_then' => '後に', //Although it is grammatically incorrect, it cannot be resolved due to the language file specification.
+            'chain_do' => '行う', //Likewise
             'chain_arguments' => '引数と',
             'payload' => 'タスクのペイロード',
             'payload_help' => '例えば、<code>コマンドを送信</code>を選択した場合は、ここにコマンドを入力します。<code>電源動作を送信</code>を選択した場合は、ここに電源動作を入力します(例えば<code>restart</code>など)。',

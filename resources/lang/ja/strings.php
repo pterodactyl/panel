@@ -35,7 +35,7 @@ return [
     'expires' => '期限切れ',
     'public_key' => 'トークン',
     'api_access' => 'Apiアクセス',
-    'never' => '初めて',//TODO
+    'never' => '初めて', //TODO
     'sign_out' => 'サインアウト',
     'admin_control' => '管理者制御',
     'required' => '必須',
@@ -47,7 +47,7 @@ return [
     'create' => '作成',
     'select_all' => '全選択',
     'select_none' => '選択無し',
-    'alias' => '別名',//エイリアス
+    'alias' => '別名', //エイリアス
     'primary' => 'プライマリ',
     'make_primary' => 'プライマリを作成',
     'none' => '無し',

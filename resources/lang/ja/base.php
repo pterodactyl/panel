@@ -44,7 +44,7 @@ return [
         'new' => [
             'header' => '新しいAPIキー',
             'header_sub' => '新しくアカウントAPIキーを作成します。',
-            'form_title' => "詳細",
+            'form_title' => '詳細',
             'descriptive_memo' => [
                 'title' => '説明',
                 'description' => 'このAPIキーの簡単な説明を入力します。',
