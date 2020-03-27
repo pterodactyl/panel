@@ -3,9 +3,8 @@
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class GetSubuserRequest extends ClientApiRequest
+class GetSubuserRequest extends SubuserRequest
 {
     /**
      * Confirm that a user is able to view subusers for the specified server.

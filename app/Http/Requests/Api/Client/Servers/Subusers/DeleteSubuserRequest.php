@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
 use Pterodactyl\Models\Permission;
 
-class DeleteSubuserRequest extends AbstractSubuserRequest
+class DeleteSubuserRequest extends SubuserRequest
 {
     /**
      * @return string

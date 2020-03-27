@@ -91,7 +91,7 @@ class SubuserController extends ClientApiController
      */
     public function update(UpdateSubuserRequest $request, Server $server): array
     {
-        $subuser = $request->subuser();
+        $subuser = $request->endpointSubuser();
         $this->repository->update($subuser->id, [
             'permissions' => $this->getDefaultPermissions($request),
         ]);
@@ -110,7 +110,7 @@ class SubuserController extends ClientApiController
      */
     public function delete(DeleteSubuserRequest $request, Server $server)
     {
-        $this->repository->delete($request->subuser()->id);
+        $this->repository->delete($request->endpointSubuser()->id);
 
         return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
     }

@@ -3,9 +3,8 @@
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class StoreSubuserRequest extends ClientApiRequest
+class StoreSubuserRequest extends SubuserRequest
 {
     /**
      * @return string

@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
 use Pterodactyl\Models\Permission;
 
-class UpdateSubuserRequest extends AbstractSubuserRequest
+class UpdateSubuserRequest extends SubuserRequest
 {
     /**
      * @return string
