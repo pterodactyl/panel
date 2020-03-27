@@ -1,15 +1,19 @@
-import React from 'react';
+import React, { forwardRef, MutableRefObject, useRef } from 'react';
 import { Subuser } from '@/state/server/subusers';
-import { Formik, FormikHelpers, useFormikContext } from 'formik';
+import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { array, object, string } from 'yup';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import Field from '@/components/elements/Field';
-import { useStoreState } from 'easy-peasy';
+import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Checkbox from '@/components/elements/Checkbox';
 import styled from 'styled-components';
 import classNames from 'classnames';
+import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
+import { ServerContext } from '@/state/server';
+import { httpErrorToHuman } from '@/api/http';
+import FlashMessageRender from '@/components/FlashMessageRender';
 
 type Props = {
     subuser?: Subuser;
@@ -29,13 +33,14 @@ const PermissionLabel = styled.label`
   }
 `;
 
-const EditSubuserModal = ({ subuser, ...props }: Props) => {
+const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...props }, ref) => {
     const { values, isSubmitting, setFieldValue } = useFormikContext<Values>();
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
 
     return (
         <Modal {...props} showSpinnerOverlay={isSubmitting}>
-            <h3>{subuser ? 'Edit subuser' : 'Create new subuser'}</h3>
+            <h3 ref={ref}>{subuser ? 'Edit subuser' : 'Create new subuser'}</h3>
+            <FlashMessageRender byKey={'user:edit'} className={'mt-4'}/>
             <div className={'mt-6'}>
                 <Field
                     name={'email'}
@@ -115,25 +120,48 @@ const EditSubuserModal = ({ subuser, ...props }: Props) => {
             </div>
         </Modal>
     );
-};
+});
 
-export default (props: Props) => {
-    const submit = (values: Values, helpers: FormikHelpers<Values>) => {
+export default ({ subuser, ...props }: Props) => {
+    const ref = useRef<HTMLHeadingElement>(null);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const appendSubuser = ServerContext.useStoreActions(actions => actions.subusers.appendSubuser);
+
+    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('user:edit');
+        createOrUpdateSubuser(uuid, values, subuser)
+            .then(subuser => {
+                appendSubuser(subuser);
+                props.onDismissed();
+            })
+            .catch(error => {
+                console.error(error);
+                setSubmitting(false);
+                addError({ key: 'user:edit', message: httpErrorToHuman(error) });
+
+                if (ref.current) {
+                    ref.current.scrollIntoView();
+                }
+            });
     };
 
     return (
         <Formik
             onSubmit={submit}
             initialValues={{
-                email: '',
-                permissions: [],
+                email: subuser?.email || '',
+                permissions: subuser?.permissions || [],
             } as Values}
             validationSchema={object().shape({
                 email: string().email('A valid email address must be provided.').required('A valid email address must be provided.'),
                 permissions: array().of(string()),
             })}
         >
-            <EditSubuserModal {...props}/>
+            <Form>
+                <EditSubuserModal ref={ref} subuser={subuser} {...props}/>
+            </Form>
         </Formik>
     );
 };

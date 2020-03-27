@@ -81,6 +81,10 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
 
     Route::group(['prefix' => '/users'], function () {
         Route::get('/', 'Servers\SubuserController@index');
+        Route::post('/', 'Servers\SubuserController@store');
+        Route::get('/{subuser}', 'Servers\SubuserController@view');
+        Route::post('/{subuser}', 'Servers\SubuserController@update');
+        Route::delete('/{subuser}', 'Servers\SubuserController@delete');
     });
 
     Route::group(['prefix' => '/settings'], function () {

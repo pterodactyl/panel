@@ -3,7 +3,6 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Subuser;
-use Illuminate\Support\Collection;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 
@@ -20,19 +19,27 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     }
 
     /**
-     * Returns the subusers for the given server instance with the associated user
-     * and permission relationships pre-loaded.
+     * Returns a subuser model for the given user and server combination. If no record
+     * exists an exception will be thrown.
      *
      * @param int $server
-     * @return \Illuminate\Support\Collection
+     * @param string $uuid
+     * @return \Pterodactyl\Models\Subuser
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function getSubusersForServer(int $server): Collection
+    public function getUserForServer(int $server, string $uuid): Subuser
     {
-        return $this->getBuilder()
-            ->with('user', 'permissions')
-            ->where('server_id', $server)
-            ->get()
-            ->toBase();
+        /** @var \Pterodactyl\Models\Subuser $model */
+        $model = $this->getBuilder()
+            ->with('server', 'user')
+            ->select('subusers.*')
+            ->join('users', 'users.id', '=', 'subusers.user_id')
+            ->where('subusers.server_id', $server)
+            ->where('users.uuid', $uuid)
+            ->firstOrFail();
+
+        return $model;
     }
 
     /**

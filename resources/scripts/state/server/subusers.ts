@@ -39,7 +39,7 @@ const subusers: ServerSubuserStore = {
     }),
 
     appendSubuser: action((state, payload) => {
-        state.data = [ ...state.data, payload ];
+        state.data = [ ...state.data.filter(user => user.uuid !== payload.uuid), payload ];
     }),
 
     getSubusers: thunk(async (actions, payload) => {

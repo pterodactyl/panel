@@ -140,7 +140,7 @@ abstract class Validable extends Model
         }
 
         return $this->getValidator()->setData(
-            $this->getAttributes()
+            $this->toArray()
         )->passes();
     }
 }
