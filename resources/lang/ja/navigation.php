@@ -4,7 +4,7 @@ return [
     'home' => 'ホーム',
     'account' => [
         'header' => 'アカウントの管理',
-        'my_account' => '自分のアカウント',
+        'my_account' => '私のアカウント',
         'security_controls' => 'セキュリティ制御',
         'api_access' => 'アカウントAPI',
         'my_servers' => '私のサーバー',
