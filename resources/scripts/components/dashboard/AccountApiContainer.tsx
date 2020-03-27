@@ -62,7 +62,7 @@ export default () => {
                         doDeletion(deleteIdentifier);
                         setDeleteIdentifier('');
                     }}
-                    onCanceled={() => setDeleteIdentifier('')}
+                    onDismissed={() => setDeleteIdentifier('')}
                 >
                     Are you sure you wish to delete this API key? All requests using it will immediately be
                     invalidated and will fail.

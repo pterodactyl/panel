@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { CSSTransition } from 'react-transition-group';
@@ -18,16 +18,22 @@ type Props = RequiredModalProps & {
     children: React.ReactNode;
 }
 
-export default (props: Props) => {
-    const [render, setRender] = useState(props.visible);
+export default ({ visible, appear, dismissable, showSpinnerOverlay, closeOnBackground = true, closeOnEscape = true, onDismissed, children  }: Props) => {
+    const [render, setRender] = useState(visible);
+
+    const isDismissable = useMemo(() => {
+        return (dismissable || true) && !(showSpinnerOverlay || false);
+    }, [dismissable, showSpinnerOverlay]);
 
     const handleEscapeEvent = (e: KeyboardEvent) => {
-        if (props.dismissable !== false && props.closeOnEscape !== false && e.key === 'Escape') {
+        if (isDismissable && closeOnEscape && e.key === 'Escape') {
             setRender(false);
         }
     };
 
-    useEffect(() => setRender(props.visible), [props.visible]);
+    useEffect(() => {
+        setRender(visible);
+    }, [visible]);
 
     useEffect(() => {
         window.addEventListener('keydown', handleEscapeEvent);
@@ -39,13 +45,13 @@ export default (props: Props) => {
         <CSSTransition
             timeout={250}
             classNames={'fade'}
-            appear={props.appear}
+            appear={appear}
             in={render}
             unmountOnExit={true}
-            onExited={() => props.onDismissed()}
+            onExited={() => onDismissed()}
         >
             <div className={'modal-mask'} onClick={e => {
-                if (props.dismissable !== false && props.closeOnBackground !== false) {
+                if (isDismissable && closeOnBackground) {
                     e.stopPropagation();
                     if (e.target === e.currentTarget) {
                         setRender(false);
@@ -53,12 +59,12 @@ export default (props: Props) => {
                 }
             }}>
                 <div className={'modal-container top'}>
-                    {props.dismissable !== false &&
+                    {isDismissable &&
                     <div className={'modal-close-icon'} onClick={() => setRender(false)}>
                         <FontAwesomeIcon icon={faTimes}/>
                     </div>
                     }
-                    {props.showSpinnerOverlay &&
+                    {showSpinnerOverlay &&
                     <div
                         className={'absolute w-full h-full rounded flex items-center justify-center'}
                         style={{ background: 'hsla(211, 10%, 53%, 0.25)' }}
@@ -67,7 +73,7 @@ export default (props: Props) => {
                     </div>
                     }
                     <div className={'modal-content p-6'}>
-                        {props.children}
+                        {children}
                     </div>
                 </div>
             </div>

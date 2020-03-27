@@ -1,5 +1,4 @@
-import { action, Action, thunk, Thunk } from 'easy-peasy';
-import getServerSubusers from '@/api/server/users/getServerSubusers';
+import { action, Action } from 'easy-peasy';
 
 export type SubuserPermission =
     'websocket.*' |
@@ -28,7 +27,7 @@ export interface ServerSubuserStore {
     data: Subuser[];
     setSubusers: Action<ServerSubuserStore, Subuser[]>;
     appendSubuser: Action<ServerSubuserStore, Subuser>;
-    getSubusers: Thunk<ServerSubuserStore, string, any, {}, Promise<void>>;
+    removeSubuser: Action<ServerSubuserStore, string>;
 }
 
 const subusers: ServerSubuserStore = {
@@ -42,10 +41,8 @@ const subusers: ServerSubuserStore = {
         state.data = [ ...state.data.filter(user => user.uuid !== payload.uuid), payload ];
     }),
 
-    getSubusers: thunk(async (actions, payload) => {
-        const subusers = await getServerSubusers(payload);
-
-        actions.setSubusers(subusers);
+    removeSubuser: action((state, payload) => {
+        state.data = [ ...state.data.filter(user => user.uuid !== payload) ];
     }),
 };
 

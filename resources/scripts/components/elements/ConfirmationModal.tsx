@@ -1,25 +1,25 @@
 import React from 'react';
-import Modal from '@/components/elements/Modal';
+import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 
-interface Props {
+type Props = {
     title: string;
     buttonText: string;
     children: string;
-    visible: boolean;
     onConfirmed: () => void;
-    onCanceled: () => void;
-}
+    showSpinnerOverlay?: boolean;
+} & RequiredModalProps;
 
-const ConfirmationModal = ({ title, children, visible, buttonText, onConfirmed, onCanceled }: Props) => (
+const ConfirmationModal = ({ title, appear, children, visible, buttonText, onConfirmed, showSpinnerOverlay, onDismissed }: Props) => (
     <Modal
-        appear={true}
+        appear={appear || true}
         visible={visible}
-        onDismissed={() => onCanceled()}
+        showSpinnerOverlay={showSpinnerOverlay}
+        onDismissed={() => onDismissed()}
     >
         <h3 className={'mb-6'}>{title}</h3>
         <p className={'text-sm'}>{children}</p>
         <div className={'flex items-center justify-end mt-8'}>
-            <button className={'btn btn-secondary btn-sm'} onClick={() => onCanceled()}>
+            <button className={'btn btn-secondary btn-sm'} onClick={() => onDismissed()}>
                 Cancel
             </button>
             <button className={'btn btn-red btn-sm ml-4'} onClick={() => onConfirmed()}>

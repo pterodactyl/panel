@@ -57,7 +57,7 @@ abstract class AbstractSubuserRequest extends ClientApiRequest
         }
 
         return $this->model ?: $this->model = $repository->getUserForServer(
-            $this->route()->parameter('subuser'), $this->route()->parameter('server')->id
+            $parameters['server']->id, $parameters['subuser']
         );
     }
 }

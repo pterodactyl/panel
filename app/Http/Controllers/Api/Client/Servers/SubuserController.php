@@ -83,12 +83,13 @@ class SubuserController extends ClientApiController
      * Update a given subuser in the system for the server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\UpdateSubuserRequest $request
-     *
+     * @param \Pterodactyl\Models\Server $server
      * @return array
+     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateSubuserRequest $request)
+    public function update(UpdateSubuserRequest $request, Server $server): array
     {
         $subuser = $request->subuser();
         $this->repository->update($subuser->id, [
@@ -104,9 +105,10 @@ class SubuserController extends ClientApiController
      * Removes a subusers from a server's assignment.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\DeleteSubuserRequest $request
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeleteSubuserRequest $request)
+    public function delete(DeleteSubuserRequest $request, Server $server)
     {
         $this->repository->delete($request->subuser()->id);
 
