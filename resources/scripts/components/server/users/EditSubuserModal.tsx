@@ -1,4 +1,4 @@
-import React, { forwardRef, MutableRefObject, useRef } from 'react';
+import React, { forwardRef, useRef } from 'react';
 import { Subuser } from '@/state/server/subusers';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { array, object, string } from 'yup';
@@ -39,8 +39,9 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
 
     return (
         <Modal {...props} showSpinnerOverlay={isSubmitting}>
-            <h3 ref={ref}>{subuser ? 'Edit subuser' : 'Create new subuser'}</h3>
+            <h3 ref={ref}>{subuser ? `Modify permissions for ${subuser.email}` : 'Create new subuser'}</h3>
             <FlashMessageRender byKey={'user:edit'} className={'mt-4'}/>
+            {!subuser &&
             <div className={'mt-6'}>
                 <Field
                     name={'email'}
@@ -48,6 +49,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                     description={'Enter the email address of the user you wish to invite as a subuser for this server.'}
                 />
             </div>
+            }
             <div className={'mt-6'}>
                 {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => (
                     <TitledGreyBox
