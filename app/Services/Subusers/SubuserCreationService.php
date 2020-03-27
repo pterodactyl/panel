@@ -103,7 +103,7 @@ class SubuserCreationService
             return $this->subuserRepository->create([
                 'user_id' => $user->id,
                 'server_id' => $server->id,
-                'permissions' => $permissions,
+                'permissions' => array_unique($permissions),
             ]);
         });
     }

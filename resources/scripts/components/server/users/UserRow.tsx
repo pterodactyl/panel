@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
 import RemoveSubuserButton from '@/components/server/users/RemoveSubuserButton';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
+import { faUnlockAlt } from '@fortawesome/free-solid-svg-icons/faUnlockAlt';
+import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock';
+import classNames from 'classnames';
 
 interface Props {
     subuser: Subuser;
@@ -28,10 +31,29 @@ export default ({ subuser }: Props) => {
             <div className={'ml-4 flex-1'}>
                 <p className={'text-sm'}>{subuser.email}</p>
             </div>
+            <div className={'ml-4'}>
+                <p className={'font-medium text-center'}>
+                    &nbsp;
+                    <FontAwesomeIcon
+                        icon={subuser.twoFactorEnabled ? faUserLock : faUnlockAlt}
+                        className={classNames('fa-fw', {
+                            'text-red-400': !subuser.twoFactorEnabled,
+                        })}
+                    />
+                    &nbsp;
+                </p>
+                <p className={'text-2xs text-neutral-500 uppercase'}>2FA Enabled</p>
+            </div>
+            <div className={'ml-4'}>
+                <p className={'font-medium text-center'}>
+                    {subuser.permissions.filter(permission => permission !== 'websocket.*').length}
+                </p>
+                <p className={'text-2xs text-neutral-500 uppercase'}>Permissions</p>
+            </div>
             <button
                 type={'button'}
                 aria-label={'Edit subuser'}
-                className={'block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mr-4'}
+                className={'block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mx-4'}
                 onClick={() => setVisible(true)}
             >
                 <FontAwesomeIcon icon={faPencilAlt}/>
