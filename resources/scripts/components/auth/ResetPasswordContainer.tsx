@@ -35,7 +35,6 @@ export default ({ match, history, location }: Props) => {
             .then(() => {
                 // @ts-ignore
                 window.location = '/';
-                return;
             })
             .catch(error => {
                 console.error(error);
