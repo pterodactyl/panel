@@ -140,7 +140,12 @@ abstract class Validable extends Model
         }
 
         return $this->getValidator()->setData(
-            $this->toArray()
+            // Trying to do self::toArray() here will leave out keys based on the whitelist/blacklist
+            // for that model. Doing this will return all of the attributes in a format that can
+            // properly be validated.
+            $this->addCastAttributesToArray(
+                $this->getAttributes(), $this->getMutatedAttributes()
+            )
         )->passes();
     }
 }

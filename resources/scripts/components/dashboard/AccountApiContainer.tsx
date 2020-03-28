@@ -46,62 +46,67 @@ export default () => {
     };
 
     return (
-        <div className={'my-10 flex'}>
+        <div className={'my-10'}>
             <FlashMessageRender byKey={'account'} className={'mb-4'}/>
-            <ContentBox title={'Create API Key'} className={'flex-1'}>
-                <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([...s!, key]))}/>
-            </ContentBox>
-            <ContentBox title={'API Keys'} className={'ml-10 flex-1'}>
-                <SpinnerOverlay visible={loading}/>
-                {deleteIdentifier &&
-                <ConfirmationModal
-                    title={'Confirm key deletion'}
-                    buttonText={'Yes, delete key'}
-                    visible={true}
-                    onConfirmed={() => {
-                        doDeletion(deleteIdentifier);
-                        setDeleteIdentifier('');
-                    }}
-                    onDismissed={() => setDeleteIdentifier('')}
-                >
-                    Are you sure you wish to delete this API key? All requests using it will immediately be
-                    invalidated and will fail.
-                </ConfirmationModal>
-                }
-                {
-                    keys.length === 0 ?
-                        <p className={'text-center text-sm'}>
-                            {loading ? 'Loading...' : 'No API keys exist for this account.'}
-                        </p>
-                        :
-                        keys.map(key => (
-                            <div key={key.identifier} className={'grey-row-box bg-neutral-600 mb-2 flex items-center'}>
-                                <FontAwesomeIcon icon={faKey} className={'text-neutral-300'}/>
-                                <div className={'ml-4 flex-1'}>
-                                    <p className={'text-sm'}>{key.description}</p>
-                                    <p className={'text-2xs text-neutral-300 uppercase'}>
-                                        Last
-                                        used: {key.lastUsedAt ? format(key.lastUsedAt, 'MMM Do, YYYY HH:mm') : 'Never'}
-                                    </p>
-                                </div>
-                                <p className={'text-sm ml-4'}>
-                                    <code className={'font-mono py-1 px-2 bg-neutral-900 rounded'}>
-                                        {key.identifier}
-                                    </code>
-                                </p>
-                                <button
-                                    className={'ml-4 p-2 text-sm'}
-                                    onClick={() => setDeleteIdentifier(key.identifier)}
+            <div className={'flex'}>
+                <ContentBox title={'Create API Key'} className={'flex-1'}>
+                    <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
+                </ContentBox>
+                <ContentBox title={'API Keys'} className={'ml-10 flex-1'}>
+                    <SpinnerOverlay visible={loading}/>
+                    {deleteIdentifier &&
+                    <ConfirmationModal
+                        title={'Confirm key deletion'}
+                        buttonText={'Yes, delete key'}
+                        visible={true}
+                        onConfirmed={() => {
+                            doDeletion(deleteIdentifier);
+                            setDeleteIdentifier('');
+                        }}
+                        onDismissed={() => setDeleteIdentifier('')}
+                    >
+                        Are you sure you wish to delete this API key? All requests using it will immediately be
+                        invalidated and will fail.
+                    </ConfirmationModal>
+                    }
+                    {
+                        keys.length === 0 ?
+                            <p className={'text-center text-sm'}>
+                                {loading ? 'Loading...' : 'No API keys exist for this account.'}
+                            </p>
+                            :
+                            keys.map(key => (
+                                <div
+                                    key={key.identifier}
+                                    className={'grey-row-box bg-neutral-600 mb-2 flex items-center'}
                                 >
-                                    <FontAwesomeIcon
-                                        icon={faTrashAlt}
-                                        className={'text-neutral-400 hover:text-red-400 transition-colors duration-150'}
-                                    />
-                                </button>
-                            </div>
-                        ))
-                }
-            </ContentBox>
+                                    <FontAwesomeIcon icon={faKey} className={'text-neutral-300'}/>
+                                    <div className={'ml-4 flex-1'}>
+                                        <p className={'text-sm'}>{key.description}</p>
+                                        <p className={'text-2xs text-neutral-300 uppercase'}>
+                                            Last
+                                            used: {key.lastUsedAt ? format(key.lastUsedAt, 'MMM Do, YYYY HH:mm') : 'Never'}
+                                        </p>
+                                    </div>
+                                    <p className={'text-sm ml-4'}>
+                                        <code className={'font-mono py-1 px-2 bg-neutral-900 rounded'}>
+                                            {key.identifier}
+                                        </code>
+                                    </p>
+                                    <button
+                                        className={'ml-4 p-2 text-sm'}
+                                        onClick={() => setDeleteIdentifier(key.identifier)}
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faTrashAlt}
+                                            className={'text-neutral-400 hover:text-red-400 transition-colors duration-150'}
+                                        />
+                                    </button>
+                                </div>
+                            ))
+                    }
+                </ContentBox>
+            </div>
         </div>
     );
 };
