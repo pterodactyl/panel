@@ -37,9 +37,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  *
  * @property string $name
  * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
- * @property \Pterodactyl\Models\Permission[]|\Illuminate\Database\Eloquent\Collection $permissions
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subuserOf
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  */
 class User extends Validable implements
@@ -221,16 +219,6 @@ class User extends Validable implements
     }
 
     /**
-     * Returns all permissions that a user has.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function permissions()
-    {
-        return $this->hasManyThrough(Permission::class, Subuser::class);
-    }
-
-    /**
      * Returns all servers that a user owns.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -238,16 +226,6 @@ class User extends Validable implements
     public function servers()
     {
         return $this->hasMany(Server::class, 'owner_id');
-    }
-
-    /**
-     * Return all servers that user is listed as a subuser of directly.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function subuserOf()
-    {
-        return $this->hasMany(Subuser::class);
     }
 
     /**
