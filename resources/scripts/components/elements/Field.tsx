@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 interface OwnProps {
     name: string;
+    light?: boolean;
     label?: string;
     description?: string;
     validate?: (value: any) => undefined | string | Promise<any>;
@@ -11,19 +12,19 @@ interface OwnProps {
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
-const Field = ({ id, name, label, description, validate, className, ...props }: Props) => (
+const Field = ({ id, name, light = false, label, description, validate, className, ...props }: Props) => (
     <FormikField name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
                 <React.Fragment>
                     {label &&
-                    <label htmlFor={id} className={'input-dark-label'}>{label}</label>
+                    <label htmlFor={id} className={light ? undefined : 'input-dark-label'}>{label}</label>
                     }
                     <input
                         id={id}
                         {...field}
                         {...props}
-                        className={classNames((className || 'input-dark'), {
+                        className={classNames((className || (light ? 'input' : 'input-dark')), {
                             error: touched[field.name] && errors[field.name],
                         })}
                     />

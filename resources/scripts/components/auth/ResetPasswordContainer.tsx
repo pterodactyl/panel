@@ -5,106 +5,110 @@ import { Link } from 'react-router-dom';
 import performPasswordReset from '@/api/auth/performPasswordReset';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
-import FlashMessageRender from '@/components/FlashMessageRender';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import Spinner from '@/components/elements/Spinner';
+import { Formik, FormikHelpers } from 'formik';
+import { object, ref, string } from 'yup';
+import Field from '@/components/elements/Field';
 
 type Props = Readonly<RouteComponentProps<{ token: string }> & {}>;
 
-export default (props: Props) => {
-    const [ isLoading, setIsLoading ] = useState(false);
+interface Values {
+    password: string;
+    passwordConfirmation: string;
+}
+
+export default ({ match, history, location }: Props) => {
     const [ email, setEmail ] = useState('');
-    const [ password, setPassword ] = useState('');
-    const [ passwordConfirm, setPasswordConfirm ] = useState('');
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    const parsed = parse(props.location.search);
+    const parsed = parse(location.search);
     if (email.length === 0 && parsed.email) {
         setEmail(parsed.email as string);
     }
 
-    const canSubmit = () => password && email && password.length >= 8 && password === passwordConfirm;
-
-    const submit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (!password || !email || !passwordConfirm) {
-            return;
-        }
-
-        setIsLoading(true);
+    const submit = ({ password, passwordConfirmation }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
-
-        performPasswordReset(email, {
-            token: props.match.params.token, password, passwordConfirmation: passwordConfirm,
-        })
+        performPasswordReset(email, { token: match.params.token, password, passwordConfirmation })
             .then(() => {
-                addFlash({ type: 'success', message: 'Your password has been reset, please login to continue.' });
-                props.history.push('/auth/login');
+                // @ts-ignore
+                window.location = '/';
+                return;
             })
             .catch(error => {
                 console.error(error);
+
+                setSubmitting(false);
                 addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
-            })
-            .then(() => setIsLoading(false));
+            });
     };
 
     return (
-        <div>
-            <h2 className={'text-center text-neutral-100 font-medium py-4'}>
-                Reset Password
-            </h2>
-            <FlashMessageRender/>
-            <LoginFormContainer onSubmit={submit}>
-                <label>Email</label>
-                <input className={'input'} value={email} disabled={true}/>
-                <div className={'mt-6'}>
-                    <label htmlFor={'new_password'}>New Password</label>
-                    <input
-                        id={'new_password'}
-                        className={'input'}
-                        type={'password'}
-                        required={true}
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                    <p className={'input-help'}>
-                        Passwords must be at least 8 characters in length.
-                    </p>
-                </div>
-                <div className={'mt-6'}>
-                    <label htmlFor={'new_password_confirm'}>Confirm New Password</label>
-                    <input
-                        id={'new_password_confirm'}
-                        className={'input'}
-                        type={'password'}
-                        required={true}
-                        onChange={e => setPasswordConfirm(e.target.value)}
-                    />
-                </div>
-                <div className={'mt-6'}>
-                    <button
-                        type={'submit'}
-                        className={'btn btn-primary btn-jumbo'}
-                        disabled={isLoading || !canSubmit()}
-                    >
-                        {isLoading ?
-                            <Spinner size={'tiny'} className={'mx-auto'}/>
-                            :
-                            'Reset Password'
-                        }
-                    </button>
-                </div>
-                <div className={'mt-6 text-center'}>
-                    <Link
-                        to={'/auth/login'}
-                        className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
-                    >
-                        Return to Login
-                    </Link>
-                </div>
-            </LoginFormContainer>
-        </div>
+        <Formik
+            onSubmit={submit}
+            initialValues={{
+                password: '',
+                passwordConfirmation: '',
+            }}
+            validationSchema={object().shape({
+                password: string().required('A new password is required.')
+                    .min(8, 'Your new password should be at least 8 characters in length.'),
+                passwordConfirmation: string()
+                    .required('Your new password does not match.')
+                    .oneOf([ref('password'), null], 'Your new password does not match.'),
+            })}
+        >
+            {({ isSubmitting }) => (
+                <LoginFormContainer
+                    title={'Reset Password'}
+                    className={'w-full flex'}
+                >
+                    <div>
+                        <label>Email</label>
+                        <input className={'input'} value={email} disabled={true}/>
+                    </div>
+                    <div className={'mt-6'}>
+                        <Field
+                            light={true}
+                            label={'New Password'}
+                            name={'password'}
+                            type={'password'}
+                            description={'Passwords must be at least 8 characters in length.'}
+                        />
+                    </div>
+                    <div className={'mt-6'}>
+                        <Field
+                            light={true}
+                            label={'Confirm New Password'}
+                            name={'passwordConfirmation'}
+                            type={'password'}
+                        />
+                    </div>
+                    <div className={'mt-6'}>
+                        <button
+                            type={'submit'}
+                            className={'btn btn-primary btn-jumbo'}
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ?
+                                <Spinner size={'tiny'} className={'mx-auto'}/>
+                                :
+                                'Reset Password'
+                            }
+                        </button>
+                    </div>
+                    <div className={'mt-6 text-center'}>
+                        <Link
+                            to={'/auth/login'}
+                            className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
+                        >
+                            Return to Login
+                        </Link>
+                    </div>
+                </LoginFormContainer>
+            )}
+        </Formik>
     );
 };
