@@ -42,6 +42,16 @@ class AuthenticateServerAccess
             throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
         }
 
+        // At the very least, ensure that the user trying to make this request is the
+        // server owner, a subuser, or a root admin. We'll leave it up to the controllers
+        // to authenticate more detailed permissions if needed.
+        if ($request->user()->id !== $server->owner_id && ! $request->user()->root_admin) {
+            // Check for subuser status.
+            if (! $server->subusers->contains('user_id', $request->user()->id)) {
+                throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
+            }
+        }
+
         if ($server->suspended) {
             throw new AccessDeniedHttpException('Cannot access a server that is marked as being suspended.');
         }
