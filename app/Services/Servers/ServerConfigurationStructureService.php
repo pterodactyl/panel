@@ -81,7 +81,7 @@ class ServerConfigurationStructureService
                 'swap' => $server->swap,
                 'io_weight' => $server->io,
                 'cpu_limit' => $server->cpu,
-                'cpu_threads' => $server->threads,
+                'threads' => $server->threads,
                 'disk_space' => $server->disk,
             ],
             'service' => [

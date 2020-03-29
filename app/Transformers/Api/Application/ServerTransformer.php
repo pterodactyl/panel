@@ -75,6 +75,7 @@ class ServerTransformer extends BaseTransformer
                 'disk' => $server->disk,
                 'io' => $server->io,
                 'cpu' => $server->cpu,
+                'threads' => $server->threads,
             ],
             'feature_limits' => [
                 'databases' => $server->database_limit,
