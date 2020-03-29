@@ -15,6 +15,7 @@ import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import ScheduleEditContainer from '@/components/server/schedules/ScheduleEditContainer';
 import UsersContainer from '@/components/server/users/UsersContainer';
+import Can from '@/components/elements/Can';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -34,11 +35,21 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                 <div id={'sub-navigation'}>
                     <div className={'items'}>
                         <NavLink to={`${match.url}`} exact>Console</NavLink>
-                        <NavLink to={`${match.url}/files`}>File Manager</NavLink>
-                        <NavLink to={`${match.url}/databases`}>Databases</NavLink>
-                        <NavLink to={`${match.url}/schedules`}>Schedules</NavLink>
-                        <NavLink to={`${match.url}/users`}>Users</NavLink>
-                        <NavLink to={`${match.url}/settings`}>Settings</NavLink>
+                        <Can action={'file.*'}>
+                            <NavLink to={`${match.url}/files`}>File Manager</NavLink>
+                        </Can>
+                        <Can action={'database.*'}>
+                            <NavLink to={`${match.url}/databases`}>Databases</NavLink>
+                        </Can>
+                        <Can action={'schedule.*'}>
+                            <NavLink to={`${match.url}/schedules`}>Schedules</NavLink>
+                        </Can>
+                        <Can action={'user.*'}>
+                            <NavLink to={`${match.url}/users`}>Users</NavLink>
+                        </Can>
+                        <Can action={'settings.*'}>
+                            <NavLink to={`${match.url}/settings`}>Settings</NavLink>
+                        </Can>
                     </div>
                 </div>
             </CSSTransition>
