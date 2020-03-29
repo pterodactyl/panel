@@ -98,6 +98,7 @@ class BuildModificationService
             'swap' => array_get($data, 'swap'),
             'io' => array_get($data, 'io'),
             'cpu' => array_get($data, 'cpu'),
+            'threads' => array_get($data, 'threads'),
             'disk' => array_get($data, 'disk'),
             'allocation_id' => array_get($data, 'allocation_id'),
             'database_limit' => array_get($data, 'database_limit'),

@@ -26,7 +26,7 @@
         <div class="col-sm-5">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">System Resources</h3>
+                    <h3 class="box-title">Resource Management</h3>
                 </div>
                 <div class="box-body">
                     <div class="form-group">
@@ -52,6 +52,13 @@
                             <span class="input-group-addon">%</span>
                         </div>
                         <p class="text-muted small">Each <em>physical</em> core on the system is considered to be <code>100%</code>. Setting this value to <code>0</code> will allow a server to use CPU time without restrictions.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="threads" class="control-label">CPU Threads</label>
+                        <div class="input-group">
+                            <input type="text" name="threads" class="form-control" value="{{ old('threads', $server->threads) }}"/>
+                            <span class="input-group-addon"></span>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="io" class="control-label">Block IO Proportion</label>

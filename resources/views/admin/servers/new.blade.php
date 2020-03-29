@@ -161,6 +161,13 @@
                         </div>
                     </div>
                     <div class="form-group col-sm-4">
+                        <label for="pThreads">CPU Threads</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="{{ old('threads') }}" name="threads" id="pThreads" />
+                            <span class="input-group-addon"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-4">
                         <label for="pIO">Block IO Weight</label>
                         <div class="input-group">
                             <input type="text" class="form-control" value="{{ old('io', 500) }}" name="io" id="pIO" />
