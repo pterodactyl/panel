@@ -21,9 +21,9 @@ const Can = ({ action, renderOnError, children }: Props) => {
                 // Allows checking for any permission matching a name, for example files.*
                 // will return if the user has any permission under the file.XYZ namespace.
                 (
-                    permission.endsWith('.*')
-                    && permission !== 'websocket.*'
-                    && userPermissions.filter(p => p.startsWith(permission.split('.')[0])).length > 0
+                    permission.endsWith('.*') &&
+                    permission !== 'websocket.*' &&
+                    userPermissions.filter(p => p.startsWith(permission.split('.')[0])).length > 0
                 )
                 // Otherwise just check if the entire permission exists in the array or not.
                 || userPermissions.indexOf(permission) >= 0);
