@@ -14,6 +14,8 @@ import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import Can from '@/components/elements/Can';
+import { usePermissions } from '@/plugins/usePermissions';
 
 type Props = {
     subuser?: Subuser;
@@ -25,21 +27,32 @@ interface Values {
 }
 
 const PermissionLabel = styled.label`
-  ${tw`flex items-center border border-transparent rounded p-2 cursor-pointer`};
+  ${tw`flex items-center border border-transparent rounded p-2`};
   text-transform: none;
 
-  &:hover {
-    ${tw`border-neutral-500 bg-neutral-800`};
+  &:not(.disabled) {
+      ${tw`cursor-pointer`};
+
+      &:hover {
+        ${tw`border-neutral-500 bg-neutral-800`};
+      }
   }
 `;
 
 const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...props }, ref) => {
     const { values, isSubmitting, setFieldValue } = useFormikContext<Values>();
+    const [ canEditUser ] = usePermissions([ 'user.update' ]);
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
 
     return (
         <Modal {...props} showSpinnerOverlay={isSubmitting}>
-            <h3 ref={ref}>{subuser ? `Modify permissions for ${subuser.email}` : 'Create new subuser'}</h3>
+            <h3 ref={ref}>
+                {subuser ?
+                    `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
+                    :
+                    'Create new subuser'
+                }
+            </h3>
             <FlashMessageRender byKey={'user:edit'} className={'mt-4'}/>
             {!subuser &&
             <div className={'mt-6'}>
@@ -50,13 +63,14 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                 />
             </div>
             }
-            <div className={'mt-6'}>
+            <div className={'my-6'}>
                 {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => (
                     <TitledGreyBox
                         key={key}
                         title={
                             <div className={'flex items-center'}>
                                 <p className={'text-sm uppercase flex-1'}>{key}</p>
+                                {canEditUser &&
                                 <input
                                     type={'checkbox'}
                                     onClick={e => {
@@ -78,6 +92,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                         }
                                     }}
                                 />
+                                }
                             </div>
                         }
                         className={index !== 0 ? 'mt-4' : undefined}
@@ -87,9 +102,11 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                         </p>
                         {Object.keys(permissions[key].keys).map((pkey, index) => (
                             <PermissionLabel
+                                key={`permission_${key}_${pkey}`}
                                 htmlFor={`permission_${key}_${pkey}`}
                                 className={classNames('transition-colors duration-75', {
                                     'mt-2': index !== 0,
+                                    disabled: !canEditUser,
                                 })}
                             >
                                 <div className={'p-2'}>
@@ -98,6 +115,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                         name={'permissions'}
                                         value={`${key}.${pkey}`}
                                         className={'w-5 h-5 mr-2'}
+                                        disabled={!canEditUser}
                                     />
                                 </div>
                                 <div className={'flex-1'}>
@@ -115,11 +133,13 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                     </TitledGreyBox>
                 ))}
             </div>
-            <div className={'mt-6 pb-6 flex justify-end'}>
-                <button className={'btn btn-primary btn-sm'} type={'submit'}>
-                    {subuser ? 'Save' : 'Invite User'}
-                </button>
-            </div>
+            <Can action={subuser ? 'user.update' : 'user.delete'}>
+                <div className={'pb-6 flex justify-end'}>
+                    <button className={'btn btn-primary btn-sm'} type={'submit'}>
+                        {subuser ? 'Save' : 'Invite User'}
+                    </button>
+                </div>
+            </Can>
         </Modal>
     );
 });

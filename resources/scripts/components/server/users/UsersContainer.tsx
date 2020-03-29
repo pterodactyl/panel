@@ -8,6 +8,7 @@ import UserRow from '@/components/server/users/UserRow';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerSubusers from '@/api/server/users/getServerSubusers';
 import { httpErrorToHuman } from '@/api/http';
+import Can from '@/components/elements/Can';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -53,9 +54,11 @@ export default () => {
                     <UserRow key={subuser.uuid} subuser={subuser}/>
                 ))
             }
-            <div className={'flex justify-end mt-6'}>
-                <AddSubuserButton/>
-            </div>
+            <Can action={'user.create'}>
+                <div className={'flex justify-end mt-6'}>
+                    <AddSubuserButton/>
+                </div>
+            </Can>
         </div>
     );
 };
