@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import getServerDatabases, { ServerDatabase } from '@/api/server/getServerDatabases';
+import getServerDatabases from '@/api/server/getServerDatabases';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
@@ -9,6 +9,7 @@ import DatabaseRow from '@/components/server/databases/DatabaseRow';
 import Spinner from '@/components/elements/Spinner';
 import { CSSTransition } from 'react-transition-group';
 import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseButton';
+import Can from '@/components/elements/Can';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -41,7 +42,7 @@ export default () => {
                 <Spinner size={'large'} centered={true}/>
                 :
                 <CSSTransition classNames={'fade'} timeout={250}>
-                    <React.Fragment>
+                    <>
                         {databases.length > 0 ?
                             databases.map((database, index) => (
                                 <DatabaseRow
@@ -54,18 +55,20 @@ export default () => {
                             :
                             <p className={'text-center text-sm text-neutral-400'}>
                                 {server.featureLimits.databases > 0 ?
-                                    `It looks like you have no databases. Click the button below to create one now.`
+                                    `It looks like you have no databases.`
                                     :
                                     `Databases cannot be created for this server.`
                                 }
                             </p>
                         }
-                        {server.featureLimits.databases > 0 &&
-                        <div className={'mt-6 flex justify-end'}>
-                            <CreateDatabaseButton onCreated={appendDatabase}/>
-                        </div>
-                        }
-                    </React.Fragment>
+                        <Can action={'database.create'}>
+                            {server.featureLimits.databases > 0 &&
+                            <div className={'mt-6 flex justify-end'}>
+                                <CreateDatabaseButton onCreated={appendDatabase}/>
+                            </div>
+                            }
+                        </Can>
+                    </>
                 </CSSTransition>
             }
         </div>
