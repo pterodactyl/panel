@@ -18,11 +18,10 @@ class SendPowerRequest extends ClientApiRequest
             case 'start':
                 return Permission::ACTION_CONTROL_START;
             case 'stop':
+            case 'kill':
                 return Permission::ACTION_CONTROL_STOP;
             case 'restart':
                 return Permission::ACTION_CONTROL_RESTART;
-            case 'kill':
-                return Permission::ACTION_CONTROL_KILL;
         }
 
         return '__invalid';

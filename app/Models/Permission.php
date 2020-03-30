@@ -20,7 +20,6 @@ class Permission extends Validable
     const ACTION_CONTROL_START = 'control.start';
     const ACTION_CONTROL_STOP = 'control.stop';
     const ACTION_CONTROL_RESTART = 'control.restart';
-    const ACTION_CONTROL_KILL = 'control.kill';
 
     const ACTION_DATABASE_READ = 'database.read';
     const ACTION_DATABASE_CREATE = 'database.create';
@@ -111,7 +110,6 @@ class Permission extends Validable
                 'start' => 'Allows a user to start the server if it is stopped.',
                 'stop' => 'Allows a user to stop a server if it is running.',
                 'restart' => 'Allows a user to perform a server restart. This allows them to start the server if it is offline, but not put the server in a completely stopped state.',
-                'kill' => 'Allows a user to terminate a server process.',
             ],
         ],
 
