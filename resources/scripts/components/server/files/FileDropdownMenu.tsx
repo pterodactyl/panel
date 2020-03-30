@@ -13,7 +13,8 @@ import { join } from 'path';
 import deleteFile from '@/api/server/files/deleteFile';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import copyFile from '@/api/server/files/copyFile';
-import http, { httpErrorToHuman } from '@/api/http';
+import { httpErrorToHuman } from '@/api/http';
+import Can from '@/components/elements/Can';
 
 type ModalType = 'rename' | 'move';
 
@@ -118,30 +119,37 @@ export default ({ uuid }: { uuid: string }) => {
             <CSSTransition timeout={250} in={menuVisible} unmountOnExit={true} classNames={'fade'}>
                 <div
                     ref={menu}
-                    onClick={e => { e.stopPropagation(); setMenuVisible(false); }}
+                    onClick={e => {
+                        e.stopPropagation();
+                        setMenuVisible(false);
+                    }}
                     className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48'}
                 >
-                    <div
-                        onClick={() => setModal('rename')}
-                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
-                    >
-                        <FontAwesomeIcon icon={faPencilAlt} className={'text-xs'}/>
-                        <span className={'ml-2'}>Rename</span>
-                    </div>
-                    <div
-                        onClick={() => setModal('move')}
-                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
-                    >
-                        <FontAwesomeIcon icon={faLevelUpAlt} className={'text-xs'}/>
-                        <span className={'ml-2'}>Move</span>
-                    </div>
-                    <div
-                        onClick={() => doCopy()}
-                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
-                    >
-                        <FontAwesomeIcon icon={faCopy} className={'text-xs'}/>
-                        <span className={'ml-2'}>Copy</span>
-                    </div>
+                    <Can action={'file.update'}>
+                        <div
+                            onClick={() => setModal('rename')}
+                            className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                        >
+                            <FontAwesomeIcon icon={faPencilAlt} className={'text-xs'}/>
+                            <span className={'ml-2'}>Rename</span>
+                        </div>
+                        <div
+                            onClick={() => setModal('move')}
+                            className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                        >
+                            <FontAwesomeIcon icon={faLevelUpAlt} className={'text-xs'}/>
+                            <span className={'ml-2'}>Move</span>
+                        </div>
+                    </Can>
+                    <Can action={'file.create'}>
+                        <div
+                            onClick={() => doCopy()}
+                            className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                        >
+                            <FontAwesomeIcon icon={faCopy} className={'text-xs'}/>
+                            <span className={'ml-2'}>Copy</span>
+                        </div>
+                    </Can>
                     <div
                         className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
                         onClick={() => doDownload()}
@@ -149,13 +157,15 @@ export default ({ uuid }: { uuid: string }) => {
                         <FontAwesomeIcon icon={faFileDownload} className={'text-xs'}/>
                         <span className={'ml-2'}>Download</span>
                     </div>
-                    <div
-                        onClick={() => doDeletion()}
-                        className={'hover:text-red-700 p-2 flex items-center hover:bg-red-100 rounded'}
-                    >
-                        <FontAwesomeIcon icon={faTrashAlt} className={'text-xs'}/>
-                        <span className={'ml-2'}>Delete</span>
-                    </div>
+                    <Can action={'file.delete'}>
+                        <div
+                            onClick={() => doDeletion()}
+                            className={'hover:text-red-700 p-2 flex items-center hover:bg-red-100 rounded'}
+                        >
+                            <FontAwesomeIcon icon={faTrashAlt} className={'text-xs'}/>
+                            <span className={'ml-2'}>Delete</span>
+                        </div>
+                    </Can>
                 </div>
             </CSSTransition>
         </div>

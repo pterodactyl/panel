@@ -11,6 +11,7 @@ import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcr
 import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { Link } from 'react-router-dom';
+import Can from '@/components/elements/Can';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -34,7 +35,6 @@ export default () => {
                 console.error(error.message, { error });
                 addError({ message: httpErrorToHuman(error), key: 'files' });
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ directory ]);
 
     return (
@@ -78,12 +78,17 @@ export default () => {
                                     </React.Fragment>
                                 </CSSTransition>
                             }
-                            <div className={'flex justify-end mt-8'}>
-                                <NewDirectoryButton/>
-                                <Link to={`/server/${id}/files/new${window.location.hash}`} className={'btn btn-sm btn-primary'}>
-                                    New File
-                                </Link>
-                            </div>
+                            <Can action={'file.create'}>
+                                <div className={'flex justify-end mt-8'}>
+                                    <NewDirectoryButton/>
+                                    <Link
+                                        to={`/server/${id}/files/new${window.location.hash}`}
+                                        className={'btn btn-sm btn-primary'}
+                                    >
+                                        New File
+                                    </Link>
+                                </div>
+                            </Can>
                         </React.Fragment>
                 }
             </React.Fragment>
