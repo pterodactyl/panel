@@ -43,7 +43,7 @@ export default () => {
     }
 
     return (
-        <div className={'my-10'}>
+        <div className={'mt-10 mb-6'}>
             <FlashMessageRender byKey={'users'} className={'mb-4'}/>
             {!subusers.length ?
                 <p className={'text-center text-sm text-neutral-400'}>
