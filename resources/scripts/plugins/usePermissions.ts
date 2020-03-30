@@ -6,9 +6,7 @@ export const usePermissions = (action: string | string[]): boolean[] => {
 
     return useDeepMemo(() => {
         if (userPermissions[0] === '*') {
-            return ([] as boolean[]).fill(
-                true, 0, Array.isArray(action) ? action.length : 1,
-            );
+            return Array(Array.isArray(action) ? action.length : 1).fill(true);
         }
 
         return (Array.isArray(action) ? action : [ action ])

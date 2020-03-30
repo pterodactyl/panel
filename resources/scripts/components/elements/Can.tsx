@@ -3,16 +3,26 @@ import { usePermissions } from '@/plugins/usePermissions';
 
 interface Props {
     action: string | string[];
+    matchAny?: boolean;
     renderOnError?: React.ReactNode | null;
     children: React.ReactNode;
 }
 
-const Can = ({ action, renderOnError, children }: Props) => {
+const Can = ({ action, matchAny = false, renderOnError, children }: Props) => {
     const can = usePermissions(action);
+
+    if (matchAny) {
+        console.log('Can.tsx', can);
+    }
 
     return (
         <>
-            {can.every(p => p) ? children : renderOnError}
+            {
+                ((matchAny && can.filter(p => p).length > 0) || (!matchAny && can.every(p => p))) ?
+                    children
+                    :
+                    renderOnError
+            }
         </>
     );
 };
