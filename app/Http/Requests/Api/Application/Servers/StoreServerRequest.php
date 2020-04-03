@@ -49,6 +49,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'limits.swap' => $rules['swap'],
             'limits.disk' => $rules['disk'],
             'limits.io' => $rules['io'],
+            'limits.threads' => $rules['threads'],
             'limits.cpu' => $rules['cpu'],
 
             // Application Resource Limits
@@ -96,6 +97,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'disk' => array_get($data, 'limits.disk'),
             'io' => array_get($data, 'limits.io'),
             'cpu' => array_get($data, 'limits.cpu'),
+            'threads' => array_get($data, 'limits.threads'),
             'skip_scripts' => array_get($data, 'skip_scripts', false),
             'allocation_id' => array_get($data, 'allocation.default'),
             'allocation_additional' => array_get($data, 'allocation.additional'),

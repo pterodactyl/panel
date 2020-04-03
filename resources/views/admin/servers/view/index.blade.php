@@ -74,6 +74,10 @@
                                 <td><code>{{ $server->cpu }}%</code></td>
                             </tr>
                             <tr>
+                                <td>CPU Threads</td>
+                                <td><code>{{ $server->threads }}</code></td>
+                            </tr>
+                            <tr>
                                 <td>Default Connection</td>
                                 <td><code>{{ $server->allocation->ip }}:{{ $server->allocation->port }}</code></td>
                             </tr>

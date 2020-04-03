@@ -24,6 +24,7 @@ export interface Server {
         disk: number;
         io: number;
         cpu: number;
+        threads: string;
     };
     featureLimits: {
         databases: number;

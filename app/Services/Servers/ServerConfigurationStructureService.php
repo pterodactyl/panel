@@ -81,6 +81,7 @@ class ServerConfigurationStructureService
                 'swap' => $server->swap,
                 'io_weight' => $server->io,
                 'cpu_limit' => $server->cpu,
+                'threads' => $server->threads,
                 'disk_space' => $server->disk,
             ],
             'service' => [
@@ -130,6 +131,7 @@ class ServerConfigurationStructureService
                 'swap' => (int) $server->swap,
                 'io' => (int) $server->io,
                 'cpu' => (int) $server->cpu,
+                'threads' => $server->threads,
                 'disk' => (int) $server->disk,
                 'image' => $server->image,
             ],
