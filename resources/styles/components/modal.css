@@ -6,9 +6,9 @@
   & > .modal-container {
     @apply .relative .w-full .max-w-1/2 .m-auto .flex-col .flex;
 
-    /*&.top {
+    &.top {
       margin-top: 10%;
-    }*/
+    }
 
     & > .modal-close-icon {
       @apply .absolute .pin-r .p-2 .text-white .cursor-pointer .opacity-50;

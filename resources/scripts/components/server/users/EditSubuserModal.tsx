@@ -45,7 +45,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
 
     return (
-        <Modal {...props} showSpinnerOverlay={isSubmitting}>
+        <Modal {...props} top={false} showSpinnerOverlay={isSubmitting}>
             <h3 ref={ref}>
                 {subuser ?
                     `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`

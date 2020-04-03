@@ -3,11 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
+import classNames from 'classnames';
 
 export interface RequiredModalProps {
     visible: boolean;
     onDismissed: () => void;
     appear?: boolean;
+    top?: boolean;
 }
 
 type Props = RequiredModalProps & {
@@ -18,7 +20,7 @@ type Props = RequiredModalProps & {
     children: React.ReactNode;
 }
 
-export default ({ visible, appear, dismissable, showSpinnerOverlay, closeOnBackground = true, closeOnEscape = true, onDismissed, children  }: Props) => {
+export default ({ visible, appear, dismissable, showSpinnerOverlay, top = true, closeOnBackground = true, closeOnEscape = true, onDismissed, children  }: Props) => {
     const [render, setRender] = useState(visible);
 
     const isDismissable = useMemo(() => {
@@ -58,7 +60,7 @@ export default ({ visible, appear, dismissable, showSpinnerOverlay, closeOnBackg
                     }
                 }
             }}>
-                <div className={'modal-container top'}>
+                <div className={classNames('modal-container', { top })}>
                     {isDismissable &&
                     <div className={'modal-close-icon'} onClick={() => setRender(false)}>
                         <FontAwesomeIcon icon={faTimes}/>
