@@ -162,17 +162,17 @@
                     </div>
                     <div class="form-group col-sm-4">
                         <label for="pThreads">CPU Threads</label>
-                        <div class="input-group">
+                        <div>
                             <input type="text" class="form-control" value="{{ old('threads') }}" name="threads" id="pThreads" />
-                            <span class="input-group-addon"></span>
                         </div>
+                        <p class="text-muted small"><strong>Advanced:</strong> Enter the specific CPU cores that this process can run on, or leave blank to allow all cores. This can be a single number, or a comma seperated list. Example: <code>0</code>, <code>0-1,3</code>, or <code>0,1,3,4</code>.</p>
                     </div>
                     <div class="form-group col-sm-4">
                         <label for="pIO">Block IO Weight</label>
-                        <div class="input-group">
+                        <div>
                             <input type="text" class="form-control" value="{{ old('io', 500) }}" name="io" id="pIO" />
-                            <span class="input-group-addon">I/O</span>
                         </div>
+                        <p class="text-muted small"><strong>Advanced</strong>: The IO performance of this server relative to other <em>running</em> containers on the system. Value should be between <code>10</code> and <code>1000</code>.</code></p>
                     </div>
                 </div>
                 <div class="box-footer no-border no-pad-top no-pad-bottom">
