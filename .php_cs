@@ -33,6 +33,7 @@ return PhpCsFixer\Config::create()
         'new_with_braces' => false,
         'no_alias_functions' => true,
         'no_multiline_whitespace_before_semicolons' => true,
+        'no_superfluous_phpdoc_tags' => false,
         'no_unreachable_default_argument_value' => true,
         'no_useless_return' => true,
         'not_operator_with_successor_space' => true,

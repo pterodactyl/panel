@@ -3,11 +3,9 @@
 namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\Server;
-use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ReinstallServerService
 {
@@ -44,28 +42,23 @@ class ReinstallServerService
     }
 
     /**
-     * @param int|\Pterodactyl\Models\Server $server
+     * Reinstall a server on the remote daemon.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @param \Pterodactyl\Models\Server $server
+     * @return \Pterodactyl\Models\Server
+     *
+     * @throws \Throwable
      */
-    public function reinstall($server)
+    public function reinstall(Server $server)
     {
-        if (! $server instanceof Server) {
-            $server = $this->repository->find($server);
-        }
+        $this->database->transaction(function () use ($server) {
+            $this->repository->withoutFreshModel()->update($server->id, [
+                'installed' => Server::STATUS_INSTALLING,
+            ]);
 
-        $this->database->beginTransaction();
-        $this->repository->withoutFreshModel()->update($server->id, [
-            'installed' => 0,
-        ], true, true);
-
-        try {
             $this->daemonServerRepository->setServer($server)->reinstall();
-            $this->database->commit();
-        } catch (RequestException $exception) {
-            throw new DaemonConnectionException($exception);
-        }
+        });
+
+        return $server->refresh();
     }
 }

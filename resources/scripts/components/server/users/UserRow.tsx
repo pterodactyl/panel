@@ -7,6 +7,7 @@ import EditSubuserModal from '@/components/server/users/EditSubuserModal';
 import { faUnlockAlt } from '@fortawesome/free-solid-svg-icons/faUnlockAlt';
 import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock';
 import classNames from 'classnames';
+import Can from '@/components/elements/Can';
 
 interface Props {
     subuser: Subuser;
@@ -58,7 +59,9 @@ export default ({ subuser }: Props) => {
             >
                 <FontAwesomeIcon icon={faPencilAlt}/>
             </button>
-            <RemoveSubuserButton subuser={subuser}/>
+            <Can action={'user.delete'}>
+                <RemoveSubuserButton subuser={subuser}/>
+            </Can>
         </div>
     );
 };

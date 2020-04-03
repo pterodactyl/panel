@@ -13,6 +13,7 @@ import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import NewTaskButton from '@/components/server/schedules/NewTaskButton';
 import DeleteScheduleButton from '@/components/server/schedules/DeleteScheduleButton';
+import Can from '@/components/elements/Can';
 
 interface Params {
     id: string;
@@ -93,24 +94,27 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                         </>
                         :
                         <p className={'text-sm text-neutral-400'}>
-                            There are no tasks configured for this schedule. Consider adding a new one using the
-                            button below.
+                            There are no tasks configured for this schedule.
                         </p>
                     }
                     <div className={'mt-8 flex justify-end'}>
-                        <DeleteScheduleButton
-                            scheduleId={schedule.id}
-                            onDeleted={() => history.push(`/server/${id}/schedules`)}
-                        />
-                        <button className={'btn btn-primary btn-sm mr-4'} onClick={() => setShowEditModal(true)}>
-                            Edit
-                        </button>
-                        <NewTaskButton
-                            scheduleId={schedule.id}
-                            onTaskAdded={task => setSchedule(s => ({
-                                ...s!, tasks: [ ...s!.tasks, task ],
-                            }))}
-                        />
+                        <Can action={'schedule.delete'}>
+                            <DeleteScheduleButton
+                                scheduleId={schedule.id}
+                                onDeleted={() => history.push(`/server/${id}/schedules`)}
+                            />
+                        </Can>
+                        <Can action={'schedule.update'}>
+                            <button className={'btn btn-primary btn-sm mr-4'} onClick={() => setShowEditModal(true)}>
+                                Edit
+                            </button>
+                            <NewTaskButton
+                                scheduleId={schedule.id}
+                                onTaskAdded={task => setSchedule(s => ({
+                                    ...s!, tasks: [ ...s!.tasks, task ],
+                                }))}
+                            />
+                        </Can>
                     </div>
                 </>
             }

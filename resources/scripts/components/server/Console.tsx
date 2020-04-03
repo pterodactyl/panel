@@ -4,6 +4,9 @@ import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import styled from 'styled-components';
+import Can from '@/components/elements/Can';
+import { usePermissions } from '@/plugins/usePermissions';
+import classNames from 'classnames';
 
 const theme = {
     background: 'transparent',
@@ -52,6 +55,7 @@ export default () => {
     const useRef = useCallback(node => setTerminalElement(node), []);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
+    const [ canSendCommands ] = usePermissions([ 'control.console']);
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -121,7 +125,9 @@ export default () => {
         <div className={'text-xs font-mono relative'}>
             <SpinnerOverlay visible={!connected} size={'large'}/>
             <div
-                className={'rounded-t p-2 bg-black w-full'}
+                className={classNames('rounded-t p-2 bg-black w-full', {
+                    'rounded-b': !canSendCommands,
+                })}
                 style={{
                     minHeight: '16rem',
                     maxHeight: '32rem',
@@ -129,6 +135,7 @@ export default () => {
             >
                 <TerminalDiv id={'terminal'} ref={useRef}/>
             </div>
+            {canSendCommands &&
             <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
                 <div className={'flex-no-shrink p-2 font-bold'}>$</div>
                 <div className={'w-full'}>
@@ -140,6 +147,7 @@ export default () => {
                     />
                 </div>
             </div>
+            }
         </div>
     );
 };

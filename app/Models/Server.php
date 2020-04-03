@@ -61,6 +61,10 @@ class Server extends Validable
      */
     const RESOURCE_NAME = 'server';
 
+    const STATUS_INSTALLING = 0;
+    const STATUS_INSTALLED = 1;
+    const STATUS_INSTALL_FAILED = 2;
+
     /**
      * The table associated with the model.
      *

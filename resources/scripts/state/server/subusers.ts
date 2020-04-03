@@ -2,7 +2,7 @@ import { action, Action } from 'easy-peasy';
 
 export type SubuserPermission =
     'websocket.*' |
-    'control.console' | 'control.start' | 'control.stop' | 'control.restart' | 'control.kill' |
+    'control.console' | 'control.start' | 'control.stop' | 'control.restart' |
     'user.create' | 'user.read' | 'user.update' | 'user.delete' |
     'file.create' | 'file.read' | 'file.update' | 'file.delete' | 'file.archive' | 'file.sftp' |
     'allocation.read' | 'allocation.update' |

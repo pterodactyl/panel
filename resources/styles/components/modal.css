@@ -4,7 +4,7 @@
   transition: opacity 250ms ease;
 
   & > .modal-container {
-    @apply .relative .w-full .max-w-md .m-auto .flex-col .flex;
+    @apply .relative .w-full .max-w-1/2 .m-auto .flex-col .flex;
 
     /*&.top {
       margin-top: 10%;

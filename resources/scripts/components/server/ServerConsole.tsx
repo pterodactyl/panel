@@ -9,6 +9,7 @@ import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
 import { bytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import Can from '@/components/elements/Can';
 
 type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -109,28 +110,36 @@ export default () => {
                         &nbsp;{cpu.toFixed(2)} %
                     </p>
                 </TitledGreyBox>
-                <div className={'grey-box justify-center'}>
-                    <button
-                        className={'btn btn-secondary btn-xs mr-2'}
-                        disabled={status !== 'offline'}
-                        onClick={e => {
-                            e.preventDefault();
-                            sendPowerCommand('start');
-                        }}
-                    >
-                        Start
-                    </button>
-                    <button
-                        className={'btn btn-secondary btn-xs mr-2'}
-                        onClick={e => {
-                            e.preventDefault();
-                            sendPowerCommand('restart');
-                        }}
-                    >
-                        Restart
-                    </button>
-                    <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
-                </div>
+                <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny={true}>
+                    <div className={'grey-box justify-center'}>
+                        <Can action={'control.start'}>
+                            <button
+                                className={'btn btn-secondary btn-xs mr-2'}
+                                disabled={status !== 'offline'}
+                                onClick={e => {
+                                    e.preventDefault();
+                                    sendPowerCommand('start');
+                                }}
+                            >
+                                Start
+                            </button>
+                        </Can>
+                        <Can action={'control.restart'}>
+                            <button
+                                className={'btn btn-secondary btn-xs mr-2'}
+                                onClick={e => {
+                                    e.preventDefault();
+                                    sendPowerCommand('restart');
+                                }}
+                            >
+                                Restart
+                            </button>
+                        </Can>
+                        <Can action={'control.stop'}>
+                            <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
+                        </Can>
+                    </div>
+                </Can>
             </div>
             <div className={'flex-1 mx-4 mr-4'}>
                 <SuspenseSpinner>

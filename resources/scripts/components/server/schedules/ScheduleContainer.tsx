@@ -9,6 +9,7 @@ import { httpErrorToHuman } from '@/api/http';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
+import Can from '@/components/elements/Can';
 
 export default ({ match, history }: RouteComponentProps) => {
     const { uuid } = ServerContext.useStoreState(state => state.server.data!);
@@ -35,9 +36,8 @@ export default ({ match, history }: RouteComponentProps) => {
                 <>
                     {
                         schedules.length === 0 ?
-                            <p className={'text-sm text-neutral-400'}>
-                                There are no schedules configured for this server. Click the button below to get
-                                started.
+                            <p className={'text-sm text-center text-neutral-400'}>
+                                There are no schedules configured for this server.
                             </p>
                             :
                             schedules.map(schedule => (
@@ -54,21 +54,23 @@ export default ({ match, history }: RouteComponentProps) => {
                                 </a>
                             ))
                     }
-                    <div className={'mt-8 flex justify-end'}>
-                        {visible && <EditScheduleModal
-                            appear={true}
-                            visible={true}
-                            onScheduleUpdated={schedule => setSchedules(s => [...(s || []), schedule])}
-                            onDismissed={() => setVisible(false)}
-                        />}
-                        <button
-                            type={'button'}
-                            className={'btn btn-lg btn-primary'}
-                            onClick={() => setVisible(true)}
-                        >
-                            Create schedule
-                        </button>
-                    </div>
+                    <Can action={'schedule.create'}>
+                        <div className={'mt-8 flex justify-end'}>
+                            {visible && <EditScheduleModal
+                                appear={true}
+                                visible={true}
+                                onScheduleUpdated={schedule => setSchedules(s => [ ...(s || []), schedule ])}
+                                onDismissed={() => setVisible(false)}
+                            />}
+                            <button
+                                type={'button'}
+                                className={'btn btn-sm btn-primary'}
+                                onClick={() => setVisible(true)}
+                            >
+                                Create schedule
+                            </button>
+                        </div>
+                    </Can>
                 </>
             }
         </div>
