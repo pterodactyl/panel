@@ -11,10 +11,6 @@ interface Props {
 const Can = ({ action, matchAny = false, renderOnError, children }: Props) => {
     const can = usePermissions(action);
 
-    if (matchAny) {
-        console.log('Can.tsx', can);
-    }
-
     return (
         <>
             {

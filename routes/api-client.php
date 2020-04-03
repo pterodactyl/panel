@@ -89,5 +89,6 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
 
     Route::group(['prefix' => '/settings'], function () {
         Route::post('/rename', 'Servers\SettingsController@rename');
+        Route::post('/reinstall', 'Servers\SettingsController@reinstall');
     });
 });
