@@ -7,6 +7,7 @@ import { httpErrorToHuman } from '@/api/http';
 import Can from '@/components/elements/Can';
 import CreateBackupButton from '@/components/server/backups/CreateBackupButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import BackupRow from '@/components/server/backups/BackupRow';
 
 export default () => {
     const { uuid } = useServer();
@@ -40,13 +41,11 @@ export default () => {
                 </p>
                 :
                 <div>
-                    {
-                        backups.map(backup => (
-                            <div key={backup.uuid}>
-                                {backup.uuid}
-                            </div>
-                        ))
-                    }
+                    {backups.map((backup, index) => <BackupRow
+                        key={backup.uuid}
+                        backup={backup}
+                        className={index !== (backups.length - 1) ? 'mb-2' : undefined}
+                    />)}
                 </div>
             }
             <Can action={'backup.create'}>
