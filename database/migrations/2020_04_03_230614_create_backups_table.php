@@ -15,15 +15,19 @@ class CreateBackupsTable extends Migration
     {
         Schema::create('backups', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedInteger('server_id');
             $table->char('uuid', 36);
             $table->string('name');
-            $table->text('contents');
+            $table->text('ignored');
             $table->string('disk');
             $table->string('sha256_hash')->nullable();
             $table->integer('bytes')->default(0);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique('uuid');
+            $table->foreign('server_id')->references('id')->on('servers')->onDelete('cascade');
         });
     }
 

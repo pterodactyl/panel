@@ -51,6 +51,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Location $location
  * @property \Pterodactyl\Models\DaemonKey $key
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
+ * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
  */
 class Server extends Model
 {
@@ -338,5 +339,13 @@ class Server extends Model
     public function keys()
     {
         return $this->hasMany(DaemonKey::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function backups()
+    {
+        return $this->hasMany(Backup::class);
     }
 }
