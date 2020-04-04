@@ -235,4 +235,18 @@ class Node extends Validable
     {
         return $this->hasMany(Allocation::class);
     }
+
+    /**
+     * Returns a boolean if the node is viable for an additional server to be placed on it.
+     *
+     * @param int $memory
+     * @param int $disk
+     * @return bool
+     */
+    public function isViable(int $memory, int $disk): bool {
+        $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
+        $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
+
+        return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
+    }
 }

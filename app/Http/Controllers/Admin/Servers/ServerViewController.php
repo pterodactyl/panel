@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
+use JavaScript;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
@@ -9,6 +10,8 @@ use Illuminate\Contracts\View\Factory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
+use Pterodactyl\Repositories\Eloquent\LocationRepository;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
@@ -38,16 +41,30 @@ class ServerViewController extends Controller
     private $nestRepository;
 
     /**
+     * @var \Pterodactyl\Repositories\Eloquent\LocationRepository
+     */
+    private $locationRepository;
+
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
+     */
+    private $nodeRepository;
+
+    /**
      * ServerViewController constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository $databaseHostRepository
      * @param \Pterodactyl\Repositories\Eloquent\NestRepository $nestRepository
+     * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
+     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(
         DatabaseHostRepository $databaseHostRepository,
         NestRepository $nestRepository,
+        LocationRepository $locationRepository,
+        NodeRepository $nodeRepository,
         ServerRepository $repository,
         Factory $view
     ) {
@@ -55,6 +72,8 @@ class ServerViewController extends Controller
         $this->databaseHostRepository = $databaseHostRepository;
         $this->repository = $repository;
         $this->nestRepository = $nestRepository;
+        $this->nodeRepository = $nodeRepository;
+        $this->locationRepository = $locationRepository;
     }
 
     /**
@@ -150,6 +169,7 @@ class ServerViewController extends Controller
      * @return \Illuminate\Contracts\View\View
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function manage(Request $request, Server $server)
     {
@@ -159,7 +179,22 @@ class ServerViewController extends Controller
             );
         }
 
-        return $this->view->make('admin.servers.view.manage', compact('server'));
+        // Check if the panel doesn't have at least 2 nodes configured.
+        $nodes = $this->nodeRepository->all();
+        $canTransfer = false;
+        if (count($nodes) >= 2) {
+            $canTransfer = true;
+        }
+
+        Javascript::put([
+            'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
+        ]);
+
+        return $this->view->make('admin.servers.view.manage', [
+            'server' => $server,
+            'locations' => $this->locationRepository->all(),
+            'canTransfer' => $canTransfer,
+        ]);
     }
 
     /**
