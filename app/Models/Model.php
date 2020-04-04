@@ -6,13 +6,10 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Validation\Factory;
-use Pterodactyl\Models\Traits\WithImmutableDates;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 abstract class Model extends IlluminateModel
 {
-    use WithImmutableDates;
-
     /**
      * Set to true to return immutable Carbon date instances from the model.
      *
