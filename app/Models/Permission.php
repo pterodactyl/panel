@@ -4,7 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Support\Collection;
 
-class Permission extends Validable
+class Permission extends Model
 {
     /**
      * The resource name for this model when it is transformed into an
@@ -36,6 +36,12 @@ class Permission extends Validable
     const ACTION_USER_CREATE = 'user.create';
     const ACTION_USER_UPDATE = 'user.update';
     const ACTION_USER_DELETE = 'user.delete';
+
+    const ACTION_BACKUP_READ = 'backup.read';
+    const ACTION_BACKUP_CREATE = 'backup.create';
+    const ACTION_BACKUP_UPDATE = 'backup.update';
+    const ACTION_BACKUP_DELETE = 'backup.delete';
+    const ACTION_BACKUP_DOWNLOAD = 'backup.download';
 
     const ACTION_ALLOCATION_READ = 'allocation.read';
     const ACTION_ALLOCIATION_UPDATE = 'allocation.update';
@@ -132,6 +138,17 @@ class Permission extends Validable
                 'delete' => 'Allows a user to delete files or directories.',
                 'archive' => 'Allows a user to archive the contents of a directory as well as decompress existing archives on the system.',
                 'sftp' => 'Allows a user to connect to SFTP and manage server files using the other assigned file permissions.',
+            ],
+        ],
+
+        'backup' => [
+            'description' => 'Permissions that control a user\'s ability to generate and manage server backups.',
+            'keys' => [
+                'create' => 'Allows a user to create new backups for this server.',
+                'read' => 'Allows a user to view all backups that exist for this server.',
+                'update' => '',
+                'delete' => 'Allows a user to remove backups from the system.',
+                'download' => 'Allows a user to download backups.',
             ],
         ],
 

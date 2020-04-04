@@ -40,12 +40,17 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  */
-class User extends Validable implements
+class User extends Model implements
     AuthenticatableContract,
     AuthorizableContract,
     CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, AvailableLanguages, CanResetPassword, Notifiable, Searchable;
+    use Authenticatable;
+    use Authorizable;
+    use AvailableLanguages;
+    use CanResetPassword;
+    use Notifiable;
+    use Searchable;
 
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;

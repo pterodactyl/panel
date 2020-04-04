@@ -18,7 +18,7 @@ namespace Pterodactyl\Models;
  * @property \Pterodactyl\Models\Server|null $server
  * @property \Pterodactyl\Models\Node $node
  */
-class Allocation extends Validable
+class Allocation extends Model
 {
     /**
      * The resource name for this model when it is transformed into an
@@ -75,7 +75,7 @@ class Allocation extends Validable
     /**
      * Accessor to automatically provide the IP alias if defined.
      *
-     * @param null|string $value
+     * @param string|null $value
      * @return string
      */
     public function getAliasAttribute($value)
@@ -86,7 +86,7 @@ class Allocation extends Validable
     /**
      * Accessor to quickly determine if this allocation has an alias.
      *
-     * @param null|string $value
+     * @param string|null $value
      * @return bool
      */
     public function getHasAliasAttribute($value)

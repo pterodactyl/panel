@@ -25,7 +25,7 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property \Pterodactyl\Models\Server $server
  * @property \Pterodactyl\Models\Task[]|\Illuminate\Support\Collection $tasks
  */
-class Schedule extends Validable
+class Schedule extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

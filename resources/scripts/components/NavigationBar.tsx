@@ -8,6 +8,8 @@ import { faSwatchbook } from '@fortawesome/free-solid-svg-icons/faSwatchbook';
 import { faCogs } from '@fortawesome/free-solid-svg-icons/faCogs';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
+import { faSearch } from '@fortawesome/free-solid-svg-icons/faSearch';
+import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 export default () => {
     const user = useStoreState((state: ApplicationStore) => state.user.data!);
@@ -22,6 +24,7 @@ export default () => {
                     </Link>
                 </div>
                 <div className={'right-navigation'}>
+                    <SearchContainer/>
                     <NavLink to={'/'} exact={true}>
                         <FontAwesomeIcon icon={faLayerGroup}/>
                     </NavLink>

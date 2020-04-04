@@ -39,7 +39,7 @@ namespace Pterodactyl\Models;
  * @property \Pterodactyl\Models\Egg|null $scriptFrom
  * @property \Pterodactyl\Models\Egg|null $configFrom
  */
-class Egg extends Validable
+class Egg extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

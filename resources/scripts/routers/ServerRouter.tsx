@@ -16,6 +16,7 @@ import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import ScheduleEditContainer from '@/components/server/schedules/ScheduleEditContainer';
 import UsersContainer from '@/components/server/users/UsersContainer';
 import Can from '@/components/elements/Can';
+import BackupContainer from '@/components/server/backups/BackupContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -47,6 +48,9 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                         <Can action={'user.*'}>
                             <NavLink to={`${match.url}/users`}>Users</NavLink>
                         </Can>
+                        <Can action={'backup.*'}>
+                            <NavLink to={`${match.url}/backups`}>Backups</NavLink>
+                        </Can>
                         <Can action={['settings.*', 'file.sftp']} matchAny={true}>
                             <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                         </Can>
@@ -77,6 +81,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
                             <Route path={`${match.path}/schedules/:id`} component={ScheduleEditContainer} exact/>
                             <Route path={`${match.path}/users`} component={UsersContainer} exact/>
+                            <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
                             <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
                         </Switch>
                     </React.Fragment>

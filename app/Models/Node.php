@@ -32,9 +32,10 @@ use Pterodactyl\Models\Traits\Searchable;
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
-class Node extends Validable
+class Node extends Model
 {
-    use Notifiable, Searchable;
+    use Notifiable;
+    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an

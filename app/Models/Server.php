@@ -52,10 +52,13 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\DaemonKey $key
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  * @property \Pterodactyl\Models\ServerTransfer $transfer
+ * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
  */
-class Server extends Validable
+class Server extends Model
 {
-    use BelongsToThrough, Notifiable, Searchable;
+    use BelongsToThrough;
+    use Notifiable;
+    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -340,12 +343,20 @@ class Server extends Validable
     }
 
     /**
-     * Returns all of the daemon keys belonging to this server.
+     * Returns the associated server transfer.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function transfer()
     {
         return $this->hasOne(ServerTransfer::class)->orderByDesc('id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function backups()
+    {
+        return $this->hasMany(Backup::class);
     }
 }

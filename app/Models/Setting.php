@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Models;
 
-class Setting extends Validable
+class Setting extends Model
 {
     /**
      * The table associated with the model.
