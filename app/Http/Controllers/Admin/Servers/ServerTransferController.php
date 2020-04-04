@@ -6,11 +6,12 @@ use Illuminate\Bus\Dispatcher;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Jobs\Server\TransferJob;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Services\Servers\SuspensionService;
+use Pterodactyl\Services\Servers\TransferService;
 
 class ServerTransferController extends Controller
 {
@@ -40,6 +41,16 @@ class ServerTransferController extends Controller
     private $nodeRepository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\SuspensionService
+     */
+    private $suspensionService;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\TransferService
+     */
+    private $transferService;
+
+    /**
      * ServerTransferController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag $alert
@@ -47,19 +58,25 @@ class ServerTransferController extends Controller
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
      * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
+     * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
+     * @param \Pterodactyl\Services\Servers\TransferService $transferService
      */
     public function __construct(
         AlertsMessageBag $alert,
         Dispatcher $dispatcher,
         ServerRepository $repository,
         LocationRepository $locationRepository,
-        NodeRepository $nodeRepository
+        NodeRepository $nodeRepository,
+        SuspensionService $suspensionService,
+        TransferService $transferService
     ) {
         $this->alert = $alert;
         $this->dispatcher = $dispatcher;
         $this->repository = $repository;
         $this->locationRepository = $locationRepository;
         $this->nodeRepository = $nodeRepository;
+        $this->suspensionService = $suspensionService;
+        $this->transferService = $transferService;
     }
 
     /**
@@ -68,6 +85,8 @@ class ServerTransferController extends Controller
      * @param \Illuminate\Http\Request $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Throwable
      */
     public function transfer(Request $request, Server $server)
     {
@@ -84,8 +103,9 @@ class ServerTransferController extends Controller
         // Check if the node is viable for the transfer.
         $node = $this->nodeRepository->getNodeWithResourceUsage($node_id);
         if ($node->isViable($server->memory, $server->disk)) {
-            // TODO: Run TransferJob.
-            $this->dispatcher->dispatch(new TransferJob($server, $node, $allocation_id, $additional_allocations));
+            // Suspend the server and request an archive to be created.
+            // $this->suspensionService->toggle($server, 'suspend');
+            $this->transferService->requestArchive($server);
 
             $this->alert->success(trans('admin/server.alerts.transfer_started'))->flash();
         } else {

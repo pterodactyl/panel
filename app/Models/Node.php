@@ -170,6 +170,7 @@ class Node extends Validable
             ],
             'system' => [
                 'data' => $this->daemonBase,
+                'archive_directory' => $this->daemonBase . '/.archives',
                 'username' => 'pterodactyl',
                 'timezone_path' => '/etc/timezone',
                 'set_permissions_on_boot' => true,
