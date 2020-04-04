@@ -79,7 +79,7 @@
                                     @if($server->threads != null)
                                         <code>{{ $server->threads }}</code>
                                     @else
-                                        <code>Not Set</code>
+                                        <code>n/a</code>
                                     @endif
                                 </td>
                             </tr>
