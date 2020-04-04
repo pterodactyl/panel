@@ -55,7 +55,7 @@ class ServerTransferController extends Controller
      * ServerTransferController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository,
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
      * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
@@ -104,9 +104,11 @@ class ServerTransferController extends Controller
         // Check if the node is viable for the transfer.
         $node = $this->nodeRepository->getNodeWithResourceUsage($node_id);
         if ($node->isViable($server->memory, $server->disk)) {
-            //$this->assignAllocationsToServer($server, $node_id, $allocation_id, $additional_allocations);
+            // Suspend the server and request an archive to be created.
+            $this->suspensionService->toggle($server, 'suspend');
 
-            /*$transfer = new ServerTransfer;
+            // Create a new ServerTransfer entry.
+            $transfer = new ServerTransfer;
 
             $transfer->server_id = $server->id;
             $transfer->old_node = $server->node_id;
@@ -116,10 +118,12 @@ class ServerTransferController extends Controller
             $transfer->old_additional_allocations = json_encode($server->allocations->where('id', '!=', $server->allocation_id)->pluck('id'));
             $transfer->new_additional_allocations = json_encode($additional_allocations);
 
-            $transfer->save();*/
+            $transfer->save();
 
-            // Suspend the server and request an archive to be created.
-            // $this->suspensionService->toggle($server, 'suspend');
+            // Add the allocations to the server so they cannot be automatically assigned while the transfer is in progress.
+            $this->assignAllocationsToServer($server, $node_id, $allocation_id, $additional_allocations);
+
+            // Request an archive from the server's current daemon.
             $this->transferService->requestArchive($server);
 
             $this->alert->success(trans('admin/server.alerts.transfer_started'))->flash();
@@ -130,6 +134,14 @@ class ServerTransferController extends Controller
         return redirect()->route('admin.servers.view.manage', $server->id);
     }
 
+    /**
+     * Assigns the specified allocations to the specified server.
+     *
+     * @param Server $server
+     * @param int $node_id
+     * @param int $allocation_id
+     * @param array $additional_allocations
+     */
     private function assignAllocationsToServer(Server $server, int $node_id, int $allocation_id, array $additional_allocations)
     {
         $allocations = $additional_allocations;

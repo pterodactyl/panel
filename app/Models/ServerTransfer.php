@@ -11,6 +11,7 @@ namespace Pterodactyl\Models;
  * @property int $new_allocation
  * @property string $old_additional_allocations
  * @property string $new_additional_allocations
+ * @property bool $successful
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -51,6 +52,7 @@ class ServerTransfer extends Validable
         'new_allocation' => 'int',
         'old_additional_allocations' => 'string',
         'new_additional_allocations' => 'string',
+        'successful' => 'bool',
     ];
 
     /**
@@ -64,10 +66,11 @@ class ServerTransfer extends Validable
         'new_allocation' => 'required|numeric',
         'old_additional_allocations' => 'nullable',
         'new_additional_allocations' => 'nullable',
+        'successful' => 'sometimes|boolean',
     ];
 
     /**
-     * Gets the server associated with a subuser.
+     * Gets the server associated with a server transfer.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

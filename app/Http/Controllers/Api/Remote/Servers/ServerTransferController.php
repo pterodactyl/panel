@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Cake\Chronos\Chronos;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -10,18 +11,31 @@ use Illuminate\Support\Facades\Log;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
+use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
+use Pterodactyl\Services\Servers\SuspensionService;
 
 class ServerTransferController extends Controller
 {
     /**
+     * @var \Illuminate\Database\ConnectionInterface
+     */
+    private $connection;
+
+    /**
      * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
      */
     private $repository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
+     */
+    private $allocationRepository;
 
     /**
      * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
@@ -34,20 +48,42 @@ class ServerTransferController extends Controller
     private $daemonTransferRepository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    private $configurationStructureService;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\SuspensionService
+     */
+    private $suspensionService;
+
+    /**
      * ServerTransferController constructor.
      *
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
      * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
-     * @param DaemonTransferRepository $daemonTransferRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonTransferRepository $daemonTransferRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
+     * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
      */
     public function __construct(
+        ConnectionInterface $connection,
         ServerRepository $repository,
+        AllocationRepositoryInterface $allocationRepository,
         NodeRepository $nodeRepository,
-        DaemonTransferRepository $daemonTransferRepository
+        DaemonTransferRepository $daemonTransferRepository,
+        ServerConfigurationStructureService $configurationStructureService,
+        SuspensionService $suspensionService
     ) {
+        $this->connection = $connection;
         $this->repository = $repository;
+        $this->allocationRepository = $allocationRepository;
         $this->nodeRepository = $nodeRepository;
         $this->daemonTransferRepository = $daemonTransferRepository;
+        $this->configurationStructureService = $configurationStructureService;
+        $this->suspensionService = $suspensionService;
     }
 
     /**
@@ -59,6 +95,7 @@ class ServerTransferController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function archive(Request $request, string $uuid)
     {
@@ -66,9 +103,19 @@ class ServerTransferController extends Controller
 
         // Unsuspend the server and don't continue the transfer.
         if (!$request->input('successful')) {
-            // $this->suspensionService->toggle($server, 'unsuspend');
+            $this->suspensionService->toggle($server, 'unsuspend');
             return JsonResponse::create([], Response::HTTP_NO_CONTENT);
         }
+
+        $server->node_id = $server->transfer->new_node;
+
+        $data = $this->configurationStructureService->handle($server);
+        $data['suspended'] = false;
+        $data['service']['skip_scripts'] = true;
+
+        $allocations = $server->getAllocationMappings();
+        $data['allocations']['default']['ip'] = array_key_first($allocations);
+        $data['allocations']['default']['port'] = $allocations[$data['allocations']['default']['ip']][0];
 
         $now = Chronos::now();
         $signer = new Sha256;
@@ -85,10 +132,92 @@ class ServerTransferController extends Controller
         // On the daemon transfer repository, make sure to set the node after the server
         // because setServer() tells the repository to use the server's node and not the one
         // we want to specify.
-        $this->daemonTransferRepository
-            ->setServer($server)
-            ->setNode($this->nodeRepository->find($server->transfer->new_node))
-            ->notify($server, $server->node, $token->__toString());
+        try {
+            $this->daemonTransferRepository
+                ->setServer($server)
+                ->setNode($this->nodeRepository->find($server->transfer->new_node))
+                ->notify($server, $data, $server->node, $token->__toString());
+        } catch (DaemonConnectionException $exception) {
+            throw $exception;
+        }
+
+        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * The daemon notifies us about a transfer failure.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uuid
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     */
+    public function failure(string $uuid)
+    {
+        $server = $this->repository->getByUuid($uuid);
+        $transfer = $server->transfer;
+
+        $allocationIds = json_decode($transfer->new_additional_allocations);
+        array_push($allocationIds, $transfer->new_allocation);
+
+        // Begin a transaction.
+        $this->connection->beginTransaction();
+
+        // Remove the new allocations.
+        $this->allocationRepository->updateWhereIn('id', $allocationIds, ['server_id' => null]);
+
+        // Commit the transaction.
+        $this->connection->commit();
+
+        // Unsuspend the server.
+        $this->suspensionService->toggle($server, 'unsuspend');
+
+        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * The daemon notifies us about a transfer success.
+     *
+     * @param string $uuid
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     */
+    public function success(string $uuid)
+    {
+        $server = $this->repository->getByUuid($uuid);
+        $transfer = $server->transfer;
+
+        // TODO: Notify old daemon about transfer and get it to remove server files.
+
+        $allocationIds = json_decode($transfer->old_additional_allocations);
+        array_push($allocationIds, $transfer->old_allocation);
+
+        // Begin a transaction.
+        $this->connection->beginTransaction();
+
+        // Remove the old allocations.
+        $this->allocationRepository->updateWhereIn('id', $allocationIds, ['server_id' => null]);
+
+        // Update the server's allocation_id and node_id.
+        $server->allocation_id = $transfer->new_allocation;
+        $server->node_id = $transfer->new_node;
+        $server->save();
+
+        // Mark the transfer as successful.
+        $transfer->successful = true;
+        $transfer->save();
+
+        // Commit the transaction.
+        $this->connection->commit();
+
+        // Unsuspend the server
+        $server->load('node');
+        Log::debug(json_encode($server));
+        Log::debug(json_encode($server->node_id));
+        Log::debug(json_encode($server->node));
+        $this->suspensionService->toggle($server, $this->suspensionService::ACTION_UNSUSPEND);
 
         return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }

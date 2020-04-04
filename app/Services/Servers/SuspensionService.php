@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
@@ -73,10 +74,14 @@ class SuspensionService
             return;
         }
 
+        Log::debug('SuspensionService: ' . $action);
+
         $this->connection->transaction(function () use ($action, $server) {
             $this->repository->withoutFreshModel()->update($server->id, [
                 'suspended' => $action === self::ACTION_SUSPEND,
             ]);
+            Log::debug('Server suspended: ' . ($action === self::ACTION_SUSPEND) ? 'true' : 'false');
+            Log::debug('Daemon unsuspended: ' . ($action === self::ACTION_UNSUSPEND)  ? 'true' : 'false');
 
             $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
         });

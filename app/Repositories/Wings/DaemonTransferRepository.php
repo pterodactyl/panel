@@ -11,18 +11,20 @@ class DaemonTransferRepository extends DaemonRepository
 {
     /**
      * @param Server $server
+     * @param array $data
      * @param Node $node
      * @param string $token
      *
      * @throws DaemonConnectionException
      */
-    public function notify(Server $server, Node $node, string $token): void {
+    public function notify(Server $server, array $data, Node $node, string $token): void {
         try {
             $this->getHttpClient()->post('/api/transfer', [
                 'json' => [
                     'server_id' => $server->uuid,
                     'url' => $node->getConnectionAddress() . sprintf('/api/servers/%s/archive', $server->uuid),
                     'token' => 'Bearer ' . $token,
+                    'server' => $data,
                 ],
             ]);
         } catch(TransferException $exception) {

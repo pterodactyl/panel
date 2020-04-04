@@ -184,7 +184,7 @@ class Server extends Validable
      */
     public function getAllocationMappings(): array
     {
-        return $this->allocations->groupBy('ip')->map(function ($item) {
+        return $this->allocations->where('node_id', $this->node_id)->groupBy('ip')->map(function ($item) {
             return $item->pluck('port');
         })->toArray();
     }
