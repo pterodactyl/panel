@@ -104,6 +104,7 @@ class ServerTransferController extends Controller
         // Unsuspend the server and don't continue the transfer.
         if (! $request->input('successful')) {
             $this->suspensionService->toggle($server, 'unsuspend');
+
             return JsonResponse::create([], Response::HTTP_NO_CONTENT);
         }
 
