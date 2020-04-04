@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Models;
 
-class Database extends Validable
+class Database extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

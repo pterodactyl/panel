@@ -22,7 +22,7 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property \Pterodactyl\Models\Schedule $schedule
  * @property \Pterodactyl\Models\Server $server
  */
-class Task extends Validable
+class Task extends Model
 {
     use BelongsToThrough;
 

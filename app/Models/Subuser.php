@@ -15,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
  * @property \Pterodactyl\Models\User $user
  * @property \Pterodactyl\Models\Server $server
  */
-class Subuser extends Validable
+class Subuser extends Model
 {
     use Notifiable;
 

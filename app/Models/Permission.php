@@ -4,7 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Support\Collection;
 
-class Permission extends Validable
+class Permission extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

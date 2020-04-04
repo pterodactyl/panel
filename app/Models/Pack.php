@@ -20,7 +20,7 @@ use Pterodactyl\Models\Traits\Searchable;
  * @property \Pterodactyl\Models\Egg|null $egg
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
  */
-class Pack extends Validable
+class Pack extends Model
 {
     use Searchable;
 

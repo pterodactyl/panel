@@ -5,11 +5,21 @@ namespace Pterodactyl\Models;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Factory;
+use Pterodactyl\Models\Traits\WithImmutableDates;
+use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
-abstract class Validable extends Model
+abstract class Model extends IlluminateModel
 {
+    use WithImmutableDates;
+
+    /**
+     * Set to true to return immutable Carbon date instances from the model.
+     *
+     * @var bool
+     */
+    protected $immutableDates = false;
+
     /**
      * Determines if the model should undergo data validation before it is saved
      * to the database.
@@ -47,7 +57,7 @@ abstract class Validable extends Model
 
         static::$validatorFactory = Container::getInstance()->make(Factory::class);
 
-        static::saving(function (Validable $model) {
+        static::saving(function (Model $model) {
             return $model->validate();
         });
     }
@@ -147,5 +157,20 @@ abstract class Validable extends Model
                 $this->getAttributes(), $this->getMutatedAttributes()
             )
         )->passes();
+    }
+
+    /**
+     * Return a timestamp as DateTime object.
+     *
+     * @param mixed $value
+     * @return \Illuminate\Support\Carbon|\Carbon\CarbonImmutable
+     */
+    protected function asDateTime($value)
+    {
+        if (! $this->immutableDates) {
+            return parent::asDateTime($value);
+        }
+
+        return $this->asImmutableDateTime($value);
     }
 }

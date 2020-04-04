@@ -16,7 +16,7 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class ApiKey extends Validable
+class ApiKey extends Model
 {
     const RESOURCE_NAME = 'api_key';
 

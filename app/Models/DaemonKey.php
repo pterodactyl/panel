@@ -4,7 +4,7 @@ namespace Pterodactyl\Models;
 
 use Znck\Eloquent\Traits\BelongsToThrough;
 
-class DaemonKey extends Validable
+class DaemonKey extends Model
 {
     use BelongsToThrough;
 

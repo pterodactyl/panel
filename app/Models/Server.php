@@ -52,9 +52,11 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\DaemonKey $key
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  */
-class Server extends Validable
+class Server extends Model
 {
-    use BelongsToThrough, Notifiable, Searchable;
+    use BelongsToThrough;
+    use Notifiable;
+    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an
