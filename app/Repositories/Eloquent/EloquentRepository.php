@@ -178,6 +178,18 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
+     * Update a model using the attributes passed.
+     *
+     * @param array|\Closure $attributes
+     * @param array $values
+     * @return int
+     */
+    public function updateWhere($attributes, array $values)
+    {
+        return $this->getBuilder()->where($attributes)->update($values);
+    }
+
+    /**
      * Perform a mass update where matching records are updated using whereIn.
      * This does not perform any model data validation.
      *
