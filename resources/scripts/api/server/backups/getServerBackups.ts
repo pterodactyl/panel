@@ -3,7 +3,7 @@ import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/
 export interface ServerBackup {
     uuid: string;
     name: string;
-    contents: string;
+    ignoredFiles: string;
     sha256Hash: string;
     bytes: number;
     createdAt: Date;
@@ -13,7 +13,7 @@ export interface ServerBackup {
 export const rawDataToServerBackup = ({ attributes }: FractalResponseData): ServerBackup => ({
     uuid: attributes.uuid,
     name: attributes.name,
-    contents: attributes.contents,
+    ignoredFiles: attributes.ignored_files,
     sha256Hash: attributes.sha256_hash,
     bytes: attributes.bytes,
     createdAt: new Date(attributes.created_at),

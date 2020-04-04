@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $server_id
  * @property int $uuid
  * @property string $name
- * @property string $ignore
+ * @property string $ignored_files
  * @property string $disk
  * @property string|null $sha256_hash
  * @property int $bytes
@@ -52,15 +52,25 @@ class Backup extends Model
     ];
 
     /**
-     * Returns dates from this model as immutable Carbon instances.
-     *
-     * @param mixed $value
-     * @return \Carbon\CarbonImmutable
+     * @var array
      */
-    protected function asDateTime($value)
-    {
-        return $this->asImmutableDateTime($value);
-    }
+    protected $attributes = [
+        'sha256_hash' => null,
+        'bytes' => 0,
+    ];
+
+    /**
+     * @var array
+     */
+    public static $validationRules = [
+        'server_id' => 'bail|required|numeric|exists:servers,id',
+        'uuid' => 'required|uuid',
+        'name' => 'required|string|regex:/^[w\][\w\s_.-]*[\w]$/',
+        'ignored_files' => 'string',
+        'disk' => 'required|string',
+        'sha256_hash' => 'nullable|string',
+        'bytes' => 'numeric',
+    ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

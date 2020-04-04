@@ -23,11 +23,11 @@ class BackupTransformer extends BaseClientTransformer
         return [
             'uuid' => $backup->uuid,
             'name' => $backup->name,
-            'ignore' => $backup->ignore,
+            'ignored_files' => $backup->ignored_files,
             'sha256_hash' => $backup->sha256_hash,
             'bytes' => $backup->bytes,
             'created_at' => $backup->created_at->toIso8601String(),
-            'completed_at' => $backup->completed_at->toIso8601String(),
+            'completed_at' => $backup->completed_at ? $backup->completed_at->toIso8601String() : null,
         ];
     }
 }

@@ -96,7 +96,9 @@ export default ({ onBackupGenerated }: Props) => {
                 onSubmit={submit}
                 initialValues={{ name: '', ignored: '' }}
                 validationSchema={object().shape({
-                    name: string().max(255),
+                    name: string().required()
+                        .matches(/^[w\][\w\s_.-]*[\w]$/, 'Backup name must only contain alpha-numeric characters, spaces, underscores, dashes, and periods. The name must start and end with an alpha-numeric character.')
+                        .max(255),
                     ignored: string(),
                 })}
             >

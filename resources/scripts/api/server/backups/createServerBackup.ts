@@ -6,7 +6,7 @@ export default (uuid: string, name?: string, ignore?: string): Promise<ServerBac
         http.post(`/api/client/servers/${uuid}/backups`, {
             name, ignore,
         })
-            .then(({ data }) => resolve(rawDataToServerBackup(data.attributes)))
+            .then(({ data }) => resolve(rawDataToServerBackup(data)))
             .catch(reject);
     });
 };

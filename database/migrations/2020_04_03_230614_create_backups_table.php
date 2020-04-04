@@ -18,7 +18,7 @@ class CreateBackupsTable extends Migration
             $table->unsignedInteger('server_id');
             $table->char('uuid', 36);
             $table->string('name');
-            $table->text('ignored');
+            $table->text('ignored_files');
             $table->string('disk');
             $table->string('sha256_hash')->nullable();
             $table->integer('bytes')->default(0);
