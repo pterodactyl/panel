@@ -3,16 +3,16 @@
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\Http\Request;
-use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Models\Server;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServerTransfer;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Servers\TransferService;
+use Pterodactyl\Services\Servers\SuspensionService;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Services\Servers\SuspensionService;
-use Pterodactyl\Services\Servers\TransferService;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class ServerTransferController extends Controller
 {

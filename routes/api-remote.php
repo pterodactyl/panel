@@ -15,5 +15,3 @@ Route::group(['prefix' => '/servers/{uuid}'], function () {
     Route::get('/transfer/failure', 'Servers\ServerTransferController@failure');
     Route::get('/transfer/success', 'Servers\ServerTransferController@success');
 });
-
-

@@ -2,11 +2,9 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Illuminate\Database\ConnectionInterface;
-use Psr\Log\LoggerInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class TransferService
 {

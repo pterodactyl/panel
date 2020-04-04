@@ -17,7 +17,8 @@ class DaemonTransferRepository extends DaemonRepository
      *
      * @throws DaemonConnectionException
      */
-    public function notify(Server $server, array $data, Node $node, string $token): void {
+    public function notify(Server $server, array $data, Node $node, string $token): void
+    {
         try {
             $this->getHttpClient()->post('/api/transfer', [
                 'json' => [
@@ -27,7 +28,7 @@ class DaemonTransferRepository extends DaemonRepository
                     'server' => $data,
                 ],
             ]);
-        } catch(TransferException $exception) {
+        } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }
     }

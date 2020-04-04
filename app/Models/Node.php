@@ -244,7 +244,8 @@ class Node extends Validable
      * @param int $disk
      * @return bool
      */
-    public function isViable(int $memory, int $disk): bool {
+    public function isViable(int $memory, int $disk): bool
+    {
         $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
         $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
 

@@ -3,22 +3,22 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Cake\Chronos\Chronos;
-use Illuminate\Database\ConnectionInterface;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Illuminate\Http\Request;
 use Lcobucci\JWT\Signer\Key;
+use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Servers\SuspensionService;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
-use Pterodactyl\Services\Servers\SuspensionService;
 
 class ServerTransferController extends Controller
 {
@@ -102,7 +102,7 @@ class ServerTransferController extends Controller
         $server = $this->repository->getByUuid($uuid);
 
         // Unsuspend the server and don't continue the transfer.
-        if (!$request->input('successful')) {
+        if (! $request->input('successful')) {
             $this->suspensionService->toggle($server, 'unsuspend');
             return JsonResponse::create([], Response::HTTP_NO_CONTENT);
         }
