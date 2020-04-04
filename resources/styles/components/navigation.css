@@ -21,8 +21,8 @@
     & .right-navigation {
         @apply .flex .h-full .items-center .justify-center;
 
-        & > a {
-            @apply .flex .items-center .h-full .no-underline .text-neutral-300 .px-6;
+        & > a, & > .navigation-link {
+            @apply .flex .items-center .h-full .no-underline .text-neutral-300 .px-6 .cursor-pointer;
             transition: background-color 150ms linear, color 150ms linear, box-shadow 150ms ease-in;
 
             /*! purgecss start ignore */
