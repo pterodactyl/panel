@@ -96,7 +96,7 @@ export default ({ onBackupGenerated }: Props) => {
                 onSubmit={submit}
                 initialValues={{ name: '', ignored: '' }}
                 validationSchema={object().shape({
-                    name: string().required().max(255),
+                    name: string().max(255),
                     ignored: string(),
                 })}
             >
