@@ -23,6 +23,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $disk
  * @property int $io
  * @property int $cpu
+ * @property string $threads
  * @property bool $oom_disabled
  * @property int $allocation_id
  * @property int $nest_id
@@ -109,6 +110,7 @@ class Server extends Validable
         'swap' => 'required|numeric|min:-1',
         'io' => 'required|numeric|between:10,1000',
         'cpu' => 'required|numeric|min:0',
+        'threads' => 'sometimes|regex:/^[0-9-,]+$/',
         'oom_disabled' => 'sometimes|boolean',
         'disk' => 'required|numeric|min:0',
         'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',

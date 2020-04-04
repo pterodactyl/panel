@@ -75,7 +75,13 @@
                             </tr>
                             <tr>
                                 <td>CPU Threads</td>
-                                <td><code>{{ $server->threads }}</code></td>
+                                <td>
+                                    @if($server->threads != null)
+                                        <code>{{ $server->threads }}</code>
+                                    @else
+                                        <code>Not Set</code>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>Default Connection</td>
