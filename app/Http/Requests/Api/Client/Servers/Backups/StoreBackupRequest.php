@@ -21,7 +21,7 @@ class StoreBackupRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string|max:255|regex:/^[w\][\w\s_.-]*[\w]$/',
+            'name' => 'nullable|string|max:255',
             'ignore' => 'nullable|string',
         ];
     }

@@ -65,7 +65,7 @@ class Backup extends Model
     public static $validationRules = [
         'server_id' => 'bail|required|numeric|exists:servers,id',
         'uuid' => 'required|uuid',
-        'name' => 'required|string|regex:/^[w\][\w\s_.-]*[\w]$/',
+        'name' => 'required|string',
         'ignored_files' => 'string',
         'disk' => 'required|string',
         'sha256_hash' => 'nullable|string',

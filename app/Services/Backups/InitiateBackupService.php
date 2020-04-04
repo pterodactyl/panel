@@ -4,7 +4,6 @@ namespace Pterodactyl\Services\Backups;
 
 use Ramsey\Uuid\Uuid;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Str;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
@@ -59,7 +58,7 @@ class InitiateBackupService
         $backup = $this->repository->create([
             'server_id' => $server->id,
             'uuid' => Uuid::uuid4()->toString(),
-            'name' => Str::lower(str_replace(' ', '_', trim($name))) ?: sprintf('backup_%s', CarbonImmutable::create()->format('YmdHis')),
+            'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::create()->toDateTimeString()),
             'ignored_files' => $this->ignoredFiles ?? '',
             'disk' => 'local',
         ], true, true);
