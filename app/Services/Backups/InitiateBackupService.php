@@ -58,7 +58,7 @@ class InitiateBackupService
         $backup = $this->repository->create([
             'server_id' => $server->id,
             'uuid' => Uuid::uuid4()->toString(),
-            'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::create()->toDateTimeString()),
+            'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
             'ignored_files' => $this->ignoredFiles ?? '',
             'disk' => 'local',
         ], true, true);
