@@ -11,4 +11,6 @@ Route::group(['prefix' => '/servers/{uuid}'], function () {
     Route::get('/', 'Servers\ServerDetailsController');
     Route::get('/install', 'Servers\ServerInstallController@index');
     Route::post('/install', 'Servers\ServerInstallController@store');
+
+    Route::post('/backup/{backup}', 'Servers\ServerBackupController');
 });
