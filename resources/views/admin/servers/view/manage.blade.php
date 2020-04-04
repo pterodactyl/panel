@@ -23,7 +23,7 @@
     @include('admin.servers.partials.navigation')
     <div class="row">
         <div class="col-sm-4">
-            <div class="box box-primary">
+            <div class="box box-danger">
                 <div class="box-header with-border">
                     <h3 class="box-title">Reinstall Server</h3>
                 </div>

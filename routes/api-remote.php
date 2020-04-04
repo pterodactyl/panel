@@ -13,3 +13,5 @@ Route::group(['prefix' => '/servers/{uuid}'], function () {
     Route::post('/install', 'Servers\ServerInstallController@store');
     Route::post('/archive', 'Servers\ServerTransferController@archive');
 });
+
+

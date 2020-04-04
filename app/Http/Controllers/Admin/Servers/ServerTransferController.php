@@ -2,11 +2,12 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
-use Illuminate\Bus\Dispatcher;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\ServerTransfer;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
@@ -21,9 +22,9 @@ class ServerTransferController extends Controller
     private $alert;
 
     /**
-     * @var \Illuminate\Bus\Dispatcher
+     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
      */
-    private $dispatcher;
+    private $allocationRepository;
 
     /**
      * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
@@ -54,7 +55,7 @@ class ServerTransferController extends Controller
      * ServerTransferController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Illuminate\Bus\Dispatcher $dispatcher
+     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository,
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
      * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
@@ -63,7 +64,7 @@ class ServerTransferController extends Controller
      */
     public function __construct(
         AlertsMessageBag $alert,
-        Dispatcher $dispatcher,
+        AllocationRepositoryInterface $allocationRepository,
         ServerRepository $repository,
         LocationRepository $locationRepository,
         NodeRepository $nodeRepository,
@@ -71,7 +72,7 @@ class ServerTransferController extends Controller
         TransferService $transferService
     ) {
         $this->alert = $alert;
-        $this->dispatcher = $dispatcher;
+        $this->allocationRepository = $allocationRepository;
         $this->repository = $repository;
         $this->locationRepository = $locationRepository;
         $this->nodeRepository = $nodeRepository;
@@ -97,12 +98,26 @@ class ServerTransferController extends Controller
         ]);
 
         $node_id = $validatedData['node_id'];
-        $allocation_id = $validatedData['allocation_id'];
-        $additional_allocations = $validatedData['allocation_additional'] ?? [];
+        $allocation_id = intval($validatedData['allocation_id']);
+        $additional_allocations = array_map('intval', $validatedData['allocation_additional'] ?? []);
 
         // Check if the node is viable for the transfer.
         $node = $this->nodeRepository->getNodeWithResourceUsage($node_id);
         if ($node->isViable($server->memory, $server->disk)) {
+            //$this->assignAllocationsToServer($server, $node_id, $allocation_id, $additional_allocations);
+
+            /*$transfer = new ServerTransfer;
+
+            $transfer->server_id = $server->id;
+            $transfer->old_node = $server->node_id;
+            $transfer->new_node = $node_id;
+            $transfer->old_allocation = $server->allocation_id;
+            $transfer->new_allocation = $allocation_id;
+            $transfer->old_additional_allocations = json_encode($server->allocations->where('id', '!=', $server->allocation_id)->pluck('id'));
+            $transfer->new_additional_allocations = json_encode($additional_allocations);
+
+            $transfer->save();*/
+
             // Suspend the server and request an archive to be created.
             // $this->suspensionService->toggle($server, 'suspend');
             $this->transferService->requestArchive($server);
@@ -113,5 +128,26 @@ class ServerTransferController extends Controller
         }
 
         return redirect()->route('admin.servers.view.manage', $server->id);
+    }
+
+    private function assignAllocationsToServer(Server $server, int $node_id, int $allocation_id, array $additional_allocations)
+    {
+        $allocations = $additional_allocations;
+        array_push($allocations, $allocation_id);
+
+        $unassigned = $this->allocationRepository->getUnassignedAllocationIds($node_id);
+
+        $updateIds = [];
+        foreach ($allocations as $allocation) {
+            if (! in_array($allocation, $unassigned)) {
+                continue;
+            }
+
+            $updateIds[] = $allocation;
+        }
+
+        if (! empty($updateIds)) {
+            $this->allocationRepository->updateWhereIn('id', $updateIds, ['server_id' => $server->id]);
+        }
     }
 }

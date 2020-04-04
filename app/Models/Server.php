@@ -51,6 +51,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Location $location
  * @property \Pterodactyl\Models\DaemonKey $key
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
+ * @property \Pterodactyl\Models\ServerTransfer $transfer
  */
 class Server extends Validable
 {
@@ -336,5 +337,15 @@ class Server extends Validable
     public function keys()
     {
         return $this->hasMany(DaemonKey::class);
+    }
+
+    /**
+     * Returns all of the daemon keys belonging to this server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function transfer()
+    {
+        return $this->hasOne(ServerTransfer::class)->orderByDesc('id');
     }
 }

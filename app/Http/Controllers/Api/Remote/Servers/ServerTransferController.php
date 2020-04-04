@@ -6,6 +6,7 @@ use Cake\Chronos\Chronos;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Lcobucci\JWT\Builder;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key;
@@ -53,13 +54,16 @@ class ServerTransferController extends Controller
      * The daemon notifies us about the archive status.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
+     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function archive(Request $request, Server $server)
+    public function archive(Request $request, string $uuid)
     {
+        $server = $this->repository->getByUuid($uuid);
+
         // Unsuspend the server and don't continue the transfer.
         if (!$request->input('successful')) {
             // $this->suspensionService->toggle($server, 'unsuspend');
@@ -75,10 +79,16 @@ class ServerTransferController extends Controller
             ->issuedAt($now->getTimestamp())
             ->canOnlyBeUsedAfter($now->getTimestamp())
             ->expiresAt($now->addMinutes(15)->getTimestamp())
-            ->relatedTo($server->id, true)
+            ->relatedTo($server->uuid, true)
             ->getToken($signer, new Key($server->node->daemonSecret));
 
-        $this->daemonTransferRepository->notify($server, $token->__toString());
+        // On the daemon transfer repository, make sure to set the node after the server
+        // because setServer() tells the repository to use the server's node and not the one
+        // we want to specify.
+        $this->daemonTransferRepository
+            ->setServer($server)
+            ->setNode($this->nodeRepository->find($server->transfer->new_node))
+            ->notify($server, $server->node, $token->__toString());
 
         return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }
