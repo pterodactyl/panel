@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Middleware\Api\Client;
 
 use Closure;
+use Pterodactyl\Models\Backup;
 use Illuminate\Container\Container;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
@@ -53,6 +54,10 @@ class SubstituteClientApiBindings extends ApiSubstituteBindings
 
                 return null;
             }
+        });
+
+        $this->router->model('backup', Backup::class, function ($value) {
+            return Backup::query()->where('uuid', $value)->firstOrFail();
         });
 
         return parent::handle($request, $next);
