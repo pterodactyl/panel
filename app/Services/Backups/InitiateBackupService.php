@@ -6,7 +6,9 @@ use Ramsey\Uuid\Uuid;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
+use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
+use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 
 class InitiateBackupService
 {
@@ -21,13 +23,30 @@ class InitiateBackupService
     private $repository;
 
     /**
+     * @var \Illuminate\Database\ConnectionInterface
+     */
+    private $connection;
+
+    /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonBackupRepository
+     */
+    private $daemonBackupRepository;
+
+    /**
      * InitiateBackupService constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
      */
-    public function __construct(BackupRepository $repository)
-    {
+    public function __construct(
+        BackupRepository $repository,
+        ConnectionInterface $connection,
+        DaemonBackupRepository $daemonBackupRepository
+    ) {
         $this->repository = $repository;
+        $this->connection = $connection;
+        $this->daemonBackupRepository = $daemonBackupRepository;
     }
 
     /**
@@ -50,19 +69,23 @@ class InitiateBackupService
      * @param string|null $name
      * @return \Pterodactyl\Models\Backup
      *
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function handle(Server $server, string $name = null): Backup
     {
-        /** @var \Pterodactyl\Models\Backup $backup */
-        $backup = $this->repository->create([
-            'server_id' => $server->id,
-            'uuid' => Uuid::uuid4()->toString(),
-            'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-            'ignored_files' => $this->ignoredFiles ?? '',
-            'disk' => 'local',
-        ], true, true);
+        return $this->connection->transaction(function () use ($server, $name) {
+            /** @var \Pterodactyl\Models\Backup $backup */
+            $backup = $this->repository->create([
+                'server_id' => $server->id,
+                'uuid' => Uuid::uuid4()->toString(),
+                'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
+                'ignored_files' => $this->ignoredFiles ?? '',
+                'disk' => 'local',
+            ], true, true);
 
-        return $backup;
+            $this->daemonBackupRepository->setServer($server)->backup($backup);
+
+            return $backup;
+        });
     }
 }
