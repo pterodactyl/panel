@@ -1,9 +1,8 @@
-import { action, Action, thunk, Thunk } from 'easy-peasy';
-import getServerSubusers from '@/api/server/users/getServerSubusers';
+import { action, Action } from 'easy-peasy';
 
 export type SubuserPermission =
     'websocket.*' |
-    'control.console' | 'control.start' | 'control.stop' | 'control.restart' | 'control.kill' |
+    'control.console' | 'control.start' | 'control.stop' | 'control.restart' |
     'user.create' | 'user.read' | 'user.update' | 'user.delete' |
     'file.create' | 'file.read' | 'file.update' | 'file.delete' | 'file.archive' | 'file.sftp' |
     'allocation.read' | 'allocation.update' |
@@ -28,7 +27,7 @@ export interface ServerSubuserStore {
     data: Subuser[];
     setSubusers: Action<ServerSubuserStore, Subuser[]>;
     appendSubuser: Action<ServerSubuserStore, Subuser>;
-    getSubusers: Thunk<ServerSubuserStore, string, any, {}, Promise<void>>;
+    removeSubuser: Action<ServerSubuserStore, string>;
 }
 
 const subusers: ServerSubuserStore = {
@@ -39,13 +38,24 @@ const subusers: ServerSubuserStore = {
     }),
 
     appendSubuser: action((state, payload) => {
-        state.data = [ ...state.data, payload ];
+        let matched = false;
+        state.data = [
+            ...state.data
+                .map(user => {
+                    if (user.uuid === payload.uuid) {
+                        matched = true;
+
+                        return payload;
+                    }
+
+                    return user;
+                })
+                .concat(matched ? [] : [ payload ]),
+        ];
     }),
 
-    getSubusers: thunk(async (actions, payload) => {
-        const subusers = await getServerSubusers(payload);
-
-        actions.setSubusers(subusers);
+    removeSubuser: action((state, payload) => {
+        state.data = [ ...state.data.filter(user => user.uuid !== payload) ];
     }),
 };
 

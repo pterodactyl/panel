@@ -4,9 +4,12 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest;
 
 class SettingsController extends ClientApiController
 {
@@ -16,15 +19,24 @@ class SettingsController extends ClientApiController
     private $repository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ReinstallServerService
+     */
+    private $reinstallServerService;
+
+    /**
      * SettingsController constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \Pterodactyl\Services\Servers\ReinstallServerService $reinstallServerService
      */
-    public function __construct(ServerRepository $repository)
-    {
+    public function __construct(
+        ServerRepository $repository,
+        ReinstallServerService $reinstallServerService
+    ) {
         parent::__construct();
 
         $this->repository = $repository;
+        $this->reinstallServerService = $reinstallServerService;
     }
 
     /**
@@ -32,7 +44,7 @@ class SettingsController extends ClientApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest $request
      * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -43,6 +55,22 @@ class SettingsController extends ClientApiController
             'name' => $request->input('name'),
         ]);
 
-        return Response::create('', Response::HTTP_NO_CONTENT);
+        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Reinstalls the server on the daemon.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     */
+    public function reinstall(ReinstallServerRequest $request, Server $server)
+    {
+        $this->reinstallServerService->reinstall($server);
+
+        return JsonResponse::create([], Response::HTTP_ACCEPTED);
     }
 }

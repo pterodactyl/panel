@@ -4,7 +4,7 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 interface Props {
     icon?: IconProp;
-    title: string;
+    title: string | React.ReactNode;
     className?: string;
     children: React.ReactNode;
 }
@@ -12,9 +12,13 @@ interface Props {
 const TitledGreyBox = ({ icon, title, children, className }: Props) => (
     <div className={`rounded shadow-md bg-neutral-700 ${className}`}>
         <div className={'bg-neutral-900 rounded-t p-3 border-b border-black'}>
-            <p className={'text-sm uppercase'}>
-                {icon && <FontAwesomeIcon icon={icon} className={'mr-2 text-neutral-300'}/>}{title}
-            </p>
+            {typeof title === 'string' ?
+                <p className={'text-sm uppercase'}>
+                    {icon && <FontAwesomeIcon icon={icon} className={'mr-2 text-neutral-300'}/>}{title}
+                </p>
+                :
+                title
+            }
         </div>
         <div className={'p-3'}>
             {children}

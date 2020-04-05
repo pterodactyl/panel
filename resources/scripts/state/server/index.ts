@@ -10,17 +10,29 @@ export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
 interface ServerDataStore {
     data?: Server;
+    permissions: string[];
+
     getServer: Thunk<ServerDataStore, string, {}, ServerStore, Promise<void>>;
     setServer: Action<ServerDataStore, Server>;
+    setPermissions: Action<ServerDataStore, string[]>;
 }
 
 const server: ServerDataStore = {
+    permissions: [],
+
     getServer: thunk(async (actions, payload) => {
-        const server = await getServer(payload);
+        const [server, permissions] = await getServer(payload);
+
         actions.setServer(server);
+        actions.setPermissions(permissions);
     }),
+
     setServer: action((state, payload) => {
         state.data = payload;
+    }),
+
+    setPermissions: action((state, payload) => {
+        state.permissions = payload;
     }),
 };
 
@@ -75,9 +87,9 @@ export const ServerContext = createContextStore<ServerStore>({
     subusers,
     clearServerState: action(state => {
         state.server.data = undefined;
+        state.server.permissions = [];
         state.databases.items = [];
         state.subusers.data = [];
-
         state.files.directory = '/';
         state.files.contents = [];
 

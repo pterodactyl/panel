@@ -13,6 +13,7 @@ import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
+import Can from '@/components/elements/Can';
 
 interface Props {
     schedule: number;
@@ -75,22 +76,26 @@ export default ({ schedule, task, onTaskUpdated, onTaskRemoved }: Props) => {
                 </p>
             </div>
             }
-            <button
-                type={'button'}
-                aria-label={'Edit scheduled task'}
-                className={'block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-color duration-150 mr-4'}
-                onClick={() => setIsEditing(true)}
-            >
-                <FontAwesomeIcon icon={faPencilAlt}/>
-            </button>
-            <button
-                type={'button'}
-                aria-label={'Delete scheduled task'}
-                className={'block text-sm p-2 text-neutral-500 hover:text-red-600 transition-color duration-150'}
-                onClick={() => setVisible(true)}
-            >
-                <FontAwesomeIcon icon={faTrashAlt}/>
-            </button>
+            <Can action={'schedule.update'}>
+                <button
+                    type={'button'}
+                    aria-label={'Edit scheduled task'}
+                    className={'block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mr-4'}
+                    onClick={() => setIsEditing(true)}
+                >
+                    <FontAwesomeIcon icon={faPencilAlt}/>
+                </button>
+            </Can>
+            <Can action={'schedule.update'}>
+                <button
+                    type={'button'}
+                    aria-label={'Delete scheduled task'}
+                    className={'block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150'}
+                    onClick={() => setVisible(true)}
+                >
+                    <FontAwesomeIcon icon={faTrashAlt}/>
+                </button>
+            </Can>
         </div>
     );
 };

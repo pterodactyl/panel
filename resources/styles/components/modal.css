@@ -4,7 +4,7 @@
   transition: opacity 250ms ease;
 
   & > .modal-container {
-    @apply .relative .w-full .max-w-md .m-auto .flex-col .flex;
+    @apply .relative .w-full .max-w-1/2 .m-auto .flex-col .flex;
 
     &.top {
       margin-top: 10%;
@@ -22,7 +22,8 @@
     }
 
     & > .modal-content {
-      @apply .bg-neutral-800 .rounded .shadow-md;
+      @apply .bg-neutral-800 .rounded .shadow-md .overflow-y-scroll;
+      max-height: calc(100vh - 16rem);
       transition: all 250ms ease;
     }
 
@@ -39,7 +40,7 @@
   }
 
   & > .modal-container.full-screen {
-    @apply .w-3/4 .mt-32;
+    @apply .w-3/4;
     height: calc(100vh - 16rem);
     max-width: none;
   }

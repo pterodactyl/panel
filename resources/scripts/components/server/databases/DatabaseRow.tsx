@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ServerDatabase } from '@/api/server/getServerDatabases';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
@@ -16,6 +15,7 @@ import { ServerContext } from '@/state/server';
 import deleteServerDatabase from '@/api/server/deleteServerDatabase';
 import { httpErrorToHuman } from '@/api/http';
 import RotatePasswordButton from '@/components/server/databases/RotatePasswordButton';
+import Can from '@/components/elements/Can';
 
 interface Props {
     databaseId: string | number;
@@ -24,10 +24,10 @@ interface Props {
 }
 
 export default ({ databaseId, className, onDelete }: Props) => {
-    const [visible, setVisible] = useState(false);
+    const [ visible, setVisible ] = useState(false);
     const database = ServerContext.useStoreState(state => state.databases.items.find(item => item.id === databaseId));
     const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
-    const [connectionVisible, setConnectionVisible] = useState(false);
+    const [ connectionVisible, setConnectionVisible ] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const server = ServerContext.useStoreState(state => state.server.data!);
 
@@ -38,7 +38,7 @@ export default ({ databaseId, className, onDelete }: Props) => {
     const schema = object().shape({
         confirm: string()
             .required('The database name must be provided.')
-            .oneOf([database.name.split('_', 2)[1], database.name], 'The database name must be provided.'),
+            .oneOf([ database.name.split('_', 2)[1], database.name ], 'The database name must be provided.'),
     });
 
     const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
@@ -73,7 +73,10 @@ export default ({ databaseId, className, onDelete }: Props) => {
                             visible={visible}
                             dismissable={!isSubmitting}
                             showSpinnerOverlay={isSubmitting}
-                            onDismissed={() => { setVisible(false); resetForm(); }}
+                            onDismissed={() => {
+                                setVisible(false);
+                                resetForm();
+                            }}
                         >
                             <FlashMessageRender byKey={'delete-database-modal'} className={'mb-6'}/>
                             <h3 className={'mb-6'}>Confirm database deletion</h3>
@@ -113,10 +116,12 @@ export default ({ databaseId, className, onDelete }: Props) => {
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
                 <FlashMessageRender byKey={'database-connection-modal'} className={'mb-6'}/>
                 <h3 className={'mb-6'}>Database connection details</h3>
-                <div>
-                    <label className={'input-dark-label'}>Password</label>
-                    <input type={'text'} className={'input-dark'} readOnly={true} value={database.password}/>
-                </div>
+                <Can action={'database.view_password'}>
+                    <div>
+                        <label className={'input-dark-label'}>Password</label>
+                        <input type={'text'} className={'input-dark'} readOnly={true} value={database.password}/>
+                    </div>
+                </Can>
                 <div className={'mt-6'}>
                     <label className={'input-dark-label'}>JBDC Connection String</label>
                     <input
@@ -127,7 +132,9 @@ export default ({ databaseId, className, onDelete }: Props) => {
                     />
                 </div>
                 <div className={'mt-6 text-right'}>
-                    <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase}/>
+                    <Can action={'database.update'}>
+                        <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase}/>
+                    </Can>
                     <button className={'btn btn-sm btn-secondary'} onClick={() => setConnectionVisible(false)}>
                         Close
                     </button>
@@ -156,9 +163,11 @@ export default ({ databaseId, className, onDelete }: Props) => {
                     <button className={'btn btn-sm btn-secondary mr-2'} onClick={() => setConnectionVisible(true)}>
                         <FontAwesomeIcon icon={faEye} fixedWidth={true}/>
                     </button>
-                    <button className={'btn btn-sm btn-secondary btn-red'} onClick={() => setVisible(true)}>
-                        <FontAwesomeIcon icon={faTrashAlt} fixedWidth={true}/>
-                    </button>
+                    <Can action={'database.delete'}>
+                        <button className={'btn btn-sm btn-secondary btn-red'} onClick={() => setVisible(true)}>
+                            <FontAwesomeIcon icon={faTrashAlt} fixedWidth={true}/>
+                        </button>
+                    </Can>
                 </div>
             </div>
         </React.Fragment>

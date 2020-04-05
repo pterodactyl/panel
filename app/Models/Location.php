@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Models;
 
-class Location extends Validable
+class Location extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

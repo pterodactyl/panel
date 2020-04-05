@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import login, { LoginData } from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
-import FlashMessageRender from '@/components/FlashMessageRender';
 import { ActionCreator, Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { FormikProps, withFormik } from 'formik';
@@ -12,32 +11,11 @@ import { httpErrorToHuman } from '@/api/http';
 import { FlashMessage } from '@/state/flashes';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Spinner from '@/components/elements/Spinner';
-import styled from 'styled-components';
-import { breakpoint } from 'styled-components-breakpoint';
 
 type OwnProps = RouteComponentProps & {
     clearFlashes: ActionCreator<void>;
     addFlash: ActionCreator<FlashMessage>;
 }
-
-const Container = styled.div`
-    ${breakpoint('sm')`
-        ${tw`w-4/5 mx-auto`}
-    `};
-
-    ${breakpoint('md')`
-        ${tw`p-10`}
-    `};
-
-    ${breakpoint('lg')`
-        ${tw`w-3/5`}
-    `};
-
-    ${breakpoint('xl')`
-        ${tw`w-full`}
-        max-width: 660px;
-    `};
-`;
 
 const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handleSubmit }: OwnProps & FormikProps<LoginData>) => {
     const ref = useRef<ReCAPTCHA | null>(null);
@@ -56,66 +34,61 @@ const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handl
     return (
         <React.Fragment>
             {ref.current && ref.current.render()}
-            <h2 className={'text-center text-neutral-100 font-medium py-4'}>
-                Login to Continue
-            </h2>
-            <Container>
-                <FlashMessageRender className={'mb-2 px-1'}/>
-                <LoginFormContainer
-                    className={'w-full flex'}
-                    onSubmit={submit}
-                >
-                    <label htmlFor={'username'}>Username or Email</label>
+            <LoginFormContainer
+                title={'Login to Continue'}
+                className={'w-full flex'}
+                onSubmit={submit}
+            >
+                <label htmlFor={'username'}>Username or Email</label>
+                <Field
+                    type={'text'}
+                    id={'username'}
+                    name={'username'}
+                    className={'input'}
+                />
+                <div className={'mt-6'}>
+                    <label htmlFor={'password'}>Password</label>
                     <Field
-                        type={'text'}
-                        id={'username'}
-                        name={'username'}
+                        type={'password'}
+                        id={'password'}
+                        name={'password'}
                         className={'input'}
                     />
-                    <div className={'mt-6'}>
-                        <label htmlFor={'password'}>Password</label>
-                        <Field
-                            type={'password'}
-                            id={'password'}
-                            name={'password'}
-                            className={'input'}
-                        />
-                    </div>
-                    <div className={'mt-6'}>
-                        <button
-                            type={'submit'}
-                            className={'btn btn-primary btn-jumbo'}
-                        >
-                            {isSubmitting ?
-                                <Spinner size={'tiny'} className={'mx-auto'}/>
-                                :
-                                'Login'
-                            }
-                        </button>
-                    </div>
-                    {recaptchaEnabled &&
-                    <ReCAPTCHA
-                        ref={ref}
-                        size={'invisible'}
-                        sitekey={siteKey || '_invalid_key'}
-                        onChange={token => {
-                            ref.current && ref.current.reset();
-                            setFieldValue('recaptchaData', token);
-                            submitForm();
-                        }}
-                        onExpired={() => setFieldValue('recaptchaData', null)}
-                    />
-                    }
-                    <div className={'mt-6 text-center'}>
-                        <Link
-                            to={'/auth/password'}
-                            className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
-                        >
-                            Forgot password?
-                        </Link>
-                    </div>
-                </LoginFormContainer>
-            </Container>
+                </div>
+                <div className={'mt-6'}>
+                    <button
+                        type={'submit'}
+                        className={'btn btn-primary btn-jumbo'}
+                    >
+                        {isSubmitting ?
+                            <Spinner size={'tiny'} className={'mx-auto'}/>
+                            :
+                            'Login'
+                        }
+                    </button>
+                </div>
+                {recaptchaEnabled &&
+                <ReCAPTCHA
+                    ref={ref}
+                    size={'invisible'}
+                    sitekey={siteKey || '_invalid_key'}
+                    onChange={token => {
+                        ref.current && ref.current.reset();
+                        setFieldValue('recaptchaData', token);
+                        submitForm();
+                    }}
+                    onExpired={() => setFieldValue('recaptchaData', null)}
+                />
+                }
+                <div className={'mt-6 text-center'}>
+                    <Link
+                        to={'/auth/password'}
+                        className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
+                    >
+                        Forgot password?
+                    </Link>
+                </div>
+            </LoginFormContainer>
         </React.Fragment>
     );
 };

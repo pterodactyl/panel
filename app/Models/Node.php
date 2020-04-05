@@ -32,9 +32,10 @@ use Pterodactyl\Models\Traits\Searchable;
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
-class Node extends Validable
+class Node extends Model
 {
-    use Notifiable, Searchable;
+    use Notifiable;
+    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -170,6 +171,7 @@ class Node extends Validable
             ],
             'system' => [
                 'data' => $this->daemonBase,
+                'archive_directory' => $this->daemonBase . '/.archives',
                 'username' => 'pterodactyl',
                 'timezone_path' => '/etc/timezone',
                 'set_permissions_on_boot' => true,
@@ -234,5 +236,20 @@ class Node extends Validable
     public function allocations()
     {
         return $this->hasMany(Allocation::class);
+    }
+
+    /**
+     * Returns a boolean if the node is viable for an additional server to be placed on it.
+     *
+     * @param int $memory
+     * @param int $disk
+     * @return bool
+     */
+    public function isViable(int $memory, int $disk): bool
+    {
+        $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
+        $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
+
+        return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }
 }

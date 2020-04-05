@@ -138,7 +138,7 @@
             {!! csrf_field() !!}
             <button type="submit" class="btn btn-sm btn-success pull-right">Export</button>
         </form>
-        <form action="{{ route('admin.packs.view.export', ['id' => $pack->id, 'files' => 'with-files']) }}" method="POST">
+        <form action="{{ route('admin.packs.view.export', ['pack' => $pack->id, 'files' => 'with-files']) }}" method="POST">
             {!! csrf_field() !!}
             <button type="submit" class="btn btn-sm pull-right muted muted-hover" style="margin-right:10px;">Export with Archive</button>
         </form>

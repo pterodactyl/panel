@@ -26,7 +26,7 @@
         <div class="col-sm-5">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">System Resources</h3>
+                    <h3 class="box-title">Resource Management</h3>
                 </div>
                 <div class="box-body">
                     <div class="form-group">
@@ -54,11 +54,18 @@
                         <p class="text-muted small">Each <em>physical</em> core on the system is considered to be <code>100%</code>. Setting this value to <code>0</code> will allow a server to use CPU time without restrictions.</p>
                     </div>
                     <div class="form-group">
+                        <label for="threads" class="control-label">CPU Threads</label>
+                        <div>
+                            <input type="text" name="threads" class="form-control" value="{{ old('threads', $server->threads) }}"/>
+                        </div>
+                        <p class="text-muted small"><strong>Advanced:</strong> Enter the specific CPU cores that this process can run on, or leave blank to allow all cores. This can be a single number, or a comma seperated list. Example: <code>0</code>, <code>0-1,3</code>, or <code>0,1,3,4</code>.</p>
+                    </div>
+                    <div class="form-group">
                         <label for="io" class="control-label">Block IO Proportion</label>
                         <div>
                             <input type="text" name="io" class="form-control" value="{{ old('io', $server->io) }}"/>
                         </div>
-                        <p class="text-muted small">Changing this value can have negative effects on all containers on the system. We strongly recommend leaving this value as <code>500</code>.</p>
+                        <p class="text-muted small"><strong>Advanced</strong>: The IO performance of this server relative to other <em>running</em> containers on the system. Value should be between <code>10</code> and <code>1000</code>.</code></p>
                     </div>
                     <div class="form-group">
                         <label for="cpu" class="control-label">Disk Space Limit</label>

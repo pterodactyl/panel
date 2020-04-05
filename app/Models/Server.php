@@ -23,6 +23,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $disk
  * @property int $io
  * @property int $cpu
+ * @property string $threads
  * @property bool $oom_disabled
  * @property int $allocation_id
  * @property int $nest_id
@@ -50,16 +51,24 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Location $location
  * @property \Pterodactyl\Models\DaemonKey $key
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
+ * @property \Pterodactyl\Models\ServerTransfer $transfer
+ * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
  */
-class Server extends Validable
+class Server extends Model
 {
-    use BelongsToThrough, Notifiable, Searchable;
+    use BelongsToThrough;
+    use Notifiable;
+    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
     const RESOURCE_NAME = 'server';
+
+    const STATUS_INSTALLING = 0;
+    const STATUS_INSTALLED = 1;
+    const STATUS_INSTALL_FAILED = 2;
 
     /**
      * The table associated with the model.
@@ -105,6 +114,7 @@ class Server extends Validable
         'swap' => 'required|numeric|min:-1',
         'io' => 'required|numeric|between:10,1000',
         'cpu' => 'required|numeric|min:0',
+        'threads' => 'nullable|regex:/^[0-9-,]+$/',
         'oom_disabled' => 'sometimes|boolean',
         'disk' => 'required|numeric|min:0',
         'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
@@ -177,7 +187,7 @@ class Server extends Validable
      */
     public function getAllocationMappings(): array
     {
-        return $this->allocations->groupBy('ip')->map(function ($item) {
+        return $this->allocations->where('node_id', $this->node_id)->groupBy('ip')->map(function ($item) {
             return $item->pluck('port');
         })->toArray();
     }
@@ -330,5 +340,23 @@ class Server extends Validable
     public function keys()
     {
         return $this->hasMany(DaemonKey::class);
+    }
+
+    /**
+     * Returns the associated server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function transfer()
+    {
+        return $this->hasOne(ServerTransfer::class)->orderByDesc('id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function backups()
+    {
+        return $this->hasMany(Backup::class);
     }
 }

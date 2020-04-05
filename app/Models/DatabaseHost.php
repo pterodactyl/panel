@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Models;
 
-class DatabaseHost extends Validable
+class DatabaseHost extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

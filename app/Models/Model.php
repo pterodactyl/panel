@@ -5,11 +5,18 @@ namespace Pterodactyl\Models;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Factory;
+use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
-abstract class Validable extends Model
+abstract class Model extends IlluminateModel
 {
+    /**
+     * Set to true to return immutable Carbon date instances from the model.
+     *
+     * @var bool
+     */
+    protected $immutableDates = false;
+
     /**
      * Determines if the model should undergo data validation before it is saved
      * to the database.
@@ -47,7 +54,7 @@ abstract class Validable extends Model
 
         static::$validatorFactory = Container::getInstance()->make(Factory::class);
 
-        static::saving(function (Validable $model) {
+        static::saving(function (Model $model) {
             return $model->validate();
         });
     }
@@ -140,7 +147,27 @@ abstract class Validable extends Model
         }
 
         return $this->getValidator()->setData(
-            $this->getAttributes()
+            // Trying to do self::toArray() here will leave out keys based on the whitelist/blacklist
+            // for that model. Doing this will return all of the attributes in a format that can
+            // properly be validated.
+            $this->addCastAttributesToArray(
+                $this->getAttributes(), $this->getMutatedAttributes()
+            )
         )->passes();
+    }
+
+    /**
+     * Return a timestamp as DateTime object.
+     *
+     * @param mixed $value
+     * @return \Illuminate\Support\Carbon|\Carbon\CarbonImmutable
+     */
+    protected function asDateTime($value)
+    {
+        if (! $this->immutableDates) {
+            return parent::asDateTime($value);
+        }
+
+        return parent::asDateTime($value)->toImmutable();
     }
 }

@@ -24,6 +24,7 @@ export interface Server {
         disk: number;
         io: number;
         cpu: number;
+        threads: string;
     };
     featureLimits: {
         databases: number;
@@ -41,20 +42,23 @@ export const rawDataToServerObject = (data: any): Server => ({
         port: data.sftp_details.port,
     },
     description: data.description ? ((data.description.length > 0) ? data.description : null) : null,
-    allocations: [{
+    allocations: [ {
         ip: data.allocation.ip,
         alias: null,
         port: data.allocation.port,
         default: true,
-    }],
+    } ],
     limits: { ...data.limits },
     featureLimits: { ...data.feature_limits },
 });
 
-export default (uuid: string): Promise<Server> => {
+export default (uuid: string): Promise<[ Server, string[] ]> => {
     return new Promise((resolve, reject) => {
         http.get(`/api/client/servers/${uuid}`)
-            .then(response => resolve(rawDataToServerObject(response.data.attributes)))
+            .then(({ data }) => resolve([
+                rawDataToServerObject(data.attributes),
+                data.meta?.is_server_owner ? ['*'] : (data.meta?.user_permissions || []),
+            ]))
             .catch(reject);
     });
 };

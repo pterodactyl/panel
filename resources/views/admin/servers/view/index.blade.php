@@ -74,6 +74,16 @@
                                 <td><code>{{ $server->cpu }}%</code></td>
                             </tr>
                             <tr>
+                                <td>CPU Threads</td>
+                                <td>
+                                    @if($server->threads != null)
+                                        <code>{{ $server->threads }}</code>
+                                    @else
+                                        <code>n/a</code>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Default Connection</td>
                                 <td><code>{{ $server->allocation->ip }}:{{ $server->allocation->port }}</code></td>
                             </tr>

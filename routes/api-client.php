@@ -81,9 +81,23 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
 
     Route::group(['prefix' => '/users'], function () {
         Route::get('/', 'Servers\SubuserController@index');
+        Route::post('/', 'Servers\SubuserController@store');
+        Route::get('/{subuser}', 'Servers\SubuserController@view');
+        Route::post('/{subuser}', 'Servers\SubuserController@update');
+        Route::delete('/{subuser}', 'Servers\SubuserController@delete');
+    });
+
+    Route::group(['prefix' => '/backups'], function () {
+        Route::get('/', 'Servers\BackupController@index');
+        Route::post('/', 'Servers\BackupController@store');
+        Route::get('/{backup}', 'Servers\BackupController@view');
+        Route::get('/{backup}/download', 'Servers\DownloadBackupController');
+        Route::post('/{backup}', 'Servers\BackupController@update');
+        Route::delete('/{backup}', 'Servers\BackupController@delete');
     });
 
     Route::group(['prefix' => '/settings'], function () {
         Route::post('/rename', 'Servers\SettingsController@rename');
+        Route::post('/reinstall', 'Servers\SettingsController@reinstall');
     });
 });

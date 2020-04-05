@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Models;
 
-class EggVariable extends Validable
+class EggVariable extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

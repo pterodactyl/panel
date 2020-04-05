@@ -15,7 +15,7 @@ namespace Pterodactyl\Models;
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Egg[] $eggs
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Pack[] $packs
  */
-class Nest extends Validable
+class Nest extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

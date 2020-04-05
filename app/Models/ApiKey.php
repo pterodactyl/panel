@@ -16,7 +16,7 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  */
-class ApiKey extends Validable
+class ApiKey extends Model
 {
     const RESOURCE_NAME = 'api_key';
 
@@ -53,7 +53,7 @@ class ApiKey extends Validable
      * @var array
      */
     protected $casts = [
-        'allowed_ips' => 'json',
+        'allowed_ips' => 'array',
         'user_id' => 'int',
         'r_' . AdminAcl::RESOURCE_USERS => 'int',
         'r_' . AdminAcl::RESOURCE_ALLOCATIONS => 'int',
@@ -99,7 +99,8 @@ class ApiKey extends Validable
         'identifier' => 'required|string|size:16|unique:api_keys,identifier',
         'token' => 'required|string',
         'memo' => 'required|nullable|string|max:500',
-        'allowed_ips' => 'nullable|json',
+        'allowed_ips' => 'nullable|array',
+        'allowed_ips.*' => 'string',
         'last_used_at' => 'nullable|date',
         'r_' . AdminAcl::RESOURCE_USERS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_ALLOCATIONS => 'integer|min:0|max:3',

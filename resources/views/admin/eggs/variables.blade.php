@@ -48,7 +48,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">{{ $variable->name }}</h3>
                 </div>
-                <form action="{{ route('admin.nests.egg.variables.edit', ['id' => $egg->id, 'variable' => $variable->id]) }}" method="POST">
+                <form action="{{ route('admin.nests.egg.variables.edit', ['egg' => $egg->id, 'variable' => $variable->id]) }}" method="POST">
                     <div class="box-body">
                         <div class="form-group">
                             <label class="form-label">Name</label>
