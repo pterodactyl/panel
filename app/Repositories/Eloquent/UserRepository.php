@@ -29,7 +29,7 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
      */
     public function getAllUsersWithCounts(): LengthAwarePaginator
     {
-        return $this->getBuilder()->withCount('servers', 'subuserOf')
+        return $this->getBuilder()->withCount('servers')
             ->search($this->getSearchTerm())
             ->paginate(50, $this->getColumns());
     }

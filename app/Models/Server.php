@@ -51,6 +51,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Location $location
  * @property \Pterodactyl\Models\DaemonKey $key
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
+ * @property \Pterodactyl\Models\ServerTransfer $transfer
  * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
  */
 class Server extends Model
@@ -186,7 +187,7 @@ class Server extends Model
      */
     public function getAllocationMappings(): array
     {
-        return $this->allocations->groupBy('ip')->map(function ($item) {
+        return $this->allocations->where('node_id', $this->node_id)->groupBy('ip')->map(function ($item) {
             return $item->pluck('port');
         })->toArray();
     }
@@ -339,6 +340,16 @@ class Server extends Model
     public function keys()
     {
         return $this->hasMany(DaemonKey::class);
+    }
+
+    /**
+     * Returns the associated server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function transfer()
+    {
+        return $this->hasOne(ServerTransfer::class)->orderByDesc('id');
     }
 
     /**

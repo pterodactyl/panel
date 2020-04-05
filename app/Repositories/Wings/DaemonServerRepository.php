@@ -124,4 +124,24 @@ class DaemonServerRepository extends DaemonRepository
             throw new DaemonConnectionException($exception);
         }
     }
+
+    /**
+     * Requests the daemon to create a full archive of the server.
+     * Once the daemon is finished they will send a POST request to
+     * "/api/remote/servers/{uuid}/archive" with a boolean.
+     *
+     * @throws DaemonConnectionException
+     */
+    public function requestArchive(): void
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            $this->getHttpClient()->post(sprintf(
+                '/api/servers/%s/archive', $this->server->uuid
+            ));
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
 }
