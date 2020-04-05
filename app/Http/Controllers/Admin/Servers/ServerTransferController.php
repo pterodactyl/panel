@@ -12,6 +12,7 @@ use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
+use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class ServerTransferController extends Controller
@@ -52,6 +53,11 @@ class ServerTransferController extends Controller
     private $transferService;
 
     /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository
+     */
+    private $daemonConfigurationRepository;
+
+    /**
      * ServerTransferController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag $alert
@@ -61,6 +67,7 @@ class ServerTransferController extends Controller
      * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
      * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
      * @param \Pterodactyl\Services\Servers\TransferService $transferService
+     * @param \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository $daemonConfigurationRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -69,7 +76,8 @@ class ServerTransferController extends Controller
         LocationRepository $locationRepository,
         NodeRepository $nodeRepository,
         SuspensionService $suspensionService,
-        TransferService $transferService
+        TransferService $transferService,
+        DaemonConfigurationRepository $daemonConfigurationRepository
     ) {
         $this->alert = $alert;
         $this->allocationRepository = $allocationRepository;
@@ -78,6 +86,7 @@ class ServerTransferController extends Controller
         $this->nodeRepository = $nodeRepository;
         $this->suspensionService = $suspensionService;
         $this->transferService = $transferService;
+        $this->daemonConfigurationRepository = $daemonConfigurationRepository;
     }
 
     /**
@@ -104,6 +113,9 @@ class ServerTransferController extends Controller
         // Check if the node is viable for the transfer.
         $node = $this->nodeRepository->getNodeWithResourceUsage($node_id);
         if ($node->isViable($server->memory, $server->disk)) {
+            // Check if the selected daemon is online.
+            $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();
+
             // Suspend the server and request an archive to be created.
             $this->suspensionService->toggle($server, 'suspend');
 
@@ -123,7 +135,7 @@ class ServerTransferController extends Controller
             // Add the allocations to the server so they cannot be automatically assigned while the transfer is in progress.
             $this->assignAllocationsToServer($server, $node_id, $allocation_id, $additional_allocations);
 
-            // Request an archive from the server's current daemon.
+            // Request an archive from the server's current daemon. (this also checks if the daemon is online)
             $this->transferService->requestArchive($server);
 
             $this->alert->success(trans('admin/server.alerts.transfer_started'))->flash();
