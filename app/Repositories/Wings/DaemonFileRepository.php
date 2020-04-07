@@ -49,9 +49,7 @@ class DaemonFileRepository extends DaemonRepository
         $length = (int) $response->getHeader('Content-Length')[0] ?? 0;
 
         if ($notLargerThan && $length > $notLargerThan) {
-            throw new FileSizeTooLargeException(
-                trans('server.files.exceptions.max_size')
-            );
+            throw new FileSizeTooLargeException;
         }
 
         return $response->getBody()->__toString();

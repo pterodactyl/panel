@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Exceptions\Http\Server;
 
@@ -13,4 +6,11 @@ use Pterodactyl\Exceptions\DisplayException;
 
 class FileSizeTooLargeException extends DisplayException
 {
+    /**
+     * FileSizeTooLargeException constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct('The file you are attempting to open is too large to view in the file editor.');
+    }
 }

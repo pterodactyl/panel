@@ -172,7 +172,7 @@ return [
     | This array includes the MIME filetypes that can be edited via the web.
     */
     'files' => [
-        'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 50000),
+        'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 1024 * 512),
         'editable' => [
             'application/json',
             'application/javascript',

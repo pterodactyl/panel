@@ -29,7 +29,18 @@ export default http;
  */
 export function httpErrorToHuman (error: any): string {
     if (error.response && error.response.data) {
-        const { data } = error.response;
+        let { data } = error.response;
+
+        // Some non-JSON requests can still return the error as a JSON block. In those cases, attempt
+        // to parse it into JSON so we can display an actual error.
+        if (typeof data === 'string') {
+            try {
+                data = JSON.parse(data);
+            } catch (e) {
+                // do nothing, bad json
+            }
+        }
+
         if (data.errors && data.errors[0] && data.errors[0].detail) {
             return data.errors[0].detail;
         }
