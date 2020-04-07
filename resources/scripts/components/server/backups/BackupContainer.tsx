@@ -44,6 +44,9 @@ export default () => {
                     {backups.map((backup, index) => <BackupRow
                         key={backup.uuid}
                         backup={backup}
+                        onBackupUpdated={data => setBackups(
+                            s => ([ ...s.map(b => b.uuid === data.uuid ? data : b) ]),
+                        )}
                         className={index !== (backups.length - 1) ? 'mb-2' : undefined}
                     />)}
                 </div>
@@ -51,7 +54,7 @@ export default () => {
             <Can action={'backup.create'}>
                 <div className={'mt-6 flex justify-end'}>
                     <CreateBackupButton
-                        onBackupGenerated={backup => setBackups(s => [...s, backup])}
+                        onBackupGenerated={backup => setBackups(s => [ ...s, backup ])}
                     />
                 </div>
             </Can>

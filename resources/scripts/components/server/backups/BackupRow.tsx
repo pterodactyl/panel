@@ -14,9 +14,11 @@ import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 
 interface Props {
     backup: ServerBackup;
+    onBackupUpdated: (backup: ServerBackup) => void;
     className?: string;
 }
 
@@ -32,11 +34,25 @@ const DownloadModal = ({ checksum, ...props }: RequiredModalProps & { checksum: 
     </Modal>
 );
 
-export default ({ backup, className }: Props) => {
+export default ({ backup, onBackupUpdated, className }: Props) => {
     const { uuid } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(false);
     const [ visible, setVisible ] = useState(false);
+
+    useWebsocketEvent(`backup completed:${backup.uuid}`, data => {
+        try {
+            const parsed = JSON.parse(data);
+            onBackupUpdated({
+                ...backup,
+                sha256Hash: parsed.sha256_hash || '',
+                bytes: parsed.file_size || 0,
+                completedAt: new Date(),
+            });
+        } catch (e) {
+            console.warn(e);
+        }
+    });
 
     const getBackupLink = () => {
         setLoading(true);
