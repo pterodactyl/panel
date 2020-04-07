@@ -34,6 +34,9 @@ class UpdatePasswordRequest extends ClientApiRequest
     {
         $rules = User::getRulesForUpdate($this->user());
 
-        return ['password' => array_merge($rules['password'], ['confirmed'])];
+        return [
+            'password' => array_merge($rules['password'], ['confirmed']),
+            'new_password' => 'required|string',
+        ];
     }
 }
