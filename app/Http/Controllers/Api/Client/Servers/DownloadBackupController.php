@@ -2,14 +2,10 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Lcobucci\JWT\Builder;
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Str;
-use Lcobucci\JWT\Signer\Key;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
-use Illuminate\Http\RedirectResponse;
+use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -28,19 +24,27 @@ class DownloadBackupController extends ClientApiController
     private $responseFactory;
 
     /**
+     * @var \Pterodactyl\Services\Nodes\NodeJWTService
+     */
+    private $jwtService;
+
+    /**
      * DownloadBackupController constructor.
      *
      * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
+     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
      * @param \Illuminate\Contracts\Routing\ResponseFactory $responseFactory
      */
     public function __construct(
         DaemonBackupRepository $daemonBackupRepository,
+        NodeJWTService $jwtService,
         ResponseFactory $responseFactory
     ) {
         parent::__construct();
 
         $this->daemonBackupRepository = $daemonBackupRepository;
         $this->responseFactory = $responseFactory;
+        $this->jwtService = $jwtService;
     }
 
     /**
@@ -51,30 +55,27 @@ class DownloadBackupController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DownloadBackupRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @param \Pterodactyl\Models\Backup $backup
-     * @return \Illuminate\Http\RedirectResponse
+     * @return array
      */
     public function __invoke(DownloadBackupRequest $request, Server $server, Backup $backup)
     {
-        $signer = new Sha256;
-        $now = CarbonImmutable::now();
+        $token = $this->jwtService
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+            ->setClaims([
+                'backup_uuid' => $backup->uuid,
+                'server_uuid' => $server->uuid,
+            ])
+            ->handle($server->node, $request->user()->id . $server->uuid);
 
-        $token = (new Builder)->issuedBy(config('app.url'))
-            ->permittedFor($server->node->getConnectionAddress())
-            ->identifiedBy(hash('sha256', $request->user()->id . $server->uuid), true)
-            ->issuedAt($now->getTimestamp())
-            ->canOnlyBeUsedAfter($now->subMinutes(5)->getTimestamp())
-            ->expiresAt($now->addMinutes(15)->getTimestamp())
-            ->withClaim('unique_id', Str::random(16))
-            ->withClaim('backup_uuid', $backup->uuid)
-            ->withClaim('server_uuid', $server->uuid)
-            ->getToken($signer, new Key($server->node->daemonSecret));
-
-        $location = sprintf(
-            '%s/download/backup?token=%s',
-            $server->node->getConnectionAddress(),
-            $token->__toString()
-        );
-
-        return RedirectResponse::create($location);
+        return [
+            'object' => 'signed_url',
+            'attributes' => [
+                'url' => sprintf(
+                    '%s/download/backup?token=%s',
+                    $server->node->getConnectionAddress(),
+                    $token->__toString()
+                ),
+            ],
+        ];
     }
 }

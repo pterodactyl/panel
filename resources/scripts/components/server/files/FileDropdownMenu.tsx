@@ -15,6 +15,9 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import copyFile from '@/api/server/files/copyFile';
 import { httpErrorToHuman } from '@/api/http';
 import Can from '@/components/elements/Can';
+import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
+import useServer from '@/plugins/useServer';
+import useFlash from '@/plugins/useFlash';
 
 type ModalType = 'rename' | 'move';
 
@@ -26,7 +29,9 @@ export default ({ uuid }: { uuid: string }) => {
     const [ modal, setModal ] = useState<ModalType | null>(null);
     const [ posX, setPosX ] = useState(0);
 
-    const server = ServerContext.useStoreState(state => state.server.data!);
+    const server = useServer();
+    const { addError, clearFlashes } = useFlash();
+
     const file = ServerContext.useStoreState(state => state.files.contents.find(file => file.uuid === uuid));
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const { removeFile, getDirectoryContents } = ServerContext.useStoreActions(actions => actions.files);
@@ -51,27 +56,41 @@ export default ({ uuid }: { uuid: string }) => {
 
     const doDeletion = () => {
         setShowSpinner(true);
+        clearFlashes('files');
         deleteFile(server.uuid, join(directory, file.name))
             .then(() => removeFile(uuid))
             .catch(error => {
                 console.error('Error while attempting to delete a file.', error);
+                addError({ key: 'files', message: httpErrorToHuman(error) });
                 setShowSpinner(false);
             });
     };
 
     const doCopy = () => {
         setShowSpinner(true);
+        clearFlashes('files');
         copyFile(server.uuid, join(directory, file.name))
             .then(() => getDirectoryContents(directory))
             .catch(error => {
                 console.error('Error while attempting to copy file.', error);
-                alert(httpErrorToHuman(error));
+                addError({ key: 'files', message: httpErrorToHuman(error) });
                 setShowSpinner(false);
             });
     };
 
     const doDownload = () => {
-        window.location = `/api/client/servers/${server.uuid}/files/download?file=${join(directory, file.name)}` as unknown as Location;
+        setShowSpinner(true);
+        clearFlashes('files');
+        getFileDownloadUrl(server.uuid, join(directory, file.name))
+            .then(url => {
+                // @ts-ignore
+                window.location = url;
+            })
+            .catch(error => {
+                console.error(error);
+                addError({ key: 'files', message: httpErrorToHuman(error) });
+            })
+            .then(() => setShowSpinner(false));
     };
 
     useEffect(() => {

@@ -2,9 +2,11 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\TransferException;
+use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 use Pterodactyl\Transformers\Daemon\FileObjectTransformer;
@@ -31,19 +33,27 @@ class FileController extends ClientApiController
     private $responseFactory;
 
     /**
+     * @var \Pterodactyl\Services\Nodes\NodeJWTService
+     */
+    private $jwtService;
+
+    /**
      * FileController constructor.
      *
      * @param \Illuminate\Contracts\Routing\ResponseFactory $responseFactory
+     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
      * @param \Pterodactyl\Repositories\Wings\DaemonFileRepository $fileRepository
      */
     public function __construct(
         ResponseFactory $responseFactory,
+        NodeJWTService $jwtService,
         DaemonFileRepository $fileRepository
     ) {
         parent::__construct();
 
         $this->fileRepository = $fileRepository;
         $this->responseFactory = $responseFactory;
+        $this->jwtService = $jwtService;
     }
 
     /**
@@ -90,36 +100,35 @@ class FileController extends ClientApiController
     }
 
     /**
+     * Generates a one-time token with a link that the user can use to
+     * download a given file.
+     *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest $request
      * @param \Pterodactyl\Models\Server $server
-     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     * @return array
      *
      * @throws \Exception
      */
     public function download(GetFileContentsRequest $request, Server $server)
     {
-        set_time_limit(0);
+        $token = $this->jwtService
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+            ->setClaims([
+                'file_path' => $request->get('file'),
+                'server_uuid' => $server->uuid,
+            ])
+            ->handle($server->node, $request->user()->id . $server->uuid);
 
-        $request = $this->fileRepository->setServer($server)->streamContent(
-            $request->get('file')
-        );
-
-        $body = $request->getBody();
-
-        preg_match('/filename=(?<name>.*)$/', $request->getHeaderLine('Content-Disposition'), $matches);
-
-        return $this->responseFactory->streamDownload(
-            function () use ($body) {
-                while (! $body->eof()) {
-                    echo $body->read(128);
-                }
-            },
-            $matches['name'] ?? 'download',
-            [
-                'Content-Type' => $request->getHeaderLine('Content-Type'),
-                'Content-Length' => $request->getHeaderLine('Content-Length'),
-            ]
-        );
+        return [
+            'object' => 'signed_url',
+            'attributes' => [
+                'url' => sprintf(
+                    '%s/download/file?token=%s',
+                    $server->node->getConnectionAddress(),
+                    $token->__toString()
+                ),
+            ],
+        ];
     }
 
     /**

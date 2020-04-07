@@ -9,8 +9,11 @@ import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDow
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { bytesToHuman } from '@/helpers';
 import Can from '@/components/elements/Can';
-import { join } from "path";
 import useServer from '@/plugins/useServer';
+import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import useFlash from '@/plugins/useFlash';
+import { httpErrorToHuman } from '@/api/http';
 
 interface Props {
     backup: ServerBackup;
@@ -31,10 +34,29 @@ const DownloadModal = ({ checksum, ...props }: RequiredModalProps & { checksum: 
 
 export default ({ backup, className }: Props) => {
     const { uuid } = useServer();
+    const { addError, clearFlashes } = useFlash();
+    const [ loading, setLoading ] = useState(false);
     const [ visible, setVisible ] = useState(false);
+
+    const getBackupLink = () => {
+        setLoading(true);
+        clearFlashes('backups');
+        getBackupDownloadUrl(uuid, backup.uuid)
+            .then(url => {
+                // @ts-ignore
+                window.location = url;
+                setVisible(true);
+            })
+            .catch(error => {
+                console.error(error);
+                addError({ key: 'backups', message: httpErrorToHuman(error) });
+            })
+            .then(() => setLoading(false));
+    };
 
     return (
         <div className={`grey-row-box flex items-center ${className}`}>
+            <SpinnerOverlay visible={loading} fixed={true}/>
             {visible &&
             <DownloadModal
                 visible={visible}
@@ -77,16 +99,12 @@ export default ({ backup, className }: Props) => {
                             <FontAwesomeIcon icon={faCloudDownloadAlt}/>
                         </div>
                         :
-                        <a
-                            href={`/api/client/servers/${uuid}/backups/${backup.uuid}/download`}
-                            target={'_blank'}
-                            onClick={() => {
-                                setVisible(true);
-                            }}
+                        <button
+                            onClick={() => getBackupLink()}
                             className={'text-sm text-neutral-300 p-2 transition-colors duration-250 hover:text-cyan-400'}
                         >
                             <FontAwesomeIcon icon={faCloudDownloadAlt}/>
-                        </a>
+                        </button>
                     }
                 </div>
             </Can>
