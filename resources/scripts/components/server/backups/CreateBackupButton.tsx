@@ -9,15 +9,11 @@ import useServer from '@/plugins/useServer';
 import createServerBackup from '@/api/server/backups/createServerBackup';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { ServerBackup } from '@/api/server/backups/getServerBackups';
+import { ServerContext } from '@/state/server';
 
 interface Values {
     name: string;
     ignored: string;
-}
-
-interface Props {
-    onBackupGenerated: (backup: ServerBackup) => void;
 }
 
 const ModalContent = ({ ...props }: RequiredModalProps) => {
@@ -66,20 +62,22 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
     );
 };
 
-export default ({ onBackupGenerated }: Props) => {
+export default () => {
     const { uuid } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
 
+    const appendBackup = ServerContext.useStoreActions(actions => actions.backups.appendBackup);
+
     useEffect(() => {
         clearFlashes('backups:create');
-    }, [visible]);
+    }, [ visible ]);
 
     const submit = ({ name, ignored }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('backups:create')
+        clearFlashes('backups:create');
         createServerBackup(uuid, name, ignored)
             .then(backup => {
-                onBackupGenerated(backup);
+                appendBackup(backup);
                 setVisible(false);
             })
             .catch(error => {

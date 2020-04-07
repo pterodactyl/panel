@@ -15,10 +15,10 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import { ServerContext } from '@/state/server';
 
 interface Props {
     backup: ServerBackup;
-    onBackupUpdated: (backup: ServerBackup) => void;
     className?: string;
 }
 
@@ -34,16 +34,18 @@ const DownloadModal = ({ checksum, ...props }: RequiredModalProps & { checksum: 
     </Modal>
 );
 
-export default ({ backup, onBackupUpdated, className }: Props) => {
+export default ({ backup, className }: Props) => {
     const { uuid } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(false);
     const [ visible, setVisible ] = useState(false);
 
+    const appendBackup = ServerContext.useStoreActions(actions => actions.backups.appendBackup);
+
     useWebsocketEvent(`backup completed:${backup.uuid}`, data => {
         try {
             const parsed = JSON.parse(data);
-            onBackupUpdated({
+            appendBackup({
                 ...backup,
                 sha256Hash: parsed.sha256_hash || '',
                 bytes: parsed.file_size || 0,

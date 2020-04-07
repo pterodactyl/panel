@@ -8,19 +8,21 @@ import Can from '@/components/elements/Can';
 import CreateBackupButton from '@/components/server/backups/CreateBackupButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import BackupRow from '@/components/server/backups/BackupRow';
+import { ServerContext } from '@/state/server';
+import ListRefreshIndicator from '@/components/elements/ListRefreshIndicator';
 
 export default () => {
     const { uuid } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(true);
-    const [ backups, setBackups ] = useState<ServerBackup[]>([]);
+
+    const backups = ServerContext.useStoreState(state => state.backups.data);
+    const setBackups = ServerContext.useStoreActions(actions => actions.backups.setBackups);
 
     useEffect(() => {
         clearFlashes('backups');
         getServerBackups(uuid)
-            .then(data => {
-                setBackups(data.items);
-            })
+            .then(data => setBackups(data.items))
             .catch(error => {
                 console.error(error);
                 addError({ key: 'backups', message: httpErrorToHuman(error) });
@@ -28,12 +30,13 @@ export default () => {
             .then(() => setLoading(false));
     }, []);
 
-    if (loading) {
+    if (backups.length === 0 && loading) {
         return <Spinner size={'large'} centered={true}/>;
     }
 
     return (
         <div className={'mt-10 mb-6'}>
+            <ListRefreshIndicator visible={loading}/>
             <FlashMessageRender byKey={'backups'} className={'mb-4'}/>
             {!backups.length ?
                 <p className="text-center text-sm text-neutral-400">
@@ -44,18 +47,13 @@ export default () => {
                     {backups.map((backup, index) => <BackupRow
                         key={backup.uuid}
                         backup={backup}
-                        onBackupUpdated={data => setBackups(
-                            s => ([ ...s.map(b => b.uuid === data.uuid ? data : b) ]),
-                        )}
                         className={index !== (backups.length - 1) ? 'mb-2' : undefined}
                     />)}
                 </div>
             }
             <Can action={'backup.create'}>
                 <div className={'mt-6 flex justify-end'}>
-                    <CreateBackupButton
-                        onBackupGenerated={backup => setBackups(s => [ ...s, backup ])}
-                    />
+                    <CreateBackupButton/>
                 </div>
             </Can>
         </div>

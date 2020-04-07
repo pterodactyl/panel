@@ -5,6 +5,7 @@ import { ServerDatabase } from '@/api/server/getServerDatabases';
 import files, { ServerFileStore } from '@/state/server/files';
 import subusers, { ServerSubuserStore } from '@/state/server/subusers';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import backups, { ServerBackupStore } from '@/state/server/backups';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
@@ -73,6 +74,7 @@ export interface ServerStore {
     subusers: ServerSubuserStore;
     databases: ServerDatabaseStore;
     files: ServerFileStore;
+    backups: ServerBackupStore;
     socket: SocketStore;
     status: ServerStatusStore;
     clearServerState: Action<ServerStore>;
@@ -85,6 +87,7 @@ export const ServerContext = createContextStore<ServerStore>({
     databases,
     files,
     subusers,
+    backups,
     clearServerState: action(state => {
         state.server.data = undefined;
         state.server.permissions = [];
@@ -92,6 +95,7 @@ export const ServerContext = createContextStore<ServerStore>({
         state.subusers.data = [];
         state.files.directory = '/';
         state.files.contents = [];
+        state.backups.backups = [];
 
         if (state.socket.instance) {
             state.socket.instance.removeAllListeners();
