@@ -20,7 +20,7 @@ export class Websocket extends EventEmitter {
     // refreshed at a pretty continuous interval. The socket server will respond
     // with "token expiring" and "token expired" events when approaching 3 minutes
     // and 0 minutes to expiry.
-    private token: string = '';
+    private token = '';
 
     // Connects to the websocket instance and sets the token for the initial request.
     connect (url: string): this {
@@ -28,7 +28,7 @@ export class Websocket extends EventEmitter {
         this.socket = new Sockette(`${this.url}`, {
             onmessage: e => {
                 try {
-                    let { event, args } = JSON.parse(e.data);
+                    const { event, args } = JSON.parse(e.data);
                     args ? this.emit(event, ...args) : this.emit(event);
                 } catch (ex) {
                     console.warn('Failed to parse incoming websocket message.', ex);

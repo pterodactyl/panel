@@ -2,15 +2,14 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Cake\Chronos\Chronos;
-use Lcobucci\JWT\Builder;
-use Lcobucci\JWT\Signer\Key;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Illuminate\Contracts\Cache\Repository;
+use Pterodactyl\Services\Nodes\NodeJWTService;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -23,15 +22,22 @@ class WebsocketController extends ClientApiController
     private $cache;
 
     /**
+     * @var \Pterodactyl\Services\Nodes\NodeJWTService
+     */
+    private $jwtService;
+
+    /**
      * WebsocketController constructor.
      *
+     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
      * @param \Illuminate\Contracts\Cache\Repository $cache
      */
-    public function __construct(Repository $cache)
+    public function __construct(NodeJWTService $jwtService, Repository $cache)
     {
         parent::__construct();
 
         $this->cache = $cache;
+        $this->jwtService = $jwtService;
     }
 
     /**
@@ -46,30 +52,35 @@ class WebsocketController extends ClientApiController
      */
     public function __invoke(ClientApiRequest $request, Server $server)
     {
-        if ($request->user()->cannot(Permission::ACTION_WEBSOCKET, $server)) {
-            throw new HttpException(
-                Response::HTTP_FORBIDDEN, 'You do not have permission to connect to this server\'s websocket.'
-            );
+        $user = $request->user();
+        if ($user->cannot(Permission::ACTION_WEBSOCKET, $server)) {
+            throw new HttpException(Response::HTTP_FORBIDDEN, 'You do not have permission to connect to this server\'s websocket.');
         }
 
-        $now = Chronos::now();
+        if ($user->root_admin || $user->id === $server->owner_id) {
+            $permissions = ['*'];
 
-        $signer = new Sha256;
+            if ($user->root_admin) {
+                $permissions[] = 'admin.errors';
+                $permissions[] = 'admin.install';
+            }
+        } else {
+            /** @var \Pterodactyl\Models\Subuser|null $subuserPermissions */
+            $subuserPermissions = $server->subusers->first(function (Subuser $subuser) use ($user) {
+                return $subuser->user_id === $user->id;
+            });
 
-        $token = (new Builder)->issuedBy(config('app.url'))
-            ->permittedFor($server->node->getConnectionAddress())
-            ->identifiedBy(hash('sha256', $request->user()->id . $server->uuid), true)
-            ->issuedAt($now->getTimestamp())
-            ->canOnlyBeUsedAfter($now->getTimestamp())
-            ->expiresAt($now->addMinutes(15)->getTimestamp())
-            ->withClaim('user_id', $request->user()->id)
-            ->withClaim('server_uuid', $server->uuid)
-            ->withClaim('permissions', array_merge([
-                'connect',
-                'send-command',
-                'send-power',
-            ], $request->user()->root_admin ? ['receive-errors', 'receive-install'] : []))
-            ->getToken($signer, new Key($server->node->daemonSecret));
+            $permissions = $subuserPermissions ? $subuserPermissions->permissions : [];
+        }
+
+        $token = $this->jwtService
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+            ->setClaims([
+                'user_id' => $request->user()->id,
+                'server_uuid' => $server->uuid,
+                'permissions' => $permissions ?? [],
+            ])
+            ->handle($server->node, $user->id . $server->uuid);
 
         $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $server->node->getConnectionAddress());
 
