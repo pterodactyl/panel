@@ -78,7 +78,7 @@ class AccountController extends ClientApiController
     {
         $this->updateService->handle($request->user(), $request->validated());
 
-        $this->sessionGuard->logoutOtherDevices($request->input('new_password'));
+        $this->sessionGuard->logoutOtherDevices($request->input('password'));
 
         return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }
