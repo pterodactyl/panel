@@ -85,7 +85,7 @@ class ServerDetailsController extends Controller
     {
         $authorization = substr($request->header('Authorization'), 7);
 
-        $node = $this->nodeRepository->findFirstWhere([ 'daemonSecret' => $authorization ]);
+        $node = $this->nodeRepository->findFirstWhere(['daemonSecret' => $authorization]);
         $servers = $this->repository->loadEveryServerForNode($node->id);
 
         $configurations = [];
