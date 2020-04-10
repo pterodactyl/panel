@@ -393,6 +393,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     {
         return $this->getBuilder()
             ->with('nest')
-            ->where('node_id', '=', $node)->get();
+            ->where('node_id', '=', $node)
+            ->get();
     }
 }
