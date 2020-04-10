@@ -58,18 +58,6 @@
                                 <td>{{ $server->name }}</td>
                             </tr>
                             <tr>
-                                <td>Memory</td>
-                                <td><code>{{ $server->memory }}MB</code> / <code data-toggle="tooltip" data-placement="top" title="Swap Space">{{ $server->swap }}MB</code></td>
-                            </tr>
-                            <tr>
-                                <td>Disk Space</td>
-                                <td><code>{{ $server->disk }}MB</code></td>
-                            </tr>
-                            <tr>
-                                <td>Block IO Weight</td>
-                                <td><code>{{ $server->io }}</code></td>
-                            </tr>
-                            <tr>
                                 <td>CPU Limit</td>
                                 <td><code>{{ $server->cpu }}%</code></td>
                             </tr>
@@ -82,6 +70,18 @@
                                         <code>n/a</code>
                                     @endif
                                 </td>
+                            </tr>
+                            <tr>
+                                <td>Memory</td>
+                                <td><code>{{ $server->memory }}MB</code> / <code data-toggle="tooltip" data-placement="top" title="Swap Space">{{ $server->swap }}MB</code></td>
+                            </tr>
+                            <tr>
+                                <td>Disk Space</td>
+                                <td><code>{{ $server->disk }}MB</code></td>
+                            </tr>
+                            <tr>
+                                <td>Block IO Weight</td>
+                                <td><code>{{ $server->io }}</code></td>
                             </tr>
                             <tr>
                                 <td>Default Connection</td>
