@@ -18,15 +18,21 @@ class MergePermissionsTableIntoSubusers extends Migration
             $table->json('permissions')->nullable()->after('server_id');
         });
 
-        DB::statement('
-            UPDATE subusers as s
-                LEFT JOIN (
-                    SELECT subuser_id, JSON_ARRAYAGG(permission) as permissions
-                    FROM permissions
-                    GROUP BY subuser_id
-                ) as p ON p.subuser_id = s.id
-                SET s.permissions = p.permissions
-        ');
+        $cursor = DB::table('permissions')
+            ->select(['subuser_id'])
+            ->selectRaw('GROUP_CONCAT(permission) as permissions')
+            ->from('permissions')
+            ->groupBy(['subuser_id'])
+            ->cursor();
+
+        DB::transaction(function () use (&$cursor) {
+            $cursor->each(function ($datum) {
+                DB::update('UPDATE subusers SET permissions = ? WHERE id = ?', [
+                    json_encode(explode(',', $datum->permissions)),
+                    $datum->subuser_id,
+                ]);
+            });
+        });
     }
 
     /**
