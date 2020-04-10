@@ -5,7 +5,6 @@ import { faArchive } from '@fortawesome/free-solid-svg-icons/faArchive';
 import format from 'date-fns/format';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
 import Spinner from '@/components/elements/Spinner';
-import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { bytesToHuman } from '@/helpers';
 import Can from '@/components/elements/Can';
@@ -16,30 +15,15 @@ import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { ServerContext } from '@/state/server';
+import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons/faEllipsisH';
 
 interface Props {
     backup: ServerBackup;
     className?: string;
 }
 
-const DownloadModal = ({ checksum, ...props }: RequiredModalProps & { checksum: string }) => (
-    <Modal {...props}>
-        <h3 className={'mb-6'}>Verify file checksum</h3>
-        <p className={'text-sm'}>
-            The SHA256 checksum of this file is:
-        </p>
-        <pre className={'mt-2 text-sm p-2 bg-neutral-900 rounded'}>
-            <code className={'block font-mono'}>{checksum}</code>
-        </pre>
-    </Modal>
-);
-
 export default ({ backup, className }: Props) => {
-    const { uuid } = useServer();
-    const { addError, clearFlashes } = useFlash();
-    const [ loading, setLoading ] = useState(false);
-    const [ visible, setVisible ] = useState(false);
-
     const appendBackup = ServerContext.useStoreActions(actions => actions.backups.appendBackup);
 
     useWebsocketEvent(`backup completed:${backup.uuid}`, data => {
@@ -56,33 +40,8 @@ export default ({ backup, className }: Props) => {
         }
     });
 
-    const getBackupLink = () => {
-        setLoading(true);
-        clearFlashes('backups');
-        getBackupDownloadUrl(uuid, backup.uuid)
-            .then(url => {
-                // @ts-ignore
-                window.location = url;
-                setVisible(true);
-            })
-            .catch(error => {
-                console.error(error);
-                addError({ key: 'backups', message: httpErrorToHuman(error) });
-            })
-            .then(() => setLoading(false));
-    };
-
     return (
         <div className={`grey-row-box flex items-center ${className}`}>
-            <SpinnerOverlay visible={loading} fixed={true}/>
-            {visible &&
-            <DownloadModal
-                visible={visible}
-                appear={true}
-                onDismissed={() => setVisible(false)}
-                checksum={backup.sha256Hash}
-            />
-            }
             <div className={'mr-4'}>
                 {backup.completedAt ?
                     <FontAwesomeIcon icon={faArchive} className={'text-neutral-300'}/>
@@ -114,15 +73,10 @@ export default ({ backup, className }: Props) => {
                 <div className={'ml-6'} style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ?
                         <div className={'p-2 invisible'}>
-                            <FontAwesomeIcon icon={faCloudDownloadAlt}/>
+                            <FontAwesomeIcon icon={faEllipsisH}/>
                         </div>
                         :
-                        <button
-                            onClick={() => getBackupLink()}
-                            className={'text-sm text-neutral-300 p-2 transition-colors duration-250 hover:text-cyan-400'}
-                        >
-                            <FontAwesomeIcon icon={faCloudDownloadAlt}/>
-                        </button>
+                        <BackupContextMenu backup={backup}/>
                     }
                 </div>
             </Can>

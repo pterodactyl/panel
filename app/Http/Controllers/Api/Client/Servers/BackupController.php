@@ -2,12 +2,16 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
+use Illuminate\Http\JsonResponse;
+use Pterodactyl\Services\Backups\DeleteBackupService;
 use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\GetBackupsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DeleteBackupRequest;
 
 class BackupController extends ClientApiController
 {
@@ -17,15 +21,22 @@ class BackupController extends ClientApiController
     private $initiateBackupService;
 
     /**
+     * @var \Pterodactyl\Services\Backups\DeleteBackupService
+     */
+    private $deleteBackupService;
+
+    /**
      * BackupController constructor.
      *
+     * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
      * @param \Pterodactyl\Services\Backups\InitiateBackupService $initiateBackupService
      */
-    public function __construct(InitiateBackupService $initiateBackupService)
+    public function __construct(DeleteBackupService $deleteBackupService, InitiateBackupService $initiateBackupService)
     {
         parent::__construct();
 
         $this->initiateBackupService = $initiateBackupService;
+        $this->deleteBackupService = $deleteBackupService;
     }
 
     /**
@@ -50,7 +61,7 @@ class BackupController extends ClientApiController
      * @param \Pterodactyl\Models\Server $server
      * @return array
      *
-     * @throws \Exception
+     * @throws \Exception|\Throwable
      */
     public function store(StoreBackupRequest $request, Server $server)
     {
@@ -63,15 +74,36 @@ class BackupController extends ClientApiController
             ->toArray();
     }
 
-    public function view()
+    /**
+     * Returns information about a single backup.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\GetBackupsRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Backup $backup
+     * @return array
+     */
+    public function view(GetBackupsRequest $request, Server $server, Backup $backup)
     {
+        return $this->fractal->item($backup)
+            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->toArray();
     }
 
-    public function update()
+    /**
+     * Deletes a backup from the panel as well as the remote source where it is currently
+     * being stored.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DeleteBackupRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Backup $backup
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     */
+    public function delete(DeleteBackupRequest $request, Server $server, Backup $backup)
     {
-    }
+        $this->deleteBackupService->handle($backup);
 
-    public function delete()
-    {
+        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
     }
 }
