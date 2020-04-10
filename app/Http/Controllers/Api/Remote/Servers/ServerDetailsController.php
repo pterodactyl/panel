@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
@@ -27,20 +28,28 @@ class ServerDetailsController extends Controller
     private $configurationStructureService;
 
     /**
+     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
+     */
+    private $nodeRepository;
+
+    /**
      * ServerConfigurationController constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
      * @param \Pterodactyl\Services\Eggs\EggConfigurationService $eggConfigurationService
+     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
      */
     public function __construct(
         ServerRepository $repository,
         ServerConfigurationStructureService $configurationStructureService,
-        EggConfigurationService $eggConfigurationService
+        EggConfigurationService $eggConfigurationService,
+        NodeRepository $nodeRepository
     ) {
         $this->eggConfigurationService = $eggConfigurationService;
         $this->repository = $repository;
         $this->configurationStructureService = $configurationStructureService;
+        $this->nodeRepository = $nodeRepository;
     }
 
     /**
@@ -61,5 +70,33 @@ class ServerDetailsController extends Controller
             'settings' => $this->configurationStructureService->handle($server),
             'process_configuration' => $this->eggConfigurationService->handle($server),
         ]);
+    }
+
+    /**
+     * Lists all servers with their configurations that are assigned to the requesting node.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function list(Request $request)
+    {
+        $authorization = substr($request->header('Authorization'), 7);
+
+        $node = $this->nodeRepository->findFirstWhere([ 'daemonSecret' => $authorization ]);
+        $servers = $this->repository->loadEveryServerForNode($node->id);
+
+        $configurations = [];
+
+        foreach ($servers as $server) {
+            $configurations[$server->uuid] = [
+                'settings' => $this->configurationStructureService->handle($server),
+                'process_configuration' => $this->eggConfigurationService->handle($server),
+            ];
+        }
+
+        return JsonResponse::create($configurations);
     }
 }
