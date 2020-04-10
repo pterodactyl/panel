@@ -102,6 +102,6 @@ class ActionController extends Controller
         $node = Node::findOrFail($nodeId);
 
         // Manually as getConfigurationAsJson() returns it in correct format already
-        return [];
+        return $node->getJsonConfiguration();
     }
 }
