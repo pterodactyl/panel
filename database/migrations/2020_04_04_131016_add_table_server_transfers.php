@@ -18,6 +18,7 @@ class AddTableServerTransfers extends Migration
         Schema::create('server_transfers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('server_id')->unsigned();
+            $table->tinyInteger('successful')->unsigned()->default(0);
             $table->integer('old_node')->unsigned();
             $table->integer('new_node')->unsigned();
             $table->integer('old_allocation')->unsigned();
