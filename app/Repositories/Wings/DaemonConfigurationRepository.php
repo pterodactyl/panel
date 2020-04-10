@@ -23,4 +23,22 @@ class DaemonConfigurationRepository extends DaemonRepository
 
         return json_decode($response->getBody()->__toString(), true);
     }
+
+    /**
+     * Updates the configuration information for a daemon.
+     *
+     * @param array $attributes
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function update(array $attributes = [])
+    {
+        try {
+            return $this->getHttpClient()->post(
+                '/api/update', array_merge($this->node->getConfiguration(), $attributes)
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
 }

@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { ServerDatabase } from '@/api/server/getServerDatabases';
 import Modal from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { object, string } from 'yup';
 import createServerDatabase from '@/api/server/createServerDatabase';
 import { ServerContext } from '@/state/server';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import useFlash from '@/plugins/useFlash';
+import useServer from '@/plugins/useServer';
 
 interface Values {
     databaseName: string;
@@ -27,28 +26,25 @@ const schema = object().shape({
         .matches(/^([1-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, 'A valid connection address must be provided.'),
 });
 
-export default ({ onCreated }: { onCreated: (database: ServerDatabase) => void }) => {
+export default () => {
+    const { uuid } = useServer();
+    const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
-    const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const server = ServerContext.useStoreState(state => state.server.data!);
+
+    const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes();
-        createServerDatabase(server.uuid, { ...values })
+        clearFlashes('database:create');
+        createServerDatabase(uuid, { ...values })
             .then(database => {
-                onCreated(database);
+                appendDatabase(database);
                 setVisible(false);
             })
             .catch(error => {
                 console.log(error);
-                addFlash({
-                    key: 'create-database-modal',
-                    type: 'error',
-                    title: 'Error',
-                    message: httpErrorToHuman(error),
-                });
-            })
-            .then(() => setSubmitting(false));
+                addError({ key: 'database:create', message: httpErrorToHuman(error) });
+                setSubmitting(false);
+            });
     };
 
     return (
@@ -69,7 +65,7 @@ export default ({ onCreated }: { onCreated: (database: ServerDatabase) => void }
                                 setVisible(false);
                             }}
                         >
-                            <FlashMessageRender byKey={'create-database-modal'} className={'mb-6'}/>
+                            <FlashMessageRender byKey={'database:create'} className={'mb-6'}/>
                             <h3 className={'mb-6'}>Create new database</h3>
                             <Form className={'m-0'}>
                                 <Field
@@ -105,7 +101,7 @@ export default ({ onCreated }: { onCreated: (database: ServerDatabase) => void }
                     )
                 }
             </Formik>
-            <button className={'btn btn-primary btn-lg'} onClick={() => setVisible(true)}>
+            <button className={'btn btn-primary btn-sm'} onClick={() => setVisible(true)}>
                 New Database
             </button>
         </React.Fragment>

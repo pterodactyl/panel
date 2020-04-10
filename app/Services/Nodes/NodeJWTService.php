@@ -69,6 +69,6 @@ class NodeJWTService
 
         return $builder
             ->withClaim('unique_id', Str::random(16))
-            ->getToken($signer, new Key($node->daemonSecret));
+            ->getToken($signer, new Key($node->getDecryptedKey()));
     }
 }

@@ -22,10 +22,6 @@ export default () => {
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     useEffect(() => {
-        getPermissions().catch(error => console.error(error));
-    }, []);
-
-    useEffect(() => {
         clearFlashes('users');
         getServerSubusers(uuid)
             .then(subusers => {
@@ -38,7 +34,14 @@ export default () => {
             });
     }, []);
 
-    if (loading || !Object.keys(permissions).length) {
+    useEffect(() => {
+        getPermissions().catch(error => {
+            addError({ key: 'users', message: httpErrorToHuman(error) });
+            console.error(error);
+        });
+    }, []);
+
+    if (!subusers.length && (loading || !Object.keys(permissions).length)) {
         return <Spinner size={'large'} centered={true}/>;
     }
 

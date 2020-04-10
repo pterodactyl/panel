@@ -1,36 +1,40 @@
-import React, { useMemo, useState } from 'react';
-import getServerSchedules, { Schedule } from '@/api/server/schedules/getServerSchedules';
+import React, { useEffect, useState } from 'react';
+import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
 import { RouteComponentProps } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import { httpErrorToHuman } from '@/api/http';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import Can from '@/components/elements/Can';
+import useServer from '@/plugins/useServer';
+import useFlash from '@/plugins/useFlash';
 
 export default ({ match, history }: RouteComponentProps) => {
-    const { uuid } = ServerContext.useStoreState(state => state.server.data!);
-    const [ schedules, setSchedules ] = useState<Schedule[] | null>(null);
+    const { uuid } = useServer();
+    const { clearFlashes, addError } = useFlash();
+    const [ loading, setLoading ] = useState(true);
     const [ visible, setVisible ] = useState(false);
-    const { clearFlashes, addError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    useMemo(() => {
+    const schedules = ServerContext.useStoreState(state => state.schedules.data);
+    const setSchedules = ServerContext.useStoreActions(actions => actions.schedules.setSchedules);
+
+    useEffect(() => {
         clearFlashes('schedules');
         getServerSchedules(uuid)
             .then(schedules => setSchedules(schedules))
             .catch(error => {
                 addError({ message: httpErrorToHuman(error), key: 'schedules' });
                 console.error(error);
-            });
-    }, [ setSchedules ]);
+            })
+            .then(() => setLoading(false));
+    }, []);
 
     return (
         <div className={'my-10 mb-6'}>
             <FlashMessageRender byKey={'schedules'} className={'mb-4'}/>
-            {!schedules ?
+            {(!schedules.length && loading) ?
                 <Spinner size={'large'} centered={true}/>
                 :
                 <>
@@ -59,7 +63,6 @@ export default ({ match, history }: RouteComponentProps) => {
                             {visible && <EditScheduleModal
                                 appear={true}
                                 visible={true}
-                                onScheduleUpdated={schedule => setSchedules(s => [ ...(s || []), schedule ])}
                                 onDismissed={() => setVisible(false)}
                             />}
                             <button

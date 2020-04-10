@@ -3,11 +3,14 @@
 namespace Pterodactyl\Models;
 
 use Symfony\Component\Yaml\Yaml;
+use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Models\Traits\Searchable;
+use Illuminate\Contracts\Encryption\Encrypter;
 
 /**
  * @property int $id
+ * @property string $uuid
  * @property bool $public
  * @property string $name
  * @property string $description
@@ -21,7 +24,8 @@ use Pterodactyl\Models\Traits\Searchable;
  * @property int $disk
  * @property int $disk_overallocate
  * @property int $upload_size
- * @property string $daemonSecret
+ * @property string $daemon_token_id
+ * @property string $daemon_token
  * @property int $daemonListen
  * @property int $daemonSFTP
  * @property string $daemonBase
@@ -43,7 +47,8 @@ class Node extends Model
      */
     const RESOURCE_NAME = 'node';
 
-    const DAEMON_SECRET_LENGTH = 36;
+    const DAEMON_TOKEN_ID_LENGTH = 16;
+    const DAEMON_TOKEN_LENGTH = 64;
 
     /**
      * The table associated with the model.
@@ -57,7 +62,7 @@ class Node extends Model
      *
      * @var array
      */
-    protected $hidden = ['daemonSecret'];
+    protected $hidden = ['daemon_token_id', 'daemon_token'];
 
     /**
      * Cast values to correct type.
@@ -84,8 +89,7 @@ class Node extends Model
         'public', 'name', 'location_id',
         'fqdn', 'scheme', 'behind_proxy',
         'memory', 'memory_overallocate', 'disk',
-        'disk_overallocate', 'upload_size',
-        'daemonSecret', 'daemonBase',
+        'disk_overallocate', 'upload_size', 'daemonBase',
         'daemonSFTP', 'daemonListen',
         'description', 'maintenance_mode',
     ];
@@ -153,12 +157,15 @@ class Node extends Model
     /**
      * Returns the configuration as an array.
      *
-     * @return string
+     * @return array
      */
-    private function getConfiguration()
+    public function getConfiguration()
     {
         return [
             'debug' => false,
+            'uuid' => $this->uuid,
+            'token_id' => $this->daemon_token_id,
+            'token' => Container::getInstance()->make(Encrypter::class)->decrypt($this->daemon_token),
             'api' => [
                 'host' => '0.0.0.0',
                 'port' => $this->daemonListen,
@@ -202,7 +209,6 @@ class Node extends Model
                 'check_interval' => 100,
             ],
             'remote' => route('index'),
-            'token' => $this->daemonSecret,
         ];
     }
 
@@ -211,17 +217,32 @@ class Node extends Model
      *
      * @return string
      */
-    public function getYamlConfiguration() {
+    public function getYamlConfiguration()
+    {
         return Yaml::dump($this->getConfiguration(), 4, 2);
     }
 
-        /**
+    /**
      * Returns the configuration in JSON format.
+     *
+     * @param bool $pretty
+     * @return string
+     */
+    public function getJsonConfiguration(bool $pretty = false)
+    {
+        return json_encode($this->getConfiguration(), $pretty ? JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_SLASHES);
+    }
+
+    /**
+     * Helper function to return the decrypted key for a node.
      *
      * @return string
      */
-    public function getJsonConfiguration(bool $pretty = false) {
-        return json_encode($this->getConfiguration(), $pretty ? JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_SLASHES);
+    public function getDecryptedKey(): string
+    {
+        return (string) Container::getInstance()->make(Encrypter::class)->decrypt(
+            $this->daemon_token
+        );
     }
 
     /**

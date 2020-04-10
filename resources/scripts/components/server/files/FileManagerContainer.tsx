@@ -22,20 +22,20 @@ export default () => {
     const [ loading, setLoading ] = useState(true);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const { id } = ServerContext.useStoreState(state => state.server.data!);
-    const { contents: files, directory } = ServerContext.useStoreState(state => state.files);
+    const { contents: files } = ServerContext.useStoreState(state => state.files);
     const { getDirectoryContents } = ServerContext.useStoreActions(actions => actions.files);
 
     useEffect(() => {
         setLoading(true);
         clearFlashes();
 
-        getDirectoryContents(window.location.hash.replace(/^#(\/)*/, '/'))
+        getDirectoryContents(window.location.hash)
             .then(() => setLoading(false))
             .catch(error => {
                 console.error(error.message, { error });
                 addError({ message: httpErrorToHuman(error), key: 'files' });
             });
-    }, [ directory ]);
+    }, []);
 
     return (
         <div className={'my-10 mb-6'}>

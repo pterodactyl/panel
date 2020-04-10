@@ -13,11 +13,10 @@ class AddTableServerTransfers extends Migration
      */
     public function up()
     {
-        Schema::dropIfExists('server_transfers');
-
         Schema::create('server_transfers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('server_id')->unsigned();
+            $table->tinyInteger('successful')->unsigned()->default(0);
             $table->integer('old_node')->unsigned();
             $table->integer('new_node')->unsigned();
             $table->integer('old_allocation')->unsigned();
@@ -25,10 +24,8 @@ class AddTableServerTransfers extends Migration
             $table->string('old_additional_allocations')->nullable();
             $table->string('new_additional_allocations')->nullable();
             $table->timestamps();
-        });
 
-        Schema::table('server_transfers', function (Blueprint $table) {
-            $table->foreign('server_id')->references('id')->on('servers');
+            $table->foreign('server_id')->references('id')->on('servers')->onDelete('cascade');
         });
     }
 

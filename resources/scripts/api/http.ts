@@ -1,12 +1,26 @@
 import axios, { AxiosInstance } from 'axios';
+import { store } from '@/state';
 
 const http: AxiosInstance = axios.create({
+    timeout: 20000,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'X-CSRF-Token': (window as any).X_CSRF_TOKEN as string || '',
     },
+});
+
+http.interceptors.request.use(req => {
+    store.getActions().progress.startContinuous();
+
+    return req;
+});
+
+http.interceptors.response.use(resp => {
+    store.getActions().progress.setComplete();
+
+    return resp;
 });
 
 // If we have a phpdebugbar instance registered at this point in time go

@@ -2,12 +2,15 @@
 
 namespace Pterodactyl\Services\Nodes;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
 
@@ -19,30 +22,38 @@ class NodeUpdateService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface
-     */
-    private $configRepository;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
     private $repository;
 
     /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository
+     */
+    private $configurationRepository;
+
+    /**
+     * @var \Illuminate\Contracts\Encryption\Encrypter
+     */
+    private $encrypter;
+
+    /**
      * UpdateService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Daemon\ConfigurationRepository $configurationRepository
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
+     * @param \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository $configurationRepository
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
-        ConfigurationRepository $configurationRepository,
+        Encrypter $encrypter,
+        DaemonConfigurationRepository $configurationRepository,
         NodeRepositoryInterface $repository
     ) {
         $this->connection = $connection;
-        $this->configRepository = $configurationRepository;
         $this->repository = $repository;
+        $this->configurationRepository = $configurationRepository;
+        $this->encrypter = $encrypter;
     }
 
     /**
@@ -58,13 +69,14 @@ class NodeUpdateService
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException
-     *
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handle(Node $node, array $data, bool $resetToken = false)
     {
         if ($resetToken) {
-            $data['daemonSecret'] = str_random(Node::DAEMON_SECRET_LENGTH);
+            $data['daemon_token'] = Str::random(Node::DAEMON_TOKEN_LENGTH);
+            $data['daemon_token_id'] = $this->encrypter->encrypt(
+                Str::random(Node::DAEMON_TOKEN_ID_LENGTH)
+            );
         }
 
         $this->connection->beginTransaction();
@@ -77,14 +89,15 @@ class NodeUpdateService
                 // We need to clone the new model and set it's authentication token to be the
                 // old one so we can connect. Then we will pass the new token through as an
                 // override on the call.
-                $cloned = $updatedModel->replicate(['daemonSecret']);
-                $cloned->setAttribute('daemonSecret', $node->getAttribute('daemonSecret'));
+                $cloned = $updatedModel->replicate(['daemon_token']);
+                $cloned->setAttribute('daemon_token', $node->getAttribute('daemon_token'));
 
-                $this->configRepository->setNode($cloned)->update([
-                    'keys' => [$data['daemonSecret']],
+                $this->configurationRepository->setNode($cloned)->update([
+                    'daemon_token_id' => $updatedModel->daemon_token_id,
+                    'daemon_token' => $updatedModel->getDecryptedKey(),
                 ]);
             } else {
-                $this->configRepository->setNode($updatedModel)->update();
+                $this->configurationRepository->setNode($updatedModel)->update();
             }
 
             $this->connection->commit();
