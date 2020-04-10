@@ -9,3 +9,7 @@ export function bytesToHuman (bytes: number): string {
 }
 
 export const bytesToMegabytes = (bytes: number) => Math.floor(bytes / 1000 / 1000);
+
+export const randomInt = (low: number, high: number) => Math.floor(Math.random() * (high - low) + low);
+
+export const cleanDirectoryPath = (path: string) => path.replace(/(^#\/*)|(\/(\/*))|(^$)/g, '/');

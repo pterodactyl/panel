@@ -9,6 +9,7 @@ import AuthenticationRouter from '@/routers/AuthenticationRouter';
 import { Provider } from 'react-redux';
 import { SiteSettings } from '@/state/settings';
 import { DefaultTheme, ThemeProvider } from 'styled-components';
+import ProgressBar from '@/components/elements/ProgressBar';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -57,6 +58,7 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <StoreProvider store={store}>
                 <Provider store={store}>
+                    <ProgressBar/>
                     <div className={'mx-auto w-auto'}>
                         <BrowserRouter basename={'/'} key={'root-router'}>
                             <Switch>

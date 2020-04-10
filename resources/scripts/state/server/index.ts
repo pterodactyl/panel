@@ -1,11 +1,12 @@
 import getServer, { Server } from '@/api/server/getServer';
 import { action, Action, createContextStore, thunk, Thunk } from 'easy-peasy';
 import socket, { SocketStore } from './socket';
-import { ServerDatabase } from '@/api/server/getServerDatabases';
 import files, { ServerFileStore } from '@/state/server/files';
 import subusers, { ServerSubuserStore } from '@/state/server/subusers';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import backups, { ServerBackupStore } from '@/state/server/backups';
+import schedules, { ServerScheduleStore } from '@/state/server/schedules';
+import databases, { ServerDatabaseStore } from '@/state/server/databases';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
@@ -22,7 +23,7 @@ const server: ServerDataStore = {
     permissions: [],
 
     getServer: thunk(async (actions, payload) => {
-        const [server, permissions] = await getServer(payload);
+        const [ server, permissions ] = await getServer(payload);
 
         actions.setServer(server);
         actions.setPermissions(permissions);
@@ -49,31 +50,12 @@ const status: ServerStatusStore = {
     }),
 };
 
-interface ServerDatabaseStore {
-    items: ServerDatabase[];
-    setDatabases: Action<ServerDatabaseStore, ServerDatabase[]>;
-    appendDatabase: Action<ServerDatabaseStore, ServerDatabase>;
-    removeDatabase: Action<ServerDatabaseStore, ServerDatabase>;
-}
-
-const databases: ServerDatabaseStore = {
-    items: [],
-    setDatabases: action((state, payload) => {
-        state.items = payload;
-    }),
-    appendDatabase: action((state, payload) => {
-        state.items = state.items.filter(item => item.id !== payload.id).concat(payload);
-    }),
-    removeDatabase: action((state, payload) => {
-        state.items = state.items.filter(item => item.id !== payload.id);
-    }),
-};
-
 export interface ServerStore {
     server: ServerDataStore;
     subusers: ServerSubuserStore;
     databases: ServerDatabaseStore;
     files: ServerFileStore;
+    schedules: ServerScheduleStore;
     backups: ServerBackupStore;
     socket: SocketStore;
     status: ServerStatusStore;
@@ -88,14 +70,16 @@ export const ServerContext = createContextStore<ServerStore>({
     files,
     subusers,
     backups,
+    schedules,
     clearServerState: action(state => {
         state.server.data = undefined;
         state.server.permissions = [];
-        state.databases.items = [];
+        state.databases.data = [];
         state.subusers.data = [];
         state.files.directory = '/';
         state.files.contents = [];
-        state.backups.backups = [];
+        state.backups.data = [];
+        state.schedules.data = [];
 
         if (state.socket.instance) {
             state.socket.instance.removeAllListeners();

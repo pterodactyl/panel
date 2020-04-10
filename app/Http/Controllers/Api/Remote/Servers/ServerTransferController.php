@@ -145,7 +145,7 @@ class ServerTransferController extends Controller
             ->canOnlyBeUsedAfter($now->getTimestamp())
             ->expiresAt($now->addMinutes(15)->getTimestamp())
             ->relatedTo($server->uuid, true)
-            ->getToken($signer, new Key($server->node->daemonSecret));
+            ->getToken($signer, new Key($server->node->getDecryptedKey()));
 
         // On the daemon transfer repository, make sure to set the node after the server
         // because setServer() tells the repository to use the server's node and not the one

@@ -1,39 +1,41 @@
 import React, { useState } from 'react';
-import { Task } from '@/api/server/schedules/getServerSchedules';
+import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import { faCode } from '@fortawesome/free-solid-svg-icons/faCode';
 import { faToggleOn } from '@fortawesome/free-solid-svg-icons/faToggleOn';
 import ConfirmTaskDeletionModal from '@/components/server/schedules/ConfirmTaskDeletionModal';
-import { ServerContext } from '@/state/server';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
 import Can from '@/components/elements/Can';
+import useServer from '@/plugins/useServer';
+import useFlash from '@/plugins/useFlash';
+import { ServerContext } from '@/state/server';
 
 interface Props {
-    schedule: number;
+    schedule: Schedule;
     task: Task;
-    onTaskUpdated: (task: Task) => void;
-    onTaskRemoved: () => void;
 }
 
-export default ({ schedule, task, onTaskUpdated, onTaskRemoved }: Props) => {
+export default ({ schedule, task }: Props) => {
+    const { uuid } = useServer();
+    const { clearFlashes, addError } = useFlash();
     const [ visible, setVisible ] = useState(false);
     const [ isLoading, setIsLoading ] = useState(false);
     const [ isEditing, setIsEditing ] = useState(false);
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const { clearFlashes, addError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 
     const onConfirmDeletion = () => {
         setIsLoading(true);
         clearFlashes('schedules');
-        deleteScheduleTask(uuid, schedule, task.id)
-            .then(() => onTaskRemoved())
+        deleteScheduleTask(uuid, schedule.id, task.id)
+            .then(() => appendSchedule({
+                ...schedule,
+                tasks: schedule.tasks.filter(t => t.id !== task.id),
+            }))
             .catch(error => {
                 console.error(error);
                 setIsLoading(false);
@@ -45,12 +47,9 @@ export default ({ schedule, task, onTaskUpdated, onTaskRemoved }: Props) => {
         <div className={'flex items-center bg-neutral-700 border border-neutral-600 mb-2 px-6 py-4 rounded'}>
             <SpinnerOverlay visible={isLoading} fixed={true} size={'large'}/>
             {isEditing && <TaskDetailsModal
-                scheduleId={schedule}
+                schedule={schedule}
                 task={task}
-                onDismissed={task => {
-                    task && onTaskUpdated(task);
-                    setIsEditing(false);
-                }}
+                onDismissed={() => setIsEditing(false)}
             />}
             <ConfirmTaskDeletionModal
                 visible={visible}

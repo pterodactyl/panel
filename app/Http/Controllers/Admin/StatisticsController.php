@@ -67,7 +67,7 @@ class StatisticsController extends Controller
 
         $tokens = [];
         foreach ($nodes as $node) {
-            $tokens[$node->id] = $node->daemonSecret;
+            $tokens[$node->id] = decrypt($node->daemon_token);
         }
 
         $this->injectJavascript([

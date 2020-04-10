@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { cleanDirectoryPath } from '@/helpers';
 
 interface Props {
     withinFileEditor?: boolean;
@@ -8,21 +9,17 @@ interface Props {
 }
 
 export default ({ withinFileEditor, isNewFile }: Props) => {
-    const { action } = useParams();
     const [ file, setFile ] = useState<string | null>(null);
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const directory = ServerContext.useStoreState(state => state.files.directory);
-    const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
 
     useEffect(() => {
-        const parts = window.location.hash.replace(/^#(\/)*/, '/').split('/');
+        const parts = cleanDirectoryPath(window.location.hash).split('/');
 
         if (withinFileEditor && !isNewFile) {
             setFile(parts.pop() || null);
         }
-
-        setDirectory(parts.join('/'));
-    }, [ withinFileEditor, isNewFile, setDirectory ]);
+    }, [ withinFileEditor, isNewFile ]);
 
     const breadcrumbs = (): { name: string; path?: string }[] => directory.split('/')
         .filter(directory => !!directory)
@@ -39,7 +36,6 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
             /<span className={'px-1 text-neutral-300'}>home</span>/
             <NavLink
                 to={`/server/${id}/files`}
-                onClick={() => setDirectory('/')}
                 className={'px-1 text-neutral-200 no-underline hover:text-neutral-100'}
             >
                 container
@@ -50,7 +46,6 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
                         <React.Fragment key={index}>
                             <NavLink
                                 to={`/server/${id}/files#${crumb.path}`}
-                                onClick={() => setDirectory(crumb.path!)}
                                 className={'px-1 text-neutral-200 no-underline hover:text-neutral-100'}
                             >
                                 {crumb.name}

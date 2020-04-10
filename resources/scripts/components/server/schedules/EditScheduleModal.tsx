@@ -6,14 +6,13 @@ import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import Switch from '@/components/elements/Switch';
 import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedule';
 import { ServerContext } from '@/state/server';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import useServer from '@/plugins/useServer';
+import useFlash from '@/plugins/useFlash';
 
 type Props = {
     schedule?: Schedule;
-    onScheduleUpdated: (schedule: Schedule) => void;
 } & RequiredModalProps;
 
 interface Values {
@@ -73,15 +72,17 @@ const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdate
     );
 };
 
-export default ({ schedule, onScheduleUpdated, visible, ...props }: Props) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+export default ({ schedule, visible, ...props }: Props) => {
+    const { uuid } = useServer();
+    const { addError, clearFlashes } = useFlash();
     const [ modalVisible, setModalVisible ] = useState(visible);
+
+    const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 
     useEffect(() => {
         setModalVisible(visible);
         clearFlashes('schedule:edit');
-    }, [visible]);
+    }, [ visible ]);
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('schedule:edit');
@@ -98,7 +99,7 @@ export default ({ schedule, onScheduleUpdated, visible, ...props }: Props) => {
         })
             .then(schedule => {
                 setSubmitting(false);
-                onScheduleUpdated(schedule);
+                appendSchedule(schedule);
                 setModalVisible(false);
             })
             .catch(error => {

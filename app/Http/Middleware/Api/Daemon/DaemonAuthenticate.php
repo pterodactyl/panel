@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Middleware\Api\Daemon;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -26,13 +27,20 @@ class DaemonAuthenticate
     ];
 
     /**
+     * @var \Illuminate\Contracts\Encryption\Encrypter
+     */
+    private $encrypter;
+
+    /**
      * DaemonAuthenticate constructor.
      *
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
-    public function __construct(NodeRepositoryInterface $repository)
+    public function __construct(Encrypter $encrypter, NodeRepositoryInterface $repository)
     {
         $this->repository = $repository;
+        $this->encrypter = $encrypter;
     }
 
     /**
@@ -50,20 +58,31 @@ class DaemonAuthenticate
             return $next($request);
         }
 
-        $token = $request->bearerToken();
-
-        if (is_null($token)) {
-            throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
+        if (is_null($bearer = $request->bearerToken())) {
+            throw new HttpException(
+                401, 'Access this this endpoint must include an Authorization header.', null, ['WWW-Authenticate' => 'Bearer']
+            );
         }
+
+        [$identifier, $token] = explode('.', $bearer);
 
         try {
-            $node = $this->repository->findFirstWhere([['daemonSecret', '=', $token]]);
+            /** @var \Pterodactyl\Models\Node $node */
+            $node = $this->repository->findFirstWhere([
+                'daemon_token_id' => $identifier,
+            ]);
+
+            if (hash_equals((string) $this->encrypter->decrypt($node->daemon_token), $token)) {
+                $request->attributes->set('node', $node);
+
+                return $next($request);
+            }
         } catch (RecordNotFoundException $exception) {
-            throw new AccessDeniedHttpException;
+            // Do nothing, we don't want to expose a node not existing at all.
         }
 
-        $request->attributes->set('node', $node);
-
-        return $next($request);
+        throw new AccessDeniedHttpException(
+            'You are not authorized to access this resource.'
+        );
     }
 }

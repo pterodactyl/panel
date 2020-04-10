@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import getServerBackups, { ServerBackup } from '@/api/server/backups/getServerBackups';
+import getServerBackups from '@/api/server/backups/getServerBackups';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
@@ -9,7 +9,6 @@ import CreateBackupButton from '@/components/server/backups/CreateBackupButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import BackupRow from '@/components/server/backups/BackupRow';
 import { ServerContext } from '@/state/server';
-import ListRefreshIndicator from '@/components/elements/ListRefreshIndicator';
 
 export default () => {
     const { uuid } = useServer();
@@ -36,7 +35,6 @@ export default () => {
 
     return (
         <div className={'mt-10 mb-6'}>
-            <ListRefreshIndicator visible={loading}/>
             <FlashMessageRender byKey={'backups'} className={'mb-4'}/>
             {!backups.length ?
                 <p className="text-center text-sm text-neutral-400">

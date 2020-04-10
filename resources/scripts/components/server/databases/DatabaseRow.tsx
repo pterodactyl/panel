@@ -9,31 +9,28 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { object, string } from 'yup';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import { ServerContext } from '@/state/server';
 import deleteServerDatabase from '@/api/server/deleteServerDatabase';
 import { httpErrorToHuman } from '@/api/http';
 import RotatePasswordButton from '@/components/server/databases/RotatePasswordButton';
 import Can from '@/components/elements/Can';
+import { ServerDatabase } from '@/api/server/getServerDatabases';
+import useServer from '@/plugins/useServer';
+import useFlash from '@/plugins/useFlash';
 
 interface Props {
-    databaseId: string | number;
+    database: ServerDatabase;
     className?: string;
-    onDelete: () => void;
 }
 
-export default ({ databaseId, className, onDelete }: Props) => {
+export default ({ database, className }: Props) => {
+    const { uuid } = useServer();
+    const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
-    const database = ServerContext.useStoreState(state => state.databases.items.find(item => item.id === databaseId));
-    const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
     const [ connectionVisible, setConnectionVisible ] = useState(false);
-    const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const server = ServerContext.useStoreState(state => state.server.data!);
 
-    if (!database) {
-        return null;
-    }
+    const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
+    const removeDatabase = ServerContext.useStoreActions(actions => actions.databases.removeDatabase);
 
     const schema = object().shape({
         confirm: string()
@@ -43,20 +40,15 @@ export default ({ databaseId, className, onDelete }: Props) => {
 
     const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
         clearFlashes();
-        deleteServerDatabase(server.uuid, database.id)
+        deleteServerDatabase(uuid, database.id)
             .then(() => {
                 setVisible(false);
-                setTimeout(() => onDelete(), 150);
+                setTimeout(() => removeDatabase(database.id), 150);
             })
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
-                addFlash({
-                    key: 'delete-database-modal',
-                    type: 'error',
-                    title: 'Error',
-                    message: httpErrorToHuman(error),
-                });
+                addError({ key: 'database:delete', message: httpErrorToHuman(error) });
             });
     };
 
@@ -78,7 +70,7 @@ export default ({ databaseId, className, onDelete }: Props) => {
                                 resetForm();
                             }}
                         >
-                            <FlashMessageRender byKey={'delete-database-modal'} className={'mb-6'}/>
+                            <FlashMessageRender byKey={'database:delete'} className={'mb-6'}/>
                             <h3 className={'mb-6'}>Confirm database deletion</h3>
                             <p className={'text-sm'}>
                                 Deleting a database is a permanent action, it cannot be undone. This will permanetly
