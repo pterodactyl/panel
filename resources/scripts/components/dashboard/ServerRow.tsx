@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faServer } from '@fortawesome/free-solid-svg-icons/faServer';
 import { faEthernet } from '@fortawesome/free-solid-svg-icons/faEthernet';
@@ -21,18 +21,19 @@ const isAlarmState = (current: number, limit: number): boolean => {
 };
 
 export default ({ server, className }: { server: Server; className: string | undefined }) => {
+    const interval = useRef<number>(null);
     const [ stats, setStats ] = useState<ServerStats | null>(null);
 
     const getStats = () => getServerResourceUsage(server.uuid).then(data => setStats(data));
 
     useEffect(() => {
-        let interval: any = null;
         getStats().then(() => {
-            interval = setInterval(() => getStats(), 20000);
+            // @ts-ignore
+            interval.current = setInterval(() => getStats(), 20000);
         });
 
         return () => {
-            interval && clearInterval(interval);
+            interval.current && clearInterval(interval.current);
         };
     }, []);
 
