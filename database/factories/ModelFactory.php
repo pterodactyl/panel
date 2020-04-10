@@ -1,7 +1,10 @@
 <?php
 
+use Ramsey\Uuid\Uuid;
 use Cake\Chronos\Chronos;
+use Illuminate\Support\Str;
 use Faker\Generator as Faker;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\ApiKey;
 
 /*
@@ -80,6 +83,7 @@ $factory->define(Pterodactyl\Models\Location::class, function (Faker $faker) {
 $factory->define(Pterodactyl\Models\Node::class, function (Faker $faker) {
     return [
         'id' => $faker->unique()->randomNumber(),
+        'uuid' => Uuid::uuid4()->toString(),
         'public' => true,
         'name' => $faker->firstName,
         'fqdn' => $faker->ipv4,
@@ -90,10 +94,11 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker $faker) {
         'disk' => 10240,
         'disk_overallocate' => 0,
         'upload_size' => 100,
-        'daemonSecret' => $faker->uuid,
+        'daemon_token_id' => Str::random(Node::DAEMON_TOKEN_ID_LENGTH),
+        'daemon_token' => Str::random(Node::DAEMON_TOKEN_LENGTH),
         'daemonListen' => 8080,
         'daemonSFTP' => 2022,
-        'daemonBase' => '/srv/daemon',
+        'daemonBase' => '/srv/daemon-data',
     ];
 });
 

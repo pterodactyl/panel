@@ -38,7 +38,6 @@ use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
-use Pterodactyl\Http\Middleware\DaemonAuthenticate as OldDaemonAuthenticate;
 
 class Kernel extends HttpKernel
 {
@@ -107,7 +106,6 @@ class Kernel extends HttpKernel
         'server' => AccessingValidServer::class,
         'subuser.auth' => AuthenticateAsSubuser::class,
         'admin' => AdminAuthenticate::class,
-        'daemon-old' => OldDaemonAuthenticate::class,
         'csrf' => VerifyCsrfToken::class,
         'throttle' => ThrottleRequests::class,
         'can' => Authorize::class,
