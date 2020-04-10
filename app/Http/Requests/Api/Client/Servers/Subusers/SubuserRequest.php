@@ -21,6 +21,8 @@ abstract class SubuserRequest extends ClientApiRequest
      * Authorize the request and ensure that a user is not trying to modify themselves.
      *
      * @return bool
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function authorize(): bool
     {
@@ -52,6 +54,8 @@ abstract class SubuserRequest extends ClientApiRequest
      * by the user making the request.
      *
      * @param array $permissions
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected function validatePermissionsCanBeAssigned(array $permissions)
     {
@@ -78,6 +82,8 @@ abstract class SubuserRequest extends ClientApiRequest
      * Returns the currently authenticated user's permissions.
      *
      * @return array
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function currentUserPermissions(): array
     {
@@ -88,7 +94,7 @@ abstract class SubuserRequest extends ClientApiRequest
         try {
             $model = $repository->findFirstWhere([
                 ['server_id', $this->route()->parameter('server')->id],
-                ['user_id' => $this->user()->id],
+                ['user_id', $this->user()->id],
             ]);
         } catch (RecordNotFoundException $exception) {
             return [];
@@ -109,6 +115,7 @@ abstract class SubuserRequest extends ClientApiRequest
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function endpointSubuser()
     {
