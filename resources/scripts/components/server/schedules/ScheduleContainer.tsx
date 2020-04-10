@@ -1,18 +1,15 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import getServerSchedules, { Schedule } from '@/api/server/schedules/getServerSchedules';
+import React, { useEffect, useState } from 'react';
+import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
 import { RouteComponentProps } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import { httpErrorToHuman } from '@/api/http';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import Can from '@/components/elements/Can';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
-import ListRefreshIndicator from '@/components/elements/ListRefreshIndicator';
 
 export default ({ match, history }: RouteComponentProps) => {
     const { uuid } = useServer();
@@ -37,7 +34,6 @@ export default ({ match, history }: RouteComponentProps) => {
     return (
         <div className={'my-10 mb-6'}>
             <FlashMessageRender byKey={'schedules'} className={'mb-4'}/>
-            <ListRefreshIndicator visible={loading}/>
             {(!schedules.length && loading) ?
                 <Spinner size={'large'} centered={true}/>
                 :
