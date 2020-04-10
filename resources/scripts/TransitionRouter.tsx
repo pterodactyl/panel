@@ -28,7 +28,7 @@ export default ({ children }: Props) => (
                         </ContentContainer>
                         <ContentContainer className={'mb-4'}>
                             <p className={'text-right text-neutral-500 text-xs'}>
-                                &copy; 2015 - 2019&nbsp;
+                                &copy; 2015 - 2020&nbsp;
                                 <a
                                     rel={'noopener nofollow'}
                                     href={'https://pterodactyl.io'}
