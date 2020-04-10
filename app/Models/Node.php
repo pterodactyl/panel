@@ -151,13 +151,13 @@ class Node extends Model
     }
 
     /**
-     * Returns the configuration in JSON format.
+     * Returns the configuration as an array.
      *
      * @return string
      */
-    public function getYamlConfiguration()
+    private function getConfiguration()
     {
-        $config = [
+        return [
             'debug' => false,
             'api' => [
                 'host' => '0.0.0.0',
@@ -204,8 +204,24 @@ class Node extends Model
             'remote' => route('index'),
             'token' => $this->daemonSecret,
         ];
+    }
 
-        return Yaml::dump($config, 4, 2);
+    /**
+     * Returns the configuration in Yaml format.
+     *
+     * @return string
+     */
+    public function getYamlConfiguration() {
+        return Yaml::dump($this->getConfiguration(), 4, 2);
+    }
+
+        /**
+     * Returns the configuration in JSON format.
+     *
+     * @return string
+     */
+    public function getJsonConfiguration(bool $pretty = false) {
+        return json_encode($this->getConfiguration(), $pretty ? JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_SLASHES);
     }
 
     /**
