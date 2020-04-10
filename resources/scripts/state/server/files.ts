@@ -1,6 +1,7 @@
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import { action, Action, thunk, Thunk } from 'easy-peasy';
 import { ServerStore } from '@/state/server/index';
+import { cleanDirectoryPath } from '@/helpers';
 
 export interface ServerFileStore {
     directory: string;
@@ -22,7 +23,7 @@ const files: ServerFileStore = {
             return;
         }
 
-        const contents = await loadDirectory(server.uuid, payload);
+        const contents = await loadDirectory(server.uuid, cleanDirectoryPath(payload));
 
         actions.setDirectory(payload.length === 0 ? '/' : payload);
         actions.setContents(contents);
@@ -47,7 +48,7 @@ const files: ServerFileStore = {
     }),
 
     setDirectory: action((state, payload) => {
-        state.directory = payload.length === 0 ? '/' : payload;
+        state.directory = cleanDirectoryPath(payload)
     }),
 };
 

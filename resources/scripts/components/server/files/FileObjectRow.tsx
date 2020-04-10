@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileImport } from '@fortawesome/free-solid-svg-icons/faFileImport';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
-import { bytesToHuman } from '@/helpers';
+import { bytesToHuman, cleanDirectoryPath } from '@/helpers';
 import differenceInHours from 'date-fns/difference_in_hours';
 import format from 'date-fns/format';
 import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
@@ -16,7 +16,7 @@ import useRouter from 'use-react-router';
 export default ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
-    const { match } = useRouter();
+    const { match, history } = useRouter();
 
     return (
         <div
@@ -27,7 +27,7 @@ export default ({ file }: { file: FileObject }) => {
             `}
         >
             <NavLink
-                to={`${match.url}/${file.isFile ? 'edit/' : ''}#${directory}/${file.name}`}
+                to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
                 className={'flex flex-1 text-neutral-300 no-underline p-3'}
                 onClick={e => {
                     // Don't rely on the onClick to work with the generated URL. Because of the way this
@@ -38,7 +38,7 @@ export default ({ file }: { file: FileObject }) => {
                     if (!file.isFile) {
                         e.preventDefault();
 
-                        window.location.hash = `#${directory}/${file.name}`;
+                        history.push(`#${cleanDirectoryPath(`${directory}/${file.name}`)}`);
                         setDirectory(`${directory}/${file.name}`);
                     }
                 }}

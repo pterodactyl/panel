@@ -64,7 +64,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                         <Spinner size={'large'}/>
                     </div>
                     :
-                    <Switch location={location} key={'server-switch'}>
+                    <Switch location={location}>
                         <Route path={`${match.path}`} component={ServerConsole} exact/>
                         <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
                         <Route
