@@ -46,6 +46,7 @@ return PhpCsFixer\Config::create()
         'psr0' => ['dir' => 'app'],
         'psr4' => true,
         'random_api_migration' => true,
+        'single_line_throw' => false,
         'standardize_not_equals' => true,
         'ternary_to_null_coalescing' => true,
         'yoda_style' => [

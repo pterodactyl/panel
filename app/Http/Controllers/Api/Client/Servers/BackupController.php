@@ -2,13 +2,16 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Carbon\Carbon;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Backups\DeleteBackupService;
+use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\GetBackupsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DeleteBackupRequest;
@@ -26,17 +29,27 @@ class BackupController extends ClientApiController
     private $deleteBackupService;
 
     /**
+     * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
+     */
+    private $repository;
+
+    /**
      * BackupController constructor.
      *
+     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
      * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
      * @param \Pterodactyl\Services\Backups\InitiateBackupService $initiateBackupService
      */
-    public function __construct(DeleteBackupService $deleteBackupService, InitiateBackupService $initiateBackupService)
-    {
+    public function __construct(
+        BackupRepository $repository,
+        DeleteBackupService $deleteBackupService,
+        InitiateBackupService $initiateBackupService
+    ) {
         parent::__construct();
 
         $this->initiateBackupService = $initiateBackupService;
         $this->deleteBackupService = $deleteBackupService;
+        $this->repository = $repository;
     }
 
     /**
@@ -65,6 +78,14 @@ class BackupController extends ClientApiController
      */
     public function store(StoreBackupRequest $request, Server $server)
     {
+        $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
+        if ($previous->count() >= 2) {
+            throw new TooManyRequestsHttpException(
+                Carbon::now()->diffInSeconds($previous->last()->created_at->addMinutes(10)),
+                'Only two backups may be generated within a 10 minute span of time.'
+            );
+        }
+
         $backup = $this->initiateBackupService
             ->setIgnoredFiles($request->input('ignored'))
             ->handle($server, $request->input('name'));
