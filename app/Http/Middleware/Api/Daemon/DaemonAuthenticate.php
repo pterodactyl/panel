@@ -8,6 +8,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticate
@@ -64,15 +65,21 @@ class DaemonAuthenticate
             );
         }
 
-        [$identifier, $token] = explode('.', $bearer);
+        $parts = explode('.', $bearer);
+        // Ensure that all of the correct parts are provided in the header.
+        if (count($parts) !== 2 || empty($parts[0]) || empty($parts[1])) {
+            throw new BadRequestHttpException(
+                'The Authorization headed provided was not in a valid format.',
+            );
+        }
 
         try {
             /** @var \Pterodactyl\Models\Node $node */
             $node = $this->repository->findFirstWhere([
-                'daemon_token_id' => $identifier,
+                'daemon_token_id' => $parts[0],
             ]);
 
-            if (hash_equals((string) $this->encrypter->decrypt($node->daemon_token), $token)) {
+            if (hash_equals((string) $this->encrypter->decrypt($node->daemon_token), $parts[1])) {
                 $request->attributes->set('node', $node);
 
                 return $next($request);
