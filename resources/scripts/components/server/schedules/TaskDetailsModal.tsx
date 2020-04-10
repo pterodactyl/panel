@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
 import Modal from '@/components/elements/Modal';
-import { Task } from '@/api/server/schedules/getServerSchedules';
+import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
 import { Field as FormikField, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { ServerContext } from '@/state/server';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import createOrUpdateScheduleTask from '@/api/server/schedules/createOrUpdateScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
 import Field from '@/components/elements/Field';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { number, object, string } from 'yup';
+import useFlash from '@/plugins/useFlash';
+import useServer from '@/plugins/useServer';
 
 interface Props {
-    scheduleId: number;
+    schedule: Schedule;
     // If a task is provided we can assume we're editing it. If not provided,
     // we are creating a new one.
     task?: Task;
-    onDismissed: (task: Task | undefined | void) => void;
+    onDismissed: () => void;
 }
 
 interface Values {
@@ -29,9 +29,11 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
     const { values: { action }, setFieldValue, setFieldTouched } = useFormikContext<Values>();
 
     useEffect(() => {
-        setFieldValue('payload', '');
-        setFieldTouched('payload', false);
-    }, [action]);
+        return () => {
+            setFieldValue('payload', '');
+            setFieldTouched('payload', false);
+        };
+    }, [ action ]);
 
     return (
         <Form className={'m-0'}>
@@ -80,9 +82,10 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
     );
 };
 
-export default ({ task, scheduleId, onDismissed }: Props) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const { clearFlashes, addError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+export default ({ task, schedule, onDismissed }: Props) => {
+    const { uuid } = useServer();
+    const { clearFlashes, addError } = useFlash();
+    const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 
     useEffect(() => {
         clearFlashes('schedule:task');
@@ -90,8 +93,16 @@ export default ({ task, scheduleId, onDismissed }: Props) => {
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('schedule:task');
-        createOrUpdateScheduleTask(uuid, scheduleId, task?.id, values)
-            .then(task => onDismissed(task))
+        createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
+            .then(task => {
+                let tasks = schedule.tasks.map(t => t.id === task.id ? task : t);
+                if (!schedule.tasks.find(t => t.id === task.id)) {
+                    tasks = [ ...tasks, task ];
+                }
+
+                appendSchedule({ ...schedule, tasks });
+                onDismissed();
+            })
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);

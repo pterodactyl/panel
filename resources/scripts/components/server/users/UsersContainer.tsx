@@ -9,6 +9,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerSubusers from '@/api/server/users/getServerSubusers';
 import { httpErrorToHuman } from '@/api/http';
 import Can from '@/components/elements/Can';
+import ListRefreshIndicator from '@/components/elements/ListRefreshIndicator';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -20,10 +21,6 @@ export default () => {
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
     const getPermissions = useStoreActions((actions: Actions<ApplicationStore>) => actions.permissions.getPermissions);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-
-    useEffect(() => {
-        getPermissions().catch(error => console.error(error));
-    }, []);
 
     useEffect(() => {
         clearFlashes('users');
@@ -38,12 +35,20 @@ export default () => {
             });
     }, []);
 
-    if (loading || !Object.keys(permissions).length) {
+    useEffect(() => {
+        getPermissions().catch(error => {
+            addError({ key: 'users', message: httpErrorToHuman(error) });
+            console.error(error);
+        });
+    }, []);
+
+    if (!subusers.length && (loading || !Object.keys(permissions).length)) {
         return <Spinner size={'large'} centered={true}/>;
     }
 
     return (
         <div className={'mt-10 mb-6'}>
+            <ListRefreshIndicator visible={loading}/>
             <FlashMessageRender byKey={'users'} className={'mb-4'}/>
             {!subusers.length ?
                 <p className={'text-center text-sm text-neutral-400'}>
