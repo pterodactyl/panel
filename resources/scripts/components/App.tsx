@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { hot } from 'react-hot-loader/root';
-import { BrowserRouter, BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
 import DashboardRouter from '@/routers/DashboardRouter';
@@ -57,17 +57,15 @@ const App = () => {
         <ThemeProvider theme={theme}>
             <StoreProvider store={store}>
                 <Provider store={store}>
-                    <Router basename={'/'}>
-                        <div className={'mx-auto w-auto'}>
-                            <BrowserRouter basename={'/'}>
-                                <Switch>
-                                    <Route path="/server/:id" component={ServerRouter}/>
-                                    <Route path="/auth" component={AuthenticationRouter}/>
-                                    <Route path="/" component={DashboardRouter}/>
-                                </Switch>
-                            </BrowserRouter>
-                        </div>
-                    </Router>
+                    <div className={'mx-auto w-auto'}>
+                        <BrowserRouter basename={'/'} key={'root-router'}>
+                            <Switch>
+                                <Route path="/server/:id" component={ServerRouter}/>
+                                <Route path="/auth" component={AuthenticationRouter}/>
+                                <Route path="/" component={DashboardRouter}/>
+                            </Switch>
+                        </BrowserRouter>
+                    </div>
                 </Provider>
             </StoreProvider>
         </ThemeProvider>

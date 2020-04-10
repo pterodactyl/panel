@@ -15,6 +15,7 @@ import useServer from '@/plugins/useServer';
 import deleteBackup from '@/api/server/backups/deleteBackup';
 import { ServerContext } from '@/state/server';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import Can from '@/components/elements/Can';
 
 interface Props {
     backup: ServerBackup;
@@ -90,18 +91,22 @@ export default ({ backup }: Props) => {
                 )}
             >
                 <div className={'text-sm'}>
-                    <DropdownButtonRow onClick={() => doDownload()}>
-                        <FontAwesomeIcon fixedWidth={true} icon={faCloudDownloadAlt} className={'text-xs'}/>
-                        <span className={'ml-2'}>Download</span>
-                    </DropdownButtonRow>
+                    <Can action={'backup.download'}>
+                        <DropdownButtonRow onClick={() => doDownload()}>
+                            <FontAwesomeIcon fixedWidth={true} icon={faCloudDownloadAlt} className={'text-xs'}/>
+                            <span className={'ml-2'}>Download</span>
+                        </DropdownButtonRow>
+                    </Can>
                     <DropdownButtonRow onClick={() => setVisible(true)}>
                         <FontAwesomeIcon fixedWidth={true} icon={faLock} className={'text-xs'}/>
                         <span className={'ml-2'}>Checksum</span>
                     </DropdownButtonRow>
-                    <DropdownButtonRow danger={true} onClick={() => setDeleteVisible(true)}>
-                        <FontAwesomeIcon fixedWidth={true} icon={faTrashAlt} className={'text-xs'}/>
-                        <span className={'ml-2'}>Delete</span>
-                    </DropdownButtonRow>
+                    <Can action={'backup.delete'}>
+                        <DropdownButtonRow danger={true} onClick={() => setDeleteVisible(true)}>
+                            <FontAwesomeIcon fixedWidth={true} icon={faTrashAlt} className={'text-xs'}/>
+                            <span className={'ml-2'}>Delete</span>
+                        </DropdownButtonRow>
+                    </Can>
                 </div>
             </DropdownMenu>
         </>

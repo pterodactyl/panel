@@ -30,7 +30,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     useEffect(() => () => clearServerState(), [ clearServerState ]);
 
     return (
-        <React.Fragment>
+        <React.Fragment key={'server-router'}>
             <NavigationBar/>
             <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
                 <div id={'sub-navigation'}>
@@ -51,7 +51,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                         <Can action={'backup.*'}>
                             <NavLink to={`${match.url}/backups`}>Backups</NavLink>
                         </Can>
-                        <Can action={['settings.*', 'file.sftp']} matchAny={true}>
+                        <Can action={[ 'settings.*', 'file.sftp' ]} matchAny={true}>
                             <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                         </Can>
                     </div>
@@ -64,27 +64,25 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                         <Spinner size={'large'}/>
                     </div>
                     :
-                    <React.Fragment>
-                        <Switch location={location}>
-                            <Route path={`${match.path}`} component={ServerConsole} exact/>
-                            <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
-                            <Route
-                                path={`${match.path}/files/:action(edit|new)`}
-                                render={props => (
-                                    <SuspenseSpinner>
-                                        <FileEditContainer {...props as any}/>
-                                    </SuspenseSpinner>
-                                )}
-                                exact
-                            />
-                            <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
-                            <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
-                            <Route path={`${match.path}/schedules/:id`} component={ScheduleEditContainer} exact/>
-                            <Route path={`${match.path}/users`} component={UsersContainer} exact/>
-                            <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
-                            <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
-                        </Switch>
-                    </React.Fragment>
+                    <Switch location={location} key={'server-switch'}>
+                        <Route path={`${match.path}`} component={ServerConsole} exact/>
+                        <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
+                        <Route
+                            path={`${match.path}/files/:action(edit|new)`}
+                            render={props => (
+                                <SuspenseSpinner>
+                                    <FileEditContainer {...props as any}/>
+                                </SuspenseSpinner>
+                            )}
+                            exact
+                        />
+                        <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
+                        <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
+                        <Route path={`${match.path}/schedules/:id`} component={ScheduleEditContainer} exact/>
+                        <Route path={`${match.path}/users`} component={UsersContainer} exact/>
+                        <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
+                        <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                    </Switch>
                 }
             </TransitionRouter>
         </React.Fragment>
