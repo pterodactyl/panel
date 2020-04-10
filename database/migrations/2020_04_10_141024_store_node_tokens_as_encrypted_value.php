@@ -23,8 +23,8 @@ class StoreNodeTokensAsEncryptedValue extends Migration
         });
 
         Schema::table('nodes', function (Blueprint $table) {
-            $table->char('uuid', 36)->after('id')->unique();
-            $table->char('daemon_token_id', 16)->after('upload_size')->unique();
+            $table->char('uuid', 36)->after('id');
+            $table->char('daemon_token_id', 16)->after('upload_size');
             $table->renameColumn('daemonSecret', 'daemon_token');
         });
 
@@ -44,6 +44,11 @@ class StoreNodeTokensAsEncryptedValue extends Migration
                     $datum->id,
                 ]);
             }
+        });
+
+        Schema::table('nodes', function (Blueprint $table) {
+            $table->unique(['uuid']);
+            $table->unique(['daemon_token_id']);
         });
     }
 
