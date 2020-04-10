@@ -78,7 +78,7 @@
                             </tr>
                             @if (! empty($server->description))
                                 <tr class="server-description">
-                                    <td colspan="7"><p class="text-muted small no-margin">{{ str_limit($server->description, 400) }}</p></td>
+                                    <td colspan="8"><p class="text-muted small no-margin">{{ str_limit($server->description, 400) }}</p></td>
                                 </tr>
                             @endif
                         @endforeach
