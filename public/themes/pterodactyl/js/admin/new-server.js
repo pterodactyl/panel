@@ -101,8 +101,11 @@ $('#pEggId').on('change', function (event) {
         ),
     });
 
+    const variableIds = {};
     $('#appendVariablesTo').html('');
     $.each(_.get(objectChain, 'variables', []), function (i, item) {
+        variableIds[item.env_variable] = 'var_ref_' + item.id;
+
         let isRequired = (item.required === 1) ? '<span class="label label-danger">Required</span> ' : '';
         let dataAppend = ' \
             <div class="form-group col-sm-6"> \
@@ -115,6 +118,10 @@ $('#pEggId').on('change', function (event) {
         ';
         $('#appendVariablesTo').append(dataAppend);
     });
+
+    // If you receive a warning on this line, it should be fine to ignore. this function is
+    // defined in "resources/views/admin/servers/new.blade.php" near the bottom of the file.
+    serviceVariablesUpdated($('#pEggId').val(), variableIds);
 });
 
 $('#pAllocation').on('change', function () {
