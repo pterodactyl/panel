@@ -52,7 +52,7 @@
 
         {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
         {!! Theme::js('vendor/bootstrap/bootstrap.min.js?t={cache-version}') !!}
-        {{-- {!! Theme::js('js/autocomplete.js?t={cache-version}') !!} --}}
+        <script src="/js/autocomplete.js" type="application/javascript"></script>
         {!! Theme::js('vendor/particlesjs/particles.min.js?t={cache-version}') !!}
         <script type="text/javascript">
             /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
