@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
+use Pterodactyl\Models\Node;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
@@ -25,17 +26,19 @@ class DaemonConfigurationRepository extends DaemonRepository
     }
 
     /**
-     * Updates the configuration information for a daemon.
+     * Updates the configuration information for a daemon. Updates the information for
+     * this instance using a passed-in model. This allows us to change plenty of information
+     * in the model, and still use the old, pre-update model to actually make the HTTP request.
      *
-     * @param array $attributes
+     * @param \Pterodactyl\Models\Node $node
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function update(array $attributes = [])
+    public function update(?Node $node)
     {
         try {
             return $this->getHttpClient()->post(
-                '/api/update', array_merge($this->node->getConfiguration(), $attributes)
+                '/api/update', ['json' => $node->getConfiguration()]
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
