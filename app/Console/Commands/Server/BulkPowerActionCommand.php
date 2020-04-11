@@ -5,14 +5,14 @@ namespace Pterodactyl\Console\Commands\Server;
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Repositories\Daemon\PowerRepository;
 use Illuminate\Validation\Factory as ValidatorFactory;
+use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class BulkPowerActionCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\DaemonPowerRepository
      */
     private $powerRepository;
 
@@ -42,27 +42,26 @@ class BulkPowerActionCommand extends Command
     /**
      * BulkPowerActionCommand constructor.
      *
-     * @param \Pterodactyl\Repositories\Daemon\PowerRepository $powerRepository
+     * @param \Pterodactyl\Repositories\Wings\DaemonPowerRepository $powerRepository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Illuminate\Validation\Factory $validator
      */
     public function __construct(
-        PowerRepository $powerRepository,
+        DaemonPowerRepository $powerRepository,
         ServerRepositoryInterface $repository,
         ValidatorFactory $validator
     ) {
         parent::__construct();
 
-        $this->powerRepository = $powerRepository;
         $this->repository = $repository;
         $this->validator = $validator;
+        $this->powerRepository = $powerRepository;
     }
 
     /**
      * Handle the bulk power request.
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
      */
     public function handle()
     {
@@ -105,7 +104,7 @@ class BulkPowerActionCommand extends Command
                 $this->powerRepository
                     ->setNode($server->node)
                     ->setServer($server)
-                    ->sendSignal($action);
+                    ->send($action);
             } catch (RequestException $exception) {
                 $this->output->error(trans('command/messages.server.power.action_failed', [
                     'name' => $server->name,
