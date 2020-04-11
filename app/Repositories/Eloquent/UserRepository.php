@@ -54,4 +54,22 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
             return $item;
         });
     }
+
+    /**
+     * Returns a user with the given id in a format that can be used for dropdowns.
+     *
+     * @param int $id
+     * @return \Pterodactyl\Models\Model
+     */
+    public function filterById(int $id): \Pterodactyl\Models\Model
+    {
+        $this->setColumns([
+            'id', 'email', 'username', 'name_first', 'name_last',
+        ]);
+
+        $model = $this->getBuilder()->findOrFail($id, $this->getColumns())->getModel();
+        $model->md5 = md5(strtolower($model->email));
+
+        return $model;
+    }
 }

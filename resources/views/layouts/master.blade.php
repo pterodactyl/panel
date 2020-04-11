@@ -274,8 +274,8 @@
             <div class="control-sidebar-bg"></div>
         </div>
         @section('footer-scripts')
-            {!! Theme::js('js/keyboard.polyfill.js?t={cache-version}') !!}
-            <script>keyboardeventKeyPolyfill.polyfill();</script>
+            {{--{!! Theme::js('js/keyboard.polyfill.js?t={cache-version}') !!}
+            <script>keyboardeventKeyPolyfill.polyfill();</script>--}}
 
             {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/sweetalert/sweetalert.min.js?t={cache-version}') !!}
@@ -284,7 +284,7 @@
             {!! Theme::js('vendor/adminlte/app.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/socketio/socket.io.v203.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js?t={cache-version}') !!}
-            {!! Theme::js('js/autocomplete.js?t={cache-version}') !!}
+            {{-- {!! Theme::js('js/autocomplete.js?t={cache-version}') !!} --}}
 
             @if(Auth::user()->root_admin)
                 <script>
