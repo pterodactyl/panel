@@ -43,7 +43,7 @@ $(document).ready(function() {
     });
 });
 
-var lastActiveBox = null;
+let lastActiveBox = null;
 $(document).on('click', function (event) {
     if (lastActiveBox !== null) {
         lastActiveBox.removeClass('box-primary');
@@ -79,8 +79,8 @@ $('#pNestId').on('change', function (event) {
 });
 
 $('#pEggId').on('change', function (event) {
-    var parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
-    var objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
+    let parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
+    let objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
 
     $('#pDefaultContainer').val(_.get(objectChain, 'docker_image', 'not defined!'));
 
@@ -103,8 +103,8 @@ $('#pEggId').on('change', function (event) {
 
     $('#appendVariablesTo').html('');
     $.each(_.get(objectChain, 'variables', []), function (i, item) {
-        var isRequired = (item.required === 1) ? '<span class="label label-danger">Required</span> ' : '';
-        var dataAppend = ' \
+        let isRequired = (item.required === 1) ? '<span class="label label-danger">Required</span> ' : '';
+        let dataAppend = ' \
             <div class="form-group col-sm-6"> \
                 <label for="var_ref_' + item.id + '" class="control-label">' + isRequired + item.name + '</label> \
                 <input type="text" id="var_ref_' + item.id + '" autocomplete="off" name="environment[' + item.env_variable + ']" class="form-control" value="' + item.default_value + '" /> \

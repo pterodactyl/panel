@@ -313,6 +313,19 @@
 
     <script type="application/javascript">
         $(document).ready(function() {
+            <!-- Persist 'Server Owner' select2 -->
+            @if (old('owner_id'))
+                $.ajax({
+                    url: '/admin/users/accounts.json?user_id={{ old('owner_id') }}',
+                    dataType: 'json',
+                }).then(function (data) {
+                    initUserIdSelect([ data ]);
+                });
+            @else
+                initUserIdSelect();
+            @endif
+            <!-- END Persist 'Server Owner' select2 -->
+
             <!-- Persist 'Node' select2 -->
             @if (old('node_id'))
                 $('#pNodeId').val('{{ old('node_id') }}').change();
@@ -337,18 +350,23 @@
             @endif
             <!-- END Persist 'Node' select2 -->
 
-            <!-- Persist 'Server Owner' select2 -->
-            @if (old('owner_id'))
-                $.ajax({
-                    url: '/admin/users/accounts.json?user_id={{ old('owner_id') }}',
-                    dataType: 'json',
-                }).then(function (data) {
-                    initUserIdSelect([ data ]);
-                });
-            @else
-                initUserIdSelect();
+            <!-- Persist 'Nest' select2 -->
+            @if (old('nest_id'))
+                $('#pNestId').val('{{ old('nest_id') }}').change();
+
+                <!-- Persist 'Egg' select2 -->
+                @if (old('egg_id'))
+                    $('#pEggId').val('{{ old('egg_id') }}').change();
+                @endif
+                <!-- END Persist 'Egg' select2 -->
+
+                <!-- Persist 'Data Pack' select2 -->
+                @if (old('pack_id'))
+                    $('#pPackId').val('{{ old('pack_id') }}').change();
+                @endif
+                <!-- END Persist 'Data Pack' select2 -->
             @endif
-            <!-- END Persist 'Server Owner' select2 -->
+            <!-- END Persist 'Nest' select2 -->
         });
     </script>
 @endsection
