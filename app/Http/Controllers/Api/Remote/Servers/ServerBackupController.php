@@ -3,8 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
