@@ -54,11 +54,11 @@ class PackUpdateServiceTest extends TestCase
     {
         $model = factory(Pack::class)->make();
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
-                'locked' => false,
-                'visible' => false,
-                'selectable' => false,
-                'test-data' => 'value',
-            ])->once()->andReturn(1);
+            'locked' => false,
+            'visible' => false,
+            'selectable' => false,
+            'test-data' => 'value',
+        ])->once()->andReturn(1);
 
         $this->assertEquals(1, $this->service->handle($model, ['test-data' => 'value']));
     }
@@ -88,11 +88,11 @@ class PackUpdateServiceTest extends TestCase
         $this->repository->shouldReceive('setColumns')->with(['id', 'egg_id'])->once()->andReturnSelf()
             ->shouldReceive('find')->with($model->id)->once()->andReturn($model);
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
-                'locked' => false,
-                'visible' => false,
-                'selectable' => false,
-                'test-data' => 'value',
-            ])->once()->andReturn(1);
+            'locked' => false,
+            'visible' => false,
+            'selectable' => false,
+            'test-data' => 'value',
+        ])->once()->andReturn(1);
 
         $this->assertEquals(1, $this->service->handle($model->id, ['test-data' => 'value']));
     }

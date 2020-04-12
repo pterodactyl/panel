@@ -173,7 +173,7 @@
             </footer>
         </div>
         @section('footer-scripts')
-            {!! Theme::js('js/keyboard.polyfill.js') !!}
+            <script src="/js/keyboard.polyfill.js" type="application/javascript"></script>
             <script>keyboardeventKeyPolyfill.polyfill();</script>
 
             {!! Theme::js('vendor/jquery/jquery.min.js?t={cache-version}') !!}
@@ -185,7 +185,7 @@
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/select2/select2.full.min.js?t={cache-version}') !!}
             {!! Theme::js('js/admin/functions.js?t={cache-version}') !!}
-            {!! Theme::js('js/autocomplete.js?t={cache-version}') !!}
+            <script src="/js/autocomplete.js" type="application/javascript"></script>
 
             @if(Auth::user()->root_admin)
                 <script>
