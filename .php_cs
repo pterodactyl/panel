@@ -47,6 +47,7 @@ return PhpCsFixer\Config::create()
         'psr4' => true,
         'random_api_migration' => true,
         'single_line_throw' => false,
+        'single_trait_insert_per_statement' => false,
         'standardize_not_equals' => true,
         'ternary_to_null_coalescing' => true,
         'yoda_style' => [

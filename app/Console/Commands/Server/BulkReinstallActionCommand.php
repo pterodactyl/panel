@@ -12,8 +12,8 @@ namespace Pterodactyl\Console\Commands\Server;
 use Webmozart\Assert\Assert;
 use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class BulkReinstallActionCommand extends Command
@@ -21,22 +21,22 @@ class BulkReinstallActionCommand extends Command
     /**
      * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
      */
-    protected $configurationStructureService;
+    private $configurationStructureService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
-    protected $daemonRepository;
+    private $daemonRepository;
+
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     */
+    private $repository;
 
     /**
      * @var string
      */
     protected $description = 'Reinstall a single server, all servers on a node, or all servers on the panel.';
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    protected $repository;
 
     /**
      * @var string
@@ -50,12 +50,12 @@ class BulkReinstallActionCommand extends Command
      *
      * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonRepository
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      */
     public function __construct(
         DaemonServerRepository $daemonRepository,
         ServerConfigurationStructureService $configurationStructureService,
-        ServerRepositoryInterface $repository
+        ServerRepository $repository
     ) {
         parent::__construct();
 
@@ -101,7 +101,7 @@ class BulkReinstallActionCommand extends Command
     /**
      * Return the servers to be reinstalled.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
      */
     private function getServersToProcess()
     {
