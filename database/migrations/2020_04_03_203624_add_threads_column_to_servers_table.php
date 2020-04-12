@@ -14,7 +14,7 @@ class AddThreadsColumnToServersTable extends Migration
     public function up()
     {
         Schema::table('servers', function (Blueprint $table) {
-            $table->string('threads')->nullable();
+            $table->string('threads')->nullable()->after('cpu');
         });
     }
 
