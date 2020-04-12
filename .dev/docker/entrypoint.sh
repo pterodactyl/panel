@@ -71,5 +71,10 @@ php artisan db:seed --force
 echo -e "Starting cron jobs."
 crond -L /var/log/crond -l 5
 
+## install yarn stuff
+yarn install --production
+yarn add cross-env
+yarn run build:production
+
 echo -e "Starting supervisord."
 exec "$@"

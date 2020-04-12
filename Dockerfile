@@ -2,7 +2,7 @@ FROM php:7.4-fpm-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot; \
+RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot yarn; \
     docker-php-ext-install bcmath; \
     docker-php-ext-install gd; \
     docker-php-ext-install mbstring; \
