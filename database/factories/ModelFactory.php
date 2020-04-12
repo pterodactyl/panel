@@ -98,7 +98,7 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker $faker) {
         'daemon_token' => Str::random(Node::DAEMON_TOKEN_LENGTH),
         'daemonListen' => 8080,
         'daemonSFTP' => 2022,
-        'daemonBase' => '/srv/daemon-data',
+        'daemonBase' => '/srv/daemon-data/',
     ];
 });
 
