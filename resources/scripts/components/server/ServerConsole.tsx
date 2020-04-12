@@ -6,6 +6,7 @@ import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
 import classNames from 'classnames';
 import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
 import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
+import { faHdd } from '@fortawesome/free-solid-svg-icons/faHdd';
 import { bytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -42,6 +43,7 @@ const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void 
 export default () => {
     const [ memory, setMemory ] = useState(0);
     const [ cpu, setCpu ] = useState(0);
+    const [ disk, setDisk ] = useState(0);
 
     const server = ServerContext.useStoreState(state => state.server.data!);
     const status = ServerContext.useStoreState(state => state.status.value);
@@ -58,6 +60,7 @@ export default () => {
 
         setMemory(stats.memory_bytes);
         setCpu(stats.cpu_absolute);
+        setDisk(stats.disk_bytes);
     };
 
     const sendPowerCommand = (command: PowerAction) => {
@@ -94,6 +97,14 @@ export default () => {
                     </p>
                     <p className={'text-xs mt-2'}>
                         <FontAwesomeIcon
+                            icon={faMicrochip}
+                            fixedWidth={true}
+                            className={'mr-1'}
+                        />
+                        &nbsp;{cpu.toFixed(2)} %
+                    </p>
+                    <p className={'text-xs mt-2'}>
+                        <FontAwesomeIcon
                             icon={faMemory}
                             fixedWidth={true}
                             className={'mr-1'}
@@ -103,11 +114,12 @@ export default () => {
                     </p>
                     <p className={'text-xs mt-2'}>
                         <FontAwesomeIcon
-                            icon={faMicrochip}
+                            icon={faHdd}
                             fixedWidth={true}
                             className={'mr-1'}
                         />
-                        &nbsp;{cpu.toFixed(2)} %
+                        &nbsp;{bytesToHuman(disk)}
+                        <span className={'text-neutral-500'}>/ {server.limits.disk} MB</span>
                     </p>
                 </TitledGreyBox>
                 <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny={true}>
