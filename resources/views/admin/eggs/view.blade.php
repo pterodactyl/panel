@@ -30,11 +30,6 @@
             </ul>
         </div>
     </div>
-    <div class="col-xs-12">
-        <div class="alert alert-info">
-            <strong>Notice:</strong> Editing an Egg or any of the Process Management fields <em>requires</em> that each Daemon be rebooted in order to apply the changes.
-        </div>
-    </div>
 </div>
 <form action="{{ route('admin.nests.egg.view', $egg->id) }}" enctype="multipart/form-data" method="POST">
     <div class="row">
@@ -165,11 +160,6 @@
                         <i class="fa fa-trash-o"></i>
                     </button>
                 </div>
-            </div>
-        </div>
-        <div class="col-xs-12">
-            <div class="alert alert-info">
-                <strong>Notice:</strong> Editing an Egg or any of the Process Management fields <em>requires</em> that each Daemon be rebooted in order to apply the changes.
             </div>
         </div>
     </div>
