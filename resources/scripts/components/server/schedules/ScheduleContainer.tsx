@@ -19,6 +19,7 @@ export default ({ match, history }: RouteComponentProps) => {
 
     const schedules = ServerContext.useStoreState(state => state.schedules.data);
     const setSchedules = ServerContext.useStoreActions(actions => actions.schedules.setSchedules);
+    const server = ServerContext.useStoreState(state => state.server.data!);
 
     useEffect(() => {
         clearFlashes('schedules');
@@ -30,6 +31,7 @@ export default ({ match, history }: RouteComponentProps) => {
             })
             .then(() => setLoading(false));
     }, []);
+    document.title = server.name + " | Schedules";
 
     return (
         <div className={'my-10 mb-6'}>

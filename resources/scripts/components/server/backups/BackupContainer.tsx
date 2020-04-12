@@ -17,6 +17,7 @@ export default () => {
 
     const backups = ServerContext.useStoreState(state => state.backups.data);
     const setBackups = ServerContext.useStoreActions(actions => actions.backups.setBackups);
+    const server = ServerContext.useStoreState(state => state.server.data!);
 
     useEffect(() => {
         clearFlashes('backups');
@@ -32,6 +33,7 @@ export default () => {
     if (backups.length === 0 && loading) {
         return <Spinner size={'large'} centered={true}/>;
     }
+    document.title = server.name + " | Backups";
 
     return (
         <div className={'mt-10 mb-6'}>

@@ -24,6 +24,7 @@ export default () => {
     const { id } = ServerContext.useStoreState(state => state.server.data!);
     const { contents: files } = ServerContext.useStoreState(state => state.files);
     const { getDirectoryContents } = ServerContext.useStoreActions(actions => actions.files);
+    const server = ServerContext.useStoreState(state => state.server.data!);
 
     useEffect(() => {
         setLoading(true);
@@ -36,6 +37,7 @@ export default () => {
                 addError({ message: httpErrorToHuman(error), key: 'files' });
             });
     }, []);
+    document.title = server.name + " | File Manager";
 
     return (
         <div className={'my-10 mb-6'}>

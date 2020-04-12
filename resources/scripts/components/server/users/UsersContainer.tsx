@@ -16,6 +16,7 @@ export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const subusers = ServerContext.useStoreState(state => state.subusers.data);
     const setSubusers = ServerContext.useStoreActions(actions => actions.subusers.setSubusers);
+    const server = ServerContext.useStoreState(state => state.server.data!);
 
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
     const getPermissions = useStoreActions((actions: Actions<ApplicationStore>) => actions.permissions.getPermissions);
@@ -45,6 +46,7 @@ export default () => {
         return <Spinner size={'large'} centered={true}/>;
     }
 
+    document.title = server.name + " | Users";
     return (
         <div className={'mt-10 mb-6'}>
             <FlashMessageRender byKey={'users'} className={'mb-4'}/>

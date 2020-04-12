@@ -12,6 +12,7 @@ import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox'
 export default () => {
     const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);
     const server = ServerContext.useStoreState(state => state.server.data!);
+    document.title = server.name + " | Settings";
 
     return (
         <div className={'my-10 mb-6'}>

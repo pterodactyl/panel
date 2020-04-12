@@ -75,6 +75,7 @@ export default () => {
             instance.removeListener('stats', statsListener);
         };
     }, [ instance, connected ]);
+    document.title = server.name + " | Console";
 
     return (
         <div className={'my-10 flex'}>

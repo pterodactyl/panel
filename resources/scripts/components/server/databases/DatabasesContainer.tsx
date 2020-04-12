@@ -18,6 +18,7 @@ export default () => {
 
     const databases = ServerContext.useStoreState(state => state.databases.data);
     const setDatabases = ServerContext.useStoreActions(state => state.databases.setDatabases);
+    const server = ServerContext.useStoreState(state => state.server.data!);
 
     useEffect(() => {
         setLoading(!databases.length);
@@ -31,6 +32,7 @@ export default () => {
             })
             .then(() => setLoading(false));
     }, []);
+    document.title = server.name + " | Databases";
 
     return (
         <div className={'my-10 mb-6'}>
