@@ -11,12 +11,26 @@ import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
 type Props = RequiredModalProps;
 
 interface Values {
     term: string;
 }
+
+const ServerResult = styled(Link)`
+    ${tw`flex items-center bg-neutral-900 p-4 rounded border-l-4 border-neutral-900 no-underline`};
+    transition: all 250ms linear;
+
+    &:hover {
+        ${tw`shadow border-cyan-500`};
+    }
+
+    &:not(:last-of-type) {
+        ${tw`mb-2`};
+    }
+`;
 
 const SearchWatcher = () => {
     const { values, submitForm } = useFormikContext<Values>();
@@ -91,10 +105,9 @@ export default ({ ...props }: Props) => {
                 <div className={'mt-6'}>
                     {
                         servers.map(server => (
-                            <Link
+                            <ServerResult
                                 key={server.uuid}
                                 to={`/server/${server.id}`}
-                                className={'flex items-center block bg-neutral-900 p-4 rounded border-l-4 border-neutral-900 no-underline hover:shadow hover:border-cyan-500 transition-colors duration-250'}
                                 onClick={() => props.onDismissed()}
                             >
                                 <div>
@@ -112,7 +125,7 @@ export default ({ ...props }: Props) => {
                                         {server.node}
                                     </span>
                                 </div>
-                            </Link>
+                            </ServerResult>
                         ))
                     }
                 </div>
