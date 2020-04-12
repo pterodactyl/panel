@@ -195,7 +195,7 @@ class EggConfigurationService
         // that. For example, the Spigot egg uses "config.docker.interface" to identify the Docker
         // interface to proxy through, but the Panel would be unaware of that.
         if (Str::startsWith($key, 'config.')) {
-            return "{{{$key}}}";
+            return preg_replace('/{{(.*)}}/', "{{{$key}}}", $value);
         }
 
         // Replace anything starting with "server." with the value out of the server configuration
