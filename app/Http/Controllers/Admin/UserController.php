@@ -177,10 +177,15 @@ class UserController extends Controller
      * Get a JSON response of users on the system.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection|\Pterodactyl\Models\Model
      */
     public function json(Request $request)
     {
+        // Handle single user requests.
+        if ($request->query('user_id')) {
+            return $this->repository->filterById($request->input('user_id'));
+        }
+
         return $this->repository->filterUsersByQuery($request->input('q'));
     }
 }
