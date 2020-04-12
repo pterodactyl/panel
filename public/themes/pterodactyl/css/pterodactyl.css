@@ -779,3 +779,8 @@ a {
 a:hover {
     color: #0967d3;
 }
+
+.form-control {
+    border-color: #606d7b;
+    background-color: #515f6c;
+}
