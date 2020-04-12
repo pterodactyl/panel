@@ -124,7 +124,22 @@ class EggConfigurationService
                 }
 
                 foreach ($value as $find => $replace) {
-                    $append['replace'][] = ['match' => $find, 'value' => $replace];
+                    if (is_object($replace)) {
+                        foreach ($replace as $match => $replaceWith) {
+                            $append['replace'][] = [
+                                'match' => $find,
+                                'if_value' => $match,
+                                'replace_with' => $replaceWith,
+                            ];
+                        }
+
+                        continue;
+                    }
+
+                    $append['replace'][] = [
+                        'match' => $find,
+                        'replace_with' => $replace,
+                    ];
                 }
             }
 
@@ -155,17 +170,13 @@ class EggConfigurationService
             return self::NOT_MATCHED;
         }
 
-        // We don't want to do anything with config keys since the Daemon will need to handle
-        // that. For example, the Spigot egg uses "config.docker.interface" to identify the Docker
-        // interface to proxy through, but the Panel would be unaware of that.
-        if (Str::startsWith($key, 'config.')) {
-            return "{{{$key}}}";
-        }
-
         // The legacy Daemon would set SERVER_MEMORY, SERVER_IP, and SERVER_PORT with their
         // respective values on the Daemon side. Ensure that anything referencing those properly
         // replaces them with the matching config value.
         switch ($key) {
+            case 'config.docker.interface':
+                $key = 'config.docker.network.interface';
+                break;
             case 'server.build.env.SERVER_MEMORY':
             case 'env.SERVER_MEMORY':
                 $key = 'server.build.memory';
@@ -178,6 +189,13 @@ class EggConfigurationService
             case 'env.SERVER_PORT':
                 $key = 'server.build.default.port';
                 break;
+        }
+
+        // We don't want to do anything with config keys since the Daemon will need to handle
+        // that. For example, the Spigot egg uses "config.docker.interface" to identify the Docker
+        // interface to proxy through, but the Panel would be unaware of that.
+        if (Str::startsWith($key, 'config.')) {
+            return "{{{$key}}}";
         }
 
         // Replace anything starting with "server." with the value out of the server configuration
