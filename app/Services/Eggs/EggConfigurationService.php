@@ -1,23 +1,17 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Eggs;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class EggConfigurationService
 {
+    private const NOT_MATCHED = '__no_match';
+
     /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
      */
@@ -109,63 +103,8 @@ class EggConfigurationService
         // can property map the egg placeholders to values.
         $structure = $this->configurationStructureService->handle($server, true);
 
-        foreach ($configs as $file => $data) {
-            foreach ($data->find ?? [] as &$value) {
-                preg_match('/^{{(?<key>.*)}}$/', $value, $matches);
-
-                if (! $key = $matches['key'] ?? null) {
-                    continue;
-                }
-
-                // Matched something in {{server.X}} format, now replace that with the actual
-                // value from the server properties.
-                //
-                // The Daemon supports server.X, env.X, and config.X placeholders.
-                if (! Str::startsWith($key, ['server.', 'env.', 'config.'])) {
-                    continue;
-                }
-
-                // We don't want to do anything with config keys since the Daemon will need to handle
-                // that. For example, the Spigot egg uses "config.docker.interface" to identify the Docker
-                // interface to proxy through, but the Panel would be unaware of that.
-                if (Str::startsWith($key, 'config.')) {
-                    $value = "{{{$key}}}";
-                    continue;
-                }
-
-                // The legacy Daemon would set SERVER_MEMORY, SERVER_IP, and SERVER_PORT with their
-                // respective values on the Daemon side. Ensure that anything referencing those properly
-                // replaces them with the matching config value.
-                switch ($key) {
-                    case 'server.build.env.SERVER_MEMORY':
-                    case 'env.SERVER_MEMORY':
-                        $key = 'server.build.memory';
-                        break;
-                    case 'server.build.env.SERVER_IP':
-                    case 'env.SERVER_IP':
-                        $key = 'server.build.default.ip';
-                        break;
-                    case 'server.build.env.SERVER_PORT':
-                    case 'env.SERVER_PORT':
-                        $key = 'server.build.default.port';
-                        break;
-                }
-
-                // Replace anything starting with "server." with the value out of the server configuration
-                // array that used to be created for the old daemon.
-                if (Str::startsWith($key, 'server.')) {
-                    $value = Arr::get(
-                        $structure, preg_replace('/^server\./', '', $key), ''
-                    );
-                    continue;
-                }
-
-                // Finally, replace anything starting with env. with the expected environment
-                // variable from the server configuration.
-                $value = Arr::get(
-                    $structure, preg_replace('/^env\./', 'build.env.', $key), ''
-                );
-            }
+        foreach ($configs as $file => &$data) {
+            $this->iterate($data->find, $structure);
         }
 
         $response = [];
@@ -193,5 +132,100 @@ class EggConfigurationService
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $value
+     * @param array $structure
+     * @return string|null
+     */
+    protected function matchAndReplaceKeys(string $value, array $structure): ?string
+    {
+        preg_match('/{{(?<key>.*)}}/', $value, $matches);
+
+        if (! $key = $matches['key'] ?? null) {
+            return self::NOT_MATCHED;
+        }
+
+        // Matched something in {{server.X}} format, now replace that with the actual
+        // value from the server properties.
+        //
+        // The Daemon supports server.X, env.X, and config.X placeholders.
+        if (! Str::startsWith($key, ['server.', 'env.', 'config.'])) {
+            return self::NOT_MATCHED;
+        }
+
+        // We don't want to do anything with config keys since the Daemon will need to handle
+        // that. For example, the Spigot egg uses "config.docker.interface" to identify the Docker
+        // interface to proxy through, but the Panel would be unaware of that.
+        if (Str::startsWith($key, 'config.')) {
+            return "{{{$key}}}";
+        }
+
+        // The legacy Daemon would set SERVER_MEMORY, SERVER_IP, and SERVER_PORT with their
+        // respective values on the Daemon side. Ensure that anything referencing those properly
+        // replaces them with the matching config value.
+        switch ($key) {
+            case 'server.build.env.SERVER_MEMORY':
+            case 'env.SERVER_MEMORY':
+                $key = 'server.build.memory';
+                break;
+            case 'server.build.env.SERVER_IP':
+            case 'env.SERVER_IP':
+                $key = 'server.build.default.ip';
+                break;
+            case 'server.build.env.SERVER_PORT':
+            case 'env.SERVER_PORT':
+                $key = 'server.build.default.port';
+                break;
+        }
+
+        // Replace anything starting with "server." with the value out of the server configuration
+        // array that used to be created for the old daemon.
+        if (Str::startsWith($key, 'server.')) {
+            $plucked = Arr::get(
+                $structure, preg_replace('/^server\./', '', $key), ''
+            );
+
+            return preg_replace('/{{(.*)}}/', $plucked, $value);
+        }
+
+        // Finally, replace anything starting with env. with the expected environment
+        // variable from the server configuration.
+        $plucked = Arr::get(
+            $structure, preg_replace('/^env\./', 'build.env.', $key), ''
+        );
+
+        return preg_replace('/{{(.*)}}/', $plucked, $value);
+    }
+
+    /**
+     * Iterates over a set of "find" values for a given file in the parser configuration. If
+     * the value of the line match is something iterable, continue iterating, otherwise perform
+     * a match & replace.
+     *
+     * @param mixed $data
+     * @param array $structure
+     */
+    private function iterate(&$data, array $structure)
+    {
+        if (! is_iterable($data) && ! is_object($data)) {
+            return;
+        }
+
+        foreach ($data as &$value) {
+            if (is_iterable($value) || is_object($value)) {
+                $this->iterate($value, $structure);
+
+                continue;
+            }
+
+            $response = $this->matchAndReplaceKeys($value, $structure);
+            if ($response === self::NOT_MATCHED) {
+                continue;
+            }
+
+            $value = $response;
+        }
     }
 }
