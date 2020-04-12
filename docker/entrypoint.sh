@@ -41,10 +41,10 @@ else
   echo "Checking if letsencrypt email is set."
   if [ -z $LE_EMAIL ]; then
     echo "No letsencrypt email is set using http config."
-    cp .dev/docker/default.conf /etc/nginx/conf.d/default.conf
+    cp docker/default.conf /etc/nginx/conf.d/default.conf
   else
     echo "writing ssl config"
-    cp .dev/docker/default_ssl.conf /etc/nginx/conf.d/default.conf
+    cp docker/default_ssl.conf /etc/nginx/conf.d/default.conf
     echo "updating ssl config for domain"
     sed -i "s|<domain>|$(echo $APP_URL | sed 's~http[s]*://~~g')|g" /etc/nginx/conf.d/default.conf
     echo "generating certs"
