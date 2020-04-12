@@ -41,8 +41,8 @@ class NodeCreationService
      */
     public function handle(array $data)
     {
-        $data['daemon_token'] = Str::random(Node::DAEMON_TOKEN_LENGTH);
-        $data['daemon_token_id'] = $this->encrypter->encrypt(Str::random(Node::DAEMON_TOKEN_ID_LENGTH));
+        $data['daemon_token'] = $this->encrypter->encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));
+        $data['daemon_token_id'] = Str::random(Node::DAEMON_TOKEN_ID_LENGTH);
 
         return $this->repository->create($data, true, true);
     }
