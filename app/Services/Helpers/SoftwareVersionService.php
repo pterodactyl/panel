@@ -61,7 +61,7 @@ class SoftwareVersionService
      */
     public function getDaemon()
     {
-        return Arr::get(self::$result, 'daemon') ?? 'error';
+        return Arr::get(self::$result, 'wings') ?? 'error';
     }
 
     /**
