@@ -9,7 +9,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Cake\Chronos\Chronos;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
@@ -299,19 +298,5 @@ class NodesController extends Controller
         $this->alert->success(trans('admin/node.notices.node_deleted'))->flash();
 
         return redirect()->route('admin.nodes');
-    }
-
-    /**
-     * Returns the configuration token to auto-deploy a node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function setToken(Node $node)
-    {
-        $token = bin2hex(random_bytes(16));
-        $this->cache->put('Node:Configuration:' . $token, $node->id, Chronos::now()->addMinutes(5));
-
-        return response()->json(['token' => $token]);
     }
 }
