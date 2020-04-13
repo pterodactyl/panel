@@ -1,7 +1,7 @@
 version: '2'
 services:
   database:
-    image: mariadb
+    image: mariadb:10.4
     volumes:
       - "/srv/pterodactyl/database:/var/lib/mysql"
     environment:
@@ -68,7 +68,7 @@ services:
       - "MAIL_PASSWORD=''"
       - "MAIL_ENCRYPTION=true"
       ## certbot settings - Used to automatically generate ssl certs and 
-      - "LE_EMAIL=''" ## leave blank unless you aree generating certs.
+      # - "LE_EMAIL=" ## uncomment if you are using ssl
 
 networks:
   default:
