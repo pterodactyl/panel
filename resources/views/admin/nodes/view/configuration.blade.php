@@ -71,8 +71,7 @@
             swal({
                 type: 'success',
                 title: 'Token created.',
-                text: 'Your token will expire <strong>in 5 minutes.</strong><br /><br />' +
-                      '<p>To auto-configure your node run the following command:<br /><small><pre>npm run configure -- --panel-url {{ config('app.url') }} --token ' + data.token + '</pre></small></p>',
+                text: '<p>To auto-configure your node run the following command:<br /><small><pre>cd /srv/wings && ./wings configure --panel-url {{ config('app.url') }} --token ' + data.token + ' --node ' + data.node + '{{ config('app.debug') ? ' --allow-insecure' : '' }}</pre></small></p>',
                 html: true
             })
         }).fail(function () {

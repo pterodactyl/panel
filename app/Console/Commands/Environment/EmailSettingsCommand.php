@@ -65,14 +65,14 @@ class EmailSettingsCommand extends Command
     public function handle()
     {
         $this->variables['MAIL_DRIVER'] = $this->option('driver') ?? $this->choice(
-                trans('command/messages.environment.mail.ask_driver'), [
+            trans('command/messages.environment.mail.ask_driver'), [
                 'smtp' => 'SMTP Server',
                 'mail' => 'PHP\'s Internal Mail Function',
                 'mailgun' => 'Mailgun Transactional Email',
                 'mandrill' => 'Mandrill Transactional Email',
                 'postmark' => 'Postmarkapp Transactional Email',
             ], $this->config->get('mail.driver', 'smtp')
-            );
+        );
 
         $method = 'setup' . studly_case($this->variables['MAIL_DRIVER']) . 'DriverVariables';
         if (method_exists($this, $method)) {

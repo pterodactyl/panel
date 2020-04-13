@@ -86,7 +86,7 @@ class ScheduleTaskController extends ClientApiController
         }
 
         $this->repository->update($task->id, [
-           'action' => $request->input('action'),
+            'action' => $request->input('action'),
             'payload' => $request->input('payload'),
             'time_offset' => $request->input('time_offset'),
         ]);

@@ -3,8 +3,8 @@
 use Ramsey\Uuid\Uuid;
 use Cake\Chronos\Chronos;
 use Illuminate\Support\Str;
-use Faker\Generator as Faker;
 use Pterodactyl\Models\Node;
+use Faker\Generator as Faker;
 use Pterodactyl\Models\ApiKey;
 
 /*
