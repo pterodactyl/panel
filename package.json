@@ -18,7 +18,7 @@
         "i18next-chained-backend": "^2.0.0",
         "i18next-localstorage-backend": "^3.0.0",
         "i18next-xhr-backend": "^3.2.2",
-        "jquery": "^3.3.1",
+        "jquery": "^3.5.0",
         "lodash-es": "^4.17.15",
         "path": "^0.12.7",
         "query-string": "^6.7.0",
