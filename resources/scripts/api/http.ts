@@ -25,6 +25,8 @@ http.interceptors.response.use(resp => {
     }
 
     return resp;
+}, () => {
+    store.getActions().progress.setComplete();
 });
 
 // If we have a phpdebugbar instance registered at this point in time go
