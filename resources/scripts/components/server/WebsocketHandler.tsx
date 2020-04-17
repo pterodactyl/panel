@@ -71,7 +71,7 @@ export default () => {
                     <ContentContainer className={'flex items-center justify-center'}>
                         <Spinner size={'tiny'}/>
                         <p className={'ml-2 text-sm text-red-100'}>
-                            We're having some trouble connecting to the console, please wait...
+                            We're having some trouble connecting to your server, please wait...
                         </p>
                     </ContentContainer>
                 </div>
