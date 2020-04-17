@@ -17,10 +17,10 @@ import UsersContainer from '@/components/server/users/UsersContainer';
 import Can from '@/components/elements/Can';
 import BackupContainer from '@/components/server/backups/BackupContainer';
 import Spinner from '@/components/elements/Spinner';
-import ServerInstalling from '@/components/screens/ServerInstalling';
 import ServerError from '@/components/screens/ServerError';
 import { httpErrorToHuman } from '@/api/http';
 import NotFound from '@/components/screens/NotFound';
+import ScreenBlock from '@/components/screens/ScreenBlock';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const [ error, setError ] = useState('');
@@ -63,7 +63,11 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             <Spinner size={'large'}/>
                         </div>
                     :
-                    <ServerInstalling/>
+                    <ScreenBlock
+                        title={'Your server is installing.'}
+                        image={'/assets/svgs/server_installing.svg'}
+                        message={'Please check back in a few minutes.'}
+                    />
                 :
                 <>
                     <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>

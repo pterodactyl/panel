@@ -43,5 +43,16 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
                 </div>
             </div>
         </Form>
+        <p className={'text-center text-neutral-500 text-xs mt-4'}>
+            &copy; 2015 - 2020&nbsp;
+            <a
+                rel={'noopener nofollow'}
+                href={'https://pterodactyl.io'}
+                target={'_blank'}
+                className={'no-underline text-neutral-500 hover:text-neutral-300'}
+            >
+                Pterodactyl Software
+            </a>
+        </p>
     </Container>
 ));

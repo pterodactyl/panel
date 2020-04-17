@@ -14,7 +14,7 @@ export default ({ className, children }: Props) => (
                 {children}
             </ContentContainer>
             <ContentContainer className={'mb-4'}>
-                <p className={'text-right text-neutral-500 text-xs'}>
+                <p className={'text-center text-neutral-500 text-xs'}>
                     &copy; 2015 - 2020&nbsp;
                     <a
                         rel={'noopener nofollow'}
