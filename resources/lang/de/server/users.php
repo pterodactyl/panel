@@ -1,0 +1,33 @@
+<?php
+
+return [
+    'permissions' => [
+        'websocket_*' => 'Erlaubt Zugriff auf den Websocket für diesen Server.',
+        'control_console' => 'Erlaubt dem Benutzer Daten an die Server Konsole zu senden.',
+        'control_start' => 'Erlaubt dem Benutzer die Server Instanz zu starten.',
+        'control_stop' => 'Erlaubt dem Benutzer die Server Instanz herunterzufahren.',
+        'control_restart' => 'Erlaubt dem Benutzer die Server Instanz neuzustarten.',
+        'control_kill' => 'Erlaubt dem Benutzer die Server Instanz zwangsweise zu stoppen.',
+        'user_create' => 'Erlaubt dem Benutzer neue Benutzer für den Server anzulegen.',
+        'user_read' => 'Erlaubt dem Benutzer dem Server zugehörige Benutzer anzusehen.',
+        'user_update' => 'Erlaubt dem Benutzer dem Server zugehörige Benutzer zu bearbeiten.',
+        'user_delete' => 'Erlaubt dem Benutzer dem Server zugehörige Benutzer zu löschen.',
+        'file_create' => 'Erlaubt dem Benutzer neue Dateien und Ordner im Dateisystem anzulegen.',
+        'file_read' => 'Erlaubt dem Benutzer Dateien und Ordner sowie deren Inhalte anzusehen.',
+        'file_update' => 'Erlaubt dem Benutzer Dateien und Ordner des Servers zu bearbeiten.',
+        'file_delete' => 'Erlaubt dem Benutzer Dateien und Ordner zu löschen.',
+        'file_archive' => 'Erlaubt dem Benutzer Archive anzulegen und existierende zu entpacken.',
+        'file_sftp' => 'Erlaubt dem Benutzer die oben genannten Dateirechte via SFTP zu nutzen.',
+        'allocation_read' => 'Erlaubt Zugriff auf die IP-Zuordnungen des Servers.',
+        'allocation_update' => 'Erlaubt dem Benutzer das Bearbeiten von IP-Zuordnungen des Servers.',
+        'database_create' => 'Erlaubt dem Benutzer das Erstellen von Datenbanken für diesen Server.',
+        'database_read' => 'Erlaubt dem Benutzer die existierenden Datenbanken des Servers anzusehen.',
+        'database_update' => 'Erlaubt dem Benutzer Änderungen an den Datenbanken des Servers durchzuführen. Nur mit der Erlaubnis "view_password" kann der Nutzer das Passwort der Datenbank ändern.',
+        'database_delete' => 'Erlaubt dem Benutzer das Löschen von Datenbanken.',
+        'database_view_password' => 'Erlaubt dem Benutzer das Ansehen von Passwörtern der Datenbanken.',
+        'schedule_create' => 'Erlaubt dem Benutzer das Erstellen neuer Aufgaben für den Server.',
+        'schedule_read' => 'Erlaubt dem Benutzer das Ansehen von Aufgaben des Servers.',
+        'schedule_update' => 'Erlaubt dem Benutzer Änderungen an existierenden Aufgaben durchzuführen.',
+        'schedule_delete' => 'Erlaubt dem Benutzer geplante Aufgaben zu löschen.',
+    ],
+];
