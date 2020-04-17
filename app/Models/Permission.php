@@ -15,7 +15,7 @@ class Permission extends Model
     /**
      * Constants defining different permissions available.
      */
-    const ACTION_WEBSOCKET = 'websocket.*';
+    const ACTION_WEBSOCKET_CONNECT = 'websocket.connect';
     const ACTION_CONTROL_CONSOLE = 'control.console';
     const ACTION_CONTROL_START = 'control.start';
     const ACTION_CONTROL_STOP = 'control.stop';
@@ -105,7 +105,7 @@ class Permission extends Model
         'websocket' => [
             'description' => 'Allows the user to connect to the server websocket, giving them access to view console output and realtime server stats.',
             'keys' => [
-                '*' => 'Gives user full read access to the websocket.',
+                'connect' => 'Allows a user to connect to the websocket instance for a server to stream the console.',
             ],
         ],
 

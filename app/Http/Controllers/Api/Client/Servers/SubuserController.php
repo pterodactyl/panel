@@ -123,6 +123,6 @@ class SubuserController extends ClientApiController
      */
     protected function getDefaultPermissions(Request $request): array
     {
-        return array_unique(array_merge($request->input('permissions') ?? [], ['websocket.*']));
+        return array_unique(array_merge($request->input('permissions') ?? [], ['websocket.connect']));
     }
 }

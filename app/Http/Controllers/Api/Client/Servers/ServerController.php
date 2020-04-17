@@ -5,7 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 
@@ -17,15 +17,22 @@ class ServerController extends ClientApiController
     private $repository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\GetUserPermissionsService
+     */
+    private $permissionsService;
+
+    /**
      * ServerController constructor.
      *
+     * @param \Pterodactyl\Services\Servers\GetUserPermissionsService $permissionsService
      * @param \Pterodactyl\Repositories\Eloquent\SubuserRepository $repository
      */
-    public function __construct(SubuserRepository $repository)
+    public function __construct(GetUserPermissionsService $permissionsService, SubuserRepository $repository)
     {
         parent::__construct();
 
         $this->repository = $repository;
+        $this->permissionsService = $permissionsService;
     }
 
     /**
@@ -38,20 +45,11 @@ class ServerController extends ClientApiController
      */
     public function index(GetServerRequest $request, Server $server): array
     {
-        try {
-            $permissions = $this->repository->findFirstWhere([
-                'server_id' => $server->id,
-                'user_id' => $request->user()->id,
-            ])->permissions;
-        } catch (RecordNotFoundException $exception) {
-            $permissions = [];
-        }
-
         return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->addMeta([
                 'is_server_owner' => $request->user()->id === $server->owner_id,
-                'user_permissions' => $permissions,
+                'user_permissions' => $this->permissionsService->handle($server, $request->user()),
             ])
             ->toArray();
     }

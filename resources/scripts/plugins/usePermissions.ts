@@ -15,7 +15,6 @@ export const usePermissions = (action: string | string[]): boolean[] => {
                 // will return if the user has any permission under the file.XYZ namespace.
                 (
                     permission.endsWith('.*') &&
-                    permission !== 'websocket.*' &&
                     userPermissions.filter(p => p.startsWith(permission.split('.')[0])).length > 0
                 ) ||
                 // Otherwise just check if the entire permission exists in the array or not.

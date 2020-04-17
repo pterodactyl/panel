@@ -47,7 +47,7 @@ export default ({ subuser }: Props) => {
             </div>
             <div className={'ml-4'}>
                 <p className={'font-medium text-center'}>
-                    {subuser.permissions.filter(permission => permission !== 'websocket.*').length}
+                    {subuser.permissions.filter(permission => permission !== 'websocket.connect').length}
                 </p>
                 <p className={'text-2xs text-neutral-500 uppercase'}>Permissions</p>
             </div>

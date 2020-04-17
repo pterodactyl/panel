@@ -5,13 +5,13 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
 use Illuminate\Contracts\Cache\Repository;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 
 class WebsocketController extends ClientApiController
@@ -27,17 +27,27 @@ class WebsocketController extends ClientApiController
     private $jwtService;
 
     /**
+     * @var \Pterodactyl\Services\Servers\GetUserPermissionsService
+     */
+    private $permissionsService;
+
+    /**
      * WebsocketController constructor.
      *
      * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
+     * @param \Pterodactyl\Services\Servers\GetUserPermissionsService $permissionsService
      * @param \Illuminate\Contracts\Cache\Repository $cache
      */
-    public function __construct(NodeJWTService $jwtService, Repository $cache)
-    {
+    public function __construct(
+        NodeJWTService $jwtService,
+        GetUserPermissionsService $permissionsService,
+        Repository $cache
+    ) {
         parent::__construct();
 
         $this->cache = $cache;
         $this->jwtService = $jwtService;
+        $this->permissionsService = $permissionsService;
     }
 
     /**
@@ -53,24 +63,8 @@ class WebsocketController extends ClientApiController
     public function __invoke(ClientApiRequest $request, Server $server)
     {
         $user = $request->user();
-        if ($user->cannot(Permission::ACTION_WEBSOCKET, $server)) {
+        if ($user->cannot(Permission::ACTION_WEBSOCKET_CONNECT, $server)) {
             throw new HttpException(Response::HTTP_FORBIDDEN, 'You do not have permission to connect to this server\'s websocket.');
-        }
-
-        if ($user->root_admin || $user->id === $server->owner_id) {
-            $permissions = ['*'];
-
-            if ($user->root_admin) {
-                $permissions[] = 'admin.errors';
-                $permissions[] = 'admin.install';
-            }
-        } else {
-            /** @var \Pterodactyl\Models\Subuser|null $subuserPermissions */
-            $subuserPermissions = $server->subusers->first(function (Subuser $subuser) use ($user) {
-                return $subuser->user_id === $user->id;
-            });
-
-            $permissions = $subuserPermissions ? $subuserPermissions->permissions : [];
         }
 
         $token = $this->jwtService
@@ -78,7 +72,7 @@ class WebsocketController extends ClientApiController
             ->setClaims([
                 'user_id' => $request->user()->id,
                 'server_uuid' => $server->uuid,
-                'permissions' => $permissions ?? [],
+                'permissions' => $this->permissionsService->handle($server, $user),
             ])
             ->handle($server->node, $user->id . $server->uuid);
 
