@@ -18,6 +18,8 @@ Route::group(['prefix' => '/servers/{uuid}'], function () {
     Route::post('/archive', 'Servers\ServerTransferController@archive');
     Route::get('/transfer/failure', 'Servers\ServerTransferController@failure');
     Route::get('/transfer/success', 'Servers\ServerTransferController@success');
+});
 
-    Route::post('/backup/{backup}', 'Servers\ServerBackupController');
+Route::group(['prefix' => '/backups'], function () {
+    Route::post('/{backup}', 'Backups\BackupStatusController');
 });

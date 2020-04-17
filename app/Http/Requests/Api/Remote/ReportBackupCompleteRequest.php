@@ -13,8 +13,8 @@ class ReportBackupCompleteRequest extends FormRequest
     {
         return [
             'successful' => 'boolean',
-            'sha256_hash' => 'string|required_if:successful,true',
-            'file_size' => 'numeric|required_if:successful,true',
+            'checksum' => 'string|required_if:successful,true',
+            'size' => 'numeric|required_if:successful,true',
         ];
     }
 }
