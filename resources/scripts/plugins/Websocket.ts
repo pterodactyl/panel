@@ -9,6 +9,12 @@ export const SOCKET_EVENTS = [
 ];
 
 export class Websocket extends EventEmitter {
+    // Timer instance for this socket.
+    private timer: any = null;
+
+    // The backoff for the timer, in milliseconds.
+    private backoff = 5000;
+
     // The socket instance being tracked.
     private socket: Sockette | null = null;
 
@@ -25,6 +31,7 @@ export class Websocket extends EventEmitter {
     // Connects to the websocket instance and sets the token for the initial request.
     connect (url: string): this {
         this.url = url;
+
         this.socket = new Sockette(`${this.url}`, {
             onmessage: e => {
                 try {
@@ -35,6 +42,10 @@ export class Websocket extends EventEmitter {
                 }
             },
             onopen: () => {
+                // Clear the timers, we managed to connect just fine.
+                this.timer && clearTimeout(this.timer);
+                this.backoff = 5000;
+
                 this.emit('SOCKET_OPEN');
                 this.authenticate();
             },
@@ -43,15 +54,19 @@ export class Websocket extends EventEmitter {
                 this.authenticate();
             },
             onclose: () => this.emit('SOCKET_CLOSE'),
-            onerror: () => this.emit('SOCKET_ERROR'),
+            onerror: error => this.emit('SOCKET_ERROR', error),
         });
 
-        return this;
-    }
+        this.timer = setTimeout(() => {
+            this.backoff = (this.backoff + 2500 >= 20000) ? 20000 : this.backoff + 2500;
+            this.socket && this.socket.close();
+            clearTimeout(this.timer);
 
-    // Returns the URL connected to for the socket.
-    getSocketUrl (): string | null {
-        return this.url;
+            // Re-attempt connecting to the socket.
+            this.connect(url);
+        }, this.backoff);
+
+        return this;
     }
 
     // Sets the authentication token to use when sending commands back and forth
@@ -64,11 +79,6 @@ export class Websocket extends EventEmitter {
         }
 
         return this;
-    }
-
-    // Returns the token being used at the current moment.
-    getToken (): string {
-        return this.token;
     }
 
     authenticate () {

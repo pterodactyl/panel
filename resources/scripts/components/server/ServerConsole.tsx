@@ -154,7 +154,7 @@ export default () => {
                     </div>
                 </Can>
             </div>
-            <div className={'flex-1 mx-4 mr-4'}>
+            <div className={'flex-1 ml-4'}>
                 <SuspenseSpinner>
                     <ChunkedConsole/>
                     <ChunkedStatGraphs/>

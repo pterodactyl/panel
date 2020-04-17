@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
 import getWebsocketToken from '@/api/server/getWebsocketToken';
+import ContentContainer from '@/components/elements/ContentContainer';
+import { CSSTransition } from 'react-transition-group';
+import Spinner from '@/components/elements/Spinner';
 
 export default () => {
     const server = ServerContext.useStoreState(state => state.server.data);
-    const { instance } = ServerContext.useStoreState(state => state.socket);
+    const [ error, setError ] = useState(false);
+    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const setServerStatus = ServerContext.useStoreActions(actions => actions.status.setServerStatus);
     const { setInstance, setConnectionState } = ServerContext.useStoreActions(actions => actions.socket);
 
@@ -14,6 +18,16 @@ export default () => {
             .then(data => socket.setToken(data.token, true))
             .catch(error => console.error(error));
     };
+
+    useEffect(() => {
+        connected && setError(false);
+    }, [ connected ]);
+
+    useEffect(() => {
+        return () => {
+            instance && instance.close();
+        };
+    }, [ instance ]);
 
     useEffect(() => {
         // If there is already an instance or there is no server, just exit out of this process
@@ -26,7 +40,10 @@ export default () => {
 
         socket.on('auth success', () => setConnectionState(true));
         socket.on('SOCKET_CLOSE', () => setConnectionState(false));
-        socket.on('SOCKET_ERROR', () => setConnectionState(false));
+        socket.on('SOCKET_ERROR', () => {
+            setError(true);
+            setConnectionState(false);
+        });
         socket.on('status', (status) => setServerStatus(status));
 
         socket.on('daemon error', message => {
@@ -47,5 +64,19 @@ export default () => {
             .catch(error => console.error(error));
     }, [ server ]);
 
-    return null;
+    return (
+        error ?
+            <CSSTransition timeout={250} in={true} appear={true} classNames={'fade'}>
+                <div className={'bg-red-500 py-2'}>
+                    <ContentContainer className={'flex items-center justify-center'}>
+                        <Spinner size={'tiny'}/>
+                        <p className={'ml-2 text-sm text-red-100'}>
+                            We're having some trouble connecting to the console, please wait...
+                        </p>
+                    </ContentContainer>
+                </div>
+            </CSSTransition>
+            :
+            null
+    );
 };
