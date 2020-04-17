@@ -9,6 +9,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerSubusers from '@/api/server/users/getServerSubusers';
 import { httpErrorToHuman } from '@/api/http';
 import Can from '@/components/elements/Can';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -46,7 +47,7 @@ export default () => {
     }
 
     return (
-        <div className={'mt-10 mb-6'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'users'} className={'mb-4'}/>
             {!subusers.length ?
                 <p className={'text-center text-sm text-neutral-400'}>
@@ -62,6 +63,6 @@ export default () => {
                     <AddSubuserButton/>
                 </div>
             </Can>
-        </div>
+        </PageContentBlock>
     );
 };

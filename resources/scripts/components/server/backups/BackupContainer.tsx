@@ -9,6 +9,7 @@ import CreateBackupButton from '@/components/server/backups/CreateBackupButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import BackupRow from '@/components/server/backups/BackupRow';
 import { ServerContext } from '@/state/server';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
     const { uuid } = useServer();
@@ -34,7 +35,7 @@ export default () => {
     }
 
     return (
-        <div className={'mt-10 mb-6'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'backups'} className={'mb-4'}/>
             {!backups.length ?
                 <p className="text-center text-sm text-neutral-400">
@@ -54,6 +55,6 @@ export default () => {
                     <CreateBackupButton/>
                 </div>
             </Can>
-        </div>
+        </PageContentBlock>
     );
 };

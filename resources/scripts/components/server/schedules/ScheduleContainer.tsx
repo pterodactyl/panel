@@ -10,6 +10,7 @@ import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import Can from '@/components/elements/Can';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default ({ match, history }: RouteComponentProps) => {
     const { uuid } = useServer();
@@ -32,7 +33,7 @@ export default ({ match, history }: RouteComponentProps) => {
     }, []);
 
     return (
-        <div className={'my-10 mb-6'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'schedules'} className={'mb-4'}/>
             {(!schedules.length && loading) ?
                 <Spinner size={'large'} centered={true}/>
@@ -76,6 +77,6 @@ export default ({ match, history }: RouteComponentProps) => {
                     </Can>
                 </>
             }
-        </div>
+        </PageContentBlock>
     );
 };

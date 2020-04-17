@@ -12,6 +12,7 @@ import { useParams } from 'react-router';
 import FileNameModal from '@/components/server/files/FileNameModal';
 import Can from '@/components/elements/Can';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const LazyAceEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/AceEditor'));
 
@@ -67,7 +68,7 @@ export default () => {
     };
 
     return (
-        <div className={'mt-10 mb-4'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'files:view'} className={'mb-4'}/>
             <FileManagerBreadcrumbs withinFileEditor={true} isNewFile={action !== 'edit'}/>
             <FileNameModal
@@ -104,6 +105,6 @@ export default () => {
                     </Can>
                 }
             </div>
-        </div>
+        </PageContentBlock>
     );
 };

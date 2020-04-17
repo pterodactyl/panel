@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import { SiteSettings } from '@/state/settings';
 import { DefaultTheme, ThemeProvider } from 'styled-components';
 import ProgressBar from '@/components/elements/ProgressBar';
+import NotFound from '@/components/screens/NotFound';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -65,6 +66,7 @@ const App = () => {
                                 <Route path="/server/:id" component={ServerRouter}/>
                                 <Route path="/auth" component={AuthenticationRouter}/>
                                 <Route path="/" component={DashboardRouter}/>
+                                <Route path={'*'} component={NotFound}/>
                             </Switch>
                         </BrowserRouter>
                     </div>

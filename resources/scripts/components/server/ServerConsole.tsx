@@ -11,6 +11,7 @@ import { bytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Can from '@/components/elements/Can';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -80,7 +81,7 @@ export default () => {
     }, [ instance, connected ]);
 
     return (
-        <div className={'my-10 flex'}>
+        <PageContentBlock className={'flex'}>
             <div className={'w-1/4'}>
                 <TitledGreyBox title={server.name} icon={faServer}>
                     <p className={'text-xs uppercase'}>
@@ -159,6 +160,6 @@ export default () => {
                     <ChunkedStatGraphs/>
                 </SuspenseSpinner>
             </div>
-        </div>
+        </PageContentBlock>
     );
 };

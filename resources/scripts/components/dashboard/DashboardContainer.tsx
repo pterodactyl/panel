@@ -3,6 +3,7 @@ import { Server } from '@/api/server/getServer';
 import getServers from '@/api/getServers';
 import ServerRow from '@/components/dashboard/ServerRow';
 import Spinner from '@/components/elements/Spinner';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
     const [ servers, setServers ] = useState<null | Server[]>(null);
@@ -18,7 +19,7 @@ export default () => {
     }
 
     return (
-        <div className={'my-10'}>
+        <PageContentBlock>
             {servers.length > 0 ?
                 servers.map(server => (
                     <ServerRow key={server.uuid} server={server} className={'mt-2'}/>
@@ -28,6 +29,6 @@ export default () => {
                     It looks like you have no servers.
                 </p>
             }
-        </div>
+        </PageContentBlock>
     );
 };

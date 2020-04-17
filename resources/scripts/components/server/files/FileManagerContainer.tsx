@@ -12,6 +12,7 @@ import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { Link } from 'react-router-dom';
 import Can from '@/components/elements/Can';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -38,7 +39,7 @@ export default () => {
     }, []);
 
     return (
-        <div className={'my-10 mb-6'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'files'} className={'mb-4'}/>
             <React.Fragment>
                 <FileManagerBreadcrumbs/>
@@ -92,6 +93,6 @@ export default () => {
                         </React.Fragment>
                 }
             </React.Fragment>
-        </div>
+        </PageContentBlock>
     );
 };

@@ -4,12 +4,13 @@ import { CSSTransition } from 'react-transition-group';
 
 interface Props {
     children: React.ReactNode;
+    className?: string;
 }
 
-export default ({ children }: Props) => (
+export default ({ className, children }: Props) => (
     <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
         <>
-            <ContentContainer className={'my-10'}>
+            <ContentContainer className={`my-10 ${className}`}>
                 {children}
             </ContentContainer>
             <ContentContainer className={'mb-4'}>

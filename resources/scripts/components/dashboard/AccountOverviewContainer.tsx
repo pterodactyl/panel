@@ -5,6 +5,7 @@ import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddr
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 import styled from 'styled-components';
 import { breakpoint } from 'styled-components-breakpoint';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const Container = styled.div`
     ${tw`flex flex-wrap my-10`};
@@ -24,16 +25,22 @@ const Container = styled.div`
 
 export default () => {
     return (
-        <Container>
-            <ContentBox title={'Update Password'} showFlashes={'account:password'}>
-                <UpdatePasswordForm/>
-            </ContentBox>
-            <ContentBox className={'mt-8 md:mt-0 md:ml-8'} title={'Update Email Address'} showFlashes={'account:email'}>
-                <UpdateEmailAddressForm/>
-            </ContentBox>
-            <ContentBox className={'xl:ml-8 mt-8 xl:mt-0'} title={'Configure Two Factor'}>
-                <ConfigureTwoFactorForm/>
-            </ContentBox>
-        </Container>
+        <PageContentBlock>
+            <Container>
+                <ContentBox title={'Update Password'} showFlashes={'account:password'}>
+                    <UpdatePasswordForm/>
+                </ContentBox>
+                <ContentBox
+                    className={'mt-8 md:mt-0 md:ml-8'}
+                    title={'Update Email Address'}
+                    showFlashes={'account:email'}
+                >
+                    <UpdateEmailAddressForm/>
+                </ContentBox>
+                <ContentBox className={'xl:ml-8 mt-8 xl:mt-0'} title={'Configure Two Factor'}>
+                    <ConfigureTwoFactorForm/>
+                </ContentBox>
+            </Container>
+        </PageContentBlock>
     );
 };

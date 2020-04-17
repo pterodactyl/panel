@@ -13,6 +13,7 @@ import { ApplicationStore } from '@/state';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { httpErrorToHuman } from '@/api/http';
 import format from 'date-fns/format';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
     const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
@@ -46,7 +47,7 @@ export default () => {
     };
 
     return (
-        <div className={'my-10'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'account'} className={'mb-4'}/>
             <div className={'flex'}>
                 <ContentBox title={'Create API Key'} className={'flex-1'}>
@@ -107,6 +108,6 @@ export default () => {
                     }
                 </ContentBox>
             </div>
-        </div>
+        </PageContentBlock>
     );
 };

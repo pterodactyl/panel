@@ -6,6 +6,7 @@ import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import TransitionRouter from '@/TransitionRouter';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
+import NotFound from '@/components/screens/NotFound';
 
 export default ({ location }: RouteComponentProps) => (
     <React.Fragment>
@@ -24,6 +25,7 @@ export default ({ location }: RouteComponentProps) => (
                 <Route path={'/account'} component={AccountOverviewContainer} exact/>
                 <Route path={'/account/api'} component={AccountApiContainer} exact/>
                 <Route path={'/design'} component={DesignElementsContainer}/>
+                <Route path={'*'} component={NotFound}/>
             </Switch>
         </TransitionRouter>
     </React.Fragment>

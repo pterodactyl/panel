@@ -10,6 +10,7 @@ import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseBu
 import Can from '@/components/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import useServer from '@/plugins/useServer';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
     const { uuid, featureLimits } = useServer();
@@ -33,7 +34,7 @@ export default () => {
     }, []);
 
     return (
-        <div className={'my-10 mb-6'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'databases'} className={'mb-4'}/>
             {(!databases.length && loading) ?
                 <Spinner size={'large'} centered={true}/>
@@ -67,6 +68,6 @@ export default () => {
                     </>
                 </CSSTransition>
             }
-        </div>
+        </PageContentBlock>
     );
 };

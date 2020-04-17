@@ -20,6 +20,7 @@ import Spinner from '@/components/elements/Spinner';
 import ServerInstalling from '@/components/screens/ServerInstalling';
 import ServerError from '@/components/screens/ServerError';
 import { httpErrorToHuman } from '@/api/http';
+import NotFound from '@/components/screens/NotFound';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const [ error, setError ] = useState('');
@@ -110,6 +111,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             <Route path={`${match.path}/users`} component={UsersContainer} exact/>
                             <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
                             <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                            <Route path={'*'} component={NotFound}/>
                         </Switch>
                     </TransitionRouter>
                 </>

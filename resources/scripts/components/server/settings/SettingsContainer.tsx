@@ -8,13 +8,14 @@ import RenameServerBox from '@/components/server/settings/RenameServerBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/components/elements/Can';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
     const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);
     const server = ServerContext.useStoreState(state => state.server.data!);
 
     return (
-        <div className={'my-10 mb-6'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'settings'} className={'mb-4'}/>
             <div className={'md:flex'}>
                 <Can action={'file.sftp'}>
@@ -69,6 +70,6 @@ export default () => {
                     </Can>
                 </div>
             </div>
-        </div>
+        </PageContentBlock>
     );
 };

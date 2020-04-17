@@ -14,6 +14,7 @@ import Can from '@/components/elements/Can';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 interface Params {
     id: string;
@@ -49,7 +50,7 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
     }, [ match ]);
 
     return (
-        <div className={'my-10 mb-6'}>
+        <PageContentBlock>
             <FlashMessageRender byKey={'schedules'} className={'mb-4'}/>
             {!schedule || isLoading ?
                 <Spinner size={'large'} centered={true}/>
@@ -104,6 +105,6 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                     </div>
                 </>
             }
-        </div>
+        </PageContentBlock>
     );
 };
