@@ -110,7 +110,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(memory)}
-                        <span className={'text-neutral-500'}>/ {server.limits.memory} MB</span>
+                        <span className={'text-neutral-500'}> / {server.limits.memory} MB</span>
                     </p>
                     <p className={'text-xs mt-2'}>
                         <FontAwesomeIcon
@@ -119,7 +119,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(disk)}
-                        <span className={'text-neutral-500'}>/ {server.limits.disk} MB</span>
+                        <span className={'text-neutral-500'}> / {server.limits.disk} MB</span>
                     </p>
                 </TitledGreyBox>
                 <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny={true}>
