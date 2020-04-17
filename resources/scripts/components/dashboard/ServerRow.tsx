@@ -23,8 +23,17 @@ const isAlarmState = (current: number, limit: number): boolean => {
 export default ({ server, className }: { server: Server; className: string | undefined }) => {
     const interval = useRef<number>(null);
     const [ stats, setStats ] = useState<ServerStats | null>(null);
+    const [ statsError, setStatsError ] = useState(false);
 
-    const getStats = () => getServerResourceUsage(server.uuid).then(data => setStats(data));
+    const getStats = () => {
+        setStatsError(false);
+        return getServerResourceUsage(server.uuid)
+            .then(data => setStats(data))
+            .catch(error => {
+                setStatsError(true);
+                console.error(error);
+            });
+    };
 
     useEffect(() => {
         getStats().then(() => {
@@ -66,7 +75,14 @@ export default ({ server, className }: { server: Server; className: string | und
             </div>
             <div className={'w-1/3 flex items-baseline relative'}>
                 {!stats ?
-                    <SpinnerOverlay size={'tiny'} visible={true} backgroundOpacity={0.25}/>
+                    !statsError ?
+                        <SpinnerOverlay size={'tiny'} visible={true} backgroundOpacity={0.25}/>
+                        :
+                        <div className={'flex-1 text-center'}>
+                            <span className={'bg-red-500 rounded px-2 py-1 text-red-100 text-xs'}>
+                                Connection Error
+                            </span>
+                        </div>
                     :
                     <React.Fragment>
                         <div className={'flex-1 flex ml-4 justify-center'}>
