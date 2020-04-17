@@ -7,7 +7,7 @@ import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer
 import NotFound from '@/components/screens/NotFound';
 
 export default ({ location, history, match }: RouteComponentProps) => (
-    <div className={'mt-8 xl:mt-32'}>
+    <div className={'pt-8 xl:pt-32'}>
         <Switch location={location}>
             <Route path={`${match.path}/login`} component={LoginContainer} exact/>
             <Route path={`${match.path}/login/checkpoint`} component={LoginCheckpointContainer}/>
