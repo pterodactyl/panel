@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
@@ -17,8 +17,13 @@ import UsersContainer from '@/components/server/users/UsersContainer';
 import Can from '@/components/elements/Can';
 import BackupContainer from '@/components/server/backups/BackupContainer';
 import Spinner from '@/components/elements/Spinner';
+import ServerInstalling from '@/components/screens/ServerInstalling';
+import ServerError from '@/components/screens/ServerError';
+import { httpErrorToHuman } from '@/api/http';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
+    const [ error, setError ] = useState('');
+    const [ installing, setInstalling ] = useState(false);
     const server = ServerContext.useStoreState(state => state.server.data);
     const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
@@ -28,7 +33,17 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     }, []);
 
     useEffect(() => {
-        getServer(match.params.id);
+        setError('');
+        setInstalling(false);
+        getServer(match.params.id)
+            .catch(error => {
+                if (error.response?.status === 409) {
+                    setInstalling(true);
+                } else {
+                    console.error(error);
+                    setError(httpErrorToHuman(error));
+                }
+            });
 
         return () => {
             clearServerState();
@@ -39,9 +54,15 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
         <React.Fragment key={'server-router'}>
             <NavigationBar/>
             {!server ?
-                <div className={'flex justify-center m-20'}>
-                    <Spinner size={'large'}/>
-                </div>
+                !installing ?
+                    error ?
+                        <ServerError message={error}/>
+                        :
+                        <div className={'flex justify-center m-20'}>
+                            <Spinner size={'large'}/>
+                        </div>
+                    :
+                    <ServerInstalling/>
                 :
                 <>
                     <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
