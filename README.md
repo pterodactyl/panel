@@ -1,57 +1,33 @@
-[![Logo Image](https://cdn.pterodactyl.io/logos/new/pterodactyl_logo.png)](https://pterodactyl.io)
+# Pryodactilus
 
-[![Build status](https://img.shields.io/travis/pterodactyl/panel/develop.svg?style=flat-square)](https://travis-ci.org/pterodactyl/panel)
-[![StyleCI](https://styleci.io/repos/47508644/shield?branch=develop)](https://styleci.io/repos/47508644)
-[![Codecov](https://img.shields.io/codecov/c/github/pterodactyl/panel/develop.svg?style=flat-square)](https://codecov.io/gh/Pterodactyl/Panel)
-[![Discord](https://img.shields.io/discord/122900397965705216.svg?style=flat-square&label=Discord)](https://pterodactyl.io/discord)
+> Forked from [pterodactly/panel](https://github.com/pterodactyl/panel), version 1.0.0-beta.1 licensed under MIT.
 
-# Pterodactyl Panel
+Pyrodactilus was formerly an open-source game server management panel called Pterodactyl. We aim to replace the provided UI with our custom fronted called [palutena](https://github.com/uphoriadev/palutena) and only keep the API and our changes.
 
-Pterodactyl is the open-source game server management panel built with PHP7, Nodejs, and Go. Designed with security in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive UI to administrators and users.
-What more are you waiting for? Make game servers a first class citizen on your platform today.
 
-![Image](https://cdn.pterodactyl.io/site-assets/mockup-macbook-grey.png)
+## Getting started
 
-## Support & Documentation
-Support for using Pterodactyl can be found on our [Documentation Website](https://pterodactyl.io/project/introduction.html), [Guides Website](https://pterodactyl.io/community/about.html), or via our [Discord Chat](https://discord.gg/QRDZvVm).
+At this time, Pyrodactilus can be launched the same way as Pterodactyl.
 
-### Supported Games
-We support a huge variety of games by utilizing Docker containers to isolate each instance, giving you the power to host your games across the world without having to bloat each physical machine with additional dependencies.
+Support can be found on our [their documentation](https://pterodactyl.io/project/introduction.html). Please head to [their repository](https://github.com/pterodactyl/panel) for further information.
 
-Some of our core supported games include:
 
-* Minecraft — including Spigot, Sponge, Bungeecord, Waterfall, and more
-* Rust
-* Terraria
-* Teamspeak
-* Mumble
-* Team Fortress 2
-* Counter Strike: Global Offensive
-* Garry's Mod
-* ARK: Survival Evolved
+## Licensing
 
-In addition to our standard nest of supported games, our community is constantly pushing the limits of this software and there are plenty more games available provided by the community. Some of these games include:
+Pryodactilus is licensed under [GPL-3.0](LICENSE). It includes our modifications and the original Pterodactyl source code that we redistribute.
 
-* Factorio
-* San Andreas: MP
-* Pocketmine MP
-* Squad
-* FiveM
-* Xonotic
-* Discord ATLBot
+```
+Copyright (C) 2020 Uphoria <hello@uphoria.dev>.
 
-## Credits
-This software would not be possible without the work of other open-source authors who provide tools such as:
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or any later version.
 
-[Ace Editor](https://ace.c9.io), [AdminLTE](https://almsaeedstudio.com), [Animate.css](http://daneden.github.io/animate.css/), [AnsiUp](https://github.com/drudru/ansi_up), [Async.js](https://github.com/caolan/async), 
-[Bootstrap](http://getbootstrap.com), [Bootstrap Notify](http://bootstrap-notify.remabledesigns.com), [Chart.js](http://www.chartjs.org), [FontAwesome](http://fontawesome.io),
-[FontAwesome Animations](https://github.com/l-lin/font-awesome-animation), [jQuery](http://jquery.com), [Laravel](https://laravel.com), [Lodash](https://lodash.com),
-[Select2](https://select2.github.io), [Socket.io](http://socket.io), [Socket.io File Upload](https://github.com/vote539/socketio-file-upload), [SweetAlert](http://t4t5.github.io/sweetalert),
-[Typeahead](https://github.com/bassjobsen/Bootstrap-3-Typeahead), and [Particles.js](http://vincentgarreau.com/particles.js).
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+```
 
-Some Javascript and CSS used within the panel is licensed under a `MIT` or `Apache 2.0` license. Please check their respective header files for more information.
+---
 
-## License
+Pterodactyl was originally released publicly under MIT.
+
 ```
 Copyright (c) 2015 - 2018 Dane Everitt <dane@daneeveritt.com>.
 
