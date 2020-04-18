@@ -7,7 +7,7 @@ namespace Pterodactyl\Models;
  * @property string $uuid
  * @property string $author
  * @property string $name
- * @property string $description
+ * @property string|null $description
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -46,7 +46,7 @@ class Nest extends Model
     public static $validationRules = [
         'author' => 'required|string|email',
         'name' => 'required|string|max:255',
-        'description' => 'sometimes|nullable|string',
+        'description' => 'nullable|string',
     ];
 
     /**

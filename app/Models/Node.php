@@ -13,7 +13,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
  * @property string $uuid
  * @property bool $public
  * @property string $name
- * @property string $description
+ * @property string|null $description
  * @property int $location_id
  * @property string $fqdn
  * @property string $scheme
@@ -111,7 +111,7 @@ class Node extends Model
      */
     public static $validationRules = [
         'name' => 'required|regex:/^([\w .-]{1,100})$/',
-        'description' => 'string',
+        'description' => 'string|nullable',
         'location_id' => 'required|exists:locations,id',
         'public' => 'boolean',
         'fqdn' => 'required|string',

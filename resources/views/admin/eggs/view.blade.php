@@ -89,7 +89,7 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pDescription" class="control-label">Description <span class="field-required"></span></label>
+                                <label for="pDescription" class="control-label">Description</label>
                                 <textarea id="pDescription" name="description" class="form-control" rows="6">{{ $egg->description }}</textarea>
                                 <p class="text-muted small">A description of this Egg that will be displayed throughout the Panel as needed.</p>
                             </div>

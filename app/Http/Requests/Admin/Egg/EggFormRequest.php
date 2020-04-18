@@ -20,7 +20,7 @@ class EggFormRequest extends AdminFormRequest
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'docker_image' => 'required|string|max:255',
             'startup' => 'required|string',
             'config_from' => 'sometimes|bail|nullable|numeric',
