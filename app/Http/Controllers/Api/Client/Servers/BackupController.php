@@ -87,7 +87,9 @@ class BackupController extends ClientApiController
         }
 
         $backup = $this->initiateBackupService
-            ->setIgnoredFiles($request->input('ignored'))
+            ->setIgnoredFiles(
+                explode(PHP_EOL, $request->input('ignored') ?? '')
+            )
             ->handle($server, $request->input('name'));
 
         return $this->fractal->item($backup)

@@ -4,6 +4,7 @@ namespace Pterodactyl\Services\Backups;
 
 use Ramsey\Uuid\Uuid;
 use Carbon\CarbonImmutable;
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
@@ -13,7 +14,7 @@ use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 class InitiateBackupService
 {
     /**
-     * @var string|null
+     * @var string[]|null
      */
     private $ignoredFiles;
 
@@ -52,12 +53,23 @@ class InitiateBackupService
     /**
      * Sets the files to be ignored by this backup.
      *
-     * @param string|null $ignored
+     * @param string[]|null $ignored
      * @return $this
      */
-    public function setIgnoredFiles(?string $ignored)
+    public function setIgnoredFiles(?array $ignored)
     {
-        $this->ignoredFiles = $ignored;
+        if (is_array($ignored)) {
+            foreach ($ignored as $value) {
+                Assert::string($value);
+            }
+        }
+
+        // Set the ignored files to be any values that are not empty in the array. Don't use
+        // the PHP empty function here incase anything that is "empty" by default (0, false, etc.)
+        // were passed as a file or folder name.
+        $this->ignoredFiles = is_null($ignored) ? [] : array_filter($ignored, function ($value) {
+            return strlen($value) > 0;
+        });
 
         return $this;
     }
@@ -79,7 +91,7 @@ class InitiateBackupService
                 'server_id' => $server->id,
                 'uuid' => Uuid::uuid4()->toString(),
                 'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-                'ignored_files' => $this->ignoredFiles ?? '',
+                'ignored_files' => is_array($this->ignoredFiles) ? array_values($this->ignoredFiles) : [],
                 'disk' => 'local',
             ], true, true);
 

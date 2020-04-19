@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $server_id
  * @property int $uuid
  * @property string $name
- * @property string $ignored_files
+ * @property string[] $ignored_files
  * @property string $disk
  * @property string|null $sha256_hash
  * @property int $bytes
@@ -45,6 +45,7 @@ class Backup extends Model
     protected $casts = [
         'id' => 'int',
         'bytes' => 'int',
+        'ignored_files' => 'array',
     ];
 
     /**
@@ -69,7 +70,7 @@ class Backup extends Model
         'server_id' => 'bail|required|numeric|exists:servers,id',
         'uuid' => 'required|uuid',
         'name' => 'required|string',
-        'ignored_files' => 'string',
+        'ignored_files' => 'array',
         'disk' => 'required|string',
         'sha256_hash' => 'nullable|string',
         'bytes' => 'numeric',

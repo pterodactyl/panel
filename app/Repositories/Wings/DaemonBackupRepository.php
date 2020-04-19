@@ -29,7 +29,7 @@ class DaemonBackupRepository extends DaemonRepository
                 [
                     'json' => [
                         'uuid' => $backup->uuid,
-                        'ignored_files' => explode(PHP_EOL, $backup->ignored_files),
+                        'ignored_files' => $backup->ignored_files,
                     ],
                 ]
             );

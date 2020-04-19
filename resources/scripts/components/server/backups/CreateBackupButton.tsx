@@ -33,7 +33,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                 </div>
                 <div className={'mb-6'}>
                     <FormikFieldWrapper
-                        name={'ignore'}
+                        name={'ignored'}
                         label={'Ignored Files & Directories'}
                         description={`
                             Enter the files or folders to ignore while generating this backup. Leave blank to use
@@ -43,7 +43,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                         `}
                     >
                         <FormikField
-                            name={'contents'}
+                            name={'ignored'}
                             component={'textarea'}
                             className={'input-dark h-32'}
                         />
