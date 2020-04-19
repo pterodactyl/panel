@@ -10,6 +10,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import { number, object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
 import useServer from '@/plugins/useServer';
+import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 
 interface Props {
     schedule: Schedule;
@@ -29,10 +30,8 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
     const { values: { action }, setFieldValue, setFieldTouched } = useFormikContext<Values>();
 
     useEffect(() => {
-        return () => {
-            setFieldValue('payload', '');
-            setFieldTouched('payload', false);
-        };
+        setFieldValue('payload', action === 'power' ? 'start' : '');
+        setFieldTouched('payload', false);
     }, [ action ]);
 
     return (
@@ -56,12 +55,14 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                         :
                         <div>
                             <label className={'input-dark-label'}>Payload</label>
-                            <FormikField as={'select'} name={'payload'} className={'input-dark'}>
-                                <option value={'start'}>Start the server</option>
-                                <option value={'restart'}>Restart the server</option>
-                                <option value={'stop'}>Stop the server</option>
-                                <option value={'kill'}>Terminate the server</option>
-                            </FormikField>
+                            <FormikFieldWrapper name={'payload'}>
+                                <FormikField as={'select'} name={'payload'} className={'input-dark'}>
+                                    <option value={'start'}>Start the server</option>
+                                    <option value={'restart'}>Restart the server</option>
+                                    <option value={'stop'}>Stop the server</option>
+                                    <option value={'kill'}>Terminate the server</option>
+                                </FormikField>
+                            </FormikFieldWrapper>
                         </div>
                     }
                 </div>
