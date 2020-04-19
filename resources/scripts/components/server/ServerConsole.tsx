@@ -127,7 +127,7 @@ export default () => {
                     <div className={'grey-box justify-center'}>
                         <Can action={'control.start'}>
                             <button
-                                className={'btn btn-secondary btn-xs mr-2'}
+                                className={'btn btn-secondary btn-green btn-xs mr-2'}
                                 disabled={status !== 'offline'}
                                 onClick={e => {
                                     e.preventDefault();
@@ -139,7 +139,7 @@ export default () => {
                         </Can>
                         <Can action={'control.restart'}>
                             <button
-                                className={'btn btn-secondary btn-xs mr-2'}
+                                className={'btn btn-secondary btn-primary btn-xs mr-2'}
                                 onClick={e => {
                                     e.preventDefault();
                                     sendPowerCommand('restart');

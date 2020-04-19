@@ -331,6 +331,12 @@ span[aria-labelledby="select2-pUserId-container"] {
     background: transparent !important;
 }
 
+.callout code {
+    background-color: #515f6cbb;
+    color: #c3c3c3;
+    border: 1px solid rgba(0, 0, 0, .25);
+}
+
 .tab-pane .box-footer {
     margin: 0 -10px -10px;
 }
@@ -485,7 +491,7 @@ label.control-label > span.field-optional:before {
 
 /* *******
 
-  > Version v0.8
+  > Version v1.0
 
 ******* */
 
@@ -546,8 +552,16 @@ body {
     color: #9aa5b1 !important;
 }
 
+.text-green {
+    color: #00a65a !important;
+}
+
 .text-muted {
     color: #9aa5b1 !important;
+}
+
+.text-danger {
+    color: #ff1c00;
 }
 
 .content-wrapper {
@@ -662,7 +676,7 @@ a {
 
 input.form-control {
     padding: .75rem;
-    background-color: #515f6c;
+    background-color: #515f6cbb;
     border-width: 1px;
     border-color: #606d7b;
     border-radius: .25rem;
@@ -674,7 +688,7 @@ input.form-control {
 
 textarea.form-control {
     padding: .75rem;
-    background-color: #515f6c;
+    background-color: #515f6cbb;
     border-width: 1px;
     border-color: #606d7b;
     border-radius: .25rem;
@@ -686,7 +700,7 @@ textarea.form-control {
 
 .input-group .input-group-addon {
     border-color: #606d7b;
-    background-color: #515f6c;
+    background-color: #515f6cbb;
     color: #cad1d8;
 }
 
@@ -695,7 +709,7 @@ textarea.form-control {
 }
 
 .select2-container--default .select2-selection--single {
-    background-color: #515f6c;
+    background-color: #515f6cbb;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -703,16 +717,17 @@ textarea.form-control {
 }
 
 .select2-container--default .select2-selection--multiple {
-    background-color: #515f6c;
+    background-color: #515f6cbb;
 }
 
 .select2-container--default .select2-selection--multiple {
     border: 1px solid #606d7b;
     border-radius: 0;
 }
+
 code {
-    background-color: #515f6c;
-    color: #999;
+    background-color: #515f6cbb;
+    color: #c3c3c3;
     border: 1px solid rgba(0, 0, 0, .25);
 }
 
@@ -760,12 +775,12 @@ code {
 }
 
 .select2-dropdown {
-    background-color: #515f6c;
+    background-color: #515f6cbb;
     border: 1px solid #606d7b;
 }
 .select2-container--default.select2-container--focus .select2-selection--multiple, .select2-container--default .select2-search--dropdown .select2-search__field {
     border-color: #d2d6de !important;
-    background-color: #515f6c;
+    background-color: #515f6cbb;
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
@@ -773,14 +788,38 @@ code {
 }
 
 a {
-    color: #099aa5;
+    color: #288afb;
 }
 
 a:hover {
-    color: #0967d3;
+    color: #206ec7;
 }
 
 .form-control {
     border-color: #606d7b;
-    background-color: #515f6c;
+    background-color: #515f6cbb;
+    color: #cad1d8;
+}
+
+.form-control[disabled], .form-control[readonly],
+fieldset[disabled] .form-control {
+    background-color: #1f2933;
+    color: #cad1d8;
+    cursor: not-allowed;
+}
+
+.well {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #515f6cbb;
+    border: 1px solid #606d7b;
+}
+
+.well-lg {
+    padding: 24px;
+}
+
+.well-sm {
+    padding: 9px;
 }
