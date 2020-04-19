@@ -229,7 +229,7 @@ a.btn {
 }
 
 input[type="checkbox"], input[type="radio"] {
-    @apply .appearance-none .inline-block .align-middle .select-none .flex-no-shrink .w-4 .h-4 .text-primary-400 .border .border-neutral-300 .rounded-sm;
+    @apply .cursor-pointer .appearance-none .inline-block .align-middle .select-none .flex-no-shrink .w-4 .h-4 .text-primary-400 .border .border-neutral-300 .rounded-sm;
     color-adjust: exact;
     background-origin: border-box;
     transition: all 75ms linear, box-shadow 25ms linear;

@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef } from 'react';
+import React, { forwardRef, useEffect, useRef } from 'react';
 import { Subuser } from '@/state/server/subusers';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { array, object, string } from 'yup';
@@ -16,6 +16,7 @@ import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/components/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
+import { useDeepMemo } from '@/plugins/useDeepMemo';
 
 type Props = {
     subuser?: Subuser;
@@ -37,12 +38,38 @@ const PermissionLabel = styled.label`
         ${tw`border-neutral-500 bg-neutral-800`};
       }
   }
+
+  &.disabled {
+      ${tw`opacity-50`};
+
+      & input[type="checkbox"]:not(:checked) {
+          ${tw`border-0`};
+      }
+  }
 `;
 
 const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...props }, ref) => {
     const { values, isSubmitting, setFieldValue } = useFormikContext<Values>();
-    const [ canEditUser ] = usePermissions([ 'user.update' ]);
-    const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
+    const [ canEditUser ] = usePermissions(subuser ? [ 'user.update' ] : [ 'user.create' ]);
+    const permissions = useStoreState(state => state.permissions.data);
+
+    // The currently logged in user's permissions. We're going to filter out any permissions
+    // that they should not need.
+    const loggedInPermissions = ServerContext.useStoreState(state => state.server.permissions);
+
+    // The permissions that can be modified by this user.
+    const editablePermissions = useDeepMemo(() => {
+        const cleaned = Object.keys(permissions)
+            .map(key => Object.keys(permissions[key].keys).map(pkey => `${key}.${pkey}`));
+
+        const list: string[] = ([] as string[]).concat.apply([], Object.values(cleaned));
+
+        if (loggedInPermissions.length === 1 && loggedInPermissions[0] === '*') {
+            return list;
+        }
+
+        return list.filter(key => loggedInPermissions.indexOf(key) >= 0);
+    }, [permissions, loggedInPermissions]);
 
     return (
         <Modal {...props} top={false} showSpinnerOverlay={isSubmitting}>
@@ -54,6 +81,12 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                 }
             </h3>
             <FlashMessageRender byKey={'user:edit'} className={'mt-4'}/>
+            <div className={'mt-4 pl-4 py-2 border-l-4 border-cyan-400'}>
+                <p className={'text-sm text-neutral-300'}>
+                    Only permissions which your account is currently assigned may be selected when creating or
+                    modifying other users.
+                </p>
+            </div>
             {!subuser &&
             <div className={'mt-6'}>
                 <Field
@@ -70,7 +103,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                         title={
                             <div className={'flex items-center'}>
                                 <p className={'text-sm uppercase flex-1'}>{key}</p>
-                                {canEditUser &&
+                                {canEditUser && editablePermissions.indexOf(key) >= 0 &&
                                 <input
                                     type={'checkbox'}
                                     onClick={e => {
@@ -106,7 +139,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                 htmlFor={`permission_${key}_${pkey}`}
                                 className={classNames('transition-colors duration-75', {
                                     'mt-2': index !== 0,
-                                    disabled: !canEditUser,
+                                    disabled: !canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0,
                                 })}
                             >
                                 <div className={'p-2'}>
@@ -115,7 +148,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                         name={'permissions'}
                                         value={`${key}.${pkey}`}
                                         className={'w-5 h-5 mr-2'}
-                                        disabled={!canEditUser}
+                                        disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
                                     />
                                 </div>
                                 <div className={'flex-1'}>
@@ -133,7 +166,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                     </TitledGreyBox>
                 ))}
             </div>
-            <Can action={subuser ? 'user.update' : 'user.delete'}>
+            <Can action={subuser ? 'user.update' : 'user.create'}>
                 <div className={'pb-6 flex justify-end'}>
                     <button className={'btn btn-primary btn-sm'} type={'submit'}>
                         {subuser ? 'Save' : 'Invite User'}
@@ -168,6 +201,10 @@ export default ({ subuser, ...props }: Props) => {
                 }
             });
     };
+
+    useEffect(() => {
+        clearFlashes('user:edit');
+    }, []);
 
     return (
         <Formik

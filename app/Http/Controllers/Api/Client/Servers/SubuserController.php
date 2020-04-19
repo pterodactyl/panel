@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
 use Pterodactyl\Transformers\Api\Client\SubuserTransformer;
@@ -123,6 +124,6 @@ class SubuserController extends ClientApiController
      */
     protected function getDefaultPermissions(Request $request): array
     {
-        return array_unique(array_merge($request->input('permissions') ?? [], ['websocket.connect']));
+        return array_unique(array_merge($request->input('permissions') ?? [], [Permission::ACTION_WEBSOCKET_CONNECT]));
     }
 }
