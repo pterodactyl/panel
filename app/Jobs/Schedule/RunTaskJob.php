@@ -12,10 +12,10 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Pterodactyl\Repositories\Eloquent\TaskRepository;
+use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class RunTaskJob extends Job implements ShouldQueue
@@ -54,16 +54,16 @@ class RunTaskJob extends Job implements ShouldQueue
      * Run the job and send actions to the daemon running the server.
      *
      * @param \Pterodactyl\Repositories\Wings\DaemonCommandRepository $commandRepository
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService $keyProviderService
+     * @param \Pterodactyl\Services\Backups\InitiateBackupService $backupService
      * @param \Pterodactyl\Repositories\Wings\DaemonPowerRepository $powerRepository
      * @param \Pterodactyl\Repositories\Eloquent\TaskRepository $taskRepository
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function handle(
         DaemonCommandRepository $commandRepository,
-        DaemonKeyProviderService $keyProviderService,
+        InitiateBackupService $backupService,
         DaemonPowerRepository $powerRepository,
         TaskRepository $taskRepository
     ) {
@@ -87,6 +87,9 @@ class RunTaskJob extends Job implements ShouldQueue
                 break;
             case 'command':
                 $commandRepository->setServer($server)->send($task->payload);
+                break;
+            case 'backup':
+                $backupService->setIgnoredFiles(explode(PHP_EOL, $task->payload))->handle($server, null);
                 break;
             default:
                 throw new InvalidArgumentException('Cannot run a task that points to a non-existent action.');

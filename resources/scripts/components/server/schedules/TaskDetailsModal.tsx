@@ -36,14 +36,17 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
 
     return (
         <Form className={'m-0'}>
-            <h3 className={'mb-6'}>Edit Task</h3>
+            <h3 className={'mb-6'}>{isEditingTask ? 'Edit Task' : 'Create Task'}</h3>
             <div className={'flex'}>
-                <div className={'mr-2'}>
+                <div className={'mr-2 w-1/3'}>
                     <label className={'input-dark-label'}>Action</label>
-                    <FormikField as={'select'} name={'action'} className={'input-dark'}>
-                        <option value={'command'}>Send command</option>
-                        <option value={'power'}>Send power action</option>
-                    </FormikField>
+                    <FormikFieldWrapper name={'action'}>
+                        <FormikField as={'select'} name={'action'} className={'input-dark'}>
+                            <option value={'command'}>Send command</option>
+                            <option value={'power'}>Send power action</option>
+                            <option value={'backup'}>Create backup</option>
+                        </FormikField>
+                    </FormikFieldWrapper>
                 </div>
                 <div className={'flex-1'}>
                     {action === 'command' ?
@@ -53,17 +56,25 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                             description={'The command to send to the server when this task executes.'}
                         />
                         :
-                        <div>
-                            <label className={'input-dark-label'}>Payload</label>
-                            <FormikFieldWrapper name={'payload'}>
-                                <FormikField as={'select'} name={'payload'} className={'input-dark'}>
-                                    <option value={'start'}>Start the server</option>
-                                    <option value={'restart'}>Restart the server</option>
-                                    <option value={'stop'}>Stop the server</option>
-                                    <option value={'kill'}>Terminate the server</option>
-                                </FormikField>
-                            </FormikFieldWrapper>
-                        </div>
+                        action === 'power' ?
+                            <div>
+                                <label className={'input-dark-label'}>Payload</label>
+                                <FormikFieldWrapper name={'payload'}>
+                                    <FormikField as={'select'} name={'payload'} className={'input-dark'}>
+                                        <option value={'start'}>Start the server</option>
+                                        <option value={'restart'}>Restart the server</option>
+                                        <option value={'stop'}>Stop the server</option>
+                                        <option value={'kill'}>Terminate the server</option>
+                                    </FormikField>
+                                </FormikFieldWrapper>
+                            </div>
+                            :
+                            <div>
+                                <label className={'input-dark-label'}>Ignored Files</label>
+                                <FormikFieldWrapper name={'payload'}>
+                                    <FormikField as={'textarea'} name={'payload'} className={'input-dark h-32'}/>
+                                </FormikFieldWrapper>
+                            </div>
                     }
                 </div>
             </div>
@@ -120,8 +131,12 @@ export default ({ task, schedule, onDismissed }: Props) => {
                 timeOffset: task?.timeOffset.toString() || '0',
             }}
             validationSchema={object().shape({
-                action: string().required().oneOf([ 'command', 'power' ]),
-                payload: string().required('A task payload must be provided.'),
+                action: string().required().oneOf([ 'command', 'power', 'backup' ]),
+                payload: string().when('action', {
+                    is: v => v !== 'backup',
+                    then: string().required('A task payload must be provided.'),
+                    otherwise: string(),
+                }),
                 timeOffset: number().typeError('The time offset must be a valid number between 0 and 900.')
                     .required('A time offset value must be provided.')
                     .min(0, 'The time offset must be at least 0 seconds.')

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Backups;
 
+use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Carbon\CarbonImmutable;
 use Webmozart\Assert\Assert;
@@ -10,6 +11,7 @@ use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class InitiateBackupService
 {
@@ -85,6 +87,14 @@ class InitiateBackupService
      */
     public function handle(Server $server, string $name = null): Backup
     {
+        $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
+        if ($previous->count() >= 2) {
+            throw new TooManyRequestsHttpException(
+                Carbon::now()->diffInSeconds($previous->last()->created_at->addMinutes(10)),
+                'Only two backups may be generated within a 10 minute span of time.'
+            );
+        }
+
         return $this->connection->transaction(function () use ($server, $name) {
             /** @var \Pterodactyl\Models\Backup $backup */
             $backup = $this->repository->create([
