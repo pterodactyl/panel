@@ -152,7 +152,7 @@ export default ({ database, className }: Props) => {
                     <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Username</p>
                 </div>
                 <div className={'ml-8 text-center'}>
-                    <p className={'text-sm'}>{database.max_connections}</p>
+                    <p className={'text-sm'}>{database.maxConnections}</p>
                     <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Max Connections</p>
                 </div>
                 <div className={'ml-8'}>

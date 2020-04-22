@@ -58,6 +58,7 @@ class DatabaseTransformer extends BaseClientTransformer
             'name' => $model->database,
             'username' => $model->username,
             'connections_from' => $model->remote,
+            'max_connections' => $model->max_connections,
         ];
     }
 
