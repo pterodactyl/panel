@@ -30,7 +30,7 @@ class Database extends Model
      * @var array
      */
     protected $fillable = [
-        'server_id', 'database_host_id', 'database', 'username', 'password', 'remote',
+        'server_id', 'database_host_id', 'database', 'username', 'password', 'remote', 'max_connections',
     ];
 
     /**
@@ -51,6 +51,7 @@ class Database extends Model
         'database_host_id' => 'required|exists:database_hosts,id',
         'database' => 'required|string|alpha_dash|between:3,100',
         'username' => 'string|alpha_dash|between:3,100',
+        'max_connections' => 'string',
         'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
         'password' => 'string',
     ];

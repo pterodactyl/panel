@@ -99,6 +99,7 @@
                         <th>Database Name</th>
                         <th>Username</th>
                         <th>Connections From</th>
+                        <th>Max Connections</th>
                         <th></th>
                     </tr>
                     @foreach($databases as $database)
@@ -107,6 +108,7 @@
                             <td class="middle">{{ $database->database }}</td>
                             <td class="middle">{{ $database->username }}</td>
                             <td class="middle">{{ $database->remote }}</td>
+                            <td class="middle">{{ $database->max_connections }}</td>
                             <td class="text-center">
                                 <a href="{{ route('admin.servers.view.database', $database->getRelation('server')->id) }}">
                                     <button class="btn btn-xs btn-primary">Manage</button>

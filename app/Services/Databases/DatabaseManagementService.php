@@ -84,7 +84,8 @@ class DatabaseManagementService
             $this->repository->createUser(
                 $database->username,
                 $database->remote,
-                $this->encrypter->decrypt($database->password)
+                $this->encrypter->decrypt($database->password),
+                $database->max_connections
             );
             $this->repository->assignUserToDatabase(
                 $database->database,

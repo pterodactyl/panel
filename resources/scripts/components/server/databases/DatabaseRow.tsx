@@ -151,6 +151,10 @@ export default ({ database, className }: Props) => {
                     <p className={'text-sm'}>{database.username}</p>
                     <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Username</p>
                 </div>
+                <div className={'ml-8 text-center'}>
+                    <p className={'text-sm'}>{database.max_connections}</p>
+                    <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Max Connections</p>
+                </div>
                 <div className={'ml-8'}>
                     <button className={'btn btn-sm btn-secondary mr-2'} onClick={() => setConnectionVisible(true)}>
                         <FontAwesomeIcon icon={faEye} fixedWidth={true}/>
