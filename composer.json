@@ -29,6 +29,9 @@
         "lcobucci/jwt": "^4.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "league/flysystem-memory": "^1.0",
+        "appstract/laravel-blade-directives": "^1.8",
+        "cakephp/chronos": "^1.3",
+        "laravel/socialite": "^4.3",
         "matriphe/iso-639": "^1.2",
         "pragmarx/google2fa": "^5.0",
         "predis/predis": "^1.1",
@@ -37,6 +40,7 @@
         "spatie/laravel-fractal": "^5.8",
         "spatie/laravel-query-builder": "^3.3",
         "staudenmeir/belongs-to-through": "^2.11",
+        "socialiteproviders/discord": "^2.0",
         "symfony/yaml": "^4.4",
         "webmozart/assert": "^1.9"
     },
