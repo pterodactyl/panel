@@ -68,7 +68,7 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * @param string $username
      * @param string $remote
      * @param string $password
-     * @param string $max_connections
+     * @param $max_connections
      * @return bool
      */
     public function createUser(string $username, string $remote, string $password, string $max_connections): bool;

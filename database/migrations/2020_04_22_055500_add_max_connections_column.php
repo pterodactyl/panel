@@ -14,7 +14,7 @@ class AddMaxConnectionsColumnToDatabasesTable extends Migration
     public function up()
     {
         Schema::table('databases', function (Blueprint $table) {
-            $table->integer('max_connections')->nullable(false)->default(0)->after('password');
+            $table->integer('max_connections')->nullable()->default(0)->after('password');
         });
     }
 

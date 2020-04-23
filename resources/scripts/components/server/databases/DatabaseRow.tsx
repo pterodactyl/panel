@@ -51,7 +51,10 @@ export default ({ database, className }: Props) => {
                 addError({ key: 'database:delete', message: httpErrorToHuman(error) });
             });
     };
-
+    if (!database.maxConnections){
+        database.maxConnections = "Unlimited"
+    }
+    
     return (
         <React.Fragment>
             <Formik

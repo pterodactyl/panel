@@ -46,7 +46,11 @@
                             <td>{{ $database->username }}</td>
                             <td>{{ $database->remote }}</td>
                             <td><code>{{ $database->host->host }}:{{ $database->host->port }}</code></td>
-                            <td>{{ $database->max_connections }}</td>
+                            @if($database->max_connections != null)
+                                <td>{{ $database->max_connections }}</td>
+                            @else
+                                <td>Unlimited</td>
+                            @endif
                             <td class="text-center">
                                 <button data-action="reset-password" data-id="{{ $database->id }}" class="btn btn-xs btn-primary"><i class="fa fa-refresh"></i></button>
                                 <button data-action="remove" data-id="{{ $database->id }}" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
@@ -86,9 +90,9 @@
                         <p class="text-muted small">This should reflect the IP address that connections are allowed from. Uses standard MySQL notation. If unsure leave as <code>%</code>.</p>
                     </div>
                     <div class="form-group">
-                        <label for="pmax_connections" class="control-label">Max Concurrent Connections</label>
-                        <input id="pmax_connections" type="text" name="max_connections" class="form-control" value="150" />
-                        <p class="text-muted small">This should reflect the max number of concurrent connections from this user to the database. Use <code>0</code> for unlimited</p>
+                        <label for="pmax_connections" class="control-label">Concurrent Connections</label>
+                        <input id="pmax_connections" type="text" name="max_connections" class="form-control"/>
+                        <p class="text-muted small">This should reflect the max number of concurrent connections from this user to the database. Leave empty for unlimited.</p>
                     </div>
                 </div>
                 <div class="box-footer">

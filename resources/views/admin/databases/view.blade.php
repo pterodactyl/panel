@@ -108,7 +108,11 @@
                             <td class="middle">{{ $database->database }}</td>
                             <td class="middle">{{ $database->username }}</td>
                             <td class="middle">{{ $database->remote }}</td>
-                            <td class="middle">{{ $database->max_connections }}</td>
+                            @if($database->max_connections != null)
+                                <td class="middle">{{ $database->max_connections }}</td>
+                            @else
+                                <td class="middle">Unlimited</td>
+                            @endif
                             <td class="text-center">
                                 <a href="{{ route('admin.servers.view.database', $database->getRelation('server')->id) }}">
                                     <button class="btn btn-xs btn-primary">Manage</button>
