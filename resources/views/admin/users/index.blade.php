@@ -58,7 +58,7 @@
                                 <td>{{ $user->username }}</td>
                                 <td class="text-center">
                                     @if($user->use_totp)
-                                        <i class="fa fa-lock text-green-500"></i>
+                                        <i class="fa fa-lock text-green"></i>
                                     @else
                                         <i class="fa fa-unlock text-red"></i>
                                     @endif
