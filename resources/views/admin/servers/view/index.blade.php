@@ -47,19 +47,25 @@
                                 <td><code>{{ $server->uuid }}</code></td>
                             </tr>
                             <tr>
-                                <td>Service</td>
+                                <td>Current Egg</td>
                                 <td>
                                     <a href="{{ route('admin.nests.view', $server->nest_id) }}">{{ $server->nest->name }}</a> ::
                                     <a href="{{ route('admin.nests.egg.view', $server->egg_id) }}">{{ $server->egg->name }}</a>
                                 </td>
                             </tr>
                             <tr>
-                                <td>Name</td>
+                                <td>Server Name</td>
                                 <td>{{ $server->name }}</td>
                             </tr>
                             <tr>
                                 <td>CPU Limit</td>
-                                <td><code>{{ $server->cpu }}%</code></td>
+                                <td>
+                                    @if($server->cpu === 0)
+                                        <code>Unlimited</code>
+                                    @else
+                                        <code>{{ $server->cpu }}%</code>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>CPU Threads</td>
@@ -67,13 +73,27 @@
                                     @if($server->threads != null)
                                         <code>{{ $server->threads }}</code>
                                     @else
-                                        <code>n/a</code>
+                                        <span class="label label-default">Not Set</span>
                                     @endif
                                 </td>
                             </tr>
                             <tr>
                                 <td>Memory</td>
-                                <td><code>{{ $server->memory }}MB</code> / <code data-toggle="tooltip" data-placement="top" title="Swap Space">{{ $server->swap }}MB</code></td>
+                                <td>
+                                    @if($server->memory === 0)
+                                        <code>Unlimited</code>
+                                    @else
+                                        <code>{{ $server->memory }}MB</code>
+                                    @endif
+                                    /
+                                    @if($server->swap === 0)
+                                        <code data-toggle="tooltip" data-placement="top" title="Swap Space">Not Set</code>
+                                    @elseif($server->swap === -1)
+                                        <code data-toggle="tooltip" data-placement="top" title="Swap Space">Unlimited</code>
+                                    @else
+                                        <code data-toggle="tooltip" data-placement="top" title="Swap Space"> {{ $server->swap }}MB</code>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>Disk Space</td>
