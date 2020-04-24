@@ -51,9 +51,6 @@ export default ({ database, className }: Props) => {
                 addError({ key: 'database:delete', message: httpErrorToHuman(error) });
             });
     };
-    if (!database.maxConnections){
-        database.maxConnections = "Unlimited"
-    }
     
     return (
         <React.Fragment>
@@ -153,10 +150,6 @@ export default ({ database, className }: Props) => {
                 <div className={'ml-8 text-center'}>
                     <p className={'text-sm'}>{database.username}</p>
                     <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Username</p>
-                </div>
-                <div className={'ml-8 text-center'}>
-                    <p className={'text-sm'}>{database.maxConnections}</p>
-                    <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Max Connections</p>
                 </div>
                 <div className={'ml-8'}>
                     <button className={'btn btn-sm btn-secondary mr-2'} onClick={() => setConnectionVisible(true)}>
