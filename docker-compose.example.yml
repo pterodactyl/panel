@@ -2,6 +2,7 @@ version: '2'
 services:
   database:
     image: mariadb:10.4
+    restart: always
     volumes:
       - "/srv/pterodactyl/database:/var/lib/mysql"
     environment:
@@ -14,9 +15,11 @@ services:
 
   cache:
     image: redis:alpine
+    restart: always
 
   panel:
     image: quay.io/pterodactyl/panel:latest
+    restart: always
     ports:
       - "80:80"
       - "443:443"
