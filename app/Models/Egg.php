@@ -8,7 +8,7 @@ namespace Pterodactyl\Models;
  * @property int $nest_id
  * @property string $author
  * @property string $name
- * @property string $description
+ * @property string|null $description
  * @property string $docker_image
  * @property string|null $config_files
  * @property string|null $config_startup
@@ -95,7 +95,7 @@ class Egg extends Model
         'nest_id' => 'required|bail|numeric|exists:nests,id',
         'uuid' => 'required|string|size:36',
         'name' => 'required|string|max:255',
-        'description' => 'required|string',
+        'description' => 'string|nullable',
         'author' => 'required|string|email',
         'docker_image' => 'required|string|max:255',
         'startup' => 'required|nullable|string',

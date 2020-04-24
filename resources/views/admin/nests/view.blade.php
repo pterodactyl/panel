@@ -32,7 +32,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Description <span class="field-required"></span></label>
+                        <label class="control-label">Description</label>
                         <div>
                             <textarea name="description" class="form-control" rows="7">{{ $nest->description }}</textarea>
                         </div>

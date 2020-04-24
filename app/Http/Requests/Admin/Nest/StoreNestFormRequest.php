@@ -20,7 +20,7 @@ class StoreNestFormRequest extends AdminFormRequest
     {
         return [
             'name' => 'required|string|min:1|max:255',
-            'description' => 'required|nullable|string',
+            'description' => 'string|nullable',
         ];
     }
 }
