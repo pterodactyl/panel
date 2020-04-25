@@ -77,7 +77,7 @@ const EnhancedForm = withFormik<Props, Values>({
                     window.location = response.intended || '/';
                     return;
                 }
-å
+
                 setSubmitting(false);
             })
             .catch(error => {
