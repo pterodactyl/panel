@@ -25,6 +25,7 @@ class StoreServerDatabaseRequest extends AdminFormRequest
                     $query->where('database_host_id', $this->input('database_host_id') ?? 0);
                 }),
             ],
+            'max_connections' => 'nullable',
             'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
             'database_host_id' => 'required|integer|exists:database_hosts,id',
         ];

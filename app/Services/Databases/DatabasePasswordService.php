@@ -71,7 +71,7 @@ class DatabasePasswordService
             ]);
 
             $this->repository->dropUser($database->username, $database->remote);
-            $this->repository->createUser($database->username, $database->remote, $password);
+            $this->repository->createUser($database->username, $database->remote, $password, $database->max_connections);
             $this->repository->assignUserToDatabase($database->database, $database->username, $database->remote);
             $this->repository->flush();
         });
