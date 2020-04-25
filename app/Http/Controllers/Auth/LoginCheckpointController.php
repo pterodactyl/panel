@@ -66,7 +66,7 @@ class LoginCheckpointController extends AbstractLoginController
      * provided a valid username and password.
      *
      * @param \Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|void
      *
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
@@ -75,18 +75,19 @@ class LoginCheckpointController extends AbstractLoginController
      */
     public function __invoke(LoginCheckpointRequest $request): JsonResponse
     {
+        $token = $request->input('confirmation_token');
+
         try {
-            $user = $this->repository->find(
-                $this->cache->pull($request->input('confirmation_token'), 0)
-            );
+            $user = $this->repository->find($this->cache->get($token, 0));
         } catch (RecordNotFoundException $exception) {
             return $this->sendFailedLoginResponse($request);
         }
 
         $decrypted = $this->encrypter->decrypt($user->totp_secret);
-        $window = $this->config->get('pterodactyl.auth.2fa.window');
 
-        if ($this->google2FA->verifyKey($decrypted, $request->input('authentication_code'), $window)) {
+        if ($this->google2FA->verifyKey($decrypted, (string) $request->input('authentication_code') ?? '', config('pterodactyl.auth.2fa.window'))) {
+            $this->cache->delete($token);
+
             return $this->sendLoginResponse($user, $request);
         }
 
