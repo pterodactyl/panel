@@ -12,24 +12,47 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 class DaemonBackupRepository extends DaemonRepository
 {
     /**
+     * @var string|null
+     */
+    protected $adapter;
+
+    /**
+     * Sets the backup adapter for this execution instance.
+     *
+     * @param string $adapter
+     * @return $this
+     */
+    public function setBackupAdapter(string $adapter)
+    {
+        $this->adapter = $adapter;
+
+        return $this;
+    }
+
+    /**
      * Tells the remote Daemon to begin generating a backup for the server.
      *
      * @param \Pterodactyl\Models\Backup $backup
+     * @param string|null $presignedUrl
      * @return \Psr\Http\Message\ResponseInterface
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function backup(Backup $backup): ResponseInterface
+    public function backup(Backup $backup, string $presignedUrl = null): ResponseInterface
     {
         Assert::isInstanceOf($this->server, Server::class);
+
+        $this->app->make('config')->get();
 
         try {
             return $this->getHttpClient()->post(
                 sprintf('/api/servers/%s/backup', $this->server->uuid),
                 [
                     'json' => [
+                        'adapter' => $this->adapter ?? config('backups.default'),
                         'uuid' => $backup->uuid,
                         'ignored_files' => $backup->ignored_files,
+                        'presigned_url' => $presignedUrl,
                     ],
                 ]
             );
