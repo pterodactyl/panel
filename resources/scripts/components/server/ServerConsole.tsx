@@ -12,6 +12,7 @@ import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Can from '@/components/elements/Can';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import ContentContainer from '@/components/elements/ContentContainer';
 
 type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -123,36 +124,47 @@ export default () => {
                         <span className={'text-neutral-500'}> / {server.limits.disk} MB</span>
                     </p>
                 </TitledGreyBox>
-                <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny={true}>
-                    <div className={'grey-box justify-center'}>
-                        <Can action={'control.start'}>
-                            <button
-                                className={'btn btn-secondary btn-green btn-xs mr-2'}
-                                disabled={status !== 'offline'}
-                                onClick={e => {
-                                    e.preventDefault();
-                                    sendPowerCommand('start');
-                                }}
-                            >
-                                Start
-                            </button>
-                        </Can>
-                        <Can action={'control.restart'}>
-                            <button
-                                className={'btn btn-secondary btn-primary btn-xs mr-2'}
-                                onClick={e => {
-                                    e.preventDefault();
-                                    sendPowerCommand('restart');
-                                }}
-                            >
-                                Restart
-                            </button>
-                        </Can>
-                        <Can action={'control.stop'}>
-                            <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
-                        </Can>
+                {!server.isInstalling ?
+                    <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny={true}>
+                        <div className={'grey-box justify-center'}>
+                            <Can action={'control.start'}>
+                                <button
+                                    className={'btn btn-secondary btn-green btn-xs mr-2'}
+                                    disabled={status !== 'offline'}
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        sendPowerCommand('start');
+                                    }}
+                                >
+                                    Start
+                                </button>
+                            </Can>
+                            <Can action={'control.restart'}>
+                                <button
+                                    className={'btn btn-secondary btn-primary btn-xs mr-2'}
+                                    onClick={e => {
+                                        e.preventDefault();
+                                        sendPowerCommand('restart');
+                                    }}
+                                >
+                                    Restart
+                                </button>
+                            </Can>
+                            <Can action={'control.stop'}>
+                                <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
+                            </Can>
+                        </div>
+                    </Can>
+                    :
+                    <div className={'mt-4 rounded bg-yellow-500 p-3'}>
+                        <ContentContainer>
+                            <p className={'text-sm text-yellow-900'}>
+                                This server is currently running its installation process and most actions are
+                                unavailable.
+                            </p>
+                        </ContentContainer>
                     </div>
-                </Can>
+                }
             </div>
             <div className={'flex-1 ml-4'}>
                 <SuspenseSpinner>

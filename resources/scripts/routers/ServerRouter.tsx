@@ -20,18 +20,26 @@ import Spinner from '@/components/elements/Spinner';
 import ServerError from '@/components/screens/ServerError';
 import { httpErrorToHuman } from '@/api/http';
 import NotFound from '@/components/screens/NotFound';
+import { useStoreState } from 'easy-peasy';
+import ServerInstallingBar from '@/components/elements/ServerInstallingBar';
+import useServer from '@/plugins/useServer';
 import ScreenBlock from '@/components/screens/ScreenBlock';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
+    const { rootAdmin } = useStoreState(state => state.user.data!);
     const [ error, setError ] = useState('');
     const [ installing, setInstalling ] = useState(false);
-    const server = ServerContext.useStoreState(state => state.server.data);
+    const server = useServer();
     const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
 
     useEffect(() => () => {
         clearServerState();
     }, []);
+
+    useEffect(() => {
+        setInstalling(server?.isInstalling !== false);
+    }, [ server?.isInstalling ]);
 
     useEffect(() => {
         setError('');
@@ -55,19 +63,12 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
         <React.Fragment key={'server-router'}>
             <NavigationBar/>
             {!server ?
-                !installing ?
-                    error ?
-                        <ServerError message={error}/>
-                        :
-                        <div className={'flex justify-center m-20'}>
-                            <Spinner size={'large'}/>
-                        </div>
+                error ?
+                    <ServerError message={error}/>
                     :
-                    <ScreenBlock
-                        title={'Your server is installing.'}
-                        image={'/assets/svgs/server_installing.svg'}
-                        message={'Please check back in a few minutes.'}
-                    />
+                    <div className={'flex justify-center m-20'}>
+                        <Spinner size={'large'}/>
+                    </div>
                 :
                 <>
                     <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
@@ -95,29 +96,43 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             </div>
                         </div>
                     </CSSTransition>
-                    <WebsocketHandler/>
-                    <TransitionRouter>
-                        <Switch location={location}>
-                            <Route path={`${match.path}`} component={ServerConsole} exact/>
-                            <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
-                            <Route
-                                path={`${match.path}/files/:action(edit|new)`}
-                                render={props => (
-                                    <SuspenseSpinner>
-                                        <FileEditContainer {...props as any}/>
-                                    </SuspenseSpinner>
-                                )}
-                                exact
-                            />
-                            <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
-                            <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
-                            <Route path={`${match.path}/schedules/:id`} component={ScheduleEditContainer} exact/>
-                            <Route path={`${match.path}/users`} component={UsersContainer} exact/>
-                            <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
-                            <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
-                            <Route path={'*'} component={NotFound}/>
-                        </Switch>
-                    </TransitionRouter>
+                    {(installing && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${server.id}`)))) ?
+                        <ScreenBlock
+                            title={'Your server is installing.'}
+                            image={'/assets/svgs/server_installing.svg'}
+                            message={'Please check back in a few minutes.'}
+                        />
+                        :
+                        <>
+                            <WebsocketHandler/>
+                            <TransitionRouter>
+                                <Switch location={location}>
+                                    <Route path={`${match.path}`} component={ServerConsole} exact/>
+                                    <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
+                                    <Route
+                                        path={`${match.path}/files/:action(edit|new)`}
+                                        render={props => (
+                                            <SuspenseSpinner>
+                                                <FileEditContainer {...props as any}/>
+                                            </SuspenseSpinner>
+                                        )}
+                                        exact
+                                    />
+                                    <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
+                                    <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
+                                    <Route
+                                        path={`${match.path}/schedules/:id`}
+                                        component={ScheduleEditContainer}
+                                        exact
+                                    />
+                                    <Route path={`${match.path}/users`} component={UsersContainer} exact/>
+                                    <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
+                                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                                    <Route path={'*'} component={NotFound}/>
+                                </Switch>
+                            </TransitionRouter>
+                        </>
+                    }
                 </>
             }
         </React.Fragment>
