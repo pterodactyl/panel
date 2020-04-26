@@ -118,15 +118,21 @@
                         <div>
                             <input type="text" id="pDatabaseLimit" name="database_limit" class="form-control" value="{{ old('database_limit', 0) }}"/>
                         </div>
-                        <p class="text-muted small">The total number of databases a user is allowed to create for this server. Leave blank to allow unlimited.</p>
+                        <p class="text-muted small">The total number of databases a user is allowed to create for this server.</p>
                     </div>
-
                     <div class="form-group col-xs-6">
                         <label for="pAllocationLimit" class="control-label">Allocation Limit</label>
                         <div>
                             <input type="text" id="pAllocationLimit" name="allocation_limit" class="form-control" value="{{ old('allocation_limit', 0) }}"/>
                         </div>
-                        <p class="text-muted small">The total number of allocations a user is allowed to create for this server. Leave blank to allow unlimited.</p>
+                        <p class="text-muted small">The total number of allocations a user is allowed to create for this server.</p>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <label for="pBackupLimit" class="control-label">Backup Limit</label>
+                        <div>
+                            <input type="text" id="pBackupLimit" name="backup_limit" class="form-control" value="{{ old('backup_limit', 0) }}"/>
+                        </div>
+                        <p class="text-muted small">The total number of backups that can be created for this server.</p>
                     </div>
                 </div>
             </div>

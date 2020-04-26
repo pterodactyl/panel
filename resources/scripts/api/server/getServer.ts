@@ -29,6 +29,7 @@ export interface Server {
     featureLimits: {
         databases: number;
         allocations: number;
+        backups: number;
     };
     isSuspended: boolean;
     isInstalling: boolean;

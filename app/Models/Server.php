@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Models;
 
-use Schema;
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Models\Traits\Searchable;
 use Znck\Eloquent\Traits\BelongsToThrough;
@@ -34,6 +33,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $installed
  * @property int $allocation_limit
  * @property int $database_limit
+ * @property int $backup_limit
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -127,6 +127,7 @@ class Server extends Model
         'installed' => 'in:0,1,2',
         'database_limit' => 'present|nullable|integer|min:0',
         'allocation_limit' => 'sometimes|nullable|integer|min:0',
+        'backup_limit' => 'present|nullable|integer|min:0',
     ];
 
     /**
@@ -152,6 +153,7 @@ class Server extends Model
         'installed' => 'integer',
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
+        'backup_limit' => 'integer',
     ];
 
     /**
@@ -169,16 +171,6 @@ class Server extends Model
         'node.name' => 10,
         'pack.name' => 10,
     ];
-
-    /**
-     * Return the columns available for this table.
-     *
-     * @return array
-     */
-    public function getTableColumns()
-    {
-        return Schema::getColumnListing($this->getTable());
-    }
 
     /**
      * Returns the format for server allocations when communicating with the Daemon.

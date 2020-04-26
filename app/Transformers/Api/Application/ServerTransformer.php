@@ -80,6 +80,7 @@ class ServerTransformer extends BaseTransformer
             'feature_limits' => [
                 'databases' => $server->database_limit,
                 'allocations' => $server->allocation_limit,
+                'backups' => $server->backup_limit,
             ],
             'user' => $server->owner_id,
             'node' => $server->node_id,

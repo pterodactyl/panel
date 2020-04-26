@@ -249,8 +249,9 @@ class ServerCreationService
             'pack_id' => empty($data['pack_id']) ? null : $data['pack_id'],
             'startup' => Arr::get($data, 'startup'),
             'image' => Arr::get($data, 'image'),
-            'database_limit' => Arr::get($data, 'database_limit'),
-            'allocation_limit' => Arr::get($data, 'allocation_limit'),
+            'database_limit' => Arr::get($data, 'database_limit', 0),
+            'allocation_limit' => Arr::get($data, 'allocation_limit', 0),
+            'backup_limit' => Arr::get($data, 'backup_limit', 0),
         ]);
 
         return $model;
