@@ -21,7 +21,6 @@ import ServerError from '@/components/screens/ServerError';
 import { httpErrorToHuman } from '@/api/http';
 import NotFound from '@/components/screens/NotFound';
 import { useStoreState } from 'easy-peasy';
-import ServerInstallingBar from '@/components/elements/ServerInstallingBar';
 import useServer from '@/plugins/useServer';
 import ScreenBlock from '@/components/screens/ScreenBlock';
 
