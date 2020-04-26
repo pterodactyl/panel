@@ -42,8 +42,6 @@ class DaemonBackupRepository extends DaemonRepository
     {
         Assert::isInstanceOf($this->server, Server::class);
 
-        $this->app->make('config')->get();
-
         try {
             return $this->getHttpClient()->post(
                 sprintf('/api/servers/%s/backup', $this->server->uuid),
