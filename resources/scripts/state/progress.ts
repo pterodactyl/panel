@@ -22,7 +22,10 @@ const progress: ProgressStore = {
     }),
 
     setComplete: action(state => {
-        state.progress = 100;
+        if (state.progress) {
+            state.progress = 100;
+        }
+
         state.continuous = false;
     }),
 };
