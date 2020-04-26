@@ -11,6 +11,7 @@ use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
+use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class InitiateBackupService
@@ -84,9 +85,16 @@ class InitiateBackupService
      * @return \Pterodactyl\Models\Backup
      *
      * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException
+     * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      */
     public function handle(Server $server, string $name = null): Backup
     {
+        // Do not allow the user to continue if this server is already at its limit.
+        if (! $server->backup_limit || $server->backups()->count() >= $server->backup_limit) {
+            throw new TooManyBackupsException($server->backup_limit);
+        }
+
         $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
         if ($previous->count() >= 2) {
             throw new TooManyRequestsHttpException(
