@@ -78,16 +78,16 @@ export default ({ server, className }: { server: Server; className: string | und
                     !statsError ?
                         <SpinnerOverlay size={'tiny'} visible={true} backgroundOpacity={0.25}/>
                         :
-                        (server.isSuspended || server.isInstalling) ?
+                        server.isInstalling ?
                             <div className={'flex-1 text-center'}>
                                 <span className={'bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs'}>
-                                    {server.isSuspended ? 'Suspended' : 'Installing'}
+                                    Installing
                                 </span>
                             </div>
                             :
                             <div className={'flex-1 text-center'}>
                                 <span className={'bg-red-500 rounded px-2 py-1 text-red-100 text-xs'}>
-                                    Connection Error
+                                    {server.isSuspended ? 'Suspended' : 'Connection Error'}
                                 </span>
                             </div>
                     :
