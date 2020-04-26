@@ -36,7 +36,7 @@ const ToggleContainer = styled.div`
 
 export interface SwitchProps {
     name: string;
-    label: string;
+    label?: string;
     description?: string;
     defaultChecked?: boolean;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -48,7 +48,7 @@ const Switch = ({ name, label, description, defaultChecked, onChange, children }
 
     return (
         <div className={'flex items-center'}>
-            <ToggleContainer className={'mr-4 flex-none'}>
+            <ToggleContainer className={'flex-none'}>
                 {children
                 || <input
                     id={uuid}
@@ -60,17 +60,21 @@ const Switch = ({ name, label, description, defaultChecked, onChange, children }
                 }
                 <label htmlFor={uuid}/>
             </ToggleContainer>
-            <div className={'w-full'}>
+            {(label || description) &&
+            <div className={'ml-4 w-full'}>
+                {label &&
                 <label
                     className={classNames('input-dark-label cursor-pointer', { 'mb-0': !!description })}
                     htmlFor={uuid}
                 >{label}</label>
+                }
                 {description &&
                 <p className={'input-help'}>
                     {description}
                 </p>
                 }
             </div>
+            }
         </div>
     );
 };
