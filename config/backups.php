@@ -6,12 +6,12 @@ return [
     // The backup driver to use for this Panel instance. All client generated server backups
     // will be stored in this location by default. It is possible to change this once backups
     // have been made, without losing data.
-    'default' => env('APP_BACKUP_DRIVER', 'local'),
+    'default' => env('APP_BACKUP_DRIVER', Backup::ADAPTER_WINGS),
 
     'disks' => [
         // There is no configuration for the local disk for Wings. That configuration
         // is determined by the Daemon configuration, and not the Panel.
-        'local' => [
+        'wings' => [
             'adapter' => Backup::ADAPTER_WINGS,
         ],
 
