@@ -2,8 +2,6 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import v4 from 'uuid/v4';
 import classNames from 'classnames';
-import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
-import { Field, FieldProps } from 'formik';
 
 const ToggleContainer = styled.div`
     ${tw`relative select-none w-12 leading-normal`};
@@ -36,49 +34,44 @@ const ToggleContainer = styled.div`
     }
 `;
 
-interface Props {
+export interface SwitchProps {
     name: string;
-    description?: string;
     label: string;
-    enabled?: boolean;
+    description?: string;
+    defaultChecked?: boolean;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    children?: React.ReactNode;
 }
 
-const Switch = ({ name, label, description }: Props) => {
+const Switch = ({ name, label, description, defaultChecked, onChange, children }: SwitchProps) => {
     const uuid = useMemo(() => v4(), []);
 
     return (
-        <FormikFieldWrapper name={name}>
-            <div className={'flex items-center'}>
-                <ToggleContainer className={'mr-4 flex-none'}>
-                    <Field name={name}>
-                        {({ field, form }: FieldProps) => (
-                            <input
-                                id={uuid}
-                                name={name}
-                                type={'checkbox'}
-                                onChange={() => {
-                                    form.setFieldTouched(name);
-                                    form.setFieldValue(field.name, !field.value);
-                                }}
-                                defaultChecked={field.value}
-                            />
-                        )}
-                    </Field>
-                    <label htmlFor={uuid}/>
-                </ToggleContainer>
-                <div className={'w-full'}>
-                    <label
-                        className={classNames('input-dark-label cursor-pointer', { 'mb-0': !!description })}
-                        htmlFor={uuid}
-                    >{label}</label>
-                    {description &&
-                    <p className={'input-help'}>
-                        {description}
-                    </p>
-                    }
-                </div>
+        <div className={'flex items-center'}>
+            <ToggleContainer className={'mr-4 flex-none'}>
+                {children
+                || <input
+                    id={uuid}
+                    name={name}
+                    type={'checkbox'}
+                    onChange={e => onChange && onChange(e)}
+                    defaultChecked={defaultChecked}
+                />
+                }
+                <label htmlFor={uuid}/>
+            </ToggleContainer>
+            <div className={'w-full'}>
+                <label
+                    className={classNames('input-dark-label cursor-pointer', { 'mb-0': !!description })}
+                    htmlFor={uuid}
+                >{label}</label>
+                {description &&
+                <p className={'input-help'}>
+                    {description}
+                </p>
+                }
             </div>
-        </FormikFieldWrapper>
+        </div>
     );
 };
 

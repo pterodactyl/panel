@@ -3,7 +3,7 @@ import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import Field from '@/components/elements/Field';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
-import Switch from '@/components/elements/Switch';
+import FormikSwitch from '@/components/elements/FormikSwitch';
 import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedule';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
@@ -56,7 +56,7 @@ const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdate
                     running. Use the fields above to specify when these tasks should begin running.
                 </p>
                 <div className={'mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded'}>
-                    <Switch
+                    <FormikSwitch
                         name={'enabled'}
                         description={'If disabled, this schedule and it\'s associated tasks will not run.'}
                         label={'Enabled'}
