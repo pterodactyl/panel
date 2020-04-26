@@ -56,6 +56,8 @@ class ServerTransformer extends BaseClientTransformer
                 'databases' => $server->database_limit,
                 'allocations' => $server->allocation_limit,
             ],
+            'is_suspended' => $server->suspended !== 0,
+            'is_installing' => $server->installed !== 1,
         ];
     }
 
