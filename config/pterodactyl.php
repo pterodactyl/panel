@@ -68,25 +68,25 @@ return [
                     'client_secret' => env('APP_OAUTH_TWITTER_SECRET'),
                     'redirect' => env('APP_OAUTH_DISCORD_REDIRECT_URI'),
                 ],
-                'gitlab ' => [
+                'gitlab' => [
                     'enabled' => false,
                     'client_id' => env('APP_OAUTH_GITLAB_KEY'),
                     'client_secret' => env('APP_OAUTH_GITLAB_SECRET'),
                     'redirect' => env('APP_OAUTH_DISCORD_REDIRECT_URI'),
                 ],
-                'bitbucket ' => [
+                'bitbucket' => [
                     'enabled' => false,
                     'client_id' => env('APP_OAUTH_BITBUCKET_KEY'),
                     'client_secret' => env('APP_OAUTH_BITBUCKET_SECRET'),
                     'redirect' => env('APP_OAUTH_DISCORD_REDIRECT_URI'),
                 ],
-                'linkedin ' => [
+                'linkedin' => [
                     'enabled' => false,
                     'client_id' => env('APP_OAUTH_LINKEDIN_KEY'),
                     'client_secret' => env('APP_OAUTH_LINKEDIN_SECRET'),
                     'redirect' => env('APP_OAUTH_DISCORD_REDIRECT_URI'),
                 ],
-                'facebook ' => [
+                'facebook' => [
                     'enabled' => false,
                     'client_id' => env('APP_OAUTH_FACEBOOK_KEY'),
                     'client_secret' => env('APP_OAUTH_FACEBOOK_SECRET'),
