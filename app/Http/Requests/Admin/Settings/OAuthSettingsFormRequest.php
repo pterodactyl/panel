@@ -17,6 +17,7 @@ class OAuthSettingsFormRequest extends AdminFormRequest
     {
         return [
             'pterodactyl:auth:oauth:enabled' => 'required|in:true,false',
+            'pterodactyl:auth:oauth:drivers' => 'required|json',
             'pterodactyl:auth:oauth:required' => 'required|integer|in:0,1,2,3',
         ];
     }
@@ -28,6 +29,7 @@ class OAuthSettingsFormRequest extends AdminFormRequest
     {
         return [
             'pterodactyl:auth:oauth:enabled' => 'OAuth Enabled',
+            'pterodactyl:auth:oauth:drivers' => 'OAuth Drivers',
             'pterodactyl:auth:oauth:required' => 'Require OAuth Authentication',
         ];
     }
