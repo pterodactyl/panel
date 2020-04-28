@@ -28,6 +28,10 @@ Route::group(['middleware' => 'guest'], function () {
     // is created).
     Route::post('/password/reset', 'ResetPasswordController')->name('auth.reset-password');
 
+    // OAuth endpoints
+    Route::get('/oauth', 'OAuthController@redirect')->name('oauth.redirect');
+    Route::get('/oauth/callback', 'OAuthController@callback')->name('oauth.callback');
+
     // Catch any other combinations of routes and pass them off to the Vuejs component.
     Route::fallback('LoginController@index');
 });
