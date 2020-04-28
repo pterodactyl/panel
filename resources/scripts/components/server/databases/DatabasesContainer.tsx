@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga';
 import getServerDatabases from '@/api/server/getServerDatabases';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
@@ -31,6 +32,10 @@ export default () => {
                 addError({ key: 'databases', message: httpErrorToHuman(error) });
             })
             .then(() => setLoading(false));
+    }, []);
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
     }, []);
 
     return (

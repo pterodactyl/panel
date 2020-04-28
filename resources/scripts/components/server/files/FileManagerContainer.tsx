@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions } from 'easy-peasy';
@@ -43,6 +44,10 @@ export default () => {
 
     useEffect(() => {
         loadContents();
+    }, []);
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
     }, []);
 
     if (error) {

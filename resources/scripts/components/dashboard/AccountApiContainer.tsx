@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga';
 import ContentBox from '@/components/elements/ContentBox';
 import CreateApiKeyForm from '@/components/dashboard/forms/CreateApiKeyForm';
 import getApiKeys, { ApiKey } from '@/api/account/getApiKeys';
@@ -45,6 +46,10 @@ export default () => {
             })
             .then(() => setLoading(false));
     };
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
+    }, []);
 
     return (
         <PageContentBlock>

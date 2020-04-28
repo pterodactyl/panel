@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useEffect } from 'react';
+import ReactGA from 'react-ga';
 import { hot } from 'react-hot-loader/root';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
@@ -37,6 +39,13 @@ const theme: DefaultTheme = {
 };
 
 const App = () => {
+
+    useEffect(() => {
+        //TODO: Get the Google Anayltics value here :)
+        ReactGA.initialize('')
+        ReactGA.pageview(location.pathname)
+    }, [])
+
     const { PterodactylUser, SiteConfiguration } = (window as ExtendedWindow);
     if (PterodactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({

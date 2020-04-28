@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useEffect } from 'react';
+import ReactGA from 'react-ga';
 import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
@@ -24,6 +26,11 @@ const Container = styled.div`
 `;
 
 export default () => {
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
+    }, []);
+
     return (
         <PageContentBlock>
             <Container>

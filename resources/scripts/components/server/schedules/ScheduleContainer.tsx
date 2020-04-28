@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga';
 import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
@@ -30,6 +31,10 @@ export default ({ match, history }: RouteComponentProps) => {
                 console.error(error);
             })
             .then(() => setLoading(false));
+    }, []);
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
     }, []);
 
     return (

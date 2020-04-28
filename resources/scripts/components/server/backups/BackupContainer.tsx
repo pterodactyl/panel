@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga';
 import Spinner from '@/components/elements/Spinner';
 import getServerBackups from '@/api/server/backups/getServerBackups';
 import useServer from '@/plugins/useServer';
@@ -28,6 +29,10 @@ export default () => {
                 addError({ key: 'backups', message: httpErrorToHuman(error) });
             })
             .then(() => setLoading(false));
+    }, []);
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
     }, []);
 
     if (backups.length === 0 && loading) {

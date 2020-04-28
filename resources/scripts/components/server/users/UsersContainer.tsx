@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
@@ -33,6 +34,10 @@ export default () => {
                 console.error(error);
                 addError({ key: 'users', message: httpErrorToHuman(error) });
             });
+    }, []);
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
     }, []);
 
     useEffect(() => {

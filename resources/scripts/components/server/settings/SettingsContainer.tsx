@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import ReactGA from 'react-ga';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import { useStoreState } from 'easy-peasy';
@@ -13,6 +14,10 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 export default () => {
     const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);
     const server = ServerContext.useStoreState(state => state.server.data!);
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
+    }, []);
 
     return (
         <PageContentBlock>

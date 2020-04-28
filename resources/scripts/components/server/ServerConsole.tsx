@@ -1,4 +1,5 @@
 import React, { lazy, useEffect, useState } from 'react';
+import ReactGA from 'react-ga';
 import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faServer } from '@fortawesome/free-solid-svg-icons/faServer';
@@ -79,6 +80,10 @@ export default () => {
             instance.removeListener('stats', statsListener);
         };
     }, [ instance, connected ]);
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
+    }, []);
 
     return (
         <PageContentBlock className={'flex'}>
