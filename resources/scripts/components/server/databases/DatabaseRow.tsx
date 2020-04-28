@@ -51,7 +51,7 @@ export default ({ database, className }: Props) => {
                 addError({ key: 'database:delete', message: httpErrorToHuman(error) });
             });
     };
-
+    
     return (
         <React.Fragment>
             <Formik

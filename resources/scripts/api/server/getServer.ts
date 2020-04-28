@@ -29,7 +29,10 @@ export interface Server {
     featureLimits: {
         databases: number;
         allocations: number;
+        backups: number;
     };
+    isSuspended: boolean;
+    isInstalling: boolean;
 }
 
 export const rawDataToServerObject = (data: any): Server => ({
@@ -50,6 +53,8 @@ export const rawDataToServerObject = (data: any): Server => ({
     } ],
     limits: { ...data.limits },
     featureLimits: { ...data.feature_limits },
+    isSuspended: data.is_suspended,
+    isInstalling: data.is_installing,
 });
 
 export default (uuid: string): Promise<[ Server, string[] ]> => {

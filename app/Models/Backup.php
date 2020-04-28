@@ -26,8 +26,8 @@ class Backup extends Model
 
     const RESOURCE_NAME = 'backup';
 
-    const DISK_LOCAL = 'local';
-    const DISK_AWS_S3 = 's3';
+    const ADAPTER_WINGS = 'wings';
+    const ADAPTER_AWS_S3 = 's3';
 
     /**
      * @var string

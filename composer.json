@@ -27,6 +27,8 @@
         "laravel/helpers": "^1.2",
         "laravel/tinker": "^1.0",
         "lcobucci/jwt": "^3.3",
+        "league/flysystem-aws-s3-v3": "^1.0",
+        "league/flysystem-memory": "^1.0",
         "matriphe/iso-639": "^1.2",
         "pragmarx/google2fa": "^5.0",
         "predis/predis": "^1.1",

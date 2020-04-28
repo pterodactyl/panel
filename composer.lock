@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1d03ca0a7151c6594255643eaaa8f527",
+    "content-hash": "2318244deed430b3f0b3df9ee4977759",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -1662,6 +1662,104 @@
                 }
             ],
             "time": "2020-03-17T18:58:12+00:00"
+        },
+        {
+            "name": "league/flysystem-aws-s3-v3",
+            "version": "1.0.24",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-aws-s3-v3.git",
+                "reference": "4382036bde5dc926f9b8b337e5bdb15e5ec7b570"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-aws-s3-v3/zipball/4382036bde5dc926f9b8b337e5bdb15e5ec7b570",
+                "reference": "4382036bde5dc926f9b8b337e5bdb15e5ec7b570",
+                "shasum": ""
+            },
+            "require": {
+                "aws/aws-sdk-php": "^3.0.0",
+                "league/flysystem": "^1.0.40",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "henrikbjorn/phpspec-code-coverage": "~1.0.1",
+                "phpspec/phpspec": "^2.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\AwsS3v3\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net"
+                }
+            ],
+            "description": "Flysystem adapter for the AWS S3 SDK v3.x",
+            "time": "2020-02-23T13:31:58+00:00"
+        },
+        {
+            "name": "league/flysystem-memory",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-memory.git",
+                "reference": "d0e87477c32e29f999b4de05e64c1adcddb51757"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-memory/zipball/d0e87477c32e29f999b4de05e64c1adcddb51757",
+                "reference": "d0e87477c32e29f999b4de05e64c1adcddb51757",
+                "shasum": ""
+            },
+            "require": {
+                "league/flysystem": "~1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.10"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\Memory\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Leppanen",
+                    "email": "chris.leppanen@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An in-memory adapter for Flysystem.",
+            "homepage": "https://github.com/thephpleague/flysystem-memory",
+            "keywords": [
+                "Flysystem",
+                "adapter",
+                "memory"
+            ],
+            "time": "2019-05-30T21:34:13+00:00"
         },
         {
             "name": "league/fractal",

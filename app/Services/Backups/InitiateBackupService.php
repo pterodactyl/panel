@@ -8,9 +8,12 @@ use Carbon\CarbonImmutable;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
+use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
+use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class InitiateBackupService
@@ -36,20 +39,28 @@ class InitiateBackupService
     private $daemonBackupRepository;
 
     /**
+     * @var \Pterodactyl\Extensions\Backups\BackupManager
+     */
+    private $backupManager;
+
+    /**
      * InitiateBackupService constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
+     * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
     public function __construct(
         BackupRepository $repository,
         ConnectionInterface $connection,
-        DaemonBackupRepository $daemonBackupRepository
+        DaemonBackupRepository $daemonBackupRepository,
+        BackupManager $backupManager
     ) {
         $this->repository = $repository;
         $this->connection = $connection;
         $this->daemonBackupRepository = $daemonBackupRepository;
+        $this->backupManager = $backupManager;
     }
 
     /**
@@ -84,9 +95,16 @@ class InitiateBackupService
      * @return \Pterodactyl\Models\Backup
      *
      * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException
+     * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      */
     public function handle(Server $server, string $name = null): Backup
     {
+        // Do not allow the user to continue if this server is already at its limit.
+        if (! $server->backup_limit || $server->backups()->count() >= $server->backup_limit) {
+            throw new TooManyBackupsException($server->backup_limit);
+        }
+
         $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
         if ($previous->count() >= 2) {
             throw new TooManyRequestsHttpException(
@@ -102,12 +120,45 @@ class InitiateBackupService
                 'uuid' => Uuid::uuid4()->toString(),
                 'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
                 'ignored_files' => is_array($this->ignoredFiles) ? array_values($this->ignoredFiles) : [],
-                'disk' => 'local',
+                'disk' => $this->backupManager->getDefaultAdapter(),
             ], true, true);
 
-            $this->daemonBackupRepository->setServer($server)->backup($backup);
+            $url = $this->getS3PresignedUrl(sprintf('%s/%s.tar.gz', $server->uuid, $backup->uuid));
+
+            $this->daemonBackupRepository->setServer($server)
+                ->setBackupAdapter($this->backupManager->getDefaultAdapter())
+                ->backup($backup, $url);
 
             return $backup;
         });
+    }
+
+    /**
+     * Generates a presigned URL for the wings daemon to upload the completed archive
+     * to. We use a 30 minute expiration on these URLs to avoid issues with large backups
+     * that may take some time to complete.
+     *
+     * @param string $path
+     * @return string|null
+     */
+    protected function getS3PresignedUrl(string $path)
+    {
+        $adapter = $this->backupManager->adapter();
+        if (! $adapter instanceof AwsS3Adapter) {
+            return null;
+        }
+
+        $client = $adapter->getClient();
+
+        $request = $client->createPresignedRequest(
+            $client->getCommand('PutObject', [
+                'Bucket' => $adapter->getBucket(),
+                'Key' => $path,
+                'ContentType' => 'binary/octet-stream',
+            ]),
+            CarbonImmutable::now()->addMinutes(30)
+        );
+
+        return $request->getUri()->__toString();
     }
 }

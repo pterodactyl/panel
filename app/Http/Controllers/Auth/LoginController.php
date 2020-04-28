@@ -70,7 +70,7 @@ class LoginController extends AbstractLoginController
      * Handle a login request to the application.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|void
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException

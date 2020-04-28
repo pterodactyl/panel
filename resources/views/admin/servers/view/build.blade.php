@@ -104,18 +104,25 @@
                         <div class="box-body">
                             <div class="row">
                                 <div class="form-group col-xs-6">
-                                    <label for="cpu" class="control-label">Database Limit</label>
+                                    <label for="database_limit" class="control-label">Database Limit</label>
                                     <div>
                                         <input type="text" name="database_limit" class="form-control" value="{{ old('database_limit', $server->database_limit) }}"/>
                                     </div>
-                                    <p class="text-muted small">The total number of databases a user is allowed to create for this server. Leave blank to allow unlimited.</p>
+                                    <p class="text-muted small">The total number of databases a user is allowed to create for this server.</p>
                                 </div>
                                 <div class="form-group col-xs-6">
-                                    <label for="cpu" class="control-label">Allocation Limit</label>
+                                    <label for="allocation_limit" class="control-label">Allocation Limit</label>
                                     <div>
                                         <input type="text" name="allocation_limit" class="form-control" value="{{ old('allocation_limit', $server->allocation_limit) }}"/>
                                     </div>
-                                    <p class="text-muted small"><strong>This feature is not currently implemented.</strong> The total number of allocations a user is allowed to create for this server. Leave blank to allow unlimited.</p>
+                                    <p class="text-muted small"><strong>This feature is not currently implemented.</strong> The total number of allocations a user is allowed to create for this server.</p>
+                                </div>
+                                <div class="form-group col-xs-6">
+                                    <label for="backup_limit" class="control-label">Backup Limit</label>
+                                    <div>
+                                        <input type="text" name="backup_limit" class="form-control" value="{{ old('backup_limit', $server->backup_limit) }}"/>
+                                    </div>
+                                    <p class="text-muted small">The total number of backups that can be created for this server.</p>
                                 </div>
                             </div>
                         </div>

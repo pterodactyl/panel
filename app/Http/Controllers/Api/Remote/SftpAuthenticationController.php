@@ -3,12 +3,15 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService;
+use Pterodactyl\Repositories\Eloquent\UserRepository;
+use Pterodactyl\Exceptions\Http\HttpForbiddenException;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Services\Servers\GetUserPermissionsService;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 
@@ -17,18 +20,35 @@ class SftpAuthenticationController extends Controller
     use ThrottlesLogins;
 
     /**
-     * @var \Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService
+     * @var \Pterodactyl\Repositories\Eloquent\UserRepository
      */
-    private $authenticationService;
+    private $userRepository;
+
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     */
+    private $serverRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\GetUserPermissionsService
+     */
+    private $permissionsService;
 
     /**
      * SftpController constructor.
      *
-     * @param \Pterodactyl\Services\Sftp\AuthenticateUsingPasswordService $authenticationService
+     * @param \Pterodactyl\Services\Servers\GetUserPermissionsService $permissionsService
+     * @param \Pterodactyl\Repositories\Eloquent\UserRepository $userRepository
+     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $serverRepository
      */
-    public function __construct(AuthenticateUsingPasswordService $authenticationService)
-    {
-        $this->authenticationService = $authenticationService;
+    public function __construct(
+        GetUserPermissionsService $permissionsService,
+        UserRepository $userRepository,
+        ServerRepository $serverRepository
+    ) {
+        $this->userRepository = $userRepository;
+        $this->serverRepository = $serverRepository;
+        $this->permissionsService = $permissionsService;
     }
 
     /**
@@ -38,7 +58,7 @@ class SftpAuthenticationController extends Controller
      * @param \Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest $request
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function __invoke(SftpAuthenticationFormRequest $request): JsonResponse
     {
@@ -52,33 +72,54 @@ class SftpAuthenticationController extends Controller
         ];
 
         $this->incrementLoginAttempts($request);
-
         if ($this->hasTooManyLoginAttempts($request)) {
-            return response()->json([
-                'error' => 'Logins throttled.',
-            ], Response::HTTP_TOO_MANY_REQUESTS);
+            return JsonResponse::create([
+                'error' => 'Too many logins attempted too quickly.',
+            ], JsonResponse::HTTP_TOO_MANY_REQUESTS);
         }
 
-        try {
-            $data = $this->authenticationService->handle(
-                $connection['username'],
-                $request->input('password'),
-                object_get($request->attributes->get('node'), 'id', 0),
-                empty($connection['server']) ? null : $connection['server']
+        /** @var \Pterodactyl\Models\Node $node */
+        $node = $request->attributes->get('node');
+        if (empty($connection['server'])) {
+            throw new NotFoundHttpException;
+        }
+
+        /** @var \Pterodactyl\Models\User $user */
+        $user = $this->userRepository->findFirstWhere([
+            ['username', '=', $connection['username']],
+        ]);
+
+        $server = $this->serverRepository->getByUuid($connection['server'] ?? '');
+        if (! password_verify($request->input('password'), $user->password) || $server->node_id !== $node->id) {
+            throw new HttpForbiddenException(
+                'Authorization credentials were not correct, please try again.'
             );
-
-            $this->clearLoginAttempts($request);
-        } catch (BadRequestHttpException $exception) {
-            return response()->json([
-                'error' => 'The server you are trying to access is not installed or is suspended.',
-            ], Response::HTTP_BAD_REQUEST);
-        } catch (RecordNotFoundException $exception) {
-            return response()->json([
-                'error' => 'Unable to locate a resource using the username and password provided.',
-            ], Response::HTTP_NOT_FOUND);
         }
 
-        return response()->json($data);
+        if (! $user->root_admin && $server->owner_id !== $user->id) {
+            $permissions = $this->permissionsService->handle($server, $user);
+
+            if (! in_array(Permission::ACTION_FILE_SFTP, $permissions)) {
+                throw new HttpForbiddenException(
+                    'You do not have permission to access SFTP for this server.'
+                );
+            }
+        }
+
+        // Remeber, for security purposes, only reveal the existence of the server to people that
+        // have provided valid credentials, and have permissions to know about it.
+        if ($server->installed !== 1 || $server->suspended) {
+            throw new BadRequestHttpException(
+                'Server is not installed or is currently suspended.'
+            );
+        }
+
+        return JsonResponse::create([
+            'server' => $server->uuid,
+            // Deprecated, but still needed at the moment for Wings.
+            'token' => '',
+            'permissions' => $permissions ?? ['*'],
+        ]);
     }
 
     /**
