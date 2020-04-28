@@ -8,6 +8,11 @@ export interface SiteSettings {
         siteKey: string;
     };
     analytics: string;
+    oauth: {
+        enabled: boolean;
+        required: boolean;
+        drivers: string;
+    };
 }
 
 export interface SettingsStore {

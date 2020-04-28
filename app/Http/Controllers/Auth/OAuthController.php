@@ -5,19 +5,21 @@ namespace Pterodactyl\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\RedirectResponse;
-use SocialiteProviders\Manager\Config;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Http\Controllers\Controller;
-use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OAuthController extends Controller
 {
     use SendsPasswordResetEmails;
+
+    /**
+     * @var \Illuminate\Auth\AuthManager
+     */
+    protected $auth;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
@@ -27,10 +29,12 @@ class OAuthController extends Controller
     /**
      * LoginController constructor.
      *
+     * @param \Illuminate\Auth\AuthManager $auth
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
-    public function __construct(UserRepositoryInterface $repository)
+    public function __construct(AuthManager $auth, UserRepositoryInterface $repository)
     {
+        $this->auth = $auth;
         $this->repository = $repository;
     }
 
@@ -73,6 +77,32 @@ class OAuthController extends Controller
      */
     protected function callback(Request $request): RedirectResponse
     {
+        $driver = $request->session()->pull('oauth_driver');
 
+        if (empty($driver)) {
+            return redirect()->route('auth.login');
+        }
+
+
+        $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+
+        // Dirty hack
+        // Can't use SocialiteProviders\Manager\Config since all providers are hardcoded for services.php
+        config(['services.' . $driver => array_merge(
+            array_only($drivers[$driver], ['client_id', 'client_secret']),
+            ['redirect' => route('oauth.callback')]
+        )]);
+
+        $oauthUser = Socialite::driver($driver)->user();
+
+        try {
+            $user = $this->repository->findFirstWhere([['oauth->'. $driver, $oauthUser->getId()]]);
+        } catch (RecordNotFoundException $e) {
+            return redirect()->route('auth.login');
+        }
+
+        $this->auth->guard()->login($user, true);
+
+        return redirect('/');
     }
 }
