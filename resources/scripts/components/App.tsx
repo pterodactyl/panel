@@ -40,12 +40,6 @@ const theme: DefaultTheme = {
 
 const App = () => {
 
-    useEffect(() => {
-        //TODO: Get the Google Anayltics value here :)
-        ReactGA.initialize('')
-        ReactGA.pageview(location.pathname)
-    }, [])
-
     const { PterodactylUser, SiteConfiguration } = (window as ExtendedWindow);
     if (PterodactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
@@ -63,6 +57,11 @@ const App = () => {
     if (!store.getState().settings.data) {
         store.getActions().settings.setSettings(SiteConfiguration!);
     }
+
+    useEffect(() => {
+        ReactGA.initialize(SiteConfiguration?.analytics)
+        ReactGA.pageview(location.pathname)
+    }, []);
 
     return (
         <ThemeProvider theme={theme}>
