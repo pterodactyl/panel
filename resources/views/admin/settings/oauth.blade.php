@@ -140,7 +140,7 @@
                 data: JSON.stringify({
                     'pterodactyl:auth:oauth:enabled': $('select[name="pterodactyl:auth:oauth:enabled"]').val(),
                     'pterodactyl:auth:oauth:drivers': JSON.stringify(drivers),
-                    'pterodactyl:auth:oauth:required': $('input[name="pterodactyl:auth:oauth:required"]').val(),
+                    'pterodactyl:auth:oauth:required': $('input[name="pterodactyl:auth:oauth:required"]:checked').val(),
                 }),
                 headers: { 'X-CSRF-Token': $('input[name="_token"]').val() }
             }).fail(function (jqXHR) {

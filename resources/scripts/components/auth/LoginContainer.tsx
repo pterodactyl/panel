@@ -22,6 +22,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
+    const { enabled: oauthEnabled, required: oauthRequired, drivers } = useStoreState(state => state.settings.data!.oauth);
 
     useEffect(() => {
         clearFlashes();
@@ -33,7 +34,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch(error => {
+            ref.current!.execute().catch((error: any) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -75,50 +76,69 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
-                    <Field
-                        light
-                        type={'text'}
-                        label={'Username or Email'}
-                        name={'username'}
-                        disabled={isSubmitting}
-                    />
-                    <div css={tw`mt-6`}>
+
+                    {(!oauthEnabled || !oauthRequired) &&
+                    <React.Fragment>
                         <Field
                             light
-                            type={'password'}
-                            label={'Password'}
-                            name={'password'}
+                            type={'text'}
+                            label={'Username or Email'}
+                            name={'username'}
                             disabled={isSubmitting}
                         />
-                    </div>
-                    <div css={tw`mt-6`}>
-                        <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
-                            Login
-                        </Button>
-                    </div>
-                    {recaptchaEnabled &&
-                    <Reaptcha
-                        ref={ref}
-                        size={'invisible'}
-                        sitekey={siteKey || '_invalid_key'}
-                        onVerify={response => {
-                            setToken(response);
-                            submitForm();
-                        }}
-                        onExpire={() => {
-                            setSubmitting(false);
-                            setToken('');
-                        }}
-                    />
+                        <div css={tw`mt-6`}>
+                            <Field
+                                light
+                                type={'password'}
+                                label={'Password'}
+                                name={'password'}
+                                disabled={isSubmitting}
+                            />
+                        </div>
+                        <div css={tw`mt-6`}>
+                            <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
+                                Login
+                            </Button>
+                        </div>
+                        {recaptchaEnabled &&
+                        <Reaptcha
+                            ref={ref}
+                            size={'invisible'}
+                            sitekey={siteKey || '_invalid_key'}
+                            onVerify={(response: any) => {
+                                setToken(response);
+                                submitForm();
+                            }}
+                            onExpire={() => {
+                                setSubmitting(false);
+                                setToken('');
+                            }}
+                        />
+                        }
+                        <div css={tw`mt-6 text-center`}>
+                            <Link
+                                to={'/auth/password'}
+                                css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
+                            >
+                                Forgot password?
+                            </Link>
+                        </div>
+
+                        { oauthEnabled &&
+                        <div css={tw`border-t-2 border-neutral-50 my-4`}/>
+                        }
+                    </React.Fragment>
                     }
-                    <div css={tw`mt-6 text-center`}>
-                        <Link
-                            to={'/auth/password'}
-                            css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
-                        >
-                            Forgot password?
-                        </Link>
+
+                    { oauthEnabled &&
+                    <div css={tw`text-s text-neutral-500 text-center ${oauthRequired ? 'mt-20' : ''}`}>
+                        {JSON.parse(drivers).map((driver: string) => (
+                            <a href={'/auth/oauth?driver=' + driver}>
+                                <img src={'/assets/svgs/' + driver + '.svg'} css={tw`inline-block w-12 mx-1`} alt={driver}/>
+                            </a>
+                        ))}
                     </div>
+                    }
                 </LoginFormContainer>
             )}
         </Formik>
