@@ -154,7 +154,7 @@ class InitiateBackupService
             $client->getCommand('PutObject', [
                 'Bucket' => $adapter->getBucket(),
                 'Key' => $path,
-                'ContentType' => 'binary/octet-stream',
+                'ContentType' => 'application/x-gzip',
             ]),
             CarbonImmutable::now()->addMinutes(30)
         );

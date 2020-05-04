@@ -3,11 +3,11 @@
 namespace Pterodactyl\Extensions\Backups;
 
 use Closure;
+use Aws\S3\S3Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
-use Aws\S3\S3MultiRegionClient;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Memory\MemoryAdapter;
@@ -160,7 +160,7 @@ class BackupManager
             $config['credentials'] = Arr::only($config, ['key', 'secret', 'token']);
         }
 
-        $client = new S3MultiRegionClient($config);
+        $client = new S3Client($config);
 
         return new AwsS3Adapter($client, $config['bucket'], $config['prefix'] ?? '', $config['options'] ?? []);
     }
