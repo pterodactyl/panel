@@ -23,4 +23,5 @@ class AddAnalyticsToSettings extends Migration
     public function down()
     {
         DB::statement('DELETE FROM `settings` WHERE (`key` = \'settings::app:analytics\')');
+    }
 }
