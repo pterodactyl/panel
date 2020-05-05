@@ -43,7 +43,7 @@
                 <pre class="no-margin">{{ $node->getYamlConfiguration() }}</pre>
             </div>
             <div class="box-footer">
-                <p class="no-margin">This file should be placed in your daemon's root directory (usually <code>/srv/wings</code>) in a file called <code>config.yml</code>.</p>
+                <p class="no-margin">This file should be placed in <code>/var/lib/pterodactyl/</code> in a file called <code>config.yml</code>.</p>
             </div>
         </div>
     </div>
