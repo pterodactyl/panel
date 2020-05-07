@@ -97,6 +97,7 @@ return [
 
         'default' => [
             'host' => env('REDIS_HOST', 'localhost'),
+            'scheme' => env('REDIS_SCHEME', 'tcp'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => env('REDIS_DATABASE', 0),
@@ -104,9 +105,14 @@ return [
 
         'sessions' => [
             'host' => env('REDIS_HOST', 'localhost'),
+            'scheme' => env('REDIS_SCHEME', 'tcp'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => env('REDIS_DATABASE_SESSIONS', 1),
+        ],
+
+        'options' => [
+            'ssl'    => ['verify_peer' => false],
         ],
     ],
 ];
