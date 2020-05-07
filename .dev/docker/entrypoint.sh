@@ -49,7 +49,7 @@ fi
 
 ## check for DB up before starting the panel
 echo "Checking database status."
-until nc -z -v -w30 $DB_HOST 3306
+until nc -z -v -w30 $DB_HOST $DB_PORT
 
 do
   echo "Waiting for database connection..."
