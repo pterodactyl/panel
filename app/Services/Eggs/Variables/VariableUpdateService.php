@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Eggs\Variables;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Exceptions\DisplayException;
@@ -81,7 +82,11 @@ class VariableUpdateService
         }
 
         if (! empty($data['rules'] ?? '')) {
-            $this->validateRules($data['rules']);
+            $this->validateRules(
+                (is_string($data['rules']) && Str::contains($data['rules'], ';;'))
+                    ? explode(';;', $data['rules'])
+                    : $data['rules']
+            );
         }
 
         $options = array_get($data, 'options') ?? [];
