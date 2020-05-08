@@ -9,7 +9,7 @@ import TransitionRouter from '@/TransitionRouter';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import NotFound from '@/components/screens/NotFound';
 
-export default ({ location }: RouteComponentProps) => (
+export default ({ location }: RouteComponentProps) => {
     useEffect(() => {
         ReactGA.pageview(location.pathname)
     }, [location.pathname]),
@@ -34,4 +34,4 @@ export default ({ location }: RouteComponentProps) => (
             </Switch>
         </TransitionRouter>
     </React.Fragment>
-);
+};

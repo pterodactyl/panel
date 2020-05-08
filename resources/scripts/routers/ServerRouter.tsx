@@ -143,8 +143,8 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     );
 };
 
-export default (props: RouteComponentProps<any>) => (
+export default (props: RouteComponentProps<any>) => {
     <ServerContext.Provider>
         <ServerRouter {...props}/>
     </ServerContext.Provider>
-);
+};

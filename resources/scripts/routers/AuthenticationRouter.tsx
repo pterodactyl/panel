@@ -7,7 +7,7 @@ import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
 import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer';
 import NotFound from '@/components/screens/NotFound';
 
-export default ({ location, history, match }: RouteComponentProps) => (
+export default ({ location, history, match }: RouteComponentProps) => {
     useEffect(() => {
         ReactGA.pageview(location.pathname)
     }, [location.pathname]),
@@ -24,4 +24,4 @@ export default ({ location, history, match }: RouteComponentProps) => (
             </Route>
         </Switch>
     </div>
-);
+};
