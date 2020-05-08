@@ -10,8 +10,8 @@ import NotFound from '@/components/screens/NotFound';
 export default ({ location, history, match }: RouteComponentProps) => {
     useEffect(() => {
         ReactGA.pageview(location.pathname)
-    }, [location.pathname]),
-
+    }, [location.pathname]);
+return(
     <div className={'pt-8 xl:pt-32'}>
         <Switch location={location}>
             <Route path={`${match.path}/login`} component={LoginContainer} exact/>
@@ -24,4 +24,4 @@ export default ({ location, history, match }: RouteComponentProps) => {
             </Route>
         </Switch>
     </div>
-};
+)};
