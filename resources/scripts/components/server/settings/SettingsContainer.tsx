@@ -15,10 +15,6 @@ export default () => {
     const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);
     const server = ServerContext.useStoreState(state => state.server.data!);
 
-    useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'settings'} className={'mb-4'}/>

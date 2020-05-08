@@ -27,10 +27,6 @@ const Container = styled.div`
 
 export default () => {
 
-    useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
     return (
         <PageContentBlock>
             <Container>

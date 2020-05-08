@@ -33,10 +33,6 @@ export default ({ match, history }: RouteComponentProps) => {
             .then(() => setLoading(false));
     }, []);
 
-    useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'schedules'} className={'mb-4'}/>

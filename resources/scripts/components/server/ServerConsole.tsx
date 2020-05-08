@@ -82,10 +82,6 @@ export default () => {
         };
     }, [ instance, connected ]);
 
-    useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
     return (
         <PageContentBlock className={'flex'}>
             <div className={'w-1/4'}>

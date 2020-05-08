@@ -46,10 +46,6 @@ export default () => {
         loadContents();
     }, []);
 
-    useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
     if (error) {
         return (
             <ServerError

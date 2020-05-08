@@ -31,10 +31,6 @@ export default () => {
             .then(() => setLoading(false));
     }, []);
 
-    useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
     if (backups.length === 0 && loading) {
         return <Spinner size={'large'} centered={true}/>;
     }

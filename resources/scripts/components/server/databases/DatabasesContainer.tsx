@@ -34,10 +34,6 @@ export default () => {
             .then(() => setLoading(false));
     }, []);
 
-    useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'databases'} className={'mb-4'}/>

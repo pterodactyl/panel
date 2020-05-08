@@ -36,10 +36,6 @@ export default () => {
         loadServers();
     }, [ showAdmin ]);
 
-    useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
     return (
         <PageContentBlock>
             <FlashMessageRender className={'mb-4'}/>

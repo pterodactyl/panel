@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
+import ReactGA from 'react-ga';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import DesignElementsContainer from '@/components/dashboard/DesignElementsContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
@@ -9,6 +10,10 @@ import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import NotFound from '@/components/screens/NotFound';
 
 export default ({ location }: RouteComponentProps) => (
+    useEffect(() => {
+        ReactGA.pageview(location.pathname)
+    }, [location.pathname]),
+
     <React.Fragment>
         <NavigationBar/>
         {location.pathname.startsWith('/account') &&

@@ -37,10 +37,6 @@ export default () => {
     }, []);
 
     useEffect(() => {
-        ReactGA.pageview(location.pathname)
-    }, []);
-
-    useEffect(() => {
         getPermissions().catch(error => {
             addError({ key: 'users', message: httpErrorToHuman(error) });
             console.error(error);
