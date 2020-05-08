@@ -254,7 +254,7 @@
 
                     <div class="form-group col-xs-12">
                         <div class="checkbox checkbox-primary no-margin-bottom">
-                            <input type="checkbox" id="pSkipScripting" name="skip_scripts" {{ \Pterodactyl\Helpers\Utilities::checked('skip_scripts', 0) }} />
+                            <input type="checkbox" id="pSkipScripting" name="skip_scripts" value="1" {{ \Pterodactyl\Helpers\Utilities::checked('skip_scripts', 0) }} />
                             <label for="pSkipScripting" class="strong">Skip Egg Install Script</label>
                         </div>
 
