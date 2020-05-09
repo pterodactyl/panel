@@ -49,7 +49,7 @@ abstract class BrowserTestCase extends TestCase
     /**
      * Setup tests.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         // Don't accidentally run the migrations aganist the non-testing database. Ask me
         // how many times I've accidentally dropped my database...
@@ -97,7 +97,7 @@ abstract class BrowserTestCase extends TestCase
      * Tear down the test and delete all cookies from the browser instance to address
      * instances where the test would be kicked over to the login page.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         /** @var \Pterodactyl\Tests\Browser\PterodactylBrowser $browser */
         foreach (static::$browsers as $browser) {

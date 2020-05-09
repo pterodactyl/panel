@@ -34,7 +34,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         Chronos::setTestNow(Chronos::now());

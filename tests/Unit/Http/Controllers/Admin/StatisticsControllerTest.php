@@ -54,7 +54,7 @@ class StatisticsControllerTest extends ControllerTestCase
      */
     private $userRepository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
