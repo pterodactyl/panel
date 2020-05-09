@@ -77,6 +77,19 @@ class NodeUpdateService
             $updated = $this->repository->withFreshModel()->update($node->id, $data, true, true);
 
             try {
+                // If we're changing the FQDN for the node, use the newly provided FQDN for the connection
+                // address. This should alleviate issues where the node gets pointed to a "valid" FQDN that
+                // isn't actually running the daemon software, and therefore you can't actually change it
+                // back.
+                //
+                // This makes more sense anyways, because only the Panel uses the FQDN for connecting, the
+                // node doesn't actually care about this.
+                //
+                // @see https://github.com/pterodactyl/panel/issues/1931
+                if (! empty($data['fqdn'])) {
+                    $node->fqdn = $data['fqdn'];
+                }
+
                 $this->configurationRepository->setNode($node)->update($updated);
             } catch (DaemonConnectionException $exception) {
                 if (! is_null($exception->getPrevious()) && $exception->getPrevious() instanceof ConnectException) {
