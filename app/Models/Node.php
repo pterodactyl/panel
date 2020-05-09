@@ -180,7 +180,6 @@ class Node extends Model
                 'data' => $this->daemonBase,
                 'archive_directory' => $this->daemonBase . '/.archives',
                 'username' => 'pterodactyl',
-                'timezone_path' => '/etc/timezone',
                 'set_permissions_on_boot' => true,
                 'detect_clean_exit_as_crash' => false,
                 'sftp' => [
@@ -199,7 +198,6 @@ class Node extends Model
                 ],
                 'update_images' => true,
                 'socket' => '/var/run/docker.sock',
-                'timezone_path' => '/etc/timezone',
             ],
             'disk_check_timeout' => 30,
             'throttles' => [
