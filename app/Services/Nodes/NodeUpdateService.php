@@ -86,9 +86,7 @@ class NodeUpdateService
                 // node doesn't actually care about this.
                 //
                 // @see https://github.com/pterodactyl/panel/issues/1931
-                if (! empty($data['fqdn'])) {
-                    $node->fqdn = $data['fqdn'];
-                }
+                $node->fqdn = $updated->fqdn;
 
                 $this->configurationRepository->setNode($node)->update($updated);
             } catch (DaemonConnectionException $exception) {
