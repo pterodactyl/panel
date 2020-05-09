@@ -53,7 +53,10 @@
                 <h3 class="box-title">Auto-Deploy</h3>
             </div>
             <div class="box-body">
-                <p class="text-muted small">To simplify the configuration of nodes it is possible to fetch the config from the panel. A token is required for this process. The button below will generate a token and provide you with the commands necessary for automatic configuration of the node. <em>Tokens are only valid for 5 minutes.</em></p>
+                <p class="text-muted small">
+                    Use the button below to generate a custom deployment command that can be used to configure
+                    wings on the target server with a single command.
+                </p>
             </div>
             <div class="box-footer">
                 <button type="button" id="configTokenBtn" class="btn btn-sm btn-default" style="width:100%;">Generate Token</button>
