@@ -138,7 +138,7 @@ class Node extends Model
         'behind_proxy' => false,
         'memory_overallocate' => 0,
         'disk_overallocate' => 0,
-        'daemonBase' => '/srv/daemon-data',
+        'daemonBase' => '/var/lib/pterodactyl/volumes',
         'daemonSFTP' => 2022,
         'daemonListen' => 8080,
         'maintenance_mode' => false,
@@ -178,33 +178,9 @@ class Node extends Model
             ],
             'system' => [
                 'data' => $this->daemonBase,
-                'archive_directory' => $this->daemonBase . '/.archives',
-                'username' => 'pterodactyl',
-                'set_permissions_on_boot' => true,
-                'detect_clean_exit_as_crash' => false,
                 'sftp' => [
-                    'use_internal' => true,
-                    'disable_disk_checking' => false,
-                    'bind_address' => '0.0.0.0',
                     'bind_port' => $this->daemonSFTP,
-                    'read_only' => false,
                 ],
-            ],
-            'docker' => [
-                'network' => [
-                    'interface' => '172.18.0.1',
-                    'name' => 'pterodactyl_nw',
-                    'driver' => 'bridge',
-                ],
-                'update_images' => true,
-                'socket' => '/var/run/docker.sock',
-            ],
-            'disk_check_timeout' => 30,
-            'throttles' => [
-                'kill_at_count' => 5,
-                'decay' => 10,
-                'bytes' => 4096,
-                'check_interval' => 100,
             ],
             'remote' => route('index'),
         ];

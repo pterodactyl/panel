@@ -108,7 +108,7 @@
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label for="pDaemonBase" class="form-label">Daemon Server File Directory</label>
-                            <input type="text" name="daemonBase" id="pDaemonBase" class="form-control" value="/srv/daemon-data" />
+                            <input type="text" name="daemonBase" id="pDaemonBase" class="form-control" value="/var/lib/pterodactyl/volumes" />
                             <p class="text-muted small">Enter the directory where server files should be stored. <strong>If you use OVH you should check your partition scheme. You may need to use <code>/home/daemon-data</code> to have enough space.</strong></p>
                         </div>
                         <div class="form-group col-md-6">
