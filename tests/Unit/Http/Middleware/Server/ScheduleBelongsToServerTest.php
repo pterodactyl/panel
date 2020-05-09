@@ -22,7 +22,7 @@ class ScheduleBelongsToServerTest extends MiddlewareTestCase
      */
     private $repository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

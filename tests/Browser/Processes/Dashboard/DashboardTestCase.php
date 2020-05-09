@@ -14,7 +14,7 @@ abstract class DashboardTestCase extends BrowserTestCase
     /**
      * Setup tests and provide a default user to calling functions.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

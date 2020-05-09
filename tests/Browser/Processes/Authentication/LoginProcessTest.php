@@ -14,7 +14,7 @@ class LoginProcessTest extends BrowserTestCase
     /**
      * Setup tests.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
