@@ -87,15 +87,20 @@ class DeleteBackupService
      * Deletes a backup from an S3 disk.
      *
      * @param \Pterodactyl\Models\Backup $backup
+     * @throws \Throwable
      */
     protected function deleteFromS3(Backup $backup)
     {
-        /** @var \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter */
-        $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
+        $this->connection->transaction(function () use ($backup) {
+            $this->repository->delete($backup->id);
 
-        $adapter->getClient()->deleteObject([
-            'Bucket' => $adapter->getBucket(),
-            'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
-        ]);
+            /** @var \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter */
+            $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
+
+            $adapter->getClient()->deleteObject([
+                'Bucket' => $adapter->getBucket(),
+                'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
+            ]);
+        });
     }
 }
