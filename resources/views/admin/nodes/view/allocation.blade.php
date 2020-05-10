@@ -83,8 +83,6 @@
                             <td class="col-sm-1 middle">
                                 @if(is_null($allocation->server_id))
                                     <button data-action="deallocate" data-id="{{ $allocation->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
-                                @else
-                                    <button class="btn btn-sm disabled"><i class="fa fa-trash-o"></i></button>
                                 @endif
                             </td>
                         </tr>
