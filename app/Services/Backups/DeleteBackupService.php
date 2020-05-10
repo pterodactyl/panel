@@ -2,10 +2,13 @@
 
 namespace Pterodactyl\Services\Backups;
 
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Backup;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DeleteBackupService
 {
@@ -50,7 +53,16 @@ class DeleteBackupService
     public function handle(Backup $backup)
     {
         $this->connection->transaction(function () use ($backup) {
-            $this->daemonBackupRepository->setServer($backup->server)->delete($backup);
+            try {
+                $this->daemonBackupRepository->setServer($backup->server)->delete($backup);
+            } catch (DaemonConnectionException $exception) {
+                $previous = $exception->getPrevious();
+                // Don't fail the request if the Daemon responds with a 404, just assume the backup
+                // doesn't actually exist and remove it's reference from the Panel as well.
+                if (! $previous instanceof ClientException || $previous->getResponse()->getStatusCode() !== Response::HTTP_NOT_FOUND) {
+                    throw $exception;
+                }
+            }
 
             $this->repository->delete($backup->id);
         });

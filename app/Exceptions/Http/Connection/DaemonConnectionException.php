@@ -6,6 +6,9 @@ use Illuminate\Http\Response;
 use GuzzleHttp\Exception\GuzzleException;
 use Pterodactyl\Exceptions\DisplayException;
 
+/**
+ * @method \GuzzleHttp\Exception\GuzzleException getPrevious()
+ */
 class DaemonConnectionException extends DisplayException
 {
     /**
