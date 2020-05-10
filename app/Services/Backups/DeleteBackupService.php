@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Backup;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -28,20 +29,28 @@ class DeleteBackupService
     private $connection;
 
     /**
+     * @var \Pterodactyl\Extensions\Backups\BackupManager
+     */
+    private $manager;
+
+    /**
      * DeleteBackupService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
+     * @param \Pterodactyl\Extensions\Backups\BackupManager $manager
      * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
      */
     public function __construct(
         ConnectionInterface $connection,
         BackupRepository $repository,
+        BackupManager $manager,
         DaemonBackupRepository $daemonBackupRepository
     ) {
         $this->repository = $repository;
         $this->daemonBackupRepository = $daemonBackupRepository;
         $this->connection = $connection;
+        $this->manager = $manager;
     }
 
     /**
@@ -52,6 +61,12 @@ class DeleteBackupService
      */
     public function handle(Backup $backup)
     {
+        if ($backup->disk === Backup::ADAPTER_AWS_S3) {
+            $this->deleteFromS3($backup);
+
+            return;
+        }
+
         $this->connection->transaction(function () use ($backup) {
             try {
                 $this->daemonBackupRepository->setServer($backup->server)->delete($backup);
@@ -66,5 +81,21 @@ class DeleteBackupService
 
             $this->repository->delete($backup->id);
         });
+    }
+
+    /**
+     * Deletes a backup from an S3 disk.
+     *
+     * @param \Pterodactyl\Models\Backup $backup
+     */
+    protected function deleteFromS3(Backup $backup)
+    {
+        /** @var \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter */
+        $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
+
+        $adapter->getClient()->deleteObject([
+            'Bucket' => $adapter->getBucket(),
+            'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
+        ]);
     }
 }
