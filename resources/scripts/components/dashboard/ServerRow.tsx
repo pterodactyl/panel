@@ -53,6 +53,21 @@ export default ({ server, className }: { server: Server; className: string | und
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
+    let disklimit;
+    let memorylimit;
+
+    if(server.limits.disk != 0) {
+        disklimit = bytesToHuman(server.limits.disk * 1000 * 1000);
+    } else {
+        disklimit = "Unlimited";
+    };
+
+    if(server.limits.memory != 0) {
+        memorylimit = bytesToHuman(server.limits.memory * 1000 * 1000);
+    } else {
+        memorylimit = "Unlimited";
+    };
+
     return (
         <Link to={`/server/${server.id}`} className={`grey-row-box cursor-pointer ${className}`}>
             <div className={'icon'}>
@@ -127,7 +142,7 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {bytesToHuman(server.limits.memory * 1000 * 1000)}</p>
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {memorylimit}</p>
                         </div>
                         <div className={'flex-1 ml-4'}>
                             <div className={'flex justify-center'}>
@@ -147,9 +162,7 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>
-                                of {bytesToHuman(server.limits.disk * 1000 * 1000)}
-                            </p>
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {disklimit}</p>
                         </div>
                     </React.Fragment>
                 }

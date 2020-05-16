@@ -81,6 +81,21 @@ export default () => {
         };
     }, [ instance, connected ]);
 
+
+    let memorylimit;
+    let disklimit;
+
+    if(server.limits.disk != 0 ) {
+        disklimit = <span className={'text-neutral-500'}> / {server.limits.memory} MB</span>;
+    } else {
+        disklimit = <span className={'text-neutral-500'}> / Unlimited</span>;
+    };
+    if(server.limits.memory != 0 ) {
+        memorylimit = <span className={'text-neutral-500'}> / {server.limits.memory} MB</span>;
+    } else {
+        memorylimit = <span className={'text-neutral-500'}> / Unlimited</span>;
+    };
+
     return (
         <PageContentBlock className={'flex'}>
             <div className={'w-1/4'}>
@@ -112,7 +127,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(memory)}
-                        <span className={'text-neutral-500'}> / {server.limits.memory} MB</span>
+                        {memorylimit}
                     </p>
                     <p className={'text-xs mt-2'}>
                         <FontAwesomeIcon
@@ -121,7 +136,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(disk)}
-                        <span className={'text-neutral-500'}> / {server.limits.disk} MB</span>
+			            {disklimit}
                     </p>
                 </TitledGreyBox>
                 {!server.isInstalling ?
