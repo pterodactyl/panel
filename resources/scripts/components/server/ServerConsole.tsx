@@ -81,20 +81,8 @@ export default () => {
         };
     }, [ instance, connected ]);
 
-
-    let memorylimit;
-    let disklimit;
-
-    if(server.limits.disk != 0 ) {
-        disklimit = <span className={'text-neutral-500'}> / {server.limits.memory} MB</span>;
-    } else {
-        disklimit = <span className={'text-neutral-500'}> / Unlimited</span>;
-    };
-    if(server.limits.memory != 0 ) {
-        memorylimit = <span className={'text-neutral-500'}> / {server.limits.memory} MB</span>;
-    } else {
-        memorylimit = <span className={'text-neutral-500'}> / Unlimited</span>;
-    };
+    const disklimit = server.limits.disk != 0 ? bytesToHuman(server.limits.disk * 1000 * 1000) : "Unlimited";
+    const memorylimit = server.limits.memory != 0 ? bytesToHuman(server.limits.memory * 1000 * 1000) : "Unlimited";
 
     return (
         <PageContentBlock className={'flex'}>
