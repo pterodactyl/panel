@@ -150,7 +150,7 @@
                         <label for="pCPU">CPU Limit</label>
 
                         <div class="input-group">
-                            <input type="text" id="pCPU" name="cpu" class="form-control" value="{{ old('cpu', 0) }}" />
+                            <input type="text" id="pCPU" name="cpu" class="form-control" value="{{ old('cpu', -1) }}" />
                             <span class="input-group-addon">%</span>
                         </div>
 
