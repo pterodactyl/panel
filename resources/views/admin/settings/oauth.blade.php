@@ -56,7 +56,17 @@
                                 <p class="text-muted"><small>If enabled, any account falling into the selected grouping will be required to authenticate using OAuth.</small></p>
                             </div>
                         </div>
-                    </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Disable Other Authentication Options If Required</label>
+                            <div>
+                                <select class="form-control" name="pterodactyl:auth:oauth:disable_other_authentication_if_required">
+                                    <option value="true">Enabled</option>
+                                    <option value="false" @if(old('pterodactyl:auth:oauth:disable_other_authentication_if_required', config('pterodactyl.auth.oauth.disable_other_authentication_if_required') == 0)) selected @endif>Disabled</option>
+                                </select>
+                                <p class="text-muted"><small>If enabled, any account falling into the grouping specified before will be required to authenticate using OAuth and will not be able to login using other authentication options.</small></p>
+                            </div>
+
+                        </div>
                 </div>
                 <div class="box-footer">
                     <button class="btn btn-sm btn-primary pull-right form-save">Save</button>
@@ -141,6 +151,7 @@
                     'pterodactyl:auth:oauth:enabled': $('select[name="pterodactyl:auth:oauth:enabled"]').val(),
                     'pterodactyl:auth:oauth:drivers': JSON.stringify(drivers),
                     'pterodactyl:auth:oauth:required': $('input[name="pterodactyl:auth:oauth:required"]:checked').val(),
+                    'pterodactyl:auth:oauth:disable_other_authentication_if_required': $('select[name="pterodactyl:auth:oauth:disable_other_authentication_if_required"]').val(),
                 }),
                 headers: { 'X-CSRF-Token': $('input[name="_token"]').val() }
             }).fail(function (jqXHR) {

@@ -36,6 +36,7 @@ class SettingsServiceProvider extends ServiceProvider
         'pterodactyl:auth:oauth:enabled',
         'pterodactyl:auth:oauth:drivers',
         'pterodactyl:auth:oauth:required',
+        'pterodactyl:auth:oauth:disable_other_authentication_if_required',
     ];
 
     /**

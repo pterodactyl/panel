@@ -43,7 +43,8 @@ class AssetComposer
             'analytics' => config('app.analytics') ?? '',
             'oauth' => [
                 'enabled' => config('pterodactyl.auth.oauth.enabled', false),
-                'required' => config('pterodactyl.auth.oauth.required', 0) == 3,
+                'required' => config('pterodactyl.auth.oauth.required', 0) == 3
+                    && config('pterodactyl.auth.oauth.disable_other_authentication_if_required', false),
                 'drivers' => json_encode($drivers),
             ],
         ]);
