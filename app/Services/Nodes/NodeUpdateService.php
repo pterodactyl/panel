@@ -8,7 +8,6 @@ use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
