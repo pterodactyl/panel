@@ -113,7 +113,7 @@ class Server extends Model
         'memory' => 'required|numeric|min:0',
         'swap' => 'required|numeric|min:-1',
         'io' => 'required|numeric|between:10,1000',
-        'cpu' => 'required|numeric|min:0',
+        'cpu' => 'required|numeric|min:-1',
         'threads' => 'nullable|regex:/^[0-9-,]+$/',
         'oom_disabled' => 'sometimes|boolean',
         'disk' => 'required|numeric|min:0',
