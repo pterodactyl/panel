@@ -48,7 +48,7 @@ export default ({ server, className }: { server: Server; className: string | und
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
-        alarms.cpu = server.limits.cpu === 0 ? false : (stats.cpuUsagePercent >= (server.limits.cpu * 0.9));
+        alarms.cpu = server.limits.cpu === -1 ? false : (stats.cpuUsagePercent >= (server.limits.cpu * 0.9));
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
