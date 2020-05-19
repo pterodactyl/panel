@@ -68,6 +68,12 @@ class LoginController extends AbstractLoginController
      */
     public function login(Request $request): JsonResponse
     {
+        // If oauth is required for all users & other ways are disabled
+        if (config('pterodactyl.auth.oauth.required') == 3
+            && config('pterodactyl.auth.oauth.disable_other_authentication_if_required')) {
+            return $this->sendFailedLoginResponse($request);
+        }
+
         $username = $request->input('user');
         $useColumn = $this->getField($username);
 
@@ -80,6 +86,19 @@ class LoginController extends AbstractLoginController
             $user = $this->repository->findFirstWhere([[$useColumn, '=', $username]]);
         } catch (RecordNotFoundException $exception) {
             return $this->sendFailedLoginResponse($request);
+        }
+
+        // If oauth is required specific users & other ways are disabled
+        if (config('pterodactyl.auth.oauth.disable_other_authentication_if_required')) {
+            if ($user->root_admin) {
+                if (config('pterodactyl.auth.oauth.required') == 2) {
+                    return $this->sendFailedLoginResponse($request);
+                }
+            } else {
+                if (config('pterodactyl.auth.oauth.required') == 1) {
+                    return $this->sendFailedLoginResponse($request);
+                }
+            }
         }
 
         // Ensure that the account is using a valid username and password before trying to

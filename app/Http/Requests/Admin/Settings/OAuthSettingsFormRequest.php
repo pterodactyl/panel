@@ -19,6 +19,7 @@ class OAuthSettingsFormRequest extends AdminFormRequest
             'pterodactyl:auth:oauth:enabled' => 'required|in:true,false',
             'pterodactyl:auth:oauth:drivers' => 'required|json',
             'pterodactyl:auth:oauth:required' => 'required|integer|in:0,1,2,3',
+            'pterodactyl:auth:oauth:disable_other_authentication_if_required' => 'required|in:true,false',
         ];
     }
 
@@ -31,6 +32,7 @@ class OAuthSettingsFormRequest extends AdminFormRequest
             'pterodactyl:auth:oauth:enabled' => 'OAuth Enabled',
             'pterodactyl:auth:oauth:drivers' => 'OAuth Drivers',
             'pterodactyl:auth:oauth:required' => 'Require OAuth Authentication',
+            'pterodactyl:auth:oauth:disable_other_authentication_if_required' => 'Disable Other Authentication Options If Required',
         ];
     }
 }

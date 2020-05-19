@@ -42,6 +42,7 @@ return [
         'oauth' => [
             'enabled' => env('APP_OAUTH_ENABLED', 0),
             'required' => env('APP_OAUTH_REQUIRED', 0),
+            'disable_other_authentication_if_required' => env('APP_OAUTH_DISABLE_OTHER_AUTHENTICATION_IF_REQUIRED', 0),
             'drivers' => json_encode([ // Store in json form to enable storing in DB
                 'discord' => [
                     'enabled' => true,
