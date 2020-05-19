@@ -60,7 +60,7 @@
                             <tr>
                                 <td>CPU Limit</td>
                                 <td>
-                                    @if($server->cpu === 0)
+                                    @if($server->cpu === -1)
                                         <code>Unlimited</code>
                                     @else
                                         <code>{{ $server->cpu }}%</code>
