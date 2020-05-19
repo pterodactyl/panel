@@ -323,6 +323,7 @@ class ServersController extends Controller
             'database' => $request->input('database'),
             'remote' => $request->input('remote'),
             'database_host_id' => $request->input('database_host_id'),
+            'max_connections' => $request->input('max_connections'),
         ]);
 
         return redirect()->route('admin.servers.view.database', $server)->withInput();
