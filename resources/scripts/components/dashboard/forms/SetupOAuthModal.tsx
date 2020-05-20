@@ -37,7 +37,7 @@ export default ({ ...props }: RequiredModalProps) => {
                                 Linked with id <code>{oauth[driver]}</code>
                             </div>
                             <div className={"mb-4"}>
-                                <a className={"btn btn-red btn-secondary btn-sm"} href={'/account/unlink?driver=' + driver}>
+                                <a className={"btn btn-red btn-secondary btn-sm"} href={'/account/oauth/unlink?driver=' + driver}>
                                     Unlink {driver}
                                 </a>
                             </div>
@@ -45,7 +45,7 @@ export default ({ ...props }: RequiredModalProps) => {
                         }
                         { oauth[driver] == undefined &&
                         <div className={"mt-16 mb-4"}>
-                            <a className={"btn btn-green btn-secondary btn-sm"} href={'/account/link?driver=' + driver}>
+                            <a className={"btn btn-green btn-secondary btn-sm"} href={'/account/oauth/link?driver=' + driver}>
                                 Link {driver}
                             </a>
                         </div>
