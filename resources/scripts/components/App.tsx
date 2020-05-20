@@ -25,6 +25,7 @@ interface ExtendedWindow extends Window {
         root_admin: boolean;
         use_totp: boolean;
         language: string;
+        oauth: string;
         updated_at: string;
         created_at: string;
         /* eslint-enable camelcase */
@@ -53,6 +54,7 @@ const App = () => {
             language: PterodactylUser.language,
             rootAdmin: PterodactylUser.root_admin,
             useTotp: PterodactylUser.use_totp,
+            oauth: PterodactylUser.oauth,
             createdAt: new Date(PterodactylUser.created_at),
             updatedAt: new Date(PterodactylUser.updated_at),
         });
