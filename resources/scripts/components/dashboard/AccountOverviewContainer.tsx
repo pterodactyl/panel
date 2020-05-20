@@ -3,6 +3,7 @@ import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
+import ConfigureOAuthForm from "@/components/dashboard/forms/ConfigureOAuthForm";
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
@@ -45,9 +46,14 @@ export default ({ location: { state } }: RouteComponentProps) => {
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure Two Factor'}>
-                    <ConfigureTwoFactorForm/>
-                </ContentBox>
+                <div>
+                    <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure Two Factor'}>
+                        <ConfigureTwoFactorForm/>
+                    </ContentBox>
+                    <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure OAuth'}>
+                        <ConfigureOAuthForm/>
+                    </ContentBox>
+                </div>
             </Container>
         </PageContentBlock>
     );
