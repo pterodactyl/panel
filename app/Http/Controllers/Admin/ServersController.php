@@ -378,4 +378,34 @@ class ServersController extends Controller
 
         return response('', 204);
     }
+
+    /**
+     * Add a mount to a server.
+     *
+     * @param Server $server
+     * @param int $mount_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addMount(Server $server, int $mount_id)
+    {
+        $server->mounts()->attach($mount_id);
+
+        $this->alert->success('Mount was added successfully.')->flash();
+        return redirect()->route('admin.servers.view.mounts', $server->id);
+    }
+
+    /**
+     * Remove a mount from a server.
+     *
+     * @param Server $server
+     * @param int $mount_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteMount(Server $server, int $mount_id)
+    {
+        $server->mounts()->detach($mount_id);
+
+        $this->alert->success('Mount was removed successfully.')->flash();
+        return redirect()->route('admin.servers.view.mounts', $server->id);
+    }
 }

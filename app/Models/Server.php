@@ -53,6 +53,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  * @property \Pterodactyl\Models\ServerTransfer $transfer
  * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
+ * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
  */
 class Server extends Model
 {
@@ -350,5 +351,15 @@ class Server extends Model
     public function backups()
     {
         return $this->hasMany(Backup::class);
+    }
+
+    /**
+     * Returns all mounts that have this server has mounted.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function mounts()
+    {
+        return $this->belongsToMany(Mount::class);
     }
 }

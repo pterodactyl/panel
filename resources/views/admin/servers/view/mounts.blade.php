@@ -41,21 +41,33 @@
                                 <td class="middle"><a href="{{ route('admin.mounts.view', $mount->id) }}">{{ $mount->name }}</a></td>
                                 <td class="middle"><code>{{ $mount->source }}</code></td>
                                 <td class="col-sm-2 middle"><code>{{ $mount->target }}</code></td>
-                                <td class="col-sm-2 middle">
-                                    @if ($mount->id == 2)
-                                        <span class="label label-primary">Unmounted</span>
-                                    @else
-                                        <span class="label label-success">Mounted</span>
-                                    @endif
-                                </td>
 
-                                <td class="col-sm-1 middle">
-                                    @if ($mount->id == 2)
-                                        <button data-action="mount" data-id="{{ $mount->id }}" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
-                                    @else
-                                        <button data-action="unmount" data-id="{{ $mount->id }}" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></button>
-                                    @endif
-                                </td>
+                                @if (! in_array($mount->id, $server->mounts->pluck('id')->toArray()))
+                                    <td class="col-sm-2 middle">
+                                        <span class="label label-primary">Unmounted</span>
+                                    </td>
+
+                                    <td class="col-sm-1 middle">
+                                        <form action="{{ route('admin.servers.view.mounts.toggle', [ 'server' => $server->id, 'mount' => $mount->id ]) }}" method="POST">
+                                            {!! csrf_field() !!}
+
+                                            <button type="submit" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
+                                        </form>
+                                    </td>
+                                @else
+                                    <td class="col-sm-2 middle">
+                                        <span class="label label-success">Mounted</span>
+                                    </td>
+
+                                    <td class="col-sm-1 middle">
+                                        <form action="{{ route('admin.servers.view.mounts.toggle', [ 'server' => $server->id, 'mount' => $mount->id ]) }}" method="POST">
+                                            @method('DELETE')
+                                            {!! csrf_field() !!}
+
+                                            <button type="submit" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></button>
+                                        </form>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </table>
@@ -63,8 +75,4 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('footer-scripts')
-    @parent
 @endsection

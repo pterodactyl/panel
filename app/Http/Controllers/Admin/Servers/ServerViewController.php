@@ -178,6 +178,8 @@ class ServerViewController extends Controller
      */
     public function mounts(Request $request, Server $server)
     {
+        $server->load('mounts');
+
         return $this->view->make('admin.servers.view.mounts', [
             'mounts' => $this->mountRepository->getMountListForServer($server),
             'server' => $server,

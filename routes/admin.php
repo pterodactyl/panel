@@ -123,6 +123,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{server}/build', 'ServersController@updateBuild');
     Route::post('/view/{server}/startup', 'ServersController@saveStartup');
     Route::post('/view/{server}/database', 'ServersController@newDatabase');
+    Route::post('/view/{server}/mounts/{mount}', 'ServersController@addMount')->name('admin.servers.view.mounts.toggle');
     Route::post('/view/{server}/manage/toggle', 'ServersController@toggleInstall')->name('admin.servers.view.manage.toggle');
     Route::post('/view/{server}/manage/suspension', 'ServersController@manageSuspension')->name('admin.servers.view.manage.suspension');
     Route::post('/view/{server}/manage/reinstall', 'ServersController@reinstallServer')->name('admin.servers.view.manage.reinstall');
@@ -133,6 +134,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::patch('/view/{server}/database', 'ServersController@resetDatabasePassword');
 
     Route::delete('/view/{server}/database/{database}/delete', 'ServersController@deleteDatabase')->name('admin.servers.view.database.delete');
+    Route::delete('/view/{server}/mounts/{mount}', 'ServersController@deleteMount');
 });
 
 /*

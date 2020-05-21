@@ -12,8 +12,9 @@ namespace Pterodactyl\Models;
  * @property bool $read_only
  * @property bool $user_mountable
  *
- * @property \Illuminate\Database\Eloquent\Relations\BelongsToMany $eggs
- * @property \Illuminate\Database\Eloquent\Relations\BelongsToMany $nodes
+ * @property \Pterodactyl\Models\Egg[]|\Illuminate\Database\Eloquent\Collection $eggs
+ * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  */
 class Mount extends Model
 {
@@ -93,5 +94,15 @@ class Mount extends Model
     public function nodes()
     {
         return $this->belongsToMany(Node::class);
+    }
+
+    /**
+     * Returns all servers that have this mount assigned.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function servers()
+    {
+        return $this->belongsToMany(Server::class);
     }
 }

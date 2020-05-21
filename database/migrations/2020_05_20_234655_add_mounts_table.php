@@ -26,14 +26,14 @@ class AddMountsTable extends Migration
 
         Schema::create('egg_mount', function (Blueprint $table) {
             $table->integer('egg_id');
-            $table->char('mount_id', 36);
+            $table->integer('mount_id');
 
             $table->unique(['egg_id', 'mount_id']);
         });
 
         Schema::create('mount_node', function (Blueprint $table) {
             $table->integer('node_id');
-            $table->char('mount_id', 36);
+            $table->integer('mount_id');
 
             $table->unique(['node_id', 'mount_id']);
         });
