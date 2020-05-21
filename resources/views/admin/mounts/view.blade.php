@@ -57,12 +57,12 @@
 
                                 <div>
                                     <div class="radio radio-success radio-inline">
-                                        <input type="radio" id="pReadOnlyFalse" name="read_only" value="0" @if($mount->read_only) checked @endif>
+                                        <input type="radio" id="pReadOnlyFalse" name="read_only" value="0" @if(!$mount->read_only) checked @endif>
                                         <label for="pReadOnlyFalse">False</label>
                                     </div>
 
                                     <div class="radio radio-warning radio-inline">
-                                        <input type="radio" id="pReadOnly" name="read_only" value="1" @if(!$mount->read_only) checked @endif>
+                                        <input type="radio" id="pReadOnly" name="read_only" value="1" @if($mount->read_only) checked @endif>
                                         <label for="pReadOnly">True</label>
                                     </div>
                                 </div>
@@ -73,12 +73,12 @@
 
                                 <div>
                                     <div class="radio radio-success radio-inline">
-                                        <input type="radio" id="pUserMountableFalse" name="user_mountable" value="0" @if($mount->user_mountable) checked @endif>
+                                        <input type="radio" id="pUserMountableFalse" name="user_mountable" value="0" @if(!$mount->user_mountable) checked @endif>
                                         <label for="pUserMountableFalse">False</label>
                                     </div>
 
                                     <div class="radio radio-warning radio-inline">
-                                        <input type="radio" id="pUserMountable" name="user_mountable" value="1" @if(!$mount->user_mountable) checked @endif>
+                                        <input type="radio" id="pUserMountable" name="user_mountable" value="1" @if($mount->user_mountable) checked @endif>
                                         <label for="pUserMountable">True</label>
                                     </div>
                                 </div>

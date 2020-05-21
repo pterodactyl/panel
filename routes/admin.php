@@ -178,6 +178,7 @@ Route::group(['prefix' => 'mounts'], function () {
     Route::get('/view/{mount}', 'MountController@view')->name('admin.mounts.view');
 
     Route::post('/', 'MountController@create');
+    Route::patch('/view/{mount}', 'MountController@update');
 });
 
 /*

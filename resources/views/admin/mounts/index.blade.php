@@ -47,8 +47,8 @@
                                 <tr>
                                     <td><code>{{ $mount->id }}</code></td>
                                     <td><a href="{{ route('admin.mounts.view', $mount->id) }}">{{ $mount->name }}</a></td>
-                                    <td>{{ $mount->source }}</td>
-                                    <td>{{ $mount->target }}</td>
+                                    <td><code>{{ $mount->source }}</code></td>
+                                    <td><code>{{ $mount->target }}</code></td>
                                     <td class="text-center">{{ $mount->eggs_count }}</td>
                                     <td class="text-center">{{ $mount->nodes_count }}</td>
                                     <td class="text-center">{{ $mount->servers_count }}</td>
