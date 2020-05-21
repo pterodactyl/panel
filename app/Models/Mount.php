@@ -36,7 +36,7 @@ class Mount extends Model
      *
      * @var array
      */
-    protected $guarded = ['id', 'uuid', 'name', 'description', 'source', 'target'];
+    protected $guarded = ['id', 'uuid'];
 
     /**
      * Default values for specific fields in the database.

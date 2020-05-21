@@ -9,12 +9,17 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Services\Servers\ServerDeletionService;
@@ -53,6 +58,11 @@ class ServersController extends Controller
      * @var \Illuminate\Contracts\Config\Repository
      */
     protected $config;
+
+    /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     */
+    private $daemonServerRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
@@ -105,6 +115,11 @@ class ServersController extends Controller
     protected $repository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    private $serverConfigurationStructureService;
+
+    /**
      * @var \Pterodactyl\Services\Servers\StartupModificationService
      */
     private $startupModificationService;
@@ -121,6 +136,7 @@ class ServersController extends Controller
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
      * @param \Pterodactyl\Services\Servers\BuildModificationService $buildModificationService
      * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
      * @param \Pterodactyl\Services\Databases\DatabasePasswordService $databasePasswordService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
@@ -131,6 +147,7 @@ class ServersController extends Controller
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Pterodactyl\Repositories\Eloquent\MountRepository $mountRepository
      * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $nestRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $serverConfigurationStructureService
      * @param \Pterodactyl\Services\Servers\StartupModificationService $startupModificationService
      * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
      */
@@ -139,6 +156,7 @@ class ServersController extends Controller
         AllocationRepositoryInterface $allocationRepository,
         BuildModificationService $buildModificationService,
         ConfigRepository $config,
+        DaemonServerRepository $daemonServerRepository,
         DatabaseManagementService $databaseManagementService,
         DatabasePasswordService $databasePasswordService,
         DatabaseRepositoryInterface $databaseRepository,
@@ -149,6 +167,7 @@ class ServersController extends Controller
         ServerRepositoryInterface $repository,
         MountRepository $mountRepository,
         NestRepositoryInterface $nestRepository,
+        ServerConfigurationStructureService $serverConfigurationStructureService,
         StartupModificationService $startupModificationService,
         SuspensionService $suspensionService
     ) {
@@ -156,6 +175,7 @@ class ServersController extends Controller
         $this->allocationRepository = $allocationRepository;
         $this->buildModificationService = $buildModificationService;
         $this->config = $config;
+        $this->daemonServerRepository = $daemonServerRepository;
         $this->databaseHostRepository = $databaseHostRepository;
         $this->databaseManagementService = $databaseManagementService;
         $this->databasePasswordService = $databasePasswordService;
@@ -166,6 +186,7 @@ class ServersController extends Controller
         $this->reinstallService = $reinstallService;
         $this->repository = $repository;
         $this->mountRepository = $mountRepository;
+        $this->serverConfigurationStructureService = $serverConfigurationStructureService;
         $this->startupModificationService = $startupModificationService;
         $this->suspensionService = $suspensionService;
     }
@@ -390,6 +411,16 @@ class ServersController extends Controller
     {
         $server->mounts()->attach($mount_id);
 
+        $data = $this->serverConfigurationStructureService->handle($server);
+
+        try {
+            $this->daemonServerRepository
+                ->setServer($server)
+                ->update(Arr::only($data, ['mounts']));
+        } catch (RequestException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+
         $this->alert->success('Mount was added successfully.')->flash();
 
         return redirect()->route('admin.servers.view.mounts', $server->id);
@@ -401,10 +432,23 @@ class ServersController extends Controller
      * @param Server $server
      * @param int $mount_id
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function deleteMount(Server $server, int $mount_id)
     {
         $server->mounts()->detach($mount_id);
+
+        $data = $this->serverConfigurationStructureService->handle($server);
+
+        try {
+            $this->daemonServerRepository
+                ->setServer($server)
+                ->update(Arr::only($data, ['mounts']));
+        } catch (RequestException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
 
         $this->alert->success('Mount was removed successfully.')->flash();
 

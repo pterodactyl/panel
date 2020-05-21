@@ -71,6 +71,17 @@ class ServerConfigurationStructureService
      */
     protected function returnCurrentFormat(Server $server)
     {
+        $mounts = $server->mounts;
+        foreach ($mounts as $mount) {
+            unset($mount->id);
+            unset($mount->uuid);
+            unset($mount->name);
+            unset($mount->description);
+            $mount->read_only = $mount->read_only == 1;
+            unset($mount->user_mountable);
+            unset($mount->pivot);
+        }
+
         return [
             'uuid' => $server->uuid,
             'suspended' => (bool) $server->suspended,
@@ -101,6 +112,7 @@ class ServerConfigurationStructureService
                 ],
                 'mappings' => $server->getAllocationMappings(),
             ],
+            'mounts' => $mounts,
         ];
     }
 
