@@ -3,8 +3,8 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Mount;
-use Illuminate\Support\Collection;
 use Pterodactyl\Models\Server;
+use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;

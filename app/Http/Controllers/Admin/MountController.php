@@ -233,6 +233,7 @@ class MountController extends Controller
     public function deleteEgg(Mount $mount, int $egg_id)
     {
         $mount->eggs()->detach($egg_id);
+
         return response('', 204);
     }
 
@@ -246,6 +247,7 @@ class MountController extends Controller
     public function deleteNode(Mount $mount, int $node_id)
     {
         $mount->nodes()->detach($node_id);
+
         return response('', 204);
     }
 }
