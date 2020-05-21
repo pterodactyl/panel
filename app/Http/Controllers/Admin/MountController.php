@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\Mount;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
@@ -22,11 +21,6 @@ class MountController extends Controller
      * @var \Prologue\Alerts\AlertsMessageBag
      */
     protected $alert;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\MountRepository
-     */
-    protected $mountRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface

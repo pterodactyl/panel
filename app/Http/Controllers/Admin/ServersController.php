@@ -9,21 +9,19 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use GuzzleHttp\Exception\RequestException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
+use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Servers\ReinstallServerService;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Servers\BuildModificationService;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
@@ -35,6 +33,8 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
 class ServersController extends Controller
