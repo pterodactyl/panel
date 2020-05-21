@@ -52,7 +52,7 @@ class Mount extends Model
      * @var string
      */
     public static $validationRules = [
-        'id' => 'required|string|size:36|unique:mounts,id',
+        // 'id' => 'required|string|size:36|unique:mounts,id',
         'name' => 'required|string|min:2|max:64|unique:mounts,name',
         'description' => 'nullable|string|max:255',
         'source' => 'required|string',
@@ -60,6 +60,13 @@ class Mount extends Model
         'read_only' => 'sometimes|boolean',
         'user_mountable' => 'sometimes|boolean',
     ];
+
+    /**
+     * Disable timestamps on this model.
+     * 
+     * @var bool
+     */
+    public $timestamps = false;
 
     /**
      * Returns all eggs that have this mount assigned.

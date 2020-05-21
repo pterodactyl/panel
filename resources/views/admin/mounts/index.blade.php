@@ -78,13 +78,61 @@
                             <div class="col-md-12">
                                 <label for="pName" class="form-label">Name</label>
                                 <input type="text" id="pName" name="name" class="form-control" />
-                                <p class="text-muted small">Thiccc boi name used to separate this mount from another!</p>
+                                <p class="text-muted small">Unique name used to separate this mount from another.</p>
                             </div>
 
                             <div class="col-md-12">
                                 <label for="pDescription" class="form-label">Description</label>
                                 <textarea id="pDescription" name="description" class="form-control" rows="4"></textarea>
-                                <p class="text-muted small">A longer description of this mount. Must be less than 255 characters.</p>
+                                <p class="text-muted small">A longer description for this mount, must be less than 255 characters.</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="pSource" class="form-label">Source</label>
+                                <input type="text" id="pSource" name="source" class="form-control" />
+                                <p class="text-muted small">File path on the host system to mount to a container.</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="pTarget" class="form-label">Target</label>
+                                <input type="text" id="pTarget" name="target" class="form-control" />
+                                <p class="text-muted small">Where the mount will be accessible inside a container.</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Read Only</label>
+
+                                <div>
+                                    <div class="radio radio-success radio-inline">
+                                        <input type="radio" id="pReadOnlyFalse" name="read_only" value="0" checked>
+                                        <label for="pReadOnlyFalse">False</label>
+                                    </div>
+
+                                    <div class="radio radio-warning radio-inline">
+                                        <input type="radio" id="pReadOnly" name="read_only" value="1">
+                                        <label for="pReadOnly">True</label>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted small">Is the mount read only inside the container?</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">User Mountable</label>
+
+                                <div>
+                                    <div class="radio radio-success radio-inline">
+                                        <input type="radio" id="pUserMountableFalse" name="user_mountable" value="0" checked>
+                                        <label for="pUserMountableFalse">False</label>
+                                    </div>
+
+                                    <div class="radio radio-warning radio-inline">
+                                        <input type="radio" id="pUserMountable" name="user_mountable" value="1">
+                                        <label for="pUserMountable">True</label>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted small">Should users be able to mount this themselves?</p>
                             </div>
                         </div>
                     </div>

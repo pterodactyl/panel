@@ -1,26 +1,45 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Mounts;
+namespace Pterodactyl\Http\Controllers\Admin;
 
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\MountFormRequest;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
+use Pterodactyl\Services\Mounts\MountCreationService;
 
 class MountController extends Controller
 {
+    /**
+     * @var \Prologue\Alerts\AlertsMessageBag
+     */
+    protected $alert;
+
     /**
      * @var \Pterodactyl\Repositories\Eloquent\MountRepository
      */
     protected $repository;
 
     /**
+     * @var \Pterodactyl\Services\Locations\LocationCreationService
+     */
+    protected $creationService;
+
+    /**
      * MountController constructor.
      *
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Repositories\Eloquent\MountRepository $repository
+     * @param \Pterodactyl\Services\Mounts\MountCreationService $creationService
      */
     public function __construct(
-        MountRepository $repository
+        AlertsMessageBag $alert,
+        MountRepository $repository,
+        MountCreationService $creationService
     ) {
+        $this->alert = $alert;
         $this->repository = $repository;
+        $this->creationService = $creationService;
     }
 
     /**
@@ -33,5 +52,22 @@ class MountController extends Controller
         return view('admin.mounts.index', [
             'mounts' => $this->repository->getAllWithDetails(),
         ]);
+    }
+
+    /**
+     * Handle request to create new mount.
+     *
+     * @param \Pterodactyl\Http\Requests\Admin\MountFormRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Throwable
+     */
+    public function create(MountFormRequest $request)
+    {
+        $mount = $this->creationService->handle($request->normalize());
+        $this->alert->success('Mount was created successfully.')->flash();
+
+        //return redirect()->route('admin.mounts.view', $mount->id);
+        return redirect()->route('admin.mounts');
     }
 }

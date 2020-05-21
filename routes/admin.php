@@ -175,6 +175,8 @@ Route::group(['prefix' => 'nodes'], function () {
 */
 Route::group(['prefix' => 'mounts'], function () {
     Route::get('/', 'MountController@index')->name('admin.mounts');
+
+    Route::post('/', 'MountController@create');
 });
 
 /*
