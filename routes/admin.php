@@ -174,7 +174,7 @@ Route::group(['prefix' => 'nodes'], function () {
 |
 */
 Route::group(['prefix' => 'mounts'], function () {
-    Route::get('/', 'Mounts\MountController@index')->name('admin.mounts');
+    Route::get('/', 'MountController@index')->name('admin.mounts');
 });
 
 /*
