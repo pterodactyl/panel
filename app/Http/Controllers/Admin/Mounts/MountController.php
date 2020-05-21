@@ -2,23 +2,23 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Mounts;
 
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Eloquent\MountRepository;
 
 class MountController extends Controller
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     * @var \Pterodactyl\Repositories\Eloquent\MountRepository
      */
     protected $repository;
 
     /**
-     * LocationController constructor.
+     * MountController constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Eloquent\MountRepository $repository
      */
     public function __construct(
-        LocationRepositoryInterface $repository
+        MountRepository $repository
     ) {
         $this->repository = $repository;
     }
@@ -31,7 +31,7 @@ class MountController extends Controller
     public function index()
     {
         return view('admin.mounts.index', [
-            'locations' => $this->repository->getAllWithDetails(),
+            'mounts' => $this->repository->getAllWithDetails(),
         ]);
     }
 }

@@ -3,7 +3,16 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int $id
+ * @property string $id
+ * @property string $name
+ * @property string $description
+ * @property string $source
+ * @property string $target
+ * @property bool $read_only
+ * @property bool $user_mountable
+ *
+ * @property \Illuminate\Database\Eloquent\Relations\BelongsToMany $nodes
+ * @property \Illuminate\Database\Eloquent\Relations\BelongsToMany $eggs
  */
 class Mount extends Model
 {
@@ -25,5 +34,50 @@ class Mount extends Model
      *
      * @var array
      */
-    protected $guarded = ['id'];
+    protected $guarded = ['id', 'name', 'description', 'source', 'target'];
+
+    /**
+     * Default values for specific fields in the database.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'read_only' => 'bool',
+        'user_mountable' => 'bool',
+    ];
+
+    /**
+     * Rules verifying that the data being stored matches the expectations of the database.
+     *
+     * @var string
+     */
+    public static $validationRules = [
+        'id' => 'required|string|size:36|unique:mounts,id',
+        'name' => 'required|string|min:2|max:64|unique:mounts,name',
+        'description' => 'nullable|string|max:255',
+        'source' => 'required|string',
+        'target' => 'required|string',
+        'read_only' => 'sometimes|boolean',
+        'user_mountable' => 'sometimes|boolean',
+    ];
+
+    /**
+     * Returns all eggs that have this mount assigned.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function eggs()
+    {
+        return $this->belongsToMany(Egg::class);
+    }
+
+    /**
+     * Returns all nodes that have this mount assigned.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function nodes()
+    {
+        return $this->belongsToMany(Node::class);
+    }
 }
