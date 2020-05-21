@@ -51,7 +51,7 @@ class MountRepository extends EloquentRepository
     }
 
     /**
-     * Return mounts available to a server. (ignoring if they are or are not mounted)
+     * Return mounts available to a server (ignoring if they are or are not mounted).
      *
      * @param Server $server
      * @return \Illuminate\Support\Collection

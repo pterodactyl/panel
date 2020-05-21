@@ -391,6 +391,7 @@ class ServersController extends Controller
         $server->mounts()->attach($mount_id);
 
         $this->alert->success('Mount was added successfully.')->flash();
+
         return redirect()->route('admin.servers.view.mounts', $server->id);
     }
 
@@ -406,6 +407,7 @@ class ServersController extends Controller
         $server->mounts()->detach($mount_id);
 
         $this->alert->success('Mount was removed successfully.')->flash();
+
         return redirect()->route('admin.servers.view.mounts', $server->id);
     }
 }
