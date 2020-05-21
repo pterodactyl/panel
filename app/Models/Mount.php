@@ -63,7 +63,7 @@ class Mount extends Model
 
     /**
      * Disable timestamps on this model.
-     * 
+     *
      * @var bool
      */
     public $timestamps = false;

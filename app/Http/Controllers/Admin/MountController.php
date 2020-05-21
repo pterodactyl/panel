@@ -5,8 +5,8 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\MountFormRequest;
-use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Services\Mounts\MountCreationService;
+use Pterodactyl\Repositories\Eloquent\MountRepository;
 
 class MountController extends Controller
 {
