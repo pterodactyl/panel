@@ -16,6 +16,7 @@ use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\SuspensionService;
+use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Services\Servers\BuildModificationService;
@@ -84,6 +85,11 @@ class ServersController extends Controller
     protected $detailsModificationService;
 
     /**
+     * @var \Pterodactyl\Repositories\Eloquent\MountRepository
+     */
+    protected $mountRepository;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $nestRepository;
@@ -123,6 +129,7 @@ class ServersController extends Controller
      * @param \Pterodactyl\Services\Servers\DetailsModificationService $detailsModificationService
      * @param \Pterodactyl\Services\Servers\ReinstallServerService $reinstallService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Eloquent\MountRepository $mountRepository
      * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $nestRepository
      * @param \Pterodactyl\Services\Servers\StartupModificationService $startupModificationService
      * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
@@ -140,6 +147,7 @@ class ServersController extends Controller
         DetailsModificationService $detailsModificationService,
         ReinstallServerService $reinstallService,
         ServerRepositoryInterface $repository,
+        MountRepository $mountRepository,
         NestRepositoryInterface $nestRepository,
         StartupModificationService $startupModificationService,
         SuspensionService $suspensionService
@@ -157,6 +165,7 @@ class ServersController extends Controller
         $this->nestRepository = $nestRepository;
         $this->reinstallService = $reinstallService;
         $this->repository = $repository;
+        $this->mountRepository = $mountRepository;
         $this->startupModificationService = $startupModificationService;
         $this->suspensionService = $suspensionService;
     }
@@ -168,7 +177,6 @@ class ServersController extends Controller
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

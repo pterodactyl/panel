@@ -30,6 +30,11 @@
                 <form action="{{ route('admin.mounts.view', $mount->id) }}" method="POST">
                     <div class="box-body">
                         <div class="form-group">
+                            <label for="PUniqueID" class="form-label">Unique ID</label>
+                            <input type="text" id="PUniqueID" class="form-control" value="{{ $mount->uuid }}" disabled />
+                        </div>
+
+                        <div class="form-group">
                             <label for="pName" class="form-label">Name</label>
                             <input type="text" id="pName" name="name" class="form-control" value="{{ $mount->name }}" />
                         </div>
@@ -117,8 +122,8 @@
 
                         @foreach ($mount->eggs as $egg)
                             <tr>
-                                <td><code>{{ $egg->id }}</code></td>
-                                <td><a href="{{ route('admin.nests.egg.view', $egg->id) }}">{{ $egg->name }}</a></td>
+                                <td class="col-sm-2 middle"><code>{{ $egg->id }}</code></td>
+                                <td class="middle"><a href="{{ route('admin.nests.egg.view', $egg->id) }}">{{ $egg->name }}</a></td>
                                 <td class="col-sm-1 middle">
                                     <button data-action="detach-egg" data-id="{{ $egg->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
                                 </td>
@@ -148,9 +153,9 @@
 
                         @foreach ($mount->nodes as $node)
                             <tr>
-                                <td><code>{{ $node->id }}</code></td>
-                                <td><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></td>
-                                <td><code>{{ $node->fqdn }}</code></td>
+                                <td class="col-sm-2 middle"><code>{{ $node->id }}</code></td>
+                                <td class="middle"><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></td>
+                                <td class="middle"><code>{{ $node->fqdn }}</code></td>
                                 <td class="col-sm-1 middle">
                                     <button data-action="detach-node" data-id="{{ $node->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
                                 </td>
@@ -254,7 +259,7 @@
 @section('footer-scripts')
     @parent
 
-    <script type="application/javascript">
+    <script>
         $(document).ready(function() {
             $('#pEggs').select2({
                 placeholder: 'Select eggs..',

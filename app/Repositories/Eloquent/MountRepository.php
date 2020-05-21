@@ -4,6 +4,7 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Mount;
 use Illuminate\Support\Collection;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -47,5 +48,23 @@ class MountRepository extends EloquentRepository
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException;
         }
+    }
+
+    /**
+     * Return mounts available to a server. (ignoring if they are or are not mounted)
+     *
+     * @param Server $server
+     * @return \Illuminate\Support\Collection
+     */
+    public function getMountListForServer(Server $server): Collection
+    {
+        return $this->getBuilder()
+            ->whereHas('eggs', function ($q) use ($server) {
+                $q->where('id', '=', $server->egg_id);
+            })
+            ->whereHas('nodes', function ($q) use ($server) {
+                $q->where('id', '=', $server->node_id);
+            })
+            ->get($this->getColumns());
     }
 }

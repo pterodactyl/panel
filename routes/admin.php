@@ -113,6 +113,7 @@ Route::group(['prefix' => 'servers'], function () {
         Route::get('/view/{server}/build', 'Servers\ServerViewController@build')->name('admin.servers.view.build');
         Route::get('/view/{server}/startup', 'Servers\ServerViewController@startup')->name('admin.servers.view.startup');
         Route::get('/view/{server}/database', 'Servers\ServerViewController@database')->name('admin.servers.view.database');
+        Route::get('/view/{server}/mounts', 'Servers\ServerViewController@mounts')->name('admin.servers.view.mounts');
     });
 
     Route::get('/view/{server}/manage', 'Servers\ServerViewController@manage')->name('admin.servers.view.manage');

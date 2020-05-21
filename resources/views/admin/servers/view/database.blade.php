@@ -37,7 +37,7 @@
                         <th>Username</th>
                         <th>Connections From</th>
                         <th>Host</th>
-                        <th>Max Conenctions</th>
+                        <th>Max Connections</th>
                         <th></th>
                     </tr>
                     @foreach($server->databases as $database)
