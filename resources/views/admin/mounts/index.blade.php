@@ -46,7 +46,7 @@
                             @foreach ($mounts as $mount)
                                 <tr>
                                     <td><code>{{ $mount->id }}</code></td>
-                                    <td><a href="{{ route('admin.locations.view', $mount->id) }}">{{ $mount->name }}</a></td>
+                                    <td><a href="{{ route('admin.mounts.view', $mount->id) }}">{{ $mount->name }}</a></td>
                                     <td>{{ $mount->source }}</td>
                                     <td>{{ $mount->target }}</td>
                                     <td class="text-center">{{ $mount->eggs_count }}</td>

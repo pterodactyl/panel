@@ -34,7 +34,7 @@ class MountCreationService
     public function handle(array $data)
     {
         return $this->repository->create(array_merge($data, [
-            'id' => Uuid::uuid4()->toString(),
+            'uuid' => Uuid::uuid4()->toString(),
         ]), true, true);
     }
 }

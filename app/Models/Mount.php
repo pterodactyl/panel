@@ -3,7 +3,8 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property string $id
+ * @property int $id
+ * @property string $uuid
  * @property string $name
  * @property string $description
  * @property string $source
@@ -11,8 +12,8 @@ namespace Pterodactyl\Models;
  * @property bool $read_only
  * @property bool $user_mountable
  *
- * @property \Illuminate\Database\Eloquent\Relations\BelongsToMany $nodes
  * @property \Illuminate\Database\Eloquent\Relations\BelongsToMany $eggs
+ * @property \Illuminate\Database\Eloquent\Relations\BelongsToMany $nodes
  */
 class Mount extends Model
 {
@@ -34,7 +35,7 @@ class Mount extends Model
      *
      * @var array
      */
-    protected $guarded = ['id', 'name', 'description', 'source', 'target'];
+    protected $guarded = ['id', 'uuid', 'name', 'description', 'source', 'target'];
 
     /**
      * Default values for specific fields in the database.
@@ -42,6 +43,12 @@ class Mount extends Model
      * @var array
      */
     protected $attributes = [
+        'id' => 'int',
+        'uuid' => 'string',
+        'name' => 'string',
+        'description' => 'string',
+        'source' => 'string',
+        'target' => 'string',
         'read_only' => 'bool',
         'user_mountable' => 'bool',
     ];
@@ -52,7 +59,7 @@ class Mount extends Model
      * @var string
      */
     public static $validationRules = [
-        // 'id' => 'required|string|size:36|unique:mounts,id',
+        // 'uuid' => 'required|string|size:36|unique:mounts,uuid',
         'name' => 'required|string|min:2|max:64|unique:mounts,name',
         'description' => 'nullable|string|max:255',
         'source' => 'required|string',

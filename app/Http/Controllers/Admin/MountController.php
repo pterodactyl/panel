@@ -55,6 +55,21 @@ class MountController extends Controller
     }
 
     /**
+     * Return the mount view page.
+     *
+     * @param string $id
+     * @return \Illuminate\View\View
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function view($id)
+    {
+        return view('admin.mounts.view', [
+            'mount' => $this->repository->getWithRelations($id),
+        ]);
+    }
+
+    /**
      * Handle request to create new mount.
      *
      * @param \Pterodactyl\Http\Requests\Admin\MountFormRequest $request

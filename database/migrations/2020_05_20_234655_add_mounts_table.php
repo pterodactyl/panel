@@ -14,8 +14,9 @@ class AddMountsTable extends Migration
     public function up()
     {
         Schema::create('mounts', function (Blueprint $table) {
-            $table->char('id', 36)->unique();
-            $table->string('name');
+            $table->increments('id')->unique();
+            $table->char('uuid', 36)->unique();
+            $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->string('source');
             $table->string('target');
@@ -24,13 +25,13 @@ class AddMountsTable extends Migration
         });
 
         Schema::create('egg_mount', function (Blueprint $table) {
-            $table->increments('egg_id')->unique();
-            $table->char('mount_id', 36)->unique();
+            $table->integer('egg_id');
+            $table->char('mount_id', 36);
         });
 
         Schema::create('mount_node', function (Blueprint $table) {
-            $table->increments('node_id')->unique();
-            $table->char('mount_id', 36)->unique();
+            $table->integer('node_id');
+            $table->char('mount_id', 36);
         });
     }
 
