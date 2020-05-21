@@ -178,7 +178,13 @@ Route::group(['prefix' => 'mounts'], function () {
     Route::get('/view/{mount}', 'MountController@view')->name('admin.mounts.view');
 
     Route::post('/', 'MountController@create');
+    Route::post('/{mount}/eggs', 'MountController@addEggs')->name('admin.mounts.eggs');
+    Route::post('/{mount}/nodes', 'MountController@addNodes')->name('admin.mounts.nodes');
+
     Route::patch('/view/{mount}', 'MountController@update');
+
+    Route::delete('/{mount}/eggs/{egg_id}', 'MountController@deleteEgg');
+    Route::delete('/{mount}/nodes/{node_id}', 'MountController@deleteNode');
 });
 
 /*

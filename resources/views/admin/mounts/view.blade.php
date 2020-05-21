@@ -24,7 +24,7 @@
         <div class="col-sm-6">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Location Details</h3>
+                    <h3 class="box-title">Mount Details</h3>
                 </div>
 
                 <form action="{{ route('admin.mounts.view', $mount->id) }}" method="POST">
@@ -101,6 +101,10 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Eggs</h3>
+
+                    <div class="box-tools">
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addEggsModal">Add Eggs</button>
+                    </div>
                 </div>
 
                 <div class="box-body table-responsive no-padding">
@@ -108,12 +112,16 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th></th>
                         </tr>
 
-                        @foreach($mount->eggs as $egg)
+                        @foreach ($mount->eggs as $egg)
                             <tr>
                                 <td><code>{{ $egg->id }}</code></td>
                                 <td><a href="{{ route('admin.nests.egg.view', $egg->id) }}">{{ $egg->name }}</a></td>
+                                <td class="col-sm-1 middle">
+                                    <button data-action="detach-egg" data-id="{{ $egg->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
+                                </td>
                             </tr>
                         @endforeach
                     </table>
@@ -123,6 +131,10 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Nodes</h3>
+
+                    <div class="box-tools">
+                        <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#addNodesModal">Add Nodes</button>
+                    </div>
                 </div>
 
                 <div class="box-body table-responsive no-padding">
@@ -131,13 +143,17 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>FQDN</th>
+                            <th></th>
                         </tr>
 
-                        @foreach($mount->nodes as $node)
+                        @foreach ($mount->nodes as $node)
                             <tr>
                                 <td><code>{{ $node->id }}</code></td>
                                 <td><a href="{{ route('admin.nodes.view', $node->id) }}">{{ $node->name }}</a></td>
                                 <td><code>{{ $node->fqdn }}</code></td>
+                                <td class="col-sm-1 middle">
+                                    <button data-action="detach-node" data-id="{{ $node->id }}" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></button>
+                                </td>
                             </tr>
                         @endforeach
                     </table>
@@ -145,4 +161,154 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="addEggsModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('admin.mounts.eggs', $mount->id) }}" method="POST">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" style="color: #FFFFFF">&times;</span>
+                        </button>
+
+                        <h4 class="modal-title">Add Eggs</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="pEggs">Eggs</label>
+                                <select id="pEggs" name="eggs[]" class="form-control" multiple>
+                                    @foreach ($nests as $nest)
+                                        <optgroup label="{{ $nest->name }}">
+                                            @foreach ($nest->eggs as $egg)
+
+                                                @if (! in_array($egg->id, $mount->eggs->pluck('id')->toArray()))
+                                                    <option value="{{ $egg->id }}">{{ $egg->name }}</option>
+                                                @endif
+
+                                            @endforeach
+                                        </optgroup>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        {!! csrf_field() !!}
+
+                        <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addNodesModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('admin.mounts.nodes', $mount->id) }}" method="POST">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" style="color: #FFFFFF">&times;</span>
+                        </button>
+
+                        <h4 class="modal-title">Add Nodes</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="pNodes">Nodes</label>
+                                <select id="pNodes" name="nodes[]" class="form-control" multiple>
+                                    @foreach ($locations as $location)
+                                        <optgroup label="{{ $location->long }} ({{ $location->short }})">
+                                            @foreach ($location->nodes as $node)
+
+                                                @if (! in_array($node->id, $mount->nodes->pluck('id')->toArray()))
+                                                    <option value="{{ $node->id }}">{{ $node->name }}</option>
+                                                @endif
+
+                                            @endforeach
+                                        </optgroup>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        {!! csrf_field() !!}
+
+                        <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('footer-scripts')
+    @parent
+
+    <script type="application/javascript">
+        $(document).ready(function() {
+            $('#pEggs').select2({
+                placeholder: 'Select eggs..',
+            });
+
+            $('#pNodes').select2({
+                placeholder: 'Select nodes..',
+            });
+
+            $('button[data-action="detach-egg"]').click(function (event) {
+                event.preventDefault();
+
+                const element = $(this);
+                const eggId = $(this).data('id');
+
+                $.ajax({
+                    method: 'DELETE',
+                    url: '/admin/mounts/' + {{ $mount->id }} + '/eggs/' + eggId,
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
+                }).done(function () {
+                    element.parent().parent().addClass('warning').delay(100).fadeOut();
+                    swal({ type: 'success', title: 'Egg detached.' });
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    swal({
+                        title: 'Whoops!',
+                        text: jqXHR.responseJSON.error,
+                        type: 'error'
+                    });
+                });
+            });
+
+            $('button[data-action="detach-node"]').click(function (event) {
+                event.preventDefault();
+
+                const element = $(this);
+                const nodeId = $(this).data('id');
+
+                $.ajax({
+                    method: 'DELETE',
+                    url: '/admin/mounts/' + {{ $mount->id }} + '/nodes/' + nodeId,
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content') },
+                }).done(function () {
+                    element.parent().parent().addClass('warning').delay(100).fadeOut();
+                    swal({ type: 'success', title: 'Node detached.' });
+                }).fail(function (jqXHR) {
+                    console.error(jqXHR);
+                    swal({
+                        title: 'Whoops!',
+                        text: jqXHR.responseJSON.error,
+                        type: 'error'
+                    });
+                });
+            });
+        });
+    </script>
 @endsection

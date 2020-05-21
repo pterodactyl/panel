@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Mount;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
@@ -11,6 +12,8 @@ use Pterodactyl\Services\Mounts\MountCreationService;
 use Pterodactyl\Services\Mounts\MountDeletionService;
 use Pterodactyl\Http\Requests\Admin\MountFormRequest;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
+use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class MountController extends Controller
 {
@@ -18,6 +21,16 @@ class MountController extends Controller
      * @var \Prologue\Alerts\AlertsMessageBag
      */
     protected $alert;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     */
+    protected $nestRepository;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
+     */
+    protected $locationRepository;
 
     /**
      * @var \Pterodactyl\Repositories\Eloquent\MountRepository
@@ -43,6 +56,8 @@ class MountController extends Controller
      * MountController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $nestRepository
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $locationRepository
      * @param \Pterodactyl\Repositories\Eloquent\MountRepository $repository
      * @param \Pterodactyl\Services\Mounts\MountCreationService $creationService
      * @param \Pterodactyl\Services\Mounts\MountDeletionService $deletionService
@@ -50,12 +65,16 @@ class MountController extends Controller
      */
     public function __construct(
         AlertsMessageBag $alert,
+        NestRepositoryInterface $nestRepository,
+        LocationRepositoryInterface $locationRepository,
         MountRepository $repository,
         MountCreationService $creationService,
         MountDeletionService $deletionService,
         MountUpdateService $updateService
     ) {
         $this->alert = $alert;
+        $this->nestRepository = $nestRepository;
+        $this->locationRepository = $locationRepository;
         $this->repository = $repository;
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
@@ -84,8 +103,16 @@ class MountController extends Controller
      */
     public function view($id)
     {
+        $nests = $this->nestRepository->all();
+        $nests->load('eggs');
+
+        $locations = $this->locationRepository->all();
+        $locations->load('nodes');
+
         return view('admin.mounts.view', [
             'mount' => $this->repository->getWithRelations($id),
+            'nests' => $nests,
+            'locations' => $locations,
         ]);
     }
 
@@ -145,5 +172,75 @@ class MountController extends Controller
         }
 
         return redirect()->route('admin.mounts.view', $mount->id);
+    }
+
+    /**
+     * Adds eggs to the mount's many to many relation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Models\Mount $mount
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addEggs(Request $request, Mount $mount)
+    {
+        $validatedData = $request->validate([
+            'eggs' => 'required|exists:eggs,id',
+        ]);
+
+        $eggs = $validatedData['eggs'] ?? [];
+        if (sizeof($eggs) > 0) {
+            $mount->eggs()->attach(array_map('intval', $eggs));
+            $this->alert->success('Mount was updated successfully.')->flash();
+        }
+
+        return redirect()->route('admin.mounts.view', $mount->id);
+    }
+
+    /**
+     * Adds nodes to the mount's many to many relation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Models\Mount $mount
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addNodes(Request $request, Mount $mount)
+    {
+        $validatedData = $request->validate([
+            'nodes' => 'required|exists:nodes,id',
+        ]);
+
+        $nodes = $validatedData['nodes'] ?? [];
+        if (sizeof($nodes) > 0) {
+            $mount->nodes()->attach(array_map('intval', $nodes));
+            $this->alert->success('Mount was updated successfully.')->flash();
+        }
+
+        return redirect()->route('admin.mounts.view', $mount->id);
+    }
+
+    /**
+     * Deletes an egg from the mount's many to many relation.
+     *
+     * @param \Pterodactyl\Models\Mount $mount
+     * @param int $egg_id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteEgg(Mount $mount, int $egg_id)
+    {
+        $mount->eggs()->detach($egg_id);
+        return response('', 204);
+    }
+
+    /**
+     * Deletes an node from the mount's many to many relation.
+     *
+     * @param \Pterodactyl\Models\Mount $mount
+     * @param int $node_id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteNode(Mount $mount, int $node_id)
+    {
+        $mount->nodes()->detach($node_id);
+        return response('', 204);
     }
 }
