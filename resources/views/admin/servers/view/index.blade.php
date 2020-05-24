@@ -97,7 +97,13 @@
                             </tr>
                             <tr>
                                 <td>Disk Space</td>
-                                <td><code>{{ $server->disk }}MB</code></td>
+                                <td>
+                                    @if($server->disk === 0)
+                                        <code>Unlimited</code>
+                                    @else
+                                        <code>{{ $server->disk }}MB</code>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <td>Block IO Weight</td>
