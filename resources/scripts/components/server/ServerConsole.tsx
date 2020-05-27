@@ -112,7 +112,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(memory)}
-                        <span className={'text-neutral-500'}> / {server.limits.memory} MB</span>
+                        <span className={'text-neutral-500'}> / {bytesToHuman(server.limits.memory * 1000 * 1000)}</span>
                     </p>
                     <p className={'text-xs mt-2'}>
                         <FontAwesomeIcon
@@ -121,7 +121,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(disk)}
-                        <span className={'text-neutral-500'}> / {server.limits.disk} MB</span>
+                        <span className={'text-neutral-500'}> / {bytesToHuman(server.limits.disk * 1000 * 1000)}</span>
                     </p>
                 </TitledGreyBox>
                 {!server.isInstalling ?
