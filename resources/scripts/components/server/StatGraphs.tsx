@@ -17,14 +17,14 @@ const chartDefaults: ChartConfiguration = {
             enabled: false,
         },
         animation: {
-            duration: 250,
+            duration: 0,
         },
         elements: {
             point: {
                 radius: 0,
             },
             line: {
-                tension: 0.1,
+                tension: 0.3,
                 backgroundColor: 'rgba(15, 178, 184, 0.45)',
                 borderColor: '#32D0D9',
             },
