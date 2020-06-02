@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
-use stdClass;
-use Exception;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
@@ -11,20 +9,6 @@ use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
 
 class DaemonFileRepository extends DaemonRepository
 {
-    /**
-     * Return stat information for a given file.
-     *
-     * @param string $path
-     * @return \stdClass
-     *
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\TransferException
-     */
-    public function getFileStat(string $path): stdClass
-    {
-        throw new Exception('Function not implemented.');
-    }
-
     /**
      * Return the contents of a given file.
      *
@@ -53,29 +37,6 @@ class DaemonFileRepository extends DaemonRepository
         }
 
         return $response->getBody()->__toString();
-    }
-
-    /**
-     * Returns a stream of a file's contents back to the calling function to allow
-     * proxying the request through the Panel rather than needing a direct call to
-     * the Daemon in order to work.
-     *
-     * @param string $path
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-    public function streamContent(string $path): ResponseInterface
-    {
-        Assert::isInstanceOf($this->server, Server::class);
-
-        $response = $this->getHttpClient()->get(
-            sprintf('/api/servers/%s/files/contents', $this->server->uuid),
-            [
-                'query' => ['file' => $path, 'download' => true],
-                'stream' => true,
-            ]
-        );
-
-        return $response;
     }
 
     /**
@@ -138,8 +99,8 @@ class DaemonFileRepository extends DaemonRepository
             sprintf('/api/servers/%s/files/create-directory', $this->server->uuid),
             [
                 'json' => [
-                    'name' => $name,
-                    'path' => $path,
+                    'name' => urldecode($name),
+                    'path' => urldecode($path),
                 ],
             ]
         );
@@ -160,8 +121,8 @@ class DaemonFileRepository extends DaemonRepository
             sprintf('/api/servers/%s/files/rename', $this->server->uuid),
             [
                 'json' => [
-                    'rename_from' => $from,
-                    'rename_to' => $to,
+                    'rename_from' => urldecode($from),
+                    'rename_to' => urldecode($to),
                 ],
             ]
         );
@@ -181,7 +142,7 @@ class DaemonFileRepository extends DaemonRepository
             sprintf('/api/servers/%s/files/copy', $this->server->uuid),
             [
                 'json' => [
-                    'location' => $location,
+                    'location' => urldecode($location),
                 ],
             ]
         );
