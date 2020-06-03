@@ -37,7 +37,7 @@ export default () => {
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'backups'} className={'mb-4'}/>
-            {featureLimits.backups >= 0 &&
+            {featureLimits.backups !== 0 &&
                 <p className="text-center text-md text-neutral-400">
                     You are currently using {backups.length} of {featureLimits.backups} backups.
                 </p>
