@@ -37,6 +37,11 @@ export default () => {
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'backups'} className={'mb-4'}/>
+            {featureLimits.backups >= 0 &&
+                <p className="text-center text-md text-neutral-400">
+                    You are currently using {backups.length} of {featureLimits.backups} backups.
+                </p>
+            }
             {!backups.length ?
                 <p className="text-center text-sm text-neutral-400">
                     There are no backups stored for this server.
