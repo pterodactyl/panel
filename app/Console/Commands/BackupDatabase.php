@@ -14,7 +14,6 @@ class BackupDatabase extends Command
     protected $description = 'Provides a exported sql file of the panels current database.';
 
     /**
-     *
      * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct(ConfigRepository $config)
@@ -32,7 +31,7 @@ class BackupDatabase extends Command
         ));
     }
     /**
-     * Run the command
+     * Run the command.
      * @return mixed
      */
     public function handle()
