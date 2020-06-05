@@ -30,6 +30,7 @@ class BackupDatabase extends Command
             storage_path('../backup.sql')
         ));
     }
+
     /**
      * Run the command.
      * @return mixed
