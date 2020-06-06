@@ -53,6 +53,8 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
     const [ canEditUser ] = usePermissions(subuser ? [ 'user.update' ] : [ 'user.create' ]);
     const permissions = useStoreState(state => state.permissions.data);
 
+    const user = useStoreState(state => state.user.data!);
+
     // The currently logged in user's permissions. We're going to filter out any permissions
     // that they should not need.
     const loggedInPermissions = ServerContext.useStoreState(state => state.server.permissions);
@@ -64,7 +66,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
 
         const list: string[] = ([] as string[]).concat.apply([], Object.values(cleaned));
 
-        if (loggedInPermissions.length === 1 && loggedInPermissions[0] === '*') {
+        if (user.rootAdmin || (loggedInPermissions.length === 1 && loggedInPermissions[0] === '*')) {
             return list;
         }
 
@@ -81,12 +83,14 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                 }
             </h3>
             <FlashMessageRender byKey={'user:edit'} className={'mt-4'}/>
+            {(!user.rootAdmin && loggedInPermissions[0] !== '*') &&
             <div className={'mt-4 pl-4 py-2 border-l-4 border-cyan-400'}>
                 <p className={'text-sm text-neutral-300'}>
                     Only permissions which your account is currently assigned may be selected when creating or
                     modifying other users.
                 </p>
             </div>
+            }
             {!subuser &&
             <div className={'mt-6'}>
                 <Field
