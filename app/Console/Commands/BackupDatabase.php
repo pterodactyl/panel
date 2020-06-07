@@ -11,7 +11,7 @@ class BackupDatabase extends Command
 {
     protected $signature = 'db:backup';
 
-    protected $description = 'Provides a exported sql file of the panels current database.';
+    protected $description = 'Provides an exported sql file of the panels current database.';
 
     /**
      * @param \Illuminate\Contracts\Config\Repository $config
@@ -27,7 +27,7 @@ class BackupDatabase extends Command
             $this->config->get('database.connections.mysql.username'),
             $this->config->get('database.connections.mysql.password'),
             $this->config->get('database.connections.mysql.database'),
-            storage_path('../backup.sql')
+            storage_path('../' . $this->config->get('database.connections.mysql.database') . '-' . date('Y-m-d-H-i') . '.sql')
         ));
     }
 
