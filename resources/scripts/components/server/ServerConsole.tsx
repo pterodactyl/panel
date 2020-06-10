@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
 import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
 import { faHdd } from '@fortawesome/free-solid-svg-icons/faHdd';
-import { bytesToHuman } from '@/helpers';
+import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Can from '@/components/elements/Can';
@@ -112,7 +112,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(memory)}
-                        <span className={'text-neutral-500'}> / {bytesToHuman(server.limits.memory * 1000 * 1000)}</span>
+                        <span className={'text-neutral-500'}> / {megabytesToHuman(server.limits.memory)}</span>
                     </p>
                     <p className={'text-xs mt-2'}>
                         <FontAwesomeIcon
@@ -121,7 +121,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(disk)}
-                        <span className={'text-neutral-500'}> / {bytesToHuman(server.limits.disk * 1000 * 1000)}</span>
+                        <span className={'text-neutral-500'}> / {megabytesToHuman(server.limits.disk)}</span>
                     </p>
                 </TitledGreyBox>
                 {!server.isInstalling ?

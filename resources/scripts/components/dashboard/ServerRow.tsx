@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
-import { bytesToHuman } from '@/helpers';
+import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import classNames from 'classnames';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
@@ -127,7 +127,7 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {bytesToHuman(server.limits.memory * 1000 * 1000)}</p>
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {megabytesToHuman(server.limits.memory)}</p>
                         </div>
                         <div className={'flex-1 ml-4'}>
                             <div className={'flex justify-center'}>
@@ -148,7 +148,7 @@ export default ({ server, className }: { server: Server; className: string | und
                                 </p>
                             </div>
                             <p className={'text-xs text-neutral-600 text-center mt-1'}>
-                                of {bytesToHuman(server.limits.disk * 1000 * 1000)}
+                                of {megabytesToHuman(server.limits.disk)}
                             </p>
                         </div>
                     </React.Fragment>
