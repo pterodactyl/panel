@@ -83,7 +83,7 @@ export default () => {
 
     return (
         <PageContentBlock className={'flex'}>
-            <div className={'w-1/4'}>
+            <div className={'w-100 md:w-1/4 mb-4 md:mb-0'}>
                 <TitledGreyBox title={server.name} icon={faServer}>
                     <p className={'text-xs uppercase'}>
                         <FontAwesomeIcon
@@ -166,7 +166,7 @@ export default () => {
                     </div>
                 }
             </div>
-            <div className={'flex-1 ml-4'}>
+            <div className={'flex-1 md:ml-4'}>
                 <SuspenseSpinner>
                     <ChunkedConsole/>
                     <ChunkedStatGraphs/>
