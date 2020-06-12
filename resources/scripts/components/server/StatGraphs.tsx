@@ -157,8 +157,8 @@ export default () => {
     }, [ instance, connected, memory, cpu ]);
 
     return (
-        <div className={'flex mt-4'}>
-            <TitledGreyBox title={'Memory usage'} icon={faMemory} className={'flex-1 mr-2'}>
+        <div className={'md:flex'}>
+            <TitledGreyBox title={'Memory usage'} icon={faMemory} className={'flex-1 md:mr-2 mt-4'}>
                 {status !== 'offline' ?
                     <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
                     :
@@ -167,7 +167,7 @@ export default () => {
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'CPU usage'} icon={faMicrochip} className={'flex-1 ml-2'}>
+            <TitledGreyBox title={'CPU usage'} icon={faMicrochip} className={'flex-1 md:ml-2 mt-4 mt-4'}>
                 {status !== 'offline' ?
                     <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
                     :
