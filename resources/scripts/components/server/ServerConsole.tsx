@@ -82,7 +82,7 @@ export default () => {
     }, [ instance, connected ]);
 
     return (
-        <PageContentBlock className={'flex'}>
+        <PageContentBlock className={'md:flex'}>
             <div className={'w-100 md:w-1/4 mb-4 md:mb-0'}>
                 <TitledGreyBox title={server.name} icon={faServer}>
                     <p className={'text-xs uppercase'}>
