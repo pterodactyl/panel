@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
@@ -54,10 +56,8 @@ class AllocationTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $allocation->loadMissing('node');
-
         return $this->item(
-            $allocation->getRelation('node'), $this->makeTransformer(NodeTransformer::class), 'node'
+            $allocation->node, $this->makeTransformer(NodeTransformer::class), Node::RESOURCE_NAME
         );
     }
 
@@ -70,14 +70,12 @@ class AllocationTransformer extends BaseTransformer
      */
     public function includeServer(Allocation $allocation)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS) || ! $allocation->server) {
             return $this->null();
         }
 
-        $allocation->loadMissing('server');
-
         return $this->item(
-            $allocation->getRelation('server'), $this->makeTransformer(ServerTransformer::class), 'server'
+            $allocation->server, $this->makeTransformer(ServerTransformer::class), Server::RESOURCE_NAME
         );
     }
 }
