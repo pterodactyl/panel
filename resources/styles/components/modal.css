@@ -4,7 +4,7 @@
   transition: opacity 250ms ease;
 
   & > .modal-container {
-    @apply .relative .w-full .max-w-1/2 .m-auto .flex-col .flex;
+    @apply .relative .m-auto .flex-col .flex;
 
     &.top {
       margin-top: 10%;
@@ -25,17 +25,6 @@
       @apply .bg-neutral-800 .rounded .shadow-md .overflow-y-scroll;
       max-height: calc(100vh - 16rem);
       transition: all 250ms ease;
-    }
-
-    /**
-     * On tiny phone screens make sure there is a margin on the sides and also
-     * center the modal rather than putting it towards the top of the screen.
-     */
-    @screen smx {
-      width: 90%;
-      .top {
-        margin-top: auto;
-      }
     }
   }
 
