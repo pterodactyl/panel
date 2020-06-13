@@ -110,7 +110,7 @@ export default () => {
                     fetchContent={value => {
                         fetchFileContent = value;
                     }}
-                    onContentSaved={() => null}
+                    onContentSaved={() => save()}
                 />
             </div>
             <div className={'flex justify-end mt-4'}>
