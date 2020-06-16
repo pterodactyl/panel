@@ -78,11 +78,11 @@ class ClientApiController extends Controller
      */
     public function store(CreateClientApiKeyRequest $request): RedirectResponse
     {
-        
-       $Count = $this->repository->findCountWhere([
+
+       $count = $this->repository->findCountWhere([
        ['user_id', '=', $request->user()->id],
        ['key_type', '=', ApiKey::TYPE_ACCOUNT]]);
-       if ($Count >= 5) {
+       if ($count >= 5) {
         throw new DisplayException(
             'Cannot assign more than 5 Client API keys to an account.'
         );
