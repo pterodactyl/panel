@@ -79,14 +79,14 @@ class ClientApiController extends Controller
     public function store(CreateClientApiKeyRequest $request): RedirectResponse
     {
 
-       $count = $this->repository->findCountWhere([
-       ['user_id', '=', $request->user()->id],
-       ['key_type', '=', ApiKey::TYPE_ACCOUNT]]);
-       if ($count >= 5) {
-        throw new DisplayException(
+        $count = $this->repository->findCountWhere([
+            ['user_id', '=', $request->user()->id],
+            ['key_type', '=', ApiKey::TYPE_ACCOUNT], ]);
+        if ($count >= 5) {
+            throw new DisplayException(
             'Cannot assign more than 5 Client API keys to an account.'
         );
-       }
+        }
 
         $allowedIps = null;
         if (! is_null($request->input('allowed_ips'))) {
