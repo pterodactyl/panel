@@ -60,7 +60,7 @@ export default ({ schedule, task }: Props) => {
             <FontAwesomeIcon icon={task.action === 'command' ? faCode : (task.action === 'backup' ? faArchive : faToggleOn) } className={'text-lg text-white'}/>
             <div className={'flex-1'}>
                 <p className={'ml-6 text-neutral-300 mb-2 uppercase text-xs'}>
-                    {task.action === 'command' ? "Send command" : (task.action === 'backup' ? "Create Backup" : "Send power action") }
+                    {task.action === 'command' ? 'Send command' : (task.action === 'backup' ? 'Create Backup' : 'Send power action') }
                 </p>
                 <code className={'ml-6 font-mono bg-neutral-800 rounded py-1 px-2 text-sm'}>
                     {task.payload}
