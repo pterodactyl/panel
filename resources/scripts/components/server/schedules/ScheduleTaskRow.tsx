@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
 import { faCode } from '@fortawesome/free-solid-svg-icons/faCode';
 import { faToggleOn } from '@fortawesome/free-solid-svg-icons/faToggleOn';
+import { faArchive } from '@fortawesome/free-solid-svg-icons/faArchive';
 import ConfirmTaskDeletionModal from '@/components/server/schedules/ConfirmTaskDeletionModal';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
@@ -56,10 +57,10 @@ export default ({ schedule, task }: Props) => {
                 onDismissed={() => setVisible(false)}
                 onConfirmed={() => onConfirmDeletion()}
             />
-            <FontAwesomeIcon icon={task.action === 'command' ? faCode : faToggleOn} className={'text-lg text-white'}/>
+            <FontAwesomeIcon icon={task.action === 'command' ? faCode : (task.action === 'backup' ? faArchive : faToggleOn) } className={'text-lg text-white'}/>
             <div className={'flex-1'}>
                 <p className={'ml-6 text-neutral-300 mb-2 uppercase text-xs'}>
-                    {task.action === 'command' ? 'Send command' : 'Send power action'}
+                    {task.action === 'command' ? "Send command" : (task.action === 'backup' ? "Create Backup" : "Send power action") }
                 </p>
                 <code className={'ml-6 font-mono bg-neutral-800 rounded py-1 px-2 text-sm'}>
                     {task.payload}
