@@ -8,19 +8,19 @@ use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Factory;
 use Tests\Unit\Commands\CommandTestCase;
+use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Console\Commands\Server\BulkPowerActionCommand;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
 
 class BulkPowerActionCommandTest extends CommandTestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface|\Mockery\Mock
+     * @var \Mockery\MockInterface
      */
     private $powerRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
+     * @var \Mockery\MockInterface
      */
     private $repository;
 
@@ -31,7 +31,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
     {
         parent::setUp();
 
-        $this->powerRepository = m::mock(PowerRepositoryInterface::class);
+        $this->powerRepository = m::mock(DaemonPowerRepository::class);
         $this->repository = m::mock(ServerRepositoryInterface::class);
     }
 
@@ -47,10 +47,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
             $server->setRelation('node', factory(Node::class)->make());
         }
 
-        $this->repository->shouldReceive('getServersForPowerActionCount')
-            ->once()
-            ->with([], [])
-            ->andReturn(2);
+        $this->repository->expects('getServersForPowerActionCount')->with([], [])->andReturns(2);
 
         $this->repository->shouldReceive('getServersForPowerAction')
             ->once()
