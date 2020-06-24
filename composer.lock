@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "79af09c27859a87b05f58bde40a29576",
+    "content-hash": "155b8e930e604c0476fa975b1084ca3f",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -6252,16 +6252,16 @@
         },
         {
             "name": "codedungeon/phpunit-result-printer",
-            "version": "0.25.1",
+            "version": "0.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mikeerickson/phpunit-pretty-result-printer.git",
-                "reference": "4a689ac40366eb4adf166cf4676da7ef30d82315"
+                "reference": "bc023b0311589bee19047425083163ffa3f0cf88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mikeerickson/phpunit-pretty-result-printer/zipball/4a689ac40366eb4adf166cf4676da7ef30d82315",
-                "reference": "4a689ac40366eb4adf166cf4676da7ef30d82315",
+                "url": "https://api.github.com/repos/mikeerickson/phpunit-pretty-result-printer/zipball/bc023b0311589bee19047425083163ffa3f0cf88",
+                "reference": "bc023b0311589bee19047425083163ffa3f0cf88",
                 "shasum": ""
             },
             "require": {
@@ -6269,10 +6269,9 @@
                 "codedungeon/php-cli-colors": "^1.10.2",
                 "hassankhan/config": "^0.11.2",
                 "php": "^7.1",
-                "symfony/yaml": "^2.7|^3.0|^4.0"
+                "symfony/yaml": "^2.7|^3.0|^4.0|^5.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.5.*",
                 "spatie/phpunit-watcher": "^1.6"
             },
             "type": "library",
@@ -6301,7 +6300,7 @@
                 "result-printer",
                 "testing"
             ],
-            "time": "2019-02-01T19:13:43+00:00"
+            "time": "2020-06-24T00:16:05+00:00"
         },
         {
             "name": "composer/ca-bundle",

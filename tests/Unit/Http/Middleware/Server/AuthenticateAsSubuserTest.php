@@ -8,6 +8,7 @@ use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
 use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateAsSubuserTest extends MiddlewareTestCase
 {
@@ -44,12 +45,12 @@ class AuthenticateAsSubuserTest extends MiddlewareTestCase
 
     /**
      * Test middleware handles missing token exception.
-     *
-     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
-     * @expectedExceptionMessage This account does not have permission to access this server.
      */
     public function testExceptionIsThrownIfNoTokenIsFound()
     {
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->expectExceptionMessage('This account does not have permission to access this server.');
+
         $model = factory(Server::class)->make();
         $user = $this->setRequestUser();
         $this->setRequestAttribute('server', $model);

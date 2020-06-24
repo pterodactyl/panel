@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\API;
+namespace Tests\Unit\Http\Middleware\Api;
 
 use Mockery as m;
 use Cake\Chronos\Chronos;
@@ -13,6 +13,7 @@ use Pterodactyl\Http\Middleware\Api\AuthenticateKey;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateKeyTest extends MiddlewareTestCase
 {
@@ -62,11 +63,11 @@ class AuthenticateKeyTest extends MiddlewareTestCase
 
     /**
      * Test that an invalid API identifier throws an exception.
-     *
-     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testInvalidIdentifier()
     {
+        $this->expectException(AccessDeniedHttpException::class);
+
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn('abcd1234');
         $this->repository->shouldReceive('findFirstWhere')->andThrow(new RecordNotFoundException);
 
@@ -141,11 +142,11 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     /**
      * Test that a valid token identifier with an invalid token attached to it
      * triggers an exception.
-     *
-     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testInvalidTokenForIdentifier()
     {
+        $this->expectException(AccessDeniedHttpException::class);
+
         $model = factory(ApiKey::class)->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'asdf');

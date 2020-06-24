@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Http\Middleware;
 
+use Illuminate\Auth\AuthenticationException;
 use Pterodactyl\Http\Middleware\Authenticate;
 
 class AuthenticateTest extends MiddlewareTestCase
@@ -18,11 +19,11 @@ class AuthenticateTest extends MiddlewareTestCase
 
     /**
      * Test that a logged out user results in an exception.
-     *
-     * @expectedException \Illuminate\Auth\AuthenticationException
      */
     public function testLoggedOutUser()
     {
+        $this->expectException(AuthenticationException::class);
+
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());

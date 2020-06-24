@@ -5,8 +5,8 @@ namespace Pterodactyl\Http\Middleware\Api\Daemon;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -14,9 +14,14 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class DaemonAuthenticate
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
      */
     private $repository;
+
+    /**
+     * @var \Illuminate\Contracts\Encryption\Encrypter
+     */
+    private $encrypter;
 
     /**
      * Daemon routes that this middleware should be skipped on.
@@ -28,17 +33,12 @@ class DaemonAuthenticate
     ];
 
     /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
      * DaemonAuthenticate constructor.
      *
      * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $repository
      */
-    public function __construct(Encrypter $encrypter, NodeRepositoryInterface $repository)
+    public function __construct(Encrypter $encrypter, NodeRepository $repository)
     {
         $this->repository = $repository;
         $this->encrypter = $encrypter;

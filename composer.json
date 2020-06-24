@@ -44,7 +44,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.3",
         "barryvdh/laravel-ide-helper": "^2.7",
-        "codedungeon/phpunit-result-printer": "0.25.1",
+        "codedungeon/phpunit-result-printer": "^0.28.0",
         "friendsofphp/php-cs-fixer": "2.16.1",
         "fzaninotto/faker": "^1.9",
         "laravel/dusk": "^6.3",
