@@ -312,12 +312,12 @@ class ServersController extends Controller
      * Creates a new database assigned to a specific server.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest $request
-     * @param int $server
+     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Exception
+     * @throws \Throwable
      */
-    public function newDatabase(StoreServerDatabaseRequest $request, $server)
+    public function newDatabase(StoreServerDatabaseRequest $request, Server $server)
     {
         $this->databaseManagementService->create($server, [
             'database' => $request->input('database'),
@@ -326,7 +326,7 @@ class ServersController extends Controller
             'max_connections' => $request->input('max_connections'),
         ]);
 
-        return redirect()->route('admin.servers.view.database', $server)->withInput();
+        return redirect()->route('admin.servers.view.database', $server->id)->withInput();
     }
 
     /**
