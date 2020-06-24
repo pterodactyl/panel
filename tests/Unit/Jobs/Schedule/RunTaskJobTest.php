@@ -3,53 +3,51 @@
 namespace Tests\Unit\Jobs\Schedule;
 
 use Mockery as m;
+use Carbon\Carbon;
 use Tests\TestCase;
 use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
 use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Bus;
 use Pterodactyl\Jobs\Schedule\RunTaskJob;
-use Illuminate\Contracts\Config\Repository;
+use Pterodactyl\Repositories\Eloquent\TaskRepository;
+use Pterodactyl\Services\Backups\InitiateBackupService;
+use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
+use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
+use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
 use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService;
 use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface;
 
 class RunTaskJobTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\CommandRepositoryInterface|\Mockery\Mock
+     * @var \Mockery\MockInterface
      */
-    protected $commandRepository;
+    private $commandRepository;
 
     /**
-     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
+     * @var \Mockery\MockInterface
      */
-    protected $config;
+    private $powerRepository;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyProviderService|\Mockery\Mock
+     * @var \Mockery\MockInterface
      */
-    protected $keyProviderService;
+    private $initiateBackupService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface|\Mockery\Mock
+     * @var \Mockery\MockInterface
      */
-    protected $powerRepository;
+    private $taskRepository;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface|\Mockery\Mock
+     * @var \Mockery\MockInterface
      */
-    protected $scheduleRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\TaskRepositoryInterface|\Mockery\Mock
-     */
-    protected $taskRepository;
+    private $scheduleRepository;
 
     /**
      * Setup tests.
@@ -57,17 +55,16 @@ class RunTaskJobTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         Bus::fake();
-        Chronos::setTestNow(Chronos::now());
+        Carbon::setTestNow(Carbon::now());
 
-        $this->commandRepository = m::mock(CommandRepositoryInterface::class);
-        $this->config = m::mock(Repository::class);
-        $this->keyProviderService = m::mock(DaemonKeyProviderService::class);
-        $this->powerRepository = m::mock(PowerRepositoryInterface::class);
-        $this->scheduleRepository = m::mock(ScheduleRepositoryInterface::class);
-        $this->taskRepository = m::mock(TaskRepositoryInterface::class);
+        $this->commandRepository = m::mock(DaemonCommandRepository::class);
+        $this->powerRepository = m::mock(DaemonPowerRepository::class);
+        $this->taskRepository = m::mock(TaskRepository::class);
+        $this->initiateBackupService = m::mock(InitiateBackupService::class);
+        $this->scheduleRepository = m::mock(ScheduleRepository::class);
 
-        $this->app->instance(Repository::class, $this->config);
         $this->app->instance(TaskRepositoryInterface::class, $this->taskRepository);
         $this->app->instance(ScheduleRepositoryInterface::class, $this->scheduleRepository);
     }
@@ -77,17 +74,20 @@ class RunTaskJobTest extends TestCase
      */
     public function testPowerAction()
     {
-        $schedule = factory(Schedule::class)->make();
+        /** @var \Pterodactyl\Models\Schedule $schedule */
+        $schedule = factory(Schedule::class)->make(['is_active' => true]);
+
+        /** @var \Pterodactyl\Models\Task $task */
         $task = factory(Task::class)->make(['action' => 'power', 'sequence_id' => 1]);
+
+        /* @var \Pterodactyl\Models\Server $server */
         $task->setRelation('server', $server = factory(Server::class)->make());
         $task->setRelation('schedule', $schedule);
         $server->setRelation('user', factory(User::class)->make());
 
-        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
-        $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->powerRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
-            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('sendSignal')->with($task->payload)->once()->andReturn(new Response);
+        $this->taskRepository->expects('getTaskForJobProcess')->with($task->id)->andReturn($task);
+        $this->powerRepository->expects('setServer')->with($task->server)->andReturnSelf()
+            ->getMock()->expects('send')->with($task->payload)->andReturn(new Response);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
         $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturnNull();
@@ -113,14 +113,12 @@ class RunTaskJobTest extends TestCase
         $task->setRelation('schedule', $schedule);
         $server->setRelation('user', factory(User::class)->make());
 
-        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
-        $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->commandRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
-            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('send')->with($task->payload)->once()->andReturn(new Response);
+        $this->taskRepository->expects('getTaskForJobProcess')->with($task->id)->andReturn($task);
+        $this->commandRepository->expects('setServer')->with($task->server)->andReturnSelf()
+            ->getMock()->expects('send')->with($task->payload)->andReturn(new Response);
 
-        $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
-        $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturnNull();
+        $this->taskRepository->expects('update')->with($task->id, ['is_queued' => false])->andReturnNull();
+        $this->taskRepository->expects('getNextTask')->with($schedule->id, $task->sequence_id)->andReturnNull();
 
         $this->scheduleRepository->shouldReceive('withoutFreshModel->update')->with($schedule->id, [
             'is_processing' => false,
@@ -143,19 +141,17 @@ class RunTaskJobTest extends TestCase
         $task->setRelation('schedule', $schedule);
         $server->setRelation('user', factory(User::class)->make());
 
-        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
-        $this->keyProviderService->shouldReceive('handle')->with($server, $server->user)->once()->andReturn('123456');
-        $this->commandRepository->shouldReceive('setServer')->with($task->server)->once()->andReturnSelf()
-            ->shouldReceive('setToken')->with('123456')->once()->andReturnSelf()
-            ->shouldReceive('send')->with($task->payload)->once()->andReturn(new Response);
+        $this->taskRepository->expects('getTaskForJobProcess')->with($task->id)->andReturn($task);
+        $this->commandRepository->expects('setServer')->with($task->server)->andReturnSelf()
+            ->getMock()->expects('send')->with($task->payload)->andReturn(new Response);
 
         $this->taskRepository->shouldReceive('update')->with($task->id, ['is_queued' => false])->once()->andReturnNull();
 
         $nextTask = factory(Task::class)->make();
-        $this->taskRepository->shouldReceive('getNextTask')->with($schedule->id, $task->sequence_id)->once()->andReturn($nextTask);
-        $this->taskRepository->shouldReceive('update')->with($nextTask->id, [
+        $this->taskRepository->expects('getNextTask')->with($schedule->id, $task->sequence_id)->andReturn($nextTask);
+        $this->taskRepository->expects('update')->with($nextTask->id, [
             'is_queued' => true,
-        ])->once()->andReturnNull();
+        ])->andReturnNull();
 
         $this->getJobInstance($task->id, $schedule->id);
 
@@ -170,19 +166,19 @@ class RunTaskJobTest extends TestCase
 
     /**
      * Test that an exception is thrown if an invalid task action is supplied.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Cannot run a task that points to a non-existent action.
      */
     public function testInvalidActionPassedToJob()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Cannot run a task that points to a non-existent action.');
+
         $schedule = factory(Schedule::class)->make();
         $task = factory(Task::class)->make(['action' => 'invalid', 'sequence_id' => 1]);
         $task->setRelation('server', $server = factory(Server::class)->make());
         $task->setRelation('schedule', $schedule);
         $server->setRelation('user', factory(User::class)->make());
 
-        $this->taskRepository->shouldReceive('getTaskForJobProcess')->with($task->id)->once()->andReturn($task);
+        $this->taskRepository->expects('getTaskForJobProcess')->with($task->id)->andReturn($task);
 
         $this->getJobInstance($task->id, 1234);
     }
@@ -218,14 +214,12 @@ class RunTaskJobTest extends TestCase
      * @param int $schedule
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     private function getJobInstance($task, $schedule)
     {
         return (new RunTaskJob($task, $schedule))->handle(
             $this->commandRepository,
-            $this->keyProviderService,
+            $this->initiateBackupService,
             $this->powerRepository,
             $this->taskRepository
         );
