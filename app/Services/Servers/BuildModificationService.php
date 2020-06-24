@@ -71,8 +71,8 @@ class BuildModificationService
      * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function handle(Server $server, array $data)
     {
@@ -91,7 +91,7 @@ class BuildModificationService
             }
         }
 
-        /** @var \Pterodactyl\Models\Server $server */
+        /* @var \Pterodactyl\Models\Server $server */
         $server = $this->repository->withFreshModel()->update($server->id, [
             'oom_disabled' => array_get($data, 'oom_disabled'),
             'memory' => array_get($data, 'memory'),

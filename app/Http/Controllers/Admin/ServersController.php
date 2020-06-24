@@ -15,9 +15,11 @@ use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Servers\ReinstallServerService;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Services\Servers\BuildModificationService;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
@@ -255,16 +257,21 @@ class ServersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function updateBuild(Request $request, Server $server)
     {
-        $this->buildModificationService->handle($server, $request->only([
-            'allocation_id', 'add_allocations', 'remove_allocations',
-            'memory', 'swap', 'io', 'cpu', 'threads', 'disk',
-            'database_limit', 'allocation_limit', 'backup_limit', 'oom_disabled',
-        ]));
+        try {
+            $this->buildModificationService->handle($server, $request->only([
+                'allocation_id', 'add_allocations', 'remove_allocations',
+                'memory', 'swap', 'io', 'cpu', 'threads', 'disk',
+                'database_limit', 'allocation_limit', 'backup_limit', 'oom_disabled',
+            ]));
+        } catch (DataValidationException $exception) {
+            throw new ValidationException($exception->validator);
+        }
+
         $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
 
         return redirect()->route('admin.servers.view.build', $server->id);
