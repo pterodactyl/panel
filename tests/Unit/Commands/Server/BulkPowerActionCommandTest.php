@@ -6,8 +6,10 @@ use Mockery as m;
 use Pterodactyl\Models\Node;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
+use Illuminate\Support\Collection;
 use Illuminate\Validation\Factory;
 use Tests\Unit\Commands\CommandTestCase;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Console\Commands\Server\BulkPowerActionCommand;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -47,25 +49,18 @@ class BulkPowerActionCommandTest extends CommandTestCase
             $server->setRelation('node', factory(Node::class)->make());
         }
 
-        $this->repository->expects('getServersForPowerActionCount')->with([], [])->andReturns(2);
-
-        $this->repository->shouldReceive('getServersForPowerAction')
-            ->once()
-            ->with([], [])
-            ->andReturn($servers);
+        $this->repository->expects('getServersForPowerActionCount')->with([], [])->andReturn(2);
+        $this->repository->expects('getServersForPowerAction')->with([], [])->andReturn($servers);
 
         for ($i = 0; $i < count($servers); $i++) {
-            $this->powerRepository->shouldReceive('setNode->setServer->sendSignal')
-                ->once()
-                ->with('kill')
-                ->andReturnNull();
+            $this->powerRepository->expects('setNode->setServer->send')->with('kill')->andReturnNull();
         }
 
         $display = $this->runCommand($this->getCommand(), ['action' => 'kill'], ['yes']);
 
         $this->assertNotEmpty($display);
-        $this->assertContains('2/2', $display);
-        $this->assertContains(trans('command/messages.server.power.confirm', ['action' => 'kill', 'count' => 2]), $display);
+        $this->assertStringContainsString('2/2', $display);
+        $this->assertStringContainsString(trans('command/messages.server.power.confirm', ['action' => 'kill', 'count' => 2]), $display);
     }
 
     /**
@@ -76,19 +71,17 @@ class BulkPowerActionCommandTest extends CommandTestCase
         $server = factory(Server::class)->make();
         $server->setRelation('node', $node = factory(Node::class)->make());
 
-        $this->repository->shouldReceive('getServersForPowerActionCount')
-            ->once()
+        $this->repository->expects('getServersForPowerActionCount')
             ->with([1, 2], [3, 4])
             ->andReturn(1);
 
-        $this->repository->shouldReceive('getServersForPowerAction')
-            ->once()
+        $this->repository->expects('getServersForPowerAction')
             ->with([1, 2], [3, 4])
-            ->andReturn([$server]);
+            ->andReturn(Collection::make([$server]));
 
         $this->powerRepository->expects('setNode')->with($node)->andReturnSelf();
         $this->powerRepository->expects('setServer')->with($server)->andReturnSelf();
-        $this->powerRepository->expects('sendSignal')->with('kill')->andReturn(new Response);
+        $this->powerRepository->expects('send')->with('kill')->andReturn(new Response);
 
         $display = $this->runCommand($this->getCommand(), [
             'action' => 'kill',
@@ -97,8 +90,8 @@ class BulkPowerActionCommandTest extends CommandTestCase
         ], ['yes']);
 
         $this->assertNotEmpty($display);
-        $this->assertContains('1/1', $display);
-        $this->assertContains(trans('command/messages.server.power.confirm', ['action' => 'kill', 'count' => 1]), $display);
+        $this->assertStringContainsString('1/1', $display);
+        $this->assertStringContainsString(trans('command/messages.server.power.confirm', ['action' => 'kill', 'count' => 1]), $display);
     }
 
     /**
@@ -109,13 +102,12 @@ class BulkPowerActionCommandTest extends CommandTestCase
         $server = factory(Server::class)->make();
         $server->setRelation('node', factory(Node::class)->make());
 
-        $this->repository->shouldReceive('getServersForPowerActionCount')
-            ->once()
+        $this->repository->expects('getServersForPowerActionCount')
             ->with([], [])
             ->andReturn(1);
 
-        $this->repository->shouldReceive('getServersForPowerAction')->once()->with([], [])->andReturn([$server]);
-        $this->powerRepository->shouldReceive('setNode->setServer->sendSignal')->once()->with('kill')->andReturnNull();
+        $this->repository->expects('getServersForPowerAction')->with([], [])->andReturn(Collection::make([$server]));
+        $this->powerRepository->expects('setNode->setServer->send')->with('kill')->andReturnNull();
 
         $display = $this->runCommand($this->getCommand(), [
             'action' => 'kill',
@@ -124,8 +116,8 @@ class BulkPowerActionCommandTest extends CommandTestCase
         ], ['yes']);
 
         $this->assertNotEmpty($display);
-        $this->assertContains('1/1', $display);
-        $this->assertContains(trans('command/messages.server.power.confirm', ['action' => 'kill', 'count' => 1]), $display);
+        $this->assertStringContainsString('1/1', $display);
+        $this->assertStringContainsString(trans('command/messages.server.power.confirm', ['action' => 'kill', 'count' => 1]), $display);
     }
 
     /**
@@ -134,10 +126,10 @@ class BulkPowerActionCommandTest extends CommandTestCase
      * @param array $data
      *
      * @dataProvider validationFailureDataProvider
-     * @expectedException \Illuminate\Validation\ValidationException
      */
     public function testValidationErrors(array $data)
     {
+        $this->expectException(ValidationException::class);
         $this->runCommand($this->getCommand(), $data);
     }
 
