@@ -37,11 +37,6 @@ export default () => {
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'backups'} className={'mb-4'}/>
-            {featureLimits.backups !== 0 &&
-                <p className="text-center text-md text-neutral-400">
-                    You are currently using {backups.length} of {featureLimits.backups} backups.
-                </p>
-            }
             {!backups.length ?
                 <p className="text-center text-sm text-neutral-400">
                     There are no backups stored for this server.
@@ -61,6 +56,11 @@ export default () => {
                 </p>
             }
             <Can action={'backup.create'}>
+                {(featureLimits.backups > 0 && backups.length > 0) &&
+                <p className="text-center text-xs text-neutral-400 mt-2">
+                    {backups.length} of {featureLimits.backups} backups have been created for this server.
+                </p>
+                }
                 {featureLimits.backups > 0 && featureLimits.backups !== backups.length &&
                 <div className={'mt-6 flex justify-end'}>
                     <CreateBackupButton/>

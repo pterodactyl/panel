@@ -36,11 +36,6 @@ export default () => {
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'databases'} className={'mb-4'}/>
-            {featureLimits.databases !== 0 &&
-                <p className="text-center text-md text-neutral-400">
-                    You are currently using {databases.length} of {featureLimits.databases} databases.
-                </p>
-            }
             {(!databases.length && loading) ?
                 <Spinner size={'large'} centered={true}/>
                 :
@@ -64,6 +59,11 @@ export default () => {
                             </p>
                         }
                         <Can action={'database.create'}>
+                            {(featureLimits.databases > 0 && databases.length > 0) &&
+                            <p className="text-center text-xs text-neutral-400 mt-2">
+                                {databases.length} of {featureLimits.databases} databases have been allocated to this server.
+                            </p>
+                            }
                             {featureLimits.databases > 0 && featureLimits.databases !== databases.length &&
                             <div className={'mt-6 flex justify-end'}>
                                 <CreateDatabaseButton/>
