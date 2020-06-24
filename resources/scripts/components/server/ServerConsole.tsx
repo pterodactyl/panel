@@ -81,6 +81,9 @@ export default () => {
         };
     }, [ instance, connected ]);
 
+    const disklimit = server.limits.disk != 0 ? bytesToHuman(server.limits.disk * 1000 * 1000) : "Unlimited";
+    const memorylimit = server.limits.memory != 0 ? bytesToHuman(server.limits.memory * 1000 * 1000) : "Unlimited";
+
     return (
         <PageContentBlock className={'flex'}>
             <div className={'w-1/4'}>
@@ -112,8 +115,8 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(memory)}
-                        <span className={'text-neutral-500'}> / {bytesToHuman(server.limits.memory * 1000 * 1000)}</span>
-                    </p>
+                        <span className={'text-neutral-500'}> / {memorylimit}</span>
+                        </p>
                     <p className={'text-xs mt-2'}>
                         <FontAwesomeIcon
                             icon={faHdd}
@@ -121,7 +124,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(disk)}
-                        <span className={'text-neutral-500'}> / {bytesToHuman(server.limits.disk * 1000 * 1000)}</span>
+                        <span className={'text-neutral-500'}> / {disklimit}</span>
                     </p>
                 </TitledGreyBox>
                 {!server.isInstalling ?
