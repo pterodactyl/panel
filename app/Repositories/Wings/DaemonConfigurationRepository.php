@@ -34,7 +34,7 @@ class DaemonConfigurationRepository extends DaemonRepository
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function update(?Node $node)
+    public function update(Node $node)
     {
         try {
             return $this->getHttpClient()->post(
