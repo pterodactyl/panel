@@ -66,7 +66,7 @@ class ApiKeyControllerTest extends IntegrationTestCase
         // Small sub-test to ensure we're always comparing the number of keys to the
         // specific logged in account, and not just the total number of keys stored in
         // the database.
-        factory(ApiKey::class)->create([
+        factory(ApiKey::class)->times(10)->create([
             'user_id' => factory(User::class)->create()->id,
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
