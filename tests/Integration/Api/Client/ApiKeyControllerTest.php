@@ -63,7 +63,7 @@ class ApiKeyControllerTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         $user = factory(User::class)->create();
 
-        // Small sub-test to ensure we're always comparing the number of keys to the
+        // Small sub-test to ensure we're always comparing the  number of keys to the
         // specific logged in account, and not just the total number of keys stored in
         // the database.
         factory(ApiKey::class)->times(10)->create([
