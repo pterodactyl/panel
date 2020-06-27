@@ -71,7 +71,10 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                             :
                             <div>
                                 <label className={'input-dark-label'}>Ignored Files</label>
-                                <FormikFieldWrapper name={'payload'}>
+                                <FormikFieldWrapper
+                                    name={'payload'}
+                                    description={'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used.'}
+                                >
                                     <FormikField as={'textarea'} name={'payload'} className={'input-dark h-32'}/>
                                 </FormikFieldWrapper>
                             </div>

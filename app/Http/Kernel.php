@@ -28,12 +28,8 @@ use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\Server\AccessingValidServer;
-use Pterodactyl\Http\Middleware\Server\AuthenticateAsSubuser;
 use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
-use Pterodactyl\Http\Middleware\Server\SubuserBelongsToServer;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
-use Pterodactyl\Http\Middleware\Server\DatabaseBelongsToServer;
-use Pterodactyl\Http\Middleware\Server\ScheduleBelongsToServer;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
@@ -104,7 +100,6 @@ class Kernel extends HttpKernel
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'guest' => RedirectIfAuthenticated::class,
         'server' => AccessingValidServer::class,
-        'subuser.auth' => AuthenticateAsSubuser::class,
         'admin' => AdminAuthenticate::class,
         'csrf' => VerifyCsrfToken::class,
         'throttle' => ThrottleRequests::class,
@@ -112,14 +107,6 @@ class Kernel extends HttpKernel
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
         'node.maintenance' => MaintenanceMiddleware::class,
-
-        // Server specific middleware (used for authenticating access to resources)
-        //
-        // These are only used for individual server authentication, and not global
-        // actions from other resources. They are defined in the route files.
-        'server..database' => DatabaseBelongsToServer::class,
-        'server..subuser' => SubuserBelongsToServer::class,
-        'server..schedule' => ScheduleBelongsToServer::class,
 
         // API Specific Middleware
         'api..key' => AuthenticateKey::class,

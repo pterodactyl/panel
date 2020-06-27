@@ -52,6 +52,8 @@ export default ({ server, className }: { server: Server; className: string | und
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
+    const disklimit = server.limits.disk != 0 ? bytesToHuman(server.limits.disk * 1000 * 1000) : "Unlimited";
+    const memorylimit = server.limits.memory != 0 ? bytesToHuman(server.limits.memory * 1000 * 1000) : "Unlimited";
 
     return (
         <Link to={`/server/${server.id}`} className={`flex-wrap md:flex-no-wrap grey-row-box cursor-pointer ${className}`}>
@@ -127,7 +129,7 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {bytesToHuman(server.limits.memory * 1000 * 1000)}</p>
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {memorylimit}</p>
                         </div>
                         <div className={'flex-1'}>
                             <div className={'flex justify-center'}>
@@ -147,9 +149,7 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>
-                                of {bytesToHuman(server.limits.disk * 1000 * 1000)}
-                            </p>
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {disklimit}</p>
                         </div>
                     </React.Fragment>
                 }

@@ -176,6 +176,8 @@
                             <input type="text" id="pMemory" name="memory" class="form-control" value="{{ old('memory') }}" />
                             <span class="input-group-addon">MB</span>
                         </div>
+
+                        <p class="text-muted small">The maximum amount of memory allowed for this container. Setting this to <code>0</code> will allow unlimited memory in a container.</p>
                     </div>
 
                     <div class="form-group col-xs-6">
@@ -185,21 +187,18 @@
                             <input type="text" id="pSwap" name="swap" class="form-control" value="{{ old('swap', 0) }}" />
                             <span class="input-group-addon">MB</span>
                         </div>
+                        <p class="text-muted small">Setting this to <code>0</code> will disable swap space on this server. Setting to <code>-1</code> will allow unlimited swap.</p>
                     </div>
-                </div>
-
-                <div class="box-footer no-border no-pad-top no-pad-bottom">
-                    <p class="text-muted small">If you do not want to assign swap space to a server, simply put <code>0</code> for the value, or <code>-1</code> to allow unlimited swap space. If you want to disable memory limiting on a server, simply enter <code>0</code> into the memory field.<p>
                 </div>
 
                 <div class="box-body row">
                     <div class="form-group col-xs-6">
                         <label for="pDisk">Disk Space</label>
-
                         <div class="input-group">
                             <input type="text" id="pDisk" name="disk" class="form-control" value="{{ old('disk') }}" />
                             <span class="input-group-addon">MB</span>
                         </div>
+                        <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Set to <code>0</code> to allow unlimited disk usage.</p>
                     </div>
 
                     <div class="form-group col-xs-6">
