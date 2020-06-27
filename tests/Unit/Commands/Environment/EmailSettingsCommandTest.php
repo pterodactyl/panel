@@ -1,4 +1,11 @@
 <?php
+/**
+ * Pterodactyl - Panel
+ * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
+ *
+ * This software is licensed under the terms of the MIT license.
+ * https://opensource.org/licenses/MIT
+ */
 
 namespace Tests\Unit\Commands\Environment;
 
@@ -51,7 +58,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], array_values($data));
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**
@@ -83,7 +90,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**
@@ -108,7 +115,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, ['--driver' => 'mail'], array_values($data));
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**
@@ -129,7 +136,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], array_values($data));
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**
@@ -157,7 +164,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**
@@ -177,7 +184,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], array_values($data));
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**
@@ -203,7 +210,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**
@@ -228,7 +235,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**
@@ -257,7 +264,7 @@ class EmailSettingsCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString('Updating stored environment configuration file.', $display);
+        $this->assertContains('Updating stored environment configuration file.', $display);
     }
 
     /**

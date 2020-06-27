@@ -5,7 +5,7 @@ namespace Pterodactyl\Services\Nodes;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
-use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeCreationService
@@ -16,14 +16,14 @@ class NodeCreationService
     protected $repository;
 
     /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
+     * @var \Illuminate\Encryption\Encrypter
      */
     private $encrypter;
 
     /**
      * CreationService constructor.
      *
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
+     * @param \Illuminate\Encryption\Encrypter $encrypter
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(Encrypter $encrypter, NodeRepositoryInterface $repository)

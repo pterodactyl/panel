@@ -76,16 +76,7 @@ class EggImporterService
     public function handle(UploadedFile $file, int $nest): Egg
     {
         if ($file->getError() !== UPLOAD_ERR_OK || ! $file->isFile()) {
-            throw new InvalidFileUploadException(
-                sprintf(
-                    'The selected file ["%s"] was not in a valid format to import. (is_file: %s is_valid: %s err_code: %s err: %s)',
-                    $file->getFilename(),
-                    $file->isFile() ? 'true' : 'false',
-                    $file->isValid() ? 'true' : 'false',
-                    $file->getError(),
-                    $file->getErrorMessage()
-                )
-            );
+            throw new InvalidFileUploadException(trans('exceptions.nest.importer.file_error'));
         }
 
         $parsed = json_decode($file->openFile()->fread($file->getSize()));

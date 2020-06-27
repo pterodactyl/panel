@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Exception;
 use Psr\Log\LoggerInterface;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
@@ -110,15 +109,7 @@ class ServerDeletionService
 
         $this->connection->transaction(function () use ($server) {
             $this->databaseRepository->setColumns('id')->findWhere([['server_id', '=', $server->id]])->each(function ($item) {
-                try {
-                    $this->databaseManagementService->delete($item->id);
-                } catch (Exception $exception) {
-                    if ($this->force) {
-                        $this->writer->warning($exception);
-                    } else {
-                        throw $exception;
-                    }
-                }
+                $this->databaseManagementService->delete($item->id);
             });
 
             $this->repository->delete($server->id);

@@ -57,12 +57,13 @@ class DatabaseController extends ApplicationApiController
      * server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
-    public function index(GetServerDatabasesRequest $request, Server $server): array
+    public function index(GetServerDatabasesRequest $request): array
     {
-        return $this->fractal->collection($server->databases)
+        $databases = $this->repository->getDatabasesForServer($request->getModel(Server::class)->id);
+
+        return $this->fractal->collection($databases)
             ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
             ->toArray();
     }
@@ -71,13 +72,11 @@ class DatabaseController extends ApplicationApiController
      * Return a single server database.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Database $database
      * @return array
      */
-    public function view(GetServerDatabaseRequest $request, Server $server, Database $database): array
+    public function view(GetServerDatabaseRequest $request): array
     {
-        return $this->fractal->item($database)
+        return $this->fractal->item($request->getModel(Database::class))
             ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
             ->toArray();
     }
@@ -86,31 +85,29 @@ class DatabaseController extends ApplicationApiController
      * Reset the password for a specific server database.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Database $database
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      *
      * @throws \Throwable
      */
-    public function resetPassword(ServerDatabaseWriteRequest $request, Server $server, Database $database): JsonResponse
+    public function resetPassword(ServerDatabaseWriteRequest $request): Response
     {
-        $this->databasePasswordService->handle($database);
+        $this->databasePasswordService->handle($request->getModel(Database::class));
 
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        return response('', 204);
     }
 
     /**
      * Create a new database on the Panel for a given server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Throwable
+     * @throws \Exception
      */
-    public function store(StoreServerDatabaseRequest $request, Server $server): JsonResponse
+    public function store(StoreServerDatabaseRequest $request): JsonResponse
     {
-        $database = $this->databaseManagementService->create($server, $request->validated());
+        $server = $request->getModel(Server::class);
+        $database = $this->databaseManagementService->create($server->id, $request->validated());
 
         return $this->fractal->item($database)
             ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
@@ -120,7 +117,7 @@ class DatabaseController extends ApplicationApiController
                     'database' => $database->id,
                 ]),
             ])
-            ->respond(Response::HTTP_CREATED);
+            ->respond(201);
     }
 
     /**

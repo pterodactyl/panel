@@ -40,62 +40,53 @@ class ServerConfigurationStructureServiceTest extends TestCase
      */
     public function testCorrectStructureIsReturned()
     {
-        /** @var \Pterodactyl\Models\Server $model */
         $model = factory(Server::class)->make();
         $model->setRelation('pack', null);
         $model->setRelation('allocation', factory(Allocation::class)->make());
         $model->setRelation('allocations', collect(factory(Allocation::class)->times(2)->make()));
         $model->setRelation('egg', factory(Egg::class)->make());
 
-        $this->environment->expects('handle')->with($model)->andReturn(['environment_array']);
+        $portListing = $model->allocations->groupBy('ip')->map(function ($item) {
+            return $item->pluck('port');
+        })->toArray();
+
+        $this->repository->shouldReceive('getDataForCreation')->with($model)->once()->andReturn($model);
+        $this->environment->shouldReceive('handle')->with($model)->once()->andReturn(['environment_array']);
 
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);
         $this->assertArrayNotHasKey('user', $response);
         $this->assertArrayNotHasKey('keys', $response);
-
         $this->assertArrayHasKey('uuid', $response);
-        $this->assertArrayHasKey('suspended', $response);
-        $this->assertArrayHasKey('environment', $response);
-        $this->assertArrayHasKey('invocation', $response);
         $this->assertArrayHasKey('build', $response);
         $this->assertArrayHasKey('service', $response);
-        $this->assertArrayHasKey('container', $response);
-        $this->assertArrayHasKey('allocations', $response);
+        $this->assertArrayHasKey('rebuild', $response);
+        $this->assertArrayHasKey('suspended', $response);
 
-        $this->assertSame([
+        $this->assertArraySubset([
             'default' => [
                 'ip' => $model->allocation->ip,
                 'port' => $model->allocation->port,
             ],
-            'mappings' => $model->getAllocationMappings(),
-        ], $response['allocations']);
+        ], $response['build'], true, 'Assert server default allocation is correct.');
+        $this->assertArraySubset(['ports' => $portListing], $response['build'], true, 'Assert server ports are correct.');
+        $this->assertArraySubset([
+            'env' => ['environment_array'],
+            'swap' => (int) $model->swap,
+            'io' => (int) $model->io,
+            'cpu' => (int) $model->cpu,
+            'disk' => (int) $model->disk,
+            'image' => $model->image,
+        ], $response['build'], true, 'Assert server build data is correct.');
 
-        $this->assertSame([
-            'memory_limit' => $model->memory,
-            'swap' => $model->swap,
-            'io_weight' => $model->io,
-            'cpu_limit' => $model->cpu,
-            'threads' => $model->threads,
-            'disk_space' => $model->disk,
-        ], $response['build']);
-
-        $this->assertSame([
+        $this->assertArraySubset([
             'egg' => $model->egg->uuid,
             'pack' => null,
             'skip_scripts' => $model->skip_scripts,
         ], $response['service']);
 
-        $this->assertSame([
-            'image' => $model->image,
-            'oom_disabled' => $model->oom_disabled,
-            'requires_rebuild' => false,
-        ], $response['container']);
-
-        $this->assertSame($model->uuid, $response['uuid']);
-        $this->assertSame((bool) $model->suspended, $response['suspended']);
-        $this->assertSame(['environment_array'], $response['environment']);
-        $this->assertSame($model->startup, $response['invocation']);
+        $this->assertFalse($response['rebuild']);
+        $this->assertSame((int) $model->suspended, $response['suspended']);
     }
 
     /**

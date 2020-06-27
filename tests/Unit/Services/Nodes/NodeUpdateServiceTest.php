@@ -2,44 +2,34 @@
 
 namespace Tests\Unit\Services\Nodes;
 
-use Exception;
 use Mockery as m;
 use Tests\TestCase;
-use GuzzleHttp\Psr7\Request;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\Node;
+use GuzzleHttp\Psr7\Response;
 use Tests\Traits\MocksRequestException;
 use GuzzleHttp\Exception\ConnectException;
-use GuzzleHttp\Exception\TransferException;
 use Illuminate\Database\ConnectionInterface;
-use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
+use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface;
 
 class NodeUpdateServiceTest extends TestCase
 {
     use PHPMock, MocksRequestException;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
     private $connection;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ConfigurationRepositoryInterface|\Mockery\Mock
      */
-    private $configurationRepository;
+    private $configRepository;
 
     /**
-     * @var \Mockery\MockInterface
-     */
-    private $encrypter;
-
-    /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
@@ -51,9 +41,8 @@ class NodeUpdateServiceTest extends TestCase
         parent::setUp();
 
         $this->connection = m::mock(ConnectionInterface::class);
-        $this->encrypter = m::mock(Encrypter::class);
-        $this->configurationRepository = m::mock(DaemonConfigurationRepository::class);
-        $this->repository = m::mock(NodeRepository::class);
+        $this->configRepository = m::mock(ConfigurationRepositoryInterface::class);
+        $this->repository = m::mock(NodeRepositoryInterface::class);
     }
 
     /**
@@ -61,59 +50,36 @@ class NodeUpdateServiceTest extends TestCase
      */
     public function testNodeIsUpdatedAndDaemonSecretIsReset()
     {
-        /** @var \Pterodactyl\Models\Node $model */
-        $model = factory(Node::class)->make([
-            'fqdn' => 'https://example.com',
-        ]);
-
-        /** @var \Pterodactyl\Models\Node $updatedModel */
+        $model = factory(Node::class)->make();
         $updatedModel = factory(Node::class)->make([
             'name' => 'New Name',
-            'fqdn' => 'https://example2.com',
+            'daemonSecret' => 'abcd1234',
         ]);
 
-        $this->connection->expects('transaction')->with(m::on(function ($closure) use ($updatedModel) {
-            $response = $closure();
+        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'str_random')
+            ->expects($this->once())->willReturn($updatedModel->daemonSecret);
 
-            $this->assertIsArray($response);
-            $this->assertTrue(count($response) === 2);
-            $this->assertSame($updatedModel, $response[0]);
-            $this->assertFalse($response[1]);
-
-            return true;
-        }))->andReturns([$updatedModel, false]);
-
-        $this->encrypter->expects('encrypt')->with(m::on(function ($value) {
-            return strlen($value) === Node::DAEMON_TOKEN_LENGTH;
-        }))->andReturns('encrypted_value');
-
-        $this->repository->expects('withFreshModel->update')->with($model->id, m::on(function ($value) {
-            $this->assertTrue(is_array($value));
-            $this->assertSame('New Name', $value['name']);
-            $this->assertSame('encrypted_value', $value['daemon_token']);
-            $this->assertTrue(strlen($value['daemon_token_id']) === Node::DAEMON_TOKEN_ID_LENGTH);
-
-            return true;
-        }), true, true)->andReturns($updatedModel);
-
-        $this->configurationRepository->expects('setNode')->with(m::on(function ($value) use ($model, $updatedModel) {
-            $this->assertInstanceOf(Node::class, $value);
-            $this->assertSame($model->uuid, $value->uuid);
-
-            // Yes, this is correct. Always use the updated model's FQDN when making requests to
-            // the Daemon so that any changes to that are properly propagated down to the daemon.
-            //
-            // @see https://github.com/pterodactyl/panel/issues/1931
-            $this->assertSame($updatedModel->fqdn, $value->fqdn);
-
-            return true;
-        }))->andReturnSelf();
-
-        $this->configurationRepository->expects('update')->with($updatedModel);
-
-        $this->getService()->handle($model, [
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('update')->with($model->id, [
             'name' => $updatedModel->name,
-        ], true);
+            'daemonSecret' => $updatedModel->daemonSecret,
+        ])->andReturn($model);
+
+        $cloned = $updatedModel->replicate(['daemonSecret']);
+        $cloned->daemonSecret = $model->daemonSecret;
+
+        $this->configRepository->shouldReceive('setNode')->with(m::on(function ($model) use ($updatedModel) {
+            return $model->daemonSecret !== $updatedModel->daemonSecret;
+        }))->once()->andReturnSelf();
+
+        $this->configRepository->shouldReceive('update')->with([
+            'keys' => ['abcd1234'],
+        ])->once()->andReturn(new Response);
+
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+
+        $response = $this->getService()->handle($model, ['name' => $updatedModel->name], true);
+        $this->assertInstanceOf(Node::class, $response);
     }
 
     /**
@@ -121,115 +87,56 @@ class NodeUpdateServiceTest extends TestCase
      */
     public function testNodeIsUpdatedAndDaemonSecretIsNotChanged()
     {
-        /** @var \Pterodactyl\Models\Node $model */
-        $model = factory(Node::class)->make(['fqdn' => 'https://example.com']);
+        $model = factory(Node::class)->make();
 
-        /** @var \Pterodactyl\Models\Node $updatedModel */
-        $updatedModel = factory(Node::class)->make(['name' => 'New Name', 'fqdn' => $model->fqdn]);
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('update')->with($model->id, [
+            'name' => 'NewName',
+        ])->andReturn($model);
 
-        $this->connection->expects('transaction')->with(m::on(function ($closure) use ($updatedModel) {
-            $response = $closure();
+        $this->configRepository->shouldReceive('setNode')->with($model)->once()->andReturnSelf()
+            ->shouldReceive('update')->withNoArgs()->once()->andReturn(new Response);
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-            $this->assertIsArray($response);
-            $this->assertTrue(count($response) === 2);
-            $this->assertSame($updatedModel, $response[0]);
-            $this->assertFalse($response[1]);
-
-            return true;
-        }))->andReturns([$updatedModel, false]);
-
-        $this->repository->expects('withFreshModel->update')->with($model->id, m::on(function ($value) {
-            $this->assertTrue(is_array($value));
-            $this->assertSame('New Name', $value['name']);
-            $this->assertArrayNotHasKey('daemon_token', $value);
-            $this->assertArrayNotHasKey('daemon_token_id', $value);
-
-            return true;
-        }), true, true)->andReturns($updatedModel);
-
-        $this->configurationRepository->expects('setNode->update')->with($updatedModel);
-
-        $this->getService()->handle($model, ['name' => $updatedModel->name]);
+        $response = $this->getService()->handle($model, ['name' => 'NewName']);
+        $this->assertInstanceOf(Node::class, $response);
     }
 
     /**
      * Test that an exception caused by a connection error is handled.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException
      */
     public function testExceptionRelatedToConnection()
     {
-        $this->configureExceptionMock(DaemonConnectionException::class);
-        $this->expectException(ConfigurationNotPersistedException::class);
+        $this->configureExceptionMock(ConnectException::class);
+        $model = factory(Node::class)->make();
 
-        /** @var \Pterodactyl\Models\Node $model */
-        $model = factory(Node::class)->make(['fqdn' => 'https://example.com']);
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('update')->andReturn($model);
 
-        /** @var \Pterodactyl\Models\Node $updatedModel */
-        $updatedModel = factory(Node::class)->make(['name' => 'New Name', 'fqdn' => $model->fqdn]);
+        $this->configRepository->shouldReceive('setNode->update')->once()->andThrow($this->getExceptionMock());
+        $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->connection->expects('transaction')->with(m::on(function ($closure) use ($updatedModel) {
-            $response = $closure();
-
-            $this->assertIsArray($response);
-            $this->assertTrue(count($response) === 2);
-            $this->assertSame($updatedModel, $response[0]);
-            $this->assertTrue($response[1]);
-
-            return true;
-        }))->andReturn([$updatedModel, true]);
-
-        $this->repository->expects('withFreshModel->update')->with($model->id, m::on(function ($value) {
-            $this->assertTrue(is_array($value));
-            $this->assertSame('New Name', $value['name']);
-            $this->assertArrayNotHasKey('daemon_token', $value);
-            $this->assertArrayNotHasKey('daemon_token_id', $value);
-
-            return true;
-        }), true, true)->andReturns($updatedModel);
-
-        $this->configurationRepository->expects('setNode->update')->with($updatedModel)->andThrow(
-            new DaemonConnectionException(
-                new ConnectException('', new Request('GET', 'Test'), new Exception)
-            )
-        );
-
-        $this->getService()->handle($model, ['name' => $updatedModel->name]);
+        $this->getService()->handle($model, ['name' => 'NewName']);
     }
 
     /**
      * Test that an exception not caused by a daemon connection error is handled.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionNotRelatedToConnection()
     {
-        /** @var \Pterodactyl\Models\Node $model */
-        $model = factory(Node::class)->make(['fqdn' => 'https://example.com']);
+        $this->configureExceptionMock();
+        $model = factory(Node::class)->make();
 
-        /** @var \Pterodactyl\Models\Node $updatedModel */
-        $updatedModel = factory(Node::class)->make(['name' => 'New Name', 'fqdn' => $model->fqdn]);
+        $this->connection->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('update')->andReturn($model);
 
-        $this->connection->expects('transaction')->with(m::on(function ($closure) use ($updatedModel) {
-            try {
-                $closure();
-            } catch (Exception $exception) {
-                $this->assertInstanceOf(DaemonConnectionException::class, $exception);
-                $this->assertSame(
-                    'There was an exception while attempting to communicate with the daemon resulting in a HTTP/E_CONN_REFUSED response code. This exception has been logged.',
-                    $exception->getMessage()
-                );
+        $this->configRepository->shouldReceive('setNode->update')->once()->andThrow($this->getExceptionMock());
 
-                return true;
-            }
-
-            return false;
-        }));
-
-        $this->repository->expects('withFreshModel->update')->andReturns($updatedModel);
-        $this->configurationRepository->expects('setNode->update')->andThrow(
-            new DaemonConnectionException(
-                new TransferException('', 500, new Exception)
-            )
-        );
-
-        $this->getService()->handle($model, ['name' => $updatedModel->name]);
+        $this->getService()->handle($model, ['name' => 'NewName']);
     }
 
     /**
@@ -239,8 +146,6 @@ class NodeUpdateServiceTest extends TestCase
      */
     private function getService(): NodeUpdateService
     {
-        return new NodeUpdateService(
-            $this->connection, $this->encrypter, $this->configurationRepository, $this->repository
-        );
+        return new NodeUpdateService($this->connection, $this->configRepository, $this->repository);
     }
 }

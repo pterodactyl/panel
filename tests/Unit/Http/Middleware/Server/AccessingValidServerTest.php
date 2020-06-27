@@ -9,8 +9,6 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Server\AccessingValidServer;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AccessingValidServerTest extends MiddlewareTestCase
 {
@@ -43,12 +41,12 @@ class AccessingValidServerTest extends MiddlewareTestCase
 
     /**
      * Test that an exception is thrown if the request is an API request and the server is suspended.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
+     * @expectedExceptionMessage Server is suspended and cannot be accessed.
      */
     public function testExceptionIsThrownIfServerIsSuspended()
     {
-        $this->expectException(AccessDeniedHttpException::class);
-        $this->expectExceptionMessage('Server is suspended and cannot be accessed.');
-
         $model = factory(Server::class)->make(['suspended' => 1]);
 
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');
@@ -61,12 +59,12 @@ class AccessingValidServerTest extends MiddlewareTestCase
 
     /**
      * Test that an exception is thrown if the request is an API request and the server is not installed.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\ConflictHttpException
+     * @expectedExceptionMessage Server is still completing the installation process.
      */
     public function testExceptionIsThrownIfServerIsNotInstalled()
     {
-        $this->expectException(ConflictHttpException::class);
-        $this->expectExceptionMessage('Server is still completing the installation process.');
-
         $model = factory(Server::class)->make(['installed' => 0]);
 
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');

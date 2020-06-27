@@ -52,20 +52,18 @@ export default ({ server, className }: { server: Server; className: string | und
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
-    const disklimit = server.limits.disk != 0 ? bytesToHuman(server.limits.disk * 1000 * 1000) : "Unlimited";
-    const memorylimit = server.limits.memory != 0 ? bytesToHuman(server.limits.memory * 1000 * 1000) : "Unlimited";
 
     return (
-        <Link to={`/server/${server.id}`} className={`flex-wrap md:flex-no-wrap grey-row-box cursor-pointer ${className}`}>
-            <div className={'icon hidden lg:block'}>
+        <Link to={`/server/${server.id}`} className={`grey-row-box cursor-pointer ${className}`}>
+            <div className={'icon'}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
-            <div className={'flex-1 md:ml-4'}>
+            <div className={'flex-1 ml-4'}>
                 <p className={'text-lg'}>{server.name}</p>
             </div>
-            <div className={'w-3/5 md:w-1/4 overflow-hidden'}>
-                <div className={'flex md:ml-4 justify-end md:justify-start'}>
-                    <FontAwesomeIcon icon={faEthernet} className={'text-neutral-500 hidden md:block'}/>
+            <div className={'w-1/4 overflow-hidden'}>
+                <div className={'flex ml-4'}>
+                    <FontAwesomeIcon icon={faEthernet} className={'text-neutral-500'}/>
                     <p className={'text-sm text-neutral-400 ml-2'}>
                         {
                             server.allocations.filter(alloc => alloc.default).map(allocation => (
@@ -75,7 +73,7 @@ export default ({ server, className }: { server: Server; className: string | und
                     </p>
                 </div>
             </div>
-            <div className={'w-full md:w-1/3 mt-8 md:mt-0 flex items-baseline relative'}>
+            <div className={'w-1/3 flex items-baseline relative'}>
                 {!stats ?
                     !statsError ?
                         <SpinnerOverlay size={'tiny'} visible={true} backgroundOpacity={0.25}/>
@@ -94,7 +92,7 @@ export default ({ server, className }: { server: Server; className: string | und
                             </div>
                     :
                     <React.Fragment>
-                        <div className={'sm:flex-1 sm:flex md:ml-4 justify-center hidden'}>
+                        <div className={'flex-1 flex ml-4 justify-center'}>
                             <FontAwesomeIcon
                                 icon={faMicrochip}
                                 className={classNames({
@@ -111,7 +109,7 @@ export default ({ server, className }: { server: Server; className: string | und
                                 {stats.cpuUsagePercent} %
                             </p>
                         </div>
-                        <div className={'flex-1 ml-4 sm:mx-4'}>
+                        <div className={'flex-1 ml-4'}>
                             <div className={'flex justify-center'}>
                                 <FontAwesomeIcon
                                     icon={faMemory}
@@ -129,9 +127,9 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {memorylimit}</p>
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {bytesToHuman(server.limits.memory * 1000 * 1000)}</p>
                         </div>
-                        <div className={'flex-1'}>
+                        <div className={'flex-1 ml-4'}>
                             <div className={'flex justify-center'}>
                                 <FontAwesomeIcon
                                     icon={faHdd}
@@ -149,7 +147,9 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {disklimit}</p>
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>
+                                of {bytesToHuman(server.limits.disk * 1000 * 1000)}
+                            </p>
                         </div>
                     </React.Fragment>
                 }

@@ -58,7 +58,7 @@ class ScheduleTaskController extends ClientApiController
             'schedule_id' => $schedule->id,
             'sequence_id' => ($lastTask->sequence_id ?? 0) + 1,
             'action' => $request->input('action'),
-            'payload' => $request->input('payload') ?? '',
+            'payload' => $request->input('payload'),
             'time_offset' => $request->input('time_offset'),
         ]);
 
@@ -87,7 +87,7 @@ class ScheduleTaskController extends ClientApiController
 
         $this->repository->update($task->id, [
             'action' => $request->input('action'),
-            'payload' => $request->input('payload') ?? '',
+            'payload' => $request->input('payload'),
             'time_offset' => $request->input('time_offset'),
         ]);
 

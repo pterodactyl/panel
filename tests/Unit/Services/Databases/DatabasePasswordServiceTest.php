@@ -51,14 +51,13 @@ class DatabasePasswordServiceTest extends TestCase
      */
     public function testPasswordIsChanged()
     {
-        /** @var \Pterodactyl\Models\Database $model */
-        $model = factory(Database::class)->make(['max_connections' => 0]);
+        $model = factory(Database::class)->make();
 
         $this->connection->expects('transaction')->with(m::on(function ($closure) {
             return is_null($closure());
         }));
 
-        $this->dynamic->expects('set')->with('dynamic', $model->database_host_id)->andReturnNull();
+        $this->dynamic->shouldReceive('set')->with('dynamic', $model->database_host_id)->once()->andReturnNull();
 
         $this->encrypter->expects('encrypt')->with(m::on(function ($string) {
             preg_match_all('/[!@+=.^-]/', $string, $matches, PREG_SET_ORDER);
@@ -68,13 +67,13 @@ class DatabasePasswordServiceTest extends TestCase
             return true;
         }))->andReturn('enc123');
 
-        $this->repository->expects('withoutFreshModel')->withNoArgs()->andReturnSelf();
-        $this->repository->expects('update')->with($model->id, ['password' => 'enc123'])->andReturn(true);
+        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf();
+        $this->repository->shouldReceive('update')->with($model->id, ['password' => 'enc123'])->once()->andReturn(true);
 
-        $this->repository->expects('dropUser')->with($model->username, $model->remote)->andReturn(true);
-        $this->repository->expects('createUser')->with($model->username, $model->remote, m::any(), 0)->andReturn(true);
-        $this->repository->expects('assignUserToDatabase')->with($model->database, $model->username, $model->remote)->andReturn(true);
-        $this->repository->expects('flush')->withNoArgs()->andReturn(true);
+        $this->repository->shouldReceive('dropUser')->with($model->username, $model->remote)->once()->andReturn(true);
+        $this->repository->shouldReceive('createUser')->with($model->username, $model->remote, m::any())->once()->andReturn(true);
+        $this->repository->shouldReceive('assignUserToDatabase')->with($model->database, $model->username, $model->remote)->once()->andReturn(true);
+        $this->repository->shouldReceive('flush')->withNoArgs()->once()->andReturn(true);
 
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);

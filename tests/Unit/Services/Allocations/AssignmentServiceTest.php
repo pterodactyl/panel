@@ -8,10 +8,6 @@ use Pterodactyl\Models\Node;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException;
-use Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException;
-use Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException;
-use Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException;
 
 class AssignmentServiceTest extends TestCase
 {
@@ -194,12 +190,12 @@ class AssignmentServiceTest extends TestCase
 
     /**
      * Test that a CIDR IP address with a range works properly.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
+     * @expectedExceptionMessage CIDR notation only allows masks between /25 and /32.
      */
     public function testCIDRNotatedIPAddressOutsideRangeLimit()
     {
-        $this->expectException(CidrOutOfRangeException::class);
-        $this->expectExceptionMessage('CIDR notation only allows masks between /25 and /32.');
-
         $data = [
             'allocation_ip' => '192.168.1.100/20',
             'allocation_ports' => ['2222'],
@@ -210,12 +206,12 @@ class AssignmentServiceTest extends TestCase
 
     /**
      * Test that an exception is thrown if there are too many ports.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
+     * @expectedExceptionMessage Adding more than 1000 ports in a single range at once is not supported.
      */
     public function testAllocationWithPortsExceedingLimit()
     {
-        $this->expectException(TooManyPortsInRangeException::class);
-        $this->expectExceptionMessage('Adding more than 1000 ports in a single range at once is not supported.');
-
         $data = [
             'allocation_ip' => '192.168.1.1',
             'allocation_ports' => ['5000-7000'],
@@ -228,12 +224,12 @@ class AssignmentServiceTest extends TestCase
 
     /**
      * Test that an exception is thrown if an invalid port is provided.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @expectedExceptionMessage The mapping provided for test123 was invalid and could not be processed.
      */
     public function testInvalidPortProvided()
     {
-        $this->expectException(InvalidPortMappingException::class);
-        $this->expectExceptionMessage('The mapping provided for test123 was invalid and could not be processed.');
-
         $data = [
             'allocation_ip' => '192.168.1.1',
             'allocation_ports' => ['test123'],
@@ -249,12 +245,11 @@ class AssignmentServiceTest extends TestCase
      * @param array $ports
      *
      * @dataProvider invalidPortsDataProvider
+     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
+     * @expectedExceptionMessage Ports in an allocation must be greater than 1024 and less than or equal to 65535.
      */
     public function testPortRangeOutsideOfRangeLimits(array $ports)
     {
-        $this->expectException(PortOutOfRangeException::class);
-        $this->expectExceptionMessage('Ports in an allocation must be greater than 1024 and less than or equal to 65535.');
-
         $data = ['allocation_ip' => '192.168.1.1', 'allocation_ports' => $ports];
 
         $this->connection->shouldReceive('beginTransaction')->once()->withNoArgs()->andReturnNull();

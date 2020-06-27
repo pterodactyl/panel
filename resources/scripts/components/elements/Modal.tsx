@@ -60,7 +60,7 @@ export default ({ visible, appear, dismissable, showSpinnerOverlay, top = true, 
                     }
                 }
             }}>
-                <div className={classNames('modal-container w-4/5 md:w-full md:max-w-1/2', { top })}>
+                <div className={classNames('modal-container', { top })}>
                     {isDismissable &&
                     <div className={'modal-close-icon'} onClick={() => setRender(false)}>
                         <FontAwesomeIcon icon={faTimes}/>

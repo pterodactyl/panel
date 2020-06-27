@@ -69,7 +69,9 @@ class DatabaseController extends ClientApiController
      */
     public function index(GetDatabasesRequest $request, Server $server): array
     {
-        return $this->fractal->collection($server->databases)
+        $databases = $this->repository->getDatabasesForServer($server->id);
+
+        return $this->fractal->collection($databases)
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
             ->toArray();
     }
@@ -81,8 +83,6 @@ class DatabaseController extends ClientApiController
      * @param \Pterodactyl\Models\Server $server
      * @return array
      *
-     * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
      * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
      */
     public function store(StoreDatabaseRequest $request, Server $server): array

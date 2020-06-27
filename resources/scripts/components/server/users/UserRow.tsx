@@ -28,10 +28,10 @@ export default ({ subuser }: Props) => {
                 onDismissed={() => setVisible(false)}
             />
             }
-            <div className={'w-10 h-10 rounded-full bg-white border-2 border-inset border-neutral-800 overflow-hidden hidden md:block'}>
+            <div className={'w-10 h-10 rounded-full bg-white border-2 border-inset border-neutral-800 overflow-hidden'}>
                 <img className={'f-full h-full'} src={`${subuser.image}?s=400`}/>
             </div>
-            <div className={'md:ml-4 flex-1'}>
+            <div className={'ml-4 flex-1'}>
                 <p className={'text-sm'}>{subuser.email}</p>
             </div>
             <div className={'ml-4'}>
@@ -45,9 +45,9 @@ export default ({ subuser }: Props) => {
                     />
                     &nbsp;
                 </p>
-                <p className={'text-2xs text-neutral-500 uppercase hidden md:block'}>2FA Enabled</p>
+                <p className={'text-2xs text-neutral-500 uppercase'}>2FA Enabled</p>
             </div>
-            <div className={'ml-4 hidden md:block'}>
+            <div className={'ml-4'}>
                 <p className={'font-medium text-center'}>
                     {subuser.permissions.filter(permission => permission !== 'websocket.connect').length}
                 </p>

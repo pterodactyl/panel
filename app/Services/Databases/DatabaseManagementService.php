@@ -3,22 +3,19 @@
 namespace Pterodactyl\Services\Databases;
 
 use Exception;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Helpers\Utilities;
-use Illuminate\Database\ConnectionInterface;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException;
-use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
 
 class DatabaseManagementService
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * @var \Illuminate\Database\DatabaseManager
      */
-    private $connection;
+    private $database;
 
     /**
      * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
@@ -36,113 +33,84 @@ class DatabaseManagementService
     private $repository;
 
     /**
-     * Determines if the service should validate the user's ability to create an additional
-     * database for this server. In almost all cases this should be true, but to keep things
-     * flexible you can also set it to false and create more databases than the server is
-     * allocated.
-     *
      * @var bool
      */
-    protected $validateDatabaseLimit = true;
+    protected $useRandomHost = false;
 
     /**
      * CreationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Illuminate\Database\DatabaseManager $database
      * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
      * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
-        ConnectionInterface $connection,
+        DatabaseManager $database,
         DynamicDatabaseConnection $dynamic,
         DatabaseRepositoryInterface $repository,
         Encrypter $encrypter
     ) {
-        $this->connection = $connection;
+        $this->database = $database;
         $this->dynamic = $dynamic;
         $this->encrypter = $encrypter;
         $this->repository = $repository;
     }
 
     /**
-     * Set wether or not this class should validate that the server has enough slots
-     * left before creating the new database.
-     *
-     * @param bool $validate
-     * @return $this
-     */
-    public function setValidateDatabaseLimit(bool $validate): self
-    {
-        $this->validateDatabaseLimit = $validate;
-
-        return $this;
-    }
-
-    /**
      * Create a new database that is linked to a specific host.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param int $server
      * @param array $data
      * @return \Pterodactyl\Models\Database
      *
-     * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
-     * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
+     * @throws \Exception
      */
-    public function create(Server $server, array $data)
+    public function create($server, array $data)
     {
-        if (! config('pterodactyl.client_features.databases.enabled')) {
-            throw new DatabaseClientFeatureNotEnabledException;
-        }
+        $data['server_id'] = $server;
+        $data['database'] = sprintf('s%d_%s', $server, $data['database']);
+        $data['username'] = sprintf('u%d_%s', $server, str_random(10));
+        $data['password'] = $this->encrypter->encrypt(
+            Utilities::randomStringWithSpecialCharacters(24)
+        );
 
-        if ($this->validateDatabaseLimit) {
-            // If the server has a limit assigned and we've already reached that limit, throw back
-            // an exception and kill the process.
-            if (! is_null($server->database_limit) && $server->databases()->count() >= $server->database_limit) {
-                throw new TooManyDatabasesException;
-            }
-        }
-
-        $data = array_merge($data, [
-            'server_id' => $server->id,
-            'database' => sprintf('s%d_%s', $server->id, $data['database']),
-            'username' => sprintf('u%d_%s', $server->id, str_random(10)),
-            'password' => $this->encrypter->encrypt(
-                Utilities::randomStringWithSpecialCharacters(24)
-            ),
-        ]);
-
-        $database = null;
-
+        $this->database->beginTransaction();
         try {
-            return $this->connection->transaction(function () use ($data, &$database) {
-                $database = $this->repository->createIfNotExists($data);
-                $this->dynamic->set('dynamic', $data['database_host_id']);
+            $database = $this->repository->createIfNotExists($data);
+            $this->dynamic->set('dynamic', $data['database_host_id']);
 
-                $this->repository->createDatabase($database->database);
-                $this->repository->createUser(
-                    $database->username, $database->remote, $this->encrypter->decrypt($database->password), $database->max_connections
-                );
-                $this->repository->assignUserToDatabase($database->database, $database->username, $database->remote);
-                $this->repository->flush();
+            $this->repository->createDatabase($database->database);
+            $this->repository->createUser(
+                $database->username,
+                $database->remote,
+                $this->encrypter->decrypt($database->password),
+                $database->max_connections
+            );
+            $this->repository->assignUserToDatabase(
+                $database->database,
+                $database->username,
+                $database->remote
+            );
+            $this->repository->flush();
 
-                return $database;
-            });
-        } catch (Exception $exception) {
+            $this->database->commit();
+        } catch (Exception $ex) {
             try {
-                if ($database instanceof Database) {
+                if (isset($database) && $database instanceof Database) {
                     $this->repository->dropDatabase($database->database);
                     $this->repository->dropUser($database->username, $database->remote);
                     $this->repository->flush();
                 }
-            } catch (Exception $exception) {
-                // Do nothing here. We've already encountered an issue before this point so no
-                // reason to prioritize this error over the initial one.
+            } catch (Exception $exTwo) {
+                // ignore an exception
             }
 
-            throw $exception;
+            $this->database->rollBack();
+            throw $ex;
         }
+
+        return $database;
     }
 
     /**

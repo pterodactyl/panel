@@ -9,30 +9,48 @@
 
 namespace Tests\Unit\Services\Servers;
 
+use Exception;
 use Mockery as m;
 use Tests\TestCase;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\ReinstallServerService;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ReinstallServerServiceTest extends TestCase
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
      */
-    private $daemonServerRepository;
+    protected $daemonServerRepository;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    private $connection;
+    protected $database;
+
+    /**
+     * @var \GuzzleHttp\Exception\RequestException
+     */
+    protected $exception;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
-    private $repository;
+    protected $repository;
+
+    /**
+     * @var \Pterodactyl\Models\Server
+     */
+    protected $server;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\ReinstallServerService
+     */
+    protected $service;
 
     /**
      * Setup tests.
@@ -41,9 +59,18 @@ class ReinstallServerServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->repository = m::mock(ServerRepository::class);
-        $this->connection = m::mock(ConnectionInterface::class);
-        $this->daemonServerRepository = m::mock(DaemonServerRepository::class);
+        $this->daemonServerRepository = m::mock(DaemonServerRepositoryInterface::class);
+        $this->database = m::mock(ConnectionInterface::class);
+        $this->exception = m::mock(RequestException::class)->makePartial();
+        $this->repository = m::mock(ServerRepositoryInterface::class);
+
+        $this->server = factory(Server::class)->make(['node_id' => 1]);
+
+        $this->service = new ReinstallServerService(
+            $this->database,
+            $this->daemonServerRepository,
+            $this->repository
+        );
     }
 
     /**
@@ -51,32 +78,70 @@ class ReinstallServerServiceTest extends TestCase
      */
     public function testServerShouldBeReinstalledWhenModelIsPassed()
     {
-        /** @var \Pterodactyl\Models\Server $server */
-        $server = factory(Server::class)->make(['id' => 123]);
-        $updated = clone $server;
-        $updated->installed = Server::STATUS_INSTALLING;
+        $this->repository->shouldNotReceive('find');
 
-        $this->connection->expects('transaction')->with(m::on(function ($closure) use ($updated) {
-            return $closure() instanceof Server;
-        }))->andReturn($updated);
+        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->server->id, [
+            'installed' => 0,
+        ], true, true)->once()->andReturnNull();
 
-        $this->repository->expects('update')->with($server->id, [
-            'installed' => Server::STATUS_INSTALLING,
-        ])->andReturns($updated);
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andReturnSelf()
+            ->shouldReceive('reinstall')->withNoArgs()->once()->andReturn(new Response);
+        $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->daemonServerRepository->expects('setServer')->with($server)->andReturnSelf();
-        $this->daemonServerRepository->expects('reinstall')->withNoArgs();
-
-        $this->assertSame($updated, $this->getService()->reinstall($server));
+        $this->service->reinstall($this->server);
     }
 
     /**
-     * @return \Pterodactyl\Services\Servers\ReinstallServerService
+     * Test that a server is reinstalled when the ID of the server is passed to the function.
      */
-    private function getService()
+    public function testServerShouldBeReinstalledWhenServerIdIsPassed()
     {
-        return new ReinstallServerService(
-            $this->connection, $this->daemonServerRepository, $this->repository
-        );
+        $this->repository->shouldReceive('find')->with($this->server->id)->once()->andReturn($this->server);
+
+        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->server->id, [
+            'installed' => 0,
+        ], true, true)->once()->andReturnNull();
+
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andReturnSelf()
+            ->shouldReceive('reinstall')->withNoArgs()->once()->andReturn(new Response);
+        $this->database->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
+
+        $this->service->reinstall($this->server->id);
+    }
+
+    /**
+     * Test that an exception thrown by guzzle is rendered as a displayable exception.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function testExceptionThrownByGuzzleShouldBeReRenderedAsDisplayable()
+    {
+        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->server->id, [
+            'installed' => 0,
+        ], true, true)->once()->andReturnNull();
+
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andThrow($this->exception);
+
+        $this->service->reinstall($this->server);
+    }
+
+    /**
+     * Test that an exception thrown by something other than guzzle is not transformed to a displayable.
+     *
+     * @expectedException \Exception
+     */
+    public function testExceptionNotThrownByGuzzleShouldNotBeTransformedToDisplayable()
+    {
+        $this->database->shouldReceive('beginTransaction')->withNoArgs()->once()->andReturnNull();
+        $this->repository->shouldReceive('withoutFreshModel->update')->with($this->server->id, [
+            'installed' => 0,
+        ], true, true)->once()->andReturnNull();
+
+        $this->daemonServerRepository->shouldReceive('setServer')->with($this->server)->once()->andThrow(new Exception());
+
+        $this->service->reinstall($this->server);
     }
 }

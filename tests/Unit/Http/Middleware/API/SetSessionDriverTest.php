@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api;
+namespace Tests\Unit\Http\Middleware\API;
 
 use Mockery as m;
 use Illuminate\Contracts\Config\Repository;

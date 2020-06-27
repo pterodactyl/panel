@@ -54,12 +54,12 @@ export default ({ file }: { file: FileObject }) => {
                     {file.name}
                 </div>
                 {file.isFile &&
-                <div className={'w-1/6 text-right mr-4 hidden md:block'}>
+                <div className={'w-1/6 text-right mr-4'}>
                     {bytesToHuman(file.size)}
                 </div>
                 }
                 <div
-                    className={'w-1/5 text-right mr-4 hidden md:block'}
+                    className={'w-1/5 text-right mr-4'}
                     title={file.modifiedAt.toString()}
                 >
                     {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?

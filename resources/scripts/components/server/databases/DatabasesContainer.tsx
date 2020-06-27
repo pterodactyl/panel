@@ -59,12 +59,7 @@ export default () => {
                             </p>
                         }
                         <Can action={'database.create'}>
-                            {(featureLimits.databases > 0 && databases.length > 0) &&
-                            <p className="text-center text-xs text-neutral-400 mt-2">
-                                {databases.length} of {featureLimits.databases} databases have been allocated to this server.
-                            </p>
-                            }
-                            {featureLimits.databases > 0 && featureLimits.databases !== databases.length &&
+                            {featureLimits.databases > 0 &&
                             <div className={'mt-6 flex justify-end'}>
                                 <CreateDatabaseButton/>
                             </div>

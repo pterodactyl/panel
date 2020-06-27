@@ -5,27 +5,24 @@ namespace Tests\Unit\Services\Servers;
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Egg;
-use GuzzleHttp\Psr7\Request;
 use Pterodactyl\Models\User;
 use Tests\Traits\MocksUuids;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
 use Tests\Traits\MocksRequestException;
-use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Repositories\Eloquent\EggRepository;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\ServerCreationService;
-use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Servers\VariableValidatorService;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
-use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
+use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Services\Deployment\AllocationSelectionService;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
+use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
+use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 /**
  * @preserveGlobalState disabled
@@ -35,59 +32,59 @@ class ServerCreationServiceTest extends TestCase
     use MocksRequestException, MocksUuids;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface|\Mockery\Mock
      */
     private $allocationRepository;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Services\Deployment\AllocationSelectionService|\Mockery\Mock
      */
     private $allocationSelectionService;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService|\Mockery\Mock
      */
     private $configurationStructureService;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Illuminate\Database\ConnectionInterface|\Mockery\Mock
      */
     private $connection;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface|\Mockery\Mock
      */
     private $daemonServerRepository;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     private $eggRepository;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Services\Deployment\FindViableNodesService|\Mockery\Mock
      */
     private $findViableNodesService;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
     private $repository;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface|\Mockery\Mock
      */
     private $serverVariableRepository;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
      */
-    private $validatorService;
+    private $userRepository;
 
     /**
-     * @var \Mockery\MockInterface
+     * @var \Pterodactyl\Services\Servers\VariableValidatorService|\Mockery\Mock
      */
-    private $serverDeletionService;
+    private $validatorService;
 
     /**
      * Setup tests.
@@ -96,17 +93,17 @@ class ServerCreationServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->allocationRepository = m::mock(AllocationRepository::class);
+        $this->allocationRepository = m::mock(AllocationRepositoryInterface::class);
         $this->allocationSelectionService = m::mock(AllocationSelectionService::class);
         $this->configurationStructureService = m::mock(ServerConfigurationStructureService::class);
         $this->connection = m::mock(ConnectionInterface::class);
+        $this->daemonServerRepository = m::mock(DaemonServerRepositoryInterface::class);
+        $this->eggRepository = m::mock(EggRepositoryInterface::class);
         $this->findViableNodesService = m::mock(FindViableNodesService::class);
+        $this->repository = m::mock(ServerRepositoryInterface::class);
+        $this->serverVariableRepository = m::mock(ServerVariableRepositoryInterface::class);
+        $this->userRepository = m::mock(UserRepositoryInterface::class);
         $this->validatorService = m::mock(VariableValidatorService::class);
-        $this->eggRepository = m::mock(EggRepository::class);
-        $this->repository = m::mock(ServerRepository::class);
-        $this->serverVariableRepository = m::mock(ServerVariableRepository::class);
-        $this->daemonServerRepository = m::mock(DaemonServerRepository::class);
-        $this->serverDeletionService = m::mock(ServerDeletionService::class);
     }
 
     /**
@@ -151,7 +148,7 @@ class ServerCreationServiceTest extends TestCase
         $this->configurationStructureService->shouldReceive('handle')->with($model)->once()->andReturn(['test' => 'struct']);
 
         $this->daemonServerRepository->shouldReceive('setServer')->with($model)->once()->andReturnSelf();
-        $this->daemonServerRepository->shouldReceive('create')->with(['test' => 'struct'])->once();
+        $this->daemonServerRepository->shouldReceive('create')->with(['test' => 'struct'], ['start_on_completion' => false])->once();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->getService()->handle($model->toArray());
@@ -253,10 +250,12 @@ class ServerCreationServiceTest extends TestCase
 
     /**
      * Test handling of node timeout or other daemon error.
+     *
+     * @expectedException \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function testExceptionShouldBeThrownIfTheRequestFails()
     {
-        $this->expectException(DaemonConnectionException::class);
+        $this->configureExceptionMock();
 
         $model = factory(Server::class)->make([
             'uuid' => $this->getKnownUuid(),
@@ -270,16 +269,8 @@ class ServerCreationServiceTest extends TestCase
         $this->validatorService->shouldReceive('handle')->once()->andReturn(collect([]));
         $this->configurationStructureService->shouldReceive('handle')->once()->andReturn([]);
 
-        $this->connection->expects('commit')->withNoArgs();
-
-        $this->daemonServerRepository->shouldReceive('setServer')->with($model)->once()->andThrow(
-            new DaemonConnectionException(
-                new ConnectException('', new Request('GET', 'test'))
-            )
-        );
-
-        $this->serverDeletionService->expects('withForce')->with(true)->andReturnSelf();
-        $this->serverDeletionService->expects('handle')->with($model);
+        $this->daemonServerRepository->shouldReceive('setServer')->with($model)->once()->andThrow($this->getExceptionMock());
+        $this->connection->shouldReceive('rollBack')->withNoArgs()->once()->andReturnNull();
 
         $this->getService()->handle($model->toArray());
     }
@@ -299,7 +290,6 @@ class ServerCreationServiceTest extends TestCase
             $this->eggRepository,
             $this->findViableNodesService,
             $this->configurationStructureService,
-            $this->serverDeletionService,
             $this->repository,
             $this->serverVariableRepository,
             $this->validatorService

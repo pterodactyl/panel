@@ -52,16 +52,16 @@ class AccountController extends ClientApiController
      * Update the authenticated user's email address.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updateEmail(UpdateEmailRequest $request): JsonResponse
+    public function updateEmail(UpdateEmailRequest $request): Response
     {
         $this->updateService->handle($request->user(), $request->validated());
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return response('', Response::HTTP_CREATED);
     }
 
     /**
@@ -74,12 +74,12 @@ class AccountController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updatePassword(UpdatePasswordRequest $request): JsonResponse
+    public function updatePassword(UpdatePasswordRequest $request): \Illuminate\Http\JsonResponse
     {
         $this->updateService->handle($request->user(), $request->validated());
 
         $this->sessionGuard->logoutOtherDevices($request->input('password'));
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
     }
 }

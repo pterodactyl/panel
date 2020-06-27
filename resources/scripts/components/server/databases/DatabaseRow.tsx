@@ -108,20 +108,8 @@ export default ({ database, className }: Props) => {
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
                 <FlashMessageRender byKey={'database-connection-modal'} className={'mb-6'}/>
                 <h3 className={'mb-6'}>Database connection details</h3>
-                <div className={'md:hidden'}>
-                    <label className={'input-dark-label'}>Endpoint</label>
-                    <input type={'text'} className={'input-dark'} readOnly={true} value={database.connectionString}/>
-                </div>
-                <div className={'mt-6 md:hidden'}>
-                    <label className={'input-dark-label'}>Connections from</label>
-                    <input type={'text'} className={'input-dark'} readOnly={true} value={database.allowConnectionsFrom}/>
-                </div>
-                <div className={'mt-6 md:hidden'}>
-                    <label className={'input-dark-label'}>Username</label>
-                    <input type={'text'} className={'input-dark'} readOnly={true} value={database.username}/>
-                </div>
                 <Can action={'database.view_password'}>
-                    <div className={'mt-6 md:mt-0'}>
+                    <div>
                         <label className={'input-dark-label'}>Password</label>
                         <input type={'text'} className={'input-dark'} readOnly={true} value={database.password}/>
                     </div>
@@ -145,21 +133,21 @@ export default ({ database, className }: Props) => {
                 </div>
             </Modal>
             <div className={classNames('grey-row-box no-hover', className)}>
-                <div className={'icon hidden md:block'}>
+                <div className={'icon'}>
                     <FontAwesomeIcon icon={faDatabase} fixedWidth={true}/>
                 </div>
-                <div className={'flex-1 md:ml-4'}>
+                <div className={'flex-1 ml-4'}>
                     <p className={'text-lg'}>{database.name}</p>
                 </div>
-                <div className={'ml-8 text-center hidden md:block'}>
+                <div className={'ml-8 text-center'}>
                     <p className={'text-sm'}>{database.connectionString}</p>
                     <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Endpoint</p>
                 </div>
-                <div className={'ml-8 text-center hidden md:block'}>
+                <div className={'ml-8 text-center'}>
                     <p className={'text-sm'}>{database.allowConnectionsFrom}</p>
                     <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Connections from</p>
                 </div>
-                <div className={'ml-8 text-center hidden md:block'}>
+                <div className={'ml-8 text-center'}>
                     <p className={'text-sm'}>{database.username}</p>
                     <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Username</p>
                 </div>

@@ -164,7 +164,7 @@ class User extends Model implements
         'name_last' => 'required|string|between:1,255',
         'password' => 'sometimes|nullable|string',
         'root_admin' => 'boolean',
-        'language' => 'string',
+        'language' => 'required|string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
     ];

@@ -100,19 +100,38 @@ class UserController extends ApplicationApiController
      * meta. If there are no errors this is an empty array.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest $request
-     * @param \Pterodactyl\Models\User $user
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateUserRequest $request, User $user): array
+    public function update(UpdateUserRequest $request): array
     {
         $this->updateService->setUserLevel(User::USER_LEVEL_ADMIN);
-        $user = $this->updateService->handle($user, $request->validated());
+        $collection = $this->updateService->handle($request->getModel(User::class), $request->validated());
 
-        $response = $this->fractal->item($user)
+        $errors = [];
+        if (! empty($collection->get('exceptions'))) {
+            foreach ($collection->get('exceptions') as $node => $exception) {
+                /** @var \GuzzleHttp\Exception\RequestException $exception */
+                /** @var \GuzzleHttp\Psr7\Response|null $response */
+                $response = method_exists($exception, 'getResponse') ? $exception->getResponse() : null;
+                $message = trans('admin/server.exceptions.daemon_exception', [
+                    'code' => is_null($response) ? 'E_CONN_REFUSED' : $response->getStatusCode(),
+                ]);
+
+                $errors[] = ['message' => $message, 'node' => $node];
+            }
+        }
+
+        $response = $this->fractal->item($collection->get('model'))
             ->transformWith($this->getTransformer(UserTransformer::class));
+
+        if (count($errors) > 0) {
+            $response->addMeta([
+                'revocation_errors' => $errors,
+            ]);
+        }
 
         return $response->toArray();
     }

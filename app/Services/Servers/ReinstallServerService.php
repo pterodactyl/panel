@@ -4,8 +4,8 @@ namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ReinstallServerService
 {
@@ -17,27 +17,27 @@ class ReinstallServerService
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    private $connection;
+    private $database;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
     private $repository;
 
     /**
      * ReinstallService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Illuminate\Database\ConnectionInterface $database
      * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
-        ConnectionInterface $connection,
+        ConnectionInterface $database,
         DaemonServerRepository $daemonServerRepository,
-        ServerRepository $repository
+        ServerRepositoryInterface $repository
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
-        $this->connection = $connection;
+        $this->database = $database;
         $this->repository = $repository;
     }
 
@@ -51,14 +51,14 @@ class ReinstallServerService
      */
     public function reinstall(Server $server)
     {
-        return $this->connection->transaction(function () use ($server) {
-            $updated = $this->repository->update($server->id, [
+        $this->database->transaction(function () use ($server) {
+            $this->repository->withoutFreshModel()->update($server->id, [
                 'installed' => Server::STATUS_INSTALLING,
             ]);
 
             $this->daemonServerRepository->setServer($server)->reinstall();
-
-            return $updated;
         });
+
+        return $server->refresh();
     }
 }

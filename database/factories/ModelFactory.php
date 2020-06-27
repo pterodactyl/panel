@@ -95,7 +95,7 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker $faker) {
         'disk_overallocate' => 0,
         'upload_size' => 100,
         'daemon_token_id' => Str::random(Node::DAEMON_TOKEN_ID_LENGTH),
-        'daemon_token' => encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH)),
+        'daemon_token' => Str::random(Node::DAEMON_TOKEN_LENGTH),
         'daemonListen' => 8080,
         'daemonSFTP' => 2022,
         'daemonBase' => '/var/lib/pterodactyl/volumes',

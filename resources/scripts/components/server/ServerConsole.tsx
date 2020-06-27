@@ -81,12 +81,9 @@ export default () => {
         };
     }, [ instance, connected ]);
 
-    const disklimit = server.limits.disk != 0 ? bytesToHuman(server.limits.disk * 1000 * 1000) : "Unlimited";
-    const memorylimit = server.limits.memory != 0 ? bytesToHuman(server.limits.memory * 1000 * 1000) : "Unlimited";
-
     return (
-        <PageContentBlock className={'md:flex'}>
-            <div className={'w-100 md:w-1/4 mb-4 md:mb-0'}>
+        <PageContentBlock className={'flex'}>
+            <div className={'w-1/4'}>
                 <TitledGreyBox title={server.name} icon={faServer}>
                     <p className={'text-xs uppercase'}>
                         <FontAwesomeIcon
@@ -115,8 +112,8 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(memory)}
-                        <span className={'text-neutral-500'}> / {memorylimit}</span>
-                        </p>
+                        <span className={'text-neutral-500'}> / {bytesToHuman(server.limits.memory * 1000 * 1000)}</span>
+                    </p>
                     <p className={'text-xs mt-2'}>
                         <FontAwesomeIcon
                             icon={faHdd}
@@ -124,7 +121,7 @@ export default () => {
                             className={'mr-1'}
                         />
                         &nbsp;{bytesToHuman(disk)}
-                        <span className={'text-neutral-500'}> / {disklimit}</span>
+                        <span className={'text-neutral-500'}> / {bytesToHuman(server.limits.disk * 1000 * 1000)}</span>
                     </p>
                 </TitledGreyBox>
                 {!server.isInstalling ?
@@ -169,7 +166,7 @@ export default () => {
                     </div>
                 }
             </div>
-            <div className={'flex-1 md:ml-4'}>
+            <div className={'flex-1 ml-4'}>
                 <SuspenseSpinner>
                     <ChunkedConsole/>
                     <ChunkedStatGraphs/>

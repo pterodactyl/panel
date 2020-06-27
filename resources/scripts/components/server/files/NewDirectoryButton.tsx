@@ -70,12 +70,7 @@ export default () => {
                             />
                             <p className={'text-xs mt-2 text-neutral-400'}>
                                 <span className={'text-neutral-200'}>This directory will be created as</span>
-                                &nbsp;/home/container/
-                                <span className={'text-cyan-200'}>
-                                    {decodeURIComponent(
-                                        join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, ''),
-                                    )}
-                                </span>
+                                &nbsp;/home/container/<span className={'text-cyan-200'}>{join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}</span>
                             </p>
                             <div className={'flex justify-end'}>
                                 <button className={'btn btn-sm btn-primary mt-8'}>

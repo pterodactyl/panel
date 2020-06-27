@@ -1,11 +1,10 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api;
+namespace Tests\Unit\Http\Middleware\API;
 
 use Pterodactyl\Models\ApiKey;
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateIPAccessTest extends MiddlewareTestCase
 {
@@ -50,11 +49,11 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
     /**
      * Test that an exception is thrown when an invalid IP address
      * tries to connect and there is an IP restriction.
+     *
+     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testWithInvalidIP()
     {
-        $this->expectException(AccessDeniedHttpException::class);
-
         $model = factory(ApiKey::class)->make(['allowed_ips' => '["127.0.0.1"]']);
         $this->setRequestAttribute('api_key', $model);
 

@@ -3,7 +3,6 @@
 namespace Pterodactyl\Exceptions;
 
 use Exception;
-use Throwable;
 use PDOException;
 use Psr\Log\LoggerInterface;
 use Swift_TransportException;
@@ -73,12 +72,12 @@ class Handler extends ExceptionHandler
      * services such as AWS Cloudwatch or other monitoring you can replace the
      * contents of this function with a call to the parent reporter.
      *
-     * @param \Throwable $exception
+     * @param \Exception $exception
      * @return mixed
      *
-     * @throws \Throwable
+     * @throws \Exception
      */
-    public function report(Throwable $exception)
+    public function report(Exception $exception)
     {
         if (! config('app.exceptions.report_all', false) && $this->shouldntReport($exception)) {
             return null;
@@ -104,7 +103,7 @@ class Handler extends ExceptionHandler
         return $logger->error($exception);
     }
 
-    private function generateCleanedExceptionStack(Throwable $exception)
+    private function generateCleanedExceptionStack(Exception $exception)
     {
         $cleanedStack = '';
         foreach ($exception->getTrace() as $index => $item) {
@@ -134,12 +133,12 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Throwable $exception
+     * @param \Exception $exception
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @throws \Throwable
+     * @throws \Exception
      */
-    public function render($request, Throwable $exception)
+    public function render($request, Exception $exception)
     {
         $connections = Container::getInstance()->make(Connection::class);
 
@@ -201,11 +200,11 @@ class Handler extends ExceptionHandler
     /**
      * Return the exception as a JSONAPI representation for use on API requests.
      *
-     * @param \Throwable $exception
+     * @param \Exception $exception
      * @param array $override
      * @return array
      */
-    public static function convertToArray(Throwable $exception, array $override = []): array
+    public static function convertToArray(Exception $exception, array $override = []): array
     {
         $error = [
             'code' => class_basename($exception),
@@ -260,10 +259,10 @@ class Handler extends ExceptionHandler
      * Converts an exception into an array to render in the response. Overrides
      * Laravel's built-in converter to output as a JSONAPI spec compliant object.
      *
-     * @param \Throwable $exception
+     * @param \Exception $exception
      * @return array
      */
-    protected function convertExceptionToArray(Throwable $exception)
+    protected function convertExceptionToArray(Exception $exception)
     {
         return self::convertToArray($exception);
     }

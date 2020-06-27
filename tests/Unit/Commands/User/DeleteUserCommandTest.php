@@ -63,7 +63,7 @@ class DeleteUserCommandTest extends CommandTestCase
         $this->assertTableContains($user1->id, $display);
         $this->assertTableContains($user1->email, $display);
         $this->assertTableContains($user1->name, $display);
-        $this->assertStringContainsString(trans('command/messages.user.deleted'), $display);
+        $this->assertContains(trans('command/messages.user.deleted'), $display);
     }
 
     /**
@@ -84,11 +84,11 @@ class DeleteUserCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], ['noResults', $user1->username, $user1->id, 'yes']);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString(trans('command/messages.user.no_users_found'), $display);
+        $this->assertContains(trans('command/messages.user.no_users_found'), $display);
         $this->assertTableContains($user1->id, $display);
         $this->assertTableContains($user1->email, $display);
         $this->assertTableContains($user1->name, $display);
-        $this->assertStringContainsString(trans('command/messages.user.deleted'), $display);
+        $this->assertContains(trans('command/messages.user.deleted'), $display);
     }
 
     /**
@@ -107,11 +107,11 @@ class DeleteUserCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], [$user1->username, 0, $user1->username, $user1->id, 'yes']);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString(trans('command/messages.user.select_search_user'), $display);
+        $this->assertContains(trans('command/messages.user.select_search_user'), $display);
         $this->assertTableContains($user1->id, $display);
         $this->assertTableContains($user1->email, $display);
         $this->assertTableContains($user1->name, $display);
-        $this->assertStringContainsString(trans('command/messages.user.deleted'), $display);
+        $this->assertContains(trans('command/messages.user.deleted'), $display);
     }
 
     /**
@@ -130,7 +130,7 @@ class DeleteUserCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], [$user1->username, $user1->id, 'no']);
 
         $this->assertNotEmpty($display);
-        $this->assertStringNotContainsString(trans('command/messages.user.deleted'), $display);
+        $this->assertNotContains(trans('command/messages.user.deleted'), $display);
     }
 
     /**
@@ -149,7 +149,7 @@ class DeleteUserCommandTest extends CommandTestCase
         $display = $this->withoutInteraction()->runCommand($this->command, ['--user' => $user1->username]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString(trans('command/messages.user.deleted'), $display);
+        $this->assertContains(trans('command/messages.user.deleted'), $display);
     }
 
     /**
@@ -169,7 +169,7 @@ class DeleteUserCommandTest extends CommandTestCase
         $display = $this->withoutInteraction()->runCommand($this->command, ['--user' => $user1->username]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString(trans('command/messages.user.multiple_found'), $display);
+        $this->assertContains(trans('command/messages.user.multiple_found'), $display);
     }
 
     /**
@@ -183,6 +183,6 @@ class DeleteUserCommandTest extends CommandTestCase
         $display = $this->withoutInteraction()->runCommand($this->command, ['--user' => 123456]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString(trans('command/messages.user.no_users_found'), $display);
+        $this->assertContains(trans('command/messages.user.no_users_found'), $display);
     }
 }

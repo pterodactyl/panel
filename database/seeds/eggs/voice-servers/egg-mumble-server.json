@@ -36,7 +36,7 @@
             "name": "Server Version",
             "description": "Version of Mumble Server to download and use.",
             "env_variable": "MUMBLE_VERSION",
-            "default_value": "1.3.1",
+            "default_value": "1.2.19",
             "user_viewable": 1,
             "user_editable": 1,
             "rules": "required|regex:\/^([0-9_\\.-]{5,8})$\/"

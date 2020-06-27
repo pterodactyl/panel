@@ -61,12 +61,12 @@ class MakeUserCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringContainsString(trans('command/messages.user.ask_password_help'), $display);
-        $this->assertStringContainsString($user->uuid, $display);
-        $this->assertStringContainsString($user->email, $display);
-        $this->assertStringContainsString($user->username, $display);
-        $this->assertStringContainsString($user->name, $display);
-        $this->assertStringContainsString('Yes', $display);
+        $this->assertContains(trans('command/messages.user.ask_password_help'), $display);
+        $this->assertContains($user->uuid, $display);
+        $this->assertContains($user->email, $display);
+        $this->assertContains($user->username, $display);
+        $this->assertContains($user->name, $display);
+        $this->assertContains('Yes', $display);
     }
 
     /**
@@ -90,7 +90,7 @@ class MakeUserCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringNotContainsString(trans('command/messages.user.ask_password_help'), $display);
+        $this->assertNotContains(trans('command/messages.user.ask_password_help'), $display);
     }
 
     /**
@@ -119,11 +119,11 @@ class MakeUserCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertStringNotContainsString(trans('command/messages.user.ask_password_help'), $display);
-        $this->assertStringContainsString($user->uuid, $display);
-        $this->assertStringContainsString($user->email, $display);
-        $this->assertStringContainsString($user->username, $display);
-        $this->assertStringContainsString($user->name, $display);
-        $this->assertStringContainsString('No', $display);
+        $this->assertNotContains(trans('command/messages.user.ask_password_help'), $display);
+        $this->assertContains($user->uuid, $display);
+        $this->assertContains($user->email, $display);
+        $this->assertContains($user->username, $display);
+        $this->assertContains($user->name, $display);
+        $this->assertContains('No', $display);
     }
 }

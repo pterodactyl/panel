@@ -17,7 +17,6 @@ use Pterodactyl\Models\Pack;
 use Illuminate\Contracts\Filesystem\Factory;
 use Pterodactyl\Services\Packs\ExportPackService;
 use Pterodactyl\Contracts\Repository\PackRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException;
 
 class ExportPackServiceTest extends TestCase
 {
@@ -133,11 +132,11 @@ class ExportPackServiceTest extends TestCase
 
     /**
      * Test that an exception is thrown when a ZipArchive cannot be created.
+     *
+     * @expectedException  \Pterodactyl\Exceptions\Service\Pack\ZipArchiveCreationException
      */
     public function testExceptionIsThrownIfZipArchiveCannotBeCreated()
     {
-        $this->expectException(ZipArchiveCreationException::class);
-
         $this->setupTestData();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Packs', 'tempnam')

@@ -310,6 +310,8 @@ class ServerCreationService
         return $allocation->node_id;
     }
 
+    /** @noinspection PhpDocMissingThrowsInspection */
+
     /**
      * Create a unique UUID and UUID-Short combo for a server.
      *
@@ -317,6 +319,7 @@ class ServerCreationService
      */
     private function generateUniqueUuidCombo(): string
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
         $uuid = Uuid::uuid4()->toString();
 
         if (! $this->repository->isUniqueUuidCombo($uuid, substr($uuid, 0, 8))) {
