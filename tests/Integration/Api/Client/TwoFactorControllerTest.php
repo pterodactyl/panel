@@ -6,20 +6,9 @@ use Carbon\Carbon;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use PragmaRX\Google2FA\Google2FA;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
-class TwoFactorControllerTest extends IntegrationTestCase
+class TwoFactorControllerTest extends ClientApiIntegrationTestCase
 {
-    /**
-     * Clean up after tests have run.
-     */
-    protected function tearDown(): void
-    {
-        User::query()->forceDelete();
-
-        parent::tearDown();
-    }
-
     /**
      * Test that image data for enabling 2FA is returned by the endpoint and that the user
      * record in the database is updated as expected.

@@ -6,20 +6,9 @@ use Mockery;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
-class AccountControllerTest extends IntegrationTestCase
+class AccountControllerTest extends ClientApiIntegrationTestCase
 {
-    /**
-     * Clean up after running tests.
-     */
-    protected function tearDown(): void
-    {
-        User::query()->forceDelete();
-
-        parent::tearDown();
-    }
-
     /**
      * Test that the user's account details are returned from the account endpoint.
      */

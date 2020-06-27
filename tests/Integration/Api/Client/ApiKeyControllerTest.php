@@ -5,9 +5,8 @@ namespace Pterodactyl\Tests\Integration\Api\Client;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
-class ApiKeyControllerTest extends IntegrationTestCase
+class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 {
     /**
      * Cleanup after tests.
@@ -15,7 +14,6 @@ class ApiKeyControllerTest extends IntegrationTestCase
     protected function tearDown(): void
     {
         ApiKey::query()->forceDelete();
-        User::query()->forceDelete();
 
         parent::tearDown();
     }

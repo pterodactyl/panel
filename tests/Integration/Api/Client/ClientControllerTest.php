@@ -2,29 +2,13 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
-class ClientControllerTest extends IntegrationTestCase
+class ClientControllerTest extends ClientApiIntegrationTestCase
 {
-    /**
-     * Cleanup after tests are run.
-     */
-    protected function tearDown(): void
-    {
-        Server::query()->forceDelete();
-        User::query()->forceDelete();
-        Node::query()->forceDelete();
-        Location::query()->forceDelete();
-
-        parent::tearDown();
-    }
-
     /**
      * Test that only the servers a logged in user is assigned to are returned by the
      * API endpoint. Obviously there are cases such as being an administrator or being

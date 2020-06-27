@@ -20,7 +20,7 @@ use Pterodactyl\Models\ApiKey;
 
 $factory->define(Pterodactyl\Models\Server::class, function (Faker $faker) {
     return [
-        'uuid' => $faker->unique()->uuid,
+        'uuid' => Uuid::uuid4()->toString(),
         'uuidShort' => str_random(8),
         'name' => $faker->firstName,
         'description' => implode(' ', $faker->sentences()),
