@@ -64,7 +64,7 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
     public function testScheduleBelongingToAnotherServerCannotBeViewed()
     {
         [$user, $server] = $this->generateTestAccount();
-        [, $server2] = $this->generateTestAccount();
+        [, $server2] = $this->generateTestAccount(['user_id' => $user->id]);
 
         $schedule = factory(Schedule::class)->create(['server_id' => $server2->id]);
 

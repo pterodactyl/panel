@@ -13,6 +13,7 @@ use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Transformers\Api\Client\TaskTransformer;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Exceptions\Service\ServiceLimitExceededException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest;
 
@@ -44,11 +45,15 @@ class ScheduleTaskController extends ClientApiController
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Service\ServiceLimitExceededException
      */
     public function store(StoreTaskRequest $request, Server $server, Schedule $schedule)
     {
-        if ($schedule->server_id !== $server->id) {
-            throw new NotFoundHttpException;
+        $limit = config('pterodactyl.client_features.schedules.per_schedule_task_limit', 10);
+        if ($schedule->tasks()->count() >= $limit) {
+            throw new ServiceLimitExceededException(
+                "Schedules may not have more than {$limit} tasks associated with them. Creating this task would put this schedule over the limit."
+            );
         }
 
         $lastTask = $schedule->tasks->last();

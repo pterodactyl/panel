@@ -6,11 +6,14 @@ use Carbon\Carbon;
 use ReflectionClass;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Model;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Collection;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
@@ -39,6 +42,33 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 
         Carbon::setTestNow(Carbon::now());
         CarbonImmutable::setTestNow(Carbon::now());
+    }
+
+    /**
+     * Returns a link to the specific resource using the client API.
+     *
+     * @param mixed $model
+     * @param string|null $append
+     * @return string
+     */
+    protected function link($model, $append = null): string
+    {
+        Assert::isInstanceOfAny($model, [Server::class, Schedule::class, Task::class]);
+
+        $link = '';
+        switch (get_class($model)) {
+            case Server::class:
+                $link = "/api/client/servers/{$model->uuid}";
+                break;
+            case Schedule::class:
+                $link = "/api/client/servers/{$model->server->uuid}/schedules/{$model->id}";
+                break;
+            case Task::class:
+                $link = "/api/client/servers/{$model->schedule->server->uuid}/schedules/{$model->schedule->id}/tasks/{$model->id}";
+                break;
+        }
+
+        return $link . ($append ? '/' . ltrim($append, '/') : '');
     }
 
     /**
