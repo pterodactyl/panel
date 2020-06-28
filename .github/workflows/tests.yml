@@ -18,7 +18,7 @@ jobs:
       fail-fast: true
       matrix:
         php: [7.3, 7.4]
-    name: Integration (PHP ${{ matrix.php }})
+    name: PHP ${{ matrix.php }}
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -44,7 +44,12 @@ jobs:
         run: cp .env.ci .env
       - name: install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
-      - name: execute tests
+      - name: execute unit tests
+        run: vendor/bin/phpunit --bootstrap bootstrap/app.php tests/Unit
+        env:
+          DB_CONNECTION: testing
+          TESTING_DB_HOST: UNIT_NO_DB
+      - name: execute integration tests
         run: vendor/bin/phpunit tests/Integration
         env:
           TESTING_DB_PORT: ${{ job.services.mysql.ports[3306] }}
