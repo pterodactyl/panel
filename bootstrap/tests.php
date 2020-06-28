@@ -27,7 +27,7 @@ if (config('database.default') !== 'testing') {
  * Perform database migrations and reseeding before continuing with
  * running the tests.
  */
-if (!env('SKIP_MIGRATIONS')) {
+if (! env('SKIP_MIGRATIONS')) {
     $output->writeln(PHP_EOL . '<info>Refreshing database for Integration tests...</info>');
     $kernel->call('migrate:fresh', ['--database' => 'testing']);
 

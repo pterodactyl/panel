@@ -117,6 +117,7 @@ class EggSeeder extends Seeder
             $decoded = json_decode($file->getContents());
             if (json_last_error() !== JSON_ERROR_NONE) {
                 $this->command->error('JSON decode exception for ' . $file->getFilename() . ': ' . json_last_error_msg());
+
                 return;
             }
 

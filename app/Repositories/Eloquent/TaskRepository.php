@@ -41,7 +41,7 @@ class TaskRepository extends EloquentRepository implements TaskRepositoryInterfa
      *
      * @param int $schedule
      * @param int $index
-     * @return null|\Pterodactyl\Models\Task
+     * @return \Pterodactyl\Models\Task|null
      */
     public function getNextTask(int $schedule, int $index)
     {

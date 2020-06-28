@@ -7,7 +7,7 @@ trait Searchable
     /**
      * The search term to use when filtering results.
      *
-     * @var null|string
+     * @var string|null
      */
     protected $searchTerm;
 
