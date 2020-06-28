@@ -54,7 +54,7 @@ class ReinstallServerService
         return $this->connection->transaction(function () use ($server) {
             $updated = $this->repository->update($server->id, [
                 'installed' => Server::STATUS_INSTALLING,
-            ]);
+            ], true, true);
 
             $this->daemonServerRepository->setServer($server)->reinstall();
 
