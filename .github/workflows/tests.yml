@@ -18,10 +18,21 @@ jobs:
       fail-fast: true
       matrix:
         php: [7.3, 7.4]
-    name: PHP ${{ matrix.php }} Integration Tests
+    name: Integration (PHP ${{ matrix.php }})
     steps:
       - name: checkout
         uses: actions/checkout@v2
+      - name: get cache directory
+        id: composer-cache
+        run: |
+          echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**.composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php }}-
       - name: setup
         uses: shivammathur/setup-php@v2
         with:
@@ -30,7 +41,7 @@ jobs:
           tools: composer:v1
           coverage: none
       - name: install dependencies
-        run: composer install --prefer-dist --no-interation --no-progress
+        run: composer install --prefer-dist --no-interaction --no-progress
       - name: execute tests
         run: vendor/bin/phpunit tests/Integration
         env:
