@@ -48,6 +48,7 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
       - name: run cs-fixer
         run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff
+        continue-on-error: true
       - name: execute unit tests
         run: vendor/bin/phpunit --bootstrap bootstrap/app.php tests/Unit
         if: ${{ always() }}
