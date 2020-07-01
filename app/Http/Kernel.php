@@ -9,6 +9,7 @@ use Pterodactyl\Http\Middleware\TrimStrings;
 use Pterodactyl\Http\Middleware\TrustProxies;
 use Illuminate\Session\Middleware\StartSession;
 use Pterodactyl\Http\Middleware\EncryptCookies;
+use Pterodactyl\Http\Middleware\Api\IsValidJson;
 use Pterodactyl\Http\Middleware\VerifyCsrfToken;
 use Pterodactyl\Http\Middleware\VerifyReCaptcha;
 use Pterodactyl\Http\Middleware\AdminAuthenticate;
@@ -69,6 +70,7 @@ class Kernel extends HttpKernel
         ],
         'api' => [
             'throttle:240,1',
+            IsValidJson::class,
             ApiSubstituteBindings::class,
             SetSessionDriver::class,
             'api..key:' . ApiKey::TYPE_APPLICATION,
@@ -80,6 +82,7 @@ class Kernel extends HttpKernel
             StartSession::class,
             SetSessionDriver::class,
             AuthenticateSession::class,
+            IsValidJson::class,
             SubstituteClientApiBindings::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
             AuthenticateIPAccess::class,
