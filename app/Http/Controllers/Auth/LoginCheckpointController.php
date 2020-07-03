@@ -11,6 +11,7 @@ use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository;
 
 class LoginCheckpointController extends AbstractLoginController
 {
@@ -35,6 +36,11 @@ class LoginCheckpointController extends AbstractLoginController
     private $encrypter;
 
     /**
+     * @var \Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository
+     */
+    private $recoveryTokenRepository;
+
+    /**
      * LoginCheckpointController constructor.
      *
      * @param \Illuminate\Auth\AuthManager $auth
@@ -42,6 +48,7 @@ class LoginCheckpointController extends AbstractLoginController
      * @param \PragmaRX\Google2FA\Google2FA $google2FA
      * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Illuminate\Contracts\Cache\Repository $cache
+     * @param \Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository $recoveryTokenRepository
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
@@ -50,6 +57,7 @@ class LoginCheckpointController extends AbstractLoginController
         Google2FA $google2FA,
         Repository $config,
         CacheRepository $cache,
+        RecoveryTokenRepository $recoveryTokenRepository,
         UserRepositoryInterface $repository
     ) {
         parent::__construct($auth, $config);
@@ -58,6 +66,7 @@ class LoginCheckpointController extends AbstractLoginController
         $this->cache = $cache;
         $this->repository = $repository;
         $this->encrypter = $encrypter;
+        $this->recoveryTokenRepository = $recoveryTokenRepository;
     }
 
     /**
@@ -76,21 +85,35 @@ class LoginCheckpointController extends AbstractLoginController
     public function __invoke(LoginCheckpointRequest $request): JsonResponse
     {
         $token = $request->input('confirmation_token');
+        $recoveryToken = $request->input('recovery_token');
 
         try {
+            /** @var \Pterodactyl\Models\User $user */
             $user = $this->repository->find($this->cache->get($token, 0));
         } catch (RecordNotFoundException $exception) {
-            return $this->sendFailedLoginResponse($request);
+            return $this->sendFailedLoginResponse($request, null, 'The authentication token provided has expired, please refresh the page and try again.');
         }
 
-        $decrypted = $this->encrypter->decrypt($user->totp_secret);
+        // If we got a recovery token try to find one that matches for the user and then continue
+        // through the process (and delete the token).
+        if (! is_null($recoveryToken)) {
+            foreach ($user->recoveryTokens as $token) {
+                if (password_verify($recoveryToken, $token->token)) {
+                    $this->recoveryTokenRepository->delete($token->id);
 
-        if ($this->google2FA->verifyKey($decrypted, (string) $request->input('authentication_code') ?? '', config('pterodactyl.auth.2fa.window'))) {
-            $this->cache->delete($token);
+                    return $this->sendLoginResponse($user, $request);
+                }
+            }
+        } else {
+            $decrypted = $this->encrypter->decrypt($user->totp_secret);
 
-            return $this->sendLoginResponse($user, $request);
+            if ($this->google2FA->verifyKey($decrypted, (string) $request->input('authentication_code') ?? '', config('pterodactyl.auth.2fa.window'))) {
+                $this->cache->delete($token);
+
+                return $this->sendLoginResponse($user, $request);
+            }
         }
 
-        return $this->sendFailedLoginResponse($request, $user);
+        return $this->sendFailedLoginResponse($request, $user, ! empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
     }
 }

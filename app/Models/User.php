@@ -39,7 +39,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
- * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryCodes
+ * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
  */
 class User extends Model implements
     AuthenticatableContract,
@@ -256,7 +256,7 @@ class User extends Model implements
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function recoveryCodes()
+    public function recoveryTokens()
     {
         return $this->hasMany(RecoveryToken::class);
     }
