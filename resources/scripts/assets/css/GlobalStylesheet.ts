@@ -14,4 +14,22 @@ export default createGlobalStyle`
     p {
         ${tw`text-neutral-200 leading-snug font-sans`};
     }
+    
+    form {
+        ${tw`m-0`};
+    }
+        
+    textarea, select, input, button, button:focus, button:focus-visible {
+        ${tw`outline-none`};
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield !important;
+    }
 `;
