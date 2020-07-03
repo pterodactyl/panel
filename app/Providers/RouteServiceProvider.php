@@ -38,11 +38,17 @@ class RouteServiceProvider extends ServiceProvider
             ->namespace($this->namespace . '\Server')
             ->group(base_path('routes/server.php'));
 
-        Route::middleware(['api'])->prefix('/api/application')
+        Route::middleware([
+            sprintf('throttle:%s,%s', config('http.rate_limit.application'), config('http.rate_limit.application_period')),
+            'api',
+        ])->prefix('/api/application')
             ->namespace($this->namespace . '\Api\Application')
             ->group(base_path('routes/api-application.php'));
 
-        Route::middleware(['client-api'])->prefix('/api/client')
+        Route::middleware([
+            sprintf('throttle:%s,%s', config('http.rate_limit.client'), config('http.rate_limit.client_period')),
+            'client-api',
+        ])->prefix('/api/client')
             ->namespace($this->namespace . '\Api\Client')
             ->group(base_path('routes/api-client.php'));
 

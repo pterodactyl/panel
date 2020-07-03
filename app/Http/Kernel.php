@@ -69,7 +69,6 @@ class Kernel extends HttpKernel
             RequireTwoFactorAuthentication::class,
         ],
         'api' => [
-            'throttle:240,1',
             IsValidJson::class,
             ApiSubstituteBindings::class,
             SetSessionDriver::class,
@@ -78,7 +77,6 @@ class Kernel extends HttpKernel
             AuthenticateIPAccess::class,
         ],
         'client-api' => [
-            'throttle:240,1',
             StartSession::class,
             SetSessionDriver::class,
             AuthenticateSession::class,

@@ -223,5 +223,7 @@ return [
     |
     | 'P_SERVER_CREATED_AT' => 'created_at'
     */
-    'environment_variables' => [],
+    'environment_variables' => [
+        'P_SERVER_ALLOCATION_LIMIT' => 'allocation_limit',
+    ],
 ];
