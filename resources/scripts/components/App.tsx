@@ -11,6 +11,7 @@ import { SiteSettings } from '@/state/settings';
 import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
 import tw from 'twin.macro';
+import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -48,21 +49,24 @@ const App = () => {
     }
 
     return (
-        <StoreProvider store={store}>
-            <Provider store={store}>
-                <ProgressBar/>
-                <div css={tw`mx-auto w-auto`}>
-                    <BrowserRouter basename={'/'} key={'root-router'}>
-                        <Switch>
-                            <Route path="/server/:id" component={ServerRouter}/>
-                            <Route path="/auth" component={AuthenticationRouter}/>
-                            <Route path="/" component={DashboardRouter}/>
-                            <Route path={'*'} component={NotFound}/>
-                        </Switch>
-                    </BrowserRouter>
-                </div>
-            </Provider>
-        </StoreProvider>
+        <>
+            <GlobalStylesheet/>
+            <StoreProvider store={store}>
+                <Provider store={store}>
+                    <ProgressBar/>
+                    <div css={tw`mx-auto w-auto`}>
+                        <BrowserRouter basename={'/'} key={'root-router'}>
+                            <Switch>
+                                <Route path="/server/:id" component={ServerRouter}/>
+                                <Route path="/auth" component={AuthenticationRouter}/>
+                                <Route path="/" component={DashboardRouter}/>
+                                <Route path={'*'} component={NotFound}/>
+                            </Switch>
+                        </BrowserRouter>
+                    </div>
+                </Provider>
+            </StoreProvider>
+        </>
     );
 };
 
