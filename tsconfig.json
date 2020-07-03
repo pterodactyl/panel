@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "esnext",
+    "target": "es2015",
+    "module": "es2015",
     "jsx": "react",
     "strict": true,
+    "noEmit": true,
     "noImplicitReturns": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "sourceMap": true,
     "baseUrl": ".",
     "lib": ["es2015", "dom"],
@@ -14,7 +16,13 @@
       "@/*": [
         "./resources/scripts/*"
       ]
-    }
+    },
+    "plugins": [
+      {
+        "name": "typescript-plugin-tw-template"
+      }
+    ],
+    "typeRoots": ["node_modules/@types"]
   },
   "include": [
     "./resources/scripts/**/*"

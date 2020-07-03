@@ -3,9 +3,7 @@ import { faFileImport } from '@fortawesome/free-solid-svg-icons/faFileImport';
 import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt';
 import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
 import { bytesToHuman, cleanDirectoryPath } from '@/helpers';
-import differenceInHours from 'date-fns/difference_in_hours';
-import format from 'date-fns/format';
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import React from 'react';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
@@ -65,7 +63,7 @@ export default ({ file }: { file: FileObject }) => {
                     {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
                         format(file.modifiedAt, 'MMM Do, YYYY h:mma')
                         :
-                        distanceInWordsToNow(file.modifiedAt, { addSuffix: true })
+                        formatDistanceToNow(file.modifiedAt, { addSuffix: true })
                     }
                 </div>
             </NavLink>

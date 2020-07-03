@@ -1,23 +1,35 @@
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 6
+  ecmaFeatures:
+    jsx: true
   project: "./tsconfig.json"
   tsconfigRootDir: "./"
+settings:
+  react:
+    pragma: "React"
+    version: "detect"
+  linkComponents:
+    - name: Link
+      linkAttribute: to
+    - name: NavLink
+      linkAttribute: to
 env:
   browser: true
   es6: true
 plugins:
-  - "@typescript-eslint"
+  - "react"
   - "react-hooks"
+  - "@typescript-eslint"
 extends:
   - "standard"
+  - "plugin:react/recommended"
   - "plugin:@typescript-eslint/recommended"
-globals:
-  tw: "readonly"
 rules:
   indent:
     - error
     - 4
+    - SwitchCase: 1
   semi:
     - error
     - always
@@ -33,6 +45,25 @@ rules:
   "@typescript-eslint/no-unused-vars": 0
   "@typescript-eslint/no-explicit-any": 0
   "@typescript-eslint/no-non-null-assertion": 0
+  no-restricted-imports:
+    - error
+    - paths:
+        - name: styled-components
+          message: Please import from styled-components/macro.
+      patterns:
+        - "!styled-components/macro"
+  "react/prop-types": 0
+  "react/display-name": 0
+  "react/jsx-indent-props":
+    - warn
+    - 4
+  "react/jsx-boolean-value":
+    - warn
+    - never
+  "react/jsx-closing-bracket-location":
+    - 1
+    - "line-aligned"
+  "react/jsx-closing-tag-location": 1
 overrides:
   - files:
       - "**/*.tsx"

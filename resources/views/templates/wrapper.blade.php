@@ -32,7 +32,7 @@
         @show
 
         @section('assets')
-            {!! $asset->css('main.css') !!}
+{{--            {!! $asset->css('main.css') !!}--}}
         @show
 
         @include('layouts.scripts')

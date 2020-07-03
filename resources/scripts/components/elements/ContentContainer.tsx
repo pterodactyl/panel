@@ -1,5 +1,6 @@
-import styled from 'styled-components';
-import { breakpoint } from 'styled-components-breakpoint';
+import styled from 'styled-components/macro';
+import { breakpoint } from '@/theme';
+import tw from 'twin.macro';
 
 const ContentContainer = styled.div`
     max-width: 1200px;
@@ -9,5 +10,6 @@ const ContentContainer = styled.div`
         ${tw`mx-auto`};
     `};
 `;
+ContentContainer.displayName = 'ContentContainer';
 
 export default ContentContainer;

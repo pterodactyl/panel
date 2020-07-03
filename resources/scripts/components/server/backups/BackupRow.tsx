@@ -1,18 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ServerBackup } from '@/api/server/backups/getServerBackups';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive } from '@fortawesome/free-solid-svg-icons/faArchive';
-import format from 'date-fns/format';
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/components/elements/Spinner';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { bytesToHuman } from '@/helpers';
 import Can from '@/components/elements/Can';
-import useServer from '@/plugins/useServer';
-import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import useFlash from '@/plugins/useFlash';
-import { httpErrorToHuman } from '@/api/http';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { ServerContext } from '@/state/server';
 import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
@@ -65,7 +58,7 @@ export default ({ backup, className }: Props) => {
                     title={format(backup.createdAt, 'ddd, MMMM Do, YYYY HH:mm:ss Z')}
                     className={'text-sm'}
                 >
-                    {distanceInWordsToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
+                    {formatDistanceToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
                 </p>
                 <p className={'text-2xs text-neutral-500 uppercase mt-1'}>Created</p>
             </div>

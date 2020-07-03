@@ -12,7 +12,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const isProduction = process.env.NODE_ENV === 'production';
 
 let plugins = [
-    new MiniCssExtractPlugin({ filename: isProduction ? 'bundle.[chunkhash:8].css' : 'bundle.[hash:8].css' }),
+    // new MiniCssExtractPlugin({ filename: isProduction ? 'bundle.[chunkhash:8].css' : 'bundle.[hash:8].css' }),
     new AssetsManifestPlugin({
         writeToDisk: true,
         publicPath: true,
@@ -22,25 +22,25 @@ let plugins = [
 ];
 
 if (isProduction) {
-    plugins = plugins.concat([
-        new PurgeCssPlugin({
-            paths: glob.sync([
-                path.join(__dirname, 'resources/scripts/**/*.tsx'),
-                path.join(__dirname, 'resources/views/templates/**/*.blade.php'),
-            ]),
-            whitelistPatterns: [/^xterm/],
-            extractors: [
-                {
-                    extractor: class {
-                        static extract (content) {
-                            return content.match(/[A-Za-z0-9-_:\\/]+/g) || [];
-                        }
-                    },
-                    extensions: ['html', 'ts', 'tsx', 'js', 'php'],
-                },
-            ],
-        }),
-    ]);
+    // plugins = plugins.concat([
+    //     new PurgeCssPlugin({
+    //         paths: glob.sync([
+    //             path.join(__dirname, 'resources/scripts/**/*.tsx'),
+    //             path.join(__dirname, 'resources/views/templates/**/*.blade.php'),
+    //         ]),
+    //         whitelistPatterns: [/^xterm/],
+    //         extractors: [
+    //             {
+    //                 extractor: class {
+    //                     static extract (content) {
+    //                         return content.match(/[A-Za-z0-9-_:\\/]+/g) || [];
+    //                     }
+    //                 },
+    //                 extensions: ['html', 'ts', 'tsx', 'js', 'php'],
+    //             },
+    //         ],
+    //     }),
+    // ]);
 } else {
     plugins.concat([new ForkTsCheckerWebpackPlugin()]);
 }
@@ -55,7 +55,6 @@ module.exports = {
     },
     entry: [
         'react-hot-loader/patch',
-        './resources/styles/main.css',
         './resources/scripts/index.tsx',
     ],
     output: {
@@ -70,65 +69,20 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: {
-                            cacheDirectory: !isProduction,
-                            presets: [
-                                '@babel/typescript',
-                                '@babel/env',
-                                '@babel/react',
-                            ],
-                            plugins: [
-                                'tailwind-components',
-                                'react-hot-loader/babel',
-                                '@babel/transform-runtime',
-                                '@babel/proposal-class-properties',
-                                '@babel/proposal-object-rest-spread',
-                                '@babel/proposal-optional-chaining',
-                                '@babel/proposal-nullish-coalescing-operator',
-                                '@babel/syntax-dynamic-import',
-                            ],
-                        },
-                    },
-                ],
+                loader: 'babel-loader',
+                options: {
+                    cacheDirectory: !isProduction,
+                },
             },
             {
                 test: /\.css$/,
-                include: [
-                    path.resolve(__dirname, 'resources'),
-                ],
+                // include: [
+                //     path.resolve(__dirname, 'resources'),
+                // ],
                 use: [
-                    {
-                        loader: MiniCssExtractPlugin.loader,
-                        options: {
-                            hmr: !isProduction,
-                        },
-                    },
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            sourceMap: !isProduction,
-                            importLoaders: 1,
-                        },
-                    },
+                    { loader: 'style-loader' },
+                    { loader: 'css-loader' },
                     { loader: 'resolve-url-loader' },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            ident: 'postcss',
-                            sourceMap: true,
-                            plugins: [
-                                require('postcss-import'),
-                                tailwind('./tailwind.js'),
-                                require('postcss-preset-env')({
-                                    stage: 2,
-                                }),
-                                require('precss'),
-                            ].concat(isProduction ? require('cssnano') : []),
-                        },
-                    },
                 ],
             },
             {
@@ -138,6 +92,11 @@ module.exports = {
                     name: '[name].[ext]?[hash:8]',
                 },
             },
+            {
+                enforce: 'pre',
+                test: /\.js$/,
+                loader: 'source-map-loader',
+            }
         ],
     },
     resolve: {
