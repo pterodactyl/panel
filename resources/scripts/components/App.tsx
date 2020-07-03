@@ -8,9 +8,9 @@ import ServerRouter from '@/routers/ServerRouter';
 import AuthenticationRouter from '@/routers/AuthenticationRouter';
 import { Provider } from 'react-redux';
 import { SiteSettings } from '@/state/settings';
-import { DefaultTheme, ThemeProvider } from 'styled-components';
 import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
+import tw from 'twin.macro';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -27,16 +27,6 @@ interface ExtendedWindow extends Window {
         /* eslint-enable camelcase */
     };
 }
-
-const theme: DefaultTheme = {
-    breakpoints: {
-        xs: 0,
-        sm: 576,
-        md: 768,
-        lg: 992,
-        xl: 1200,
-    },
-};
 
 const App = () => {
     const { PterodactylUser, SiteConfiguration } = (window as ExtendedWindow);
@@ -58,23 +48,21 @@ const App = () => {
     }
 
     return (
-        <ThemeProvider theme={theme}>
-            <StoreProvider store={store}>
-                <Provider store={store}>
-                    <ProgressBar/>
-                    <div className={'mx-auto w-auto'}>
-                        <BrowserRouter basename={'/'} key={'root-router'}>
-                            <Switch>
-                                <Route path="/server/:id" component={ServerRouter}/>
-                                <Route path="/auth" component={AuthenticationRouter}/>
-                                <Route path="/" component={DashboardRouter}/>
-                                <Route path={'*'} component={NotFound}/>
-                            </Switch>
-                        </BrowserRouter>
-                    </div>
-                </Provider>
-            </StoreProvider>
-        </ThemeProvider>
+        <StoreProvider store={store}>
+            <Provider store={store}>
+                <ProgressBar/>
+                <div css={tw`mx-auto w-auto`}>
+                    <BrowserRouter basename={'/'} key={'root-router'}>
+                        <Switch>
+                            <Route path="/server/:id" component={ServerRouter}/>
+                            <Route path="/auth" component={AuthenticationRouter}/>
+                            <Route path="/" component={DashboardRouter}/>
+                            <Route path={'*'} component={NotFound}/>
+                        </Switch>
+                    </BrowserRouter>
+                </div>
+            </Provider>
+        </StoreProvider>
     );
 };
 

@@ -11,7 +11,7 @@ const InputSpinner = ({ visible, children }: { visible: boolean, children: React
             appear={true}
             classNames={'fade'}
         >
-            <div className={'absolute pin-r h-full flex items-center justify-end pr-3'}>
+            <div className={'absolute right-0 h-full flex items-center justify-end pr-3'}>
                 <Spinner size={'tiny'}/>
             </div>
         </CSSTransition>

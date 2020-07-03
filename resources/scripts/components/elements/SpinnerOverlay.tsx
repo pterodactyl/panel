@@ -13,7 +13,7 @@ interface Props {
 const SpinnerOverlay = ({ size, fixed, visible, backgroundOpacity }: Props) => (
     <CSSTransition timeout={150} classNames={'fade'} in={visible} unmountOnExit={true}>
         <div
-            className={classNames('pin-t pin-l flex items-center justify-center w-full h-full rounded', {
+            className={classNames('top-0 left-0 flex items-center justify-center w-full h-full rounded', {
                 absolute: !fixed,
                 fixed: fixed,
             })}

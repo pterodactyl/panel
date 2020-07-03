@@ -34,9 +34,11 @@ module.exports = {
                 'monospace',
             ],
         },
-    },
-    extend: {
         colors: {
+            transparent: 'transparent',
+            black: 'hsl(210, 27%, 10%)',
+            white: '#ffffff',
+            'basically-white': '#fafafb',
             primary: {
                 50: 'hsl(202, 100%, 95%)', // lightest
                 100: 'hsl(204, 100%, 86%)', // lighter

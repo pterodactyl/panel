@@ -1,8 +1,9 @@
 import React, { forwardRef } from 'react';
 import { Form } from 'formik';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { breakpoint } from 'styled-components-breakpoint';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import tw from 'twin.macro';
 
 type Props = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
     title?: string;

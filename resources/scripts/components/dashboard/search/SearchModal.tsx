@@ -11,7 +11,8 @@ import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
+import tw from 'twin.macro';
 
 type Props = RequiredModalProps;
 
@@ -102,7 +103,7 @@ export default ({ ...props }: Props) => {
                     </FormikFieldWrapper>
                 </Form>
                 {servers.length > 0 &&
-                <div className={'mt-6'}>
+                <div css={tw`mt-6`}>
                     {
                         servers.map(server => (
                             <ServerResult
@@ -111,8 +112,8 @@ export default ({ ...props }: Props) => {
                                 onClick={() => props.onDismissed()}
                             >
                                 <div>
-                                    <p className={'text-sm'}>{server.name}</p>
-                                    <p className={'mt-1 text-xs text-neutral-400'}>
+                                    <p css={tw`text-sm`}>{server.name}</p>
+                                    <p css={tw`mt-1 text-xs text-neutral-400`}>
                                         {
                                             server.allocations.filter(alloc => alloc.default).map(allocation => (
                                                 <span key={allocation.ip + allocation.port.toString()}>{allocation.alias || allocation.ip}:{allocation.port}</span>
@@ -120,8 +121,8 @@ export default ({ ...props }: Props) => {
                                         }
                                     </p>
                                 </div>
-                                <div className={'flex-1 text-right'}>
-                                    <span className={'text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded'}>
+                                <div css={tw`flex-1 text-right`}>
+                                    <span css={tw`text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded`}>
                                         {server.node}
                                     </span>
                                 </div>

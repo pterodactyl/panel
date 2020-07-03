@@ -11,7 +11,7 @@
     }
 
     & > .modal-close-icon {
-      @apply .absolute .pin-r .p-2 .text-white .cursor-pointer .opacity-50;
+      @apply .absolute .right-0 .p-2 .text-white .cursor-pointer .opacity-50;
       transition: opacity 150ms linear, transform 150ms ease-in;
       top: -2rem;
 

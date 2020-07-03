@@ -6,10 +6,9 @@ import { ApplicationStore } from '@/state';
 type Props = Readonly<{
     byKey?: string;
     spacerClass?: string;
-    className?: string;
 }>;
 
-export default ({ className, spacerClass, byKey }: Props) => {
+export default ({ spacerClass, byKey }: Props) => {
     const flashes = useStoreState((state: State<ApplicationStore>) => state.flashes.items);
 
     let filtered = flashes;
@@ -22,11 +21,11 @@ export default ({ className, spacerClass, byKey }: Props) => {
     }
 
     return (
-        <div className={className}>
+        <div>
             {
                 filtered.map((flash, index) => (
                     <React.Fragment key={flash.id || flash.type + flash.message}>
-                        {index > 0 && <div className={spacerClass || 'mt-2'}></div>}
+                        {index > 0 && <div css={tw`${spacerClass || 'mt-2'}`}></div>}
                         <MessageBox type={flash.type} title={flash.title}>
                             {flash.message}
                         </MessageBox>

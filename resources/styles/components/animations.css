@@ -22,7 +22,7 @@ div.route-transition-group {
   @apply .relative;
 
   & section {
-    @apply .absolute .w-full .pin-t .pin-l;
+    @apply .absolute .w-full .top-0 .left-0;
   }
 }
 /*! purgecss end ignore */

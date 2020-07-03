@@ -3,10 +3,11 @@ import { ITerminalOptions, Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import Can from '@/components/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
 import classNames from 'classnames';
+import tw from 'twin.macro';
 
 const theme = {
     background: 'transparent',

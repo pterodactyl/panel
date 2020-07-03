@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
+import tw from 'twin.macro';
 
 interface Props {
     children: React.ReactNode;
@@ -12,10 +13,7 @@ export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
     transition: 150ms all ease;
 
     &:hover {
-        ${props => props.danger
-            ? tw`text-red-700 bg-red-100`
-            : tw`text-neutral-700 bg-neutral-100`
-        };
+        ${props => props.danger ? tw`text-red-700 bg-red-100` : tw`text-neutral-700 bg-neutral-100`};
     }
 `;
 

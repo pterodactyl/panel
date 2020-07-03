@@ -3,7 +3,7 @@ import useRouter from 'use-react-router';
 import { ServerContext } from '@/state/server';
 import ace, { Editor } from 'brace';
 import getFileContents from '@/api/server/files/getFileContents';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 // @ts-ignore
 require('brace/ext/modelist');
@@ -113,7 +113,7 @@ export default ({ style, initialContent, initialModePath, fetchContent, onConten
     return (
         <EditorContainer style={style}>
             <div id={'editor'} ref={ref}/>
-            <div className={'absolute pin-r pin-b z-50'}>
+            <div className={'absolute right-0 bottom-0 z-50'}>
                 <div className={'m-3 rounded bg-neutral-900 border border-black'}>
                     <select
                         className={'input-dark'}
