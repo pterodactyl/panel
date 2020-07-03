@@ -96,9 +96,14 @@ class TwoFactorController extends ClientApiController
             throw new ValidationException($validator);
         }
 
-        $this->toggleTwoFactorService->handle($request->user(), $request->input('code'), true);
+        $tokens = $this->toggleTwoFactorService->handle($request->user(), $request->input('code'), true);
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([
+            'object' => 'recovery_tokens',
+            'attributes' => [
+                'tokens' => $tokens,
+            ],
+        ]);
     }
 
     /**
