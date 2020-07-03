@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
+use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository;
@@ -34,14 +35,21 @@ class ToggleTwoFactorService
     private $recoveryTokenRepository;
 
     /**
+     * @var \Illuminate\Database\ConnectionInterface
+     */
+    private $connection;
+
+    /**
      * ToggleTwoFactorService constructor.
      *
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      * @param \PragmaRX\Google2FA\Google2FA $google2FA
      * @param \Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository $recoveryTokenRepository
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
+        ConnectionInterface $connection,
         Encrypter $encrypter,
         Google2FA $google2FA,
         RecoveryTokenRepository $recoveryTokenRepository,
@@ -51,6 +59,7 @@ class ToggleTwoFactorService
         $this->google2FA = $google2FA;
         $this->repository = $repository;
         $this->recoveryTokenRepository = $recoveryTokenRepository;
+        $this->connection = $connection;
     }
 
     /**
@@ -61,11 +70,10 @@ class ToggleTwoFactorService
      * @param bool|null $toggleState
      * @return string[]
      *
+     * @throws \Throwable
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
      */
     public function handle(User $user, string $token, bool $toggleState = null): array
@@ -78,40 +86,42 @@ class ToggleTwoFactorService
             throw new TwoFactorAuthenticationTokenInvalid('The token provided is not valid.');
         }
 
-        // Now that we're enabling 2FA on the account, generate 10 recovery tokens for the account
-        // and store them hashed in the database. We'll return them to the caller so that the user
-        // can see and save them.
-        //
-        // If a user is unable to login with a 2FA token they can provide one of these backup codes
-        // which will then be marked as deleted from the database and will also bypass 2FA protections
-        // on their account.
-        $tokens = [];
-        if ((! $toggleState && ! $user->use_totp) || $toggleState) {
-            $inserts = [];
-            for ($i = 0; $i < 10; $i++) {
-                $token = Str::random(10);
+        return $this->connection->transaction(function () use ($user, $toggleState) {
+            // Now that we're enabling 2FA on the account, generate 10 recovery tokens for the account
+            // and store them hashed in the database. We'll return them to the caller so that the user
+            // can see and save them.
+            //
+            // If a user is unable to login with a 2FA token they can provide one of these backup codes
+            // which will then be marked as deleted from the database and will also bypass 2FA protections
+            // on their account.
+            $tokens = [];
+            if ((! $toggleState && ! $user->use_totp) || $toggleState) {
+                $inserts = [];
+                for ($i = 0; $i < 10; $i++) {
+                    $token = Str::random(10);
 
-                $inserts[] = [
-                    'user_id' => $user->id,
-                    'token' => password_hash($token, PASSWORD_DEFAULT),
-                ];
+                    $inserts[] = [
+                        'user_id' => $user->id,
+                        'token' => password_hash($token, PASSWORD_DEFAULT),
+                    ];
 
-                $tokens[] = $token;
+                    $tokens[] = $token;
+                }
+
+                // Before inserting any new records make sure all of the old ones are deleted to avoid
+                // any issues or storing an unnecessary number of tokens in the database.
+                $this->recoveryTokenRepository->deleteWhere(['user_id' => $user->id]);
+
+                // Bulk insert the hashed tokens.
+                $this->recoveryTokenRepository->insert($inserts);
             }
 
-            // Bulk insert the hashed tokens.
-            $this->recoveryTokenRepository->insert($inserts);
-        } elseif ($toggleState === false || $user->use_totp) {
-            // If we are disabling 2FA on this account we will delete all of the recovery codes
-            // that exist in the database for this account.
-            $this->recoveryTokenRepository->deleteWhere(['user_id' => $user->id]);
-        }
+            $this->repository->withoutFreshModel()->update($user->id, [
+                'totp_authenticated_at' => Carbon::now(),
+                'use_totp' => (is_null($toggleState) ? ! $user->use_totp : $toggleState),
+            ]);
 
-        $this->repository->withoutFreshModel()->update($user->id, [
-            'totp_authenticated_at' => Carbon::now(),
-            'use_totp' => (is_null($toggleState) ? ! $user->use_totp : $toggleState),
-        ]);
-
-        return $tokens;
+            return $tokens;
+        });
     }
 }

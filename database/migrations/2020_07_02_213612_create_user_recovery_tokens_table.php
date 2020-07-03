@@ -15,7 +15,11 @@ class CreateUserRecoveryTokensTable extends Migration
     {
         Schema::create('recovery_tokens', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->unsignedInteger('user_id');
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 
