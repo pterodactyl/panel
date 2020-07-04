@@ -116,6 +116,9 @@ module.exports = {
             fontSize: {
                 '2xs': '0.625rem',
             },
+            transitionDuration: {
+                250: '250ms',
+            },
             borderColor: theme => ({
                 default: theme('colors.neutral.400', 'cuurrentColor'),
             }),

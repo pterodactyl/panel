@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons/faTimes';
-import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
-import classNames from 'classnames';
+import tw from 'twin.macro';
+import styled from 'styled-components/macro';
+import Fade from '@/components/elements/Fade';
 
 export interface RequiredModalProps {
     visible: boolean;
@@ -12,20 +13,38 @@ export interface RequiredModalProps {
     top?: boolean;
 }
 
-type Props = RequiredModalProps & {
+interface Props extends RequiredModalProps {
     dismissable?: boolean;
     closeOnEscape?: boolean;
     closeOnBackground?: boolean;
     showSpinnerOverlay?: boolean;
-    children: React.ReactNode;
 }
 
-export default ({ visible, appear, dismissable, showSpinnerOverlay, top = true, closeOnBackground = true, closeOnEscape = true, onDismissed, children  }: Props) => {
-    const [render, setRender] = useState(visible);
+const ModalMask = styled.div`
+    ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
+    background: rgba(0, 0, 0, 0.70);
+`;
+
+const ModalContainer = styled.div<{ alignTop?: boolean }>`
+    ${tw`relative flex flex-col w-full m-auto`};
+    max-width: 50%;
+    // @todo max-w-screen-lg perhaps?
+    ${props => props.alignTop && 'margin-top: 10%'};
+    
+    & > .close-icon {
+        ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
+        top: -2rem;
+        
+        &:hover {${tw`transform rotate-90`}}
+    }
+`;
+
+const Modal: React.FC<Props> = ({ visible, appear, dismissable, showSpinnerOverlay, top = true, closeOnBackground = true, closeOnEscape = true, onDismissed, children }) => {
+    const [ render, setRender ] = useState(visible);
 
     const isDismissable = useMemo(() => {
         return (dismissable || true) && !(showSpinnerOverlay || false);
-    }, [dismissable, showSpinnerOverlay]);
+    }, [ dismissable, showSpinnerOverlay ]);
 
     const handleEscapeEvent = (e: KeyboardEvent) => {
         if (isDismissable && closeOnEscape && e.key === 'Escape') {
@@ -33,52 +52,47 @@ export default ({ visible, appear, dismissable, showSpinnerOverlay, top = true, 
         }
     };
 
-    useEffect(() => {
-        setRender(visible);
-    }, [visible]);
+    useEffect(() => setRender(visible), [ visible ]);
 
     useEffect(() => {
         window.addEventListener('keydown', handleEscapeEvent);
 
         return () => window.removeEventListener('keydown', handleEscapeEvent);
-    }, [render]);
+    }, [ render ]);
 
     return (
-        <CSSTransition
-            timeout={250}
-            classNames={'fade'}
-            appear={appear}
-            in={render}
-            unmountOnExit={true}
-            onExited={() => onDismissed()}
-        >
-            <div className={'modal-mask'} onClick={e => {
-                if (isDismissable && closeOnBackground) {
-                    e.stopPropagation();
-                    if (e.target === e.currentTarget) {
-                        setRender(false);
+        <Fade timeout={250} appear={appear} in={render} unmountOnExit onExited={onDismissed}>
+            <ModalMask
+                onClick={e => {
+                    if (isDismissable && closeOnBackground) {
+                        e.stopPropagation();
+                        if (e.target === e.currentTarget) {
+                            setRender(false);
+                        }
                     }
-                }
-            }}>
-                <div className={classNames('modal-container', { top })}>
+                }}
+            >
+                <ModalContainer alignTop={top}>
                     {isDismissable &&
-                    <div className={'modal-close-icon'} onClick={() => setRender(false)}>
+                    <div className={'close-icon'} onClick={() => setRender(false)}>
                         <FontAwesomeIcon icon={faTimes}/>
                     </div>
                     }
                     {showSpinnerOverlay &&
                     <div
-                        className={'absolute w-full h-full rounded flex items-center justify-center'}
+                        css={tw`absolute w-full h-full rounded flex items-center justify-center`}
                         style={{ background: 'hsla(211, 10%, 53%, 0.25)' }}
                     >
                         <Spinner/>
                     </div>
                     }
-                    <div className={'modal-content p-6'}>
+                    <div css={tw`bg-neutral-800 p-6 rounded shadow-md overflow-y-scroll transition-all duration-250`}>
                         {children}
                     </div>
-                </div>
-            </div>
-        </CSSTransition>
+                </ModalContainer>
+            </ModalMask>
+        </Fade>
     );
 };
+
+export default Modal;
