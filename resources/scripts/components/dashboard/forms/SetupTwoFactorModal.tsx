@@ -9,6 +9,8 @@ import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Field from '@/components/elements/Field';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface Values {
     code: string;
@@ -64,7 +66,7 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
                     .matches(/^(\d){6}$/, 'Authenticator code must be 6 digits.'),
             })}
         >
-            {({ isSubmitting, isValid }) => (
+            {({ isSubmitting }) => (
                 <Modal
                     {...props}
                     onDismissed={dismiss}
@@ -75,47 +77,47 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
                 >
                     {recoveryTokens.length > 0 ?
                         <>
-                            <h2 className={'mb-4'}>Two-factor authentication enabled</h2>
-                            <p className={'text-neutral-300'}>
+                            <h2 css={tw`text-2xl mb-4`}>Two-factor authentication enabled</h2>
+                            <p css={tw`text-neutral-300`}>
                                 Two-factor authentication has been enabled on your account. Should you loose access to
-                                this device you'll need to use on of the codes displayed below in order to access your
+                                this device you&apos;ll need to use on of the codes displayed below in order to access your
                                 account.
                             </p>
-                            <p className={'text-neutral-300 mt-4'}>
+                            <p css={tw`text-neutral-300 mt-4`}>
                                 <strong>These codes will not be displayed again.</strong> Please take note of them now
                                 by storing them in a secure repository such as a password manager.
                             </p>
-                            <pre className={'mt-4 rounded font-mono bg-neutral-900 p-4'}>
-                                {recoveryTokens.map(token => <code key={token} className={'block mb-1'}>{token}</code>)}
+                            <pre css={tw`text-sm mt-4 rounded font-mono bg-neutral-900 p-4`}>
+                                {recoveryTokens.map(token => <code key={token} css={tw`block mb-1`}>{token}</code>)}
                             </pre>
-                            <div className={'text-right'}>
-                                <button className={'mt-6 btn btn-lg btn-primary'} onClick={dismiss}>
+                            <div css={tw`text-right`}>
+                                <Button css={tw`mt-6`} size={'large'} onClick={dismiss}>
                                     Close
-                                </button>
+                                </Button>
                             </div>
                         </>
                         :
-                        <Form className={'mb-0'}>
-                            <FlashMessageRender className={'mb-6'} byKey={'account:two-factor'}/>
-                            <div className={'flex flex-wrap'}>
-                                <div className={'w-full md:flex-1'}>
-                                    <div className={'w-32 h-32 md:w-64 md:h-64 bg-neutral-600 p-2 rounded mx-auto'}>
+                        <Form css={tw`mb-0`}>
+                            <FlashMessageRender css={tw`mb-6`} byKey={'account:two-factor'}/>
+                            <div css={tw`flex flex-wrap`}>
+                                <div css={tw`w-full md:flex-1`}>
+                                    <div css={tw`w-32 h-32 md:w-64 md:h-64 bg-neutral-600 p-2 rounded mx-auto`}>
                                         {!token || !token.length ?
                                             <img
                                                 src={'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='}
-                                                className={'w-64 h-64 rounded'}
+                                                css={tw`w-64 h-64 rounded`}
                                             />
                                             :
                                             <img
                                                 src={`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${token}`}
                                                 onLoad={() => setLoading(false)}
-                                                className={'w-full h-full shadow-none rounded-0'}
+                                                css={tw`w-full h-full shadow-none rounded-none`}
                                             />
                                         }
                                     </div>
                                 </div>
-                                <div className={'w-full mt-6 md:mt-0 md:flex-1 md:flex md:flex-col'}>
-                                    <div className={'flex-1'}>
+                                <div css={tw`w-full mt-6 md:mt-0 md:flex-1 md:flex md:flex-col`}>
+                                    <div css={tw`flex-1`}>
                                         <Field
                                             id={'code'}
                                             name={'code'}
@@ -125,10 +127,10 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
                                             autoFocus={!loading}
                                         />
                                     </div>
-                                    <div className={'mt-6 md:mt-0 text-right'}>
-                                        <button className={'btn btn-primary btn-sm'} disabled={!isValid}>
+                                    <div css={tw`mt-6 md:mt-0 text-right`}>
+                                        <Button>
                                             Setup
-                                        </button>
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
