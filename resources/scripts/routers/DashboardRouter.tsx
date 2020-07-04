@@ -3,12 +3,12 @@ import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
-import TransitionRouter from '@/TransitionRouter';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import NotFound from '@/components/screens/NotFound';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 import config from '@/../../tailwind.config.js';
+import TransitionRouter from '@/TransitionRouter';
 
 const SubNavigation = styled.div`
     ${tw`w-full bg-neutral-700 shadow`};
