@@ -74,8 +74,7 @@ const StyledButton = styled.button<Omit<Props, 'isLoading'>>`
     &:disabled { opacity: 0.55; cursor: default }
 `;
 
-type ComponentProps = Props &
-    Omit<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, keyof Props>;
+type ComponentProps = Omit<JSX.IntrinsicElements['button'], 'ref' | keyof Props> & Props;
 
 const Button: React.FC<ComponentProps> = ({ children, isLoading, ...props }) => (
     <StyledButton {...props}>
