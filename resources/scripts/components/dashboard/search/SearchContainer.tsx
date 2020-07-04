@@ -19,7 +19,7 @@ export default () => {
         <>
             {visible &&
             <SearchModal
-                appear={true}
+                appear
                 visible={visible}
                 onDismissed={() => setVisible(false)}
             />

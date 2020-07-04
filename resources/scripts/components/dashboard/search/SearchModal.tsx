@@ -13,6 +13,7 @@ import { httpErrorToHuman } from '@/api/http';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
+import Input from '@/components/elements/Input';
 
 type Props = RequiredModalProps;
 
@@ -94,11 +95,7 @@ export default ({ ...props }: Props) => {
                     >
                         <SearchWatcher/>
                         <InputSpinner visible={loading}>
-                            <Field
-                                innerRef={ref}
-                                name={'term'}
-                                className={'input-dark'}
-                            />
+                            <Field as={Input} innerRef={ref} name={'term'}/>
                         </InputSpinner>
                     </FormikFieldWrapper>
                 </Form>

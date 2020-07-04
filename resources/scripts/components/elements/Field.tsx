@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
@@ -13,8 +13,8 @@ interface OwnProps {
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
-const Field = ({ id, name, light = false, label, description, validate, className, ...props }: Props) => (
-    <FormikField name={name} validate={validate}>
+const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, label, description, validate, className, ...props }, ref) => (
+    <FormikField innerRef={ref} name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
                 <React.Fragment>
@@ -39,6 +39,7 @@ const Field = ({ id, name, light = false, label, description, validate, classNam
             )
         }
     </FormikField>
-);
+));
+Field.displayName = 'Field';
 
 export default Field;
