@@ -15,7 +15,7 @@ import classNames from 'classnames';
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
 const isAlarmState = (current: number, limit: number): boolean => {
-    const limitInBytes = limit * 1000 * 1000;
+    const limitInBytes = limit * 1024 * 1024;
 
     return current / limitInBytes >= 0.90;
 };
@@ -52,6 +52,8 @@ export default ({ server, className }: { server: Server; className: string | und
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
+    const disklimit = server.limits.disk != 0 ? megabytesToHuman(server.limits.disk) : "Unlimited";
+    const memorylimit = server.limits.memory != 0 ? megabytesToHuman(server.limits.memory) : "Unlimited";
 
     return (
         <Link to={`/server/${server.id}`} className={`grey-row-box cursor-pointer ${className}`}>
@@ -127,7 +129,8 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {megabytesToHuman(server.limits.memory)}</p>
+
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {memorylimit}</p>
                         </div>
                         <div className={'flex-1 ml-4'}>
                             <div className={'flex justify-center'}>
@@ -147,9 +150,8 @@ export default ({ server, className }: { server: Server; className: string | und
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </p>
                             </div>
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>
-                                of {megabytesToHuman(server.limits.disk)}
-                            </p>
+
+                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {disklimit}</p>
                         </div>
                     </React.Fragment>
                 }

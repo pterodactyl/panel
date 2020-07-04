@@ -12,7 +12,7 @@ import { ServerContext } from '@/state/server';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
-    const { uuid } = useServer();
+    const { uuid, featureLimits } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(true);
 
@@ -50,10 +50,22 @@ export default () => {
                     />)}
                 </div>
             }
+            {featureLimits.backups === 0 &&
+                <p className="text-center text-sm text-neutral-400">
+                    Backups cannot be created for this server.
+                </p>
+            }
             <Can action={'backup.create'}>
+                {(featureLimits.backups > 0 && backups.length > 0) &&
+                <p className="text-center text-xs text-neutral-400 mt-2">
+                    {backups.length} of {featureLimits.backups} backups have been created for this server.
+                </p>
+                }
+                {featureLimits.backups > 0 && featureLimits.backups !== backups.length &&
                 <div className={'mt-6 flex justify-end'}>
                     <CreateBackupButton/>
                 </div>
+                }
             </Can>
         </PageContentBlock>
     );

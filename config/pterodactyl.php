@@ -162,6 +162,11 @@ return [
             'enabled' => env('PTERODACTYL_CLIENT_DATABASES_ENABLED', true),
             'allow_random' => env('PTERODACTYL_CLIENT_DATABASES_ALLOW_RANDOM', true),
         ],
+
+        'schedules' => [
+            // The total number of tasks that can exist for any given schedule at once.
+            'per_schedule_task_limit' => 10,
+        ],
     ],
 
     /*
@@ -218,5 +223,7 @@ return [
     |
     | 'P_SERVER_CREATED_AT' => 'created_at'
     */
-    'environment_variables' => [],
+    'environment_variables' => [
+        'P_SERVER_ALLOCATION_LIMIT' => 'allocation_limit',
+    ],
 ];

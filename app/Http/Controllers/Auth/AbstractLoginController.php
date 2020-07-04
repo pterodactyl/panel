@@ -68,10 +68,11 @@ abstract class AbstractLoginController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Contracts\Auth\Authenticatable|null $user
+     * @param string|null $message
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    protected function sendFailedLoginResponse(Request $request, Authenticatable $user = null)
+    protected function sendFailedLoginResponse(Request $request, Authenticatable $user = null, string $message = null)
     {
         $this->incrementLoginAttempts($request);
         $this->fireFailedLoginEvent($user, [
@@ -79,7 +80,9 @@ abstract class AbstractLoginController extends Controller
         ]);
 
         if ($request->route()->named('auth.login-checkpoint')) {
-            throw new DisplayException(trans('auth.two_factor.checkpoint_failed'));
+            throw new DisplayException(
+                $message ?? trans('auth.two_factor.checkpoint_failed')
+            );
         }
 
         throw new DisplayException(trans('auth.failed'));
@@ -116,7 +119,7 @@ abstract class AbstractLoginController extends Controller
      */
     protected function getField(string $input = null): string
     {
-        return str_contains($input, '@') ? 'email' : 'username';
+        return ($input && str_contains($input, '@')) ? 'email' : 'username';
     }
 
     /**

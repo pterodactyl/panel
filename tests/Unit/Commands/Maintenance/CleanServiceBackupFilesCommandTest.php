@@ -54,7 +54,7 @@ class CleanServiceBackupFilesCommandTest extends CommandTestCase
         $display = $this->runCommand($this->getCommand());
 
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.maintenance.deleting_service_backup', ['file' => 'testfile.txt']), $display);
+        $this->assertStringContainsString(trans('command/messages.maintenance.deleting_service_backup', ['file' => 'testfile.txt']), $display);
     }
 
     /**

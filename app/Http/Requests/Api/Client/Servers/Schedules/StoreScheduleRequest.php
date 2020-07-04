@@ -21,7 +21,7 @@ class StoreScheduleRequest extends ViewScheduleRequest
     {
         return [
             'name' => 'required|string|min:1',
-            'is_active' => 'boolean',
+            'is_active' => 'filled|boolean',
             'minute' => 'required|string',
             'hour' => 'required|string',
             'day_of_month' => 'required|string',

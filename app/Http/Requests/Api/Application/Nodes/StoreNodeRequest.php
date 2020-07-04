@@ -21,7 +21,7 @@ class StoreNodeRequest extends ApplicationApiRequest
     /**
      * Validation rules to apply to this request.
      *
-     * @param null|array $rules
+     * @param array|null $rules
      * @return array
      */
     public function rules(array $rules = null): array

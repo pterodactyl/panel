@@ -103,6 +103,7 @@ class ApiKeyController extends ClientApiController
     public function delete(ClientApiRequest $request, string $identifier)
     {
         $response = $this->repository->deleteWhere([
+            'key_type' => ApiKey::TYPE_ACCOUNT,
             'user_id' => $request->user()->id,
             'identifier' => $identifier,
         ]);

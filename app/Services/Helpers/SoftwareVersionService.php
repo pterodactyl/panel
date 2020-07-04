@@ -4,7 +4,7 @@ namespace Pterodactyl\Services\Helpers;
 
 use Exception;
 use GuzzleHttp\Client;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
@@ -120,7 +120,7 @@ class SoftwareVersionService
      */
     protected function cacheVersionData()
     {
-        return $this->cache->remember(self::VERSION_CACHE_KEY, Chronos::now()->addMinutes(config()->get('pterodactyl.cdn.cache_time', 60)), function () {
+        return $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config()->get('pterodactyl.cdn.cache_time', 60)), function () {
             try {
                 $response = $this->client->request('GET', config()->get('pterodactyl.cdn.url'));
 

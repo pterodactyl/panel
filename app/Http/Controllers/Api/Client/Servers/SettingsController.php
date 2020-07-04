@@ -55,7 +55,7 @@ class SettingsController extends ClientApiController
             'name' => $request->input('name'),
         ]);
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -71,6 +71,6 @@ class SettingsController extends ClientApiController
     {
         $this->reinstallServerService->reinstall($server);
 
-        return JsonResponse::create([], Response::HTTP_ACCEPTED);
+        return new JsonResponse([], Response::HTTP_ACCEPTED);
     }
 }
