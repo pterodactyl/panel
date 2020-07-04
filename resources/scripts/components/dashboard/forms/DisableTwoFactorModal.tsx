@@ -8,6 +8,8 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 import { httpErrorToHuman } from '@/api/http';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface Values {
     password: string;
@@ -45,19 +47,19 @@ export default ({ ...props }: RequiredModalProps) => {
             {({ isSubmitting, isValid }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
                     <Form className={'mb-0'}>
-                        <FlashMessageRender className={'mb-6'} byKey={'account:two-factor'}/>
+                        <FlashMessageRender css={tw`mb-6`} byKey={'account:two-factor'}/>
                         <Field
                             id={'password'}
                             name={'password'}
                             type={'password'}
                             label={'Current Password'}
                             description={'In order to disable two-factor authentication you will need to provide your account password.'}
-                            autoFocus={true}
+                            autoFocus
                         />
-                        <div className={'mt-6 text-right'}>
-                            <button className={'btn btn-red btn-sm'} disabled={!isValid}>
+                        <div css={tw`mt-6 text-right`}>
+                            <Button disabled={!isValid}>
                                 Disable Two-Factor
-                            </button>
+                            </Button>
                         </div>
                     </Form>
                 </Modal>

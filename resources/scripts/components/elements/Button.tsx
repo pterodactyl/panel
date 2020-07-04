@@ -7,10 +7,9 @@ interface Props {
     size?: 'xsmall' | 'small' | 'large' | 'xlarge';
     color?: 'green' | 'red' | 'primary' | 'grey';
     isSecondary?: boolean;
-    disabled?: boolean;
 }
 
-const StyledButton = styled.button<Props>`
+const StyledButton = styled.button<Omit<Props, 'isLoading'>>`
     ${tw`rounded p-2 uppercase tracking-wide text-sm transition-all duration-150`};
     
         ${props => props.isSecondary && css<Props>`
@@ -73,9 +72,6 @@ const StyledButton = styled.button<Props>`
     ${props => props.size === 'xlarge' && tw`p-4 w-full`};
     
     &:disabled { opacity: 0.55; cursor: default }
-    
-    ${props => props.disabled && css`opacity: 0.55; cursor: default`};
-
 `;
 
 type ComponentProps = Props &
@@ -88,7 +84,7 @@ const Button: React.FC<ComponentProps> = ({ children, isLoading, ...props }) => 
             <div className={'spinner-circle spinner-white spinner-sm'}/>
         </div>
         }
-        <span css={isLoading && tw`text-transparent`}>
+        <span css={isLoading ? tw`text-transparent` : undefined}>
             {children}
         </span>
     </StyledButton>

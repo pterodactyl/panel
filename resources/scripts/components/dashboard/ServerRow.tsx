@@ -79,7 +79,7 @@ export default ({ server }: { server: Server }) => {
             <div css={tw`w-1/3 flex items-baseline relative`}>
                 {!stats ?
                     !statsError ?
-                        <SpinnerOverlay size={'tiny'} visible={true} backgroundOpacity={0.25}/>
+                        <SpinnerOverlay size={'small'} visible={true} backgroundOpacity={0.25}/>
                         :
                         server.isInstalling ?
                             <div css={tw`flex-1 text-center`}>

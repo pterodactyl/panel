@@ -69,7 +69,7 @@ export default () => {
             <CSSTransition timeout={250} in={true} appear={true} classNames={'fade'}>
                 <div className={'bg-red-500 py-2'}>
                     <ContentContainer className={'flex items-center justify-center'}>
-                        <Spinner size={'tiny'}/>
+                        <Spinner size={'small'}/>
                         <p className={'ml-2 text-sm text-red-100'}>
                             We're having some trouble connecting to your server, please wait...
                         </p>

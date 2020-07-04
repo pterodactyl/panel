@@ -39,7 +39,7 @@ export default ({ backup, className }: Props) => {
                 {backup.completedAt ?
                     <FontAwesomeIcon icon={faArchive} className={'text-neutral-300'}/>
                     :
-                    <Spinner size={'tiny'}/>
+                    <Spinner size={'small'}/>
                 }
             </div>
             <div className={'flex-1'}>

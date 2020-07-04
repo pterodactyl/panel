@@ -1,7 +1,7 @@
 import React from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
-import classNames from 'classnames';
 import Input from '@/components/elements/Input';
+import Label from '@/components/elements/Label';
 
 interface OwnProps {
     name: string;
@@ -19,7 +19,7 @@ const Field = ({ id, name, light = false, label, description, validate, classNam
             ({ field, form: { errors, touched } }: FieldProps) => (
                 <React.Fragment>
                     {label &&
-                    <label htmlFor={id} className={light ? undefined : 'input-dark-label'}>{label}</label>
+                    <Label htmlFor={id} isLight={light}>{label}</Label>
                     }
                     <Input
                         id={id}

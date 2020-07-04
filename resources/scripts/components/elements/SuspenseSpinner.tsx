@@ -5,7 +5,7 @@ const SuspenseSpinner = ({ children }: { children?: React.ReactNode }) => (
     <Suspense
         fallback={
             <div className={'mx-4 w-3/4 mr-4 flex items-center justify-center'}>
-                <Spinner centered={true} size={'normal'}/>
+                <Spinner centered/>
             </div>
         }
     >

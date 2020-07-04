@@ -61,7 +61,7 @@ const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handl
                         className={'btn btn-primary btn-jumbo'}
                     >
                         {isSubmitting ?
-                            <Spinner size={'tiny'} className={'mx-auto'}/>
+                            <Spinner size={'small'} className={'mx-auto'}/>
                             :
                             'Login'
                         }

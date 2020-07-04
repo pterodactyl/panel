@@ -19,7 +19,7 @@ const RenameServerBox = () => {
 
     return (
         <TitledGreyBox title={'Change Server Name'} className={'relative'}>
-            <SpinnerOverlay size={'normal'} visible={isSubmitting}/>
+            <SpinnerOverlay visible={isSubmitting}/>
             <Form className={'mb-0'}>
                 <Field
                     id={'name'}

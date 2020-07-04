@@ -92,7 +92,7 @@ export default ({ match, history, location }: Props) => {
                             disabled={isSubmitting}
                         >
                             {isSubmitting ?
-                                <Spinner size={'tiny'} className={'mx-auto'}/>
+                                <Spinner size={'small'} className={'mx-auto'}/>
                                 :
                                 'Reset Password'
                             }
