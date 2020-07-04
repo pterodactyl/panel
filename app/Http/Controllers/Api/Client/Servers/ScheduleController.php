@@ -147,7 +147,7 @@ class ScheduleController extends ClientApiController
     {
         $this->repository->delete($schedule->id);
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**

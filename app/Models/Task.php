@@ -90,7 +90,7 @@ class Task extends Model
         'schedule_id' => 'required|numeric|exists:schedules,id',
         'sequence_id' => 'required|numeric|min:1',
         'action' => 'required|string',
-        'payload' => 'required|string',
+        'payload' => 'required_unless:action,backup|string',
         'time_offset' => 'required|numeric|between:0,900',
         'is_queued' => 'boolean',
     ];

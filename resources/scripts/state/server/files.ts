@@ -48,7 +48,7 @@ const files: ServerFileStore = {
     }),
 
     setDirectory: action((state, payload) => {
-        state.directory = cleanDirectoryPath(payload)
+        state.directory = cleanDirectoryPath(payload);
     }),
 };
 

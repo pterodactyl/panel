@@ -103,7 +103,7 @@ class LoginController extends AbstractLoginController
             $token = Str::random(64);
             $this->cache->put($token, $user->id, Chronos::now()->addMinutes(5));
 
-            return JsonResponse::create([
+            return new JsonResponse([
                 'data' => [
                     'complete' => false,
                     'confirmation_token' => $token,

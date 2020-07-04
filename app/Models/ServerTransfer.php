@@ -17,7 +17,7 @@ namespace Pterodactyl\Models;
  *
  * @property \Pterodactyl\Models\Server $server
  */
-class ServerTransfer extends Validable
+class ServerTransfer extends Model
 {
     /**
      * The resource name for this model when it is transformed into an

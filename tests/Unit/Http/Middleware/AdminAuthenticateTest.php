@@ -4,6 +4,7 @@ namespace Tests\Unit\Http\Middleware;
 
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Middleware\AdminAuthenticate;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AdminAuthenticateTest extends MiddlewareTestCase
 {
@@ -21,11 +22,11 @@ class AdminAuthenticateTest extends MiddlewareTestCase
 
     /**
      * Test that a missing user in the request triggers an error.
-     *
-     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testExceptionIsThrownIfUserDoesNotExist()
     {
+        $this->expectException(AccessDeniedHttpException::class);
+
         $this->request->shouldReceive('user')->withNoArgs()->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
@@ -33,11 +34,11 @@ class AdminAuthenticateTest extends MiddlewareTestCase
 
     /**
      * Test that an exception is thrown if the user is not an admin.
-     *
-     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testExceptionIsThrownIfUserIsNotAnAdmin()
     {
+        $this->expectException(AccessDeniedHttpException::class);
+
         $user = factory(User::class)->make(['root_admin' => 0]);
 
         $this->request->shouldReceive('user')->withNoArgs()->twice()->andReturn($user);

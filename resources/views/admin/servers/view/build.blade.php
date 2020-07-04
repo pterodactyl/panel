@@ -66,7 +66,7 @@
                             <input type="text" name="disk" class="form-control" value="{{ old('disk', $server->disk) }}"/>
                             <span class="input-group-addon">MB</span>
                         </div>
-                        <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available.</p>
+                        <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Set to <code>0</code> to allow unlimited disk usage.</p>
                     </div>
                     <div class="form-group">
                         <label for="io" class="control-label">Block IO Proportion</label>

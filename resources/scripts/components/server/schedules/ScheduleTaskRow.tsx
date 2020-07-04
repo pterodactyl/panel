@@ -14,11 +14,25 @@ import Can from '@/components/elements/Can';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
+import { faFileArchive } from '@fortawesome/free-solid-svg-icons/faFileArchive';
 
 interface Props {
     schedule: Schedule;
     task: Task;
 }
+
+const getActionDetails = (action: string): [ string, any ] => {
+    switch (action) {
+    case 'command':
+        return ['Send Command', faCode];
+    case 'power':
+        return ['Send Power Action', faToggleOn];
+    case 'backup':
+        return ['Create Backup', faFileArchive];
+    default:
+        return ['Unknown Action', faCode];
+    }
+};
 
 export default ({ schedule, task }: Props) => {
     const { uuid } = useServer();
@@ -43,6 +57,8 @@ export default ({ schedule, task }: Props) => {
             });
     };
 
+    const [ title, icon ] = getActionDetails(task.action);
+
     return (
         <div className={'flex items-center bg-neutral-700 border border-neutral-600 mb-2 px-6 py-4 rounded'}>
             <SpinnerOverlay visible={isLoading} fixed={true} size={'large'}/>
@@ -56,14 +72,19 @@ export default ({ schedule, task }: Props) => {
                 onDismissed={() => setVisible(false)}
                 onConfirmed={() => onConfirmDeletion()}
             />
-            <FontAwesomeIcon icon={task.action === 'command' ? faCode : faToggleOn} className={'text-lg text-white'}/>
+            <FontAwesomeIcon icon={icon} className={'text-lg text-white'}/>
             <div className={'flex-1'}>
-                <p className={'ml-6 text-neutral-300 mb-2 uppercase text-xs'}>
-                    {task.action === 'command' ? 'Send command' : 'Send power action'}
+                <p className={'ml-6 text-neutral-300 uppercase text-xs'}>
+                    {title}
                 </p>
-                <code className={'ml-6 font-mono bg-neutral-800 rounded py-1 px-2 text-sm'}>
-                    {task.payload}
-                </code>
+                {task.payload &&
+                <div className={'ml-6 mt-2'}>
+                    {task.action === 'backup' && <p className={'text-xs uppercase text-neutral-400 mb-1'}>Ignoring files & folders:</p>}
+                    <div className={'font-mono bg-neutral-800 rounded py-1 px-2 text-sm w-auto whitespace-pre inline-block'}>
+                        {task.payload}
+                    </div>
+                </div>
+                }
             </div>
             {task.sequenceId > 1 &&
             <div className={'mr-6'}>

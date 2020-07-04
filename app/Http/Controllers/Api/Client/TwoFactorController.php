@@ -61,11 +61,11 @@ class TwoFactorController extends ClientApiController
      */
     public function index(Request $request)
     {
-        if ($request->user()->totp_enabled) {
+        if ($request->user()->use_totp) {
             throw new BadRequestHttpException('Two-factor authentication is already enabled on this account.');
         }
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'data' => [
                 'image_url_data' => $this->setupService->handle($request->user()),
             ],
@@ -96,9 +96,14 @@ class TwoFactorController extends ClientApiController
             throw new ValidationException($validator);
         }
 
-        $this->toggleTwoFactorService->handle($request->user(), $request->input('code'), true);
+        $tokens = $this->toggleTwoFactorService->handle($request->user(), $request->input('code'), true);
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([
+            'object' => 'recovery_tokens',
+            'attributes' => [
+                'tokens' => $tokens,
+            ],
+        ]);
     }
 
     /**
@@ -124,6 +129,6 @@ class TwoFactorController extends ClientApiController
             'use_totp' => false,
         ]);
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

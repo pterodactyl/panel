@@ -24,7 +24,7 @@ class AssetHashService
     private $application;
 
     /**
-     * @var null|array
+     * @var array|null
      */
     protected static $manifest;
 

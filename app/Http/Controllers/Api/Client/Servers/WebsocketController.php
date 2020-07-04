@@ -7,7 +7,6 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
-use Illuminate\Contracts\Cache\Repository;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
@@ -16,11 +15,6 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 
 class WebsocketController extends ClientApiController
 {
-    /**
-     * @var \Illuminate\Contracts\Cache\Repository
-     */
-    private $cache;
-
     /**
      * @var \Pterodactyl\Services\Nodes\NodeJWTService
      */
@@ -36,16 +30,13 @@ class WebsocketController extends ClientApiController
      *
      * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
      * @param \Pterodactyl\Services\Servers\GetUserPermissionsService $permissionsService
-     * @param \Illuminate\Contracts\Cache\Repository $cache
      */
     public function __construct(
         NodeJWTService $jwtService,
-        GetUserPermissionsService $permissionsService,
-        Repository $cache
+        GetUserPermissionsService $permissionsService
     ) {
         parent::__construct();
 
-        $this->cache = $cache;
         $this->jwtService = $jwtService;
         $this->permissionsService = $permissionsService;
     }
@@ -78,7 +69,7 @@ class WebsocketController extends ClientApiController
 
         $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $server->node->getConnectionAddress());
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'data' => [
                 'token' => $token->__toString(),
                 'socket' => $socket . sprintf('/api/servers/%s/ws', $server->uuid),
