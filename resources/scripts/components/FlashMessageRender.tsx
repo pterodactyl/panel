@@ -14,18 +14,21 @@ const FlashMessageRender = ({ byKey, className }: Props) => {
     ));
 
     return (
-        <div className={className}>
-            {
-                flashes.map((flash, index) => (
-                    <React.Fragment key={flash.id || flash.type + flash.message}>
-                        {index > 0 && <div css={tw`mt-2`}></div>}
-                        <MessageBox type={flash.type} title={flash.title}>
-                            {flash.message}
-                        </MessageBox>
-                    </React.Fragment>
-                ))
-            }
-        </div>
+        flashes.length ?
+            <div className={className}>
+                {
+                    flashes.map((flash, index) => (
+                        <React.Fragment key={flash.id || flash.type + flash.message}>
+                            {index > 0 && <div css={tw`mt-2`}></div>}
+                            <MessageBox type={flash.type} title={flash.title}>
+                                {flash.message}
+                            </MessageBox>
+                        </React.Fragment>
+                    ))
+                }
+            </div>
+            :
+            null
     );
 };
 

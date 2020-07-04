@@ -16,6 +16,7 @@ import deleteBackup from '@/api/server/backups/deleteBackup';
 import { ServerContext } from '@/state/server';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import Can from '@/components/elements/Can';
+import tw from 'twin.macro';
 
 interface Props {
     backup: ServerBackup;
@@ -61,8 +62,8 @@ export default ({ backup }: Props) => {
         <>
             {visible &&
             <ChecksumModal
+                appear
                 visible={visible}
-                appear={true}
                 onDismissed={() => setVisible(false)}
                 checksum={backup.sha256Hash}
             />
@@ -84,27 +85,27 @@ export default ({ backup }: Props) => {
                 renderToggle={onClick => (
                     <button
                         onClick={onClick}
-                        className={'text-neutral-200 transition-color duration-150 hover:text-neutral-100 p-2'}
+                        css={tw`text-neutral-200 transition-colors duration-150 hover:text-neutral-100 p-2`}
                     >
                         <FontAwesomeIcon icon={faEllipsisH}/>
                     </button>
                 )}
             >
-                <div className={'text-sm'}>
+                <div css={tw`text-sm`}>
                     <Can action={'backup.download'}>
                         <DropdownButtonRow onClick={() => doDownload()}>
-                            <FontAwesomeIcon fixedWidth={true} icon={faCloudDownloadAlt} className={'text-xs'}/>
-                            <span className={'ml-2'}>Download</span>
+                            <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`}/>
+                            <span css={tw`ml-2`}>Download</span>
                         </DropdownButtonRow>
                     </Can>
                     <DropdownButtonRow onClick={() => setVisible(true)}>
-                        <FontAwesomeIcon fixedWidth={true} icon={faLock} className={'text-xs'}/>
-                        <span className={'ml-2'}>Checksum</span>
+                        <FontAwesomeIcon fixedWidth icon={faLock} css={tw`text-xs`}/>
+                        <span css={tw`ml-2`}>Checksum</span>
                     </DropdownButtonRow>
                     <Can action={'backup.delete'}>
-                        <DropdownButtonRow danger={true} onClick={() => setDeleteVisible(true)}>
-                            <FontAwesomeIcon fixedWidth={true} icon={faTrashAlt} className={'text-xs'}/>
-                            <span className={'ml-2'}>Delete</span>
+                        <DropdownButtonRow danger onClick={() => setDeleteVisible(true)}>
+                            <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
+                            <span css={tw`ml-2`}>Delete</span>
                         </DropdownButtonRow>
                     </Can>
                 </div>

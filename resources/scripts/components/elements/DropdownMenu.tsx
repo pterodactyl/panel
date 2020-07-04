@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
+import Fade from '@/components/elements/Fade';
 
 interface Props {
     children: React.ReactNode;
@@ -55,29 +56,25 @@ const DropdownMenu = ({ renderToggle, children }: Props) => {
 
         return () => {
             document.removeEventListener('click', windowListener);
-        }
+        };
     }, [ visible ]);
 
     return (
         <div>
             {renderToggle(onClickHandler)}
-            <CSSTransition
-                timeout={250}
-                in={visible}
-                unmountOnExit={true}
-                classNames={'fade'}
-            >
+            <Fade timeout={250} in={visible} unmountOnExit>
                 <div
                     ref={menu}
                     onClick={e => {
                         e.stopPropagation();
                         setVisible(false);
                     }}
-                    className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48'}
+                    css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500`}
+                    style={{ minWidth: '12rem' }}
                 >
                     {children}
                 </div>
-            </CSSTransition>
+            </Fade>
         </div>
     );
 };

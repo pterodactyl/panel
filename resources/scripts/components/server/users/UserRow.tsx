@@ -9,6 +9,8 @@ import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock';
 import classNames from 'classnames';
 import Can from '@/components/elements/Can';
 import { useStoreState } from 'easy-peasy';
+import tw from 'twin.macro';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 
 interface Props {
     subuser: Subuser;
@@ -19,23 +21,23 @@ export default ({ subuser }: Props) => {
     const [ visible, setVisible ] = useState(false);
 
     return (
-        <div className={'grey-row-box mb-2'}>
+        <GreyRowBox css={tw`mb-2`}>
             {visible &&
             <EditSubuserModal
-                appear={true}
-                visible={true}
+                appear
+                visible
                 subuser={subuser}
                 onDismissed={() => setVisible(false)}
             />
             }
-            <div className={'w-10 h-10 rounded-full bg-white border-2 border-inset border-neutral-800 overflow-hidden'}>
-                <img className={'f-full h-full'} src={`${subuser.image}?s=400`}/>
+            <div css={tw`w-10 h-10 rounded-full bg-white border-2 border-neutral-800 overflow-hidden`}>
+                <img css={tw`w-full h-full`} src={`${subuser.image}?s=400`}/>
             </div>
-            <div className={'ml-4 flex-1'}>
-                <p className={'text-sm'}>{subuser.email}</p>
+            <div css={tw`ml-4 flex-1`}>
+                <p css={tw`text-sm`}>{subuser.email}</p>
             </div>
-            <div className={'ml-4'}>
-                <p className={'font-medium text-center'}>
+            <div css={tw`ml-4`}>
+                <p css={tw`font-medium text-center`}>
                     &nbsp;
                     <FontAwesomeIcon
                         icon={subuser.twoFactorEnabled ? faUserLock : faUnlockAlt}
@@ -45,13 +47,13 @@ export default ({ subuser }: Props) => {
                     />
                     &nbsp;
                 </p>
-                <p className={'text-2xs text-neutral-500 uppercase'}>2FA Enabled</p>
+                <p css={tw`text-2xs text-neutral-500 uppercase`}>2FA Enabled</p>
             </div>
-            <div className={'ml-4'}>
-                <p className={'font-medium text-center'}>
+            <div css={tw`ml-4`}>
+                <p css={tw`font-medium text-center`}>
                     {subuser.permissions.filter(permission => permission !== 'websocket.connect').length}
                 </p>
-                <p className={'text-2xs text-neutral-500 uppercase'}>Permissions</p>
+                <p css={tw`text-2xs text-neutral-500 uppercase`}>Permissions</p>
             </div>
             <button
                 type={'button'}
@@ -66,6 +68,6 @@ export default ({ subuser }: Props) => {
             <Can action={'user.delete'}>
                 <RemoveSubuserButton subuser={subuser}/>
             </Can>
-        </div>
+        </GreyRowBox>
     );
 };

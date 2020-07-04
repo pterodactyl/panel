@@ -18,6 +18,9 @@ import Can from '@/components/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
 import { useDeepMemo } from '@/plugins/useDeepMemo';
 import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import Label from '@/components/elements/Label';
+import Input from '@/components/elements/Input';
 
 type Props = {
     subuser?: Subuser;
@@ -72,17 +75,17 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
         }
 
         return list.filter(key => loggedInPermissions.indexOf(key) >= 0);
-    }, [permissions, loggedInPermissions]);
+    }, [ permissions, loggedInPermissions ]);
 
     return (
         <Modal {...props} top={false} showSpinnerOverlay={isSubmitting}>
-            <h3 ref={ref}>
+            <h2 css={tw`text-2xl`} ref={ref}>
                 {subuser ?
                     `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
                     :
                     'Create new subuser'
                 }
-            </h3>
+            </h2>
             <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`}/>
             {(!user.rootAdmin && loggedInPermissions[0] !== '*') &&
             <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
@@ -108,8 +111,8 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                         title={
                             <div css={tw`flex items-center`}>
                                 <p css={tw`text-sm uppercase flex-1`}>{key}</p>
-                                {canEditUser && editablePermissions.indexOf(key) >= 0 &&
-                                <input
+                                {canEditUser &&
+                                <Input
                                     type={'checkbox'}
                                     onClick={e => {
                                         if (e.currentTarget.checked) {
@@ -133,7 +136,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                 }
                             </div>
                         }
-                        className={index !== 0 ? 'mt-4' : undefined}
+                        css={index > 0 ? tw`mt-4` : undefined}
                     >
                         <p css={tw`text-sm text-neutral-400 mb-4`}>
                             {permissions[key].description}
@@ -157,9 +160,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                     />
                                 </div>
                                 <div css={tw`flex-1`}>
-                                    <span css={tw`font-medium`} className={'input-dark-label'}>
-                                        {pkey}
-                                    </span>
+                                    <Label css={tw`font-medium`}>{pkey}</Label>
                                     {permissions[key].keys[pkey].length > 0 &&
                                     <p css={tw`text-xs text-neutral-400 mt-1`}>
                                         {permissions[key].keys[pkey]}
@@ -173,9 +174,9 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
             </div>
             <Can action={subuser ? 'user.update' : 'user.create'}>
                 <div css={tw`pb-6 flex justify-end`}>
-                    <button className={'btn btn-primary btn-sm'} type={'submit'}>
+                    <Button type={'submit'}>
                         {subuser ? 'Save' : 'Invite User'}
-                    </button>
+                    </Button>
                 </div>
             </Can>
         </Modal>

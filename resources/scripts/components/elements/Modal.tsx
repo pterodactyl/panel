@@ -27,6 +27,7 @@ const ModalMask = styled.div`
 
 const ModalContainer = styled.div<{ alignTop?: boolean }>`
     ${tw`relative flex flex-col w-full m-auto`};
+    max-height: calc(100vh - 8rem);
     max-width: 50%;
     // @todo max-w-screen-lg perhaps?
     ${props => props.alignTop && 'margin-top: 10%'};
