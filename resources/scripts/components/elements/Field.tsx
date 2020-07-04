@@ -1,6 +1,7 @@
 import React from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
 import classNames from 'classnames';
+import Input from '@/components/elements/Input';
 
 interface OwnProps {
     name: string;
@@ -20,13 +21,12 @@ const Field = ({ id, name, light = false, label, description, validate, classNam
                     {label &&
                     <label htmlFor={id} className={light ? undefined : 'input-dark-label'}>{label}</label>
                     }
-                    <input
+                    <Input
                         id={id}
                         {...field}
                         {...props}
-                        className={classNames((className || (light ? 'input' : 'input-dark')), {
-                            error: touched[field.name] && errors[field.name],
-                        })}
+                        isLight={light}
+                        hasError={!!(touched[field.name] && errors[field.name])}
                     />
                     {touched[field.name] && errors[field.name] ?
                         <p className={'input-help error'}>

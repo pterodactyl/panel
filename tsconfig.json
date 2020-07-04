@@ -26,5 +26,8 @@
   },
   "include": [
     "./resources/scripts/**/*"
+  ],
+  "exclude": [
+    "/node_modules/"
   ]
 }
