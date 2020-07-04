@@ -22,7 +22,6 @@ const inputStyle = css<Props>`
     ${tw`p-3 border rounded text-sm transition-all duration-150`};
     ${tw`bg-neutral-600 border-neutral-500 hover:border-neutral-400 text-neutral-200 shadow-none`};
     
-    ${props => props.hasError && tw`text-red-600 border-red-500 hover:border-red-600`};
     & + .input-help {
         ${tw`mt-1 text-xs`};
         ${props => props.hasError ? tw`text-red-400` : tw`text-neutral-400`};
@@ -41,6 +40,7 @@ const inputStyle = css<Props>`
     }
     
     ${props => props.isLight && light};
+    ${props => props.hasError && tw`text-red-600 border-red-500 hover:border-red-600`};
 `;
 
 const Input = styled.input<Props>`${inputStyle}`;

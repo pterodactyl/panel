@@ -11,6 +11,8 @@ import { httpErrorToHuman } from '@/api/http';
 import { FlashMessage } from '@/state/flashes';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Spinner from '@/components/elements/Spinner';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 type OwnProps = RouteComponentProps & {
     clearFlashes: ActionCreator<void>;
@@ -36,36 +38,29 @@ const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handl
             {ref.current && ref.current.render()}
             <LoginFormContainer
                 title={'Login to Continue'}
-                className={'w-full flex'}
+                css={tw`w-full flex`}
                 onSubmit={submit}
             >
-                <label htmlFor={'username'}>Username or Email</label>
                 <Field
                     type={'text'}
+                    label={'Username or Email'}
                     id={'username'}
                     name={'username'}
-                    className={'input'}
+                    light
                 />
-                <div className={'mt-6'}>
-                    <label htmlFor={'password'}>Password</label>
+                <div css={tw`mt-6`}>
                     <Field
                         type={'password'}
+                        label={'Password'}
                         id={'password'}
                         name={'password'}
-                        className={'input'}
+                        light
                     />
                 </div>
-                <div className={'mt-6'}>
-                    <button
-                        type={'submit'}
-                        className={'btn btn-primary btn-jumbo'}
-                    >
-                        {isSubmitting ?
-                            <Spinner size={'small'} className={'mx-auto'}/>
-                            :
-                            'Login'
-                        }
-                    </button>
+                <div css={tw`mt-6`}>
+                    <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting}>
+                        Login
+                    </Button>
                 </div>
                 {recaptchaEnabled &&
                 <ReCAPTCHA
@@ -80,10 +75,10 @@ const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handl
                     onExpired={() => setFieldValue('recaptchaData', null)}
                 />
                 }
-                <div className={'mt-6 text-center'}>
+                <div css={tw`mt-6 text-center`}>
                     <Link
                         to={'/auth/password'}
-                        className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
+                        css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                     >
                         Forgot password?
                     </Link>
