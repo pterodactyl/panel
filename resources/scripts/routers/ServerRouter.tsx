@@ -23,6 +23,7 @@ import NotFound from '@/components/screens/NotFound';
 import { useStoreState } from 'easy-peasy';
 import useServer from '@/plugins/useServer';
 import ScreenBlock from '@/components/screens/ScreenBlock';
+import SubNavigation from '@/components/elements/SubNavigation';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const { rootAdmin } = useStoreState(state => state.user.data!);
@@ -71,8 +72,8 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                 :
                 <>
                     <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
-                        <div id={'sub-navigation'}>
-                            <div className={'items'}>
+                        <SubNavigation>
+                            <div>
                                 <NavLink to={`${match.url}`} exact>Console</NavLink>
                                 <Can action={'file.*'}>
                                     <NavLink to={`${match.url}/files`}>File Manager</NavLink>
@@ -93,7 +94,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                                 </Can>
                             </div>
-                        </div>
+                        </SubNavigation>
                     </CSSTransition>
                     {(installing && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${server.id}`)))) ?
                         <ScreenBlock

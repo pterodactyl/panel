@@ -3,10 +3,10 @@ import ContentContainer from '@/components/elements/ContentContainer';
 import { CSSTransition } from 'react-transition-group';
 import tw from 'twin.macro';
 
-const PageContentBlock: React.FC = ({ children }) => (
+const PageContentBlock: React.FC<{ className?: string }> = ({ children, className }) => (
     <CSSTransition timeout={250} classNames={'fade'} appear in>
         <>
-            <ContentContainer css={tw`my-10`}>
+            <ContentContainer css={tw`my-10`} className={className}>
                 {children}
             </ContentContainer>
             <ContentContainer css={tw`mb-4`}>

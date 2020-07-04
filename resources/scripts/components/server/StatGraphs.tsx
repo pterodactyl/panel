@@ -6,6 +6,7 @@ import merge from 'lodash-es/merge';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
 import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
+import tw from 'twin.macro';
 
 const chartDefaults: ChartConfiguration = {
     type: 'line',
@@ -157,21 +158,21 @@ export default () => {
     }, [ instance, connected, memory, cpu ]);
 
     return (
-        <div className={'flex mt-4'}>
-            <TitledGreyBox title={'Memory usage'} icon={faMemory} className={'flex-1 mr-2'}>
+        <div css={tw`flex mt-4`}>
+            <TitledGreyBox title={'Memory usage'} icon={faMemory} css={tw`flex-1 mr-2`}>
                 {status !== 'offline' ?
                     <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
                     :
-                    <p className={'text-xs text-neutral-400 text-center p-3'}>
+                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
                         Server is offline.
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'CPU usage'} icon={faMicrochip} className={'flex-1 ml-2'}>
+            <TitledGreyBox title={'CPU usage'} icon={faMicrochip} css={tw`flex-1 ml-2`}>
                 {status !== 'offline' ?
                     <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
                     :
-                    <p className={'text-xs text-neutral-400 text-center p-3'}>
+                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
                         Server is offline.
                     </p>
                 }

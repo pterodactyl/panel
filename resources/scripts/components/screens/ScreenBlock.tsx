@@ -1,10 +1,9 @@
 import React from 'react';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons/faArrowLeft';
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons/faSyncAlt';
+import { faArrowLeft, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
-import styled from 'styled-components/macro';
+import styled, { keyframes } from 'styled-components/macro';
 import tw from 'twin.macro';
 
 interface BaseProps {
@@ -27,17 +26,15 @@ interface PropsWithBack extends BaseProps {
 
 type Props = PropsWithBack | PropsWithRetry;
 
+const spin = keyframes`
+    to { transform: rotate(360deg) }
+`;
+
 const ActionButton = styled.button`
     ${tw`rounded-full w-8 h-8 flex items-center justify-center`};
 
     &.hover\\:spin:hover {
-        animation: spin 2s linear infinite;
-    }
-
-    @keyframes spin {
-        to {
-            transform: rotate(360deg);
-        }
+        animation: ${spin} 2s linear infinite;
     }
 `;
 

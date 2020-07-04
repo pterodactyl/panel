@@ -7,6 +7,7 @@ import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import tw from 'twin.macro';
 import styled from 'styled-components/macro';
+// @ts-ignore
 import * as config from '@/../../tailwind.config.js';
 
 const Navigation = styled.div`

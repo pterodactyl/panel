@@ -12,7 +12,6 @@ import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
 import tw from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
-import TransitionRouter from '@/TransitionRouter';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
