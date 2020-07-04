@@ -112,5 +112,13 @@ module.exports = {
                 900: 'hsl(125, 97%, 14%)',
             },
         },
+        extend: {
+            fontSize: {
+                '2xs': '0.625rem',
+            },
+            borderColor: theme => ({
+                default: theme('colors.neutral.400', 'cuurrentColor'),
+            }),
+        },
     },
 };

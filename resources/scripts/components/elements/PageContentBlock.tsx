@@ -3,7 +3,7 @@ import ContentContainer from '@/components/elements/ContentContainer';
 import { CSSTransition } from 'react-transition-group';
 import tw from 'twin.macro';
 
-export default ({ children }): React.FC => (
+const PageContentBlock: React.FC = ({ children }) => (
     <CSSTransition timeout={250} classNames={'fade'} appear in>
         <>
             <ContentContainer css={tw`my-10`}>
@@ -25,3 +25,5 @@ export default ({ children }): React.FC => (
         </>
     </CSSTransition>
 );
+
+export default PageContentBlock;

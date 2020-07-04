@@ -14,6 +14,8 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import { httpErrorToHuman } from '@/api/http';
 import format from 'date-fns/format';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import tw from 'twin.macro';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 
 export default () => {
     const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
@@ -48,18 +50,18 @@ export default () => {
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'account'} className={'mb-4'}/>
-            <div className={'flex'}>
-                <ContentBox title={'Create API Key'} className={'flex-1'}>
+            <FlashMessageRender byKey={'account'} css={tw`mb-4`}/>
+            <div css={tw`flex`}>
+                <ContentBox title={'Create API Key'} css={tw`flex-1`}>
                     <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
-                <ContentBox title={'API Keys'} className={'ml-10 flex-1'}>
+                <ContentBox title={'API Keys'} css={tw`ml-10 flex-1`}>
                     <SpinnerOverlay visible={loading}/>
                     {deleteIdentifier &&
                     <ConfirmationModal
+                        visible
                         title={'Confirm key deletion'}
                         buttonText={'Yes, delete key'}
-                        visible={true}
                         onConfirmed={() => {
                             doDeletion(deleteIdentifier);
                             setDeleteIdentifier('');
@@ -72,38 +74,38 @@ export default () => {
                     }
                     {
                         keys.length === 0 ?
-                            <p className={'text-center text-sm'}>
+                            <p css={tw`text-center text-sm`}>
                                 {loading ? 'Loading...' : 'No API keys exist for this account.'}
                             </p>
                             :
-                            keys.map(key => (
-                                <div
+                            keys.map((key, index) => (
+                                <GreyRowBox
                                     key={key.identifier}
-                                    className={'grey-row-box bg-neutral-600 mb-2 flex items-center'}
+                                    css={[ tw`bg-neutral-600 flex items-center`, index > 0 && tw`mt-2` ]}
                                 >
-                                    <FontAwesomeIcon icon={faKey} className={'text-neutral-300'}/>
-                                    <div className={'ml-4 flex-1'}>
-                                        <p className={'text-sm'}>{key.description}</p>
-                                        <p className={'text-2xs text-neutral-300 uppercase'}>
-                                            Last
-                                            used: {key.lastUsedAt ? format(key.lastUsedAt, 'MMM Do, YYYY HH:mm') : 'Never'}
+                                    <FontAwesomeIcon icon={faKey} css={tw`text-neutral-300`}/>
+                                    <div css={tw`ml-4 flex-1`}>
+                                        <p css={tw`text-sm`}>{key.description}</p>
+                                        <p css={tw`text-2xs text-neutral-300 uppercase`}>
+                                            Last used:&nbsp;
+                                            {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : 'Never'}
                                         </p>
                                     </div>
-                                    <p className={'text-sm ml-4'}>
-                                        <code className={'font-mono py-1 px-2 bg-neutral-900 rounded'}>
+                                    <p css={tw`text-sm ml-4`}>
+                                        <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded`}>
                                             {key.identifier}
                                         </code>
                                     </p>
                                     <button
-                                        className={'ml-4 p-2 text-sm'}
+                                        css={tw`ml-4 p-2 text-sm`}
                                         onClick={() => setDeleteIdentifier(key.identifier)}
                                     >
                                         <FontAwesomeIcon
                                             icon={faTrashAlt}
-                                            className={'text-neutral-400 hover:text-red-400 transition-colors duration-150'}
+                                            css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`}
                                         />
                                     </button>
-                                </div>
+                                </GreyRowBox>
                             ))
                     }
                 </ContentBox>

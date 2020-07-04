@@ -16,7 +16,7 @@ const light = css<Props>`
     }
 `;
 
-const Input = styled.input<Props>`
+const inputStyle = css<Props>`
     // Reset to normal styling.
     ${tw`appearance-none w-full min-w-0`};
     ${tw`p-3 border rounded text-sm transition-all duration-150`};
@@ -43,4 +43,8 @@ const Input = styled.input<Props>`
     ${props => props.isLight && light};
 `;
 
+const Input = styled.input<Props>`${inputStyle}`;
+const Textarea = styled.textarea<Props>`${inputStyle}`;
+
+export { Textarea };
 export default Input;
