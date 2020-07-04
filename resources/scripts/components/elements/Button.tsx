@@ -1,6 +1,7 @@
 import React from 'react';
 import styled, { css } from 'styled-components/macro';
 import tw from 'twin.macro';
+import Spinner from '@/components/elements/Spinner';
 
 interface Props {
     isLoading?: boolean;
@@ -10,9 +11,9 @@ interface Props {
 }
 
 const StyledButton = styled.button<Omit<Props, 'isLoading'>>`
-    ${tw`rounded p-2 uppercase tracking-wide text-sm transition-all duration-150`};
+    ${tw`relative inline-block rounded p-2 uppercase tracking-wide text-sm transition-all duration-150`};
     
-        ${props => props.isSecondary && css<Props>`
+    ${props => props.isSecondary && css<Props>`
         ${tw`border border-neutral-600 bg-transparent text-neutral-200`};
         
         &:hover:not(:disabled) {
@@ -79,8 +80,8 @@ type ComponentProps = Omit<JSX.IntrinsicElements['button'], 'ref' | keyof Props>
 const Button: React.FC<ComponentProps> = ({ children, isLoading, ...props }) => (
     <StyledButton {...props}>
         {isLoading &&
-        <div css={tw`w-full flex absolute justify-center`} style={{ marginLeft: '-0.75rem' }}>
-            <div className={'spinner-circle spinner-white spinner-sm'}/>
+        <div css={tw`flex absolute justify-center items-center w-full h-full left-0 top-0`}>
+            <Spinner size={'small'}/>
         </div>
         }
         <span css={isLoading ? tw`text-transparent` : undefined}>

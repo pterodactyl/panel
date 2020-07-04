@@ -36,11 +36,7 @@ const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handl
     return (
         <React.Fragment>
             {ref.current && ref.current.render()}
-            <LoginFormContainer
-                title={'Login to Continue'}
-                css={tw`w-full flex`}
-                onSubmit={submit}
-            >
+            <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`} onSubmit={submit}>
                 <Field
                     type={'text'}
                     label={'Username or Email'}
