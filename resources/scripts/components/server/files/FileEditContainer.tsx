@@ -1,14 +1,13 @@
 import React, { lazy, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import getFileContents from '@/api/server/files/getFileContents';
-import useRouter from 'use-react-router';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import saveFileContents from '@/api/server/files/saveFileContents';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
-import { useParams } from 'react-router';
+import { useHistory, useLocation, useParams } from 'react-router';
 import FileNameModal from '@/components/server/files/FileNameModal';
 import Can from '@/components/elements/Can';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -22,10 +21,12 @@ const LazyAceEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/compo
 export default () => {
     const [ error, setError ] = useState('');
     const { action } = useParams();
-    const { history, location: { hash } } = useRouter();
     const [ loading, setLoading ] = useState(action === 'edit');
     const [ content, setContent ] = useState('');
     const [ modalVisible, setModalVisible ] = useState(false);
+
+    const history = useHistory();
+    const { hash } = useLocation();
 
     const { id, uuid } = ServerContext.useStoreState(state => state.server.data!);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);

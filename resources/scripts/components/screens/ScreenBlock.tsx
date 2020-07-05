@@ -2,9 +2,9 @@ import React from 'react';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import classNames from 'classnames';
 import styled, { keyframes } from 'styled-components/macro';
 import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface BaseProps {
     title: string;
@@ -30,7 +30,7 @@ const spin = keyframes`
     to { transform: rotate(360deg) }
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled(Button)`
     ${tw`rounded-full w-8 h-8 flex items-center justify-center`};
 
     &.hover\\:spin:hover {
@@ -46,7 +46,7 @@ export default ({ title, image, message, onBack, onRetry }: Props) => (
                 <div css={tw`absolute left-0 top-0 ml-4 mt-4`}>
                     <ActionButton
                         onClick={() => onRetry ? onRetry() : (onBack ? onBack() : null)}
-                        className={classNames('btn btn-primary', { 'hover:spin': !!onRetry })}
+                        className={onRetry ? 'hover:spin' : undefined}
                     >
                         <FontAwesomeIcon icon={onRetry ? faSyncAlt : faArrowLeft}/>
                     </ActionButton>

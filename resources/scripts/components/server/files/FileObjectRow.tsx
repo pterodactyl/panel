@@ -6,14 +6,15 @@ import React from 'react';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
 import { ServerContext } from '@/state/server';
-import { NavLink } from 'react-router-dom';
-import useRouter from 'use-react-router';
+import { NavLink, useHistory, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 
 export default ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
-    const { match, history } = useRouter();
+
+    const history = useHistory();
+    const match = useRouteMatch();
 
     return (
         <div

@@ -2,7 +2,6 @@ import React, { lazy, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
-import classNames from 'classnames';
 import { bytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -68,11 +67,10 @@ export default () => {
                         <FontAwesomeIcon
                             icon={faCircle}
                             fixedWidth
-                            className={classNames('mr-1', {
-                                'text-red-500': status === 'offline',
-                                'text-yellow-500': [ 'running', 'offline' ].indexOf(status) < 0,
-                                'text-green-500': status === 'running',
-                            })}
+                            css={[
+                                tw`mr-1`,
+                                status === 'offline' ? tw`text-red-500` : (status === 'running' ? tw`text-green-500` : tw`text-yellow-500`),
+                            ]}
                         />
                         &nbsp;{status}
                     </p>

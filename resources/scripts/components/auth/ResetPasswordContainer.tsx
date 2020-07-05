@@ -56,6 +56,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                     .min(8, 'Your new password should be at least 8 characters in length.'),
                 passwordConfirmation: string()
                     .required('Your new password does not match.')
+                    // @ts-ignore
                     .oneOf([ ref('password'), null ], 'Your new password does not match.'),
             })}
         >
@@ -66,7 +67,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                 >
                     <div>
                         <label>Email</label>
-                        <Input value={email} light disabled/>
+                        <Input value={email} isLight disabled/>
                     </div>
                     <div css={tw`mt-6`}>
                         <Field

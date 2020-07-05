@@ -1,6 +1,5 @@
 import React from 'react';
 import { Field, FieldProps } from 'formik';
-import classNames from 'classnames';
 import InputError from '@/components/elements/InputError';
 import Label from '@/components/elements/Label';
 
@@ -18,7 +17,7 @@ const FormikFieldWrapper = ({ id, name, label, className, description, validate,
     <Field name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
-                <div className={classNames(className, { 'has-error': touched[field.name] && errors[field.name] })}>
+                <div className={`${className} ${(touched[field.name] && errors[field.name]) ? 'has-error' : undefined}`}>
                     {label && <Label htmlFor={id}>{label}</Label>}
                     {children}
                     <InputError errors={errors} touched={touched} name={field.name}>

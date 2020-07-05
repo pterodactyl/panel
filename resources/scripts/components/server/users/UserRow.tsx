@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faUnlockAlt, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import RemoveSubuserButton from '@/components/server/users/RemoveSubuserButton';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
-import classNames from 'classnames';
 import Can from '@/components/elements/Can';
 import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
@@ -39,9 +38,8 @@ export default ({ subuser }: Props) => {
                     &nbsp;
                     <FontAwesomeIcon
                         icon={subuser.twoFactorEnabled ? faUserLock : faUnlockAlt}
-                        className={classNames('fa-fw', {
-                            'text-red-400': !subuser.twoFactorEnabled,
-                        })}
+                        fixedWidth
+                        css={!subuser.twoFactorEnabled ? tw`text-red-400` : undefined}
                     />
                     &nbsp;
                 </p>
@@ -56,9 +54,10 @@ export default ({ subuser }: Props) => {
             <button
                 type={'button'}
                 aria-label={'Edit subuser'}
-                className={classNames('block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mx-4', {
-                    hidden: subuser.uuid === uuid,
-                })}
+                css={[
+                    tw`block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mx-4`,
+                    subuser.uuid === uuid ? tw`hidden` : undefined,
+                ]}
                 onClick={() => setVisible(true)}
             >
                 <FontAwesomeIcon icon={faPencilAlt}/>

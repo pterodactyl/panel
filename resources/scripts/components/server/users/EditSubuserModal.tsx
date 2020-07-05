@@ -9,7 +9,6 @@ import { ApplicationStore } from '@/state';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Checkbox from '@/components/elements/Checkbox';
 import styled from 'styled-components/macro';
-import classNames from 'classnames';
 import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
@@ -145,10 +144,11 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                             <PermissionLabel
                                 key={`permission_${key}_${pkey}`}
                                 htmlFor={`permission_${key}_${pkey}`}
-                                className={classNames('transition-colors duration-75', {
-                                    'mt-2': index !== 0,
-                                    disabled: !canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0,
-                                })}
+                                css={[
+                                    tw`transition-colors duration-75`,
+                                    index > 0 ? tw`mt-2` : undefined,
+                                ]}
+                                className={(!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0) ? 'disabled' : undefined}
                             >
                                 <div css={tw`p-2`}>
                                     <Checkbox
