@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Subuser } from '@/state/server/subusers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
+import { faPencilAlt, faUnlockAlt, faUserLock } from '@fortawesome/free-solid-svg-icons';
 import RemoveSubuserButton from '@/components/server/users/RemoveSubuserButton';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
-import { faUnlockAlt } from '@fortawesome/free-solid-svg-icons/faUnlockAlt';
-import { faUserLock } from '@fortawesome/free-solid-svg-icons/faUserLock';
 import classNames from 'classnames';
 import Can from '@/components/elements/Can';
 import { useStoreState } from 'easy-peasy';

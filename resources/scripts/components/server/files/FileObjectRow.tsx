@@ -1,7 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileImport } from '@fortawesome/free-solid-svg-icons/faFileImport';
-import { faFileAlt } from '@fortawesome/free-solid-svg-icons/faFileAlt';
-import { faFolder } from '@fortawesome/free-solid-svg-icons/faFolder';
+import { faFileAlt, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
 import { bytesToHuman, cleanDirectoryPath } from '@/helpers';
 import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import React from 'react';

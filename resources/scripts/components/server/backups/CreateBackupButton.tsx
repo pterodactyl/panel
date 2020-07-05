@@ -12,7 +12,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerContext } from '@/state/server';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
-import Input, { Textarea } from '@/components/elements/Input';
+import { Textarea } from '@/components/elements/Input';
 
 interface Values {
     name: string;

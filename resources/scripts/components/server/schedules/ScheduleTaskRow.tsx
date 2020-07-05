@@ -1,19 +1,15 @@
 import React, { useState } from 'react';
 import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import { faCode } from '@fortawesome/free-solid-svg-icons/faCode';
-import { faToggleOn } from '@fortawesome/free-solid-svg-icons/faToggleOn';
+import { faCode, faFileArchive, faPencilAlt, faToggleOn, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
 import Can from '@/components/elements/Can';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import { faFileArchive } from '@fortawesome/free-solid-svg-icons/faFileArchive';
 import tw from 'twin.macro';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 

@@ -10,7 +10,6 @@ import Field from '@/components/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
 import { FlashMessage } from '@/state/flashes';
 import ReCAPTCHA from 'react-google-recaptcha';
-import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 
@@ -87,7 +86,7 @@ const LoginContainer = ({ isSubmitting, setFieldValue, values, submitForm, handl
 const EnhancedForm = withFormik<OwnProps, LoginData>({
     displayName: 'LoginContainerForm',
 
-    mapPropsToValues: (props) => ({
+    mapPropsToValues: () => ({
         username: '',
         password: '',
         recaptchaData: null,

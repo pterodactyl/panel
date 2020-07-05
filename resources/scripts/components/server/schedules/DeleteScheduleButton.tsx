@@ -39,6 +39,7 @@ export default ({ scheduleId, onDeleted }: Props) => {
     return (
         <>
             <ConfirmationModal
+                showSpinnerOverlay={isLoading}
                 title={'Delete schedule?'}
                 buttonText={'Yes, delete schedule'}
                 onConfirmed={onDelete}

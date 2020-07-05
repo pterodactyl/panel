@@ -3,7 +3,6 @@ import { Field, FieldProps } from 'formik';
 import classNames from 'classnames';
 import InputError from '@/components/elements/InputError';
 import Label from '@/components/elements/Label';
-import tw from 'twin.macro';
 
 interface Props {
     id?: string;

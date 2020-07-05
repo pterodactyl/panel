@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
 import { PowerAction } from '@/components/server/ServerConsole';
 import Button from '@/components/elements/Button';
 

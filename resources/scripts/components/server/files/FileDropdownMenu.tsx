@@ -1,12 +1,13 @@
 import React, { createRef, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons/faEllipsisH';
-import { CSSTransition } from 'react-transition-group';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons/faPencilAlt';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import { faFileDownload } from '@fortawesome/free-solid-svg-icons/faFileDownload';
-import { faCopy } from '@fortawesome/free-solid-svg-icons/faCopy';
-import { faLevelUpAlt } from '@fortawesome/free-solid-svg-icons/faLevelUpAlt';
+import {
+    faCopy,
+    faEllipsisH,
+    faFileDownload,
+    faLevelUpAlt,
+    faPencilAlt,
+    faTrashAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
 import { join } from 'path';

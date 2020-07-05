@@ -1,16 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faServer } from '@fortawesome/free-solid-svg-icons/faServer';
-import { faEthernet } from '@fortawesome/free-solid-svg-icons/faEthernet';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
-import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
-import { faHdd } from '@fortawesome/free-solid-svg-icons/faHdd';
+import { faServer, faEthernet, faMicrochip, faMemory, faHdd } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
 import { bytesToHuman } from '@/helpers';
-import classNames from 'classnames';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 

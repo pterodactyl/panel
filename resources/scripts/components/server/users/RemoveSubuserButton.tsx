@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Subuser } from '@/state/server/subusers';
 import deleteSubuser from '@/api/server/users/deleteSubuser';
 import { Actions, useStoreActions } from 'easy-peasy';

@@ -4,8 +4,7 @@ import { ServerContext } from '@/state/server';
 import { bytesToMegabytes } from '@/helpers';
 import merge from 'lodash-es/merge';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
+import { faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
 
 const chartDefaults: ChartConfiguration = {

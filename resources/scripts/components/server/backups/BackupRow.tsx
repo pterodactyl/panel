@@ -1,7 +1,7 @@
 import React from 'react';
 import { ServerBackup } from '@/api/server/backups/getServerBackups';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive } from '@fortawesome/free-solid-svg-icons/faArchive';
+import { faArchive, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
 import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/components/elements/Spinner';
 import { bytesToHuman } from '@/helpers';
@@ -9,7 +9,6 @@ import Can from '@/components/elements/Can';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { ServerContext } from '@/state/server';
 import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons/faEllipsisH';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 

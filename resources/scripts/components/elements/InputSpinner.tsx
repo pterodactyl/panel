@@ -1,6 +1,5 @@
 import React from 'react';
 import Spinner from '@/components/elements/Spinner';
-import { CSSTransition } from 'react-transition-group';
 import Fade from '@/components/elements/Fade';
 import tw from 'twin.macro';
 

@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { ServerBackup } from '@/api/server/backups/getServerBackups';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons/faEllipsisH';
+import { faCloudDownloadAlt, faEllipsisH, faLock, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
-import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import { faLock } from '@fortawesome/free-solid-svg-icons/faLock';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import { httpErrorToHuman } from '@/api/http';
 import useFlash from '@/plugins/useFlash';

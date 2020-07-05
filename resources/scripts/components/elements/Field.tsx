@@ -13,11 +13,11 @@ interface OwnProps {
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
-const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, label, description, validate, className, ...props }, ref) => (
+const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, label, description, validate, ...props }, ref) => (
     <FormikField innerRef={ref} name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
-                <React.Fragment>
+                <>
                     {label &&
                     <Label htmlFor={id} isLight={light}>{label}</Label>
                     }
@@ -35,7 +35,7 @@ const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, la
                         :
                         description ? <p className={'input-help'}>{description}</p> : null
                     }
-                </React.Fragment>
+                </>
             )
         }
     </FormikField>

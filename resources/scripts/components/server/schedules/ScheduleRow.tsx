@@ -1,9 +1,8 @@
 import React from 'react';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons/faCalendarAlt';
-import format from 'date-fns/format';
-import classNames from 'classnames';
+import { faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { format } from 'date-fns';
 import tw from 'twin.macro';
 
 export default ({ schedule }: { schedule: Schedule }) => (

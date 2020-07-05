@@ -12,7 +12,7 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
-import Button, { LinkButton } from '@/components/elements/Button';
+import { LinkButton } from '@/components/elements/Button';
 
 export default () => {
     const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);

@@ -5,7 +5,6 @@ import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import DatabaseRow from '@/components/server/databases/DatabaseRow';
 import Spinner from '@/components/elements/Spinner';
-import { CSSTransition } from 'react-transition-group';
 import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseButton';
 import Can from '@/components/elements/Can';
 import useFlash from '@/plugins/useFlash';
@@ -63,7 +62,8 @@ export default () => {
                         <Can action={'database.create'}>
                             {(featureLimits.databases > 0 && databases.length > 0) &&
                             <p css={tw`text-center text-xs text-neutral-400 mt-2`}>
-                                {databases.length} of {featureLimits.databases} databases have been allocated to this server.
+                                {databases.length} of {featureLimits.databases} databases have been allocated to this
+                                server.
                             </p>
                             }
                             {featureLimits.databases > 0 && featureLimits.databases !== databases.length &&

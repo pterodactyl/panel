@@ -7,7 +7,6 @@ import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import Spinner from '@/components/elements/Spinner';
 import { Formik, FormikHelpers } from 'formik';
 import { object, ref, string } from 'yup';
 import Field from '@/components/elements/Field';

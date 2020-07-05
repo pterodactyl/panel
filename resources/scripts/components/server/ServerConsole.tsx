@@ -1,12 +1,8 @@
 import React, { lazy, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faServer } from '@fortawesome/free-solid-svg-icons/faServer';
-import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
+import { faCircle, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
-import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
-import { faHdd } from '@fortawesome/free-solid-svg-icons/faHdd';
 import { bytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';

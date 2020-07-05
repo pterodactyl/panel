@@ -32,7 +32,7 @@ export default () => {
         return null;
     }
 
-    const submit = (values: Values, { resetForm, setSubmitting }: FormikHelpers<Values>) => {
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('account:password');
         updateAccountPassword({ ...values })
             .then(() => {
