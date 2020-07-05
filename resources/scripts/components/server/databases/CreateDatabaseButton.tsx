@@ -9,6 +9,8 @@ import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import useServer from '@/plugins/useServer';
+import Button from '@/components/elements/Button';
+import tw from 'twin.macro';
 
 interface Values {
     databaseName: string;
@@ -48,7 +50,7 @@ export default () => {
     };
 
     return (
-        <React.Fragment>
+        <>
             <Formik
                 onSubmit={submit}
                 initialValues={{ databaseName: '', connectionsFrom: '%' }}
@@ -65,9 +67,9 @@ export default () => {
                                 setVisible(false);
                             }}
                         >
-                            <FlashMessageRender byKey={'database:create'} className={'mb-6'}/>
-                            <h3 className={'mb-6'}>Create new database</h3>
-                            <Form className={'m-0'}>
+                            <FlashMessageRender byKey={'database:create'} css={tw`mb-6`}/>
+                            <h2 css={tw`text-2xl mb-6`}>Create new database</h2>
+                            <Form css={tw`m-0`}>
                                 <Field
                                     type={'string'}
                                     id={'database_name'}
@@ -75,7 +77,7 @@ export default () => {
                                     label={'Database Name'}
                                     description={'A descriptive name for your database instance.'}
                                 />
-                                <div className={'mt-6'}>
+                                <div css={tw`mt-6`}>
                                     <Field
                                         type={'string'}
                                         id={'connections_from'}
@@ -84,26 +86,27 @@ export default () => {
                                         description={'Where connections should be allowed from. Use % for wildcards.'}
                                     />
                                 </div>
-                                <div className={'mt-6 text-right'}>
-                                    <button
+                                <div css={tw`mt-6 text-right`}>
+                                    <Button
                                         type={'button'}
-                                        className={'btn btn-sm btn-secondary mr-2'}
+                                        isSecondary
+                                        css={tw`mr-2`}
                                         onClick={() => setVisible(false)}
                                     >
                                         Cancel
-                                    </button>
-                                    <button className={'btn btn-sm btn-primary'} type={'submit'}>
+                                    </Button>
+                                    <Button type={'submit'}>
                                         Create Database
-                                    </button>
+                                    </Button>
                                 </div>
                             </Form>
                         </Modal>
                     )
                 }
             </Formik>
-            <button className={'btn btn-primary btn-sm'} onClick={() => setVisible(true)}>
+            <Button onClick={() => setVisible(true)}>
                 New Database
-            </button>
-        </React.Fragment>
+            </Button>
+        </>
     );
 };
