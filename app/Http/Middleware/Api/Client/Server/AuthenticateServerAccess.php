@@ -65,7 +65,7 @@ class AuthenticateServerAccess
         }
 
         if ($server->suspended) {
-            throw new AccessDeniedHttpException('This server is currenty suspended and the functionality requested is unavailable.');
+            throw new AccessDeniedHttpException('This server is currently suspended and the functionality requested is unavailable.');
         }
 
         if (! $server->isInstalled()) {
