@@ -84,6 +84,7 @@
         "eslint-plugin-standard": "^4.0.1",
         "fork-ts-checker-webpack-plugin": "^5.0.6",
         "redux-devtools-extension": "^2.13.8",
+        "source-map-loader": "^1.0.1",
         "style-loader": "^1.2.1",
         "svg-url-loader": "^6.0.0",
         "tailwindcss": "^1.4.6",
@@ -99,12 +100,12 @@
         "yarn-deduplicate": "^1.1.1"
     },
     "scripts": {
-        "clean": "rm -rf public/assets/*.{js,css,map}",
+        "clean": "cd public/assets && find . \\( -name \"*.js\" -o -name \"*.map\" \\) -type f -delete",
         "lint": "eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
         "watch": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "yarn run clean && cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production",
-        "serve": "yarn run clean && cross-env PUBLIC_PATH=https://pterodactyl.test:8080 cross-env TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
+        "serve": "yarn run clean && cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development TSC_WATCHFILE=UseFsEventsWithFallbackDynamicPolling webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
     },
     "browserslist": [
         "> 0.5%",

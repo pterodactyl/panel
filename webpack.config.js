@@ -10,14 +10,13 @@ module.exports = {
     cache: true,
     target: 'web',
     mode: process.env.NODE_ENV,
-    context: __dirname,
     devtool: isProduction ? false : (process.env.DEVTOOL || 'eval-source-map'),
     performance: {
         hints: false,
     },
     entry: ['react-hot-loader/patch', './resources/scripts/index.tsx'],
     output: {
-        path: path.resolve(__dirname, '/public/assets'),
+        path: path.join(__dirname, '/public/assets'),
         filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
         chunkFilename: isProduction ? '[name].[chunkhash:8].js' : '[name].[hash:8].js',
         publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
@@ -26,7 +25,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.ts(x?)$/,
+                test: /\.tsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 options: {
@@ -38,27 +37,32 @@ module.exports = {
                 use: [ 'style-loader', 'css-loader' ],
             },
             {
-                test: /\.(png|jpe?g|gif)$/,
+                test: /\.(png|jp(e?)g|gif)$/,
                 loader: 'file-loader',
                 options: {
-                    name: 'images/[name].[hash].[ext]',
+                    name: 'images/[name].[hash:8].[ext]',
                 },
             },
             {
                 test: /\.svg$/,
                 loader: 'svg-url-loader',
+            },
+            {
+                test: /\.js$/,
+                enforce: 'pre',
+                loader: 'source-map-loader',
             }
-            // {
-            //     enforce: 'pre',
-            //     test: /\.js$/,
-            //     loader: 'source-map-loader',
-            // },
         ],
+    },
+    stats: {
+        // Ignore warnings emitted by "source-map-loader" when trying to parse source maps from
+        // JS plugins we use, namely brace editor.
+        warningsFilter: [/Failed to parse source map/],
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
-            '@': path.resolve(__dirname, 'resources/scripts'),
+            '@': path.join(__dirname, '/resources/scripts'),
         },
         symlinks: false,
     },
@@ -66,7 +70,7 @@ module.exports = {
         new AssetsManifestPlugin({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
         !isProduction ? new ForkTsCheckerWebpackPlugin({
             eslint: {
-                files: './resources/scripts/**/*.{ts,tsx}',
+                files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
             },
         }) : null,
         process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin() : null
@@ -97,7 +101,7 @@ module.exports = {
     },
     devServer: {
         compress: true,
-        contentBase: 'public',
+        contentBase: path.join(__dirname, '/public'),
         publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
         allowedHosts: [
             '.pterodactyl.test',
