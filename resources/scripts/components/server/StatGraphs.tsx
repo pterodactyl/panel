@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Chart, { ChartConfiguration } from 'chart.js';
 import { ServerContext } from '@/state/server';
 import { bytesToMegabytes } from '@/helpers';
-import merge from 'lodash-es/merge';
+import merge from 'deepmerge';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
@@ -59,7 +59,7 @@ const chartDefaults: ChartConfiguration = {
 };
 
 const createDefaultChart = (ctx: CanvasRenderingContext2D, options?: ChartConfiguration): Chart => new Chart(ctx, {
-    ...merge({}, chartDefaults, options),
+    ...merge(chartDefaults, options || {}),
     data: {
         labels: Array(20).fill(''),
         datasets: [

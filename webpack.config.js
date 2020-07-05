@@ -73,7 +73,10 @@ module.exports = {
                 files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
             },
         }) : null,
-        process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin() : null
+        process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin({
+            analyzerHost: '0.0.0.0',
+            analyzerPort: 8081,
+        }) : null
     ].filter(p => p),
     optimization: {
         usedExports: true,

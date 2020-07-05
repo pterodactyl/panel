@@ -3,7 +3,7 @@ import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { object, string } from 'yup';
-import { debounce } from 'lodash-es';
+import debounce from 'debounce';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import InputSpinner from '@/components/elements/InputSpinner';
 import getServers from '@/api/getServers';
@@ -57,6 +57,7 @@ export default ({ ...props }: Props) => {
         setLoading(true);
         setSubmitting(false);
         clearFlashes('search');
+
         getServers(term)
             .then(servers => setServers(servers.items.filter((_, index) => index < 5)))
             .catch(error => {

@@ -1,7 +1,7 @@
 import React from 'react';
-import capitalize from 'lodash-es/capitalize';
 import { FormikErrors, FormikTouched } from 'formik';
 import tw from 'twin.macro';
+import { capitalize } from '@/helpers';
 
 interface Props {
     errors: FormikErrors<any>;
