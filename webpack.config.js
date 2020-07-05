@@ -66,6 +66,11 @@ module.exports = {
         },
         symlinks: false,
     },
+    externals: {
+        // Mark moment as an external to exclude it from the Chart.js build since we don't need to use
+        // it for anything.
+        moment: 'moment',
+    },
     plugins: [
         new AssetsManifestPlugin({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
         !isProduction ? new ForkTsCheckerWebpackPlugin({
