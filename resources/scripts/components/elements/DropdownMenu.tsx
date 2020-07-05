@@ -69,8 +69,7 @@ const DropdownMenu = ({ renderToggle, children }: Props) => {
                         e.stopPropagation();
                         setVisible(false);
                     }}
-                    css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500`}
-                    style={{ minWidth: '12rem' }}
+                    css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48`}
                 >
                     {children}
                 </div>

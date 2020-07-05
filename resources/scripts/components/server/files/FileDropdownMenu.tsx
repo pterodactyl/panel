@@ -18,6 +18,8 @@ import Can from '@/components/elements/Can';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
+import tw from 'twin.macro';
+import Fade from '@/components/elements/Fade';
 
 type ModalType = 'rename' | 'move';
 
@@ -113,7 +115,7 @@ export default ({ uuid }: { uuid: string }) => {
         <div key={`dropdown:${file.uuid}`}>
             <div
                 ref={menuButton}
-                className={'p-3 hover:text-white'}
+                css={tw`p-3 hover:text-white`}
                 onClick={e => {
                     e.preventDefault();
                     if (!menuVisible) {
@@ -133,60 +135,60 @@ export default ({ uuid }: { uuid: string }) => {
                         setMenuVisible(false);
                     }}
                 />
-                <SpinnerOverlay visible={showSpinner} fixed={true} size={'large'}/>
+                <SpinnerOverlay visible={showSpinner} fixed size={'large'}/>
             </div>
-            <CSSTransition timeout={250} in={menuVisible} unmountOnExit={true} classNames={'fade'}>
+            <Fade timeout={250} in={menuVisible} unmountOnExit classNames={'fade'}>
                 <div
                     ref={menu}
                     onClick={e => {
                         e.stopPropagation();
                         setMenuVisible(false);
                     }}
-                    className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48'}
+                    css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48`}
                 >
                     <Can action={'file.update'}>
                         <div
                             onClick={() => setModal('rename')}
-                            className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                            css={tw`hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded`}
                         >
-                            <FontAwesomeIcon icon={faPencilAlt} className={'text-xs'}/>
-                            <span className={'ml-2'}>Rename</span>
+                            <FontAwesomeIcon icon={faPencilAlt} css={tw`text-xs`}/>
+                            <span css={tw`ml-2`}>Rename</span>
                         </div>
                         <div
                             onClick={() => setModal('move')}
-                            className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                            css={tw`hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded`}
                         >
-                            <FontAwesomeIcon icon={faLevelUpAlt} className={'text-xs'}/>
-                            <span className={'ml-2'}>Move</span>
+                            <FontAwesomeIcon icon={faLevelUpAlt} css={tw`text-xs`}/>
+                            <span css={tw`ml-2`}>Move</span>
                         </div>
                     </Can>
                     <Can action={'file.create'}>
                         <div
                             onClick={() => doCopy()}
-                            className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                            css={tw`hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded`}
                         >
-                            <FontAwesomeIcon icon={faCopy} className={'text-xs'}/>
-                            <span className={'ml-2'}>Copy</span>
+                            <FontAwesomeIcon icon={faCopy} css={tw`text-xs`}/>
+                            <span css={tw`ml-2`}>Copy</span>
                         </div>
                     </Can>
                     <div
-                        className={'hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded'}
+                        css={tw`hover:text-neutral-700 p-2 flex items-center hover:bg-neutral-100 rounded`}
                         onClick={() => doDownload()}
                     >
-                        <FontAwesomeIcon icon={faFileDownload} className={'text-xs'}/>
-                        <span className={'ml-2'}>Download</span>
+                        <FontAwesomeIcon icon={faFileDownload} css={tw`text-xs`}/>
+                        <span css={tw`ml-2`}>Download</span>
                     </div>
                     <Can action={'file.delete'}>
                         <div
                             onClick={() => doDeletion()}
-                            className={'hover:text-red-700 p-2 flex items-center hover:bg-red-100 rounded'}
+                            css={tw`hover:text-red-700 p-2 flex items-center hover:bg-red-100 rounded`}
                         >
-                            <FontAwesomeIcon icon={faTrashAlt} className={'text-xs'}/>
-                            <span className={'ml-2'}>Delete</span>
+                            <FontAwesomeIcon icon={faTrashAlt} css={tw`text-xs`}/>
+                            <span css={tw`ml-2`}>Delete</span>
                         </div>
                     </Can>
                 </div>
-            </CSSTransition>
+            </Fade>
         </div>
     );
 };

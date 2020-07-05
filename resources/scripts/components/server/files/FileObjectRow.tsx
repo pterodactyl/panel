@@ -10,6 +10,7 @@ import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
 import { ServerContext } from '@/state/server';
 import { NavLink } from 'react-router-dom';
 import useRouter from 'use-react-router';
+import tw from 'twin.macro';
 
 export default ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
@@ -19,14 +20,11 @@ export default ({ file }: { file: FileObject }) => {
     return (
         <div
             key={file.name}
-            className={`
-                flex bg-neutral-700 rounded-sm mb-px text-sm
-                hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600
-            `}
+            css={tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`}
         >
             <NavLink
                 to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
-                className={'flex flex-1 text-neutral-300 no-underline p-3'}
+                css={tw`flex flex-1 text-neutral-300 no-underline p-3`}
                 onClick={e => {
                     // Don't rely on the onClick to work with the generated URL. Because of the way this
                     // component re-renders you'll get redirected into a nested directory structure since
@@ -41,27 +39,27 @@ export default ({ file }: { file: FileObject }) => {
                     }
                 }}
             >
-                <div className={'flex-none text-neutral-400 mr-4 text-lg pl-3'}>
+                <div css={tw`flex-none text-neutral-400 mr-4 text-lg pl-3`}>
                     {file.isFile ?
                         <FontAwesomeIcon icon={file.isSymlink ? faFileImport : faFileAlt}/>
                         :
                         <FontAwesomeIcon icon={faFolder}/>
                     }
                 </div>
-                <div className={'flex-1'}>
+                <div css={tw`flex-1`}>
                     {file.name}
                 </div>
                 {file.isFile &&
-                <div className={'w-1/6 text-right mr-4'}>
+                <div css={tw`w-1/6 text-right mr-4`}>
                     {bytesToHuman(file.size)}
                 </div>
                 }
                 <div
-                    className={'w-1/5 text-right mr-4'}
+                    css={tw`w-1/5 text-right mr-4`}
                     title={file.modifiedAt.toString()}
                 >
                     {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
-                        format(file.modifiedAt, 'MMM Do, YYYY h:mma')
+                        format(file.modifiedAt, 'MMM do, yyyy h:mma')
                         :
                         formatDistanceToNow(file.modifiedAt, { addSuffix: true })
                     }

@@ -14,7 +14,8 @@ import { Link } from 'react-router-dom';
 import Can from '@/components/elements/Can';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import ServerError from '@/components/screens/ServerError';
-import useRouter from 'use-react-router';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -24,7 +25,7 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 export default () => {
     const [ error, setError ] = useState('');
     const [ loading, setLoading ] = useState(true);
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const { id } = ServerContext.useStoreState(state => state.server.data!);
     const { contents: files } = ServerContext.useStoreState(state => state.files);
     const { getDirectoryContents } = ServerContext.useStoreActions(actions => actions.files);
@@ -56,16 +57,16 @@ export default () => {
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'files'} className={'mb-4'}/>
+            <FlashMessageRender byKey={'files'} css={tw`mb-4`}/>
             <React.Fragment>
                 <FileManagerBreadcrumbs/>
                 {
                     loading ?
-                        <Spinner size={'large'} centered={true}/>
+                        <Spinner size={'large'} centered/>
                         :
                         <React.Fragment>
                             {!files.length ?
-                                <p className={'text-sm text-neutral-400 text-center'}>
+                                <p css={tw`text-sm text-neutral-400 text-center`}>
                                     This directory seems to be empty.
                                 </p>
                                 :
@@ -74,8 +75,8 @@ export default () => {
                                         <div>
                                             {files.length > 250 ?
                                                 <React.Fragment>
-                                                    <div className={'rounded bg-yellow-400 mb-px p-3'}>
-                                                        <p className={'text-yellow-900 text-sm text-center'}>
+                                                    <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
+                                                        <p css={tw`text-yellow-900 text-sm text-center`}>
                                                             This directory is too large to display in the browser,
                                                             limiting the output to the first 250 files.
                                                         </p>
@@ -96,14 +97,15 @@ export default () => {
                                 </CSSTransition>
                             }
                             <Can action={'file.create'}>
-                                <div className={'flex justify-end mt-8'}>
+                                <div css={tw`flex justify-end mt-8`}>
                                     <NewDirectoryButton/>
-                                    <Link
+                                    <Button
+                                        // @ts-ignore
+                                        as={Link}
                                         to={`/server/${id}/files/new${window.location.hash}`}
-                                        className={'btn btn-sm btn-primary'}
                                     >
                                         New File
-                                    </Link>
+                                    </Button>
                                 </div>
                             </Can>
                         </React.Fragment>

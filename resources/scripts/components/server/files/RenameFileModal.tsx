@@ -6,7 +6,8 @@ import { join } from 'path';
 import renameFile from '@/api/server/files/renameFile';
 import { ServerContext } from '@/state/server';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import classNames from 'classnames';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface FormikValues {
     name: string;
@@ -48,14 +49,14 @@ export default ({ file, useMoveTerminology, ...props }: Props) => {
         >
             {({ isSubmitting, values }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form className={'m-0'}>
+                    <Form css={tw`m-0`}>
                         <div
-                            className={classNames('flex', {
-                                'items-center': useMoveTerminology,
-                                'items-end': !useMoveTerminology,
-                            })}
+                            css={[
+                                tw`flex`,
+                                useMoveTerminology ? tw`items-center` : tw`items-end`,
+                            ]}
                         >
-                            <div className={'flex-1 mr-6'}>
+                            <div css={tw`flex-1 mr-6`}>
                                 <Field
                                     type={'string'}
                                     id={'file_name'}
@@ -65,18 +66,16 @@ export default ({ file, useMoveTerminology, ...props }: Props) => {
                                         ? 'Enter the new name and directory of this file or folder, relative to the current directory.'
                                         : undefined
                                     }
-                                    autoFocus={true}
+                                    autoFocus
                                 />
                             </div>
                             <div>
-                                <button className={'btn btn-sm btn-primary'}>
-                                    {useMoveTerminology ? 'Move' : 'Rename'}
-                                </button>
+                                <Button>{useMoveTerminology ? 'Move' : 'Rename'}</Button>
                             </div>
                         </div>
                         {useMoveTerminology &&
-                        <p className={'text-xs mt-2 text-neutral-400'}>
-                            <strong className={'text-neutral-200'}>New location:</strong>
+                        <p css={tw`text-xs mt-2 text-neutral-400`}>
+                            <strong css={tw`text-neutral-200`}>New location:</strong>
                             &nbsp;/home/container/{join(directory, values.name).replace(/^(\.\.\/|\/)+/, '')}
                         </p>
                         }

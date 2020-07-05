@@ -119,6 +119,9 @@ module.exports = {
             transitionDuration: {
                 250: '250ms',
             },
+            minWidth: {
+                '48': '12rem',
+            },
             borderColor: theme => ({
                 default: theme('colors.neutral.400', 'cuurrentColor'),
             }),

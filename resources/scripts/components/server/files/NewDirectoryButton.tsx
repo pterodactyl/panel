@@ -7,6 +7,8 @@ import { join } from 'path';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import v4 from 'uuid/v4';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface Values {
     directoryName: string;
@@ -62,33 +64,33 @@ export default () => {
                             resetForm();
                         }}
                     >
-                        <Form className={'m-0'}>
+                        <Form css={tw`m-0`}>
                             <Field
                                 id={'directoryName'}
                                 name={'directoryName'}
                                 label={'Directory Name'}
                             />
-                            <p className={'text-xs mt-2 text-neutral-400'}>
-                                <span className={'text-neutral-200'}>This directory will be created as</span>
+                            <p css={tw`text-xs mt-2 text-neutral-400`}>
+                                <span css={tw`text-neutral-200`}>This directory will be created as</span>
                                 &nbsp;/home/container/
-                                <span className={'text-cyan-200'}>
+                                <span css={tw`text-cyan-200`}>
                                     {decodeURIComponent(
                                         join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, ''),
                                     )}
                                 </span>
                             </p>
-                            <div className={'flex justify-end'}>
-                                <button className={'btn btn-sm btn-primary mt-8'}>
+                            <div css={tw`flex justify-end`}>
+                                <Button css={tw`mt-8`}>
                                     Create Directory
-                                </button>
+                                </Button>
                             </div>
                         </Form>
                     </Modal>
                 )}
             </Formik>
-            <button className={'btn btn-sm btn-secondary mr-2'} onClick={() => setVisible(true)}>
+            <Button isSecondary css={tw`mr-2`} onClick={() => setVisible(true)}>
                 Create Directory
-            </button>
+            </Button>
         </React.Fragment>
     );
 };
