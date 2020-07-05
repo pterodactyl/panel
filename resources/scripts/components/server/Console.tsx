@@ -6,6 +6,7 @@ import { ServerContext } from '@/state/server';
 import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
 import tw from 'twin.macro';
+import 'xterm/dist/xterm.css';
 
 const theme = {
     background: 'transparent',

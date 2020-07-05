@@ -7,7 +7,7 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
 
-const chartDefaults: ChartConfiguration = {
+const chartDefaults = (ticks?: Chart.TickOptions | undefined): ChartConfiguration => ({
     type: 'line',
     options: {
         legend: {
@@ -45,21 +45,17 @@ const chartDefaults: ChartConfiguration = {
                     zeroLineColor: 'rgba(15, 178, 184, 0.45)',
                     zeroLineWidth: 3,
                 },
-                ticks: {
+                ticks: merge(ticks || {}, {
                     fontSize: 10,
                     fontFamily: '"IBM Plex Mono", monospace',
                     fontColor: 'rgb(229, 232, 235)',
                     min: 0,
                     beginAtZero: true,
                     maxTicksLimit: 5,
-                },
+                }),
             } ],
         },
     },
-};
-
-const createDefaultChart = (ctx: CanvasRenderingContext2D, options?: ChartConfiguration): Chart => new Chart(ctx, {
-    ...merge(chartDefaults, options || {}),
     data: {
         labels: Array(20).fill(''),
         datasets: [
@@ -84,18 +80,12 @@ export default () => {
             return;
         }
 
-        setMemory(createDefaultChart(node.getContext('2d')!, {
-            options: {
-                scales: {
-                    yAxes: [ {
-                        ticks: {
-                            callback: (value) => `${value}Mb  `,
-                            suggestedMax: limits.memory,
-                        },
-                    } ],
-                },
-            },
-        }));
+        setMemory(
+            new Chart(node.getContext('2d')!, chartDefaults({
+                callback: (value) => `${value}Mb  `,
+                suggestedMax: limits.memory,
+            }))
+        );
     }, []);
 
     const cpuRef = useCallback<(node: HTMLCanvasElement | null) => void>(node => {
@@ -103,17 +93,11 @@ export default () => {
             return;
         }
 
-        setCpu(createDefaultChart(node.getContext('2d')!, {
-            options: {
-                scales: {
-                    yAxes: [ {
-                        ticks: {
-                            callback: (value) => `${value}%  `,
-                        },
-                    } ],
-                },
-            },
-        }));
+        setCpu(
+            new Chart(node.getContext('2d')!, chartDefaults({
+                callback: (value) => `${value}%`,
+            })),
+        );
     }, []);
 
     const statsListener = (data: string) => {
