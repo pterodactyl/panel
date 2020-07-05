@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
+import Button from '@/components/elements/Button';
 
 interface Props {
     schedule: Schedule;
@@ -17,9 +18,9 @@ export default ({ schedule }: Props) => {
                 onDismissed={() => setVisible(false)}
             />
             }
-            <button className={'btn btn-primary btn-sm'} onClick={() => setVisible(true)}>
+            <Button onClick={() => setVisible(true)}>
                 New Task
-            </button>
+            </Button>
         </>
     );
 };

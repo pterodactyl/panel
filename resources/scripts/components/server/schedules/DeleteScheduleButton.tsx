@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import Modal from '@/components/elements/Modal';
 import deleteSchedule from '@/api/server/schedules/deleteSchedule';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 interface Props {
     scheduleId: number;
@@ -36,34 +38,19 @@ export default ({ scheduleId, onDeleted }: Props) => {
 
     return (
         <>
-            <Modal
+            <ConfirmationModal
+                title={'Delete schedule?'}
+                buttonText={'Yes, delete schedule'}
+                onConfirmed={onDelete}
                 visible={visible}
                 onDismissed={() => setVisible(false)}
-                showSpinnerOverlay={isLoading}
             >
-                <h3 className={'mb-6'}>Delete schedule</h3>
-                <p className={'text-sm'}>
-                    Are you sure you want to delete this schedule? All tasks will be removed and any running processes
-                    will be terminated.
-                </p>
-                <div className={'mt-6 flex justify-end'}>
-                    <button
-                        className={'btn btn-secondary btn-sm mr-4'}
-                        onClick={() => setVisible(false)}
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        className={'btn btn-red btn-sm'}
-                        onClick={() => onDelete()}
-                    >
-                        Yes, delete schedule
-                    </button>
-                </div>
-            </Modal>
-            <button className={'btn btn-red btn-secondary btn-sm mr-4'} onClick={() => setVisible(true)}>
+                Are you sure you want to delete this schedule? All tasks will be removed and any running processes
+                will be terminated.
+            </ConfirmationModal>
+            <Button css={tw`mr-4`} color={'red'} isSecondary onClick={() => setVisible(true)}>
                 Delete
-            </button>
+            </Button>
         </>
     );
 };

@@ -10,6 +10,8 @@ import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 type Props = {
     schedule?: Schedule;
@@ -29,43 +31,43 @@ const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdate
 
     return (
         <Modal {...props} showSpinnerOverlay={isSubmitting}>
-            <h3 className={'mb-6'}>{schedule ? 'Edit schedule' : 'Create new schedule'}</h3>
-            <FlashMessageRender byKey={'schedule:edit'} className={'mb-6'}/>
+            <h3 css={tw`mb-6`}>{schedule ? 'Edit schedule' : 'Create new schedule'}</h3>
+            <FlashMessageRender byKey={'schedule:edit'} css={tw`mb-6`}/>
             <Form>
                 <Field
                     name={'name'}
                     label={'Schedule name'}
                     description={'A human readable identifer for this schedule.'}
                 />
-                <div className={'flex mt-6'}>
-                    <div className={'flex-1 mr-4'}>
+                <div css={tw`flex mt-6`}>
+                    <div css={tw`flex-1 mr-4`}>
                         <Field name={'dayOfWeek'} label={'Day of week'}/>
                     </div>
-                    <div className={'flex-1 mr-4'}>
+                    <div css={tw`flex-1 mr-4`}>
                         <Field name={'dayOfMonth'} label={'Day of month'}/>
                     </div>
-                    <div className={'flex-1 mr-4'}>
+                    <div css={tw`flex-1 mr-4`}>
                         <Field name={'hour'} label={'Hour'}/>
                     </div>
-                    <div className={'flex-1'}>
+                    <div css={tw`flex-1`}>
                         <Field name={'minute'} label={'Minute'}/>
                     </div>
                 </div>
-                <p className={'input-help'}>
+                <p css={tw`text-neutral-400 text-xs mt-2`}>
                     The schedule system supports the use of Cronjob syntax when defining when tasks should begin
                     running. Use the fields above to specify when these tasks should begin running.
                 </p>
-                <div className={'mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded'}>
+                <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                     <FormikSwitch
                         name={'enabled'}
                         description={'If disabled, this schedule and it\'s associated tasks will not run.'}
                         label={'Enabled'}
                     />
                 </div>
-                <div className={'mt-6 text-right'}>
-                    <button className={'btn btn-sm btn-primary'} type={'submit'}>
+                <div css={tw`mt-6 text-right`}>
+                    <Button type={'submit'}>
                         {schedule ? 'Save changes' : 'Create schedule'}
-                    </button>
+                    </Button>
                 </div>
             </Form>
         </Modal>

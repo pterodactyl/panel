@@ -18,7 +18,7 @@ const ConfirmationModal = ({ title, appear, children, visible, buttonText, onCon
         showSpinnerOverlay={showSpinnerOverlay}
         onDismissed={() => onDismissed()}
     >
-        <h3 css={tw`mb-6`}>{title}</h3>
+        <h2 css={tw`text-2xl mb-6`}>{title}</h2>
         <p css={tw`text-sm`}>{children}</p>
         <div css={tw`flex items-center justify-end mt-8`}>
             <Button isSecondary onClick={() => onDismissed()}>
