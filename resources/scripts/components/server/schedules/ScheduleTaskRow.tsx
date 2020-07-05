@@ -62,7 +62,7 @@ export default ({ schedule, task }: Props) => {
 
     return (
         <div css={tw`flex items-center bg-neutral-700 border border-neutral-600 mb-2 px-6 py-4 rounded`}>
-            <SpinnerOverlay visible={isLoading} fixed={true} size={'large'}/>
+            <SpinnerOverlay visible={isLoading} fixed size={'large'}/>
             {isEditing && <TaskDetailsModal
                 schedule={schedule}
                 task={task}

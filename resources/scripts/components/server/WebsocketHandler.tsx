@@ -67,7 +67,7 @@ export default () => {
 
     return (
         error ?
-            <CSSTransition timeout={250} in={true} appear={true} classNames={'fade'}>
+            <CSSTransition timeout={250} in appear classNames={'fade'}>
                 <div css={tw`bg-red-500 py-2`}>
                     <ContentContainer css={tw`flex items-center justify-center`}>
                         <Spinner size={'small'}/>

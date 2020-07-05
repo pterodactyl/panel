@@ -27,7 +27,7 @@ interface State {
     schedule?: Schedule;
 }
 
-export default ({ match, history, location: { state } }: RouteComponentProps<Params, {}, State>) => {
+export default ({ match, history, location: { state } }: RouteComponentProps<Params, Record<string, unknown>, State>) => {
     const { id, uuid } = useServer();
     const { clearFlashes, addError } = useFlash();
     const [ isLoading, setIsLoading ] = useState(true);

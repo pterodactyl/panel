@@ -80,7 +80,7 @@ export default ({ backup }: Props) => {
                 be recovered once deleted.
             </ConfirmationModal>
             }
-            <SpinnerOverlay visible={loading} fixed={true}/>
+            <SpinnerOverlay visible={loading} fixed/>
             <DropdownMenu
                 renderToggle={onClick => (
                     <button

@@ -6,7 +6,7 @@ import { cleanDirectoryPath } from '@/helpers';
 export interface ServerFileStore {
     directory: string;
     contents: FileObject[];
-    getDirectoryContents: Thunk<ServerFileStore, string, {}, ServerStore, Promise<void>>;
+    getDirectoryContents: Thunk<ServerFileStore, string, Record<string, unknown>, ServerStore, Promise<void>>;
     setContents: Action<ServerFileStore, FileObject[]>;
     pushFile: Action<ServerFileStore, FileObject>;
     removeFile: Action<ServerFileStore, string>;

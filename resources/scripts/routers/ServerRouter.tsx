@@ -69,7 +69,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     <Spinner size={'large'} centered/>
                 :
                 <>
-                    <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
+                    <CSSTransition timeout={250} classNames={'fade'} appear in>
                         <SubNavigation>
                             <div>
                                 <NavLink to={`${match.url}`} exact>Console</NavLink>
@@ -88,7 +88,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Can action={'backup.*'}>
                                     <NavLink to={`${match.url}/backups`}>Backups</NavLink>
                                 </Can>
-                                <Can action={[ 'settings.*', 'file.sftp' ]} matchAny={true}>
+                                <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
                                     <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                                 </Can>
                             </div>

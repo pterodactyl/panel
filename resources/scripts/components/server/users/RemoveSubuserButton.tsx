@@ -31,7 +31,7 @@ export default ({ subuser }: { subuser: Subuser }) => {
                 addError({ key: 'users', message: httpErrorToHuman(error) });
                 setShowConfirmation(false);
             });
-    }
+    };
 
     return (
         <>

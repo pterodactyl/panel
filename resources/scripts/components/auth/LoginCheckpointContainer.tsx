@@ -17,7 +17,7 @@ interface Values {
     recoveryCode: '',
 }
 
-type OwnProps = RouteComponentProps<{}, StaticContext, { token?: string }>
+type OwnProps = RouteComponentProps<Record<string, unknown>, StaticContext, { token?: string }>
 
 type Props = OwnProps & {
     addError: ActionCreator<FlashStore['addError']['payload']>;

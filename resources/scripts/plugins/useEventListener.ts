@@ -5,7 +5,7 @@ export default (eventName: string, handler: any, element: any = window) => {
 
     useEffect(() => {
         savedHandler.current = handler;
-    }, [handler]);
+    }, [ handler ]);
 
     useEffect(
         () => {
@@ -18,6 +18,6 @@ export default (eventName: string, handler: any, element: any = window) => {
                 element.removeEventListener(eventName, eventListener);
             };
         },
-        [eventName, element],
+        [ eventName, element ],
     );
 };

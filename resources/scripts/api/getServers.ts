@@ -3,10 +3,9 @@ import http, { getPaginationSet, PaginatedResult } from '@/api/http';
 
 export default (query?: string, includeAdmin?: boolean): Promise<PaginatedResult<Server>> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/client`, {
+        http.get('/api/client', {
             params: {
                 include: [ 'allocation' ],
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 filter: includeAdmin ? 'all' : undefined,
                 query,
             },

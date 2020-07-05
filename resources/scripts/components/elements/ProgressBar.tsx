@@ -62,9 +62,9 @@ export default () => {
         <div className={'w-full fixed'} style={{ height: '2px' }}>
             <CSSTransition
                 timeout={250}
-                appear={true}
+                appear
                 in={visible}
-                unmountOnExit={true}
+                unmountOnExit
                 classNames={'fade'}
             >
                 <BarFill style={{ width: progress === undefined ? '100%' : `${progress}%` }}/>

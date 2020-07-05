@@ -11,7 +11,6 @@ export default (uuid: string, schedule: number, task: number | undefined, { time
     return new Promise((resolve, reject) => {
         http.post(`/api/client/servers/${uuid}/schedules/${schedule}/tasks${task ? `/${task}` : ''}`, {
             ...data,
-            // eslint-disable-next-line @typescript-eslint/camelcase
             time_offset: timeOffset,
         })
             .then(({ data }) => resolve(rawDataToServerTask(data.attributes)))

@@ -49,7 +49,7 @@ rules:
   "@typescript-eslint/no-explicit-any": 0
   "@typescript-eslint/no-non-null-assertion": 0
   "@typescript-eslint/ban-ts-comment": 0
-  # @todo this would be nice to have, but don't want to deal with the warning spam at the moment.
+  # This would be nice to have, but don't want to deal with the warning spam at the moment.
   "@typescript-eslint/explicit-module-boundary-types": 0
   no-restricted-imports:
     - error
@@ -58,6 +58,8 @@ rules:
           message: Please import from styled-components/macro.
       patterns:
         - "!styled-components/macro"
+  # Not sure, this rule just doesn't work right and is protected by our use of Typescript anyways
+  # so I'm just not going to worry about it.
   "react/prop-types": 0
   "react/display-name": 0
   "react/jsx-indent-props":

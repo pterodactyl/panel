@@ -14,7 +14,7 @@ export default () => {
         <div>
             {visible &&
             <DisableTwoFactorModal
-                appear={true}
+                appear
                 visible={visible}
                 onDismissed={() => setVisible(false)}
             />

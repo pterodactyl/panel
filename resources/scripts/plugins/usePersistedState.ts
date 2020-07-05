@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 export function usePersistedState<S = undefined> (key: string, defaultValue: S): [S | undefined, Dispatch<SetStateAction<S | undefined>>] {
-    const [state, setState] = useState(
+    const [ state, setState ] = useState(
         () => {
             try {
                 const item = localStorage.getItem(key);
@@ -16,8 +16,8 @@ export function usePersistedState<S = undefined> (key: string, defaultValue: S):
     );
 
     useEffect(() => {
-        localStorage.setItem(key, JSON.stringify(state))
-    }, [key, state]);
+        localStorage.setItem(key, JSON.stringify(state));
+    }, [ key, state ]);
 
     return [ state, setState ];
 }

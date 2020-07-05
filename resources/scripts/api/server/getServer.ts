@@ -62,7 +62,8 @@ export default (uuid: string): Promise<[ Server, string[] ]> => {
         http.get(`/api/client/servers/${uuid}`)
             .then(({ data }) => resolve([
                 rawDataToServerObject(data.attributes),
-                data.meta?.is_server_owner ? ['*'] : (data.meta?.user_permissions || []),
+                // eslint-disable-next-line camelcase
+                data.meta?.is_server_owner ? [ '*' ] : (data.meta?.user_permissions || []),
             ]))
             .catch(reject);
     });

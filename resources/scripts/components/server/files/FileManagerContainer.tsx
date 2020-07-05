@@ -70,7 +70,7 @@ export default () => {
                                     This directory seems to be empty.
                                 </p>
                                 :
-                                <CSSTransition classNames={'fade'} timeout={250} appear={true} in={true}>
+                                <CSSTransition classNames={'fade'} timeout={250} appear in>
                                     <React.Fragment>
                                         <div>
                                             {files.length > 250 ?

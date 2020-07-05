@@ -17,7 +17,6 @@ export default (email: string, data: Data): Promise<PasswordResetResponse> => {
             email,
             token: data.token,
             password: data.password,
-            // eslint-disable-next-line @typescript-eslint/camelcase
             password_confirmation: data.passwordConfirmation,
         })
             .then(response => resolve({

@@ -14,7 +14,7 @@ interface ServerDataStore {
     data?: Server;
     permissions: string[];
 
-    getServer: Thunk<ServerDataStore, string, {}, ServerStore, Promise<void>>;
+    getServer: Thunk<ServerDataStore, string, Record<string, unknown>, ServerStore, Promise<void>>;
     setServer: Action<ServerDataStore, Server>;
     setPermissions: Action<ServerDataStore, string[]>;
 }
