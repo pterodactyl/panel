@@ -9,7 +9,7 @@ const InputSpinner = ({ visible, children }: { visible: boolean, children: React
             appear
             unmountOnExit
             in={visible}
-            timeout={250}
+            timeout={150}
         >
             <div css={tw`absolute right-0 h-full flex items-center justify-end pr-3`}>
                 <Spinner size={'small'}/>

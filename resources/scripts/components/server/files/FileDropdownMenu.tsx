@@ -138,7 +138,7 @@ export default ({ uuid }: { uuid: string }) => {
                 />
                 <SpinnerOverlay visible={showSpinner} fixed size={'large'}/>
             </div>
-            <Fade timeout={250} in={menuVisible} unmountOnExit classNames={'fade'}>
+            <Fade timeout={150} in={menuVisible} unmountOnExit classNames={'fade'}>
                 <div
                     ref={menu}
                     onClick={e => {

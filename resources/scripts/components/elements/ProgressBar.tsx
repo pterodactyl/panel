@@ -61,7 +61,7 @@ export default () => {
     return (
         <div className={'w-full fixed'} style={{ height: '2px' }}>
             <CSSTransition
-                timeout={250}
+                timeout={150}
                 appear
                 in={visible}
                 unmountOnExit

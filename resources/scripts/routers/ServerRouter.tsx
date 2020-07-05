@@ -69,7 +69,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     <Spinner size={'large'} centered/>
                 :
                 <>
-                    <CSSTransition timeout={250} classNames={'fade'} appear in>
+                    <CSSTransition timeout={150} classNames={'fade'} appear in>
                         <SubNavigation>
                             <div>
                                 <NavLink to={`${match.url}`} exact>Console</NavLink>

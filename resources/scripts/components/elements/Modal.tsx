@@ -62,7 +62,7 @@ const Modal: React.FC<Props> = ({ visible, appear, dismissable, showSpinnerOverl
     }, [ render ]);
 
     return (
-        <Fade timeout={250} appear={appear} in={render} unmountOnExit onExited={onDismissed}>
+        <Fade timeout={150} appear={appear} in={render} unmountOnExit onExited={onDismissed}>
             <ModalMask
                 onClick={e => {
                     if (isDismissable && closeOnBackground) {
@@ -87,7 +87,7 @@ const Modal: React.FC<Props> = ({ visible, appear, dismissable, showSpinnerOverl
                         <Spinner/>
                     </div>
                     }
-                    <div css={tw`bg-neutral-800 p-6 rounded shadow-md overflow-y-scroll transition-all duration-250`}>
+                    <div css={tw`bg-neutral-800 p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}>
                         {children}
                     </div>
                 </ModalContainer>

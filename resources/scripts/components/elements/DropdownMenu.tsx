@@ -61,7 +61,7 @@ const DropdownMenu = ({ renderToggle, children }: Props) => {
     return (
         <div>
             {renderToggle(onClickHandler)}
-            <Fade timeout={250} in={visible} unmountOnExit>
+            <Fade timeout={150} in={visible} unmountOnExit>
                 <div
                     ref={menu}
                     onClick={e => {
