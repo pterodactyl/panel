@@ -1,10 +1,12 @@
 const path = require('path');
+const webpack = require('webpack');
 const AssetsManifestPlugin = require('webpack-assets-manifest');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const isProduction = process.env.NODE_ENV === 'production';
+const modes = Object.keys(require('./resources/scripts/modes'));
 
 module.exports = {
     cache: true,
@@ -72,6 +74,7 @@ module.exports = {
         moment: 'moment',
     },
     plugins: [
+        new webpack.ContextReplacementPlugin(/brace[/\\](mode|worker)/, new RegExp(`^\.\/(${modes.join('|')})$`)),
         new AssetsManifestPlugin({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
         !isProduction ? new ForkTsCheckerWebpackPlugin({
             eslint: {

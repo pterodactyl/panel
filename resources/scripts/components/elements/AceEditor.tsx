@@ -3,6 +3,8 @@ import ace, { Editor } from 'brace';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 import Select from '@/components/elements/Select';
+// @ts-ignore
+import modes from '@/modes';
 
 // @ts-ignore
 require('brace/ext/modelist');
@@ -17,32 +19,6 @@ const EditorContainer = styled.div`
         ${tw`rounded h-full`};
     }
 `;
-
-const modes: { [k: string]: string } = {
-    assembly_x86: 'Assembly (x86)',
-    c_cpp: 'C++',
-    coffee: 'Coffeescript',
-    css: 'CSS',
-    dockerfile: 'Dockerfile',
-    golang: 'Go',
-    html: 'HTML',
-    ini: 'Ini',
-    java: 'Java',
-    javascript: 'Javascript',
-    json: 'JSON',
-    kotlin: 'Kotlin',
-    lua: 'Luascript',
-    perl: 'Perl',
-    php: 'PHP',
-    properties: 'Properties',
-    python: 'Python',
-    ruby: 'Ruby',
-    plain_text: 'Plaintext',
-    toml: 'TOML',
-    typescript: 'Typescript',
-    xml: 'XML',
-    yaml: 'YAML',
-};
 
 Object.keys(modes).forEach(mode => require(`brace/mode/${mode}`));
 
@@ -117,7 +93,7 @@ export default ({ style, initialContent, initialModePath, fetchContent, onConten
                     >
                         {
                             Object.keys(modes).map(key => (
-                                <option key={key} value={key}>{modes[key]}</option>
+                                <option key={key} value={key}>{(modes as { [k: string]: string })[key]}</option>
                             ))
                         }
                     </Select>
