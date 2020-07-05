@@ -66,9 +66,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                 error ?
                     <ServerError message={error}/>
                     :
-                    <div className={'flex justify-center m-20'}>
-                        <Spinner size={'large'}/>
-                    </div>
+                    <Spinner size={'large'} centered/>
                 :
                 <>
                     <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
