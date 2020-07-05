@@ -1,6 +1,9 @@
 name: tests
 on:
   push:
+    branch-ignore:
+      - 'master'
+      - 'release/**'
   pull_request:
 jobs:
   integration_tests:
