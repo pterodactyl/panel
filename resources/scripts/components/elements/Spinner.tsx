@@ -34,7 +34,7 @@ const Spinner = ({ centered, ...props }: Props) => (
     centered ?
         <div
             css={[
-                tw`flex justify-center`,
+                tw`flex justify-center items-center`,
                 props.size === 'large' ? tw`m-20` : tw`m-6`,
             ]}
         >
