@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Models\Traits\Searchable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
@@ -259,5 +260,22 @@ class User extends Model implements
     public function recoveryTokens()
     {
         return $this->hasMany(RecoveryToken::class);
+    }
+
+    /**
+     * Returns all of the servers that a user can access by way of being the owner of the
+     * server, or because they are assigned as a subuser for that server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function accessibleServers()
+    {
+        return $this->hasMany(Server::class, 'owner_id')
+            ->select('servers.*')
+            ->leftJoin('subusers', 'subusers.server_id', '=', 'servers.id')
+            ->where(function (Builder $builder) {
+                $builder->where('servers.owner_id', $this->id)->orWhere('subusers.user_id', $this->id);
+            })
+            ->groupBy('servers.id');
     }
 }

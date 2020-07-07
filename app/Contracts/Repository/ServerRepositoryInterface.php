@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -106,16 +105,6 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return array
      */
     public function getDaemonServiceData(Server $server, bool $refresh = false): array;
-
-    /**
-     * Return a paginated list of servers that a user can access at a given level.
-     *
-     * @param \Pterodactyl\Models\User $user
-     * @param int $level
-     * @param bool|int $paginate
-     * @return \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
-     */
-    public function filterUserAccessServers(User $user, int $level, $paginate = 25);
 
     /**
      * Return a server by UUID.

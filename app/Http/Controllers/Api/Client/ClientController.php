@@ -3,7 +3,9 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Permission;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
@@ -36,32 +38,36 @@ class ClientController extends ClientApiController
      */
     public function index(GetServersRequest $request): array
     {
-        // Check for the filter parameter on the request.
-        switch ($request->input('filter')) {
-            case 'all':
-                $filter = User::FILTER_LEVEL_ALL;
-                break;
-            case 'admin':
-                $filter = User::FILTER_LEVEL_ADMIN;
-                break;
-            case 'owner':
-                $filter = User::FILTER_LEVEL_OWNER;
-                break;
-            case 'subuser-of':
-            default:
-                $filter = User::FILTER_LEVEL_SUBUSER;
-                break;
+        $user = $request->user();
+        $level = $request->getFilterLevel();
+        $transformer = $this->getTransformer(ServerTransformer::class);
+
+        // Start the query builder and ensure we eager load any requested relationships from the request.
+        $builder = Server::query()->with($this->getIncludesForTransformer($transformer, ['node']));
+
+        if ($level === User::FILTER_LEVEL_OWNER) {
+            $builder = $builder->where('owner_id', $request->user()->id);
+        }
+        // If set to all, display all servers they can access, including those they access as an
+        // admin. If set to subuser, only return the servers they can access because they are owner,
+        // or marked as a subuser of the server.
+        elseif (($level === User::FILTER_LEVEL_ALL && ! $user->root_admin) || $level === User::FILTER_LEVEL_SUBUSER) {
+            $builder = $builder->whereIn('id', $user->accessibleServers()->pluck('id')->all());
+        }
+        // If set to admin, only display the servers a user can access because they are an administrator.
+        // This means only servers the user would not have access to if they were not an admin (because they
+        // are not an owner or subuser) are returned.
+        elseif ($level === User::FILTER_LEVEL_ADMIN && $user->root_admin) {
+            $builder = $builder->whereNotIn('id', $user->accessibleServers()->pluck('id')->all());
         }
 
-        $servers = $this->repository
-            ->setSearchTerm($request->input('query'))
-            ->filterUserAccessServers(
-                $request->user(), $filter, config('pterodactyl.paginate.frontend.servers')
-            );
+        $builder = QueryBuilder::for($builder)->allowedFilters(
+            'uuid', 'name', 'external_id'
+        );
 
-        return $this->fractal->collection($servers)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
-            ->toArray();
+        $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
+
+        return $this->fractal->transformWith($transformer)->collection($servers)->toArray();
     }
 
     /**

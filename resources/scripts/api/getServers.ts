@@ -6,8 +6,8 @@ export default (query?: string, includeAdmin?: boolean): Promise<PaginatedResult
         http.get('/api/client', {
             params: {
                 include: [ 'allocation' ],
-                filter: includeAdmin ? 'all' : undefined,
-                query,
+                type: includeAdmin ? 'all' : undefined,
+                'filter[name]': query,
             },
         })
             .then(({ data }) => resolve({
