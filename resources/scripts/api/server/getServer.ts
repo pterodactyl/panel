@@ -45,12 +45,12 @@ export const rawDataToServerObject = (data: any): Server => ({
         port: data.sftp_details.port,
     },
     description: data.description ? ((data.description.length > 0) ? data.description : null) : null,
-    allocations: [ {
-        ip: data.allocation.ip,
-        alias: null,
-        port: data.allocation.port,
-        default: true,
-    } ],
+    allocations: (data.allocations || []).map((datum: any) => ({
+        ip: datum.ip,
+        alias: datum.ip_alias,
+        port: datum.port,
+        default: datum.is_default,
+    })),
     limits: { ...data.limits },
     featureLimits: { ...data.feature_limits },
     isSuspended: data.is_suspended,

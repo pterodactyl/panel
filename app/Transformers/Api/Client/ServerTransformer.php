@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api\Client;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Allocation;
 
 class ServerTransformer extends BaseClientTransformer
 {
@@ -41,10 +42,14 @@ class ServerTransformer extends BaseClientTransformer
                 'port' => $server->node->daemonSFTP,
             ],
             'description' => $server->description,
-            'allocation' => [
-                'ip' => $server->allocation->alias,
-                'port' => $server->allocation->port,
-            ],
+            'allocations' => $server->allocations->map(function (Allocation $allocation) use ($server) {
+                return [
+                    'ip' => $allocation->ip,
+                    'ip_alias' => $allocation->ip_alias,
+                    'port' => $allocation->port,
+                    'is_default' => $allocation->id === $server->allocation_id,
+                ];
+            }),
             'limits' => [
                 'memory' => $server->memory,
                 'swap' => $server->swap,
