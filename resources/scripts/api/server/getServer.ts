@@ -4,7 +4,7 @@ export interface Allocation {
     ip: string;
     alias: string | null;
     port: number;
-    default: boolean;
+    isDefault: boolean;
 }
 
 export interface Server {
@@ -49,7 +49,7 @@ export const rawDataToServerObject = (data: any): Server => ({
         ip: datum.ip,
         alias: datum.ip_alias,
         port: datum.port,
-        default: datum.is_default,
+        isDefault: datum.is_default,
     })),
     limits: { ...data.limits },
     featureLimits: { ...data.feature_limits },

@@ -65,7 +65,7 @@ export default ({ server }: { server: Server }) => {
                     <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
                         {
-                            server.allocations.filter(alloc => alloc.default).map(allocation => (
+                            server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
                                 <span key={allocation.ip + allocation.port.toString()}>{allocation.alias || allocation.ip}:{allocation.port}</span>
                             ))
                         }
