@@ -24,13 +24,11 @@ class AllocationTransformer extends BaseClientTransformer
      */
     public function transform(Allocation $model)
     {
-        $model->loadMissing('server');
-
         return [
             'ip' => $model->ip,
-            'alias' => $model->ip_alias,
+            'ip_alias' => $model->ip_alias,
             'port' => $model->port,
-            'default' => $model->getRelation('server')->allocation_id === $model->id,
+            'is_default' => $model->server->allocation_id === $model->id,
         ];
     }
 }

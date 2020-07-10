@@ -10,6 +10,11 @@ use Pterodactyl\Models\Allocation;
 class ServerTransformer extends BaseClientTransformer
 {
     /**
+     * @var string[]
+     */
+    protected $defaultIncludes = ['allocations'];
+
+    /**
      * @var array
      */
     protected $availableIncludes = ['egg', 'subusers'];
@@ -42,14 +47,6 @@ class ServerTransformer extends BaseClientTransformer
                 'port' => $server->node->daemonSFTP,
             ],
             'description' => $server->description,
-            'allocations' => $server->allocations->map(function (Allocation $allocation) use ($server) {
-                return [
-                    'ip' => $allocation->ip,
-                    'ip_alias' => $allocation->ip_alias,
-                    'port' => $allocation->port,
-                    'is_default' => $allocation->id === $server->allocation_id,
-                ];
-            }),
             'limits' => [
                 'memory' => $server->memory,
                 'swap' => $server->swap,
@@ -65,6 +62,22 @@ class ServerTransformer extends BaseClientTransformer
             'is_suspended' => $server->suspended !== 0,
             'is_installing' => $server->installed !== 1,
         ];
+    }
+
+    /**
+     * Returns the allocations associated with this server.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Collection
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     */
+    public function includeAllocations(Server $server)
+    {
+        return $this->collection(
+            $server->allocations,
+            $this->makeTransformer(AllocationTransformer::class),
+            Allocation::RESOURCE_NAME
+        );
     }
 
     /**

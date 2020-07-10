@@ -28,10 +28,12 @@ abstract class ClientApiController extends ApplicationApiController
 
     /**
      * Returns the parsed includes for this request.
+     *
+     * @return string[]
      */
     protected function parseIncludes()
     {
-        $includes = $this->request->query('include');
+        $includes = $this->request->query('include') ?? [];
 
         if (! is_string($includes)) {
             return $includes;
