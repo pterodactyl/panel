@@ -20,6 +20,11 @@ class RecoveryToken extends Model
     /**
      * @var bool
      */
+    public $timestamps = true;
+
+    /**
+     * @var bool
+     */
     protected $immutableDates = true;
 
     /**

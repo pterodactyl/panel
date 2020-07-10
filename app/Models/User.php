@@ -266,11 +266,11 @@ class User extends Model implements
      * Returns all of the servers that a user can access by way of being the owner of the
      * server, or because they are assigned as a subuser for that server.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Builder
      */
     public function accessibleServers()
     {
-        return $this->hasMany(Server::class, 'owner_id')
+        return Server::query()
             ->select('servers.*')
             ->leftJoin('subusers', 'subusers.server_id', '=', 'servers.id')
             ->where(function (Builder $builder) {
