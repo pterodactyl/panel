@@ -36,7 +36,8 @@ const checkboxStyle = css<Props>`
 
 const inputStyle = css<Props>`
     // Reset to normal styling.
-    ${tw`appearance-none w-full min-w-0`};
+    resize: none;
+    ${tw`appearance-none outline-none w-full min-w-0`};
     ${tw`p-3 border rounded text-sm transition-all duration-150`};
     ${tw`bg-neutral-600 border-neutral-500 hover:border-neutral-400 text-neutral-200 shadow-none`};
     
@@ -49,8 +50,8 @@ const inputStyle = css<Props>`
         ${tw`shadow-none`};
     }
     
-    &:focus {
-        ${tw`shadow-md border-neutral-400`};
+    &:not(:disabled):not(:read-only):focus {
+        ${tw`shadow-md border-primary-400`};
     }
 
     &:disabled {

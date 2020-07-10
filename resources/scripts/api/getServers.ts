@@ -11,7 +11,7 @@ export default (query?: string, includeAdmin?: boolean): Promise<PaginatedResult
             },
         })
             .then(({ data }) => resolve({
-                items: (data.data || []).map((datum: any) => rawDataToServerObject(datum.attributes)),
+                items: (data.data || []).map((datum: any) => rawDataToServerObject(datum)),
                 pagination: getPaginationSet(data.meta.pagination),
             }))
             .catch(reject);
