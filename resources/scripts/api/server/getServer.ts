@@ -2,9 +2,11 @@ import http, { FractalResponseData, FractalResponseList } from '@/api/http';
 import { rawDataToServerAllocation } from '@/api/transformers';
 
 export interface Allocation {
+    id: number;
     ip: string;
     alias: string | null;
     port: number;
+    notes: string | null;
     isDefault: boolean;
 }
 

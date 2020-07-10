@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
+use Pterodactyl\Http\Middleware\Api\Client\Server\AllocationBelongsToServer;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,9 +75,11 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::delete('/{schedule}/tasks/{task}', 'Servers\ScheduleTaskController@delete');
     });
 
-    Route::group(['prefix' => '/network'], function () {
-        Route::get('/', 'Servers\NetworkController@index');
-        Route::put('/primary', 'Servers\NetworkController@storePrimary');
+    Route::group(['prefix' => '/network', 'middleware' => [AllocationBelongsToServer::class]], function () {
+        Route::get('/allocations', 'Servers\NetworkAllocationController@index');
+        Route::post('/allocations/{allocation}', 'Servers\NetworkAllocationController@update');
+        Route::post('/allocations/{allocation}/primary', 'Servers\NetworkAllocationController@setPrimary');
+        Route::delete('/allocations/{allocation}', 'Servers\NetworkAllocationController@delete');
     });
 
     Route::group(['prefix' => '/users'], function () {

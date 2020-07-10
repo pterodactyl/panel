@@ -23,16 +23,17 @@ const NetworkContainer = () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data, error, mutate } = useSWR<Allocation[]>(server.uuid, key => getServerAllocations(key), { initialData: server.allocations });
 
-    const setPrimaryAllocation = (ip: string, port: number) => {
+    const setPrimaryAllocation = (id: number) => {
         clearFlashes('server:network');
 
-        mutate(data?.map(a => (a.ip === ip && a.port === port) ? { ...a, isDefault: true } : {
-            ...a,
-            isDefault: false,
-        }), false);
+        const initial = data;
+        mutate(data?.map(a => a.id === id ? { ...a, isDefault: true } : { ...a, isDefault: false }), false);
 
-        setPrimaryServerAllocation(server.uuid, ip, port)
-            .catch(error => clearAndAddHttpError({ key: 'server:network', error }));
+        setPrimaryServerAllocation(server.uuid, id)
+            .catch(error => {
+                clearAndAddHttpError({ key: 'server:network', error });
+                mutate(initial, false);
+            });
     };
 
     useEffect(() => {
@@ -46,7 +47,7 @@ const NetworkContainer = () => {
             {!data ?
                 <Spinner size={'large'} centered/>
                 :
-                data.map(({ ip, port, alias, isDefault }, index) => (
+                data.map(({ id, ip, port, alias, isDefault }, index) => (
                     <GreyRowBox key={`${ip}:${port}`} css={index > 0 ? tw`mt-2` : undefined}>
                         <div css={tw`pl-4 pr-6 text-neutral-400`}>
                             <FontAwesomeIcon icon={faNetworkWired}/>
@@ -70,7 +71,7 @@ const NetworkContainer = () => {
                                         isSecondary
                                         size={'xsmall'}
                                         color={'primary'}
-                                        onClick={() => setPrimaryAllocation(ip, port)}
+                                        onClick={() => setPrimaryAllocation(id)}
                                     >
                                         Make Primary
                                     </Button>
