@@ -74,7 +74,7 @@ const NetworkContainer = () => {
                             <Label>IP Address</Label>
                         </div>
                         <div>
-                            <Code>:{port}</Code>
+                            <Code>{port}</Code>
                             <Label>Port</Label>
                         </div>
                         <div css={tw`px-8 flex-1 self-start`}>
