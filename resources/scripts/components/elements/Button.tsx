@@ -68,6 +68,7 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
         &:hover:not(:disabled) {
             ${tw`border-neutral-500 text-neutral-100`};
             ${props => props.color === 'red' && tw`bg-red-500 border-red-600 text-red-50`};
+            ${props => props.color === 'primary' && tw`bg-primary-500 border-primary-600 text-primary-50`};
             ${props => props.color === 'green' && tw`bg-green-500 border-green-600 text-green-50`};
         }
     `};

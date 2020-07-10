@@ -76,6 +76,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
 
     Route::group(['prefix' => '/network'], function () {
         Route::get('/', 'Servers\NetworkController@index');
+        Route::put('/primary', 'Servers\NetworkController@storePrimary');
     });
 
     Route::group(['prefix' => '/users'], function () {

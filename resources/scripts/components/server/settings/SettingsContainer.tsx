@@ -13,7 +13,6 @@ import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import { LinkButton } from '@/components/elements/Button';
-import ServerAllocationsContainer from '@/components/server/settings/ServerAllocationsContainer';
 
 export default () => {
     const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);
@@ -61,6 +60,8 @@ export default () => {
                             </div>
                         </TitledGreyBox>
                     </Can>
+                </div>
+                <div css={tw`w-full mt-6 md:flex-1 md:mt-0`}>
                     <Can action={'settings.rename'}>
                         <div css={tw`mb-6 md:mb-10`}>
                             <RenameServerBox/>
@@ -69,9 +70,6 @@ export default () => {
                     <Can action={'settings.reinstall'}>
                         <ReinstallServerBox/>
                     </Can>
-                </div>
-                <div css={tw`w-full mt-6 md:flex-1 md:mt-0`}>
-                    <ServerAllocationsContainer/>
                 </div>
             </div>
         </PageContentBlock>

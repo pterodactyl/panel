@@ -34,6 +34,7 @@
         "sockette": "^2.0.6",
         "styled-components": "^5.1.1",
         "styled-components-breakpoint": "^3.0.0-preview.20",
+        "swr": "^0.2.3",
         "uuid": "^3.3.2",
         "xterm": "^3.14.4",
         "xterm-addon-attach": "^0.1.0",

@@ -1,4 +1,5 @@
-import http from '@/api/http';
+import http, { FractalResponseData, FractalResponseList } from '@/api/http';
+import { rawDataToServerAllocation } from '@/api/transformers';
 
 export interface Allocation {
     ip: string;
@@ -35,7 +36,7 @@ export interface Server {
     isInstalling: boolean;
 }
 
-export const rawDataToServerObject = (data: any): Server => ({
+export const rawDataToServerObject = ({ attributes: data }: FractalResponseData): Server => ({
     id: data.identifier,
     uuid: data.uuid,
     name: data.name,
@@ -45,23 +46,18 @@ export const rawDataToServerObject = (data: any): Server => ({
         port: data.sftp_details.port,
     },
     description: data.description ? ((data.description.length > 0) ? data.description : null) : null,
-    allocations: (data.allocations || []).map((datum: any) => ({
-        ip: datum.ip,
-        alias: datum.ip_alias,
-        port: datum.port,
-        isDefault: datum.is_default,
-    })),
     limits: { ...data.limits },
     featureLimits: { ...data.feature_limits },
     isSuspended: data.is_suspended,
     isInstalling: data.is_installing,
+    allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(rawDataToServerAllocation),
 });
 
 export default (uuid: string): Promise<[ Server, string[] ]> => {
     return new Promise((resolve, reject) => {
         http.get(`/api/client/servers/${uuid}`)
             .then(({ data }) => resolve([
-                rawDataToServerObject(data.attributes),
+                rawDataToServerObject(data),
                 // eslint-disable-next-line camelcase
                 data.meta?.is_server_owner ? [ '*' ] : (data.meta?.user_permissions || []),
             ]))

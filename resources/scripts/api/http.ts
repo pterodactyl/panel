@@ -75,10 +75,13 @@ export interface FractalResponseData {
     object: string;
     attributes: {
         [k: string]: any;
-        relationships?: {
-            [k: string]: FractalResponseData;
-        };
+        relationships?: Record<string, FractalResponseData | FractalResponseList>;
     };
+}
+
+export interface FractalResponseList {
+    object: 'list';
+    data: FractalResponseData[];
 }
 
 export interface PaginatedResult<T> {

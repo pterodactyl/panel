@@ -2,11 +2,15 @@ import React from 'react';
 import ContentContainer from '@/components/elements/ContentContainer';
 import { CSSTransition } from 'react-transition-group';
 import tw from 'twin.macro';
+import FlashMessageRender from '@/components/FlashMessageRender';
 
-const PageContentBlock: React.FC<{ className?: string }> = ({ children, className }) => (
+const PageContentBlock: React.FC<{ showFlashKey?: string; className?: string }> = ({ children, showFlashKey, className }) => (
     <CSSTransition timeout={150} classNames={'fade'} appear in>
         <>
             <ContentContainer css={tw`my-10`} className={className}>
+                {showFlashKey &&
+                <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`}/>
+                }
                 {children}
             </ContentContainer>
             <ContentContainer css={tw`mb-4`}>
