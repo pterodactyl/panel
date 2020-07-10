@@ -14,28 +14,30 @@ import { Allocation } from '@/api/server/getServer';
 import Spinner from '@/components/elements/Spinner';
 import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import useFlash from '@/plugins/useFlash';
-import { httpErrorToHuman } from '@/api/http';
 
 const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm block`}`;
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
 
 const NetworkContainer = () => {
     const server = useServer();
-    const { clearFlashes, clearAndAddError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data, error, mutate } = useSWR<Allocation[]>(server.uuid, key => getServerAllocations(key), { initialData: server.allocations });
 
     const setPrimaryAllocation = (ip: string, port: number) => {
         clearFlashes('server:network');
 
-        mutate(data?.map(a => (a.ip === ip && a.port === port) ? { ...a, isDefault: true } : { ...a, isDefault: false }), false);
+        mutate(data?.map(a => (a.ip === ip && a.port === port) ? { ...a, isDefault: true } : {
+            ...a,
+            isDefault: false,
+        }), false);
 
         setPrimaryServerAllocation(server.uuid, ip, port)
-            .catch(error => clearAndAddError({ key: 'server:network', message: httpErrorToHuman(error) }));
+            .catch(error => clearAndAddHttpError({ key: 'server:network', error }));
     };
 
     useEffect(() => {
         if (error) {
-            clearAndAddError({ key: 'server:network', message: error });
+            clearAndAddHttpError({ key: 'server:network', error });
         }
     }, [ error ]);
 
