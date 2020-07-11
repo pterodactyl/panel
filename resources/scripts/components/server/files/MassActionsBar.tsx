@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import { useFormikContext } from 'formik';
@@ -19,13 +19,19 @@ const MassActionsBar = () => {
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ loading, setLoading ] = useState(false);
+    const [ loadingMessage, setLoadingMessage ] = useState('');
     const [ showConfirm, setShowConfirm ] = useState(false);
     const { values, setFieldValue } = useFormikContext<{ selectedFiles: string[] }>();
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
+    useEffect(() => {
+        if (!loading) setLoadingMessage('');
+    }, [ loading ]);
+
     const onClickCompress = () => {
         setLoading(true);
         clearFlashes('files');
+        setLoadingMessage('Archiving files...');
 
         compressFiles(uuid, directory, values.selectedFiles)
             .then(() => mutate())
@@ -38,6 +44,7 @@ const MassActionsBar = () => {
         setLoading(true);
         setShowConfirm(false);
         clearFlashes('files');
+        setLoadingMessage('Deleting files...');
 
         deleteFiles(uuid, directory, values.selectedFiles)
             .then(() => {
@@ -54,7 +61,9 @@ const MassActionsBar = () => {
     return (
         <Fade timeout={75} in={values.selectedFiles.length > 0} unmountOnExit>
             <div css={tw`fixed bottom-0 z-50 left-0 right-0 flex justify-center`}>
-                <SpinnerOverlay visible={loading} size={'large'} fixed/>
+                <SpinnerOverlay visible={loading} size={'large'} fixed>
+                    {loadingMessage}
+                </SpinnerOverlay>
                 <ConfirmationModal
                     visible={showConfirm}
                     title={'Delete these files?'}
