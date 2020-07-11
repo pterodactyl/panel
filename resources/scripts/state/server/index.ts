@@ -77,7 +77,6 @@ export const ServerContext = createContextStore<ServerStore>({
         state.databases.data = [];
         state.subusers.data = [];
         state.files.directory = '/';
-        state.files.contents = [];
         state.backups.data = [];
         state.schedules.data = [];
 
