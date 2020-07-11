@@ -21,8 +21,10 @@ class UpdateAllocationRequest extends ClientApiRequest
      */
     public function rules(): array
     {
+        $rules = Allocation::getRules();
+
         return [
-            'notes' => Allocation::$validationRules['notes'],
+            'notes' => array_merge($rules['notes'], ['present']),
         ];
     }
 }
