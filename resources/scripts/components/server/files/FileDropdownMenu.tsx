@@ -117,7 +117,7 @@ export default ({ file }: { file: FileObject }) => {
                 <div css={tw`p-3 hover:text-white`} onClick={onClick}>
                     <FontAwesomeIcon icon={faEllipsisH}/>
                     <RenameFileModal
-                        file={file}
+                        files={[ file.name ]}
                         visible={!!modal}
                         useMoveTerminology={modal === 'move'}
                         onDismissed={() => setModal(null)}

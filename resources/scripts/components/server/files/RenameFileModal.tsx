@@ -5,7 +5,6 @@ import Field from '@/components/elements/Field';
 import { join } from 'path';
 import renameFiles from '@/api/server/files/renameFiles';
 import { ServerContext } from '@/state/server';
-import { FileObject } from '@/api/server/files/loadDirectory';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import useServer from '@/plugins/useServer';
@@ -16,9 +15,9 @@ interface FormikValues {
     name: string;
 }
 
-type Props = RequiredModalProps & { file: FileObject; useMoveTerminology?: boolean };
+type Props = RequiredModalProps & { files: string[]; useMoveTerminology?: boolean };
 
-export default ({ file, useMoveTerminology, ...props }: Props) => {
+export default ({ files, useMoveTerminology, ...props }: Props) => {
     const { uuid } = useServer();
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -28,18 +27,24 @@ export default ({ file, useMoveTerminology, ...props }: Props) => {
         clearFlashes('files');
 
         const len = name.split('/').length;
-        if (!useMoveTerminology && len === 1) {
-            // Rename the file within this directory.
-            mutate(files => files.map(f => f.uuid === file.uuid ? { ...f, name } : f), false);
-        } else if ((useMoveTerminology || len > 1) && file.uuid.length) {
-            // Remove the file from this directory since they moved it elsewhere.
-            mutate(files => files.filter(f => f.uuid !== file.uuid), false);
+        if (files.length === 1) {
+            if (!useMoveTerminology && len === 1) {
+                // Rename the file within this directory.
+                mutate(data => data.map(f => f.name === files[0] ? { ...f, name } : f), false);
+            } else if ((useMoveTerminology || len > 1)) {
+                // Remove the file from this directory since they moved it elsewhere.
+                mutate(data => data.filter(f => f.name !== files[0]), false);
+            }
         }
 
-        const renameFrom = join(directory, file.name);
-        const renameTo = join(directory, name);
+        let data;
+        if (useMoveTerminology && files.length > 1) {
+            data = files.map(f => ({ from: f, to: join(name, f) }));
+        } else {
+            data = files.map(f => ({ from: f, to: name }));
+        }
 
-        renameFiles(uuid, directory, [ { renameFrom, renameTo } ])
+        renameFiles(uuid, directory, data)
             .then(() => props.onDismissed())
             .catch(error => {
                 mutate();
@@ -49,7 +54,7 @@ export default ({ file, useMoveTerminology, ...props }: Props) => {
     };
 
     return (
-        <Formik onSubmit={submit} initialValues={{ name: file.name }}>
+        <Formik onSubmit={submit} initialValues={{ name: files.length > 1 ? '' : (files[0] || '') }}>
             {({ isSubmitting, values }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
                     <Form css={tw`m-0`}>
