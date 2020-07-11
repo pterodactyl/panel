@@ -64,9 +64,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
 
     windowListener = (e: MouseEvent) => {
         const menu = this.menu.current;
-
-        console.log('windowListener:', e.button);
-
+        
         if (e.button === 2 || !this.state.visible || !menu) {
             return;
         }
