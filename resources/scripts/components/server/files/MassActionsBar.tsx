@@ -76,12 +76,15 @@ const MassActionsBar = () => {
                 >
                     Deleting files is a permanent operation, you cannot undo this action.
                 </ConfirmationModal>
+                {showMove &&
                 <RenameFileModal
                     files={selectedFiles}
-                    visible={showMove}
+                    visible
+                    appear
                     useMoveTerminology
                     onDismissed={() => setShowMove(false)}
                 />
+                }
                 <div css={tw`rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
                     <Button size={'xsmall'} css={tw`mr-4`} onClick={() => setShowMove(true)}>
                         <FontAwesomeIcon icon={faLevelUpAlt} css={tw`mr-2`}/> Move

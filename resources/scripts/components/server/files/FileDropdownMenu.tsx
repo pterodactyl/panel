@@ -116,12 +116,15 @@ export default ({ file }: { file: FileObject }) => {
             renderToggle={onClick => (
                 <div css={tw`p-3 hover:text-white`} onClick={onClick}>
                     <FontAwesomeIcon icon={faEllipsisH}/>
+                    {!!modal &&
                     <RenameFileModal
+                        visible
+                        appear
                         files={[ file.name ]}
-                        visible={!!modal}
                         useMoveTerminology={modal === 'move'}
                         onDismissed={() => setModal(null)}
                     />
+                    }
                     <SpinnerOverlay visible={showSpinner} fixed size={'large'}/>
                 </div>
             )}
