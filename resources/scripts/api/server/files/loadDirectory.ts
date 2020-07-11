@@ -1,5 +1,5 @@
 import http from '@/api/http';
-import v4 from 'uuid/v4';
+import { rawDataToFileObject } from '@/api/transformers';
 
 export interface FileObject {
     uuid: string;
@@ -19,16 +19,5 @@ export default async (uuid: string, directory?: string): Promise<FileObject[]> =
         params: { directory },
     });
 
-    return (data.data || []).map((item: any): FileObject => ({
-        uuid: v4(),
-        name: item.attributes.name,
-        mode: item.attributes.mode,
-        size: Number(item.attributes.size),
-        isFile: item.attributes.is_file,
-        isSymlink: item.attributes.is_symlink,
-        isEditable: item.attributes.is_editable,
-        mimetype: item.attributes.mimetype,
-        createdAt: new Date(item.attributes.created_at),
-        modifiedAt: new Date(item.attributes.modified_at),
-    }));
+    return (data.data || []).map(rawDataToFileObject);
 };

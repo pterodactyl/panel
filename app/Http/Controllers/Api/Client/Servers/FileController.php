@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Illuminate\Http\JsonResponse;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -17,6 +18,7 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CompressFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 
@@ -90,7 +92,7 @@ class FileController extends ClientApiController
      */
     public function getFileContents(GetFileContentsRequest $request, Server $server): Response
     {
-        return Response::create(
+        return new Response(
             $this->fileRepository->setServer($server)->getContent(
                 $request->get('file'), config('pterodactyl.files.max_edit_size')
             ),
@@ -136,16 +138,16 @@ class FileController extends ClientApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest $request
      * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function writeFileContents(WriteFileContentRequest $request, Server $server): Response
+    public function writeFileContents(WriteFileContentRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository->setServer($server)->putContent(
             $request->get('file'),
             $request->getContent()
         );
 
-        return Response::create('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -153,15 +155,15 @@ class FileController extends ClientApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest $request
      * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function createFolder(CreateFolderRequest $request, Server $server): Response
+    public function createFolder(CreateFolderRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository
             ->setServer($server)
             ->createDirectory($request->input('name'), $request->input('root', '/'));
 
-        return Response::create('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -169,15 +171,15 @@ class FileController extends ClientApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest $request
      * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function renameFile(RenameFileRequest $request, Server $server): Response
+    public function renameFile(RenameFileRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository
             ->setServer($server)
             ->renameFile($request->input('rename_from'), $request->input('rename_to'));
 
-        return Response::create('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -185,15 +187,32 @@ class FileController extends ClientApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest $request
      * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function copyFile(CopyFileRequest $request, Server $server): Response
+    public function copyFile(CopyFileRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository
             ->setServer($server)
             ->copyFile($request->input('location'));
 
-        return Response::create('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CompressFilesRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @return array
+     */
+    public function compressFiles(CompressFilesRequest $request, Server $server): array
+    {
+        $file = $this->fileRepository->setServer($server)
+            ->compressFiles(
+                $request->input('root'), $request->input('files')
+            );
+
+        return $this->fractal->item($file)
+            ->transformWith($this->getTransformer(FileObjectTransformer::class))
+            ->toArray();
     }
 
     /**
@@ -201,14 +220,14 @@ class FileController extends ClientApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest $request
      * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeleteFileRequest $request, Server $server): Response
+    public function delete(DeleteFileRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository
             ->setServer($server)
             ->deleteFile($request->input('location'));
 
-        return Response::create('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

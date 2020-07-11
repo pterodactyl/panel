@@ -167,4 +167,28 @@ class DaemonFileRepository extends DaemonRepository
             ]
         );
     }
+
+    /**
+     * Compress the given files or folders in the given root.
+     *
+     * @param string|null $root
+     * @param array $files
+     * @return array
+     */
+    public function compressFiles(?string $root, array $files): array
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        $response = $this->getHttpClient()->post(
+            sprintf('/api/servers/%s/files/compress', $this->server->uuid),
+            [
+                'json' => [
+                    'root' => $root ?? '/',
+                    'files' => $files,
+                ],
+            ]
+        );
+
+        return json_decode($response->getBody(), true);
+    }
 }

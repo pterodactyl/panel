@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCopy,
     faEllipsisH,
+    faFileArchive,
     faFileDownload,
     faLevelUpAlt,
     faPencilAlt,
@@ -25,6 +26,7 @@ import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import DropdownMenu from '@/components/elements/DropdownMenu';
 import styled from 'styled-components/macro';
 import useEventListener from '@/plugins/useEventListener';
+import compressFiles from '@/api/server/files/compressFiles';
 
 type ModalType = 'rename' | 'move';
 
@@ -81,10 +83,8 @@ export default ({ file }: { file: FileObject }) => {
 
         copyFile(uuid, join(directory, file.name))
             .then(() => mutate())
-            .catch(error => {
-                setShowSpinner(false);
-                clearAndAddHttpError({ key: 'files', error });
-            });
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .then(() => setShowSpinner(false));
     };
 
     const doDownload = () => {
@@ -96,6 +96,16 @@ export default ({ file }: { file: FileObject }) => {
                 // @ts-ignore
                 window.location = url;
             })
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .then(() => setShowSpinner(false));
+    };
+
+    const doArchive = () => {
+        setShowSpinner(true);
+        clearFlashes('files');
+
+        compressFiles(uuid, directory, [ file.name ])
+            .then(() => mutate())
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
@@ -125,6 +135,9 @@ export default ({ file }: { file: FileObject }) => {
                 <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
             </Can>
             }
+            <Can action={'file.archive'}>
+                <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+            </Can>
             <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
             <Can action={'file.delete'}>
                 <Row onClick={doDeletion} icon={faTrashAlt} title={'Delete'} $danger/>
