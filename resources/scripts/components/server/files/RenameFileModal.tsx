@@ -22,6 +22,7 @@ export default ({ files, useMoveTerminology, ...props }: Props) => {
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);
+    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
     const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
         clearFlashes('files');
@@ -45,12 +46,14 @@ export default ({ files, useMoveTerminology, ...props }: Props) => {
         }
 
         renameFiles(uuid, directory, data)
-            .then(() => props.onDismissed())
+            .then((): Promise<any> => files.length > 0 ? mutate() : Promise.resolve())
+            .then(() => setSelectedFiles([]))
             .catch(error => {
                 mutate();
                 setSubmitting(false);
                 clearAndAddHttpError({ key: 'files', error });
-            });
+            })
+            .then(() => props.onDismissed());
     };
 
     return (

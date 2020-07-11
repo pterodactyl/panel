@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useFormikContext } from 'formik';
 import Fade from '@/components/elements/Fade';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileArchive, faLevelUpAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
@@ -13,6 +12,7 @@ import useServer from '@/plugins/useServer';
 import { ServerContext } from '@/state/server';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import deleteFiles from '@/api/server/files/deleteFiles';
+import RenameFileModal from '@/components/server/files/RenameFileModal';
 
 const MassActionsBar = () => {
     const { uuid } = useServer();
@@ -21,8 +21,11 @@ const MassActionsBar = () => {
     const [ loading, setLoading ] = useState(false);
     const [ loadingMessage, setLoadingMessage ] = useState('');
     const [ showConfirm, setShowConfirm ] = useState(false);
-    const { values, setFieldValue } = useFormikContext<{ selectedFiles: string[] }>();
+    const [ showMove, setShowMove ] = useState(false);
     const directory = ServerContext.useStoreState(state => state.files.directory);
+
+    const selectedFiles = ServerContext.useStoreState(state => state.files.selectedFiles);
+    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
     useEffect(() => {
         if (!loading) setLoadingMessage('');
@@ -33,9 +36,9 @@ const MassActionsBar = () => {
         clearFlashes('files');
         setLoadingMessage('Archiving files...');
 
-        compressFiles(uuid, directory, values.selectedFiles)
+        compressFiles(uuid, directory, selectedFiles)
             .then(() => mutate())
-            .then(() => setFieldValue('selectedFiles', []))
+            .then(() => setSelectedFiles([]))
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setLoading(false));
     };
@@ -46,10 +49,10 @@ const MassActionsBar = () => {
         clearFlashes('files');
         setLoadingMessage('Deleting files...');
 
-        deleteFiles(uuid, directory, values.selectedFiles)
+        deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
-                mutate(files => files.filter(f => values.selectedFiles.indexOf(f.name) < 0), false);
-                setFieldValue('selectedFiles', []);
+                mutate(files => files.filter(f => selectedFiles.indexOf(f.name) < 0), false);
+                setSelectedFiles([]);
             })
             .catch(error => {
                 mutate();
@@ -59,7 +62,7 @@ const MassActionsBar = () => {
     };
 
     return (
-        <Fade timeout={75} in={values.selectedFiles.length > 0} unmountOnExit>
+        <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
             <div css={tw`fixed bottom-0 z-50 left-0 right-0 flex justify-center`}>
                 <SpinnerOverlay visible={loading} size={'large'} fixed>
                     {loadingMessage}
@@ -73,15 +76,17 @@ const MassActionsBar = () => {
                 >
                     Deleting files is a permanent operation, you cannot undo this action.
                 </ConfirmationModal>
+                <RenameFileModal
+                    files={selectedFiles}
+                    visible={showMove}
+                    useMoveTerminology
+                    onDismissed={() => setShowMove(false)}
+                />
                 <div css={tw`rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
-                    <Button size={'xsmall'} css={tw`mr-4`}>
+                    <Button size={'xsmall'} css={tw`mr-4`} onClick={() => setShowMove(true)}>
                         <FontAwesomeIcon icon={faLevelUpAlt} css={tw`mr-2`}/> Move
                     </Button>
-                    <Button
-                        size={'xsmall'}
-                        css={tw`mr-4`}
-                        onClick={onClickCompress}
-                    >
+                    <Button size={'xsmall'} css={tw`mr-4`} onClick={onClickCompress}>
                         <FontAwesomeIcon icon={faFileArchive} css={tw`mr-2`}/> Archive
                     </Button>
                     <Button size={'xsmall'} color={'red'} isSecondary onClick={() => setShowConfirm(true)}>
