@@ -81,7 +81,7 @@ const LoginCheckpointContainer = () => {
 const EnhancedForm = withFormik<Props, Values>({
     handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { addError, clearFlashes, location } }) => {
         clearFlashes();
-        console.log(code);
+
         loginCheckpoint(location.state?.token || '', code, recoveryCode)
             .then(response => {
                 if (response.complete) {
