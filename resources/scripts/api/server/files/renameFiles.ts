@@ -5,11 +5,11 @@ interface Data {
     renameTo: string;
 }
 
-export default (uuid: string, { renameFrom, renameTo }: Data): Promise<void> => {
+export default (uuid: string, directory: string, files: Data[]): Promise<void> => {
     return new Promise((resolve, reject) => {
         http.put(`/api/client/servers/${uuid}/files/rename`, {
-            rename_from: renameFrom,
-            rename_to: renameTo,
+            root: directory,
+            files: files.map(f => ({ from: f.renameFrom, to: f.renameTo })),
         })
             .then(() => resolve())
             .catch(reject);

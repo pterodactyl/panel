@@ -3,7 +3,7 @@ import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { join } from 'path';
-import renameFile from '@/api/server/files/renameFile';
+import renameFiles from '@/api/server/files/renameFiles';
 import { ServerContext } from '@/state/server';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import tw from 'twin.macro';
@@ -21,10 +21,12 @@ type Props = RequiredModalProps & { file: FileObject; useMoveTerminology?: boole
 export default ({ file, useMoveTerminology, ...props }: Props) => {
     const { uuid } = useServer();
     const { mutate } = useFileManagerSwr();
-    const { clearAndAddHttpError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
+        clearFlashes('files');
+
         const len = name.split('/').length;
         if (!useMoveTerminology && len === 1) {
             // Rename the file within this directory.
@@ -36,7 +38,8 @@ export default ({ file, useMoveTerminology, ...props }: Props) => {
 
         const renameFrom = join(directory, file.name);
         const renameTo = join(directory, name);
-        renameFile(uuid, { renameFrom, renameTo })
+
+        renameFiles(uuid, directory, [ { renameFrom, renameTo } ])
             .then(() => props.onDismissed())
             .catch(error => {
                 mutate();

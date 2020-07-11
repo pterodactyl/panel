@@ -109,11 +109,11 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Renames or moves a file on the remote machine.
      *
-     * @param string $from
-     * @param string $to
+     * @param string|null $root
+     * @param array $files
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function renameFile(string $from, string $to): ResponseInterface
+    public function renameFiles(?string $root, array $files): ResponseInterface
     {
         Assert::isInstanceOf($this->server, Server::class);
 
@@ -121,8 +121,8 @@ class DaemonFileRepository extends DaemonRepository
             sprintf('/api/servers/%s/files/rename', $this->server->uuid),
             [
                 'json' => [
-                    'rename_from' => urldecode($from),
-                    'rename_to' => urldecode($to),
+                    'root' => $root ?? '/',
+                    'files' => $files,
                 ],
             ]
         );
@@ -163,7 +163,7 @@ class DaemonFileRepository extends DaemonRepository
             sprintf('/api/servers/%s/files/delete', $this->server->uuid),
             [
                 'json' => [
-                    'root' => $root,
+                    'root' => $root ?? '/',
                     'files' => $files,
                 ],
             ]

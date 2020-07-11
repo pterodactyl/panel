@@ -67,7 +67,7 @@ class FileController extends ClientApiController
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function listDirectory(ListFilesRequest $request, Server $server): array
+    public function directory(ListFilesRequest $request, Server $server): array
     {
         try {
             $contents = $this->fileRepository
@@ -90,7 +90,7 @@ class FileController extends ClientApiController
      * @return \Illuminate\Http\Response
      * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
      */
-    public function getFileContents(GetFileContentsRequest $request, Server $server): Response
+    public function contents(GetFileContentsRequest $request, Server $server): Response
     {
         return new Response(
             $this->fileRepository->setServer($server)->getContent(
@@ -140,7 +140,7 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
-    public function writeFileContents(WriteFileContentRequest $request, Server $server): JsonResponse
+    public function write(WriteFileContentRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository->setServer($server)->putContent(
             $request->get('file'),
@@ -157,7 +157,7 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
-    public function createFolder(CreateFolderRequest $request, Server $server): JsonResponse
+    public function create(CreateFolderRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository
             ->setServer($server)
@@ -173,11 +173,11 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
-    public function renameFile(RenameFileRequest $request, Server $server): JsonResponse
+    public function rename(RenameFileRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository
             ->setServer($server)
-            ->renameFile($request->input('rename_from'), $request->input('rename_to'));
+            ->renameFiles($request->input('root'), $request->input('files'));
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -189,7 +189,7 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
-    public function copyFile(CopyFileRequest $request, Server $server): JsonResponse
+    public function copy(CopyFileRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository
             ->setServer($server)
@@ -203,7 +203,7 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Models\Server $server
      * @return array
      */
-    public function compressFiles(CompressFilesRequest $request, Server $server): array
+    public function compress(CompressFilesRequest $request, Server $server): array
     {
         $file = $this->fileRepository->setServer($server)
             ->compressFiles(

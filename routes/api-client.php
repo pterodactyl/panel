@@ -53,15 +53,15 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     });
 
     Route::group(['prefix' => '/files'], function () {
-        Route::get('/list', 'Servers\FileController@listDirectory');
-        Route::get('/contents', 'Servers\FileController@getFileContents');
+        Route::get('/list', 'Servers\FileController@directory');
+        Route::get('/contents', 'Servers\FileController@contents');
         Route::get('/download', 'Servers\FileController@download');
-        Route::put('/rename', 'Servers\FileController@renameFile');
-        Route::post('/copy', 'Servers\FileController@copyFile');
-        Route::post('/write', 'Servers\FileController@writeFileContents');
-        Route::post('/compress', 'Servers\FileController@compressFiles');
+        Route::put('/rename', 'Servers\FileController@rename');
+        Route::post('/copy', 'Servers\FileController@copy');
+        Route::post('/write', 'Servers\FileController@write');
+        Route::post('/compress', 'Servers\FileController@compress');
         Route::post('/delete', 'Servers\FileController@delete');
-        Route::post('/create-folder', 'Servers\FileController@createFolder');
+        Route::post('/create-folder', 'Servers\FileController@create');
     });
 
     Route::group(['prefix' => '/schedules'], function () {
