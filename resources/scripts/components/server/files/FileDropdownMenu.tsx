@@ -96,7 +96,7 @@ export default ({ file }: { file: FileObject }) => {
     return (
         <DropdownMenu
             renderToggle={onClick => (
-                <div onClick={onClick}>
+                <div css={tw`p-3 hover:text-white`} onClick={onClick}>
                     <FontAwesomeIcon icon={faEllipsisH}/>
                     <RenameFileModal
                         file={file}

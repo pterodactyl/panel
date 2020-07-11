@@ -8,6 +8,9 @@ import { ServerContext } from '@/state/server';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import useServer from '@/plugins/useServer';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import useFlash from '@/plugins/useFlash';
 
 interface FormikValues {
     name: string;
@@ -16,37 +19,34 @@ interface FormikValues {
 type Props = RequiredModalProps & { file: FileObject; useMoveTerminology?: boolean };
 
 export default ({ file, useMoveTerminology, ...props }: Props) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const { uuid } = useServer();
+    const { mutate } = useFileManagerSwr();
+    const { clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);
-    const { pushFile, removeFile } = ServerContext.useStoreActions(actions => actions.files);
 
-    const submit = (values: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
+    const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
+        const len = name.split('/').length;
+        if (!useMoveTerminology && len === 1) {
+            // Rename the file within this directory.
+            mutate(files => files.map(f => f.uuid === file.uuid ? { ...f, name } : f), false);
+        } else if ((useMoveTerminology || len > 1) && file.uuid.length) {
+            // Remove the file from this directory since they moved it elsewhere.
+            mutate(files => files.filter(f => f.uuid !== file.uuid), false);
+        }
+
         const renameFrom = join(directory, file.name);
-        const renameTo = join(directory, values.name);
-
+        const renameTo = join(directory, name);
         renameFile(uuid, { renameFrom, renameTo })
-            .then(() => {
-                if (!useMoveTerminology && values.name.split('/').length === 1) {
-                    pushFile({ ...file, name: values.name });
-                }
-
-                if ((useMoveTerminology || values.name.split('/').length > 1) && file.uuid.length > 0) {
-                    removeFile(file.uuid);
-                }
-
-                props.onDismissed();
-            })
+            .then(() => props.onDismissed())
             .catch(error => {
+                mutate();
                 setSubmitting(false);
-                console.error(error);
+                clearAndAddHttpError({ key: 'files', error });
             });
     };
 
     return (
-        <Formik
-            onSubmit={submit}
-            initialValues={{ name: file.name }}
-        >
+        <Formik onSubmit={submit} initialValues={{ name: file.name }}>
             {({ isSubmitting, values }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
                     <Form css={tw`m-0`}>

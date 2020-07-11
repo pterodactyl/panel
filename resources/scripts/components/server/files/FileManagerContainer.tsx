@@ -28,6 +28,10 @@ export default () => {
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
 
     useEffect(() => {
+        // We won't automatically mutate the store when the component re-mounts, otherwise because of
+        // my (horrible) programming this fires off way more than we intend it to.
+        mutate();
+
         setDirectory(hash.length > 0 ? hash : '/');
     }, [ hash ]);
 

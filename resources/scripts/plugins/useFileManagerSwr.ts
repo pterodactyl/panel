@@ -11,5 +11,9 @@ export default () => {
     return useSWR<FileObject[]>(
         `${uuid}:files:${hash}`,
         () => loadDirectory(uuid, cleanDirectoryPath(hash)),
+        {
+            revalidateOnMount: false,
+            refreshInterval: 0,
+        }
     );
 };
