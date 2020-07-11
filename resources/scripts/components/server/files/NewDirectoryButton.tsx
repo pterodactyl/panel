@@ -9,6 +9,11 @@ import createDirectory from '@/api/server/files/createDirectory';
 import v4 from 'uuid/v4';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { mutate } from 'swr';
+import useServer from '@/plugins/useServer';
+import { FileObject } from '@/api/server/files/loadDirectory';
+import { useLocation } from 'react-router';
+import useFlash from '@/plugins/useFlash';
 
 interface Values {
     directoryName: string;
@@ -18,37 +23,44 @@ const schema = object().shape({
     directoryName: string().required('A valid directory name must be provided.'),
 });
 
-export default () => {
-    const [ visible, setVisible ] = useState(false);
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const directory = ServerContext.useStoreState(state => state.files.directory);
-    const pushFile = ServerContext.useStoreActions(actions => actions.files.pushFile);
+const generateDirectoryData = (name: string): FileObject => ({
+    uuid: v4(),
+    name: name,
+    mode: '0644',
+    size: 0,
+    isFile: false,
+    isEditable: false,
+    isSymlink: false,
+    mimetype: '',
+    createdAt: new Date(),
+    modifiedAt: new Date(),
+});
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        createDirectory(uuid, directory, values.directoryName)
+export default () => {
+    const { uuid } = useServer();
+    const { hash } = useLocation();
+    const { clearAndAddHttpError } = useFlash();
+    const [ visible, setVisible ] = useState(false);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
+
+    const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        createDirectory(uuid, directory, directoryName)
             .then(() => {
-                pushFile({
-                    uuid: v4(),
-                    name: values.directoryName,
-                    mode: '0644',
-                    size: 0,
-                    isFile: false,
-                    isEditable: false,
-                    isSymlink: false,
-                    mimetype: '',
-                    createdAt: new Date(),
-                    modifiedAt: new Date(),
-                });
+                mutate(
+                    `${uuid}:files:${hash}`,
+                    (data: FileObject[]) => [ ...data, generateDirectoryData(directoryName) ],
+                );
                 setVisible(false);
             })
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
+                clearAndAddHttpError({ key: 'files', error });
             });
     };
 
     return (
-        <React.Fragment>
+        <>
             <Formik
                 onSubmit={submit}
                 validationSchema={schema}
@@ -91,6 +103,6 @@ export default () => {
             <Button isSecondary css={tw`mr-2`} onClick={() => setVisible(true)}>
                 Create Directory
             </Button>
-        </React.Fragment>
+        </>
     );
 };
