@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { createRef } from 'react';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 import Fade from '@/components/elements/Fade';
@@ -17,64 +17,91 @@ export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
     }
 `;
 
-const DropdownMenu = ({ renderToggle, children }: Props) => {
-    const menu = useRef<HTMLDivElement>(null);
-    const [ posX, setPosX ] = useState(0);
-    const [ visible, setVisible ] = useState(false);
+interface State {
+    posX: number;
+    visible: boolean;
+}
 
-    const onClickHandler = (e: React.MouseEvent<any, MouseEvent>) => {
+class DropdownMenu extends React.PureComponent<Props, State> {
+    menu = createRef<HTMLDivElement>();
+
+    state: State = {
+        posX: 0,
+        visible: false,
+    };
+
+    componentWillUnmount () {
+        this.removeListeners();
+    }
+
+    componentDidUpdate (prevProps: Readonly<Props>, prevState: Readonly<State>) {
+        const menu = this.menu.current;
+
+        if (this.state.visible && !prevState.visible && menu) {
+            document.addEventListener('click', this.windowListener);
+            document.addEventListener('contextmenu', this.contextMenuListener);
+            menu.setAttribute(
+                'style', `left: ${Math.round(this.state.posX - menu.clientWidth)}px`,
+            );
+        }
+
+        if (!this.state.visible && prevState.visible) {
+            this.removeListeners();
+        }
+    }
+
+    removeListeners = () => {
+        document.removeEventListener('click', this.windowListener);
+        document.removeEventListener('contextmenu', this.contextMenuListener);
+    };
+
+    onClickHandler = (e: React.MouseEvent<any, MouseEvent>) => {
         e.preventDefault();
-
-        !visible && setPosX(e.clientX);
-        setVisible(s => !s);
+        this.triggerMenu(e.clientX);
     };
 
-    const windowListener = (e: MouseEvent) => {
-        if (e.button === 2 || !visible || !menu.current) {
+    contextMenuListener = () => this.setState({ visible: false });
+
+    windowListener = (e: MouseEvent) => {
+        const menu = this.menu.current;
+
+        if (e.button === 2 || !this.state.visible || !menu) {
             return;
         }
 
-        if (e.target === menu.current || menu.current.contains(e.target as Node)) {
+        if (e.target === menu || menu.contains(e.target as Node)) {
             return;
         }
 
-        if (e.target !== menu.current && !menu.current.contains(e.target as Node)) {
-            setVisible(false);
+        if (e.target !== menu && !menu.contains(e.target as Node)) {
+            this.setState({ visible: false });
         }
     };
 
-    useEffect(() => {
-        if (!visible || !menu.current) {
-            return;
-        }
+    triggerMenu = (posX: number) => this.setState(s => ({
+        posX: !s.visible ? posX : s.posX,
+        visible: !s.visible,
+    }));
 
-        document.addEventListener('click', windowListener);
-        menu.current.setAttribute(
-            'style', `left: ${Math.round(posX - menu.current.clientWidth)}px`,
+    render () {
+        return (
+            <div>
+                {this.props.renderToggle(this.onClickHandler)}
+                <Fade timeout={150} in={this.state.visible} unmountOnExit>
+                    <div
+                        ref={this.menu}
+                        onClick={e => {
+                            e.stopPropagation();
+                            this.setState({ visible: false });
+                        }}
+                        css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48`}
+                    >
+                        {this.props.children}
+                    </div>
+                </Fade>
+            </div>
         );
-
-        return () => {
-            document.removeEventListener('click', windowListener);
-        };
-    }, [ visible ]);
-
-    return (
-        <div>
-            {renderToggle(onClickHandler)}
-            <Fade timeout={150} in={visible} unmountOnExit>
-                <div
-                    ref={menu}
-                    onClick={e => {
-                        e.stopPropagation();
-                        setVisible(false);
-                    }}
-                    css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 min-w-48`}
-                >
-                    {children}
-                </div>
-            </Fade>
-        </div>
-    );
-};
+    }
+}
 
 export default DropdownMenu;

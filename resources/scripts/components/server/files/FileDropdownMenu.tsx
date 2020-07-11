@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCopy,
@@ -24,6 +24,7 @@ import { FileObject } from '@/api/server/files/loadDirectory';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import DropdownMenu from '@/components/elements/DropdownMenu';
 import styled from 'styled-components/macro';
+import useEventListener from '@/plugins/useEventListener';
 
 type ModalType = 'rename' | 'move';
 
@@ -46,14 +47,20 @@ const Row = ({ icon, title, ...props }: RowProps) => (
 );
 
 export default ({ file }: { file: FileObject }) => {
+    const onClickRef = useRef<DropdownMenu>(null);
     const [ showSpinner, setShowSpinner ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
 
     const { uuid } = useServer();
     const { mutate } = useFileManagerSwr();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
-
     const directory = ServerContext.useStoreState(state => state.files.directory);
+
+    useEventListener(`pterodactyl:files:ctx:${file.uuid}`, (e: CustomEvent) => {
+        if (onClickRef.current) {
+            onClickRef.current.triggerMenu(e.detail);
+        }
+    });
 
     const doDeletion = () => {
         clearFlashes('files');
@@ -95,6 +102,7 @@ export default ({ file }: { file: FileObject }) => {
 
     return (
         <DropdownMenu
+            ref={onClickRef}
             renderToggle={onClick => (
                 <div css={tw`p-3 hover:text-white`} onClick={onClick}>
                     <FontAwesomeIcon icon={faEllipsisH}/>
@@ -112,9 +120,11 @@ export default ({ file }: { file: FileObject }) => {
                 <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'}/>
                 <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'}/>
             </Can>
+            {file.isFile &&
             <Can action={'file.create'}>
                 <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
             </Can>
+            }
             <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
             <Can action={'file.delete'}>
                 <Row onClick={doDeletion} icon={faTrashAlt} title={'Delete'} $danger/>

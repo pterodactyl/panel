@@ -37,7 +37,13 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
     };
 
     return (
-        <Row key={file.name}>
+        <Row
+            key={file.name}
+            onContextMenu={e => {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent(`pterodactyl:files:ctx:${file.uuid}`, { detail: e.clientX }));
+            }}
+        >
             <NavLink
                 to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
                 css={tw`flex flex-1 text-neutral-300 no-underline p-3`}
