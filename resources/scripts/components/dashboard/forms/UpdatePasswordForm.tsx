@@ -7,6 +7,8 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import updateAccountPassword from '@/api/account/updateAccountPassword';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface Values {
     current: string;
@@ -30,7 +32,7 @@ export default () => {
         return null;
     }
 
-    const submit = (values: Values, { resetForm, setSubmitting }: FormikHelpers<Values>) => {
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('account:password');
         updateAccountPassword({ ...values })
             .then(() => {
@@ -57,14 +59,14 @@ export default () => {
                     ({ isSubmitting, isValid }) => (
                         <React.Fragment>
                             <SpinnerOverlay size={'large'} visible={isSubmitting}/>
-                            <Form className={'m-0'}>
+                            <Form css={tw`m-0`}>
                                 <Field
                                     id={'current_password'}
                                     type={'password'}
                                     name={'current'}
                                     label={'Current Password'}
                                 />
-                                <div className={'mt-6'}>
+                                <div css={tw`mt-6`}>
                                     <Field
                                         id={'new_password'}
                                         type={'password'}
@@ -73,7 +75,7 @@ export default () => {
                                         description={'Your new password should be at least 8 characters in length and unique to this website.'}
                                     />
                                 </div>
-                                <div className={'mt-6'}>
+                                <div css={tw`mt-6`}>
                                     <Field
                                         id={'confirm_password'}
                                         type={'password'}
@@ -81,10 +83,10 @@ export default () => {
                                         label={'Confirm New Password'}
                                     />
                                 </div>
-                                <div className={'mt-6'}>
-                                    <button className={'btn btn-primary btn-sm'} disabled={isSubmitting || !isValid}>
+                                <div css={tw`mt-6`}>
+                                    <Button size={'small'} disabled={isSubmitting || !isValid}>
                                         Update Password
-                                    </button>
+                                    </Button>
                                 </div>
                             </Form>
                         </React.Fragment>

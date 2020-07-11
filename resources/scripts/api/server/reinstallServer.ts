@@ -6,4 +6,4 @@ export default (uuid: string): Promise<void> => {
             .then(() => resolve())
             .catch(reject);
     });
-}
+};

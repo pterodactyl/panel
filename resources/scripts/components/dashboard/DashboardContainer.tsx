@@ -10,6 +10,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import { useStoreState } from 'easy-peasy';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import Switch from '@/components/elements/Switch';
+import tw from 'twin.macro';
 
 export default () => {
     const { addError, clearFlashes } = useFlash();
@@ -37,10 +38,10 @@ export default () => {
 
     return (
         <PageContentBlock>
-            <FlashMessageRender className={'mb-4'}/>
+            <FlashMessageRender css={tw`mb-4`}/>
             {rootAdmin &&
-            <div className={'mb-2 flex justify-end items-center'}>
-                <p className={'uppercase text-xs text-neutral-400 mr-2'}>
+            <div css={tw`mb-2 flex justify-end items-center`}>
+                <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
                     {showAdmin ? 'Showing all servers' : 'Showing your servers'}
                 </p>
                 <Switch
@@ -51,14 +52,16 @@ export default () => {
             </div>
             }
             {loading ?
-                <Spinner centered={true} size={'large'}/>
+                <Spinner centered size={'large'}/>
                 :
                 servers.length > 0 ?
-                    servers.map(server => (
-                        <ServerRow key={server.uuid} server={server} className={'mt-2'}/>
+                    servers.map((server, index) => (
+                        <div key={server.uuid} css={index > 0 ? tw`mt-2` : undefined}>
+                            <ServerRow server={server}/>
+                        </div>
                     ))
                     :
-                    <p className={'text-center text-sm text-neutral-400'}>
+                    <p css={tw`text-center text-sm text-neutral-400`}>
                         There are no servers associated with your account.
                     </p>
             }

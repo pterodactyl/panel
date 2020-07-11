@@ -10,6 +10,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import BackupRow from '@/components/server/backups/BackupRow';
 import { ServerContext } from '@/state/server';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import tw from 'twin.macro';
 
 export default () => {
     const { uuid, featureLimits } = useServer();
@@ -31,14 +32,14 @@ export default () => {
     }, []);
 
     if (backups.length === 0 && loading) {
-        return <Spinner size={'large'} centered={true}/>;
+        return <Spinner size={'large'} centered/>;
     }
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'backups'} className={'mb-4'}/>
+            <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             {!backups.length ?
-                <p className="text-center text-sm text-neutral-400">
+                <p css={tw`text-center text-sm text-neutral-400`}>
                     There are no backups stored for this server.
                 </p>
                 :
@@ -46,7 +47,7 @@ export default () => {
                     {backups.map((backup, index) => <BackupRow
                         key={backup.uuid}
                         backup={backup}
-                        className={index !== (backups.length - 1) ? 'mb-2' : undefined}
+                        css={index > 0 ? tw`mt-2` : undefined}
                     />)}
                 </div>
             }
@@ -57,12 +58,12 @@ export default () => {
             }
             <Can action={'backup.create'}>
                 {(featureLimits.backups > 0 && backups.length > 0) &&
-                <p className="text-center text-xs text-neutral-400 mt-2">
+                <p css={tw`text-center text-xs text-neutral-400 mt-2`}>
                     {backups.length} of {featureLimits.backups} backups have been created for this server.
                 </p>
                 }
                 {featureLimits.backups > 0 && featureLimits.backups !== backups.length &&
-                <div className={'mt-6 flex justify-end'}>
+                <div css={tw`mt-6 flex justify-end`}>
                     <CreateBackupButton/>
                 </div>
                 }

@@ -1,46 +1,21 @@
 import React, { lazy, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faServer } from '@fortawesome/free-solid-svg-icons/faServer';
-import { faCircle } from '@fortawesome/free-solid-svg-icons/faCircle';
-import classNames from 'classnames';
-import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
-import { faHdd } from '@fortawesome/free-solid-svg-icons/faHdd';
+import { faCircle, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Can from '@/components/elements/Can';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import ContentContainer from '@/components/elements/ContentContainer';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import StopOrKillButton from '@/components/server/StopOrKillButton';
 
-type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
+export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
 const ChunkedConsole = lazy(() => import(/* webpackChunkName: "console" */'@/components/server/Console'));
 const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/components/server/StatGraphs'));
-
-const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void }) => {
-    const [ clicked, setClicked ] = useState(false);
-    const status = ServerContext.useStoreState(state => state.status.value);
-
-    useEffect(() => {
-        setClicked(state => [ 'stopping' ].indexOf(status) < 0 ? false : state);
-    }, [ status ]);
-
-    return (
-        <button
-            className={'btn btn-red btn-xs'}
-            disabled={status === 'offline'}
-            onClick={e => {
-                e.preventDefault();
-                onPress(clicked ? 'kill' : 'stop');
-                setClicked(true);
-            }}
-        >
-            {clicked ? 'Kill' : 'Stop'}
-        </button>
-    );
-};
 
 export default () => {
     const [ memory, setMemory ] = useState(0);
@@ -81,59 +56,45 @@ export default () => {
         };
     }, [ instance, connected ]);
 
-    const disklimit = server.limits.disk != 0 ? megabytesToHuman(server.limits.disk) : "Unlimited";
-    const memorylimit = server.limits.memory != 0 ? megabytesToHuman(server.limits.memory) : "Unlimited";
+    const disklimit = server.limits.disk ? megabytesToHuman(server.limits.disk) : 'Unlimited';
+    const memorylimit = server.limits.memory ? megabytesToHuman(server.limits.memory) : 'Unlimited';
 
     return (
-        <PageContentBlock className={'flex'}>
-            <div className={'w-1/4'}>
+        <PageContentBlock css={tw`flex`}>
+            <div css={tw`w-1/4`}>
                 <TitledGreyBox title={server.name} icon={faServer}>
-                    <p className={'text-xs uppercase'}>
+                    <p css={tw`text-xs uppercase`}>
                         <FontAwesomeIcon
                             icon={faCircle}
-                            fixedWidth={true}
-                            className={classNames('mr-1', {
-                                'text-red-500': status === 'offline',
-                                'text-yellow-500': [ 'running', 'offline' ].indexOf(status) < 0,
-                                'text-green-500': status === 'running',
-                            })}
+                            fixedWidth
+                            css={[
+                                tw`mr-1`,
+                                status === 'offline' ? tw`text-red-500` : (status === 'running' ? tw`text-green-500` : tw`text-yellow-500`),
+                            ]}
                         />
                         &nbsp;{status}
                     </p>
-                    <p className={'text-xs mt-2'}>
-                        <FontAwesomeIcon
-                            icon={faMicrochip}
-                            fixedWidth={true}
-                            className={'mr-1'}
-                        />
-                        &nbsp;{cpu.toFixed(2)} %
+                    <p css={tw`text-xs mt-2`}>
+                        <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {cpu.toFixed(2)}%
                     </p>
-                    <p className={'text-xs mt-2'}>
-                        <FontAwesomeIcon
-                            icon={faMemory}
-                            fixedWidth={true}
-                            className={'mr-1'}
-                        />
-                        &nbsp;{bytesToHuman(memory)}
-                        <span className={'text-neutral-500'}> / {memorylimit}</span>
+                    <p css={tw`text-xs mt-2`}>
+                        <FontAwesomeIcon icon={faMemory} fixedWidth css={tw`mr-1`}/> {bytesToHuman(memory)}
+                        <span css={tw`text-neutral-500`}> / {memorylimit}</span>
                     </p>
-                    <p className={'text-xs mt-2'}>
-                        <FontAwesomeIcon
-                            icon={faHdd}
-                            fixedWidth={true}
-                            className={'mr-1'}
-                        />
-                        &nbsp;{bytesToHuman(disk)}
-
-                        <span className={'text-neutral-500'}> / {disklimit}</span>
+                    <p css={tw`text-xs mt-2`}>
+                        <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(disk)}
+                        <span css={tw`text-neutral-500`}> / {disklimit}</span>
                     </p>
                 </TitledGreyBox>
                 {!server.isInstalling ?
-                    <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny={true}>
-                        <div className={'grey-box justify-center'}>
+                    <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
+                        <div css={tw`shadow-md bg-neutral-700 rounded p-3 flex text-xs mt-4 justify-center`}>
                             <Can action={'control.start'}>
-                                <button
-                                    className={'btn btn-secondary btn-green btn-xs mr-2'}
+                                <Button
+                                    size={'xsmall'}
+                                    color={'green'}
+                                    isSecondary
+                                    css={tw`mr-2`}
                                     disabled={status !== 'offline'}
                                     onClick={e => {
                                         e.preventDefault();
@@ -141,18 +102,20 @@ export default () => {
                                     }}
                                 >
                                     Start
-                                </button>
+                                </Button>
                             </Can>
                             <Can action={'control.restart'}>
-                                <button
-                                    className={'btn btn-secondary btn-primary btn-xs mr-2'}
+                                <Button
+                                    size={'xsmall'}
+                                    isSecondary
+                                    css={tw`mr-2`}
                                     onClick={e => {
                                         e.preventDefault();
                                         sendPowerCommand('restart');
                                     }}
                                 >
                                     Restart
-                                </button>
+                                </Button>
                             </Can>
                             <Can action={'control.stop'}>
                                 <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
@@ -160,9 +123,9 @@ export default () => {
                         </div>
                     </Can>
                     :
-                    <div className={'mt-4 rounded bg-yellow-500 p-3'}>
+                    <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                         <ContentContainer>
-                            <p className={'text-sm text-yellow-900'}>
+                            <p css={tw`text-sm text-yellow-900`}>
                                 This server is currently running its installation process and most actions are
                                 unavailable.
                             </p>
@@ -170,7 +133,7 @@ export default () => {
                     </div>
                 }
             </div>
-            <div className={'flex-1 ml-4'}>
+            <div css={tw`flex-1 ml-4`}>
                 <SuspenseSpinner>
                     <ChunkedConsole/>
                     <ChunkedStatGraphs/>

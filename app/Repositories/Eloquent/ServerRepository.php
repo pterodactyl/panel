@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -227,43 +226,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Return a paginated list of servers that a user can access at a given level.
-     *
-     * @param \Pterodactyl\Models\User $user
-     * @param int $level
-     * @param bool|int $paginate
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
-     */
-    public function filterUserAccessServers(User $user, int $level, $paginate = 25)
-    {
-        $instance = $this->getBuilder()->select($this->getColumns())->with(['user', 'node', 'allocation']);
-
-        // If access level is set to owner, only display servers
-        // that the user owns.
-        if ($level === User::FILTER_LEVEL_OWNER) {
-            $instance->where('owner_id', $user->id);
-        }
-
-        // If set to all, display all servers they can access, including
-        // those they access as an admin. If set to subuser, only return
-        // the servers they can access because they are owner, or marked
-        // as a subuser of the server.
-        elseif (($level === User::FILTER_LEVEL_ALL && ! $user->root_admin) || $level === User::FILTER_LEVEL_SUBUSER) {
-            $instance->whereIn('id', $this->getUserAccessServers($user->id));
-        }
-
-        // If set to admin, only display the servers a user can access
-        // as an administrator (leaves out owned and subuser of).
-        elseif ($level === User::FILTER_LEVEL_ADMIN && $user->root_admin) {
-            $instance->whereNotIn('id', $this->getUserAccessServers($user->id));
-        }
-
-        $instance->search($this->getSearchTerm());
-
-        return $paginate ? $instance->paginate($paginate) : $instance->get();
-    }
-
-    /**
      * Return a server by UUID.
      *
      * @param string $uuid
@@ -337,20 +299,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     public function isUniqueUuidCombo(string $uuid, string $short): bool
     {
         return ! $this->getBuilder()->where('uuid', '=', $uuid)->orWhere('uuidShort', '=', $short)->exists();
-    }
-
-    /**
-     * Return an array of server IDs that a given user can access based
-     * on owner and subuser permissions.
-     *
-     * @param int $user
-     * @return int[]
-     */
-    private function getUserAccessServers(int $user): array
-    {
-        return $this->getBuilder()->select('id')->where('owner_id', $user)->union(
-            $this->app->make(SubuserRepository::class)->getBuilder()->select('server_id')->where('user_id', $user)
-        )->pluck('id')->all();
     }
 
     /**

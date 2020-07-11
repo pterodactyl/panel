@@ -8,6 +8,8 @@ import { ApplicationStore } from '@/state';
 import Field from '@/components/elements/Field';
 import { Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface Values {
     email: string;
@@ -43,33 +45,30 @@ export default () => {
             {({ isSubmitting }) => (
                 <LoginFormContainer
                     title={'Request Password Reset'}
-                    className={'w-full flex'}
+                    css={tw`w-full flex`}
                 >
                     <Field
-                        light={true}
+                        light
                         label={'Email'}
                         description={'Enter your account email address to receive instructions on resetting your password.'}
                         name={'email'}
                         type={'email'}
                     />
-                    <div className={'mt-6'}>
-                        <button
+                    <div css={tw`mt-6`}>
+                        <Button
                             type={'submit'}
-                            className={'btn btn-primary btn-jumbo flex justify-center'}
+                            size={'xlarge'}
                             disabled={isSubmitting}
+                            isLoading={isSubmitting}
                         >
-                            {isSubmitting ?
-                                <div className={'spinner-circle spinner-sm spinner-white'}></div>
-                                :
-                                'Send Email'
-                            }
-                        </button>
+                            Send Email
+                        </Button>
                     </div>
-                    <div className={'mt-6 text-center'}>
+                    <div css={tw`mt-6 text-center`}>
                         <Link
                             type={'button'}
                             to={'/auth/login'}
-                            className={'text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700'}
+                            css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                         >
                             Return to Login
                         </Link>

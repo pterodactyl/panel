@@ -7,7 +7,7 @@ const useWebsocketEvent = (event: string, callback: (data: string) => void) => {
 
     useEffect(() => {
         savedCallback.current = callback;
-    }, [callback]);
+    }, [ callback ]);
 
     return useEffect(() => {
         const eventListener = (event: any) => savedCallback.current(event);

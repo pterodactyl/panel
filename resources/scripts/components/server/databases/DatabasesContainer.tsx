@@ -5,12 +5,13 @@ import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import DatabaseRow from '@/components/server/databases/DatabaseRow';
 import Spinner from '@/components/elements/Spinner';
-import { CSSTransition } from 'react-transition-group';
 import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseButton';
 import Can from '@/components/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import useServer from '@/plugins/useServer';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import tw from 'twin.macro';
+import Fade from '@/components/elements/Fade';
 
 export default () => {
     const { uuid, featureLimits } = useServer();
@@ -35,11 +36,11 @@ export default () => {
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'databases'} className={'mb-4'}/>
+            <FlashMessageRender byKey={'databases'} css={tw`mb-4`}/>
             {(!databases.length && loading) ?
-                <Spinner size={'large'} centered={true}/>
+                <Spinner size={'large'} centered/>
                 :
-                <CSSTransition classNames={'fade'} timeout={250}>
+                <Fade timeout={150}>
                     <>
                         {databases.length > 0 ?
                             databases.map((database, index) => (
@@ -50,28 +51,29 @@ export default () => {
                                 />
                             ))
                             :
-                            <p className={'text-center text-sm text-neutral-400'}>
+                            <p css={tw`text-center text-sm text-neutral-400`}>
                                 {featureLimits.databases > 0 ?
-                                    `It looks like you have no databases.`
+                                    'It looks like you have no databases.'
                                     :
-                                    `Databases cannot be created for this server.`
+                                    'Databases cannot be created for this server.'
                                 }
                             </p>
                         }
                         <Can action={'database.create'}>
                             {(featureLimits.databases > 0 && databases.length > 0) &&
-                            <p className="text-center text-xs text-neutral-400 mt-2">
-                                {databases.length} of {featureLimits.databases} databases have been allocated to this server.
+                            <p css={tw`text-center text-xs text-neutral-400 mt-2`}>
+                                {databases.length} of {featureLimits.databases} databases have been allocated to this
+                                server.
                             </p>
                             }
                             {featureLimits.databases > 0 && featureLimits.databases !== databases.length &&
-                            <div className={'mt-6 flex justify-end'}>
+                            <div css={tw`mt-6 flex justify-end`}>
                                 <CreateDatabaseButton/>
                             </div>
                             }
                         </Can>
                     </>
-                </CSSTransition>
+                </Fade>
             }
         </PageContentBlock>
     );

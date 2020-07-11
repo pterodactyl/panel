@@ -10,6 +10,9 @@ import createServerBackup from '@/api/server/backups/createServerBackup';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerContext } from '@/state/server';
+import Button from '@/components/elements/Button';
+import tw from 'twin.macro';
+import { Textarea } from '@/components/elements/Input';
 
 interface Values {
     name: string;
@@ -21,17 +24,17 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
 
     return (
         <Modal {...props} showSpinnerOverlay={isSubmitting}>
-            <Form className={'pb-6'}>
-                <FlashMessageRender byKey={'backups:create'} className={'mb-4'}/>
-                <h3 className={'mb-6'}>Create server backup</h3>
-                <div className={'mb-6'}>
+            <Form>
+                <FlashMessageRender byKey={'backups:create'} css={tw`mb-4`}/>
+                <h2 css={tw`text-2xl mb-6`}>Create server backup</h2>
+                <div css={tw`mb-6`}>
                     <Field
                         name={'name'}
                         label={'Backup name'}
                         description={'If provided, the name that should be used to reference this backup.'}
                     />
                 </div>
-                <div className={'mb-6'}>
+                <div css={tw`mb-6`}>
                     <FormikFieldWrapper
                         name={'ignored'}
                         label={'Ignored Files & Directories'}
@@ -42,20 +45,13 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                             prefixing the path with an exclamation point.
                         `}
                     >
-                        <FormikField
-                            name={'ignored'}
-                            component={'textarea'}
-                            className={'input-dark h-32'}
-                        />
+                        <FormikField as={Textarea} name={'ignored'} css={tw`h-32`}/>
                     </FormikFieldWrapper>
                 </div>
-                <div className={'flex justify-end'}>
-                    <button
-                        type={'submit'}
-                        className={'btn btn-primary btn-sm'}
-                    >
+                <div css={tw`flex justify-end`}>
+                    <Button type={'submit'}>
                         Start backup
-                    </button>
+                    </Button>
                 </div>
             </Form>
         </Modal>
@@ -99,18 +95,15 @@ export default () => {
                 })}
             >
                 <ModalContent
-                    appear={true}
+                    appear
                     visible={visible}
                     onDismissed={() => setVisible(false)}
                 />
             </Formik>
             }
-            <button
-                className={'btn btn-primary btn-sm'}
-                onClick={() => setVisible(true)}
-            >
+            <Button onClick={() => setVisible(true)}>
                 Create backup
-            </button>
+            </Button>
         </>
     );
 };

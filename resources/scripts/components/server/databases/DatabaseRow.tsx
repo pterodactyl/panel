@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDatabase } from '@fortawesome/free-solid-svg-icons/faDatabase';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
-import classNames from 'classnames';
+import { faDatabase, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import Modal from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
@@ -17,6 +14,11 @@ import Can from '@/components/elements/Can';
 import { ServerDatabase } from '@/api/server/getServerDatabases';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import Label from '@/components/elements/Label';
+import Input from '@/components/elements/Input';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 
 interface Props {
     database: ServerDatabase;
@@ -51,13 +53,14 @@ export default ({ database, className }: Props) => {
                 addError({ key: 'database:delete', message: httpErrorToHuman(error) });
             });
     };
-    
+
     return (
-        <React.Fragment>
+        <>
             <Formik
                 onSubmit={submit}
                 initialValues={{ confirm: '' }}
                 validationSchema={schema}
+                isInitialValid={false}
             >
                 {
                     ({ isSubmitting, isValid, resetForm }) => (
@@ -70,13 +73,13 @@ export default ({ database, className }: Props) => {
                                 resetForm();
                             }}
                         >
-                            <FlashMessageRender byKey={'database:delete'} className={'mb-6'}/>
-                            <h3 className={'mb-6'}>Confirm database deletion</h3>
-                            <p className={'text-sm'}>
+                            <FlashMessageRender byKey={'database:delete'} css={tw`mb-6`}/>
+                            <h2 css={tw`text-2xl mb-6`}>Confirm database deletion</h2>
+                            <p css={tw`text-sm`}>
                                 Deleting a database is a permanent action, it cannot be undone. This will permanetly
                                 delete the <strong>{database.name}</strong> database and remove all associated data.
                             </p>
-                            <Form className={'m-0 mt-6'}>
+                            <Form css={tw`m-0 mt-6`}>
                                 <Field
                                     type={'text'}
                                     id={'confirm_name'}
@@ -84,21 +87,22 @@ export default ({ database, className }: Props) => {
                                     label={'Confirm Database Name'}
                                     description={'Enter the database name to confirm deletion.'}
                                 />
-                                <div className={'mt-6 text-right'}>
-                                    <button
+                                <div css={tw`mt-6 text-right`}>
+                                    <Button
                                         type={'button'}
-                                        className={'btn btn-sm btn-secondary mr-2'}
+                                        isSecondary
+                                        css={tw`mr-2`}
                                         onClick={() => setVisible(false)}
                                     >
                                         Cancel
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         type={'submit'}
-                                        className={'btn btn-sm btn-red'}
+                                        color={'red'}
                                         disabled={!isValid}
                                     >
                                         Delete Database
-                                    </button>
+                                    </Button>
                                 </div>
                             </Form>
                         </Modal>
@@ -106,62 +110,61 @@ export default ({ database, className }: Props) => {
                 }
             </Formik>
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
-                <FlashMessageRender byKey={'database-connection-modal'} className={'mb-6'}/>
-                <h3 className={'mb-6'}>Database connection details</h3>
+                <FlashMessageRender byKey={'database-connection-modal'} css={tw`mb-6`}/>
+                <h3 css={tw`mb-6`}>Database connection details</h3>
                 <Can action={'database.view_password'}>
                     <div>
-                        <label className={'input-dark-label'}>Password</label>
-                        <input type={'text'} className={'input-dark'} readOnly={true} value={database.password}/>
+                        <Label>Password</Label>
+                        <Input type={'text'} readOnly value={database.password}/>
                     </div>
                 </Can>
-                <div className={'mt-6'}>
-                    <label className={'input-dark-label'}>JBDC Connection String</label>
-                    <input
+                <div css={tw`mt-6`}>
+                    <Label>JBDC Connection String</Label>
+                    <Input
                         type={'text'}
-                        className={'input-dark'}
-                        readOnly={true}
+                        readOnly
                         value={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
                     />
                 </div>
-                <div className={'mt-6 text-right'}>
+                <div css={tw`mt-6 text-right`}>
                     <Can action={'database.update'}>
                         <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase}/>
                     </Can>
-                    <button className={'btn btn-sm btn-secondary'} onClick={() => setConnectionVisible(false)}>
+                    <Button isSecondary onClick={() => setConnectionVisible(false)}>
                         Close
-                    </button>
+                    </Button>
                 </div>
             </Modal>
-            <div className={classNames('grey-row-box no-hover', className)}>
-                <div className={'icon'}>
-                    <FontAwesomeIcon icon={faDatabase} fixedWidth={true}/>
+            <GreyRowBox $hoverable={false} className={className}>
+                <div>
+                    <FontAwesomeIcon icon={faDatabase} fixedWidth/>
                 </div>
-                <div className={'flex-1 ml-4'}>
-                    <p className={'text-lg'}>{database.name}</p>
+                <div css={tw`flex-1 ml-4`}>
+                    <p css={tw`text-lg`}>{database.name}</p>
                 </div>
-                <div className={'ml-8 text-center'}>
-                    <p className={'text-sm'}>{database.connectionString}</p>
-                    <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Endpoint</p>
+                <div css={tw`ml-8 text-center`}>
+                    <p css={tw`text-sm`}>{database.connectionString}</p>
+                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Endpoint</p>
                 </div>
-                <div className={'ml-8 text-center'}>
-                    <p className={'text-sm'}>{database.allowConnectionsFrom}</p>
-                    <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Connections from</p>
+                <div css={tw`ml-8 text-center`}>
+                    <p css={tw`text-sm`}>{database.allowConnectionsFrom}</p>
+                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Connections from</p>
                 </div>
-                <div className={'ml-8 text-center'}>
-                    <p className={'text-sm'}>{database.username}</p>
-                    <p className={'mt-1 text-2xs text-neutral-500 uppercase select-none'}>Username</p>
+                <div css={tw`ml-8 text-center`}>
+                    <p css={tw`text-sm`}>{database.username}</p>
+                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Username</p>
                 </div>
-                <div className={'ml-8'}>
-                    <button className={'btn btn-sm btn-secondary mr-2'} onClick={() => setConnectionVisible(true)}>
-                        <FontAwesomeIcon icon={faEye} fixedWidth={true}/>
-                    </button>
+                <div css={tw`ml-8`}>
+                    <Button isSecondary css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>
+                        <FontAwesomeIcon icon={faEye} fixedWidth/>
+                    </Button>
                     <Can action={'database.delete'}>
-                        <button className={'btn btn-sm btn-secondary btn-red'} onClick={() => setVisible(true)}>
-                            <FontAwesomeIcon icon={faTrashAlt} fixedWidth={true}/>
-                        </button>
+                        <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
+                            <FontAwesomeIcon icon={faTrashAlt} fixedWidth/>
+                        </Button>
                     </Can>
                 </div>
-            </div>
-        </React.Fragment>
+            </GreyRowBox>
+        </>
     );
 };

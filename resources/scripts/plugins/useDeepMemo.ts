@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import isEqual from 'lodash-es/isEqual';
+import isEqual from 'react-fast-compare';
 
 export const useDeepMemo = <T, K> (fn: () => T, key: K): T => {
     const ref = useRef<{ key: K, value: T }>();

@@ -159,7 +159,7 @@ class FileController extends ClientApiController
     {
         $this->fileRepository
             ->setServer($server)
-            ->createDirectory($request->input('name'), $request->input('directory', '/'));
+            ->createDirectory($request->input('name'), $request->input('root', '/'));
 
         return Response::create('', Response::HTTP_NO_CONTENT);
     }

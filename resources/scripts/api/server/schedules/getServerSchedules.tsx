@@ -64,7 +64,7 @@ export default (uuid: string): Promise<Schedule[]> => {
     return new Promise((resolve, reject) => {
         http.get(`/api/client/servers/${uuid}/schedules`, {
             params: {
-                include: ['tasks'],
+                include: [ 'tasks' ],
             },
         })
             .then(({ data }) => resolve((data.data || []).map((row: any) => rawDataToServerSchedule(row.attributes))))

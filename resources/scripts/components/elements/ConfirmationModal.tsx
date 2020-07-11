@@ -1,5 +1,7 @@
 import React from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 type Props = {
     title: string;
@@ -16,15 +18,15 @@ const ConfirmationModal = ({ title, appear, children, visible, buttonText, onCon
         showSpinnerOverlay={showSpinnerOverlay}
         onDismissed={() => onDismissed()}
     >
-        <h3 className={'mb-6'}>{title}</h3>
-        <p className={'text-sm'}>{children}</p>
-        <div className={'flex items-center justify-end mt-8'}>
-            <button className={'btn btn-secondary btn-sm'} onClick={() => onDismissed()}>
+        <h2 css={tw`text-2xl mb-6`}>{title}</h2>
+        <p css={tw`text-sm`}>{children}</p>
+        <div css={tw`flex items-center justify-end mt-8`}>
+            <Button isSecondary onClick={() => onDismissed()}>
                 Cancel
-            </button>
-            <button className={'btn btn-red btn-sm ml-4'} onClick={() => onConfirmed()}>
+            </Button>
+            <Button color={'red'} css={tw`ml-4`} onClick={() => onConfirmed()}>
                 {buttonText}
-            </button>
+            </Button>
         </div>
     </Modal>
 );

@@ -1,16 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faServer } from '@fortawesome/free-solid-svg-icons/faServer';
-import { faEthernet } from '@fortawesome/free-solid-svg-icons/faEthernet';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
-import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
-import { faHdd } from '@fortawesome/free-solid-svg-icons/faHdd';
+import { faServer, faEthernet, faMicrochip, faMemory, faHdd } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
-import classNames from 'classnames';
+import tw from 'twin.macro';
+import GreyRowBox from '@/components/elements/GreyRowBox';
+
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
@@ -20,7 +18,7 @@ const isAlarmState = (current: number, limit: number): boolean => {
     return current / limitInBytes >= 0.90;
 };
 
-export default ({ server, className }: { server: Server; className: string | undefined }) => {
+export default ({ server }: { server: Server }) => {
     const interval = useRef<number>(null);
     const [ stats, setStats ] = useState<ServerStats | null>(null);
     const [ statsError, setStatsError ] = useState(false);
@@ -52,110 +50,114 @@ export default ({ server, className }: { server: Server; className: string | und
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
-    const disklimit = server.limits.disk != 0 ? megabytesToHuman(server.limits.disk) : "Unlimited";
-    const memorylimit = server.limits.memory != 0 ? megabytesToHuman(server.limits.memory) : "Unlimited";
+
+    const disklimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : "Unlimited";
+    const memorylimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : "Unlimited";
 
     return (
-        <Link to={`/server/${server.id}`} className={`grey-row-box cursor-pointer ${className}`}>
+        <GreyRowBox as={Link} to={`/server/${server.id}`}>
             <div className={'icon'}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
-            <div className={'flex-1 ml-4'}>
-                <p className={'text-lg'}>{server.name}</p>
+            <div css={tw`flex-1 ml-4`}>
+                <p css={tw`text-lg`}>{server.name}</p>
             </div>
-            <div className={'w-1/4 overflow-hidden'}>
-                <div className={'flex ml-4'}>
-                    <FontAwesomeIcon icon={faEthernet} className={'text-neutral-500'}/>
-                    <p className={'text-sm text-neutral-400 ml-2'}>
+            <div css={tw`w-1/4 overflow-hidden`}>
+                <div css={tw`flex ml-4`}>
+                    <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
+                    <p css={tw`text-sm text-neutral-400 ml-2`}>
                         {
-                            server.allocations.filter(alloc => alloc.default).map(allocation => (
+                            server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
                                 <span key={allocation.ip + allocation.port.toString()}>{allocation.alias || allocation.ip}:{allocation.port}</span>
                             ))
                         }
                     </p>
                 </div>
             </div>
-            <div className={'w-1/3 flex items-baseline relative'}>
+            <div css={tw`w-1/3 flex items-baseline relative`}>
                 {!stats ?
                     !statsError ?
-                        <SpinnerOverlay size={'tiny'} visible={true} backgroundOpacity={0.25}/>
+                        <SpinnerOverlay size={'small'} visible backgroundOpacity={0.25}/>
                         :
                         server.isInstalling ?
-                            <div className={'flex-1 text-center'}>
-                                <span className={'bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs'}>
+                            <div css={tw`flex-1 text-center`}>
+                                <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
                                     Installing
                                 </span>
                             </div>
                             :
-                            <div className={'flex-1 text-center'}>
-                                <span className={'bg-red-500 rounded px-2 py-1 text-red-100 text-xs'}>
+                            <div css={tw`flex-1 text-center`}>
+                                <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
                                     {server.isSuspended ? 'Suspended' : 'Connection Error'}
                                 </span>
                             </div>
                     :
                     <React.Fragment>
-                        <div className={'flex-1 flex ml-4 justify-center'}>
+                        <div css={tw`flex-1 flex ml-4 justify-center`}>
                             <FontAwesomeIcon
                                 icon={faMicrochip}
-                                className={classNames({
-                                    'text-neutral-500': !alarms.cpu,
-                                    'text-red-400': alarms.cpu,
-                                })}
+                                css={[
+                                    !alarms.cpu && tw`text-neutral-500`,
+                                    alarms.cpu && tw`text-red-400`,
+                                ]}
                             />
                             <p
-                                className={classNames('text-sm ml-2', {
-                                    'text-neutral-400': !alarms.cpu,
-                                    'text-white': alarms.cpu,
-                                })}
+                                css={[
+                                    tw`text-sm ml-2`,
+                                    !alarms.cpu && tw`text-neutral-400`,
+                                    alarms.cpu && tw`text-white`,
+                                ]}
                             >
                                 {stats.cpuUsagePercent} %
                             </p>
                         </div>
-                        <div className={'flex-1 ml-4'}>
-                            <div className={'flex justify-center'}>
+                        <div css={tw`flex-1 ml-4`}>
+                            <div css={tw`flex justify-center`}>
                                 <FontAwesomeIcon
                                     icon={faMemory}
-                                    className={classNames({
-                                        'text-neutral-500': !alarms.memory,
-                                        'text-red-400': alarms.memory,
-                                    })}
+                                    css={[
+                                        !alarms.memory && tw`text-neutral-500`,
+                                        alarms.memory && tw`text-red-400`,
+                                    ]}
                                 />
                                 <p
-                                    className={classNames('text-sm ml-2', {
-                                        'text-neutral-400': !alarms.memory,
-                                        'text-white': alarms.memory,
-                                    })}
+                                    css={[
+                                        tw`text-sm ml-2`,
+                                        !alarms.memory && tw`text-neutral-400`,
+                                        alarms.memory && tw`text-white`,
+                                    ]}
                                 >
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </p>
                             </div>
 
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {memorylimit}</p>
+                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
                         </div>
-                        <div className={'flex-1 ml-4'}>
-                            <div className={'flex justify-center'}>
+                        <div css={tw`flex-1 ml-4`}>
+                            <div css={tw`flex justify-center`}>
                                 <FontAwesomeIcon
                                     icon={faHdd}
-                                    className={classNames({
-                                        'text-neutral-500': !alarms.disk,
-                                        'text-red-400': alarms.disk,
-                                    })}
+                                    css={[
+                                        !alarms.disk && tw`text-neutral-500`,
+                                        alarms.disk && tw`text-red-400`,
+                                    ]}
                                 />
                                 <p
-                                    className={classNames('text-sm ml-2', {
-                                        'text-neutral-400': !alarms.disk,
-                                        'text-white': alarms.disk,
-                                    })}
+                                    css={[
+                                        tw`text-sm ml-2`,
+                                        !alarms.disk && tw`text-neutral-400`,
+                                        alarms.disk && tw`text-white`,
+                                    ]}
                                 >
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </p>
                             </div>
 
-                            <p className={'text-xs text-neutral-600 text-center mt-1'}>of {disklimit}</p>
+                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
                         </div>
                     </React.Fragment>
                 }
             </div>
-        </Link>
+        </GreyRowBox>
     );
 };

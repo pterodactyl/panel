@@ -6,6 +6,8 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Field from '@/components/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface Values {
     email: string;
@@ -54,14 +56,14 @@ export default () => {
                 ({ isSubmitting, isValid }) => (
                     <React.Fragment>
                         <SpinnerOverlay size={'large'} visible={isSubmitting}/>
-                        <Form className={'m-0'}>
+                        <Form css={tw`m-0`}>
                             <Field
                                 id={'current_email'}
                                 type={'email'}
                                 name={'email'}
                                 label={'Email'}
                             />
-                            <div className={'mt-6'}>
+                            <div css={tw`mt-6`}>
                                 <Field
                                     id={'confirm_password'}
                                     type={'password'}
@@ -69,10 +71,10 @@ export default () => {
                                     label={'Confirm Password'}
                                 />
                             </div>
-                            <div className={'mt-6'}>
-                                <button className={'btn btn-sm btn-primary'} disabled={isSubmitting || !isValid}>
+                            <div css={tw`mt-6`}>
+                                <Button size={'small'} disabled={isSubmitting || !isValid}>
                                     Update Email
-                                </button>
+                                </Button>
                             </div>
                         </Form>
                     </React.Fragment>

@@ -17,13 +17,13 @@ i18n
                 LocalStorageBackend,
                 XHR,
             ],
-            backendOptions: [{
+            backendOptions: [ {
                 prefix: 'pterodactyl_lng__',
                 expirationTime: 7 * 24 * 60 * 60 * 1000, // 7 days, in milliseconds
                 store: window.localStorage,
             }, {
                 loadPath: '/locales/{{lng}}/{{ns}}.json',
-            }],
+            } ],
         },
     });
 

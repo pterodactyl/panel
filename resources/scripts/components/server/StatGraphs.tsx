@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import Chart, { ChartConfiguration } from 'chart.js';
 import { ServerContext } from '@/state/server';
 import { bytesToMegabytes } from '@/helpers';
-import merge from 'lodash-es/merge';
+import merge from 'deepmerge';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { faMemory } from '@fortawesome/free-solid-svg-icons/faMemory';
-import { faMicrochip } from '@fortawesome/free-solid-svg-icons/faMicrochip';
+import { faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
+import tw from 'twin.macro';
 
-const chartDefaults: ChartConfiguration = {
+const chartDefaults = (ticks?: Chart.TickOptions | undefined): ChartConfiguration => ({
     type: 'line',
     options: {
         legend: {
@@ -45,21 +45,17 @@ const chartDefaults: ChartConfiguration = {
                     zeroLineColor: 'rgba(15, 178, 184, 0.45)',
                     zeroLineWidth: 3,
                 },
-                ticks: {
+                ticks: merge(ticks || {}, {
                     fontSize: 10,
                     fontFamily: '"IBM Plex Mono", monospace',
                     fontColor: 'rgb(229, 232, 235)',
                     min: 0,
                     beginAtZero: true,
                     maxTicksLimit: 5,
-                },
+                }),
             } ],
         },
     },
-};
-
-const createDefaultChart = (ctx: CanvasRenderingContext2D, options?: ChartConfiguration): Chart => new Chart(ctx, {
-    ...merge({}, chartDefaults, options),
     data: {
         labels: Array(20).fill(''),
         datasets: [
@@ -84,18 +80,12 @@ export default () => {
             return;
         }
 
-        setMemory(createDefaultChart(node.getContext('2d')!, {
-            options: {
-                scales: {
-                    yAxes: [ {
-                        ticks: {
-                            callback: (value) => `${value}Mb  `,
-                            suggestedMax: limits.memory,
-                        },
-                    } ],
-                },
-            },
-        }));
+        setMemory(
+            new Chart(node.getContext('2d')!, chartDefaults({
+                callback: (value) => `${value}Mb  `,
+                suggestedMax: limits.memory,
+            }))
+        );
     }, []);
 
     const cpuRef = useCallback<(node: HTMLCanvasElement | null) => void>(node => {
@@ -103,17 +93,11 @@ export default () => {
             return;
         }
 
-        setCpu(createDefaultChart(node.getContext('2d')!, {
-            options: {
-                scales: {
-                    yAxes: [ {
-                        ticks: {
-                            callback: (value) => `${value}%  `,
-                        },
-                    } ],
-                },
-            },
-        }));
+        setCpu(
+            new Chart(node.getContext('2d')!, chartDefaults({
+                callback: (value) => `${value}%`,
+            })),
+        );
     }, []);
 
     const statsListener = (data: string) => {
@@ -157,21 +141,21 @@ export default () => {
     }, [ instance, connected, memory, cpu ]);
 
     return (
-        <div className={'flex mt-4'}>
-            <TitledGreyBox title={'Memory usage'} icon={faMemory} className={'flex-1 mr-2'}>
+        <div css={tw`flex mt-4`}>
+            <TitledGreyBox title={'Memory usage'} icon={faMemory} css={tw`flex-1 mr-2`}>
                 {status !== 'offline' ?
                     <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
                     :
-                    <p className={'text-xs text-neutral-400 text-center p-3'}>
+                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
                         Server is offline.
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'CPU usage'} icon={faMicrochip} className={'flex-1 ml-2'}>
+            <TitledGreyBox title={'CPU usage'} icon={faMicrochip} css={tw`flex-1 ml-2`}>
                 {status !== 'offline' ?
                     <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
                     :
-                    <p className={'text-xs text-neutral-400 text-center p-3'}>
+                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
                         Server is offline.
                     </p>
                 }

@@ -1,5 +1,4 @@
 import React from 'react';
-import styled from 'styled-components';
 import ScreenBlock from '@/components/screens/ScreenBlock';
 
 interface Props {

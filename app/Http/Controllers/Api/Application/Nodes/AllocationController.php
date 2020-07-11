@@ -3,11 +3,10 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
 use Pterodactyl\Models\Node;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\AllocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest;
@@ -27,40 +26,31 @@ class AllocationController extends ApplicationApiController
     private $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * AllocationController constructor.
      *
      * @param \Pterodactyl\Services\Allocations\AssignmentService $assignmentService
      * @param \Pterodactyl\Services\Allocations\AllocationDeletionService $deletionService
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
      */
     public function __construct(
         AssignmentService $assignmentService,
-        AllocationDeletionService $deletionService,
-        AllocationRepositoryInterface $repository
+        AllocationDeletionService $deletionService
     ) {
         parent::__construct();
 
         $this->assignmentService = $assignmentService;
         $this->deletionService = $deletionService;
-        $this->repository = $repository;
     }
 
     /**
      * Return all of the allocations that exist for a given node.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest $request
+     * @param \Pterodactyl\Models\Node $node
      * @return array
      */
-    public function index(GetAllocationsRequest $request): array
+    public function index(GetAllocationsRequest $request, Node $node): array
     {
-        $allocations = $this->repository->getPaginatedAllocationsForNode(
-            $request->getModel(Node::class)->id, 50
-        );
+        $allocations = $node->allocations()->paginate(50);
 
         return $this->fractal->collection($allocations)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
@@ -71,32 +61,35 @@ class AllocationController extends ApplicationApiController
      * Store new allocations for a given node.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\StoreAllocationRequest $request
-     * @return \Illuminate\Http\Response
+     * @param \Pterodactyl\Models\Node $node
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
-    public function store(StoreAllocationRequest $request): Response
+    public function store(StoreAllocationRequest $request, Node $node): JsonResponse
     {
-        $this->assignmentService->handle($request->getModel(Node::class), $request->validated());
+        $this->assignmentService->handle($node, $request->validated());
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
      * Delete a specific allocation from the Panel.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest $request
-     * @return \Illuminate\Http\Response
+     * @param \Pterodactyl\Models\Node $node
+     * @param \Pterodactyl\Models\Allocation $allocation
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function delete(DeleteAllocationRequest $request): Response
+    public function delete(DeleteAllocationRequest $request, Node $node, Allocation $allocation): JsonResponse
     {
-        $this->deletionService->handle($request->getModel(Allocation::class));
+        $this->deletionService->handle($allocation);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

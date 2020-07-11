@@ -5,9 +5,15 @@ namespace Pterodactyl\Transformers\Api\Client;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Allocation;
 
 class ServerTransformer extends BaseClientTransformer
 {
+    /**
+     * @var string[]
+     */
+    protected $defaultIncludes = ['allocations'];
+
     /**
      * @var array
      */
@@ -41,10 +47,6 @@ class ServerTransformer extends BaseClientTransformer
                 'port' => $server->node->daemonSFTP,
             ],
             'description' => $server->description,
-            'allocation' => [
-                'ip' => $server->allocation->alias,
-                'port' => $server->allocation->port,
-            ],
             'limits' => [
                 'memory' => $server->memory,
                 'swap' => $server->swap,
@@ -60,6 +62,22 @@ class ServerTransformer extends BaseClientTransformer
             'is_suspended' => $server->suspended !== 0,
             'is_installing' => $server->installed !== 1,
         ];
+    }
+
+    /**
+     * Returns the allocations associated with this server.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Collection
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     */
+    public function includeAllocations(Server $server)
+    {
+        return $this->collection(
+            $server->allocations,
+            $this->makeTransformer(AllocationTransformer::class),
+            Allocation::RESOURCE_NAME
+        );
     }
 
     /**

@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import { randomInt } from '@/helpers';
 import { CSSTransition } from 'react-transition-group';
+import tw from 'twin.macro';
 
 const BarFill = styled.div`
     ${tw`h-full bg-cyan-400`};
@@ -60,10 +61,10 @@ export default () => {
     return (
         <div className={'w-full fixed'} style={{ height: '2px' }}>
             <CSSTransition
-                timeout={250}
-                appear={true}
+                timeout={150}
+                appear
                 in={visible}
-                unmountOnExit={true}
+                unmountOnExit
                 classNames={'fade'}
             >
                 <BarFill style={{ width: progress === undefined ? '100%' : `${progress}%` }}/>

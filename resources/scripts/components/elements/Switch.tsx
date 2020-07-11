@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import v4 from 'uuid/v4';
-import classNames from 'classnames';
+import tw from 'twin.macro';
+import Label from '@/components/elements/Label';
+import Input from '@/components/elements/Input';
 
 const ToggleContainer = styled.div`
     ${tw`relative select-none w-12 leading-normal`};
@@ -47,10 +49,10 @@ const Switch = ({ name, label, description, defaultChecked, onChange, children }
     const uuid = useMemo(() => v4(), []);
 
     return (
-        <div className={'flex items-center'}>
-            <ToggleContainer className={'flex-none'}>
+        <div css={tw`flex items-center`}>
+            <ToggleContainer css={tw`flex-none`}>
                 {children
-                || <input
+                || <Input
                     id={uuid}
                     name={name}
                     type={'checkbox'}
@@ -58,18 +60,20 @@ const Switch = ({ name, label, description, defaultChecked, onChange, children }
                     defaultChecked={defaultChecked}
                 />
                 }
-                <label htmlFor={uuid}/>
+                <Label htmlFor={uuid}/>
             </ToggleContainer>
             {(label || description) &&
-            <div className={'ml-4 w-full'}>
+            <div css={tw`ml-4 w-full`}>
                 {label &&
-                <label
-                    className={classNames('input-dark-label cursor-pointer', { 'mb-0': !!description })}
+                <Label
+                    css={[ tw`cursor-pointer`, !!description && tw`mb-0` ]}
                     htmlFor={uuid}
-                >{label}</label>
+                >
+                    {label}
+                </Label>
                 }
                 {description &&
-                <p className={'input-help'}>
+                <p css={tw`text-neutral-400 text-sm mt-2`}>
                     {description}
                 </p>
                 }

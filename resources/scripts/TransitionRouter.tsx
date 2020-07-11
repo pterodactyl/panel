@@ -1,21 +1,30 @@
 import React from 'react';
 import { Route } from 'react-router';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { SwitchTransition } from 'react-transition-group';
+import Fade from '@/components/elements/Fade';
+import styled from 'styled-components/macro';
+import tw from 'twin.macro';
 
-type Props = Readonly<{
-    children: React.ReactNode;
-}>;
+const StyledSwitchTransition = styled(SwitchTransition)`
+    ${tw`relative`};
+    
+    & section {
+        ${tw`absolute w-full top-0 left-0`};
+    }
+`;
 
-export default ({ children }: Props) => (
+const TransitionRouter: React.FC = ({ children }) => (
     <Route
         render={({ location }) => (
-            <TransitionGroup className={'route-transition-group'}>
-                <CSSTransition key={location.key} timeout={250} in={true} appear={true} classNames={'fade'}>
+            <StyledSwitchTransition>
+                <Fade timeout={150} key={location.key} in appear unmountOnExit>
                     <section>
                         {children}
                     </section>
-                </CSSTransition>
-            </TransitionGroup>
+                </Fade>
+            </StyledSwitchTransition>
         )}
     />
 );
+
+export default TransitionRouter;

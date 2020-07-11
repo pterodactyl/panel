@@ -2,9 +2,11 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Repository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -15,6 +17,53 @@ use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 abstract class EloquentRepository extends Repository implements RepositoryInterface
 {
+    /**
+     * @var bool
+     */
+    protected $useRequestFilters = false;
+
+    /**
+     * Determines if the repository function should use filters off the request object
+     * present when returning results. This allows repository methods to be called in API
+     * context's such that we can pass through ?filter[name]=Dane&sort=desc for example.
+     *
+     * @param bool $usingFilters
+     * @return $this
+     */
+    public function usingRequestFilters($usingFilters = true)
+    {
+        $this->useRequestFilters = $usingFilters;
+
+        return $this;
+    }
+
+    /**
+     * Returns the request instance.
+     *
+     * @return \Illuminate\Http\Request
+     */
+    protected function request()
+    {
+        return $this->app->make(Request::class);
+    }
+
+    /**
+     * Paginate the response data based on the page para.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $instance
+     * @param int $default
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    protected function paginate(Builder $instance, int $default = 50)
+    {
+        if (! $this->useRequestFilters) {
+            return $instance->paginate($default);
+        }
+
+        return $instance->paginate($this->request()->query('per_page', $default));
+    }
+
     /**
      * Return an instance of the eloquent model bound to this
      * repository instance.
@@ -236,6 +285,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Return all records associated with the given model.
      *
      * @return \Illuminate\Support\Collection
+     * @deprecated Just use the model
      */
     public function all(): Collection
     {
@@ -313,6 +363,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Get the amount of entries in the database.
      *
      * @return int
+     * @deprecated just use the count method off a model
      */
     public function count(): int
     {

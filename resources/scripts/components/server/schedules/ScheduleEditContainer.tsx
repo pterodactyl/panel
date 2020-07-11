@@ -15,6 +15,9 @@ import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 
 interface Params {
     id: string;
@@ -24,7 +27,7 @@ interface State {
     schedule?: Schedule;
 }
 
-export default ({ match, history, location: { state } }: RouteComponentProps<Params, {}, State>) => {
+export default ({ match, history, location: { state } }: RouteComponentProps<Params, Record<string, unknown>, State>) => {
     const { id, uuid } = useServer();
     const { clearFlashes, addError } = useFlash();
     const [ isLoading, setIsLoading ] = useState(true);
@@ -51,22 +54,22 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'schedules'} className={'mb-4'}/>
+            <FlashMessageRender byKey={'schedules'} css={tw`mb-4`}/>
             {!schedule || isLoading ?
-                <Spinner size={'large'} centered={true}/>
+                <Spinner size={'large'} centered/>
                 :
                 <>
-                    <div className={'grey-row-box'}>
+                    <GreyRowBox>
                         <ScheduleRow schedule={schedule}/>
-                    </div>
+                    </GreyRowBox>
                     <EditScheduleModal
                         visible={showEditModal}
                         schedule={schedule}
                         onDismissed={() => setShowEditModal(false)}
                     />
-                    <div className={'flex items-center mt-8 mb-4'}>
-                        <div className={'flex-1'}>
-                            <h2>Configured Tasks</h2>
+                    <div css={tw`flex items-center mt-8 mb-4`}>
+                        <div css={tw`flex-1`}>
+                            <h2 css={tw`text-2xl`}>Configured Tasks</h2>
                         </div>
                     </div>
                     {schedule.tasks.length > 0 ?
@@ -79,17 +82,17 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                                     ))
                             }
                             {schedule.tasks.length > 1 &&
-                            <p className={'text-xs text-neutral-400'}>
+                            <p css={tw`text-xs text-neutral-400`}>
                                 Task delays are relative to the previous task in the listing.
                             </p>
                             }
                         </>
                         :
-                        <p className={'text-sm text-neutral-400'}>
+                        <p css={tw`text-sm text-neutral-400`}>
                             There are no tasks configured for this schedule.
                         </p>
                     }
-                    <div className={'mt-8 flex justify-end'}>
+                    <div css={tw`mt-8 flex justify-end`}>
                         <Can action={'schedule.delete'}>
                             <DeleteScheduleButton
                                 scheduleId={schedule.id}
@@ -97,9 +100,9 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                             />
                         </Can>
                         <Can action={'schedule.update'}>
-                            <button className={'btn btn-primary btn-sm mr-4'} onClick={() => setShowEditModal(true)}>
+                            <Button css={tw`mr-4`} onClick={() => setShowEditModal(true)}>
                                 Edit
-                            </button>
+                            </Button>
                             <NewTaskButton schedule={schedule}/>
                         </Can>
                     </div>

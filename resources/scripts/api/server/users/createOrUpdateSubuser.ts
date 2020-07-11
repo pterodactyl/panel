@@ -15,4 +15,4 @@ export default (uuid: string, params: Params, subuser?: Subuser): Promise<Subuse
             .then(data => resolve(rawDataToServerSubuser(data.data)))
             .catch(reject);
     });
-}
+};

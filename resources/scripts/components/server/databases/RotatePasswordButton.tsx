@@ -6,6 +6,7 @@ import { ServerContext } from '@/state/server';
 import { ServerDatabase } from '@/api/server/getServerDatabases';
 import { httpErrorToHuman } from '@/api/http';
 import Button from '@/components/elements/Button';
+import tw from 'twin.macro';
 
 export default ({ databaseId, onUpdate }: {
     databaseId: string;
@@ -38,7 +39,7 @@ export default ({ databaseId, onUpdate }: {
     };
 
     return (
-        <Button className={'btn-secondary mr-2'} onClick={rotate} isLoading={loading}>
+        <Button isSecondary color={'primary'} css={tw`mr-2`} onClick={rotate} isLoading={loading}>
             Rotate Password
         </Button>
     );

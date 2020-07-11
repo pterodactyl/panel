@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use PragmaRX\Google2FA\Google2FA;
+use Pterodactyl\Models\RecoveryToken;
+use PHPUnit\Framework\ExpectationFailedException;
 
 class TwoFactorControllerTest extends ClientApiIntegrationTestCase
 {
@@ -89,11 +91,29 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
             'code' => $token,
         ]);
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $response->assertOk();
+        $response->assertJsonPath('object', 'recovery_tokens');
 
         $user = $user->refresh();
-
         $this->assertTrue($user->use_totp);
+
+        $tokens = RecoveryToken::query()->where('user_id', $user->id)->get();
+        $this->assertCount(10, $tokens);
+        $this->assertStringStartsWith('$2y$10$', $tokens[0]->token);
+
+        $tokens = $tokens->pluck('token')->toArray();
+
+        foreach ($response->json('attributes.tokens') as $raw) {
+            foreach ($tokens as $hashed) {
+                if (password_verify($raw, $hashed)) {
+                    continue 2;
+                }
+            }
+
+            throw new ExpectationFailedException(
+                sprintf('Failed asserting that token [%s] exists as a hashed value in recovery_tokens table.', $raw)
+            );
+        }
     }
 
     /**

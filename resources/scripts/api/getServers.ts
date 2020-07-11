@@ -3,16 +3,15 @@ import http, { getPaginationSet, PaginatedResult } from '@/api/http';
 
 export default (query?: string, includeAdmin?: boolean): Promise<PaginatedResult<Server>> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/client`, {
+        http.get('/api/client', {
             params: {
                 include: [ 'allocation' ],
-                // eslint-disable-next-line @typescript-eslint/camelcase
-                filter: includeAdmin ? 'all' : undefined,
-                query,
+                type: includeAdmin ? 'all' : undefined,
+                'filter[name]': query,
             },
         })
             .then(({ data }) => resolve({
-                items: (data.data || []).map((datum: any) => rawDataToServerObject(datum.attributes)),
+                items: (data.data || []).map((datum: any) => rawDataToServerObject(datum)),
                 pagination: getPaginationSet(data.meta.pagination),
             }))
             .catch(reject);

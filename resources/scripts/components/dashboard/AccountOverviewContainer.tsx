@@ -3,9 +3,10 @@ import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
-import styled from 'styled-components';
-import { breakpoint } from 'styled-components-breakpoint';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import tw from 'twin.macro';
+import { breakpoint } from '@/theme';
+import styled from 'styled-components/macro';
 
 const Container = styled.div`
     ${tw`flex flex-wrap my-10`};
@@ -31,13 +32,13 @@ export default () => {
                     <UpdatePasswordForm/>
                 </ContentBox>
                 <ContentBox
-                    className={'mt-8 md:mt-0 md:ml-8'}
+                    css={tw`mt-8 md:mt-0 md:ml-8`}
                     title={'Update Email Address'}
                     showFlashes={'account:email'}
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox className={'xl:ml-8 mt-8 xl:mt-0'} title={'Configure Two Factor'}>
+                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure Two Factor'}>
                     <ConfigureTwoFactorForm/>
                 </ContentBox>
             </Container>
