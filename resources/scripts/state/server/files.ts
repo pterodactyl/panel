@@ -7,6 +7,8 @@ export interface ServerFileStore {
 
     setDirectory: Action<ServerFileStore, string>;
     setSelectedFiles: Action<ServerFileStore, string[]>;
+    appendSelectedFile: Action<ServerFileStore, string>;
+    removeSelectedFile: Action<ServerFileStore, string>;
 }
 
 const files: ServerFileStore = {
@@ -19,6 +21,14 @@ const files: ServerFileStore = {
 
     setSelectedFiles: action((state, payload) => {
         state.selectedFiles = payload;
+    }),
+
+    appendSelectedFile: action((state, payload) => {
+        state.selectedFiles = state.selectedFiles.filter(f => f !== payload).concat(payload);
+    }),
+
+    removeSelectedFile: action((state, payload) => {
+        state.selectedFiles = state.selectedFiles.filter(f => f !== payload);
     }),
 };
 

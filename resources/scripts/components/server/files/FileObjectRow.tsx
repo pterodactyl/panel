@@ -10,27 +10,15 @@ import { NavLink, useHistory, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import isEqual from 'react-fast-compare';
 import styled from 'styled-components/macro';
-import Input from '@/components/elements/Input';
+import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
 
 const Row = styled.div`
     ${tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};
 `;
 
-const Checkbox = styled(Input)`
-    && {
-        ${tw`border-neutral-500`};
-        
-        &:not(:checked) {
-            ${tw`hover:border-neutral-300`};
-        }
-    }
-`;
-
 const FileObjectRow = ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
-    const selectedFiles = ServerContext.useStoreState(state => state.files.selectedFiles);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
-    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
     const history = useHistory();
     const match = useRouteMatch();
@@ -57,21 +45,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
                 window.dispatchEvent(new CustomEvent(`pterodactyl:files:ctx:${file.uuid}`, { detail: e.clientX }));
             }}
         >
-            <label css={tw`flex-none p-4 absolute self-center z-30 cursor-pointer`}>
-                <Checkbox
-                    name={'selectedFiles'}
-                    value={file.name}
-                    checked={selectedFiles.indexOf(file.name) >= 0}
-                    type={'checkbox'}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        if (e.currentTarget.checked) {
-                            setSelectedFiles(selectedFiles.filter(f => f !== file.name).concat(file.name));
-                        } else {
-                            setSelectedFiles(selectedFiles.filter(f => f !== file.name));
-                        }
-                    }}
-                />
-            </label>
+            <SelectFileCheckbox name={file.name}/>
             <NavLink
                 to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
                 css={tw`flex flex-1 text-neutral-300 no-underline p-3`}
