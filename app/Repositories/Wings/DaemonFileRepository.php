@@ -151,10 +151,11 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Delete a file or folder for the server.
      *
-     * @param string $location
+     * @param string|null $root
+     * @param array $files
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function deleteFile(string $location): ResponseInterface
+    public function deleteFiles(?string $root, array $files): ResponseInterface
     {
         Assert::isInstanceOf($this->server, Server::class);
 
@@ -162,7 +163,8 @@ class DaemonFileRepository extends DaemonRepository
             sprintf('/api/servers/%s/files/delete', $this->server->uuid),
             [
                 'json' => [
-                    'location' => $location,
+                    'root' => $root,
+                    'files' => $files,
                 ],
             ]
         );

@@ -5,13 +5,14 @@ import Input from '@/components/elements/Input';
 interface Props {
     name: string;
     value: string;
+    className?: string;
 }
 
 type OmitFields = 'ref' | 'name' | 'value' | 'type' | 'checked' | 'onClick' | 'onChange';
 
 type InputProps = Omit<JSX.IntrinsicElements['input'], OmitFields>;
 
-const Checkbox = ({ name, value, ...props }: Props & InputProps) => (
+const Checkbox = ({ name, value, className, ...props }: Props & InputProps) => (
     <Field name={name}>
         {({ field, form }: FieldProps) => {
             if (!Array.isArray(field.value)) {
@@ -24,6 +25,7 @@ const Checkbox = ({ name, value, ...props }: Props & InputProps) => (
                 <Input
                     {...field}
                     {...props}
+                    className={className}
                     type={'checkbox'}
                     checked={(field.value || []).includes(value)}
                     onClick={() => form.setFieldTouched(field.name, true)}

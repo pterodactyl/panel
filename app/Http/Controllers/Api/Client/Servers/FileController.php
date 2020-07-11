@@ -216,7 +216,7 @@ class FileController extends ClientApiController
     }
 
     /**
-     * Deletes a file or folder from the server.
+     * Deletes files or folders for the server in the given root directory.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest $request
      * @param \Pterodactyl\Models\Server $server
@@ -224,9 +224,10 @@ class FileController extends ClientApiController
      */
     public function delete(DeleteFileRequest $request, Server $server): JsonResponse
     {
-        $this->fileRepository
-            ->setServer($server)
-            ->deleteFile($request->input('location'));
+        $this->fileRepository->setServer($server)
+            ->deleteFiles(
+                $request->input('root'), $request->input('files')
+            );
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

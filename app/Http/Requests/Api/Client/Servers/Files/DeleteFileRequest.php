@@ -22,7 +22,9 @@ class DeleteFileRequest extends ClientApiRequest implements ClientPermissionsReq
     public function rules(): array
     {
         return [
-            'location' => 'required|string',
+            'root' => 'required|nullable|string',
+            'files' => 'required|array',
+            'files.*' => 'string',
         ];
     }
 }

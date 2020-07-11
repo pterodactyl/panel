@@ -15,6 +15,8 @@ import Button from '@/components/elements/Button';
 import useServer from '@/plugins/useServer';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import { Form, Formik } from 'formik';
+import MassActionsBar from '@/components/server/files/MassActionsBar';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -55,23 +57,29 @@ export default () => {
                             </p>
                             :
                             <CSSTransition classNames={'fade'} timeout={150} appear in>
-                                <React.Fragment>
-                                    <div>
-                                        {files.length > 250 &&
-                                        <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
-                                            <p css={tw`text-yellow-900 text-sm text-center`}>
-                                                This directory is too large to display in the browser,
-                                                limiting the output to the first 250 files.
-                                            </p>
-                                        </div>
-                                        }
-                                        {
-                                            sortFiles(files.slice(0, 250)).map(file => (
-                                                <FileObjectRow key={file.uuid} file={file}/>
-                                            ))
-                                        }
-                                    </div>
-                                </React.Fragment>
+                                <div>
+                                    <Formik
+                                        onSubmit={() => undefined}
+                                        initialValues={{ selectedFiles: [] }}
+                                    >
+                                        <Form>
+                                            {files.length > 250 &&
+                                            <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
+                                                <p css={tw`text-yellow-900 text-sm text-center`}>
+                                                    This directory is too large to display in the browser,
+                                                    limiting the output to the first 250 files.
+                                                </p>
+                                            </div>
+                                            }
+                                            {
+                                                sortFiles(files.slice(0, 250)).map(file => (
+                                                    <FileObjectRow key={file.uuid} file={file}/>
+                                                ))
+                                            }
+                                            <MassActionsBar/>
+                                        </Form>
+                                    </Formik>
+                                </div>
                             </CSSTransition>
                         }
                         <Can action={'file.create'}>

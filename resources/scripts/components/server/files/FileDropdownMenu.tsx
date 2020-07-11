@@ -13,7 +13,7 @@ import {
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
 import { join } from 'path';
-import deleteFile from '@/api/server/files/deleteFile';
+import deleteFiles from '@/api/server/files/deleteFiles';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import copyFile from '@/api/server/files/copyFile';
 import Can from '@/components/elements/Can';
@@ -71,7 +71,7 @@ export default ({ file }: { file: FileObject }) => {
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
         mutate(files => files.filter(f => f.uuid !== file.uuid), false);
 
-        deleteFile(uuid, join(directory, file.name)).catch(error => {
+        deleteFiles(uuid, directory, [ file.name ]).catch(error => {
             mutate();
             clearAndAddHttpError({ key: 'files', error });
         });
