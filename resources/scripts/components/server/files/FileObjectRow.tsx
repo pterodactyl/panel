@@ -69,7 +69,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
                     }
                 </div>
             </NavLink>
-            <FileDropdownMenu uuid={file.uuid}/>
+            <FileDropdownMenu file={file}/>
         </Row>
     );
 };

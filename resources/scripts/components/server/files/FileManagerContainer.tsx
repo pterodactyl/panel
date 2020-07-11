@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
-import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
+import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { Link, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';
@@ -12,10 +12,9 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import ServerError from '@/components/screens/ServerError';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import useSWR from 'swr';
 import useServer from '@/plugins/useServer';
-import { cleanDirectoryPath } from '@/helpers';
 import { ServerContext } from '@/state/server';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -23,14 +22,10 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
+    const { id } = useServer();
     const { hash } = useLocation();
-    const { id, uuid } = useServer();
+    const { data: files, error, mutate } = useFileManagerSwr();
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
-
-    const { data: files, error, mutate } = useSWR(
-        `${uuid}:files:${hash}`,
-        () => loadDirectory(uuid, cleanDirectoryPath(window.location.hash)),
-    );
 
     useEffect(() => {
         setDirectory(hash.length > 0 ? hash : '/');
