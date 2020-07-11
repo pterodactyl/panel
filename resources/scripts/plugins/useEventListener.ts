@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export default (eventName: string, handler: any, element: any = window) => {
+export default (eventName: string, handler: (e: Event | CustomEvent | UIEvent | any) => void, element: any = window) => {
     const savedHandler = useRef<any>(null);
 
     useEffect(() => {
