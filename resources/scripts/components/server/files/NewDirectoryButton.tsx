@@ -7,6 +7,13 @@ import { join } from 'path';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import v4 from 'uuid/v4';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import { mutate } from 'swr';
+import useServer from '@/plugins/useServer';
+import { FileObject } from '@/api/server/files/loadDirectory';
+import { useLocation } from 'react-router';
+import useFlash from '@/plugins/useFlash';
 
 interface Values {
     directoryName: string;
@@ -16,37 +23,44 @@ const schema = object().shape({
     directoryName: string().required('A valid directory name must be provided.'),
 });
 
-export default () => {
-    const [ visible, setVisible ] = useState(false);
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const directory = ServerContext.useStoreState(state => state.files.directory);
-    const pushFile = ServerContext.useStoreActions(actions => actions.files.pushFile);
+const generateDirectoryData = (name: string): FileObject => ({
+    uuid: v4(),
+    name: name,
+    mode: '0644',
+    size: 0,
+    isFile: false,
+    isEditable: false,
+    isSymlink: false,
+    mimetype: '',
+    createdAt: new Date(),
+    modifiedAt: new Date(),
+});
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        createDirectory(uuid, directory, values.directoryName)
+export default () => {
+    const { uuid } = useServer();
+    const { hash } = useLocation();
+    const { clearAndAddHttpError } = useFlash();
+    const [ visible, setVisible ] = useState(false);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
+
+    const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        createDirectory(uuid, directory, directoryName)
             .then(() => {
-                pushFile({
-                    uuid: v4(),
-                    name: values.directoryName,
-                    mode: '0644',
-                    size: 0,
-                    isFile: false,
-                    isEditable: false,
-                    isSymlink: false,
-                    mimetype: '',
-                    createdAt: new Date(),
-                    modifiedAt: new Date(),
-                });
+                mutate(
+                    `${uuid}:files:${hash}`,
+                    (data: FileObject[]) => [ ...data, generateDirectoryData(directoryName) ],
+                );
                 setVisible(false);
             })
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
+                clearAndAddHttpError({ key: 'files', error });
             });
     };
 
     return (
-        <React.Fragment>
+        <>
             <Formik
                 onSubmit={submit}
                 validationSchema={schema}
@@ -62,33 +76,33 @@ export default () => {
                             resetForm();
                         }}
                     >
-                        <Form className={'m-0'}>
+                        <Form css={tw`m-0`}>
                             <Field
                                 id={'directoryName'}
                                 name={'directoryName'}
                                 label={'Directory Name'}
                             />
-                            <p className={'text-xs mt-2 text-neutral-400'}>
-                                <span className={'text-neutral-200'}>This directory will be created as</span>
+                            <p css={tw`text-xs mt-2 text-neutral-400`}>
+                                <span css={tw`text-neutral-200`}>This directory will be created as</span>
                                 &nbsp;/home/container/
-                                <span className={'text-cyan-200'}>
+                                <span css={tw`text-cyan-200`}>
                                     {decodeURIComponent(
                                         join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, ''),
                                     )}
                                 </span>
                             </p>
-                            <div className={'flex justify-end'}>
-                                <button className={'btn btn-sm btn-primary mt-8'}>
+                            <div css={tw`flex justify-end`}>
+                                <Button css={tw`mt-8`}>
                                     Create Directory
-                                </button>
+                                </Button>
                             </div>
                         </Form>
                     </Modal>
                 )}
             </Formik>
-            <button className={'btn btn-sm btn-secondary mr-2'} onClick={() => setVisible(true)}>
+            <Button isSecondary css={tw`mr-2`} onClick={() => setVisible(true)}>
                 Create Directory
-            </button>
-        </React.Fragment>
+            </Button>
+        </>
     );
 };

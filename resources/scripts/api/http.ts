@@ -5,7 +5,7 @@ const http: AxiosInstance = axios.create({
     timeout: 20000,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
         'X-CSRF-Token': (window as any).X_CSRF_TOKEN as string || '',
     },
@@ -75,10 +75,13 @@ export interface FractalResponseData {
     object: string;
     attributes: {
         [k: string]: any;
-        relationships?: {
-            [k: string]: FractalResponseData;
-        };
+        relationships?: Record<string, FractalResponseData | FractalResponseList>;
     };
+}
+
+export interface FractalResponseList {
+    object: 'list';
+    data: FractalResponseData[];
 }
 
 export interface PaginatedResult<T> {

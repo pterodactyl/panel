@@ -1,22 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ServerBackup } from '@/api/server/backups/getServerBackups';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive } from '@fortawesome/free-solid-svg-icons/faArchive';
-import format from 'date-fns/format';
-import distanceInWordsToNow from 'date-fns/distance_in_words_to_now';
+import { faArchive, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/components/elements/Spinner';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { bytesToHuman } from '@/helpers';
 import Can from '@/components/elements/Can';
-import useServer from '@/plugins/useServer';
-import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import useFlash from '@/plugins/useFlash';
-import { httpErrorToHuman } from '@/api/http';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { ServerContext } from '@/state/server';
 import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons/faEllipsisH';
+import tw from 'twin.macro';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 
 interface Props {
     backup: ServerBackup;
@@ -41,38 +35,38 @@ export default ({ backup, className }: Props) => {
     });
 
     return (
-        <div className={`grey-row-box flex items-center ${className}`}>
-            <div className={'mr-4'}>
+        <GreyRowBox css={tw`flex items-center`} className={className}>
+            <div css={tw`mr-4`}>
                 {backup.completedAt ?
-                    <FontAwesomeIcon icon={faArchive} className={'text-neutral-300'}/>
+                    <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
                     :
-                    <Spinner size={'tiny'}/>
+                    <Spinner size={'small'}/>
                 }
             </div>
-            <div className={'flex-1'}>
-                <p className={'text-sm mb-1'}>
+            <div css={tw`flex-1`}>
+                <p css={tw`text-sm mb-1`}>
                     {backup.name}
                     {backup.completedAt &&
-                    <span className={'ml-3 text-neutral-300 text-xs font-thin'}>{bytesToHuman(backup.bytes)}</span>
+                    <span css={tw`ml-3 text-neutral-300 text-xs font-thin`}>{bytesToHuman(backup.bytes)}</span>
                     }
                 </p>
-                <p className={'text-xs text-neutral-400 font-mono'}>
+                <p css={tw`text-xs text-neutral-400 font-mono`}>
                     {backup.uuid}
                 </p>
             </div>
-            <div className={'ml-8 text-center'}>
+            <div css={tw`ml-8 text-center`}>
                 <p
-                    title={format(backup.createdAt, 'ddd, MMMM Do, YYYY HH:mm:ss Z')}
-                    className={'text-sm'}
+                    title={format(backup.createdAt, 'ddd, MMMM do, yyyy HH:mm:ss')}
+                    css={tw`text-sm`}
                 >
-                    {distanceInWordsToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
+                    {formatDistanceToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
                 </p>
-                <p className={'text-2xs text-neutral-500 uppercase mt-1'}>Created</p>
+                <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>Created</p>
             </div>
             <Can action={'backup.download'}>
-                <div className={'ml-6'} style={{ marginRight: '-0.5rem' }}>
+                <div css={tw`ml-6`} style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ?
-                        <div className={'p-2 invisible'}>
+                        <div css={tw`p-2 invisible`}>
                             <FontAwesomeIcon icon={faEllipsisH}/>
                         </div>
                         :
@@ -80,6 +74,6 @@ export default ({ backup, className }: Props) => {
                     }
                 </div>
             </Can>
-        </div>
+        </GreyRowBox>
     );
 };

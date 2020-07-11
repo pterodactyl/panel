@@ -9,6 +9,7 @@ namespace Pterodactyl\Models;
  * @property string|null $ip_alias
  * @property int $port
  * @property int|null $server_id
+ * @property string|null $notes
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  *
@@ -60,6 +61,7 @@ class Allocation extends Model
         'port' => 'required|numeric|between:1024,65553',
         'ip_alias' => 'nullable|string',
         'server_id' => 'nullable|exists:servers,id',
+        'notes' => 'nullable|string|max:256',
     ];
 
     /**

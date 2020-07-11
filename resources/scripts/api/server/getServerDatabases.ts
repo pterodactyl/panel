@@ -18,7 +18,7 @@ export const rawDataToServerDatabase = (data: any): ServerDatabase => ({
     password: data.relationships && data.relationships.password ? data.relationships.password.attributes.password : undefined,
 });
 
-export default (uuid: string, includePassword: boolean = true): Promise<ServerDatabase[]> => {
+export default (uuid: string, includePassword = true): Promise<ServerDatabase[]> => {
     return new Promise((resolve, reject) => {
         http.get(`/api/client/servers/${uuid}/databases`, {
             params: includePassword ? { include: 'password' } : undefined,

@@ -9,6 +9,9 @@ import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ApiKey } from '@/api/account/getApiKeys';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import Input, { Textarea } from '@/components/elements/Input';
 
 interface Values {
     description: string;
@@ -44,22 +47,21 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                 closeOnEscape={false}
                 closeOnBackground={false}
             >
-                <h3 className={'mb-6'}>Your API Key</h3>
-                <p className={'text-sm mb-6'}>
+                <h3 css={tw`mb-6`}>Your API Key</h3>
+                <p css={tw`text-sm mb-6`}>
                     The API key you have requested is shown below. Please store this in a safe location, it will not be
                     shown again.
                 </p>
-                <pre className={'text-sm bg-neutral-900 rounded py-2 px-4 font-mono'}>
-                    <code className={'font-mono'}>{apiKey}</code>
+                <pre css={tw`text-sm bg-neutral-900 rounded py-2 px-4 font-mono`}>
+                    <code css={tw`font-mono`}>{apiKey}</code>
                 </pre>
-                <div className={'flex justify-end mt-6'}>
-                    <button
+                <div css={tw`flex justify-end mt-6`}>
+                    <Button
                         type={'button'}
-                        className={'btn btn-secondary btn-sm'}
                         onClick={() => setApiKey('')}
                     >
                         Close
-                    </button>
+                    </Button>
                 </div>
             </Modal>
             <Formik
@@ -80,25 +82,19 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                             label={'Description'}
                             name={'description'}
                             description={'A description of this API key.'}
-                            className={'mb-6'}
+                            css={tw`mb-6`}
                         >
-                            <Field name={'description'} className={'input-dark'}/>
+                            <Field name={'description'} as={Input}/>
                         </FormikFieldWrapper>
                         <FormikFieldWrapper
                             label={'Allowed IPs'}
                             name={'allowedIps'}
                             description={'Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line.'}
                         >
-                            <Field
-                                as={'textarea'}
-                                name={'allowedIps'}
-                                className={'input-dark h-32'}
-                            />
+                            <Field as={Textarea} name={'allowedIps'} css={tw`h-32`}/>
                         </FormikFieldWrapper>
-                        <div className={'flex justify-end mt-6'}>
-                            <button className={'btn btn-primary btn-sm'}>
-                                Create
-                            </button>
+                        <div css={tw`flex justify-end mt-6`}>
+                            <Button>Create</Button>
                         </div>
                     </Form>
                 )}

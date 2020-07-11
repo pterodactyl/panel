@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
-use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
@@ -27,15 +25,10 @@ class IndexController extends Controller
     /**
      * Returns listing of user's servers.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index()
     {
-        $servers = $this->repository->setSearchTerm($request->input('query'))->filterUserAccessServers(
-            $request->user(), User::FILTER_LEVEL_ALL, config('pterodactyl.paginate.frontend.servers')
-        );
-
-        return view('templates/base.core', ['servers' => $servers]);
+        return view('templates/base.core');
     }
 }

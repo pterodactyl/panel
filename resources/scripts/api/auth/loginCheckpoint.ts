@@ -4,11 +4,9 @@ import { LoginResponse } from '@/api/auth/login';
 export default (token: string, code: string, recoveryToken?: string): Promise<LoginResponse> => {
     return new Promise((resolve, reject) => {
         http.post('/auth/login/checkpoint', {
-            /* eslint-disable @typescript-eslint/camelcase */
             confirmation_token: token,
             authentication_code: code,
             recovery_token: (recoveryToken && recoveryToken.length > 0) ? recoveryToken : undefined,
-            /* eslint-enable @typescript-eslint/camelcase */
         })
             .then(response => resolve({
                 complete: response.data.data.complete,

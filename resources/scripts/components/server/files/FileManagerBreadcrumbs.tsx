@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { NavLink } from 'react-router-dom';
 import { cleanDirectoryPath } from '@/helpers';
+import tw from 'twin.macro';
 
 interface Props {
     withinFileEditor?: boolean;
@@ -32,11 +33,11 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
         });
 
     return (
-        <div className={'flex items-center text-sm mb-4 text-neutral-500'}>
-            /<span className={'px-1 text-neutral-300'}>home</span>/
+        <div css={tw`flex items-center text-sm mb-4 text-neutral-500`}>
+            /<span css={tw`px-1 text-neutral-300`}>home</span>/
             <NavLink
                 to={`/server/${id}/files`}
-                className={'px-1 text-neutral-200 no-underline hover:text-neutral-100'}
+                css={tw`px-1 text-neutral-200 no-underline hover:text-neutral-100`}
             >
                 container
             </NavLink>/
@@ -46,18 +47,18 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
                         <React.Fragment key={index}>
                             <NavLink
                                 to={`/server/${id}/files#${crumb.path}`}
-                                className={'px-1 text-neutral-200 no-underline hover:text-neutral-100'}
+                                css={tw`px-1 text-neutral-200 no-underline hover:text-neutral-100`}
                             >
                                 {crumb.name}
                             </NavLink>/
                         </React.Fragment>
                         :
-                        <span key={index} className={'px-1 text-neutral-300'}>{crumb.name}</span>
+                        <span key={index} css={tw`px-1 text-neutral-300`}>{crumb.name}</span>
                 ))
             }
             {file &&
             <React.Fragment>
-                <span className={'px-1 text-neutral-300'}>{decodeURIComponent(file)}</span>
+                <span css={tw`px-1 text-neutral-300`}>{decodeURIComponent(file)}</span>
             </React.Fragment>
             }
         </div>

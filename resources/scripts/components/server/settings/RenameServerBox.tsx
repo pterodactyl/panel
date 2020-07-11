@@ -9,6 +9,8 @@ import { object, string } from 'yup';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
+import Button from '@/components/elements/Button';
+import tw from 'twin.macro';
 
 interface Values {
     name: string;
@@ -18,19 +20,19 @@ const RenameServerBox = () => {
     const { isSubmitting } = useFormikContext<Values>();
 
     return (
-        <TitledGreyBox title={'Change Server Name'} className={'relative'}>
-            <SpinnerOverlay size={'normal'} visible={isSubmitting}/>
-            <Form className={'mb-0'}>
+        <TitledGreyBox title={'Change Server Name'} css={tw`relative`}>
+            <SpinnerOverlay visible={isSubmitting}/>
+            <Form css={tw`mb-0`}>
                 <Field
                     id={'name'}
                     name={'name'}
                     label={'Server Name'}
                     type={'text'}
                 />
-                <div className={'mt-6 text-right'}>
-                    <button type={'submit'} className={'btn btn-sm btn-primary'}>
+                <div css={tw`mt-6 text-right`}>
+                    <Button type={'submit'}>
                         Save
-                    </button>
+                    </Button>
                 </div>
             </Form>
         </TitledGreyBox>

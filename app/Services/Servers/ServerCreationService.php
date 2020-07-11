@@ -270,7 +270,9 @@ class ServerCreationService
             $records = array_merge($records, $data['allocation_additional']);
         }
 
-        $this->allocationRepository->assignAllocationsToServer($server->id, $records);
+        $this->allocationRepository->updateWhereIn('id', $records, [
+            'server_id' => $server->id,
+        ]);
     }
 
     /**

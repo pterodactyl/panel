@@ -1,14 +1,8 @@
 import React, { Suspense } from 'react';
 import Spinner from '@/components/elements/Spinner';
 
-const SuspenseSpinner = ({ children }: { children?: React.ReactNode }) => (
-    <Suspense
-        fallback={
-            <div className={'mx-4 w-3/4 mr-4 flex items-center justify-center'}>
-                <Spinner centered={true} size={'normal'}/>
-            </div>
-        }
-    >
+const SuspenseSpinner: React.FC = ({ children }) => (
+    <Suspense fallback={<Spinner size={'large'} centered/>}>
         {children}
     </Suspense>
 );

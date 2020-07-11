@@ -9,6 +9,10 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/components/elements/Can';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import tw from 'twin.macro';
+import Input from '@/components/elements/Input';
+import Label from '@/components/elements/Label';
+import { LinkButton } from '@/components/elements/Button';
 
 export default () => {
     const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);
@@ -16,52 +20,50 @@ export default () => {
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'settings'} className={'mb-4'}/>
-            <div className={'md:flex'}>
-                <Can action={'file.sftp'}>
-                    <div className={'w-full md:flex-1 md:max-w-1/2 md:mr-10'}>
-                        <TitledGreyBox title={'SFTP Details'}>
+            <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
+            <div css={tw`md:flex`}>
+                <div css={tw`w-full md:flex-1 md:mr-10`}>
+                    <Can action={'file.sftp'}>
+                        <TitledGreyBox title={'SFTP Details'} css={tw`mb-6 md:mb-10`}>
                             <div>
-                                <label className={'input-dark-label'}>Server Address</label>
-                                <input
+                                <Label>Server Address</Label>
+                                <Input
                                     type={'text'}
-                                    className={'input-dark'}
                                     value={`sftp://${server.sftpDetails.ip}:${server.sftpDetails.port}`}
-                                    readOnly={true}
+                                    readOnly
                                 />
                             </div>
-                            <div className={'mt-6'}>
-                                <label className={'input-dark-label'}>Username</label>
-                                <input
+                            <div css={tw`mt-6`}>
+                                <Label>Username</Label>
+                                <Input
                                     type={'text'}
-                                    className={'input-dark'}
                                     value={`${user.username}.${server.id}`}
-                                    readOnly={true}
+                                    readOnly
                                 />
                             </div>
-                            <div className={'mt-6 flex items-center'}>
-                                <div className={'flex-1'}>
-                                    <div className={'border-l-4 border-cyan-500 p-3'}>
-                                        <p className={'text-xs text-neutral-200'}>
+                            <div css={tw`mt-6 flex items-center`}>
+                                <div css={tw`flex-1`}>
+                                    <div css={tw`border-l-4 border-cyan-500 p-3`}>
+                                        <p css={tw`text-xs text-neutral-200`}>
                                             Your SFTP password is the same as the password you use to access this panel.
                                         </p>
                                     </div>
                                 </div>
-                                <div className={'ml-4'}>
-                                    <a
+                                <div css={tw`ml-4`}>
+                                    <LinkButton
+                                        isSecondary
                                         href={`sftp://${user.username}.${server.id}@${server.sftpDetails.ip}:${server.sftpDetails.port}`}
-                                        className={'btn btn-sm btn-secondary'}
                                     >
                                         Launch SFTP
-                                    </a>
+                                    </LinkButton>
                                 </div>
                             </div>
                         </TitledGreyBox>
-                    </div>
-                </Can>
-                <div className={'w-full mt-6 md:flex-1 md:max-w-1/2 md:mt-0'}>
+                    </Can>
+                </div>
+                <div css={tw`w-full mt-6 md:flex-1 md:mt-0`}>
                     <Can action={'settings.rename'}>
-                        <div className={'mb-6 md:mb-10'}>
+                        <div css={tw`mb-6 md:mb-10`}>
                             <RenameServerBox/>
                         </div>
                     </Can>

@@ -16,7 +16,7 @@ export interface UserStore {
     data?: UserData;
     setUserData: Action<UserStore, UserData>;
     updateUserData: Action<UserStore, Partial<UserData>>;
-    updateUserEmail: Thunk<UserStore, { email: string; password: string }, any, {}, Promise<void>>;
+    updateUserEmail: Thunk<UserStore, { email: string; password: string }, any, UserStore, Promise<void>>;
 }
 
 const user: UserStore = {

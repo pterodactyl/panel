@@ -15,6 +15,7 @@ use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Collection;
+use Pterodactyl\Models\Allocation;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
@@ -53,7 +54,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function link($model, $append = null): string
     {
-        Assert::isInstanceOfAny($model, [Server::class, Schedule::class, Task::class]);
+        Assert::isInstanceOfAny($model, [Server::class, Schedule::class, Task::class, Allocation::class]);
 
         $link = '';
         switch (get_class($model)) {
@@ -65,6 +66,9 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
                 break;
             case Task::class:
                 $link = "/api/client/servers/{$model->schedule->server->uuid}/schedules/{$model->schedule->id}/tasks/{$model->id}";
+                break;
+            case Allocation::class:
+                $link = "/api/client/servers/{$model->server->uuid}/network/allocations/{$model->id}";
                 break;
         }
 

@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { ServerBackup } from '@/api/server/backups/getServerBackups';
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons/faEllipsisH';
+import { faCloudDownloadAlt, faEllipsisH, faLock, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
-import { faCloudDownloadAlt } from '@fortawesome/free-solid-svg-icons/faCloudDownloadAlt';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons/faTrashAlt';
-import { faLock } from '@fortawesome/free-solid-svg-icons/faLock';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import { httpErrorToHuman } from '@/api/http';
 import useFlash from '@/plugins/useFlash';
@@ -16,6 +13,7 @@ import deleteBackup from '@/api/server/backups/deleteBackup';
 import { ServerContext } from '@/state/server';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import Can from '@/components/elements/Can';
+import tw from 'twin.macro';
 
 interface Props {
     backup: ServerBackup;
@@ -61,8 +59,8 @@ export default ({ backup }: Props) => {
         <>
             {visible &&
             <ChecksumModal
+                appear
                 visible={visible}
-                appear={true}
                 onDismissed={() => setVisible(false)}
                 checksum={backup.sha256Hash}
             />
@@ -79,32 +77,32 @@ export default ({ backup }: Props) => {
                 be recovered once deleted.
             </ConfirmationModal>
             }
-            <SpinnerOverlay visible={loading} fixed={true}/>
+            <SpinnerOverlay visible={loading} fixed/>
             <DropdownMenu
                 renderToggle={onClick => (
                     <button
                         onClick={onClick}
-                        className={'text-neutral-200 transition-color duration-150 hover:text-neutral-100 p-2'}
+                        css={tw`text-neutral-200 transition-colors duration-150 hover:text-neutral-100 p-2`}
                     >
                         <FontAwesomeIcon icon={faEllipsisH}/>
                     </button>
                 )}
             >
-                <div className={'text-sm'}>
+                <div css={tw`text-sm`}>
                     <Can action={'backup.download'}>
                         <DropdownButtonRow onClick={() => doDownload()}>
-                            <FontAwesomeIcon fixedWidth={true} icon={faCloudDownloadAlt} className={'text-xs'}/>
-                            <span className={'ml-2'}>Download</span>
+                            <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`}/>
+                            <span css={tw`ml-2`}>Download</span>
                         </DropdownButtonRow>
                     </Can>
                     <DropdownButtonRow onClick={() => setVisible(true)}>
-                        <FontAwesomeIcon fixedWidth={true} icon={faLock} className={'text-xs'}/>
-                        <span className={'ml-2'}>Checksum</span>
+                        <FontAwesomeIcon fixedWidth icon={faLock} css={tw`text-xs`}/>
+                        <span css={tw`ml-2`}>Checksum</span>
                     </DropdownButtonRow>
                     <Can action={'backup.delete'}>
-                        <DropdownButtonRow danger={true} onClick={() => setDeleteVisible(true)}>
-                            <FontAwesomeIcon fixedWidth={true} icon={faTrashAlt} className={'text-xs'}/>
-                            <span className={'ml-2'}>Delete</span>
+                        <DropdownButtonRow danger onClick={() => setDeleteVisible(true)}>
+                            <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
+                            <span css={tw`ml-2`}>Delete</span>
                         </DropdownButtonRow>
                     </Can>
                 </div>

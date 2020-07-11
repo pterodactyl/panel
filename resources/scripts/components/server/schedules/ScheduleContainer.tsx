@@ -11,6 +11,9 @@ import Can from '@/components/elements/Can';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import tw from 'twin.macro';
+import GreyRowBox from '@/components/elements/GreyRowBox';
+import Button from '@/components/elements/Button';
 
 export default ({ match, history }: RouteComponentProps) => {
     const { uuid } = useServer();
@@ -34,45 +37,38 @@ export default ({ match, history }: RouteComponentProps) => {
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'schedules'} className={'mb-4'}/>
+            <FlashMessageRender byKey={'schedules'} css={tw`mb-4`}/>
             {(!schedules.length && loading) ?
-                <Spinner size={'large'} centered={true}/>
+                <Spinner size={'large'} centered/>
                 :
                 <>
                     {
                         schedules.length === 0 ?
-                            <p className={'text-sm text-center text-neutral-400'}>
+                            <p css={tw`text-sm text-center text-neutral-400`}>
                                 There are no schedules configured for this server.
                             </p>
                             :
                             schedules.map(schedule => (
-                                <a
+                                <GreyRowBox
+                                    as={'a'}
                                     key={schedule.id}
                                     href={`${match.url}/${schedule.id}`}
-                                    className={'grey-row-box cursor-pointer mb-2'}
-                                    onClick={e => {
+                                    css={tw`cursor-pointer mb-2`}
+                                    onClick={(e: any) => {
                                         e.preventDefault();
                                         history.push(`${match.url}/${schedule.id}`, { schedule });
                                     }}
                                 >
                                     <ScheduleRow schedule={schedule}/>
-                                </a>
+                                </GreyRowBox>
                             ))
                     }
                     <Can action={'schedule.create'}>
-                        <div className={'mt-8 flex justify-end'}>
-                            {visible && <EditScheduleModal
-                                appear={true}
-                                visible={true}
-                                onDismissed={() => setVisible(false)}
-                            />}
-                            <button
-                                type={'button'}
-                                className={'btn btn-sm btn-primary'}
-                                onClick={() => setVisible(true)}
-                            >
+                        <div css={tw`mt-8 flex justify-end`}>
+                            {visible && <EditScheduleModal appear visible onDismissed={() => setVisible(false)}/>}
+                            <Button type={'button'} onClick={() => setVisible(true)}>
                                 Create schedule
-                            </button>
+                            </Button>
                         </div>
                     </Can>
                 </>

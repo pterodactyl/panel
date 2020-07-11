@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState, lazy } from 'react';
-import useRouter from 'use-react-router';
-import { ServerContext } from '@/state/server';
+import React, { useCallback, useEffect, useState } from 'react';
 import ace, { Editor } from 'brace';
-import getFileContents from '@/api/server/files/getFileContents';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
+import tw from 'twin.macro';
+import Select from '@/components/elements/Select';
+// @ts-ignore
+import modes from '@/modes';
 
 // @ts-ignore
 require('brace/ext/modelist');
@@ -11,42 +12,13 @@ require('ayu-ace/mirage');
 
 const EditorContainer = styled.div`
     min-height: 16rem;
-    height: calc(100vh - 16rem);
+    height: calc(100vh - 20rem);
     ${tw`relative`};
     
     #editor {
         ${tw`rounded h-full`};
     }
 `;
-
-const modes: { [k: string]: string } = {
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    assembly_x86: 'Assembly (x86)',
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    c_cpp: 'C++',
-    coffee: 'Coffeescript',
-    css: 'CSS',
-    dockerfile: 'Dockerfile',
-    golang: 'Go',
-    html: 'HTML',
-    ini: 'Ini',
-    java: 'Java',
-    javascript: 'Javascript',
-    json: 'JSON',
-    kotlin: 'Kotlin',
-    lua: 'Luascript',
-    perl: 'Perl',
-    php: 'PHP',
-    properties: 'Properties',
-    python: 'Python',
-    ruby: 'Ruby',
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    plain_text: 'Plaintext',
-    toml: 'TOML',
-    typescript: 'Typescript',
-    xml: 'XML',
-    yaml: 'YAML',
-};
 
 Object.keys(modes).forEach(mode => require(`brace/mode/${mode}`));
 
@@ -70,7 +42,7 @@ export default ({ style, initialContent, initialModePath, fetchContent, onConten
 
     useEffect(() => {
         editor && editor.session.setMode(mode);
-    }, [editor, mode]);
+    }, [ editor, mode ]);
 
     useEffect(() => {
         editor && editor.session.setValue(initialContent || '');
@@ -113,19 +85,18 @@ export default ({ style, initialContent, initialModePath, fetchContent, onConten
     return (
         <EditorContainer style={style}>
             <div id={'editor'} ref={ref}/>
-            <div className={'absolute pin-r pin-b z-50'}>
-                <div className={'m-3 rounded bg-neutral-900 border border-black'}>
-                    <select
-                        className={'input-dark'}
+            <div css={tw`absolute right-0 bottom-0 z-50`}>
+                <div css={tw`m-3 rounded bg-neutral-900 border border-black`}>
+                    <Select
                         value={mode.split('/').pop()}
                         onChange={e => setMode(`ace/mode/${e.currentTarget.value}`)}
                     >
                         {
                             Object.keys(modes).map(key => (
-                                <option key={key} value={key}>{modes[key]}</option>
+                                <option key={key} value={key}>{(modes as { [k: string]: string })[key]}</option>
                             ))
                         }
-                    </select>
+                    </Select>
                 </div>
             </div>
         </EditorContainer>

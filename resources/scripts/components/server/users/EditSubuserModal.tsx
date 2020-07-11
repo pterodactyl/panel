@@ -8,8 +8,7 @@ import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Checkbox from '@/components/elements/Checkbox';
-import styled from 'styled-components';
-import classNames from 'classnames';
+import styled from 'styled-components/macro';
 import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
@@ -17,6 +16,10 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/components/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
 import { useDeepMemo } from '@/plugins/useDeepMemo';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import Label from '@/components/elements/Label';
+import Input from '@/components/elements/Input';
 
 type Props = {
     subuser?: Subuser;
@@ -71,28 +74,28 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
         }
 
         return list.filter(key => loggedInPermissions.indexOf(key) >= 0);
-    }, [permissions, loggedInPermissions]);
+    }, [ permissions, loggedInPermissions ]);
 
     return (
         <Modal {...props} top={false} showSpinnerOverlay={isSubmitting}>
-            <h3 ref={ref}>
+            <h2 css={tw`text-2xl`} ref={ref}>
                 {subuser ?
                     `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
                     :
                     'Create new subuser'
                 }
-            </h3>
-            <FlashMessageRender byKey={'user:edit'} className={'mt-4'}/>
+            </h2>
+            <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`}/>
             {(!user.rootAdmin && loggedInPermissions[0] !== '*') &&
-            <div className={'mt-4 pl-4 py-2 border-l-4 border-cyan-400'}>
-                <p className={'text-sm text-neutral-300'}>
+            <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
+                <p css={tw`text-sm text-neutral-300`}>
                     Only permissions which your account is currently assigned may be selected when creating or
                     modifying other users.
                 </p>
             </div>
             }
             {!subuser &&
-            <div className={'mt-6'}>
+            <div css={tw`mt-6`}>
                 <Field
                     name={'email'}
                     label={'User Email'}
@@ -100,15 +103,15 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                 />
             </div>
             }
-            <div className={'my-6'}>
+            <div css={tw`my-6`}>
                 {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => (
                     <TitledGreyBox
                         key={key}
                         title={
-                            <div className={'flex items-center'}>
-                                <p className={'text-sm uppercase flex-1'}>{key}</p>
-                                {canEditUser && editablePermissions.indexOf(key) >= 0 &&
-                                <input
+                            <div css={tw`flex items-center`}>
+                                <p css={tw`text-sm uppercase flex-1`}>{key}</p>
+                                {canEditUser &&
+                                <Input
                                     type={'checkbox'}
                                     onClick={e => {
                                         if (e.currentTarget.checked) {
@@ -132,35 +135,34 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                 }
                             </div>
                         }
-                        className={index !== 0 ? 'mt-4' : undefined}
+                        css={index > 0 ? tw`mt-4` : undefined}
                     >
-                        <p className={'text-sm text-neutral-400 mb-4'}>
+                        <p css={tw`text-sm text-neutral-400 mb-4`}>
                             {permissions[key].description}
                         </p>
                         {Object.keys(permissions[key].keys).map((pkey, index) => (
                             <PermissionLabel
                                 key={`permission_${key}_${pkey}`}
                                 htmlFor={`permission_${key}_${pkey}`}
-                                className={classNames('transition-colors duration-75', {
-                                    'mt-2': index !== 0,
-                                    disabled: !canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0,
-                                })}
+                                css={[
+                                    tw`transition-colors duration-75`,
+                                    index > 0 ? tw`mt-2` : undefined,
+                                ]}
+                                className={(!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0) ? 'disabled' : undefined}
                             >
-                                <div className={'p-2'}>
+                                <div css={tw`p-2`}>
                                     <Checkbox
                                         id={`permission_${key}_${pkey}`}
                                         name={'permissions'}
                                         value={`${key}.${pkey}`}
-                                        className={'w-5 h-5 mr-2'}
+                                        css={tw`w-5 h-5 mr-2`}
                                         disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
                                     />
                                 </div>
-                                <div className={'flex-1'}>
-                                    <span className={'input-dark-label font-medium'}>
-                                        {pkey}
-                                    </span>
+                                <div css={tw`flex-1`}>
+                                    <Label css={tw`font-medium`}>{pkey}</Label>
                                     {permissions[key].keys[pkey].length > 0 &&
-                                    <p className={'text-xs text-neutral-400 mt-1'}>
+                                    <p css={tw`text-xs text-neutral-400 mt-1`}>
                                         {permissions[key].keys[pkey]}
                                     </p>
                                     }
@@ -171,10 +173,10 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                 ))}
             </div>
             <Can action={subuser ? 'user.update' : 'user.create'}>
-                <div className={'pb-6 flex justify-end'}>
-                    <button className={'btn btn-primary btn-sm'} type={'submit'}>
+                <div css={tw`pb-6 flex justify-end`}>
+                    <Button type={'submit'}>
                         {subuser ? 'Save' : 'Invite User'}
-                    </button>
+                    </Button>
                 </div>
             </Can>
         </Modal>

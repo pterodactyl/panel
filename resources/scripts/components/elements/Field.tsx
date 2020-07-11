@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
-import classNames from 'classnames';
+import Input from '@/components/elements/Input';
+import Label from '@/components/elements/Label';
 
 interface OwnProps {
     name: string;
@@ -12,21 +13,20 @@ interface OwnProps {
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
-const Field = ({ id, name, light = false, label, description, validate, className, ...props }: Props) => (
-    <FormikField name={name} validate={validate}>
+const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, label, description, validate, ...props }, ref) => (
+    <FormikField innerRef={ref} name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
-                <React.Fragment>
+                <>
                     {label &&
-                    <label htmlFor={id} className={light ? undefined : 'input-dark-label'}>{label}</label>
+                    <Label htmlFor={id} isLight={light}>{label}</Label>
                     }
-                    <input
+                    <Input
                         id={id}
                         {...field}
                         {...props}
-                        className={classNames((className || (light ? 'input' : 'input-dark')), {
-                            error: touched[field.name] && errors[field.name],
-                        })}
+                        isLight={light}
+                        hasError={!!(touched[field.name] && errors[field.name])}
                     />
                     {touched[field.name] && errors[field.name] ?
                         <p className={'input-help error'}>
@@ -35,10 +35,11 @@ const Field = ({ id, name, light = false, label, description, validate, classNam
                         :
                         description ? <p className={'input-help'}>{description}</p> : null
                     }
-                </React.Fragment>
+                </>
             )
         }
     </FormikField>
-);
+));
+Field.displayName = 'Field';
 
 export default Field;

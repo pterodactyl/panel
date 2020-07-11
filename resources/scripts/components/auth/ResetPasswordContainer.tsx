@@ -7,19 +7,19 @@ import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import Spinner from '@/components/elements/Spinner';
 import { Formik, FormikHelpers } from 'formik';
 import { object, ref, string } from 'yup';
 import Field from '@/components/elements/Field';
-
-type Props = Readonly<RouteComponentProps<{ token: string }> & {}>;
+import Input from '@/components/elements/Input';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 interface Values {
     password: string;
     passwordConfirmation: string;
 }
 
-export default ({ match, history, location }: Props) => {
+export default ({ match, location }: RouteComponentProps<{ token: string }>) => {
     const [ email, setEmail ] = useState('');
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
@@ -56,52 +56,50 @@ export default ({ match, history, location }: Props) => {
                     .min(8, 'Your new password should be at least 8 characters in length.'),
                 passwordConfirmation: string()
                     .required('Your new password does not match.')
-                    .oneOf([ref('password'), null], 'Your new password does not match.'),
+                    // @ts-ignore
+                    .oneOf([ ref('password'), null ], 'Your new password does not match.'),
             })}
         >
             {({ isSubmitting }) => (
                 <LoginFormContainer
                     title={'Reset Password'}
-                    className={'w-full flex'}
+                    css={tw`w-full flex`}
                 >
                     <div>
                         <label>Email</label>
-                        <input className={'input'} value={email} disabled={true}/>
+                        <Input value={email} isLight disabled/>
                     </div>
-                    <div className={'mt-6'}>
+                    <div css={tw`mt-6`}>
                         <Field
-                            light={true}
+                            light
                             label={'New Password'}
                             name={'password'}
                             type={'password'}
                             description={'Passwords must be at least 8 characters in length.'}
                         />
                     </div>
-                    <div className={'mt-6'}>
+                    <div css={tw`mt-6`}>
                         <Field
-                            light={true}
+                            light
                             label={'Confirm New Password'}
                             name={'passwordConfirmation'}
                             type={'password'}
                         />
                     </div>
-                    <div className={'mt-6'}>
-                        <button
+                    <div css={tw`mt-6`}>
+                        <Button
+                            size={'xlarge'}
                             type={'submit'}
-                            className={'btn btn-primary btn-jumbo'}
                             disabled={isSubmitting}
+                            isLoading={isSubmitting}
                         >
-                            {isSubmitting ?
-                                <Spinner size={'tiny'} className={'mx-auto'}/>
-                                :
-                                'Reset Password'
-                            }
-                        </button>
+                            Reset Password
+                        </Button>
                     </div>
-                    <div className={'mt-6 text-center'}>
+                    <div css={tw`mt-6 text-center`}>
                         <Link
                             to={'/auth/login'}
-                            className={'text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'}
+                            css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
                             Return to Login
                         </Link>

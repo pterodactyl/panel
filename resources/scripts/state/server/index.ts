@@ -14,7 +14,7 @@ interface ServerDataStore {
     data?: Server;
     permissions: string[];
 
-    getServer: Thunk<ServerDataStore, string, {}, ServerStore, Promise<void>>;
+    getServer: Thunk<ServerDataStore, string, Record<string, unknown>, ServerStore, Promise<void>>;
     setServer: Action<ServerDataStore, Server>;
     setPermissions: Action<ServerDataStore, string[]>;
 }
@@ -77,7 +77,6 @@ export const ServerContext = createContextStore<ServerStore>({
         state.databases.data = [];
         state.subusers.data = [];
         state.files.directory = '/';
-        state.files.contents = [];
         state.backups.data = [];
         state.schedules.data = [];
 

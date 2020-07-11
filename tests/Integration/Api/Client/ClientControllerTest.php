@@ -35,7 +35,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('data.0.attributes.identifier', $servers[0]->uuidShort);
         $response->assertJsonPath('data.0.attributes.server_owner', true);
         $response->assertJsonPath('meta.pagination.total', 1);
-        $response->assertJsonPath('meta.pagination.per_page', config('pterodactyl.paginate.frontend.servers'));
+        $response->assertJsonPath('meta.pagination.per_page', 50);
     }
 
     /**
@@ -54,7 +54,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
             $this->createServerModel(['user_id' => $users[2]->id]),
         ];
 
-        $response = $this->actingAs($users[0])->getJson('/api/client?filter=all');
+        $response = $this->actingAs($users[0])->getJson('/api/client?type=all');
 
         $response->assertOk();
         $response->assertJsonCount(3, 'data');
@@ -117,7 +117,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
             'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
 
-        $response = $this->actingAs($users[0])->getJson('/api/client?filter=owner');
+        $response = $this->actingAs($users[0])->getJson('/api/client?type=owner');
 
         $response->assertOk();
         $response->assertJsonCount(1, 'data');

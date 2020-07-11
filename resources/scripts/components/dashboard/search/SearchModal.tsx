@@ -3,7 +3,7 @@ import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { object, string } from 'yup';
-import { debounce } from 'lodash-es';
+import debounce from 'debounce';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import InputSpinner from '@/components/elements/InputSpinner';
 import getServers from '@/api/getServers';
@@ -11,7 +11,9 @@ import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
+import tw from 'twin.macro';
+import Input from '@/components/elements/Input';
 
 type Props = RequiredModalProps;
 
@@ -20,8 +22,7 @@ interface Values {
 }
 
 const ServerResult = styled(Link)`
-    ${tw`flex items-center bg-neutral-900 p-4 rounded border-l-4 border-neutral-900 no-underline`};
-    transition: all 250ms linear;
+    ${tw`flex items-center bg-neutral-900 p-4 rounded border-l-4 border-neutral-900 no-underline transition-all duration-150`};
 
     &:hover {
         ${tw`shadow border-cyan-500`};
@@ -55,6 +56,7 @@ export default ({ ...props }: Props) => {
         setLoading(true);
         setSubmitting(false);
         clearFlashes('search');
+
         getServers(term)
             .then(servers => setServers(servers.items.filter((_, index) => index < 5)))
             .catch(error => {
@@ -93,16 +95,12 @@ export default ({ ...props }: Props) => {
                     >
                         <SearchWatcher/>
                         <InputSpinner visible={loading}>
-                            <Field
-                                innerRef={ref}
-                                name={'term'}
-                                className={'input-dark'}
-                            />
+                            <Field as={Input} innerRef={ref} name={'term'}/>
                         </InputSpinner>
                     </FormikFieldWrapper>
                 </Form>
                 {servers.length > 0 &&
-                <div className={'mt-6'}>
+                <div css={tw`mt-6`}>
                     {
                         servers.map(server => (
                             <ServerResult
@@ -111,17 +109,17 @@ export default ({ ...props }: Props) => {
                                 onClick={() => props.onDismissed()}
                             >
                                 <div>
-                                    <p className={'text-sm'}>{server.name}</p>
-                                    <p className={'mt-1 text-xs text-neutral-400'}>
+                                    <p css={tw`text-sm`}>{server.name}</p>
+                                    <p css={tw`mt-1 text-xs text-neutral-400`}>
                                         {
-                                            server.allocations.filter(alloc => alloc.default).map(allocation => (
+                                            server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
                                                 <span key={allocation.ip + allocation.port.toString()}>{allocation.alias || allocation.ip}:{allocation.port}</span>
                                             ))
                                         }
                                     </p>
                                 </div>
-                                <div className={'flex-1 text-right'}>
-                                    <span className={'text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded'}>
+                                <div css={tw`flex-1 text-right`}>
+                                    <span css={tw`text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded`}>
                                         {server.node}
                                     </span>
                                 </div>

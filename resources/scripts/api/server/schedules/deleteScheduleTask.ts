@@ -5,5 +5,5 @@ export default (uuid: string, scheduleId: number, taskId: number): Promise<void>
         http.delete(`/api/client/servers/${uuid}/schedules/${scheduleId}/tasks/${taskId}`)
             .then(() => resolve())
             .catch(reject);
-    })
+    });
 };

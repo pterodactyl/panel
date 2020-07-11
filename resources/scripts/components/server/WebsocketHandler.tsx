@@ -5,6 +5,7 @@ import getWebsocketToken from '@/api/server/getWebsocketToken';
 import ContentContainer from '@/components/elements/ContentContainer';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
+import tw from 'twin.macro';
 
 export default () => {
     const server = ServerContext.useStoreState(state => state.server.data);
@@ -66,12 +67,12 @@ export default () => {
 
     return (
         error ?
-            <CSSTransition timeout={250} in={true} appear={true} classNames={'fade'}>
-                <div className={'bg-red-500 py-2'}>
-                    <ContentContainer className={'flex items-center justify-center'}>
-                        <Spinner size={'tiny'}/>
-                        <p className={'ml-2 text-sm text-red-100'}>
-                            We're having some trouble connecting to your server, please wait...
+            <CSSTransition timeout={150} in appear classNames={'fade'}>
+                <div css={tw`bg-red-500 py-2`}>
+                    <ContentContainer css={tw`flex items-center justify-center`}>
+                        <Spinner size={'small'}/>
+                        <p css={tw`ml-2 text-sm text-red-100`}>
+                            We&apos;re having some trouble connecting to your server, please wait...
                         </p>
                     </ContentContainer>
                 </div>

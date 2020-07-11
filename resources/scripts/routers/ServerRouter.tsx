@@ -23,6 +23,8 @@ import NotFound from '@/components/screens/NotFound';
 import { useStoreState } from 'easy-peasy';
 import useServer from '@/plugins/useServer';
 import ScreenBlock from '@/components/screens/ScreenBlock';
+import SubNavigation from '@/components/elements/SubNavigation';
+import NetworkContainer from '@/components/server/network/NetworkContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const { rootAdmin } = useStoreState(state => state.user.data!);
@@ -65,14 +67,12 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                 error ?
                     <ServerError message={error}/>
                     :
-                    <div className={'flex justify-center m-20'}>
-                        <Spinner size={'large'}/>
-                    </div>
+                    <Spinner size={'large'} centered/>
                 :
                 <>
-                    <CSSTransition timeout={250} classNames={'fade'} appear={true} in={true}>
-                        <div id={'sub-navigation'}>
-                            <div className={'items'}>
+                    <CSSTransition timeout={150} classNames={'fade'} appear in>
+                        <SubNavigation>
+                            <div>
                                 <NavLink to={`${match.url}`} exact>Console</NavLink>
                                 <Can action={'file.*'}>
                                     <NavLink to={`${match.url}/files`}>File Manager</NavLink>
@@ -89,11 +89,14 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Can action={'backup.*'}>
                                     <NavLink to={`${match.url}/backups`}>Backups</NavLink>
                                 </Can>
-                                <Can action={[ 'settings.*', 'file.sftp' ]} matchAny={true}>
+                                <Can action={'allocations.*'}>
+                                    <NavLink to={`${match.url}/network`}>Network</NavLink>
+                                </Can>
+                                <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
                                     <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                                 </Can>
                             </div>
-                        </div>
+                        </SubNavigation>
                     </CSSTransition>
                     {(installing && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${server.id}`)))) ?
                         <ScreenBlock
@@ -126,6 +129,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     />
                                     <Route path={`${match.path}/users`} component={UsersContainer} exact/>
                                     <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
+                                    <Route path={`${match.path}/network`} component={NetworkContainer} exact/>
                                     <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
                                     <Route path={'*'} component={NotFound}/>
                                 </Switch>

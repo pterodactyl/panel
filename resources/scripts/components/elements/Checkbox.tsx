@@ -1,14 +1,15 @@
 import React from 'react';
 import { Field, FieldProps } from 'formik';
+import Input from '@/components/elements/Input';
 
 interface Props {
     name: string;
     value: string;
 }
 
-type OmitFields = 'name' | 'value' | 'type' | 'checked' | 'onChange';
+type OmitFields = 'ref' | 'name' | 'value' | 'type' | 'checked' | 'onClick' | 'onChange';
 
-type InputProps = Omit<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>, OmitFields>;
+type InputProps = Omit<JSX.IntrinsicElements['input'], OmitFields>;
 
 const Checkbox = ({ name, value, ...props }: Props & InputProps) => (
     <Field name={name}>
@@ -20,7 +21,7 @@ const Checkbox = ({ name, value, ...props }: Props & InputProps) => (
             }
 
             return (
-                <input
+                <Input
                     {...field}
                     {...props}
                     type={'checkbox'}

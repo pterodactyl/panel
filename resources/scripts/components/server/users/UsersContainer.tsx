@@ -10,6 +10,7 @@ import getServerSubusers from '@/api/server/users/getServerSubusers';
 import { httpErrorToHuman } from '@/api/http';
 import Can from '@/components/elements/Can';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import tw from 'twin.macro';
 
 export default () => {
     const [ loading, setLoading ] = useState(true);
@@ -43,15 +44,15 @@ export default () => {
     }, []);
 
     if (!subusers.length && (loading || !Object.keys(permissions).length)) {
-        return <Spinner size={'large'} centered={true}/>;
+        return <Spinner size={'large'} centered/>;
     }
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'users'} className={'mb-4'}/>
+            <FlashMessageRender byKey={'users'} css={tw`mb-4`}/>
             {!subusers.length ?
-                <p className={'text-center text-sm text-neutral-400'}>
-                    It looks like you don't have any subusers.
+                <p css={tw`text-center text-sm text-neutral-400`}>
+                    It looks like you don&apos;t have any subusers.
                 </p>
                 :
                 subusers.map(subuser => (
@@ -59,7 +60,7 @@ export default () => {
                 ))
             }
             <Can action={'user.create'}>
-                <div className={'flex justify-end mt-6'}>
+                <div css={tw`flex justify-end mt-6`}>
                     <AddSubuserButton/>
                 </div>
             </Can>

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ServerContext } from '@/state/server';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import reinstallServer from '@/api/server/reinstallServer';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -19,7 +20,11 @@ export default () => {
         setIsSubmitting(true);
         reinstallServer(uuid)
             .then(() => {
-                addFlash({ key: 'settings', type: 'success', message: 'Your server has begun the reinstallation process.' });
+                addFlash({
+                    key: 'settings',
+                    type: 'success',
+                    message: 'Your server has begun the reinstallation process.',
+                });
             })
             .catch(error => {
                 console.error(error);
@@ -30,10 +35,10 @@ export default () => {
                 setIsSubmitting(false);
                 setModalVisible(false);
             });
-    }
+    };
 
     return (
-        <TitledGreyBox title={'Reinstall Server'} className={'relative'}>
+        <TitledGreyBox title={'Reinstall Server'} css={tw`relative`}>
             <ConfirmationModal
                 title={'Confirm server reinstallation'}
                 buttonText={'Yes, reinstall server'}
@@ -42,21 +47,26 @@ export default () => {
                 visible={modalVisible}
                 onDismissed={() => setModalVisible(false)}
             >
-                Your server will be stopped and some files may be deleted or modified during this process, are you sure you wish to continue?
+                Your server will be stopped and some files may be deleted or modified during this process, are you sure
+                you wish to continue?
             </ConfirmationModal>
-            <p className={'text-sm'}>
+            <p css={tw`text-sm`}>
                 Reinstalling your server will stop it, and then re-run the installation script that initially
-                set it up. <strong className={'font-bold'}>Some files may be deleted or modified during this process,
-                please back up your data before continuing.</strong>
+                set it up.&nbsp;
+                <strong css={tw`font-medium`}>
+                    Some files may be deleted or modified during this process, please back up your data before
+                    continuing.
+                </strong>
             </p>
-            <div className={'mt-6 text-right'}>
-                <button
+            <div css={tw`mt-6 text-right`}>
+                <Button
                     type={'button'}
-                    className={'btn btn-sm btn-secondary btn-red'}
+                    color={'red'}
+                    isSecondary
                     onClick={() => setModalVisible(true)}
                 >
                     Reinstall Server
-                </button>
+                </Button>
             </div>
         </TitledGreyBox>
     );

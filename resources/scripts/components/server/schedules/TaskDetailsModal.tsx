@@ -11,6 +11,11 @@ import { number, object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
 import useServer from '@/plugins/useServer';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
+import tw from 'twin.macro';
+import Label from '@/components/elements/Label';
+import { Textarea } from '@/components/elements/Input';
+import Button from '@/components/elements/Button';
+import Select from '@/components/elements/Select';
 
 interface Props {
     schedule: Schedule;
@@ -35,20 +40,20 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
     }, [ action ]);
 
     return (
-        <Form className={'m-0'}>
-            <h3 className={'mb-6'}>{isEditingTask ? 'Edit Task' : 'Create Task'}</h3>
-            <div className={'flex'}>
-                <div className={'mr-2 w-1/3'}>
-                    <label className={'input-dark-label'}>Action</label>
+        <Form css={tw`m-0`}>
+            <h2 css={tw`text-2xl mb-6`}>{isEditingTask ? 'Edit Task' : 'Create Task'}</h2>
+            <div css={tw`flex`}>
+                <div css={tw`mr-2 w-1/3`}>
+                    <Label>Action</Label>
                     <FormikFieldWrapper name={'action'}>
-                        <FormikField as={'select'} name={'action'} className={'input-dark'}>
+                        <FormikField as={Select} name={'action'}>
                             <option value={'command'}>Send command</option>
                             <option value={'power'}>Send power action</option>
                             <option value={'backup'}>Create backup</option>
                         </FormikField>
                     </FormikFieldWrapper>
                 </div>
-                <div className={'flex-1'}>
+                <div css={tw`flex-1`}>
                     {action === 'command' ?
                         <Field
                             name={'payload'}
@@ -58,9 +63,9 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                         :
                         action === 'power' ?
                             <div>
-                                <label className={'input-dark-label'}>Payload</label>
+                                <Label>Payload</Label>
                                 <FormikFieldWrapper name={'payload'}>
-                                    <FormikField as={'select'} name={'payload'} className={'input-dark'}>
+                                    <FormikField as={Select} name={'payload'}>
                                         <option value={'start'}>Start the server</option>
                                         <option value={'restart'}>Restart the server</option>
                                         <option value={'stop'}>Stop the server</option>
@@ -70,28 +75,28 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                             </div>
                             :
                             <div>
-                                <label className={'input-dark-label'}>Ignored Files</label>
+                                <Label>Ignored Files</Label>
                                 <FormikFieldWrapper
                                     name={'payload'}
                                     description={'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used.'}
                                 >
-                                    <FormikField as={'textarea'} name={'payload'} className={'input-dark h-32'}/>
+                                    <FormikField as={Textarea} name={'payload'} css={tw`h-32`}/>
                                 </FormikFieldWrapper>
                             </div>
                     }
                 </div>
             </div>
-            <div className={'mt-6'}>
+            <div css={tw`mt-6`}>
                 <Field
                     name={'timeOffset'}
                     label={'Time offset (in seconds)'}
                     description={'The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'}
                 />
             </div>
-            <div className={'flex justify-end mt-6'}>
-                <button type={'submit'} className={'btn btn-primary btn-sm'}>
+            <div css={tw`flex justify-end mt-6`}>
+                <Button type={'submit'}>
                     {isEditingTask ? 'Save Changes' : 'Create Task'}
-                </button>
+                </Button>
             </div>
         </Form>
     );
@@ -148,12 +153,12 @@ export default ({ task, schedule, onDismissed }: Props) => {
         >
             {({ isSubmitting }) => (
                 <Modal
-                    visible={true}
-                    appear={true}
+                    visible
+                    appear
                     onDismissed={() => onDismissed()}
                     showSpinnerOverlay={isSubmitting}
                 >
-                    <FlashMessageRender byKey={'schedule:task'} className={'mb-4'}/>
+                    <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`}/>
                     <TaskDetailsForm isEditingTask={typeof task !== 'undefined'}/>
                 </Modal>
             )}

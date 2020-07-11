@@ -3,10 +3,10 @@ import { ITerminalOptions, Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
-import styled from 'styled-components';
-import Can from '@/components/elements/Can';
+import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
-import classNames from 'classnames';
+import tw from 'twin.macro';
+import 'xterm/dist/xterm.css';
 
 const theme = {
     background: 'transparent',
@@ -55,7 +55,7 @@ export default () => {
     const useRef = useCallback(node => setTerminalElement(node), []);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const [ canSendCommands ] = usePermissions([ 'control.console']);
+    const [ canSendCommands ] = usePermissions([ 'control.console' ]);
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -122,12 +122,13 @@ export default () => {
     }, [ connected, instance ]);
 
     return (
-        <div className={'text-xs font-mono relative'}>
+        <div css={tw`text-xs font-mono relative`}>
             <SpinnerOverlay visible={!connected} size={'large'}/>
             <div
-                className={classNames('rounded-t p-2 bg-black w-full', {
-                    'rounded-b': !canSendCommands,
-                })}
+                css={[
+                    tw`rounded-t p-2 bg-black w-full`,
+                    !canSendCommands && tw`rounded-b`,
+                ]}
                 style={{
                     minHeight: '16rem',
                     maxHeight: '32rem',
@@ -136,13 +137,13 @@ export default () => {
                 <TerminalDiv id={'terminal'} ref={useRef}/>
             </div>
             {canSendCommands &&
-            <div className={'rounded-b bg-neutral-900 text-neutral-100 flex'}>
-                <div className={'flex-no-shrink p-2 font-bold'}>$</div>
-                <div className={'w-full'}>
+            <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex`}>
+                <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
+                <div css={tw`w-full`}>
                     <input
                         type={'text'}
                         disabled={!instance || !connected}
-                        className={'bg-transparent text-neutral-100 p-2 pl-0 w-full'}
+                        css={tw`bg-transparent text-neutral-100 p-2 pl-0 w-full`}
                         onKeyDown={e => handleCommandKeydown(e)}
                     />
                 </div>

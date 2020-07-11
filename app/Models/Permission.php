@@ -44,7 +44,9 @@ class Permission extends Model
     const ACTION_BACKUP_DOWNLOAD = 'backup.download';
 
     const ACTION_ALLOCATION_READ = 'allocation.read';
-    const ACTION_ALLOCIATION_UPDATE = 'allocation.update';
+    const ACTION_ALLOCATION_CREATE = 'allocation.create';
+    const ACTION_ALLOCATION_UPDATE = 'allocation.update';
+    const ACTION_ALLOCATION_DELETE = 'allocation.delete';
 
     const ACTION_FILE_READ = 'file.read';
     const ACTION_FILE_CREATE = 'file.create';
@@ -157,7 +159,9 @@ class Permission extends Model
             'description' => 'Permissions that control a user\'s ability to modify the port allocations for this server.',
             'keys' => [
                 'read' => 'Allows a user to view the allocations assigned to this server.',
-                'update' => 'Allows a user to modify the allocations assigned to this server.',
+                'create' => 'Allows a user to assign additional allocations to the server.',
+                'update' => 'Allows a user to change the primary server allocation and attach notes to each allocation.',
+                'delete' => 'Allows a user to delete an allocation from the server.',
             ],
         ],
 
