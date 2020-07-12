@@ -4,7 +4,7 @@ import { ServerContext } from '@/state/server';
 import styled from 'styled-components/macro';
 import Input from '@/components/elements/Input';
 
-const Checkbox = styled(Input)`
+export const FileActionCheckbox = styled(Input)`
     && {
         ${tw`border-neutral-500`};
         
@@ -21,7 +21,7 @@ export default ({ name }: { name: string }) => {
 
     return (
         <label css={tw`flex-none p-4 absolute self-center z-30 cursor-pointer`}>
-            <Checkbox
+            <FileActionCheckbox
                 name={'selectedFiles'}
                 value={name}
                 checked={isChecked}

@@ -3,6 +3,8 @@ import { ServerContext } from '@/state/server';
 import { NavLink } from 'react-router-dom';
 import { cleanDirectoryPath } from '@/helpers';
 import tw from 'twin.macro';
+import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 
 interface Props {
     withinFileEditor?: boolean;
@@ -13,6 +15,10 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
     const [ file, setFile ] = useState<string | null>(null);
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const directory = ServerContext.useStoreState(state => state.files.directory);
+
+    const { data: files } = useFileManagerSwr();
+    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
+    const selectedFilesLength = ServerContext.useStoreState(state => state.files.selectedFiles.length);
 
     useEffect(() => {
         const parts = cleanDirectoryPath(window.location.hash).split('/');
@@ -32,8 +38,20 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
             return { name: decodeURIComponent(directory), path: `/${dirs.slice(0, index + 1).join('/')}` };
         });
 
+    const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedFiles(e.currentTarget.checked ? (files?.map(file => file.name) || []) : []);
+    };
+
     return (
         <div css={tw`flex items-center text-sm mb-4 text-neutral-500`}>
+            {!!(files && files.length) &&
+            <FileActionCheckbox
+                type={'checkbox'}
+                css={tw`mx-4`}
+                checked={selectedFilesLength === (files ? files.length : -1)}
+                onChange={onSelectAllClick}
+            />
+            }
             /<span css={tw`px-1 text-neutral-300`}>home</span>/
             <NavLink
                 to={`/server/${id}/files`}
