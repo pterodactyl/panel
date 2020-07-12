@@ -57,7 +57,7 @@ export default ({ ...props }: RequiredModalProps) => {
                             autoFocus
                         />
                         <div css={tw`mt-6 text-right`}>
-                            <Button 
+                            <Button
                                 color={'red'}
                                 disabled={!isValid}
                             >
