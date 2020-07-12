@@ -16,6 +16,7 @@ import useServer from '@/plugins/useServer';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
+import UploadButton from '@/components/server/files/UploadButton';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -79,6 +80,7 @@ export default () => {
                         <Can action={'file.create'}>
                             <div css={tw`flex justify-end mt-8`}>
                                 <NewDirectoryButton/>
+                                <UploadButton/>
                                 <Button
                                     // @ts-ignore
                                     as={Link}
