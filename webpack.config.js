@@ -76,11 +76,11 @@ module.exports = {
     plugins: [
         new webpack.ContextReplacementPlugin(/brace[/\\](mode|worker)/, new RegExp(`^\.\/(${modes.join('|')})$`)),
         new AssetsManifestPlugin({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
-        !isProduction ? new ForkTsCheckerWebpackPlugin({
+        new ForkTsCheckerWebpackPlugin(isProduction ? {} : {
             eslint: {
                 files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
             },
-        }) : null,
+        }),
         process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin({
             analyzerHost: '0.0.0.0',
             analyzerPort: 8081,

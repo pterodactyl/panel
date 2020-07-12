@@ -26,15 +26,18 @@ extends:
   - "plugin:react/recommended"
   - "plugin:@typescript-eslint/recommended"
 rules:
+  quotes:
+    - warn
+    - single
   indent:
-    - error
+    - warn
     - 4
     - SwitchCase: 1
   semi:
-    - error
+    - warn
     - always
   comma-dangle:
-    - error
+    - warn
     - always-multiline
   array-bracket-spacing:
     - warn
