@@ -8,6 +8,7 @@ import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResou
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
+import Spinner from '@/components/elements/Spinner';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
@@ -17,7 +18,7 @@ const isAlarmState = (current: number, limit: number): boolean => {
     return current / limitInBytes >= 0.90;
 };
 
-export default ({ server }: { server: Server }) => {
+export default ({ server, className }: { server: Server; className?: string }) => {
     const interval = useRef<number>(null);
     const [ stats, setStats ] = useState<ServerStats | null>(null);
     const [ statsError, setStatsError ] = useState(false);
@@ -54,7 +55,7 @@ export default ({ server }: { server: Server }) => {
     const memorylimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : 'Unlimited';
 
     return (
-        <GreyRowBox as={Link} to={`/server/${server.id}`}>
+        <GreyRowBox as={Link} to={`/server/${server.id}`} className={className}>
             <div className={'icon'}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
@@ -73,10 +74,10 @@ export default ({ server }: { server: Server }) => {
                     </p>
                 </div>
             </div>
-            <div css={tw`w-1/3 flex items-baseline relative`}>
+            <div css={tw`w-1/3 flex items-baseline justify-center relative`}>
                 {!stats ?
                     !statsError ?
-                        <SpinnerOverlay size={'small'} visible backgroundOpacity={0.25}/>
+                        <Spinner size={'small'}/>
                         :
                         server.isInstalling ?
                             <div css={tw`flex-1 text-center`}>
@@ -129,7 +130,6 @@ export default ({ server }: { server: Server }) => {
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </p>
                             </div>
-
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4`}>
@@ -151,7 +151,6 @@ export default ({ server }: { server: Server }) => {
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </p>
                             </div>
-
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
                         </div>
                     </React.Fragment>
