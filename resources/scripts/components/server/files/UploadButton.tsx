@@ -15,7 +15,7 @@ export default () => {
     const { uuid } = useServer();
     const [ visible, setVisible ] = useState(false);
 
-    const handleEscapeEvent = (e: KeyboardEvent) => {
+    const handleEscapeEvent = () => {
         setVisible(false);
     };
 
