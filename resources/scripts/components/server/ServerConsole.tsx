@@ -2,7 +2,7 @@ import React, { lazy, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
-import { bytesToHuman } from '@/helpers';
+import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Can from '@/components/elements/Can';
@@ -56,8 +56,8 @@ export default () => {
         };
     }, [ instance, connected ]);
 
-    const disklimit = server.limits.disk ? bytesToHuman(server.limits.disk * 1000 * 1000) : 'Unlimited';
-    const memorylimit = server.limits.memory ? bytesToHuman(server.limits.memory * 1000 * 1000) : 'Unlimited';
+    const disklimit = server.limits.disk ? megabytesToHuman(server.limits.disk) : 'Unlimited';
+    const memorylimit = server.limits.memory ? megabytesToHuman(server.limits.memory) : 'Unlimited';
 
     return (
         <PageContentBlock css={tw`flex`}>

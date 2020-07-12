@@ -5,14 +5,15 @@ import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
-import { bytesToHuman } from '@/helpers';
+import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
+
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
 const isAlarmState = (current: number, limit: number): boolean => {
-    const limitInBytes = limit * 1000 * 1000;
+    const limitInBytes = limit * 1024 * 1024;
 
     return current / limitInBytes >= 0.90;
 };
@@ -49,8 +50,9 @@ export default ({ server }: { server: Server }) => {
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
-    const disklimit = server.limits.disk !== 0 ? bytesToHuman(server.limits.disk * 1000 * 1000) : 'Unlimited';
-    const memorylimit = server.limits.memory !== 0 ? bytesToHuman(server.limits.memory * 1000 * 1000) : 'Unlimited';
+
+    const disklimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : "Unlimited";
+    const memorylimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : "Unlimited";
 
     return (
         <GreyRowBox as={Link} to={`/server/${server.id}`}>
@@ -128,6 +130,7 @@ export default ({ server }: { server: Server }) => {
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </p>
                             </div>
+
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4`}>
@@ -149,6 +152,7 @@ export default ({ server }: { server: Server }) => {
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </p>
                             </div>
+
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
                         </div>
                     </React.Fragment>
