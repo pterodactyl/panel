@@ -1,6 +1,9 @@
+import axios from 'axios';
+import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
+import useServer from '@/plugins/useServer';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
 
 const ModalMask = styled.div`
@@ -9,31 +12,71 @@ const ModalMask = styled.div`
 `;
 
 export default () => {
+    const { uuid } = useServer();
     const [ visible, setVisible ] = useState(false);
+
+    const handleEscapeEvent = (e: KeyboardEvent) => {
+        setVisible(false);
+    };
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleEscapeEvent);
+
+        return () => window.removeEventListener('keydown', handleEscapeEvent);
+    }, [ visible ]);
 
     const onDragOver = (e: any) => {
         e.preventDefault();
-
-        //console.log(e);
     };
 
     const onDragEnter = (e: any) => {
         e.preventDefault();
-
-        //console.log(e);
     };
 
     const onDragLeave = (e: any) => {
         e.preventDefault();
-
-        //console.log(e);
     };
 
     const onFileDrop = (e: any) => {
         e.preventDefault();
 
-        const files = e.dataTransfer.files;
+        if (e.dataTransfer === undefined || e.dataTransfer === null) {
+            return;
+        }
+
+        const files: FileList = e.dataTransfer.files;
         console.log(files);
+
+        const formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+            console.log(files[i]);
+            // @ts-ignore
+            formData.append('files', files[i]);
+        }
+
+        console.log('getFileUploadUrl');
+        getFileUploadUrl(uuid)
+            .then(url => {
+                console.log(url);
+
+                // `${url}&directory=`
+                axios.post(url, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                })
+                    .then(res => {
+                        console.log(res);
+                        setVisible(false);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            })
+            .catch(error => {
+                console.error(error);
+            });
     };
 
     return (

@@ -62,6 +62,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/compress', 'Servers\FileController@compress');
         Route::post('/delete', 'Servers\FileController@delete');
         Route::post('/create-folder', 'Servers\FileController@create');
+        Route::get('/upload', 'Servers\FileUploadController');
     });
 
     Route::group(['prefix' => '/schedules'], function () {
