@@ -9,17 +9,21 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
+use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Services\Servers\SuspensionService;
+use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Servers\BuildModificationService;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
@@ -31,6 +35,8 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
 class ServersController extends Controller
@@ -54,6 +60,11 @@ class ServersController extends Controller
      * @var \Illuminate\Contracts\Config\Repository
      */
     protected $config;
+
+    /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     */
+    private $daemonServerRepository;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
@@ -86,6 +97,11 @@ class ServersController extends Controller
     protected $detailsModificationService;
 
     /**
+     * @var \Pterodactyl\Repositories\Eloquent\MountRepository
+     */
+    protected $mountRepository;
+
+    /**
      * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
      */
     protected $nestRepository;
@@ -99,6 +115,11 @@ class ServersController extends Controller
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
     protected $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    private $serverConfigurationStructureService;
 
     /**
      * @var \Pterodactyl\Services\Servers\StartupModificationService
@@ -117,6 +138,7 @@ class ServersController extends Controller
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
      * @param \Pterodactyl\Services\Servers\BuildModificationService $buildModificationService
      * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
      * @param \Pterodactyl\Services\Databases\DatabasePasswordService $databasePasswordService
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
@@ -125,7 +147,9 @@ class ServersController extends Controller
      * @param \Pterodactyl\Services\Servers\DetailsModificationService $detailsModificationService
      * @param \Pterodactyl\Services\Servers\ReinstallServerService $reinstallService
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Pterodactyl\Repositories\Eloquent\MountRepository $mountRepository
      * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $nestRepository
+     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $serverConfigurationStructureService
      * @param \Pterodactyl\Services\Servers\StartupModificationService $startupModificationService
      * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
      */
@@ -134,6 +158,7 @@ class ServersController extends Controller
         AllocationRepositoryInterface $allocationRepository,
         BuildModificationService $buildModificationService,
         ConfigRepository $config,
+        DaemonServerRepository $daemonServerRepository,
         DatabaseManagementService $databaseManagementService,
         DatabasePasswordService $databasePasswordService,
         DatabaseRepositoryInterface $databaseRepository,
@@ -142,7 +167,9 @@ class ServersController extends Controller
         DetailsModificationService $detailsModificationService,
         ReinstallServerService $reinstallService,
         ServerRepositoryInterface $repository,
+        MountRepository $mountRepository,
         NestRepositoryInterface $nestRepository,
+        ServerConfigurationStructureService $serverConfigurationStructureService,
         StartupModificationService $startupModificationService,
         SuspensionService $suspensionService
     ) {
@@ -150,6 +177,7 @@ class ServersController extends Controller
         $this->allocationRepository = $allocationRepository;
         $this->buildModificationService = $buildModificationService;
         $this->config = $config;
+        $this->daemonServerRepository = $daemonServerRepository;
         $this->databaseHostRepository = $databaseHostRepository;
         $this->databaseManagementService = $databaseManagementService;
         $this->databasePasswordService = $databasePasswordService;
@@ -159,6 +187,8 @@ class ServersController extends Controller
         $this->nestRepository = $nestRepository;
         $this->reinstallService = $reinstallService;
         $this->repository = $repository;
+        $this->mountRepository = $mountRepository;
+        $this->serverConfigurationStructureService = $serverConfigurationStructureService;
         $this->startupModificationService = $startupModificationService;
         $this->suspensionService = $suspensionService;
     }
@@ -170,7 +200,6 @@ class ServersController extends Controller
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -377,5 +406,60 @@ class ServersController extends Controller
         $this->databaseManagementService->delete($database->id);
 
         return response('', 204);
+    }
+
+    /**
+     * Add a mount to a server.
+     *
+     * @param Server $server
+     * @param int $mount_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function addMount(Server $server, int $mount_id)
+    {
+        $server->mounts()->attach($mount_id);
+
+        $data = $this->serverConfigurationStructureService->handle($server);
+
+        try {
+            $this->daemonServerRepository
+                ->setServer($server)
+                ->update(Arr::only($data, ['mounts']));
+        } catch (RequestException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+
+        $this->alert->success('Mount was added successfully.')->flash();
+
+        return redirect()->route('admin.servers.view.mounts', $server->id);
+    }
+
+    /**
+     * Remove a mount from a server.
+     *
+     * @param Server $server
+     * @param int $mount_id
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function deleteMount(Server $server, int $mount_id)
+    {
+        $server->mounts()->detach($mount_id);
+
+        $data = $this->serverConfigurationStructureService->handle($server);
+
+        try {
+            $this->daemonServerRepository
+                ->setServer($server)
+                ->update(Arr::only($data, ['mounts']));
+        } catch (RequestException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+
+        $this->alert->success('Mount was removed successfully.')->flash();
+
+        return redirect()->route('admin.servers.view.mounts', $server->id);
     }
 }

@@ -11,6 +11,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
@@ -36,6 +37,11 @@ class ServerViewController extends Controller
     private $repository;
 
     /**
+     * @var \Pterodactyl\Repositories\Eloquent\MountRepository
+     */
+    protected $mountRepository;
+
+    /**
      * @var \Pterodactyl\Repositories\Eloquent\NestRepository
      */
     private $nestRepository;
@@ -53,27 +59,30 @@ class ServerViewController extends Controller
     /**
      * ServerViewController constructor.
      *
+     * @param \Illuminate\Contracts\View\Factory $view
      * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository $databaseHostRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NestRepository $nestRepository
      * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
+     * @param \Pterodactyl\Repositories\Eloquent\MountRepository $mountRepository
+     * @param \Pterodactyl\Repositories\Eloquent\NestRepository $nestRepository
      * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(
+        Factory $view,
         DatabaseHostRepository $databaseHostRepository,
-        NestRepository $nestRepository,
         LocationRepository $locationRepository,
+        MountRepository $mountRepository,
+        NestRepository $nestRepository,
         NodeRepository $nodeRepository,
-        ServerRepository $repository,
-        Factory $view
+        ServerRepository $repository
     ) {
         $this->view = $view;
         $this->databaseHostRepository = $databaseHostRepository;
-        $this->repository = $repository;
+        $this->locationRepository = $locationRepository;
+        $this->mountRepository = $mountRepository;
         $this->nestRepository = $nestRepository;
         $this->nodeRepository = $nodeRepository;
-        $this->locationRepository = $locationRepository;
+        $this->repository = $repository;
     }
 
     /**
@@ -161,6 +170,23 @@ class ServerViewController extends Controller
     }
 
     /**
+     * Returns all of the mounts that exist for the server.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Pterodactyl\Models\Server $server
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function mounts(Request $request, Server $server)
+    {
+        $server->load('mounts');
+
+        return $this->view->make('admin.servers.view.mounts', [
+            'mounts' => $this->mountRepository->getMountListForServer($server),
+            'server' => $server,
+        ]);
+    }
+
+    /**
      * Returns the base server management page, or an exception if the server
      * is in a state that cannot be recovered from.
      *
@@ -169,7 +195,6 @@ class ServerViewController extends Controller
      * @return \Illuminate\Contracts\View\View
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function manage(Request $request, Server $server)
     {

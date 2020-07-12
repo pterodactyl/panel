@@ -113,6 +113,7 @@ Route::group(['prefix' => 'servers'], function () {
         Route::get('/view/{server}/build', 'Servers\ServerViewController@build')->name('admin.servers.view.build');
         Route::get('/view/{server}/startup', 'Servers\ServerViewController@startup')->name('admin.servers.view.startup');
         Route::get('/view/{server}/database', 'Servers\ServerViewController@database')->name('admin.servers.view.database');
+        Route::get('/view/{server}/mounts', 'Servers\ServerViewController@mounts')->name('admin.servers.view.mounts');
     });
 
     Route::get('/view/{server}/manage', 'Servers\ServerViewController@manage')->name('admin.servers.view.manage');
@@ -122,6 +123,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{server}/build', 'ServersController@updateBuild');
     Route::post('/view/{server}/startup', 'ServersController@saveStartup');
     Route::post('/view/{server}/database', 'ServersController@newDatabase');
+    Route::post('/view/{server}/mounts/{mount}', 'ServersController@addMount')->name('admin.servers.view.mounts.toggle');
     Route::post('/view/{server}/manage/toggle', 'ServersController@toggleInstall')->name('admin.servers.view.manage.toggle');
     Route::post('/view/{server}/manage/suspension', 'ServersController@manageSuspension')->name('admin.servers.view.manage.suspension');
     Route::post('/view/{server}/manage/reinstall', 'ServersController@reinstallServer')->name('admin.servers.view.manage.reinstall');
@@ -132,6 +134,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::patch('/view/{server}/database', 'ServersController@resetDatabasePassword');
 
     Route::delete('/view/{server}/database/{database}/delete', 'ServersController@deleteDatabase')->name('admin.servers.view.database.delete');
+    Route::delete('/view/{server}/mounts/{mount}', 'ServersController@deleteMount');
 });
 
 /*
@@ -163,6 +166,28 @@ Route::group(['prefix' => 'nodes'], function () {
     Route::delete('/view/{node}/delete', 'NodesController@delete')->name('admin.nodes.view.delete');
     Route::delete('/view/{node}/allocation/remove/{allocation}', 'NodesController@allocationRemoveSingle')->name('admin.nodes.view.allocation.removeSingle');
     Route::delete('/view/{node}/allocations', 'NodesController@allocationRemoveMultiple')->name('admin.nodes.view.allocation.removeMultiple');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Mount Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /admin/mounts
+|
+*/
+Route::group(['prefix' => 'mounts'], function () {
+    Route::get('/', 'MountController@index')->name('admin.mounts');
+    Route::get('/view/{mount}', 'MountController@view')->name('admin.mounts.view');
+
+    Route::post('/', 'MountController@create');
+    Route::post('/{mount}/eggs', 'MountController@addEggs')->name('admin.mounts.eggs');
+    Route::post('/{mount}/nodes', 'MountController@addNodes')->name('admin.mounts.nodes');
+
+    Route::patch('/view/{mount}', 'MountController@update');
+
+    Route::delete('/{mount}/eggs/{egg_id}', 'MountController@deleteEgg');
+    Route::delete('/{mount}/nodes/{node_id}', 'MountController@deleteNode');
 });
 
 /*
