@@ -91,7 +91,7 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
                                 {recoveryTokens.map(token => <code key={token} css={tw`block mb-1`}>{token}</code>)}
                             </pre>
                             <div css={tw`text-right`}>
-                                <Button css={tw`mt-6`} size={'large'} onClick={dismiss}>
+                                <Button css={tw`mt-6`} onClick={dismiss}>
                                     Close
                                 </Button>
                             </div>
