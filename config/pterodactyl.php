@@ -44,6 +44,12 @@ return [
             'required' => env('APP_OAUTH_REQUIRED', 0),
             'disable_other_authentication_if_required' => env('APP_OAUTH_DISABLE_OTHER_AUTHENTICATION_IF_REQUIRED', 0),
             'drivers' => json_encode([ // Store in json form to enable storing in DB
+                'generic' => [
+                    'enabled' => false,
+                    'client_id' => env('APP_OAUTH_GENERIC_KEY'),
+                    'client_secret' => env('APP_OAUTH_GENERIC_SECRET'),
+                    'listener' => 'Pterodactyl\\Extensions\\Socialite\\GenericExtendSocialite@handle',
+                ],
                 'discord' => [
                     'enabled' => true,
                     'client_id' => env('APP_OAUTH_DISCORD_KEY'),
@@ -86,6 +92,18 @@ return [
                     'client_secret' => env('APP_OAUTH_FACEBOOK_SECRET'),
                 ],
             ]),
+            // Generic driver options
+            // For a more advanced driver please create a custom one instead
+            'generic' => [
+                'url' => [
+                    'auth' => 'https://domain.tld/oauth/route/auth',
+                    'token' => 'https://domain.tld/oauth/route/token',
+                    'user' => 'https://domain.tld/oauth/route/user'
+                ],
+                'id_field' => 'id',
+                'scopes' => [],
+                'scope_separator' => ' ',
+            ]
         ],
     ],
 
