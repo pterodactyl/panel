@@ -65,8 +65,8 @@
                                 </select>
                                 <p class="text-muted"><small>If enabled, any account falling into the grouping specified before will be required to authenticate using OAuth and will not be able to login using other authentication options.</small></p>
                             </div>
-
                         </div>
+                    </div>
                 </div>
                 <div class="box-footer">
                     <button class="btn btn-sm btn-primary pull-right form-save">Save</button>
@@ -102,8 +102,8 @@
                                     </th>
                                 </tr>
                                 @foreach(json_decode($drivers, true) as $driver => $options)
-                                    <tr>
-                                        <td>{{ $driver }}</td>
+                                    <tr driver="{{ $driver }}">
+                                        <td>{{ $driver }} @if (array_has($options, 'custom')) <button class="btn btn-danger btn-tiny btn-pill delete-driver" driver="{{ $driver }}">DELETE</button>@endif</td>
                                         <td class="text-center"><input type="checkbox" class="inline-block" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':enabled' }}"  @if ($options['enabled']) checked @endif></td>
                                         <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_id' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_id', $options['client_id']) }}"></td>
                                         <td><input type="password" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_secret' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_secret') }}"></td>
@@ -119,7 +119,64 @@
                     </div>
                 </div>
                 <div class="box-footer">
-                    <button class="btn btn-sm btn-primary pull-right form-save">Save</button>
+                    <div class="pull-right">
+                        <button class="btn btn-sm btn-success add-new">Add New</button>
+                        <button class="btn btn-sm btn-primary form-save">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="add-modal">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Driver</h5>
+                    <button type="button" class="close add-modal-close" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Before adding a new driver you must first install the matching <a href="https://socialiteproviders.netlify.app/" target="_blank">Socialite Driver</a>.</p>
+
+
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Driver ID</label>
+                            <div>
+                                <input required type="text" class="form-control" name="add-new:driver-id"/>
+                                <p class="text-muted small">This must be the <b>exact</b> same as the Socialite Driver (usually in lowercase).</p>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Client ID</label>
+                            <div>
+                                <input required type="text" class="form-control" name="add-new:client-id"/>
+                                <p class="text-muted small">The client ID obtained from your OAuth provider.</p>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Client Secret</label>
+                            <div>
+                                <input required type="password" class="form-control" name="add-new:client-secret"/>
+                                <p class="text-muted small">The client Secret obtained from your OAuth provider.</p>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Driver Listener</label>
+                            <div>
+                                <input required type="text" class="form-control" name="add-new:driver-listener"/>
+                                <p class="text-muted small">The Socialite Driver Listener (usually written in the code block under section <code>3. Event Listener</code> on the driver page).</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <p>To add an icon on the login page please add the image as an svg in the folder <code>public/assets/svgs/&lt;driver id&gt;.svg</code></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="add-modal-save">Add New</button>
+                    <button type="button" class="btn btn-secondary add-modal-close">Close</button>
                 </div>
             </div>
         </div>
@@ -130,11 +187,27 @@
 @section('footer-scripts')
     @parent
 
+    <style>
+        .modal-dialog-centered {
+            top: 25%;
+        }
+
+        .btn-tiny {
+            padding: .25rem .5rem;
+            font-size: .875rem;
+        }
+
+        .btn-pill {
+            border-radius: 9999px;
+        }
+    </style>
+
     <script>
         let drivers = {!! $drivers !!};
 
         function saveSettings() {
             for(driver in drivers) {
+                if (drivers[driver].hasOwnProperty('custom')) continue;
                 drivers[driver]['enabled'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':enabled"]').is(":checked");
                 drivers[driver]['client_id'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':client_id"]').val();
                 drivers[driver]['client_secret'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':client_secret"]').val();
@@ -190,6 +263,46 @@
                         text: 'OAuth settings have been updated successfully and the queue worker was restarted to apply these changes.',
                         type: 'success'
                     });
+                });
+            });
+
+
+            $('.delete-driver').on('click', function () {
+                let driverId = $(this).attr('driver');
+                $('tr[driver="' + driverId + '"]').remove();
+                delete drivers[driverId];
+            });
+
+            $('.add-new').on('click', function () {
+                $('#add-modal').modal('show');
+            });
+
+            $('.add-modal-close').on('click', function () {
+                $('#add-modal').modal('hide');
+            });
+
+            // Empty on load
+            $('input[name="add-new:driver-id"]').val('');
+            $('input[name="add-new:client-id"]').val('');
+            $('input[name="add-new:client-secret"]').val('');
+            $('input[name="add-new:driver-listener"]').val('');
+
+            $('#add-modal-save').on('click', function () {
+                let driverId = $('input[name="add-new:driver-id"]').val();
+                let clientId = $('input[name="add-new:client-id"]').val();
+                let clientSecret = $('input[name="add-new:client-secret"]').val();
+                let driverListener = $('input[name="add-new:driver-listener"]').val();
+
+                drivers[driverId] = {
+                    'enabled': true,
+                    'client_id': clientId,
+                    'client_secret': clientSecret,
+                    'listener': driverListener,
+                    'custom': true,
+                };
+
+                saveSettings().done(function () {
+                    location.reload();
                 });
             });
         });

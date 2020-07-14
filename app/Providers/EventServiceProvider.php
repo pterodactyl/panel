@@ -32,7 +32,15 @@ class EventServiceProvider extends ServiceProvider
         $listeners = [];
 
         foreach ($drivers as $driver => $options) {
-            if (array_has($options, 'listener')) array_push($listeners, $options['listener']);
+            if (array_has($options, 'listener')) {
+                $listener = $options['listener'];
+                if (strpos($listener, '@') !== false) {
+                    $class = explode('@', $listener)[0];
+                    $method = explode('@', $listener)[1];
+
+                    if (method_exists($class, $method)) array_push($listeners, $listener);
+                }
+            }
         }
 
         foreach (array_unique($listeners) as $listener) {
