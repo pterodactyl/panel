@@ -33,6 +33,8 @@ class PowerController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\SendPowerRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function index(SendPowerRequest $request, Server $server): Response
     {
