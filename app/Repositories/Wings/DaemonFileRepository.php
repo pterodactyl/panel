@@ -256,7 +256,7 @@ class DaemonFileRepository extends DaemonRepository
             return $this->getHttpClient()->post(
                 sprintf('/api/servers/%s/files/decompress', $this->server->uuid),
                 [
-                    'json ' => [
+                    'json' => [
                         'root' => $root ?? '/',
                         'file' => $file,
                     ],
