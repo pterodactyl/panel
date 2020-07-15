@@ -12,6 +12,7 @@ export interface FileObject {
     mimetype: string;
     createdAt: Date;
     modifiedAt: Date;
+    isArchiveType: () => boolean;
 }
 
 export default async (uuid: string, directory?: string): Promise<FileObject[]> => {

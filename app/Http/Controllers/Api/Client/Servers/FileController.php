@@ -232,6 +232,24 @@ class FileController extends ClientApiController
     }
 
     /**
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DecompressFilesRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function decompress(DecompressFilesRequest $request, Server $server): JsonResponse
+    {
+        // Allow up to five minutes for this request to process before timing out.
+        set_time_limit(300);
+
+        $this->fileRepository->setServer($server)
+            ->decompressFile($request->input('root'), $request->input('file'));
+
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Deletes files or folders for the server in the given root directory.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest $request

@@ -60,6 +60,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/copy', 'Servers\FileController@copy');
         Route::post('/write', 'Servers\FileController@write');
         Route::post('/compress', 'Servers\FileController@compress');
+        Route::post('/decompress', 'Servers\FileController@decompress');
         Route::post('/delete', 'Servers\FileController@delete');
         Route::post('/create-folder', 'Servers\FileController@create');
     });

@@ -23,4 +23,12 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
     mimetype: data.attributes.mimetype,
     createdAt: new Date(data.attributes.created_at),
     modifiedAt: new Date(data.attributes.modified_at),
+
+    isArchiveType: function () {
+        return this.isFile && [
+            'application/zip',
+            'application/gzip',
+            'application/x-tar',
+        ].indexOf(this.mimetype) >= 0;
+    },
 });

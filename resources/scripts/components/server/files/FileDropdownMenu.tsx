@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+    faBoxOpen,
     faCopy,
     faEllipsisH,
     faFileArchive,
@@ -27,6 +28,7 @@ import DropdownMenu from '@/components/elements/DropdownMenu';
 import styled from 'styled-components/macro';
 import useEventListener from '@/plugins/useEventListener';
 import compressFiles from '@/api/server/files/compressFiles';
+import decompressFiles from '@/api/server/files/decompressFiles';
 
 type ModalType = 'rename' | 'move';
 
@@ -43,7 +45,7 @@ interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Row = ({ icon, title, ...props }: RowProps) => (
     <StyledRow {...props}>
-        <FontAwesomeIcon icon={icon} css={tw`text-xs`}/>
+        <FontAwesomeIcon icon={icon} css={tw`text-xs`} fixedWidth/>
         <span css={tw`ml-2`}>{title}</span>
     </StyledRow>
 );
@@ -110,6 +112,16 @@ export default ({ file }: { file: FileObject }) => {
             .then(() => setShowSpinner(false));
     };
 
+    const doUnarchive = () => {
+        setShowSpinner(true);
+        clearFlashes('files');
+
+        decompressFiles(uuid, directory, file.name)
+            .then(() => mutate())
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .then(() => setShowSpinner(false));
+    };
+
     return (
         <DropdownMenu
             ref={onClickRef}
@@ -138,9 +150,15 @@ export default ({ file }: { file: FileObject }) => {
                 <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
             </Can>
             }
-            <Can action={'file.archive'}>
-                <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
-            </Can>
+            {file.isArchiveType() ?
+                <Can action={'file.create'}>
+                    <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                </Can>
+                :
+                <Can action={'file.archive'}>
+                    <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+                </Can>
+            }
             <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
             <Can action={'file.delete'}>
                 <Row onClick={doDeletion} icon={faTrashAlt} title={'Delete'} $danger/>

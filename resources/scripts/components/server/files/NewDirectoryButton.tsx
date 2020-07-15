@@ -34,6 +34,7 @@ const generateDirectoryData = (name: string): FileObject => ({
     mimetype: '',
     createdAt: new Date(),
     modifiedAt: new Date(),
+    isArchiveType: () => false,
 });
 
 export default () => {
