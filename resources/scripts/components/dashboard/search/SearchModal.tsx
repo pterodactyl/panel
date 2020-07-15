@@ -57,7 +57,7 @@ export default ({ ...props }: Props) => {
         setSubmitting(false);
         clearFlashes('search');
 
-        getServers(term)
+        getServers({ query: term })
             .then(servers => setServers(servers.items.filter((_, index) => index < 5)))
             .catch(error => {
                 console.error(error);

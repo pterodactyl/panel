@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faServer, faEthernet, faMicrochip, faMemory, faHdd } from '@fortawesome/free-solid-svg-icons';
+import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import tw from 'twin.macro';
