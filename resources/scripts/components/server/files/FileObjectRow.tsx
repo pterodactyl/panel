@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faFileAlt, faFileArchive, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
 import { bytesToHuman, cleanDirectoryPath } from '@/helpers';
 import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import React, { memo } from 'react';
@@ -53,7 +53,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
             >
                 <div css={tw`flex-none self-center text-neutral-400 mr-4 text-lg pl-3 ml-6`}>
                     {file.isFile ?
-                        <FontAwesomeIcon icon={file.isSymlink ? faFileImport : faFileAlt}/>
+                        <FontAwesomeIcon icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}/>
                         :
                         <FontAwesomeIcon icon={faFolder}/>
                     }
