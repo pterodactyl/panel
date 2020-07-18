@@ -18,7 +18,6 @@ const Row = styled.div`
 
 const FileObjectRow = ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
-    const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
 
     const history = useHistory();
     const match = useRouteMatch();
@@ -31,9 +30,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
         // Just trust me future me, leave this be.
         if (!file.isFile) {
             e.preventDefault();
-
             history.push(`#${cleanDirectoryPath(`${directory}/${file.name}`)}`);
-            setDirectory(`${directory}/${file.name}`);
         }
     };
 
