@@ -23,7 +23,7 @@ class DaemonServerRepository extends DaemonRepository
                 sprintf('/api/servers/%s', $this->server->uuid)
             );
         } catch (TransferException $exception) {
-            throw new DaemonConnectionException($exception);
+            throw new DaemonConnectionException($exception, false);
         }
 
         return json_decode($response->getBody()->__toString(), true);

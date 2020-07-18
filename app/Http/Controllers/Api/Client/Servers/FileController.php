@@ -6,13 +6,11 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 use Pterodactyl\Transformers\Daemon\FileObjectTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
@@ -70,13 +68,9 @@ class FileController extends ClientApiController
      */
     public function directory(ListFilesRequest $request, Server $server): array
     {
-        try {
-            $contents = $this->fileRepository
-                ->setServer($server)
-                ->getDirectory($request->get('directory') ?? '/');
-        } catch (TransferException $exception) {
-            throw new DaemonConnectionException($exception, true);
-        }
+        $contents = $this->fileRepository
+            ->setServer($server)
+            ->getDirectory($request->get('directory') ?? '/');
 
         return $this->fractal->collection($contents)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))

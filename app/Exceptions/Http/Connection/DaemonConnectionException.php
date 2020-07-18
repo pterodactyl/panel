@@ -22,7 +22,7 @@ class DaemonConnectionException extends DisplayException
      * @param \GuzzleHttp\Exception\GuzzleException $previous
      * @param bool $useStatusCode
      */
-    public function __construct(GuzzleException $previous, bool $useStatusCode = false)
+    public function __construct(GuzzleException $previous, bool $useStatusCode = true)
     {
         /** @var \GuzzleHttp\Psr7\Response|null $response */
         $response = method_exists($previous, 'getResponse') ? $previous->getResponse() : null;
