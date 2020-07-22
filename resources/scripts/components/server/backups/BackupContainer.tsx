@@ -52,7 +52,7 @@ export default () => {
                 </div>
             }
             {featureLimits.backups === 0 &&
-                <p className="text-center text-sm text-neutral-400">
+                <p css={tw`text-center text-sm text-neutral-400`}>
                     Backups cannot be created for this server.
                 </p>
             }
