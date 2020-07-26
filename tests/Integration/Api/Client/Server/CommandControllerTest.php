@@ -9,6 +9,7 @@ use Pterodactyl\Models\Permission;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class CommandControllerTest extends ClientApiIntegrationTestCase
@@ -86,7 +87,9 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
 
         $this->repository->expects('setServer->send')->andThrows(
-            new BadResponseException('', new Request('GET', 'test'), new GuzzleResponse(Response::HTTP_BAD_GATEWAY))
+            new DaemonConnectionException(
+                new BadResponseException('', new Request('GET', 'test'), new GuzzleResponse(Response::HTTP_BAD_GATEWAY))
+            )
         );
 
         $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", [
