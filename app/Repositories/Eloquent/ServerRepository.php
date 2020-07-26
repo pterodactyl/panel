@@ -225,18 +225,23 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             $instance->where('owner_id', $user->id);
         }
 
-        // If set to all, display all servers they can access, including
-        // those they access as an admin. If set to subuser, only return
-        // the servers they can access because they are owner, or marked
-        // as a subuser of the server.
-        elseif (($level === User::FILTER_LEVEL_ALL && ! $user->root_admin) || $level === User::FILTER_LEVEL_SUBUSER) {
-            $instance->whereIn('id', $this->getUserAccessServers($user->id));
+        // Only allow these two filters if the user is an administrator.
+        elseif ($user->root_admin && in_array($level, [ User::FILTER_LEVEL_ALL, User::FILTER_LEVEL_ADMIN ])) {
+            // We specifically only match admin in here. If they request all servers and are a root admin
+            // we just won't append any filters to the builder and thus they'll be able to see everything
+            // since this will skip over that final else block.
+            if ($level === User::FILTER_LEVEL_ADMIN) {
+                $instance->whereNotIn('id', $this->getUserAccessServers($user->id));
+            }
         }
 
-        // If set to admin, only display the servers a user can access
-        // as an administrator (leaves out owned and subuser of).
-        elseif ($level === User::FILTER_LEVEL_ADMIN && $user->root_admin) {
-            $instance->whereNotIn('id', $this->getUserAccessServers($user->id));
+        // If we did not match on the user being an administrator and requesting all/admin only or the user
+        // is not an admin and requested those locked endpoints, just return all of the servers the user actually
+        // has access to.
+        //
+        // @see https://github.com/pterodactyl/panel/security/advisories/GHSA-6888-7f3w-92jx
+        else {
+            $instance->whereIn('id', $this->getUserAccessServers($user->id));
         }
 
         $instance->search($this->getSearchTerm());
