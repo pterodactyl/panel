@@ -57,11 +57,6 @@ class User extends Model implements
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;
 
-    const FILTER_LEVEL_ALL = 0;
-    const FILTER_LEVEL_OWNER = 1;
-    const FILTER_LEVEL_ADMIN = 2;
-    const FILTER_LEVEL_SUBUSER = 3;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

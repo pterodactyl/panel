@@ -17,11 +17,11 @@ export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ page, setPage ] = useState(1);
     const { rootAdmin } = useStoreState(state => state.user.data!);
-    const [ includeAdmin, setIncludeAdmin ] = usePersistedState('show_all_servers', false);
+    const [ showOnlyAdmin, setShowOnlyAdmin ] = usePersistedState('show_all_servers', false);
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
-        [ '/api/client/servers', includeAdmin, page ],
-        () => getServers({ includeAdmin, page }),
+        [ '/api/client/servers', showOnlyAdmin, page ],
+        () => getServers({ onlyAdmin: showOnlyAdmin, page }),
     );
 
     useEffect(() => {
@@ -34,12 +34,12 @@ export default () => {
             {rootAdmin &&
             <div css={tw`mb-2 flex justify-end items-center`}>
                 <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
-                    {includeAdmin ? 'Showing all servers' : 'Showing your servers'}
+                    {showOnlyAdmin ? 'Showing other\'s servers' : 'Showing your servers'}
                 </p>
                 <Switch
                     name={'show_all_servers'}
-                    defaultChecked={includeAdmin}
-                    onChange={() => setIncludeAdmin(s => !s)}
+                    defaultChecked={showOnlyAdmin}
+                    onChange={() => setShowOnlyAdmin(s => !s)}
                 />
             </div>
             }
@@ -58,7 +58,11 @@ export default () => {
                             ))
                             :
                             <p css={tw`text-center text-sm text-neutral-400`}>
-                                There are no servers associated with your account.
+                                {showOnlyAdmin ?
+                                    'There are no other servers to display.'
+                                    :
+                                    'There are no servers associated with your account.'
+                                }
                             </p>
                     )}
                 </Pagination>

@@ -4,14 +4,14 @@ import http, { getPaginationSet, PaginatedResult } from '@/api/http';
 interface QueryParams {
     query?: string;
     page?: number;
-    includeAdmin?: boolean;
+    onlyAdmin?: boolean;
 }
 
-export default ({ query, page = 1, includeAdmin = false }: QueryParams): Promise<PaginatedResult<Server>> => {
+export default ({ query, page = 1, onlyAdmin = false }: QueryParams): Promise<PaginatedResult<Server>> => {
     return new Promise((resolve, reject) => {
         http.get('/api/client', {
             params: {
-                type: includeAdmin ? 'all' : undefined,
+                type: onlyAdmin ? 'admin' : undefined,
                 'filter[name]': query,
                 page,
             },
