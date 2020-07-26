@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Http\Requests\Base\CreateClientApiKeyRequest;
@@ -73,10 +74,20 @@ class ClientApiController extends Controller
      * @param \Pterodactyl\Http\Requests\Base\CreateClientApiKeyRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function store(CreateClientApiKeyRequest $request): RedirectResponse
     {
+        $count = $this->repository->findCountWhere([
+            ['user_id', '=', $request->user()->id],
+            ['key_type', '=', ApiKey::TYPE_ACCOUNT],
+        ]);
+
+        if ($count >= 5) {
+            throw new DisplayException('Cannot assign more than 5 API keys to an account.');
+        }
+
         $allowedIps = null;
         if (! is_null($request->input('allowed_ips'))) {
             $allowedIps = json_encode(explode(PHP_EOL, $request->input('allowed_ips')));

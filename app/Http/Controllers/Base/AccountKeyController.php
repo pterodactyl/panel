@@ -82,10 +82,13 @@ class AccountKeyController extends Controller
      */
     public function store(StoreAccountKeyRequest $request)
     {
-        if ($this->repository->findCountWhere(['user_id' => $request->user()->id]) >= 5) {
-            throw new DisplayException(
-                'Cannot assign more than 5 API keys to an account.'
-            );
+        $count = $this->repository->findCountWhere([
+            ['user_id', '=', $request->user()->id],
+            ['key_type', '=', ApiKey::TYPE_ACCOUNT],
+        ]);
+
+        if ($count >= 5) {
+            throw new DisplayException('Cannot assign more than 5 API keys to an account.');
         }
 
         $this->keyService->setKeyType(ApiKey::TYPE_ACCOUNT)->handle([
