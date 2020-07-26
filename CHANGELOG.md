@@ -3,6 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.18 (Derelict Dermodactylus)
+### Fixed
+* **[Security]** Re-addressed missed endpoint that would not properly limit a user account to 5 API keys.
+* **[Security]** Addresses a Client API vulnerability that would allow a user to list all servers on the system ([`GHSA-6888-7f3w-92jx`](https://github.com/pterodactyl/panel/security/advisories/GHSA-6888-7f3w-92jx))
+
 ## v0.7.17 (Derelict Dermodactylus)
 ### Fixed
 * Limited accounts to 5 API keys at a time.
