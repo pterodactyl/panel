@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
@@ -26,6 +27,8 @@ export default () => {
     const { id } = useServer();
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
+
+    const servername = ServerContext.useStoreState(state => state.server.data.name);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
@@ -42,6 +45,9 @@ export default () => {
 
     return (
         <PageContentBlock showFlashKey={'files'}>
+            <Helmet>
+                <title> {servername} | File Manager </title>
+            </Helmet>
             <FileManagerBreadcrumbs/>
             {
                 !files ?

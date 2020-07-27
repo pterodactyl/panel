@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
@@ -17,6 +18,7 @@ export default () => {
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const subusers = ServerContext.useStoreState(state => state.subusers.data);
+    const servername = ServerContext.useStoreState(state => state.server.data.name);
     const setSubusers = ServerContext.useStoreActions(actions => actions.subusers.setSubusers);
 
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
@@ -49,6 +51,9 @@ export default () => {
 
     return (
         <PageContentBlock>
+            <Helmet>
+                <title> {servername} | Subusers </title>
+            </Helmet>
             <FlashMessageRender byKey={'users'} css={tw`mb-4`}/>
             {!subusers.length ?
                 <p css={tw`text-center text-sm text-neutral-400`}>

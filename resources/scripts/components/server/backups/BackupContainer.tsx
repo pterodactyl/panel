@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import Spinner from '@/components/elements/Spinner';
 import getServerBackups from '@/api/server/backups/getServerBackups';
 import useServer from '@/plugins/useServer';
@@ -18,6 +19,7 @@ export default () => {
     const [ loading, setLoading ] = useState(true);
 
     const backups = ServerContext.useStoreState(state => state.backups.data);
+    const server = ServerContext.useStoreState(state => state.server.data!);
     const setBackups = ServerContext.useStoreActions(actions => actions.backups.setBackups);
 
     useEffect(() => {
@@ -37,6 +39,9 @@ export default () => {
 
     return (
         <PageContentBlock>
+            <Helmet>
+                <title> {server.name} | Backups</title>
+            </Helmet>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             {!backups.length ?
                 <p css={tw`text-center text-sm text-neutral-400`}>

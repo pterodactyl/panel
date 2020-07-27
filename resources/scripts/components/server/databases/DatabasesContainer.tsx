@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import getServerDatabases from '@/api/server/getServerDatabases';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
@@ -19,6 +20,7 @@ export default () => {
     const [ loading, setLoading ] = useState(true);
 
     const databases = ServerContext.useStoreState(state => state.databases.data);
+    const servername = ServerContext.useStoreState(state => state.server.data.name);
     const setDatabases = ServerContext.useStoreActions(state => state.databases.setDatabases);
 
     useEffect(() => {
@@ -36,6 +38,9 @@ export default () => {
 
     return (
         <PageContentBlock>
+            <Helmet>
+                <title> {servername} | Databases </title>
+            </Helmet>
             <FlashMessageRender byKey={'databases'} css={tw`mb-4`}/>
             {(!databases.length && loading) ?
                 <Spinner size={'large'} centered/>

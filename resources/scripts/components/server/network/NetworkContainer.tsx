@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
+import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
@@ -27,6 +29,8 @@ const NetworkContainer = () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ loading, setLoading ] = useState<false | number>(false);
     const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), { initialData: allocations });
+
+    const servername = ServerContext.useStoreState(state => state.server.data.name);
 
     const setPrimaryAllocation = (id: number) => {
         clearFlashes('server:network');
@@ -61,6 +65,9 @@ const NetworkContainer = () => {
 
     return (
         <PageContentBlock showFlashKey={'server:network'}>
+            <Helmet>
+                <title> {servername} | Network </title>
+            </Helmet>
             {!data ?
                 <Spinner size={'large'} centered/>
                 :

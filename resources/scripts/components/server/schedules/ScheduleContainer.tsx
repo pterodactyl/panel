@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
@@ -22,6 +23,7 @@ export default ({ match, history }: RouteComponentProps) => {
     const [ visible, setVisible ] = useState(false);
 
     const schedules = ServerContext.useStoreState(state => state.schedules.data);
+    const servername = ServerContext.useStoreState(state => state.server.data.name);
     const setSchedules = ServerContext.useStoreActions(actions => actions.schedules.setSchedules);
 
     useEffect(() => {
@@ -37,6 +39,9 @@ export default ({ match, history }: RouteComponentProps) => {
 
     return (
         <PageContentBlock>
+            <Helmet>
+                <title> {servername} | Schedules </title>
+            </Helmet>
             <FlashMessageRender byKey={'schedules'} css={tw`mb-4`}/>
             {(!schedules.length && loading) ?
                 <Spinner size={'large'} centered/>
