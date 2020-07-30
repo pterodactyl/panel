@@ -14,7 +14,7 @@ export default ({ schedule }: { schedule: Schedule }) => (
             <p>{schedule.name}</p>
             <p css={tw`text-xs text-neutral-400`}>
                 Last run
-                at: {schedule.lastRunAt ? format(schedule.lastRunAt, 'MMM Do [at] h:mma') : 'never'}
+                at: {schedule.lastRunAt ? format(schedule.lastRunAt, 'MMM do \'at\' h:mma') : 'never'}
             </p>
         </div>
         <div css={tw`flex items-center mx-8`}>
