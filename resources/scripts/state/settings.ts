@@ -7,6 +7,7 @@ export interface SiteSettings {
         enabled: boolean;
         siteKey: string;
     };
+    analytics: string;
 }
 
 export interface SettingsStore {

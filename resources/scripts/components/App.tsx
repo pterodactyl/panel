@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useEffect } from 'react';
+import ReactGA from 'react-ga';
 import { hot } from 'react-hot-loader/root';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
@@ -47,6 +48,11 @@ const App = () => {
     if (!store.getState().settings.data) {
         store.getActions().settings.setSettings(SiteConfiguration!);
     }
+
+    useEffect(() => {
+        ReactGA.initialize(SiteConfiguration!.analytics);
+        ReactGA.pageview(location.pathname);
+    }, []);
 
     return (
         <>
