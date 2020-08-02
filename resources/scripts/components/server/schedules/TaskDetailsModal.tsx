@@ -32,11 +32,16 @@ interface Values {
 }
 
 const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
-    const { values: { action }, setFieldValue, setFieldTouched, isSubmitting } = useFormikContext<Values>();
+    const { values: { action }, initialValues, setFieldValue, setFieldTouched, isSubmitting } = useFormikContext<Values>();
 
     useEffect(() => {
-        setFieldValue('payload', action === 'power' ? 'start' : '');
-        setFieldTouched('payload', false);
+        if (action !== initialValues.action) {
+            setFieldValue('payload', action === 'power' ? 'start' : '');
+            setFieldTouched('payload', false);
+        } else {
+            setFieldValue('payload', initialValues.payload);
+            setFieldTouched('payload', false);
+        }
     }, [ action ]);
 
     return (
