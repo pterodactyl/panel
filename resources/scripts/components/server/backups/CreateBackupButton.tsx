@@ -49,7 +49,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                     </FormikFieldWrapper>
                 </div>
                 <div css={tw`flex justify-end`}>
-                    <Button type={'submit'}>
+                    <Button type={'submit'} disabled={isSubmitting}>
                         Start backup
                     </Button>
                 </div>
@@ -94,11 +94,7 @@ export default () => {
                     ignored: string(),
                 })}
             >
-                <ModalContent
-                    appear
-                    visible={visible}
-                    onDismissed={() => setVisible(false)}
-                />
+                <ModalContent appear visible={visible} onDismissed={() => setVisible(false)}/>
             </Formik>
             }
             <Button onClick={() => setVisible(true)}>

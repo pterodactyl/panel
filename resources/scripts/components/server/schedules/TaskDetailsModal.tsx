@@ -32,7 +32,7 @@ interface Values {
 }
 
 const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
-    const { values: { action }, setFieldValue, setFieldTouched } = useFormikContext<Values>();
+    const { values: { action }, setFieldValue, setFieldTouched, isSubmitting } = useFormikContext<Values>();
 
     useEffect(() => {
         setFieldValue('payload', action === 'power' ? 'start' : '');
@@ -94,7 +94,7 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                 />
             </div>
             <div css={tw`flex justify-end mt-6`}>
-                <Button type={'submit'}>
+                <Button type={'submit'} disabled={isSubmitting}>
                     {isEditingTask ? 'Save Changes' : 'Create Task'}
                 </Button>
             </div>
