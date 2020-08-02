@@ -71,7 +71,7 @@ export default () => {
                                     }
                                     {
                                         sortFiles(files.slice(0, 250)).map(file => (
-                                            <FileObjectRow key={file.uuid} file={file}/>
+                                            <FileObjectRow key={file.key} file={file}/>
                                         ))
                                     }
                                     <MassActionsBar/>

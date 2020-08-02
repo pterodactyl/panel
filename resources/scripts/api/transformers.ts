@@ -1,7 +1,6 @@
 import { Allocation } from '@/api/server/getServer';
 import { FractalResponseData } from '@/api/http';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import v4 from 'uuid/v4';
 
 export const rawDataToServerAllocation = (data: FractalResponseData): Allocation => ({
     id: data.attributes.id,
@@ -13,7 +12,7 @@ export const rawDataToServerAllocation = (data: FractalResponseData): Allocation
 });
 
 export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
-    uuid: v4(),
+    key: `${data.attributes.is_file ? 'file' : 'dir'}_${data.attributes.name}`,
     name: data.attributes.name,
     mode: data.attributes.mode,
     size: Number(data.attributes.size),

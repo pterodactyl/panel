@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBoxOpen,
@@ -29,6 +29,7 @@ import styled from 'styled-components/macro';
 import useEventListener from '@/plugins/useEventListener';
 import compressFiles from '@/api/server/files/compressFiles';
 import decompressFiles from '@/api/server/files/decompressFiles';
+import isEqual from 'react-fast-compare';
 
 type ModalType = 'rename' | 'move';
 
@@ -50,7 +51,7 @@ const Row = ({ icon, title, ...props }: RowProps) => (
     </StyledRow>
 );
 
-export default ({ file }: { file: FileObject }) => {
+const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const onClickRef = useRef<DropdownMenu>(null);
     const [ showSpinner, setShowSpinner ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
@@ -60,7 +61,7 @@ export default ({ file }: { file: FileObject }) => {
     const { clearAndAddHttpError, clearFlashes } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
-    useEventListener(`pterodactyl:files:ctx:${file.uuid}`, (e: CustomEvent) => {
+    useEventListener(`pterodactyl:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
             onClickRef.current.triggerMenu(e.detail);
         }
@@ -71,7 +72,7 @@ export default ({ file }: { file: FileObject }) => {
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        mutate(files => files.filter(f => f.uuid !== file.uuid), false);
+        mutate(files => files.filter(f => f.key !== file.key), false);
 
         deleteFiles(uuid, directory, [ file.name ]).catch(error => {
             mutate();
@@ -166,3 +167,5 @@ export default ({ file }: { file: FileObject }) => {
         </DropdownMenu>
     );
 };
+
+export default memo(FileDropdownMenu, isEqual);

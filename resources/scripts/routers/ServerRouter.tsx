@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactGA from 'react-ga';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
@@ -25,6 +26,7 @@ import useServer from '@/plugins/useServer';
 import ScreenBlock from '@/components/screens/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
+import InstallListener from '@/components/server/InstallListener';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const { rootAdmin } = useStoreState(state => state.user.data!);
@@ -59,6 +61,10 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
             clearServerState();
         };
     }, [ match.params.id ]);
+
+    useEffect(() => {
+        ReactGA.pageview(location.pathname);
+    }, [ location.pathname ]);
 
     return (
         <React.Fragment key={'server-router'}>
@@ -98,6 +104,8 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             </div>
                         </SubNavigation>
                     </CSSTransition>
+                    <InstallListener/>
+                    <WebsocketHandler/>
                     {(installing && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${server.id}`)))) ?
                         <ScreenBlock
                             title={'Your server is installing.'}
@@ -106,7 +114,6 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                         />
                         :
                         <>
-                            <WebsocketHandler/>
                             <TransitionRouter>
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
