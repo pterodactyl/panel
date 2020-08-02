@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
@@ -16,7 +17,7 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import Button from '@/components/elements/Button';
 
 export default ({ match, history }: RouteComponentProps) => {
-    const { uuid } = useServer();
+    const { uuid, name: serverName } = useServer();
     const { clearFlashes, addError } = useFlash();
     const [ loading, setLoading ] = useState(true);
     const [ visible, setVisible ] = useState(false);
@@ -37,6 +38,9 @@ export default ({ match, history }: RouteComponentProps) => {
 
     return (
         <PageContentBlock>
+            <Helmet>
+                <title> {serverName} | Schedules </title>
+            </Helmet>
             <FlashMessageRender byKey={'schedules'} css={tw`mb-4`}/>
             {(!schedules.length && loading) ?
                 <Spinner size={'large'} centered/>

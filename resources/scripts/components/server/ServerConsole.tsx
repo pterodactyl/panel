@@ -1,4 +1,5 @@
 import React, { lazy, useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
@@ -61,6 +62,9 @@ export default () => {
 
     return (
         <PageContentBlock css={tw`flex`}>
+            <Helmet>
+                <title> {server.name} | Console </title>
+            </Helmet>
             <div css={tw`w-1/4`}>
                 <TitledGreyBox title={server.name} icon={faServer}>
                     <p css={tw`text-xs uppercase`}>
