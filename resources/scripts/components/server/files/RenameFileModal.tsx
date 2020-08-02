@@ -9,23 +9,22 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import useServer from '@/plugins/useServer';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import useFlash from '@/plugins/useFlash';
+import withFlash, { WithFlashProps } from '@/hoc/withFlash';
 
 interface FormikValues {
     name: string;
 }
 
-type Props = RequiredModalProps & { files: string[]; useMoveTerminology?: boolean };
+type OwnProps = WithFlashProps & RequiredModalProps & { files: string[]; useMoveTerminology?: boolean };
 
-export default ({ files, useMoveTerminology, ...props }: Props) => {
+const RenameFileModal = ({ flash, files, useMoveTerminology, ...props }: OwnProps) => {
     const { uuid } = useServer();
     const { mutate } = useFileManagerSwr();
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
     const submit = ({ name }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
-        clearFlashes('files');
+        flash.clearFlashes('files');
 
         const len = name.split('/').length;
         if (files.length === 1) {
@@ -51,7 +50,7 @@ export default ({ files, useMoveTerminology, ...props }: Props) => {
             .catch(error => {
                 mutate();
                 setSubmitting(false);
-                clearAndAddHttpError({ key: 'files', error });
+                flash.clearAndAddHttpError({ key: 'files', error });
             })
             .then(() => props.onDismissed());
     };
@@ -96,3 +95,5 @@ export default ({ files, useMoveTerminology, ...props }: Props) => {
         </Formik>
     );
 };
+
+export default withFlash(RenameFileModal);
