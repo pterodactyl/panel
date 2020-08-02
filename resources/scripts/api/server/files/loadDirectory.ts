@@ -2,7 +2,7 @@ import http from '@/api/http';
 import { rawDataToFileObject } from '@/api/transformers';
 
 export interface FileObject {
-    uuid: string;
+    key: string;
     name: string;
     mode: string;
     size: number;

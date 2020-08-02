@@ -6,7 +6,6 @@ import Field from '@/components/elements/Field';
 import { join } from 'path';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
-import v4 from 'uuid/v4';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import { mutate } from 'swr';
@@ -24,7 +23,7 @@ const schema = object().shape({
 });
 
 const generateDirectoryData = (name: string): FileObject => ({
-    uuid: v4(),
+    key: `dir_${name}`,
     name: name,
     mode: '0644',
     size: 0,
