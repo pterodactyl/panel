@@ -15,12 +15,11 @@ import tw from 'twin.macro';
 import Fade from '@/components/elements/Fade';
 
 export default () => {
-    const { uuid, featureLimits } = useServer();
+    const { uuid, featureLimits, name: serverName } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(true);
 
     const databases = ServerContext.useStoreState(state => state.databases.data);
-    const servername = ServerContext.useStoreState(state => state.server.data.name);
     const setDatabases = ServerContext.useStoreActions(state => state.databases.setDatabases);
 
     useEffect(() => {
@@ -39,7 +38,7 @@ export default () => {
     return (
         <PageContentBlock>
             <Helmet>
-                <title> {servername} | Databases </title>
+                <title> {serverName} | Databases </title>
             </Helmet>
             <FlashMessageRender byKey={'databases'} css={tw`mb-4`}/>
             {(!databases.length && loading) ?

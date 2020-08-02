@@ -14,12 +14,11 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 
 export default () => {
-    const { uuid, featureLimits } = useServer();
+    const { uuid, featureLimits, name: serverName } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(true);
 
     const backups = ServerContext.useStoreState(state => state.backups.data);
-    const server = ServerContext.useStoreState(state => state.server.data!);
     const setBackups = ServerContext.useStoreActions(actions => actions.backups.setBackups);
 
     useEffect(() => {
@@ -40,7 +39,7 @@ export default () => {
     return (
         <PageContentBlock>
             <Helmet>
-                <title> {server.name} | Backups</title>
+                <title> {serverName} | Backups</title>
             </Helmet>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             {!backups.length ?

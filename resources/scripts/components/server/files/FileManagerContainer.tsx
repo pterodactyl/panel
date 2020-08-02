@@ -24,11 +24,10 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
-    const { id } = useServer();
+    const { id, name: serverName } = useServer();
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
 
-    const servername = ServerContext.useStoreState(state => state.server.data.name);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
@@ -46,7 +45,7 @@ export default () => {
     return (
         <PageContentBlock showFlashKey={'files'}>
             <Helmet>
-                <title> {servername} | File Manager </title>
+                <title> {serverName} | File Manager </title>
             </Helmet>
             <FileManagerBreadcrumbs/>
             {

@@ -18,7 +18,7 @@ export default () => {
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const subusers = ServerContext.useStoreState(state => state.subusers.data);
-    const servername = ServerContext.useStoreState(state => state.server.data.name);
+    const servername = ServerContext.useStoreState(state => state.server.data!.name);
     const setSubusers = ServerContext.useStoreActions(actions => actions.subusers.setSubusers);
 
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
