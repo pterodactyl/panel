@@ -67,12 +67,11 @@ class EggConfigurationService
     {
         $done = Arr::get($startup, 'done');
 
-        return array_filter([
+        return [
             'done' => is_string($done) ? [$done] : $done,
-            'user_interaction' => Arr::get($startup, 'userInteraction'),
-        ], function ($datum) {
-            return ! is_null($datum);
-        });
+            'user_interaction' => Arr::get($startup, 'userInteraction') ?? [],
+            'strip_ansi' => Arr::get($startup, 'strip_ansi') ?? false,
+        ];
     }
 
     /**
