@@ -51,10 +51,28 @@ class EggConfigurationService
         );
 
         return [
-            'startup' => json_decode($server->egg->inherit_config_startup),
+            'startup' => $this->convertStartupToNewFormat(json_decode($server->egg->inherit_config_startup, true)),
             'stop' => $this->convertStopToNewFormat($server->egg->inherit_config_stop),
             'configs' => $configs,
         ];
+    }
+
+    /**
+     * Convert the "done" variable into an array if it is not currently one.
+     *
+     * @param array $startup
+     * @return array
+     */
+    protected function convertStartupToNewFormat(array $startup)
+    {
+        $done = Arr::get($startup, 'done');
+
+        return array_filter([
+            'done' => is_string($done) ? [$done] : $done,
+            'user_interaction' => Arr::get($startup, 'userInteraction'),
+        ], function ($datum) {
+            return ! is_null($datum);
+        });
     }
 
     /**
