@@ -69,7 +69,7 @@ class EggConfigurationService
 
         return [
             'done' => is_string($done) ? [$done] : $done,
-            'user_interaction' => Arr::get($startup, 'userInteraction') ?? [],
+            'user_interaction' => Arr::get($startup, 'userInteraction') ?? Arr::get($startup, 'user_interaction') ?? [],
             'strip_ansi' => Arr::get($startup, 'strip_ansi') ?? false,
         ];
     }
