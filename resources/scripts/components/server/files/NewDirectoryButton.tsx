@@ -8,11 +8,10 @@ import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { mutate } from 'swr';
 import useServer from '@/plugins/useServer';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import { useLocation } from 'react-router';
 import useFlash from '@/plugins/useFlash';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 
 interface Values {
     directoryName: string;
@@ -38,20 +37,16 @@ const generateDirectoryData = (name: string): FileObject => ({
 
 export default () => {
     const { uuid } = useServer();
-    const { hash } = useLocation();
     const { clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
+
+    const { mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, directoryName)
-            .then(() => {
-                mutate(
-                    `${uuid}:files:${hash}`,
-                    (data: FileObject[]) => [ ...data, generateDirectoryData(directoryName) ],
-                );
-                setVisible(false);
-            })
+            .then(() => mutate(data => [ ...data, generateDirectoryData(directoryName) ], false))
+            .then(() => setVisible(false))
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
@@ -78,6 +73,7 @@ export default () => {
                     >
                         <Form css={tw`m-0`}>
                             <Field
+                                autoFocus
                                 id={'directoryName'}
                                 name={'directoryName'}
                                 label={'Directory Name'}
