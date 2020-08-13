@@ -12,6 +12,17 @@ What more are you waiting for? Make game servers a first class citizen on your p
 
 ![Image](https://cdn.pterodactyl.io/site-assets/mockup-macbook-grey.png)
 
+## Sponsors
+I would like to extend my sincere thanks to the following sponsors for funding Pterodactyl's developement. [Interested
+in becoming a sponsor?](https://github.com/sponsors/DaneEveritt)
+
+#### [BloomVPS](https://bloomvps.com)
+> Ditch your overloaded server and see what dedicated Ryzen CPUs can do for your Minecraft community.
+
+#### [VersatileNode](https://versatilenode.com/)
+> Looking to host a minecraft server, vps, or a website? VersatileNode is one of the most affordable hosting providers
+to provide quality yet cheap services with incredible support.
+
 ## Support & Documentation
 Support for using Pterodactyl can be found on our [Documentation Website](https://pterodactyl.io/project/introduction.html), [Guides Website](https://pterodactyl.io/community/about.html), or via our [Discord Chat](https://discord.gg/QRDZvVm).
 
