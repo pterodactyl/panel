@@ -1,13 +1,6 @@
 import Sockette from 'sockette';
 import { EventEmitter } from 'events';
 
-export const SOCKET_EVENTS = [
-    'SOCKET_OPEN',
-    'SOCKET_RECONNECT',
-    'SOCKET_CLOSE',
-    'SOCKET_ERROR',
-];
-
 export class Websocket extends EventEmitter {
     // Timer instance for this socket.
     private timer: any = null;

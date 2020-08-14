@@ -8,7 +8,7 @@ const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void 
     const status = ServerContext.useStoreState(state => state.status.value);
 
     useEffect(() => {
-        setClicked(state => [ 'stopping' ].indexOf(status) < 0 ? false : state);
+        setClicked(status === 'stopping');
     }, [ status ]);
 
     return (
