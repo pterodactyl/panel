@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import Spinner from '@/components/elements/Spinner';
 import getServerBackups from '@/api/server/backups/getServerBackups';
 import useServer from '@/plugins/useServer';
@@ -13,7 +14,7 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 
 export default () => {
-    const { uuid, featureLimits } = useServer();
+    const { uuid, featureLimits, name: serverName } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(true);
 
@@ -37,6 +38,9 @@ export default () => {
 
     return (
         <PageContentBlock>
+            <Helmet>
+                <title> {serverName} | Backups</title>
+            </Helmet>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             {!backups.length ?
                 <p css={tw`text-center text-sm text-neutral-400`}>
@@ -52,7 +56,7 @@ export default () => {
                 </div>
             }
             {featureLimits.backups === 0 &&
-                <p className="text-center text-sm text-neutral-400">
+                <p css={tw`text-center text-sm text-neutral-400`}>
                     Backups cannot be created for this server.
                 </p>
             }

@@ -12,6 +12,27 @@ What more are you waiting for? Make game servers a first class citizen on your p
 
 ![Image](https://cdn.pterodactyl.io/site-assets/mockup-macbook-grey.png)
 
+## Sponsors
+I would like to extend my sincere thanks to the following sponsors for funding Pterodactyl's developement. [Interested
+in becoming a sponsor?](https://github.com/sponsors/DaneEveritt)
+
+#### [BloomVPS](https://bloomvps.com)
+> BloomVPS offers dedicated core VPS and Minecraft hosting with Ryzen 9 processors. With owned-hardware, we offer truly
+> unbeatable prices on high-performance hosting.
+
+#### [VersatileNode](https://versatilenode.com/)
+> Looking to host a minecraft server, vps, or a website? VersatileNode is one of the most affordable hosting providers
+> to provide quality yet cheap services with incredible support.
+
+#### [MineStrator](https://minestrator.com/)
+> Looking for a French highend hosting company for you minecraft server? More than 14,000 members on our discord
+> trust us.
+
+#### [DedicatedMC](https://dedicatedmc.io/)
+> DedicatedMC provides Raw Power hosting at affordable pricing, making sure to never compromise on your performance
+> and giving you the best performance money can buy.
+
+
 ## Support & Documentation
 Support for using Pterodactyl can be found on our [Documentation Website](https://pterodactyl.io/project/introduction.html), [Guides Website](https://pterodactyl.io/community/about.html), or via our [Discord Chat](https://discord.gg/QRDZvVm).
 
@@ -43,7 +64,7 @@ In addition to our standard nest of supported games, our community is constantly
 ## Credits
 This software would not be possible without the work of other open-source authors who provide tools such as:
 
-[Ace Editor](https://ace.c9.io), [AdminLTE](https://almsaeedstudio.com), [Animate.css](http://daneden.github.io/animate.css/), [AnsiUp](https://github.com/drudru/ansi_up), [Async.js](https://github.com/caolan/async), 
+[Ace Editor](https://ace.c9.io), [AdminLTE](https://adminlte.io), [Animate.css](http://daneden.github.io/animate.css/), [AnsiUp](https://github.com/drudru/ansi_up), [Async.js](https://github.com/caolan/async), 
 [Bootstrap](http://getbootstrap.com), [Bootstrap Notify](http://bootstrap-notify.remabledesigns.com), [Chart.js](http://www.chartjs.org), [FontAwesome](http://fontawesome.io),
 [FontAwesome Animations](https://github.com/l-lin/font-awesome-animation), [jQuery](http://jquery.com), [Laravel](https://laravel.com), [Lodash](https://lodash.com),
 [Select2](https://select2.github.io), [Socket.io](http://socket.io), [Socket.io File Upload](https://github.com/vote539/socketio-file-upload), [SweetAlert](http://t4t5.github.io/sweetalert),

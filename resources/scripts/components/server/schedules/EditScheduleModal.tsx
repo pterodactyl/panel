@@ -65,7 +65,7 @@ const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdate
                     />
                 </div>
                 <div css={tw`mt-6 text-right`}>
-                    <Button type={'submit'}>
+                    <Button type={'submit'} disabled={isSubmitting}>
                         {schedule ? 'Save changes' : 'Create schedule'}
                     </Button>
                 </div>

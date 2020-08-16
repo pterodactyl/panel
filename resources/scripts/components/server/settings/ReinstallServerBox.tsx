@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
@@ -36,6 +36,10 @@ export default () => {
                 setModalVisible(false);
             });
     };
+
+    useEffect(() => {
+        clearFlashes();
+    }, []);
 
     return (
         <TitledGreyBox title={'Reinstall Server'} css={tw`relative`}>

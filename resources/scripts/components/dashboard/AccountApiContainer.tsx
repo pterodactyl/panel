@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import ContentBox from '@/components/elements/ContentBox';
 import CreateApiKeyForm from '@/components/dashboard/forms/CreateApiKeyForm';
 import getApiKeys, { ApiKey } from '@/api/account/getApiKeys';
@@ -7,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import deleteApiKey from '@/api/account/deleteApiKey';
-import { Actions, useStoreActions } from 'easy-peasy';
+import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { httpErrorToHuman } from '@/api/http';
@@ -21,6 +22,7 @@ export default () => {
     const [ keys, setKeys ] = useState<ApiKey[]>([]);
     const [ loading, setLoading ] = useState(true);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
     useEffect(() => {
         clearFlashes('account');
@@ -49,6 +51,9 @@ export default () => {
 
     return (
         <PageContentBlock>
+            <Helmet>
+                <title> {name} | API</title>
+            </Helmet>
             <FlashMessageRender byKey={'account'} css={tw`mb-4`}/>
             <div css={tw`flex`}>
                 <ContentBox title={'Create API Key'} css={tw`flex-1`}>

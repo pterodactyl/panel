@@ -230,6 +230,9 @@ class DaemonFileRepository extends DaemonRepository
                         'root' => $root ?? '/',
                         'files' => $files,
                     ],
+                    // Wait for up to 15 minutes for the archive to be completed when calling this endpoint
+                    // since it will likely take quite awhile for large directories.
+                    'timeout' => 60 * 15,
                 ]
             );
         } catch (TransferException $exception) {

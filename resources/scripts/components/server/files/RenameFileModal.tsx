@@ -15,9 +15,9 @@ interface FormikValues {
     name: string;
 }
 
-type Props = RequiredModalProps & { files: string[]; useMoveTerminology?: boolean };
+type OwnProps = RequiredModalProps & { files: string[]; useMoveTerminology?: boolean };
 
-export default ({ files, useMoveTerminology, ...props }: Props) => {
+const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
     const { uuid } = useServer();
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -96,3 +96,5 @@ export default ({ files, useMoveTerminology, ...props }: Props) => {
         </Formik>
     );
 };
+
+export default RenameFileModal;

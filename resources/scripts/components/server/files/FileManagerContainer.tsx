@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
@@ -23,9 +24,10 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
-    const { id } = useServer();
+    const { id, name: serverName } = useServer();
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
+
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
@@ -42,6 +44,9 @@ export default () => {
 
     return (
         <PageContentBlock showFlashKey={'files'}>
+            <Helmet>
+                <title> {serverName} | File Manager </title>
+            </Helmet>
             <FileManagerBreadcrumbs/>
             {
                 !files ?
@@ -65,7 +70,7 @@ export default () => {
                                     }
                                     {
                                         sortFiles(files.slice(0, 250)).map(file => (
-                                            <FileObjectRow key={file.uuid} file={file}/>
+                                            <FileObjectRow key={file.key} file={file}/>
                                         ))
                                     }
                                     <MassActionsBar/>
