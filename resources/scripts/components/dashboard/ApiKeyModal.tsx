@@ -32,7 +32,7 @@ const ApiKeyModal = ({ apiKey }: Props) => {
 
 ApiKeyModal.displayName = 'ApiKeyModal';
 
-export default asModal({
+export default asModal<Props>({
     closeOnEscape: false,
     closeOnBackground: false,
 })(ApiKeyModal);

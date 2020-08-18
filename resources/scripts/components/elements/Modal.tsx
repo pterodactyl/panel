@@ -86,12 +86,14 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
                     </div>
                     }
                     {showSpinnerOverlay &&
-                    <div
-                        css={tw`absolute w-full h-full rounded flex items-center justify-center`}
-                        style={{ background: 'hsla(211, 10%, 53%, 0.25)' }}
-                    >
-                        <Spinner/>
-                    </div>
+                    <Fade timeout={150} appear in>
+                        <div
+                            css={tw`absolute w-full h-full rounded flex items-center justify-center`}
+                            style={{ background: 'hsla(211, 10%, 53%, 0.25)' }}
+                        >
+                            <Spinner/>
+                        </div>
+                    </Fade>
                     }
                     <div css={tw`bg-neutral-800 p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}>
                         {children}

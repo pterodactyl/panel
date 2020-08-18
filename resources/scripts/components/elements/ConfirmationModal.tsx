@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import asModal from '@/hoc/asModal';
@@ -12,12 +12,8 @@ type Props = {
     showSpinnerOverlay?: boolean;
 };
 
-const ConfirmationModal = ({ title, children, buttonText, onConfirmed, showSpinnerOverlay }: Props) => {
-    const { dismiss, toggleSpinner } = useContext(ModalContext);
-
-    useEffect(() => {
-        toggleSpinner(showSpinnerOverlay);
-    }, [ showSpinnerOverlay ]);
+const ConfirmationModal = ({ title, children, buttonText, onConfirmed }: Props) => {
+    const { dismiss } = useContext(ModalContext);
 
     return (
         <>
@@ -37,4 +33,6 @@ const ConfirmationModal = ({ title, children, buttonText, onConfirmed, showSpinn
 
 ConfirmationModal.displayName = 'ConfirmationModal';
 
-export default asModal()(ConfirmationModal);
+export default asModal<Props>(props => ({
+    showSpinnerOverlay: props.showSpinnerOverlay,
+}))(ConfirmationModal);

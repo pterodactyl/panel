@@ -1,6 +1,7 @@
 import React from 'react';
 import Modal, { ModalProps } from '@/components/elements/Modal';
 import ModalContext from '@/context/ModalContext';
+import isEqual from 'react-fast-compare';
 
 export interface AsModalProps {
     visible: boolean;
@@ -12,26 +13,34 @@ type ExtendedModalProps = Omit<ModalProps, 'appear' | 'visible' | 'onDismissed'>
 interface State {
     render: boolean;
     visible: boolean;
-    showSpinnerOverlay: boolean;
+    modalProps: ExtendedModalProps | undefined;
 }
 
-function asModal (modalProps?: ExtendedModalProps) {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    return function <T extends object> (Component: React.ComponentType<T>) {
-        return class extends React.PureComponent <T & AsModalProps, State> {
+type ExtendedComponentType<T> = (C: React.ComponentType<T>) => React.ComponentType<T & AsModalProps>;
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+function asModal<P extends object> (modalProps?: ExtendedModalProps | ((props: P) => ExtendedModalProps)): ExtendedComponentType<P> {
+    return function (Component) {
+        return class extends React.PureComponent <P & AsModalProps, State> {
             static displayName = `asModal(${Component.displayName})`;
 
-            constructor (props: T & AsModalProps) {
+            constructor (props: P & AsModalProps) {
                 super(props);
 
                 this.state = {
                     render: props.visible,
                     visible: props.visible,
-                    showSpinnerOverlay: modalProps?.showSpinnerOverlay || false,
+                    modalProps: typeof modalProps === 'function' ? modalProps(this.props) : modalProps,
                 };
             }
 
-            componentDidUpdate (prevProps: Readonly<T & AsModalProps>) {
+            componentDidUpdate (prevProps: Readonly<P & AsModalProps>) {
+                const mapped = typeof modalProps === 'function' ? modalProps(this.props) : modalProps;
+                if (!isEqual(this.state.modalProps, mapped)) {
+                    // noinspection JSPotentiallyInvalidUsageOfThis
+                    this.setState({ modalProps: mapped });
+                }
+
                 if (prevProps.visible && !this.props.visible) {
                     // noinspection JSPotentiallyInvalidUsageOfThis
                     this.setState({ visible: false });
@@ -43,7 +52,12 @@ function asModal (modalProps?: ExtendedModalProps) {
 
             dismiss = () => this.setState({ visible: false });
 
-            toggleSpinner = (value?: boolean) => this.setState({ showSpinnerOverlay: value || false });
+            toggleSpinner = (value?: boolean) => this.setState(s => ({
+                modalProps: {
+                    ...s.modalProps,
+                    showSpinnerOverlay: value || false,
+                },
+            }));
 
             render () {
                 return (
@@ -58,13 +72,12 @@ function asModal (modalProps?: ExtendedModalProps) {
                                 <Modal
                                     appear
                                     visible={this.state.visible}
-                                    showSpinnerOverlay={this.state.showSpinnerOverlay}
                                     onDismissed={() => this.setState({ render: false }, () => {
                                         if (typeof this.props.onModalDismissed === 'function') {
                                             this.props.onModalDismissed();
                                         }
                                     })}
-                                    {...modalProps}
+                                    {...this.state.modalProps}
                                 >
                                     <Component {...this.props}/>
                                 </Modal>
