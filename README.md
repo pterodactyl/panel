@@ -32,7 +32,7 @@ in becoming a sponsor?](https://github.com/sponsors/DaneEveritt)
 > DedicatedMC provides Raw Power hosting at affordable pricing, making sure to never compromise on your performance
 > and giving you the best performance money can buy.
 
-### [Skynode](https://skynode.com)
+#### [Skynode](https://www.skynode.pro/)
 > Skynode provides blazing fast game servers along with a top notch user experience. Whatever our clients are looking
 > for, we're able to provide it!
 
