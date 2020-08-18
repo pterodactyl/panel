@@ -61,21 +61,19 @@ export default () => {
                 </ContentBox>
                 <ContentBox title={'API Keys'} css={tw`ml-10 flex-1`}>
                     <SpinnerOverlay visible={loading}/>
-                    {deleteIdentifier &&
                     <ConfirmationModal
-                        visible
+                        visible={!!deleteIdentifier}
                         title={'Confirm key deletion'}
                         buttonText={'Yes, delete key'}
                         onConfirmed={() => {
                             doDeletion(deleteIdentifier);
                             setDeleteIdentifier('');
                         }}
-                        onDismissed={() => setDeleteIdentifier('')}
+                        onModalDismissed={() => setDeleteIdentifier('')}
                     >
                         Are you sure you wish to delete this API key? All requests using it will immediately be
                         invalidated and will fail.
                     </ConfirmationModal>
-                    }
                     {
                         keys.length === 0 ?
                             <p css={tw`text-center text-sm`}>

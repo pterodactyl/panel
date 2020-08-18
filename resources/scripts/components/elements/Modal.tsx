@@ -13,7 +13,7 @@ export interface RequiredModalProps {
     top?: boolean;
 }
 
-interface Props extends RequiredModalProps {
+export interface ModalProps extends RequiredModalProps {
     dismissable?: boolean;
     closeOnEscape?: boolean;
     closeOnBackground?: boolean;
@@ -40,7 +40,7 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     }
 `;
 
-const Modal: React.FC<Props> = ({ visible, appear, dismissable, showSpinnerOverlay, top = true, closeOnBackground = true, closeOnEscape = true, onDismissed, children }) => {
+const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinnerOverlay, top = true, closeOnBackground = true, closeOnEscape = true, onDismissed, children }) => {
     const [ render, setRender ] = useState(visible);
 
     const isDismissable = useMemo(() => {
@@ -62,7 +62,13 @@ const Modal: React.FC<Props> = ({ visible, appear, dismissable, showSpinnerOverl
     }, [ render ]);
 
     return (
-        <Fade timeout={150} appear={appear} in={render} unmountOnExit onExited={onDismissed}>
+        <Fade
+            in={render}
+            timeout={150}
+            appear={appear || true}
+            unmountOnExit
+            onExited={() => onDismissed()}
+        >
             <ModalMask
                 onClick={e => {
                     if (isDismissable && closeOnBackground) {

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
-import Modal from '@/components/elements/Modal';
 import createApiKey from '@/api/account/createApiKey';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
@@ -13,6 +12,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Input, { Textarea } from '@/components/elements/Input';
 import styled from 'styled-components/macro';
+import ApiKeyModal from '@/components/dashboard/ApiKeyModal';
 
 interface Values {
     description: string;
@@ -44,29 +44,11 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
 
     return (
         <>
-            <Modal
+            <ApiKeyModal
                 visible={apiKey.length > 0}
-                onDismissed={() => setApiKey('')}
-                closeOnEscape={false}
-                closeOnBackground={false}
-            >
-                <h3 css={tw`mb-6`}>Your API Key</h3>
-                <p css={tw`text-sm mb-6`}>
-                    The API key you have requested is shown below. Please store this in a safe location, it will not be
-                    shown again.
-                </p>
-                <pre css={tw`text-sm bg-neutral-900 rounded py-2 px-4 font-mono`}>
-                    <code css={tw`font-mono`}>{apiKey}</code>
-                </pre>
-                <div css={tw`flex justify-end mt-6`}>
-                    <Button
-                        type={'button'}
-                        onClick={() => setApiKey('')}
-                    >
-                        Close
-                    </Button>
-                </div>
-            </Modal>
+                onModalDismissed={() => setApiKey('')}
+                apiKey={apiKey}
+            />
             <Formik
                 onSubmit={submit}
                 initialValues={{ description: '', allowedIps: '' }}

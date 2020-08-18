@@ -65,18 +65,16 @@ export default ({ backup }: Props) => {
                 checksum={backup.sha256Hash}
             />
             }
-            {deleteVisible &&
             <ConfirmationModal
+                visible={deleteVisible}
                 title={'Delete this backup?'}
                 buttonText={'Yes, delete backup'}
                 onConfirmed={() => doDeletion()}
-                visible={deleteVisible}
-                onDismissed={() => setDeleteVisible(false)}
+                onModalDismissed={() => setDeleteVisible(false)}
             >
                 Are you sure you wish to delete this backup? This is a permanent operation and the backup cannot
                 be recovered once deleted.
             </ConfirmationModal>
-            }
             <SpinnerOverlay visible={loading} fixed/>
             <DropdownMenu
                 renderToggle={onClick => (
