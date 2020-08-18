@@ -12,11 +12,14 @@ import { ApiKey } from '@/api/account/getApiKeys';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Input, { Textarea } from '@/components/elements/Input';
+import styled from 'styled-components/macro';
 
 interface Values {
     description: string;
     allowedIps: string;
 }
+
+const CustomTextarea = styled(Textarea)`${tw`h-32`}`;
 
 export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
     const [ apiKey, setApiKey ] = useState('');
@@ -66,10 +69,7 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
             </Modal>
             <Formik
                 onSubmit={submit}
-                initialValues={{
-                    description: '',
-                    allowedIps: '',
-                }}
+                initialValues={{ description: '', allowedIps: '' }}
                 validationSchema={object().shape({
                     allowedIps: string(),
                     description: string().required().min(4),
@@ -91,7 +91,7 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                             name={'allowedIps'}
                             description={'Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line.'}
                         >
-                            <Field as={Textarea} name={'allowedIps'} css={tw`h-32`}/>
+                            <Field name={'allowedIps'} as={CustomTextarea}/>
                         </FormikFieldWrapper>
                         <div css={tw`flex justify-end mt-6`}>
                             <Button>Create</Button>
