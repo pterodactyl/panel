@@ -38,7 +38,7 @@ export default ({ subuser }: { subuser: Subuser }) => {
             <ConfirmationModal
                 title={'Delete this subuser?'}
                 buttonText={'Yes, remove subuser'}
-                visible
+                visible={showConfirmation}
                 showSpinnerOverlay={loading}
                 onConfirmed={() => doDeletion()}
                 onModalDismissed={() => setShowConfirmation(false)}
