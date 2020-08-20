@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Middleware\Api\Client\Server;
 
 use Closure;
-use Exception;
 use Illuminate\Http\Request;
 
 class SubuserBelongsToServer
