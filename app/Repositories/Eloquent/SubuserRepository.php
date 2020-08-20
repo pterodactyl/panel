@@ -19,30 +19,6 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
     }
 
     /**
-     * Returns a subuser model for the given user and server combination. If no record
-     * exists an exception will be thrown.
-     *
-     * @param int $server
-     * @param string $uuid
-     * @return \Pterodactyl\Models\Subuser
-     *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
-     */
-    public function getUserForServer(int $server, string $uuid): Subuser
-    {
-        /** @var \Pterodactyl\Models\Subuser $model */
-        $model = $this->getBuilder()
-            ->with('server', 'user')
-            ->select('subusers.*')
-            ->join('users', 'users.id', '=', 'subusers.user_id')
-            ->where('subusers.server_id', $server)
-            ->where('users.uuid', $uuid)
-            ->firstOrFail();
-
-        return $model;
-    }
-
-    /**
      * Return a subuser with the associated server relationship.
      *
      * @param \Pterodactyl\Models\Subuser $subuser

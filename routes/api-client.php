@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Pterodactyl\Http\Middleware\Api\Client\Server\SubuserBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AllocationBelongsToServer;
 
@@ -84,12 +85,12 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::delete('/allocations/{allocation}', 'Servers\NetworkAllocationController@delete');
     });
 
-    Route::group(['prefix' => '/users'], function () {
+    Route::group(['prefix' => '/users', 'middleware' => [SubuserBelongsToServer::class]], function () {
         Route::get('/', 'Servers\SubuserController@index');
         Route::post('/', 'Servers\SubuserController@store');
-        Route::get('/{subuser}', 'Servers\SubuserController@view');
-        Route::post('/{subuser}', 'Servers\SubuserController@update');
-        Route::delete('/{subuser}', 'Servers\SubuserController@delete');
+        Route::get('/{user}', 'Servers\SubuserController@view');
+        Route::post('/{user}', 'Servers\SubuserController@update');
+        Route::delete('/{user}', 'Servers\SubuserController@delete');
     });
 
     Route::group(['prefix' => '/backups'], function () {

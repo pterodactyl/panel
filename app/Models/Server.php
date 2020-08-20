@@ -38,7 +38,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Pterodactyl\Models\User $user
- * @property \Pterodactyl\Models\User[]|\Illuminate\Database\Eloquent\Collection $subusers
+ * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subusers
  * @property \Pterodactyl\Models\Allocation $allocation
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  * @property \Pterodactyl\Models\Pack|null $pack
