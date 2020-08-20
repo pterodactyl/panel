@@ -2,8 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import ace, { Editor } from 'brace';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
-import Select from '@/components/elements/Select';
-// @ts-ignore
 import modes from '@/modes';
 
 // @ts-ignore
@@ -21,41 +19,37 @@ const EditorContainer = styled.div`
 `;
 
 Object.keys(modes).forEach(mode => require(`brace/mode/${mode}`));
+const modelist = ace.acequire('ace/ext/modelist');
 
 export interface Props {
     style?: React.CSSProperties;
     initialContent?: string;
-    initialModePath?: string;
+    mode: string;
+    filename?: string;
+    onModeChanged: (mode: string) => void;
     fetchContent: (callback: () => Promise<string>) => void;
     onContentSaved: (content: string) => void;
 }
 
-export default ({ style, initialContent, initialModePath, fetchContent, onContentSaved }: Props) => {
-    const [ mode, setMode ] = useState('ace/mode/plain_text');
-
+export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
     const [ editor, setEditor ] = useState<Editor>();
     const ref = useCallback(node => {
-        if (node) {
-            setEditor(ace.edit('editor'));
-        }
+        if (node) setEditor(ace.edit('editor'));
     }, []);
 
     useEffect(() => {
-        editor && editor.session.setMode(mode);
+        if (modelist && filename) {
+            onModeChanged(modelist.getModeForPath(filename).mode.replace(/^ace\/mode\//, ''));
+        }
+    }, [ filename ]);
+
+    useEffect(() => {
+        editor && editor.session.setMode(`ace/mode/${mode}`);
     }, [ editor, mode ]);
 
     useEffect(() => {
         editor && editor.session.setValue(initialContent || '');
     }, [ editor, initialContent ]);
-
-    useEffect(() => {
-        if (initialModePath) {
-            const modelist = ace.acequire('ace/ext/modelist');
-            if (modelist) {
-                setMode(modelist.getModeForPath(initialModePath).mode);
-            }
-        }
-    }, [ initialModePath ]);
 
     useEffect(() => {
         if (!editor) {
@@ -85,20 +79,6 @@ export default ({ style, initialContent, initialModePath, fetchContent, onConten
     return (
         <EditorContainer style={style}>
             <div id={'editor'} ref={ref}/>
-            <div css={tw`absolute right-0 bottom-0 z-50`}>
-                <div css={tw`m-3 rounded bg-neutral-900 border border-black`}>
-                    <Select
-                        value={mode.split('/').pop()}
-                        onChange={e => setMode(`ace/mode/${e.currentTarget.value}`)}
-                    >
-                        {
-                            Object.keys(modes).map(key => (
-                                <option key={key} value={key}>{(modes as { [k: string]: string })[key]}</option>
-                            ))
-                        }
-                    </Select>
-                </div>
-            </div>
         </EditorContainer>
     );
 };
