@@ -30,7 +30,7 @@ class BaseController extends Controller
      */
     public function index(): View
     {
-        return view('admin.index', ['version' => $this->version]);
-        // return view('templates/base.core');
+        // return view('admin.index', ['version' => $this->version]);
+        return view('templates/base.core');
     }
 }
