@@ -17,7 +17,7 @@ class PruneOrphanedBackupsCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Removes all backups that have existed for more than "n" minutes which are not marked as completed.';
+    protected $description = 'Marks all backups that have not completed in the last "n" minutes as being failed.';
 
     /**
      * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
@@ -25,7 +25,7 @@ class PruneOrphanedBackupsCommand extends Command
     public function handle(BackupRepository $repository)
     {
         $since = $this->option('since-minutes');
-        if (!is_digit($since)) {
+        if (! is_digit($since)) {
             throw new InvalidArgumentException('The --since-minutes option must be a valid numeric digit.');
         }
 
@@ -34,14 +34,18 @@ class PruneOrphanedBackupsCommand extends Command
             ->whereDate('created_at', '<=', CarbonImmutable::now()->subMinutes($since));
 
         $count = $query->count();
-        if (!$count) {
-            $this->info('There are no orphaned backups to be removed.');
+        if (! $count) {
+            $this->info('There are no orphaned backups to be marked as failed.');
 
             return;
         }
 
-        $this->warn("Deleting {$count} backups that have not been marked as completed in the last {$since} minutes.");
+        $this->warn("Marking {$count} backups that have not been marked as completed in the last {$since} minutes as failed.");
 
-        $query->delete();
+        $query->update([
+            'is_successful' => false,
+            'completed_at' => CarbonImmutable::now(),
+            'updated_at' => CarbonImmutable::now(),
+        ]);
     }
 }
