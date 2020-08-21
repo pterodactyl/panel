@@ -25,7 +25,7 @@ RUN cp docker/default.conf /etc/nginx/conf.d/default.conf \
  && cat docker/www.conf > /usr/local/etc/php-fpm.d/www.conf \
  && rm /usr/local/etc/php-fpm.d/www.conf.default \
  && cat docker/supervisord.conf > /etc/supervisord.conf \
- && echo "* * * * * /usr/bin/php /app/artisan schedule:run >> /dev/null 2>&1" >> /var/spool/cron/crontabs/root \
+ && echo "* * * * * /usr/local/bin/php /app/artisan schedule:run >> /dev/null 2>&1" >> /var/spool/cron/crontabs/root \
  && sed -i s/ssl_session_cache/#ssl_session_cache/g /etc/nginx/nginx.conf \
  && mkdir -p /var/run/php /var/run/nginx
 
