@@ -52,10 +52,10 @@ const App = () => {
         store.getActions().settings.setSettings(SiteConfiguration!);
     }
 
-    /* useEffect(() => {
+    useEffect(() => {
         ReactGA.initialize(SiteConfiguration!.analytics);
         ReactGA.pageview(location.pathname);
-    }, []); */
+    }, []);
 
     return (
         <>
