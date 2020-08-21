@@ -4,7 +4,6 @@ import socket, { SocketStore } from './socket';
 import files, { ServerFileStore } from '@/state/server/files';
 import subusers, { ServerSubuserStore } from '@/state/server/subusers';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import backups, { ServerBackupStore } from '@/state/server/backups';
 import schedules, { ServerScheduleStore } from '@/state/server/schedules';
 import databases, { ServerDatabaseStore } from '@/state/server/databases';
 
@@ -56,7 +55,6 @@ export interface ServerStore {
     databases: ServerDatabaseStore;
     files: ServerFileStore;
     schedules: ServerScheduleStore;
-    backups: ServerBackupStore;
     socket: SocketStore;
     status: ServerStatusStore;
     clearServerState: Action<ServerStore>;
@@ -69,7 +67,6 @@ export const ServerContext = createContextStore<ServerStore>({
     databases,
     files,
     subusers,
-    backups,
     schedules,
     clearServerState: action(state => {
         state.server.data = undefined;
@@ -78,7 +75,6 @@ export const ServerContext = createContextStore<ServerStore>({
         state.subusers.data = [];
         state.files.directory = '/';
         state.files.selectedFiles = [];
-        state.backups.data = [];
         state.schedules.data = [];
 
         if (state.socket.instance) {

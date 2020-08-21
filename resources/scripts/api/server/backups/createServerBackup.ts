@@ -1,5 +1,6 @@
-import { rawDataToServerBackup, ServerBackup } from '@/api/server/backups/getServerBackups';
 import http from '@/api/http';
+import { ServerBackup } from '@/api/server/types';
+import { rawDataToServerBackup } from '@/api/server/transformers';
 
 export default (uuid: string, name?: string, ignored?: string): Promise<ServerBackup> => {
     return new Promise((resolve, reject) => {
