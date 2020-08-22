@@ -31,7 +31,7 @@ export default () => {
                         keys.length < 1 ?
                             <div css={tw`w-full flex flex-col items-center justify-center pb-6 py-2 sm:py-8 md:py-10 px-8`}>
                                 <div css={tw`h-64 flex`}>
-                                    <img src={'/assets/svgs/not_found.svg'} alt={'No Items'} css={tw`h-full`}/>
+                                    <img src={'/assets/svgs/not_found.svg'} alt={'No Items'} css={tw`h-full select-none`}/>
                                 </div>
 
                                 <p css={tw`text-xl text-neutral-400 text-center font-normal sm:mt-8`}>No items could be found, it&apos;s almost like they are hiding.</p>

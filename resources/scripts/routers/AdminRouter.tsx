@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
-import TransitionRouter from '@/TransitionRouter';
 import NotFound from '@/components/screens/NotFound';
 import SettingsContainer from '@/components/admin/settings/SettingsContainer';
 import OverviewContainer from '@/components/admin/overview/OverviewContainer';
@@ -31,7 +30,7 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
 
         & > span {
             height: 18px;
-            ${tw`font-header font-medium text-xs text-neutral-300 whitespace-no-wrap uppercase ml-4 mb-1`};
+            ${tw`font-header font-medium text-xs text-neutral-300 whitespace-no-wrap uppercase ml-4 mb-1 select-none`};
             ${props => props.collapsed && tw`opacity-0`};
 
             &:not(:first-of-type) {
@@ -40,7 +39,7 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
         }
 
         & > a {
-            ${tw`h-10 w-full flex flex-row items-center text-neutral-300 cursor-pointer`};
+            ${tw`h-10 w-full flex flex-row items-center text-neutral-300 cursor-pointer select-none`};
             ${props => props.collapsed ? tw`justify-center` : tw`px-4`};
 
             & > svg {
@@ -86,7 +85,7 @@ export default ({ location, match }: RouteComponentProps) => {
                     { !collapsed ?
                         <h1 css={tw`text-2xl text-neutral-50 whitespace-no-wrap`}>{name}</h1>
                         :
-                        <img src={'/favicons/android-icon-48x48.png'} />
+                        <img src={'/favicons/android-icon-48x48.png'} alt={'Pterodactyl Icon'} />
                     }
                 </div>
 
@@ -150,11 +149,11 @@ export default ({ location, match }: RouteComponentProps) => {
                 </NavLink>
 
                 <div className={'user'}>
-                    <img src={'https://cdn.krygon.app/avatars/52564280420073473/7db9f06013ec39f7fa5c1e79241c43afa1f152d82cbb193ecaab7753b9a3e61e?size=64'} alt="Profile Picture" css={tw`h-10 w-10 rounded-full`} />
+                    <img src={'https://cdn.krygon.app/avatars/52564280420073473/7db9f06013ec39f7fa5c1e79241c43afa1f152d82cbb193ecaab7753b9a3e61e?size=64'} alt="Profile Picture" css={tw`h-10 w-10 rounded-full select-none`} />
 
                     <div css={tw`flex flex-col ml-4`}>
-                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-no-wrap leading-tight`}>Matthew Penner</span>
-                        <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-no-wrap leading-tight`}>Super Administrator</span>
+                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-no-wrap leading-tight select-none`}>Matthew Penner</span>
+                        <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-no-wrap leading-tight select-none`}>Super Administrator</span>
                     </div>
 
                     <NavLink to={'/auth/logout'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-neutral-50 ml-auto transition-all duration-100`}>
@@ -164,7 +163,7 @@ export default ({ location, match }: RouteComponentProps) => {
             </Sidebar>
 
             <div css={tw`h-full w-full flex flex-col items-center`}>
-                <div css={tw`min-h-screen w-full flex flex-col px-4 py-12 overflow-x-hidden`} style={{ maxWidth: '86rem' }}>
+                <div css={tw`min-h-screen w-full flex flex-col px-16 py-12 overflow-x-hidden`} style={{ maxWidth: '86rem' }}>
                     {/* <TransitionRouter> */}
                     <Switch location={location}>
                         <Route path={`${match.path}`} component={OverviewContainer} exact/>
