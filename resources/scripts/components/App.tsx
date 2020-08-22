@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import ReactGA from 'react-ga';
+// import React, { useEffect } from 'react';
+// import ReactGA from 'react-ga';
+import React from 'react';
 import { hot } from 'react-hot-loader/root';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
@@ -13,7 +14,8 @@ import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
 import tw from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
-import AdminRouter from '@/routers/AdminRouter';
+
+const ChunkedAdminRouter = lazy(() => import(/* webpackChunkName: "admin" */'@/routers/AdminRouter'));
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -50,10 +52,10 @@ const App = () => {
         store.getActions().settings.setSettings(SiteConfiguration!);
     }
 
-    useEffect(() => {
+    /* useEffect(() => {
         ReactGA.initialize(SiteConfiguration!.analytics);
         ReactGA.pageview(location.pathname);
-    }, []);
+    }, []); */
 
     return (
         <>
@@ -64,13 +66,15 @@ const App = () => {
 
                     <div css={tw`mx-auto w-auto`}>
                         <BrowserRouter basename={'/'} key={'root-router'}>
-                            <Switch>
-                                <Route path="/server/:id" component={ServerRouter}/>
-                                <Route path="/auth" component={AuthenticationRouter}/>
-                                <Route path="/admin" component={AdminRouter}/>
-                                <Route path="/" component={DashboardRouter}/>
-                                <Route path={'*'} component={NotFound}/>
-                            </Switch>
+                            <Suspense fallback={<div>Loading...</div>}>
+                                <Switch>
+                                    <Route path="/server/:id" component={ServerRouter}/>
+                                    <Route path="/auth" component={AuthenticationRouter}/>
+                                    <Route path="/admin" component={ChunkedAdminRouter}/>
+                                    <Route path="/" component={DashboardRouter}/>
+                                    <Route path={'*'} component={NotFound}/>
+                                </Switch>
+                            </Suspense>
                         </BrowserRouter>
                     </div>
                 </Provider>
