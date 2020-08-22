@@ -61,6 +61,7 @@ const App = () => {
             <StoreProvider store={store}>
                 <Provider store={store}>
                     <ProgressBar/>
+
                     <div css={tw`mx-auto w-auto`}>
                         <BrowserRouter basename={'/'} key={'root-router'}>
                             <Switch>
