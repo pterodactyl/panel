@@ -27,6 +27,7 @@ import ScreenBlock from '@/components/screens/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
 import InstallListener from '@/components/server/InstallListener';
+import StartupContainer from '@/components/server/startup/StartupContainer';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const { rootAdmin } = useStoreState(state => state.user.data!);
@@ -98,6 +99,9 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Can action={'allocations.*'}>
                                     <NavLink to={`${match.url}/network`}>Network</NavLink>
                                 </Can>
+                                <Can action={'startup.*'}>
+                                    <NavLink to={`${match.url}/startup`}>Startup</NavLink>
+                                </Can>
                                 <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
                                     <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                                 </Can>
@@ -137,6 +141,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     <Route path={`${match.path}/users`} component={UsersContainer} exact/>
                                     <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
                                     <Route path={`${match.path}/network`} component={NetworkContainer} exact/>
+                                    <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
                                     <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
                                     <Route path={'*'} component={NotFound}/>
                                 </Switch>

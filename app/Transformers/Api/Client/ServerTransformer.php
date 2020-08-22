@@ -6,13 +6,17 @@ use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Allocation;
+use Illuminate\Container\Container;
+use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Services\Servers\StartupCommandService;
+use Pterodactyl\Transformers\Api\Client\EggVariableTransformer;
 
 class ServerTransformer extends BaseClientTransformer
 {
     /**
      * @var string[]
      */
-    protected $defaultIncludes = ['allocations'];
+    protected $defaultIncludes = ['allocations', 'variables'];
 
     /**
      * @var array
@@ -36,6 +40,9 @@ class ServerTransformer extends BaseClientTransformer
      */
     public function transform(Server $server): array
     {
+        /** @var \Pterodactyl\Services\Servers\StartupCommandService $service */
+        $service = Container::getInstance()->make(StartupCommandService::class);
+
         return [
             'server_owner' => $this->getKey()->user_id === $server->owner_id,
             'identifier' => $server->uuidShort,
@@ -54,6 +61,7 @@ class ServerTransformer extends BaseClientTransformer
                 'io' => $server->io,
                 'cpu' => $server->cpu,
             ],
+            'invocation' => $service->handle($server),
             'feature_limits' => [
                 'databases' => $server->database_limit,
                 'allocations' => $server->allocation_limit,
@@ -77,6 +85,20 @@ class ServerTransformer extends BaseClientTransformer
             $server->allocations,
             $this->makeTransformer(AllocationTransformer::class),
             Allocation::RESOURCE_NAME
+        );
+    }
+
+    /**
+     * @param \Pterodactyl\Models\Server $server
+     * @return \League\Fractal\Resource\Collection
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     */
+    public function includeVariables(Server $server)
+    {
+        return $this->collection(
+            $server->variables->where('user_viewable', true),
+            $this->makeTransformer(EggVariableTransformer::class),
+            EggVariable::RESOURCE_NAME
         );
     }
 

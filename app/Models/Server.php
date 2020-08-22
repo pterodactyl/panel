@@ -45,7 +45,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Node $node
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Pterodactyl\Models\Egg $egg
- * @property \Pterodactyl\Models\ServerVariable[]|\Illuminate\Database\Eloquent\Collection $variables
+ * @property \Pterodactyl\Models\EggVariable[]|\Illuminate\Database\Eloquent\Collection $variables
  * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection $schedule
  * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
  * @property \Pterodactyl\Models\Location $location
@@ -270,7 +270,9 @@ class Server extends Model
      */
     public function variables()
     {
-        return $this->hasMany(ServerVariable::class);
+        return $this->hasMany(EggVariable::class, 'egg_id', 'egg_id')
+            ->select(['egg_variables.*', 'server_variables.variable_value as server_value'])
+            ->leftJoin('server_variables', 'server_variables.variable_id', '=', 'egg_variables.id');
     }
 
     /**

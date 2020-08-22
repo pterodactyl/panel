@@ -143,6 +143,10 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getVariablesWithValues(int $id, bool $returnAsObject = false)
     {
+        $this->getBuilder()
+            ->with('variables', 'egg.variables')
+            ->findOrFail($id);
+
         try {
             $instance = $this->getBuilder()->with('variables', 'egg.variables')->find($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {

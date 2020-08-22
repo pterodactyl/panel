@@ -19,6 +19,7 @@ export interface Server {
         ip: string;
         port: number;
     };
+    invocation: string;
     description: string;
     allocations: Allocation[];
     limits: {
@@ -43,6 +44,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     uuid: data.uuid,
     name: data.name,
     node: data.node,
+    invocation: data.invocation,
     sftpDetails: {
         ip: data.sftp_details.ip,
         port: data.sftp_details.port,
