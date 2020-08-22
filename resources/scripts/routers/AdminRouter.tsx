@@ -8,6 +8,15 @@ import tw from 'twin.macro';
 import styled from 'styled-components/macro';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
+import ApiKeysContainer from '@/components/admin/api/ApiKeysContainer';
+import DatabasesContainer from '@/components/admin/databases/DatabasesContainer';
+import NodesContainer from '@/components/admin/nodes/NodesContainer';
+import LocationsContainer from '@/components/admin/locations/LocationsContainer';
+import ServersContainer from '@/components/admin/servers/ServersContainer';
+import UsersContainer from '@/components/admin/users/UsersContainer';
+import PacksContainer from '@/components/admin/packs/PacksContainer';
+import NestsContainer from '@/components/admin/nests/NestsContainer';
+import MountsContainer from '@/components/admin/mounts/MountsContainer';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
     ${tw`h-screen flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
@@ -73,11 +82,7 @@ export default ({ location, match }: RouteComponentProps) => {
     return (
         <div css={tw`h-screen w-screen overflow-x-hidden flex flex-row`}>
             <Sidebar collapsed={collapsed}>
-                <div className={'header'} onClick={
-                    () => {
-                        setCollapsed(!collapsed);
-                    }
-                }>
+                <div className={'header'} onClick={ () => { setCollapsed(!collapsed); } }>
                     { !collapsed ?
                         <h1 css={tw`text-2xl text-neutral-50 whitespace-no-wrap`}>{name}</h1>
                         :
@@ -158,13 +163,29 @@ export default ({ location, match }: RouteComponentProps) => {
                 </div>
             </Sidebar>
 
-            <TransitionRouter>
-                <Switch location={location}>
-                    <Route path={`${match.path}`} component={OverviewContainer} exact/>
-                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
-                    <Route path={'*'} component={NotFound}/>
-                </Switch>
-            </TransitionRouter>
+            <div css={tw`h-full w-full flex flex-col items-center`}>
+                <div css={tw`min-h-screen w-full flex flex-col px-4 py-12 overflow-x-hidden`} style={{ maxWidth: '86rem' }}>
+                    {/* <TransitionRouter> */}
+                    <Switch location={location}>
+                        <Route path={`${match.path}`} component={OverviewContainer} exact/>
+                        <Route path={`${match.path}/settings`} component={SettingsContainer}/>
+                        <Route path={`${match.path}/api`} component={ApiKeysContainer}/>
+
+                        <Route path={`${match.path}/databases`} component={DatabasesContainer}/>
+                        <Route path={`${match.path}/locations`} component={LocationsContainer}/>
+                        <Route path={`${match.path}/nodes`} component={NodesContainer}/>
+                        <Route path={`${match.path}/servers`} component={ServersContainer}/>
+                        <Route path={`${match.path}/users`} component={UsersContainer}/>
+
+                        <Route path={`${match.path}/nests`} component={NestsContainer}/>
+                        <Route path={`${match.path}/packs`} component={PacksContainer}/>
+                        <Route path={`${match.path}/mounts`} component={MountsContainer}/>
+
+                        <Route path={'*'} component={NotFound}/>
+                    </Switch>
+                    {/* </TransitionRouter> */}
+                </div>
+            </div>
         </div>
     );
 };

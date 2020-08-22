@@ -6,8 +6,8 @@ export default () => {
     return (
         <AdminContentBlock>
             <div>
-                <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Overview</h2>
-                <p css={tw`text-base text-neutral-400`}>A quick glance at your system.</p>
+                <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Mounts</h2>
+                <p css={tw`text-base text-neutral-400`}>SoonTM</p>
             </div>
         </AdminContentBlock>
     );
