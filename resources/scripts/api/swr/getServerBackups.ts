@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import http, { getPaginationSet, PaginatedResult } from '@/api/http';
 import { ServerBackup } from '@/api/server/types';
-import { rawDataToServerBackup } from '@/api/server/transformers';
+import { rawDataToServerBackup } from '@/api/transformers';
 import useServer from '@/plugins/useServer';
 
 export default (page?: number | string) => {

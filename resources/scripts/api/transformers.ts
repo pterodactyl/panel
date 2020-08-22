@@ -1,6 +1,7 @@
 import { Allocation } from '@/api/server/getServer';
 import { FractalResponseData } from '@/api/http';
 import { FileObject } from '@/api/server/files/loadDirectory';
+import { ServerBackup } from '@/api/server/types';
 
 export const rawDataToServerAllocation = (data: FractalResponseData): Allocation => ({
     id: data.attributes.id,
@@ -38,4 +39,15 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
             'application/zip', // .zip
         ].indexOf(this.mimetype) >= 0;
     },
+});
+
+export const rawDataToServerBackup = ({ attributes }: FractalResponseData): ServerBackup => ({
+    uuid: attributes.uuid,
+    isSuccessful: attributes.is_successful,
+    name: attributes.name,
+    ignoredFiles: attributes.ignored_files,
+    sha256Hash: attributes.sha256_hash,
+    bytes: attributes.bytes,
+    createdAt: new Date(attributes.created_at),
+    completedAt: attributes.completed_at ? new Date(attributes.completed_at) : null,
 });
