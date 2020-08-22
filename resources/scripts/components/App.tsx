@@ -1,6 +1,6 @@
 // import React, { useEffect } from 'react';
 // import ReactGA from 'react-ga';
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
