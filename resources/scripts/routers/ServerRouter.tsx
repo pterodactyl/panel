@@ -28,6 +28,7 @@ import SubNavigation from '@/components/elements/SubNavigation';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
 import InstallListener from '@/components/server/InstallListener';
 import StartupContainer from '@/components/server/startup/StartupContainer';
+import requireServerPermission from '@/hoc/requireServerPermission';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const { rootAdmin } = useStoreState(state => state.user.data!);
@@ -121,7 +122,11 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             <TransitionRouter>
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
-                                    <Route path={`${match.path}/files`} component={FileManagerContainer} exact/>
+                                    <Route
+                                        path={`${match.path}/files`}
+                                        component={requireServerPermission(FileManagerContainer, 'file.*')}
+                                        exact
+                                    />
                                     <Route
                                         path={`${match.path}/files/:action(edit|new)`}
                                         render={props => (
@@ -131,17 +136,17 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                         )}
                                         exact
                                     />
-                                    <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
-                                    <Route path={`${match.path}/schedules`} component={ScheduleContainer} exact/>
+                                    <Route path={`${match.path}/databases`} component={requireServerPermission(DatabasesContainer, 'database.*')} exact/>
+                                    <Route path={`${match.path}/schedules`} component={requireServerPermission(ScheduleContainer, 'schedule.*')} exact/>
                                     <Route
                                         path={`${match.path}/schedules/:id`}
                                         component={ScheduleEditContainer}
                                         exact
                                     />
-                                    <Route path={`${match.path}/users`} component={UsersContainer} exact/>
-                                    <Route path={`${match.path}/backups`} component={BackupContainer} exact/>
-                                    <Route path={`${match.path}/network`} component={NetworkContainer} exact/>
-                                    <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
+                                    <Route path={`${match.path}/users`} component={requireServerPermission(UsersContainer, 'user.*')} exact/>
+                                    <Route path={`${match.path}/backups`} component={requireServerPermission(BackupContainer, 'backup.*')} exact/>
+                                    <Route path={`${match.path}/network`} component={requireServerPermission(NetworkContainer, 'allocation.*')} exact/>
+                                    <Route path={`${match.path}/startup`} component={requireServerPermission(StartupContainer, 'startup.*')} exact/>
                                     <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
                                     <Route path={'*'} component={NotFound}/>
                                 </Switch>

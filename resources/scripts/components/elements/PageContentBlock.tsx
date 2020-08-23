@@ -4,23 +4,20 @@ import { CSSTransition } from 'react-transition-group';
 import tw from 'twin.macro';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Helmet } from 'react-helmet';
-import useServer from '@/plugins/useServer';
 
-interface Props {
+export interface PageContentBlockProps {
     title?: string;
     className?: string;
     showFlashKey?: string;
 }
 
-const PageContentBlock: React.FC<Props> = ({ title, showFlashKey, className, children }) => {
-    const { name } = useServer();
-
+const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey, className, children }) => {
     return (
         <CSSTransition timeout={150} classNames={'fade'} appear in>
             <>
-                {!!title &&
+                {title &&
                 <Helmet>
-                    <title>{name} | {title}</title>
+                    <title>{title}</title>
                 </Helmet>
                 }
                 <ContentContainer css={tw`my-10`} className={className}>

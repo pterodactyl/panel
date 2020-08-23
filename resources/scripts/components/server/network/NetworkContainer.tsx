@@ -3,7 +3,6 @@ import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import styled from 'styled-components/macro';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Button from '@/components/elements/Button';
 import Can from '@/components/elements/Can';
@@ -18,6 +17,7 @@ import { Textarea } from '@/components/elements/Input';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
 import { debounce } from 'debounce';
 import InputSpinner from '@/components/elements/InputSpinner';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm block`}`;
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
@@ -60,7 +60,7 @@ const NetworkContainer = () => {
     }, [ error ]);
 
     return (
-        <PageContentBlock title={'Network'} showFlashKey={'server:network'}>
+        <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
             {!data ?
                 <Spinner size={'large'} centered/>
                 :
@@ -108,7 +108,7 @@ const NetworkContainer = () => {
                     </GreyRowBox>
                 ))
             }
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };
 
