@@ -59,12 +59,12 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
                     {file.name}
                 </div>
                 {file.isFile &&
-                <div css={tw`w-1/6 text-right mr-4`}>
+                <div css={tw`w-1/6 text-right mr-4 hidden md:block`}>
                     {bytesToHuman(file.size)}
                 </div>
                 }
                 <div
-                    css={tw`w-1/5 text-right mr-4`}
+                    css={tw`w-1/5 text-right mr-4 hidden md:block`}
                     title={file.modifiedAt.toString()}
                 >
                     {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
