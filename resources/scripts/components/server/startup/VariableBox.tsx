@@ -44,7 +44,7 @@ const VariableBox = ({ variable }: Props) => {
 
     return (
         <TitledGreyBox title={variable.name}>
-            <FlashMessageRender byKey={FLASH_KEY} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={FLASH_KEY} css={tw`mb-1`}/>
             <InputSpinner visible={loading}>
                 <Input
                     onKeyUp={e => setVariableValue(e.currentTarget.value)}
