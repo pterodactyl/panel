@@ -43,7 +43,7 @@ export default ({ backup, className }: Props) => {
         <GreyRowBox css={tw`flex items-center`} className={className}>
             <div css={tw`mr-4`}>
                 {backup.completedAt ?
-                    <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
+                    <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300 hidden md:block`}/>
                     :
                     <Spinner size={'small'}/>
                 }
@@ -57,10 +57,10 @@ export default ({ backup, className }: Props) => {
                     }
                     {backup.name}
                     {(backup.completedAt && backup.isSuccessful) &&
-                    <span css={tw`ml-3 text-neutral-300 text-xs font-thin`}>{bytesToHuman(backup.bytes)}</span>
+                    <span css={tw`ml-3 text-neutral-300 text-xs font-thin hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
                     }
                 </p>
-                <p css={tw`text-xs text-neutral-400 font-mono`}>
+                <p css={tw`text-xs text-neutral-400 font-mono hidden md:block`}>
                     {backup.uuid}
                 </p>
             </div>
