@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 import { cleanDirectoryPath } from '@/helpers';
 import tw from 'twin.macro';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
@@ -13,6 +13,7 @@ interface Props {
 
 export default ({ withinFileEditor, isNewFile }: Props) => {
     const [ file, setFile ] = useState<string | null>(null);
+    const { params } = useRouteMatch<Record<string, string>>();
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
@@ -44,7 +45,7 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
 
     return (
         <div css={tw`flex items-center text-sm mb-4 text-neutral-500`}>
-            {!!(files && files.length) &&
+            {(files && files.length && !params?.action) &&
             <FileActionCheckbox
                 type={'checkbox'}
                 css={tw`mx-4`}
