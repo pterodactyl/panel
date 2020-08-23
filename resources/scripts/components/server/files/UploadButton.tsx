@@ -8,6 +8,8 @@ import styled from 'styled-components/macro';
 import { ModalMask } from '@/components/elements/Modal';
 import Fade from '@/components/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import useFlash from '@/plugins/useFlash';
 
 const InnerContainer = styled.div`
   max-width: 600px;
@@ -17,6 +19,8 @@ const InnerContainer = styled.div`
 export default () => {
     const { uuid } = useServer();
     const [ visible, setVisible ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     useEventListener('dragenter', e => {
         e.stopPropagation();
@@ -41,42 +45,33 @@ export default () => {
 
     const onFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
+        e.stopPropagation();
 
+        setVisible(false);
         if (e.dataTransfer === undefined || e.dataTransfer === null) {
             return;
         }
 
-        const files: FileList = e.dataTransfer.files;
-        console.log(files);
+        const form = new FormData();
+        Array.from(e.dataTransfer.files).forEach(file => form.append('files', file));
 
-        const formData = new FormData();
-
-        for (let i = 0; i < files.length; i++) {
-            console.log(files[i]);
-            // @ts-ignore
-            formData.append('files', files[i]);
-        }
-
+        setLoading(true);
+        clearFlashes('files');
         getFileUploadUrl(uuid)
-            .then(url => {
-                console.log(url);
-
-                axios.post(url, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                })
-                    .then(res => {
-                        console.log(res);
-                        setVisible(false);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
+            .then(url => axios.post(url, form, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }))
+            .then(res => {
+                console.log(res);
             })
             .catch(error => {
                 console.error(error);
-            });
+                clearAndAddHttpError({ error, key: 'files' });
+            })
+            .then(() => setVisible(false))
+            .then(() => setLoading(false));
     };
 
     return (
@@ -88,10 +83,7 @@ export default () => {
                 key={'upload_modal_mask'}
                 unmountOnExit
             >
-                <ModalMask
-                    onClick={() => setVisible(false)}
-                    onDrop={onFileDrop}
-                >
+                <ModalMask onClick={() => setVisible(false)} onDrop={onFileDrop} onDragOver={e => e.preventDefault()}>
                     <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
                         <InnerContainer>
                             <p css={tw`text-lg text-neutral-200 text-center`}>
@@ -101,6 +93,7 @@ export default () => {
                     </div>
                 </ModalMask>
             </Fade>
+            <SpinnerOverlay visible={loading} size={'large'}/>
             <Button css={tw`mr-2`} onClick={() => setVisible(true)}>
                 Upload
             </Button>

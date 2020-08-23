@@ -8,13 +8,13 @@ export default (eventName: string, handler: (e: Event | CustomEvent | UIEvent | 
     }, [ handler ]);
 
     useEffect(() => {
-        const isSupported = document && document.addEventListener;
+        const isSupported = window && window.addEventListener;
         if (!isSupported) return;
 
         const eventListener = (event: any) => savedHandler.current(event);
-        document.addEventListener(eventName, eventListener, options);
+        window.addEventListener(eventName, eventListener, options);
         return () => {
-            document.removeEventListener(eventName, eventListener);
+            window.removeEventListener(eventName, eventListener);
         };
-    }, [ eventName, document ]);
+    }, [ eventName, window ]);
 };
