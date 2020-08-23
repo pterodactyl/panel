@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Helmet } from 'react-helmet';
 import { ApplicationStore } from '@/state';
 import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
@@ -28,12 +27,8 @@ const Container = styled.div`
 `;
 
 export default () => {
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     return (
-        <PageContentBlock>
-            <Helmet>
-                <title> {name} | Account Overview</title>
-            </Helmet>
+        <PageContentBlock title={'Account Overview'}>
             <Container>
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm/>

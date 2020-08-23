@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import Spinner from '@/components/elements/Spinner';
 import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
@@ -13,7 +12,7 @@ import getServerBackups from '@/api/swr/getServerBackups';
 
 export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { featureLimits, name: serverName } = useServer();
+    const { featureLimits } = useServer();
 
     const { data: backups, error, isValidating } = getServerBackups();
 
@@ -32,10 +31,7 @@ export default () => {
     }
 
     return (
-        <PageContentBlock>
-            <Helmet>
-                <title>{serverName} | Backups</title>
-            </Helmet>
+        <PageContentBlock title={'Backups'}>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             {!backups.items.length ?
                 <p css={tw`text-center text-sm text-neutral-400`}>

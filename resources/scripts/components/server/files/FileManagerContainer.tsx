@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
@@ -24,7 +23,7 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
-    const { id, name: serverName } = useServer();
+    const { id } = useServer();
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
 
@@ -43,10 +42,7 @@ export default () => {
     }
 
     return (
-        <PageContentBlock showFlashKey={'files'}>
-            <Helmet>
-                <title> {serverName} | File Manager </title>
-            </Helmet>
+        <PageContentBlock title={'File Manager'} showFlashKey={'files'}>
             <FileManagerBreadcrumbs/>
             {
                 !files ?

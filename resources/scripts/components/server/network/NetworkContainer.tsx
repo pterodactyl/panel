@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
@@ -24,7 +23,7 @@ const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
 
 const NetworkContainer = () => {
-    const { uuid, allocations, name: serverName } = useServer();
+    const { uuid, allocations } = useServer();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ loading, setLoading ] = useState<false | number>(false);
     const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), { initialData: allocations });
@@ -61,10 +60,7 @@ const NetworkContainer = () => {
     }, [ error ]);
 
     return (
-        <PageContentBlock showFlashKey={'server:network'}>
-            <Helmet>
-                <title> {serverName} | Network </title>
-            </Helmet>
+        <PageContentBlock title={'Network'} showFlashKey={'server:network'}>
             {!data ?
                 <Spinner size={'large'} centered/>
                 :

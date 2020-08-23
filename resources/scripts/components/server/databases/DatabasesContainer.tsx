@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import getServerDatabases from '@/api/server/getServerDatabases';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
@@ -15,7 +14,7 @@ import tw from 'twin.macro';
 import Fade from '@/components/elements/Fade';
 
 export default () => {
-    const { uuid, featureLimits, name: serverName } = useServer();
+    const { uuid, featureLimits } = useServer();
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(true);
 
@@ -36,10 +35,7 @@ export default () => {
     }, []);
 
     return (
-        <PageContentBlock>
-            <Helmet>
-                <title> {serverName} | Databases </title>
-            </Helmet>
+        <PageContentBlock title={'Databases'}>
             <FlashMessageRender byKey={'databases'} css={tw`mb-4`}/>
             {(!databases.length && loading) ?
                 <Spinner size={'large'} centered/>

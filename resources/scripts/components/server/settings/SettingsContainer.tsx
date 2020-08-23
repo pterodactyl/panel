@@ -1,5 +1,4 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import { useStoreState } from 'easy-peasy';
@@ -20,10 +19,7 @@ export default () => {
     const server = ServerContext.useStoreState(state => state.server.data!);
 
     return (
-        <PageContentBlock>
-            <Helmet>
-                <title> {server.name} | Settings </title>
-            </Helmet>
+        <PageContentBlock title={'Settings'}>
             <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
             <div css={tw`md:flex`}>
                 <div css={tw`w-full md:flex-1 md:mr-10`}>
