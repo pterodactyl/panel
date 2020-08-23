@@ -147,7 +147,7 @@ export default ({ database, className }: Props) => {
                     </Button>
                 </div>
             </Modal>
-            <GreyRowBox $hoverable={false} className={className}>
+            <GreyRowBox $hoverable={false} className={className} css={tw`mb-2`}>
                 <div css={tw`hidden md:block`}>
                     <FontAwesomeIcon icon={faDatabase} fixedWidth/>
                 </div>
