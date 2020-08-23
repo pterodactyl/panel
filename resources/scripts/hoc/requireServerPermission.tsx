@@ -1,6 +1,5 @@
 import React from 'react';
 import Can from '@/components/elements/Can';
-import NotFound from '@/components/screens/NotFound';
 import ScreenBlock from '@/components/screens/ScreenBlock';
 
 const requireServerPermission = (Component: React.ComponentType<any>, permissions: string | string[]) => {
@@ -17,7 +16,7 @@ const requireServerPermission = (Component: React.ComponentType<any>, permission
                         />
                     }
                 >
-                    <Component/>
+                    <Component {...this.props}/>
                 </Can>
             );
         }
