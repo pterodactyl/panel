@@ -8,3 +8,13 @@ export interface ServerBackup {
     createdAt: Date;
     completedAt: Date | null;
 }
+
+export interface ServerEggVariable {
+    name: string;
+    description: string;
+    envVariable: string;
+    defaultValue: string;
+    serverValue: string;
+    isEditable: boolean;
+    rules: string[];
+}
