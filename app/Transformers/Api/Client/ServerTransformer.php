@@ -61,7 +61,7 @@ class ServerTransformer extends BaseClientTransformer
                 'io' => $server->io,
                 'cpu' => $server->cpu,
             ],
-            'invocation' => $service->handle($server),
+            'invocation' => $service->handle($server, ! $this->getUser()->can(Permission::ACTION_STARTUP_READ, $server)),
             'feature_limits' => [
                 'databases' => $server->database_limit,
                 'allocations' => $server->allocation_limit,

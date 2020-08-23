@@ -82,7 +82,7 @@ class DownloadBackupController extends ClientApiController
                 throw new BadRequestHttpException;
         }
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'object' => 'signed_url',
             'attributes' => [
                 'url' => $url,
