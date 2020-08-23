@@ -10,6 +10,7 @@ import Fade from '@/components/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 
 const InnerContainer = styled.div`
   max-width: 600px;
@@ -20,6 +21,7 @@ export default () => {
     const { uuid } = useServer();
     const [ visible, setVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
+    const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     useEventListener('dragenter', e => {
@@ -63,9 +65,7 @@ export default () => {
                     'Content-Type': 'multipart/form-data',
                 },
             }))
-            .then(res => {
-                console.log(res);
-            })
+            .then(() => mutate())
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ error, key: 'files' });
