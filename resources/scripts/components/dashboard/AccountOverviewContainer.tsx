@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { Helmet } from 'react-helmet';
+import { ApplicationStore } from '@/state';
 import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
@@ -7,6 +9,7 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
+import { useStoreState } from 'easy-peasy';
 
 const Container = styled.div`
     ${tw`flex flex-wrap my-10`};
@@ -25,8 +28,12 @@ const Container = styled.div`
 `;
 
 export default () => {
+    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     return (
         <PageContentBlock>
+            <Helmet>
+                <title> {name} | Account Overview</title>
+            </Helmet>
             <Container>
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm/>

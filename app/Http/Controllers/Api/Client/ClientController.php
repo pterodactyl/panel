@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Permission;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -39,31 +38,27 @@ class ClientController extends ClientApiController
     public function index(GetServersRequest $request): array
     {
         $user = $request->user();
-        $level = $request->getFilterLevel();
         $transformer = $this->getTransformer(ServerTransformer::class);
 
         // Start the query builder and ensure we eager load any requested relationships from the request.
-        $builder = Server::query()->with($this->getIncludesForTransformer($transformer, ['node']));
+        $builder = QueryBuilder::for(
+            Server::query()->with($this->getIncludesForTransformer($transformer, ['node']))
+        )->allowedFilters('uuid', 'name', 'external_id');
 
-        if ($level === User::FILTER_LEVEL_OWNER) {
-            $builder = $builder->where('owner_id', $request->user()->id);
-        }
-        // If set to all, display all servers they can access, including those they access as an
-        // admin. If set to subuser, only return the servers they can access because they are owner,
-        // or marked as a subuser of the server.
-        elseif (($level === User::FILTER_LEVEL_ALL && ! $user->root_admin) || $level === User::FILTER_LEVEL_SUBUSER) {
+        // Either return all of the servers the user has access to because they are an admin `?type=admin` or
+        // just return all of the servers the user has access to because they are the owner or a subuser of the
+        // server.
+        if ($request->input('type') === 'admin') {
+            $builder = $user->root_admin
+                ? $builder->whereNotIn('id', $user->accessibleServers()->pluck('id')->all())
+                // If they aren't an admin but want all the admin servers don't fail the request, just
+                // make it a query that will never return any results back.
+                : $builder->whereRaw('1 = 2');
+        } elseif ($request->input('type') === 'owner') {
+            $builder = $builder->where('owner_id', $user->id);
+        } else {
             $builder = $builder->whereIn('id', $user->accessibleServers()->pluck('id')->all());
         }
-        // If set to admin, only display the servers a user can access because they are an administrator.
-        // This means only servers the user would not have access to if they were not an admin (because they
-        // are not an owner or subuser) are returned.
-        elseif ($level === User::FILTER_LEVEL_ADMIN && $user->root_admin) {
-            $builder = $builder->whereNotIn('id', $user->accessibleServers()->pluck('id')->all());
-        }
-
-        $builder = QueryBuilder::for($builder)->allowedFilters(
-            'uuid', 'name', 'external_id'
-        );
 
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
 

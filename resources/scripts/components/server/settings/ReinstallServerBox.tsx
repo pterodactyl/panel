@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
@@ -37,15 +37,19 @@ export default () => {
             });
     };
 
+    useEffect(() => {
+        clearFlashes();
+    }, []);
+
     return (
         <TitledGreyBox title={'Reinstall Server'} css={tw`relative`}>
             <ConfirmationModal
                 title={'Confirm server reinstallation'}
                 buttonText={'Yes, reinstall server'}
-                onConfirmed={() => reinstall()}
+                onConfirmed={reinstall}
                 showSpinnerOverlay={isSubmitting}
                 visible={modalVisible}
-                onDismissed={() => setModalVisible(false)}
+                onModalDismissed={() => setModalVisible(false)}
             >
                 Your server will be stopped and some files may be deleted or modified during this process, are you sure
                 you wish to continue?

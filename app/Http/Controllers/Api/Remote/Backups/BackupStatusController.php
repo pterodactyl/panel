@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
 
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
@@ -31,25 +32,16 @@ class BackupStatusController extends Controller
      * @param \Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest $request
      * @param string $backup
      * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function __invoke(ReportBackupCompleteRequest $request, string $backup)
     {
-        /** @var \Pterodactyl\Models\Backup $backup */
-        $backup = $this->repository->findFirstWhere([['uuid', '=', $backup]]);
+        $this->repository->updateWhere([['uuid', '=', $backup]], [
+            'is_successful' => $request->input('successful') ? true : false,
+            'sha256_hash' => $request->input('checksum'),
+            'bytes' => $request->input('size'),
+            'completed_at' => CarbonImmutable::now(),
+        ]);
 
-        if ($request->input('successful')) {
-            $this->repository->update($backup->id, [
-                'sha256_hash' => $request->input('checksum'),
-                'bytes' => $request->input('size'),
-                'completed_at' => Carbon::now(),
-            ], true, true);
-        } else {
-            $this->repository->delete($backup->id);
-        }
-
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

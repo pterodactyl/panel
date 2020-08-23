@@ -2,7 +2,7 @@ import http from '@/api/http';
 import { rawDataToFileObject } from '@/api/transformers';
 
 export interface FileObject {
-    uuid: string;
+    key: string;
     name: string;
     mode: string;
     size: number;
@@ -12,6 +12,7 @@ export interface FileObject {
     mimetype: string;
     createdAt: Date;
     modifiedAt: Date;
+    isArchiveType: () => boolean;
 }
 
 export default async (uuid: string, directory?: string): Promise<FileObject[]> => {

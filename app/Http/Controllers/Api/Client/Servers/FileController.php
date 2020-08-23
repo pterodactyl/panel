@@ -6,19 +6,18 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 use Pterodactyl\Transformers\Daemon\FileObjectTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CompressFilesRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DecompressFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 
@@ -69,13 +68,9 @@ class FileController extends ClientApiController
      */
     public function directory(ListFilesRequest $request, Server $server): array
     {
-        try {
-            $contents = $this->fileRepository
-                ->setServer($server)
-                ->getDirectory($request->get('directory') ?? '/');
-        } catch (TransferException $exception) {
-            throw new DaemonConnectionException($exception, true);
-        }
+        $contents = $this->fileRepository
+            ->setServer($server)
+            ->getDirectory($request->get('directory') ?? '/');
 
         return $this->fractal->collection($contents)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -88,7 +83,9 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\Response
+     *
      * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function contents(GetFileContentsRequest $request, Server $server): Response
     {
@@ -139,6 +136,8 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function write(WriteFileContentRequest $request, Server $server): JsonResponse
     {
@@ -156,6 +155,8 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function create(CreateFolderRequest $request, Server $server): JsonResponse
     {
@@ -172,6 +173,8 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function rename(RenameFileRequest $request, Server $server): JsonResponse
     {
@@ -188,6 +191,8 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function copy(CopyFileRequest $request, Server $server): JsonResponse
     {
@@ -202,9 +207,14 @@ class FileController extends ClientApiController
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CompressFilesRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function compress(CompressFilesRequest $request, Server $server): array
     {
+        // Allow up to five minutes for this request to process before timing out.
+        set_time_limit(300);
+
         $file = $this->fileRepository->setServer($server)
             ->compressFiles(
                 $request->input('root'), $request->input('files')
@@ -216,11 +226,31 @@ class FileController extends ClientApiController
     }
 
     /**
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DecompressFilesRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function decompress(DecompressFilesRequest $request, Server $server): JsonResponse
+    {
+        // Allow up to five minutes for this request to process before timing out.
+        set_time_limit(300);
+
+        $this->fileRepository->setServer($server)
+            ->decompressFile($request->input('root'), $request->input('file'));
+
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Deletes files or folders for the server in the given root directory.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function delete(DeleteFileRequest $request, Server $server): JsonResponse
     {

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
+import { faFileAlt, faFileArchive, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
 import { bytesToHuman, cleanDirectoryPath } from '@/helpers';
 import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import React, { memo } from 'react';
@@ -18,7 +18,6 @@ const Row = styled.div`
 
 const FileObjectRow = ({ file }: { file: FileObject }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
-    const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
 
     const history = useHistory();
     const match = useRouteMatch();
@@ -31,9 +30,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
         // Just trust me future me, leave this be.
         if (!file.isFile) {
             e.preventDefault();
-
             history.push(`#${cleanDirectoryPath(`${directory}/${file.name}`)}`);
-            setDirectory(`${directory}/${file.name}`);
         }
     };
 
@@ -42,7 +39,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
             key={file.name}
             onContextMenu={e => {
                 e.preventDefault();
-                window.dispatchEvent(new CustomEvent(`pterodactyl:files:ctx:${file.uuid}`, { detail: e.clientX }));
+                window.dispatchEvent(new CustomEvent(`pterodactyl:files:ctx:${file.key}`, { detail: e.clientX }));
             }}
         >
             <SelectFileCheckbox name={file.name}/>
@@ -53,7 +50,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
             >
                 <div css={tw`flex-none self-center text-neutral-400 mr-4 text-lg pl-3 ml-6`}>
                     {file.isFile ?
-                        <FontAwesomeIcon icon={file.isSymlink ? faFileImport : faFileAlt}/>
+                        <FontAwesomeIcon icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}/>
                         :
                         <FontAwesomeIcon icon={faFolder}/>
                     }

@@ -69,7 +69,7 @@ export default ({ schedule, task }: Props) => {
                 buttonText={'Delete Task'}
                 onConfirmed={onConfirmDeletion}
                 visible={visible}
-                onDismissed={() => setVisible(false)}
+                onModalDismissed={() => setVisible(false)}
             >
                 Are you sure you want to delete this task? This action cannot be undone.
             </ConfirmationModal>

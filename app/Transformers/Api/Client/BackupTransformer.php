@@ -22,6 +22,7 @@ class BackupTransformer extends BaseClientTransformer
     {
         return [
             'uuid' => $backup->uuid,
+            'is_successful' => $backup->is_successful,
             'name' => $backup->name,
             'ignored_files' => $backup->ignored_files,
             'sha256_hash' => $backup->sha256_hash,

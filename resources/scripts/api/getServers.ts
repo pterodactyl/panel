@@ -1,13 +1,19 @@
 import { rawDataToServerObject, Server } from '@/api/server/getServer';
 import http, { getPaginationSet, PaginatedResult } from '@/api/http';
 
-export default (query?: string, includeAdmin?: boolean): Promise<PaginatedResult<Server>> => {
+interface QueryParams {
+    query?: string;
+    page?: number;
+    onlyAdmin?: boolean;
+}
+
+export default ({ query, page = 1, onlyAdmin = false }: QueryParams): Promise<PaginatedResult<Server>> => {
     return new Promise((resolve, reject) => {
         http.get('/api/client', {
             params: {
-                include: [ 'allocation' ],
-                type: includeAdmin ? 'all' : undefined,
+                type: onlyAdmin ? 'admin' : undefined,
                 'filter[name]': query,
+                page,
             },
         })
             .then(({ data }) => resolve({

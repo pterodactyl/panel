@@ -39,33 +39,6 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Tests that all of the servers on the system are returned when making the request as an
-     * administrator and including the ?filter=all parameter in the URL.
-     */
-    public function testFilterIncludeAllServersWhenAdministrator()
-    {
-        /** @var \Pterodactyl\Models\User[] $users */
-        $users = factory(User::class)->times(3)->create();
-        $users[0]->root_admin = true;
-
-        $servers = [
-            $this->createServerModel(['user_id' => $users[0]->id]),
-            $this->createServerModel(['user_id' => $users[1]->id]),
-            $this->createServerModel(['user_id' => $users[2]->id]),
-        ];
-
-        $response = $this->actingAs($users[0])->getJson('/api/client?type=all');
-
-        $response->assertOk();
-        $response->assertJsonCount(3, 'data');
-
-        for ($i = 0; $i < 3; $i++) {
-            $response->assertJsonPath("data.{$i}.attributes.server_owner", $i === 0);
-            $response->assertJsonPath("data.{$i}.attributes.identifier", $servers[$i]->uuidShort);
-        }
-    }
-
-    /**
      * Test that servers where the user is a subuser are returned by default in the API call.
      */
     public function testServersUserIsASubuserOfAreReturned()
@@ -142,5 +115,60 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
                     'permissions' => Permission::permissions()->toArray(),
                 ],
             ]);
+    }
+
+    /**
+     * Test that only servers a user can access because they are an administrator are returned. This
+     * will always exclude any servers they can see because they're the owner or a subuser of the server.
+     */
+    public function testOnlyAdminLevelServersAreReturned()
+    {
+        /** @var \Pterodactyl\Models\User[] $users */
+        $users = factory(User::class)->times(4)->create();
+        $users[0]->update(['root_admin' => true]);
+
+        $servers = [
+            $this->createServerModel(['user_id' => $users[0]->id]),
+            $this->createServerModel(['user_id' => $users[1]->id]),
+            $this->createServerModel(['user_id' => $users[2]->id]),
+            $this->createServerModel(['user_id' => $users[3]->id]),
+        ];
+
+        Subuser::query()->create([
+            'user_id' => $users[0]->id,
+            'server_id' => $servers[1]->id,
+            'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
+        ]);
+
+        // Only servers 2 & 3 (0 indexed) should be returned by the API at this point. The user making
+        // the request is the owner of server 0, and a subuser of server 1 so they should be exluded.
+        $response = $this->actingAs($users[0])->getJson('/api/client?type=admin');
+
+        $response->assertOk();
+        $response->assertJsonCount(2, 'data');
+
+        $response->assertJsonPath('data.0.attributes.server_owner', false);
+        $response->assertJsonPath('data.0.attributes.identifier', $servers[2]->uuidShort);
+        $response->assertJsonPath('data.1.attributes.server_owner', false);
+        $response->assertJsonPath('data.1.attributes.identifier', $servers[3]->uuidShort);
+    }
+
+    /**
+     * Test that no servers get returned if the user requests all admin level servers by using
+     * ?type=admin in the request.
+     */
+    public function testNoServersAreReturnedIfAdminFilterIsPassedByRegularUser()
+    {
+        /** @var \Pterodactyl\Models\User[] $users */
+        $users = factory(User::class)->times(3)->create();
+
+        $this->createServerModel(['user_id' => $users[0]->id]);
+        $this->createServerModel(['user_id' => $users[1]->id]);
+        $this->createServerModel(['user_id' => $users[2]->id]);
+
+        $response = $this->actingAs($users[0])->getJson('/api/client?type=admin');
+
+        $response->assertOk();
+        $response->assertJsonCount(0, 'data');
     }
 }

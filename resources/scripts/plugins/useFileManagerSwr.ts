@@ -2,18 +2,18 @@ import useSWR from 'swr';
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import { cleanDirectoryPath } from '@/helpers';
 import useServer from '@/plugins/useServer';
-import { useLocation } from 'react-router';
+import { ServerContext } from '@/state/server';
 
 export default () => {
     const { uuid } = useServer();
-    const { hash } = useLocation();
+    const directory = ServerContext.useStoreState(state => state.files.directory);
 
     return useSWR<FileObject[]>(
-        `${uuid}:files:${hash}`,
-        () => loadDirectory(uuid, cleanDirectoryPath(hash)),
+        `${uuid}:files:${directory}`,
+        () => loadDirectory(uuid, cleanDirectoryPath(directory)),
         {
-            revalidateOnMount: false,
+            revalidateOnMount: true,
             refreshInterval: 0,
-        }
+        },
     );
 };

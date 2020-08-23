@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+    faBoxOpen,
     faCopy,
     faEllipsisH,
     faFileArchive,
@@ -27,6 +28,8 @@ import DropdownMenu from '@/components/elements/DropdownMenu';
 import styled from 'styled-components/macro';
 import useEventListener from '@/plugins/useEventListener';
 import compressFiles from '@/api/server/files/compressFiles';
+import decompressFiles from '@/api/server/files/decompressFiles';
+import isEqual from 'react-fast-compare';
 
 type ModalType = 'rename' | 'move';
 
@@ -43,12 +46,12 @@ interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Row = ({ icon, title, ...props }: RowProps) => (
     <StyledRow {...props}>
-        <FontAwesomeIcon icon={icon} css={tw`text-xs`}/>
+        <FontAwesomeIcon icon={icon} css={tw`text-xs`} fixedWidth/>
         <span css={tw`ml-2`}>{title}</span>
     </StyledRow>
 );
 
-export default ({ file }: { file: FileObject }) => {
+const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const onClickRef = useRef<DropdownMenu>(null);
     const [ showSpinner, setShowSpinner ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
@@ -58,7 +61,7 @@ export default ({ file }: { file: FileObject }) => {
     const { clearAndAddHttpError, clearFlashes } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
-    useEventListener(`pterodactyl:files:ctx:${file.uuid}`, (e: CustomEvent) => {
+    useEventListener(`pterodactyl:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
             onClickRef.current.triggerMenu(e.detail);
         }
@@ -69,7 +72,7 @@ export default ({ file }: { file: FileObject }) => {
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        mutate(files => files.filter(f => f.uuid !== file.uuid), false);
+        mutate(files => files.filter(f => f.key !== file.key), false);
 
         deleteFiles(uuid, directory, [ file.name ]).catch(error => {
             mutate();
@@ -110,6 +113,16 @@ export default ({ file }: { file: FileObject }) => {
             .then(() => setShowSpinner(false));
     };
 
+    const doUnarchive = () => {
+        setShowSpinner(true);
+        clearFlashes('files');
+
+        decompressFiles(uuid, directory, file.name)
+            .then(() => mutate())
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .then(() => setShowSpinner(false));
+    };
+
     return (
         <DropdownMenu
             ref={onClickRef}
@@ -138,9 +151,15 @@ export default ({ file }: { file: FileObject }) => {
                 <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
             </Can>
             }
-            <Can action={'file.archive'}>
-                <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
-            </Can>
+            {file.isArchiveType() ?
+                <Can action={'file.create'}>
+                    <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                </Can>
+                :
+                <Can action={'file.archive'}>
+                    <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+                </Can>
+            }
             <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
             <Can action={'file.delete'}>
                 <Row onClick={doDeletion} icon={faTrashAlt} title={'Delete'} $danger/>
@@ -148,3 +167,5 @@ export default ({ file }: { file: FileObject }) => {
         </DropdownMenu>
     );
 };
+
+export default memo(FileDropdownMenu, isEqual);

@@ -72,7 +72,7 @@ const MassActionsBar = () => {
                     title={'Delete these files?'}
                     buttonText={'Yes, Delete Files'}
                     onConfirmed={onClickConfirmDeletion}
-                    onDismissed={() => setShowConfirm(false)}
+                    onModalDismissed={() => setShowConfirm(false)}
                 >
                     Deleting files is a permanent operation, you cannot undo this action.
                 </ConfirmationModal>

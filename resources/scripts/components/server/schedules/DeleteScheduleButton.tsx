@@ -39,12 +39,12 @@ export default ({ scheduleId, onDeleted }: Props) => {
     return (
         <>
             <ConfirmationModal
-                showSpinnerOverlay={isLoading}
+                visible={visible}
                 title={'Delete schedule?'}
                 buttonText={'Yes, delete schedule'}
                 onConfirmed={onDelete}
-                visible={visible}
-                onDismissed={() => setVisible(false)}
+                showSpinnerOverlay={isLoading}
+                onModalDismissed={() => setVisible(false)}
             >
                 Are you sure you want to delete this schedule? All tasks will be removed and any running processes
                 will be terminated.

@@ -85,8 +85,8 @@ return [
     | Configure the timeout to be used for Guzzle connections here.
     */
     'guzzle' => [
-        'timeout' => env('GUZZLE_TIMEOUT', 5),
-        'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 3),
+        'timeout' => env('GUZZLE_TIMEOUT', 30),
+        'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 10),
     ],
 
     /*

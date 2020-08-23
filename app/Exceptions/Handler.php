@@ -213,6 +213,13 @@ class Handler extends ExceptionHandler
             'detail' => 'An error was encountered while processing this request.',
         ];
 
+        if ($exception instanceof ModelNotFoundException || $exception->getPrevious() instanceof ModelNotFoundException) {
+            // Show a nicer error message compared to the standard "No query results for model"
+            // response that is normally returned. If we are in debug mode this will get overwritten
+            // with a more specific error message to help narrow down things.
+            $error['detail'] = 'The requested resource could not be found on the server.';
+        }
+
         if (config('app.debug')) {
             $error = array_merge($error, [
                 'detail' => $exception->getMessage(),

@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet';
 import { Server } from '@/api/server/getServer';
+import { ApplicationStore } from '@/state';
 import getServers from '@/api/getServers';
 import ServerRow from '@/components/dashboard/ServerRow';
 import Spinner from '@/components/elements/Spinner';
@@ -11,15 +13,18 @@ import Switch from '@/components/elements/Switch';
 import tw from 'twin.macro';
 import useSWR from 'swr';
 import { PaginatedResult } from '@/api/http';
+import Pagination from '@/components/elements/Pagination';
 
 export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const [ page, setPage ] = useState(1);
     const { rootAdmin } = useStoreState(state => state.user.data!);
-    const [ showAdmin, setShowAdmin ] = usePersistedState('show_all_servers', false);
+    const [ showOnlyAdmin, setShowOnlyAdmin ] = usePersistedState('show_all_servers', false);
+    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
-        [ '/api/client/servers', showAdmin ],
-        () => getServers(undefined, showAdmin)
+        [ '/api/client/servers', showOnlyAdmin, page ],
+        () => getServers({ onlyAdmin: showOnlyAdmin, page }),
     );
 
     useEffect(() => {
@@ -29,29 +34,44 @@ export default () => {
 
     return (
         <PageContentBlock showFlashKey={'dashboard'}>
+            <Helmet>
+                <title> {name} | Dashboard</title>
+            </Helmet>
             {rootAdmin &&
             <div css={tw`mb-2 flex justify-end items-center`}>
                 <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
-                    {showAdmin ? 'Showing all servers' : 'Showing your servers'}
+                    {showOnlyAdmin ? 'Showing other\'s servers' : 'Showing your servers'}
                 </p>
                 <Switch
                     name={'show_all_servers'}
-                    defaultChecked={showAdmin}
-                    onChange={() => setShowAdmin(s => !s)}
+                    defaultChecked={showOnlyAdmin}
+                    onChange={() => setShowOnlyAdmin(s => !s)}
                 />
             </div>
             }
             {!servers ?
                 <Spinner centered size={'large'}/>
                 :
-                servers.items.length > 0 ?
-                    servers.items.map((server, index) => (
-                        <ServerRow key={server.uuid} server={server} css={index > 0 ? tw`mt-2` : undefined}/>
-                    ))
-                    :
-                    <p css={tw`text-center text-sm text-neutral-400`}>
-                        There are no servers associated with your account.
-                    </p>
+                <Pagination data={servers} onPageSelect={setPage}>
+                    {({ items }) => (
+                        items.length > 0 ?
+                            items.map((server, index) => (
+                                <ServerRow
+                                    key={server.uuid}
+                                    server={server}
+                                    css={index > 0 ? tw`mt-2` : undefined}
+                                />
+                            ))
+                            :
+                            <p css={tw`text-center text-sm text-neutral-400`}>
+                                {showOnlyAdmin ?
+                                    'There are no other servers to display.'
+                                    :
+                                    'There are no servers associated with your account.'
+                                }
+                            </p>
+                    )}
+                </Pagination>
             }
         </PageContentBlock>
     );

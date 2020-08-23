@@ -17,4 +17,14 @@ class StoreApiKeyRequest extends ClientApiRequest
             'allowed_ips.*' => 'ip',
         ];
     }
+
+    /**
+     * @return array|string[]
+     */
+    public function messages()
+    {
+        return [
+            'allowed_ips.*' => 'All of the IP addresses entered must be valid IPv4 addresses.',
+        ];
+    }
 }
