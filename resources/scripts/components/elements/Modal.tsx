@@ -20,7 +20,7 @@ export interface ModalProps extends RequiredModalProps {
     showSpinnerOverlay?: boolean;
 }
 
-const ModalMask = styled.div`
+export const ModalMask = styled.div`
     ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
     background: rgba(0, 0, 0, 0.70);
 `;

@@ -5,39 +5,41 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/macro';
+import { ModalMask } from '@/components/elements/Modal';
+import Fade from '@/components/elements/Fade';
+import useEventListener from '@/plugins/useEventListener';
 
-const ModalMask = styled.div`
-    ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
-    background: rgba(0, 0, 0, 0.70);
+const InnerContainer = styled.div`
+  max-width: 600px;
+  ${tw`bg-black w-full border-4 border-primary-500 border-dashed rounded p-10 mx-10`}
 `;
 
 export default () => {
     const { uuid } = useServer();
     const [ visible, setVisible ] = useState(false);
 
-    const handleEscapeEvent = () => {
+    useEventListener('dragenter', e => {
+        e.stopPropagation();
+        setVisible(true);
+    }, true);
+
+    useEventListener('dragexit', e => {
+        e.stopPropagation();
         setVisible(false);
-    };
+    }, true);
 
     useEffect(() => {
-        window.addEventListener('keydown', handleEscapeEvent);
+        if (!visible) return;
 
-        return () => window.removeEventListener('keydown', handleEscapeEvent);
+        const hide = () => setVisible(false);
+
+        window.addEventListener('keydown', hide);
+        return () => {
+            window.removeEventListener('keydown', hide);
+        };
     }, [ visible ]);
 
-    const onDragOver = (e: any) => {
-        e.preventDefault();
-    };
-
-    const onDragEnter = (e: any) => {
-        e.preventDefault();
-    };
-
-    const onDragLeave = (e: any) => {
-        e.preventDefault();
-    };
-
-    const onFileDrop = (e: any) => {
+    const onFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault();
 
         if (e.dataTransfer === undefined || e.dataTransfer === null) {
@@ -55,12 +57,10 @@ export default () => {
             formData.append('files', files[i]);
         }
 
-        console.log('getFileUploadUrl');
         getFileUploadUrl(uuid)
             .then(url => {
                 console.log(url);
 
-                // `${url}&directory=`
                 axios.post(url, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -81,20 +81,26 @@ export default () => {
 
     return (
         <>
-            {
-                visible ?
-                    <ModalMask>
-                        <div css={tw`w-full flex items-center justify-center`} onDragOver={onDragOver} onDragEnter={onDragEnter} onDragLeave={onDragLeave} onDrop={onFileDrop}>
-                            <div css={tw`w-full md:w-3/4 lg:w-3/5 xl:w-2/5 flex flex-col items-center border-2 border-dashed border-neutral-400 rounded py-8 px-12 mx-8 md:mx-0`}>
-                                <img src={'/assets/svgs/file_upload.svg'} css={tw`h-auto w-full select-none`}/>
-                                <p css={tw`text-lg text-neutral-200 font-normal mt-8`}>Drag and drop files to upload</p>
-                            </div>
-                        </div>
-                    </ModalMask>
-                    :
-                    null
-            }
-
+            <Fade
+                appear
+                in={visible}
+                timeout={75}
+                key={'upload_modal_mask'}
+                unmountOnExit
+            >
+                <ModalMask
+                    onClick={() => setVisible(false)}
+                    onDrop={onFileDrop}
+                >
+                    <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
+                        <InnerContainer>
+                            <p css={tw`text-lg text-neutral-200 text-center`}>
+                                Drag and drop files to upload.
+                            </p>
+                        </InnerContainer>
+                    </div>
+                </ModalMask>
+            </Fade>
             <Button css={tw`mr-2`} onClick={() => setVisible(true)}>
                 Upload
             </Button>
