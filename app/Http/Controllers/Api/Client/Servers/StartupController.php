@@ -55,9 +55,13 @@ class StartupController extends ClientApiController
         /** @var \Pterodactyl\Models\EggVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
 
-        if (is_null($variable) || !$variable->user_viewable || !$variable->user_editable) {
+        if (is_null($variable) || !$variable->user_viewable) {
             throw new BadRequestHttpException(
-                "The environment variable you are trying to edit [\"{$request->input('key')}\"] does not exist."
+                "The environment variable you are trying to edit does not exist."
+            );
+        } else if (! $variable->user_editable) {
+            throw new BadRequestHttpException(
+                "The environment variable you are trying to edit is read-only."
             );
         }
 
