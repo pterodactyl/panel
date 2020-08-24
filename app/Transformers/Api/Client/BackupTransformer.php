@@ -25,7 +25,7 @@ class BackupTransformer extends BaseClientTransformer
             'is_successful' => $backup->is_successful,
             'name' => $backup->name,
             'ignored_files' => $backup->ignored_files,
-            'sha256_hash' => $backup->sha256_hash,
+            'checksum' => $backup->checksum,
             'bytes' => $backup->bytes,
             'created_at' => $backup->created_at->toIso8601String(),
             'completed_at' => $backup->completed_at ? $backup->completed_at->toIso8601String() : null,
