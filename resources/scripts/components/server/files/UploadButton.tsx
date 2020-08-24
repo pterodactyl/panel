@@ -11,6 +11,7 @@ import useEventListener from '@/plugins/useEventListener';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import { ServerContext } from '@/state/server';
 
 const InnerContainer = styled.div`
   max-width: 600px;
@@ -23,6 +24,7 @@ export default () => {
     const [ loading, setLoading ] = useState(false);
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const directory = ServerContext.useStoreState(state => state.files.directory);
 
     useEventListener('dragenter', e => {
         e.stopPropagation();
@@ -60,7 +62,7 @@ export default () => {
         setLoading(true);
         clearFlashes('files');
         getFileUploadUrl(uuid)
-            .then(url => axios.post(url, form, {
+            .then(url => axios.post(`${url}&directory=${directory}`, form, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
