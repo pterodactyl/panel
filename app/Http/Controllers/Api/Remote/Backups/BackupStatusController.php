@@ -37,7 +37,7 @@ class BackupStatusController extends Controller
     {
         $this->repository->updateWhere([['uuid', '=', $backup]], [
             'is_successful' => $request->input('successful') ? true : false,
-            'sha256_hash' => $request->input('checksum'),
+            'checksum' => $request->input('checksum_type') . ':' . $request->input('checksum'),
             'bytes' => $request->input('size'),
             'completed_at' => CarbonImmutable::now(),
         ]);
