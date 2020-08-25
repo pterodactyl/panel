@@ -7,7 +7,7 @@ import tw from 'twin.macro';
 
 export default ({ schedule }: { schedule: Schedule }) => (
     <>
-        <div>
+        <div css={tw`hidden md:block`}>
             <FontAwesomeIcon icon={faCalendarAlt} fixedWidth/>
         </div>
         <div css={tw`flex-1 ml-4`}>

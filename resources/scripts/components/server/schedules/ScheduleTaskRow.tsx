@@ -73,13 +73,13 @@ export default ({ schedule, task }: Props) => {
             >
                 Are you sure you want to delete this task? This action cannot be undone.
             </ConfirmationModal>
-            <FontAwesomeIcon icon={icon} css={tw`text-lg text-white`}/>
+            <FontAwesomeIcon icon={icon} css={tw`text-lg text-white hidden md:block`}/>
             <div css={tw`flex-1`}>
-                <p css={tw`ml-6 text-neutral-300 uppercase text-xs`}>
+                <p css={tw`md:ml-6 text-neutral-300 uppercase text-xs`}>
                     {title}
                 </p>
                 {task.payload &&
-                <div css={tw`ml-6 mt-2`}>
+                <div css={tw`md:ml-6 mt-2`}>
                     {task.action === 'backup' &&
                     <p css={tw`text-xs uppercase text-neutral-400 mb-1`}>Ignoring files & folders:</p>}
                     <div css={tw`font-mono bg-neutral-800 rounded py-1 px-2 text-sm w-auto whitespace-pre inline-block`}>
