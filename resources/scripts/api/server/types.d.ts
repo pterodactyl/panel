@@ -3,7 +3,7 @@ export interface ServerBackup {
     isSuccessful: boolean;
     name: string;
     ignoredFiles: string;
-    sha256Hash: string;
+    checksum: string;
     bytes: number;
     createdAt: Date;
     completedAt: Date | null;

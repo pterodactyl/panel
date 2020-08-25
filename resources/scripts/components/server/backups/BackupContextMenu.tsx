@@ -66,7 +66,7 @@ export default ({ backup }: Props) => {
                 appear
                 visible={visible}
                 onDismissed={() => setVisible(false)}
-                checksum={backup.sha256Hash}
+                checksum={backup.checksum}
             />
             }
             <ConfirmationModal

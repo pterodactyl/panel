@@ -6,7 +6,7 @@ const ChecksumModal = ({ checksum, ...props }: RequiredModalProps & { checksum: 
     <Modal {...props}>
         <h3 css={tw`mb-6`}>Verify file checksum</h3>
         <p css={tw`text-sm`}>
-            The SHA256 checksum of this file is:
+            The checksum of this file is:
         </p>
         <pre css={tw`mt-2 text-sm p-2 bg-neutral-900 rounded`}>
             <code css={tw`block font-mono`}>{checksum}</code>

@@ -43,12 +43,25 @@ const VariableBox = ({ variable }: Props) => {
     }, 500);
 
     return (
-        <TitledGreyBox title={variable.name}>
+        <TitledGreyBox
+            title={
+                <p css={tw`text-sm uppercase`}>
+                    {!variable.isEditable &&
+                    <span css={tw`bg-neutral-700 text-xs py-1 px-2 rounded-full mr-2`}>Read Only</span>
+                    }
+                    {variable.name}
+                </p>
+            }
+        >
             <FlashMessageRender byKey={FLASH_KEY} css={tw`mb-4`}/>
             <InputSpinner visible={loading}>
                 <Input
-                    onKeyUp={e => setVariableValue(e.currentTarget.value)}
-                    readOnly={!canEdit}
+                    onKeyUp={e => {
+                        if (canEdit && variable.isEditable) {
+                            setVariableValue(e.currentTarget.value);
+                        }
+                    }}
+                    readOnly={!canEdit || !variable.isEditable}
                     name={variable.envVariable}
                     defaultValue={variable.serverValue}
                     placeholder={variable.defaultValue}

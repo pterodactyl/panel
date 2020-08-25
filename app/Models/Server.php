@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Models\Traits\Searchable;
+use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
@@ -272,7 +273,15 @@ class Server extends Model
     {
         return $this->hasMany(EggVariable::class, 'egg_id', 'egg_id')
             ->select(['egg_variables.*', 'server_variables.variable_value as server_value'])
-            ->leftJoin('server_variables', 'server_variables.variable_id', '=', 'egg_variables.id');
+            ->leftJoin('server_variables', function (JoinClause $join) {
+                // Don't forget to join against the server ID as well since the way we're using this relationship
+                // would actually return all of the variables and their values for _all_ servers using that egg,\
+                // rather than only the server for this model.
+                //
+                // @see https://github.com/pterodactyl/panel/issues/2250
+                $join->on('server_variables.variable_id', 'egg_variables.id')
+                    ->where('server_variables.server_id', $this->id);
+            });
     }
 
     /**
