@@ -55,10 +55,10 @@ export default ({ server, className }: { server: Server; className?: string }) =
 
     return (
         <GreyRowBox as={Link} to={`/server/${server.id}`} className={className}>
-            <div className={'icon'}>
+            <div className={'icon'} css={tw`hidden md:block`}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
-            <div css={tw`flex-1 ml-4`}>
+            <div css={tw`flex-1 md:ml-4`}>
                 <div css={tw`flex items-center`}>
                     <div
                         css={[
@@ -71,7 +71,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     <p css={tw`text-lg`}>{server.name}</p>
                 </div>
             </div>
-            <div css={tw`w-1/4 overflow-hidden`}>
+            <div css={tw`w-1/4 overflow-hidden hidden lg:block`}>
                 <div css={tw`flex ml-4`}>
                     <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
@@ -83,7 +83,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     </p>
                 </div>
             </div>
-            <div css={tw`w-1/3 flex items-baseline justify-center relative`}>
+            <div css={tw`w-1/3 sm:w-1/2 lg:w-1/3 flex items-baseline justify-center relative`}>
                 {!stats ?
                     !statsError ?
                         <Spinner size={'small'}/>
@@ -102,7 +102,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </div>
                     :
                     <React.Fragment>
-                        <div css={tw`flex-1 flex ml-4 justify-center`}>
+                        <div css={tw`flex-1 flex ml-4 sm:flex hidden justify-center`}>
                             <FontAwesomeIcon
                                 icon={faMicrochip}
                                 css={[
@@ -120,7 +120,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                 {stats.cpuUsagePercent} %
                             </p>
                         </div>
-                        <div css={tw`flex-1 ml-4`}>
+                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
                                 <FontAwesomeIcon
                                     icon={faMemory}
@@ -141,7 +141,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
                         </div>
-                        <div css={tw`flex-1 ml-4`}>
+                        <div css={tw`flex-1 ml-4 md:block hidden`}>
                             <div css={tw`flex justify-center`}>
                                 <FontAwesomeIcon
                                     icon={faHdd}
