@@ -29,7 +29,7 @@ export default ({ backup, className }: Props) => {
                 items: data.items.map(b => b.uuid !== backup.uuid ? b : ({
                     ...b,
                     isSuccessful: parsed.is_successful || true,
-                    sha256Hash: parsed.sha256_hash || '',
+                    checksum: parsed.checksum || '',
                     bytes: parsed.file_size || 0,
                     completedAt: new Date(),
                 })),
