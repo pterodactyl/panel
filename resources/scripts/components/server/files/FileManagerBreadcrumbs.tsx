@@ -45,7 +45,7 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
 
     return (
         <div css={tw`flex items-center text-sm mb-4 text-neutral-500`}>
-            {(files && files.length && !params?.action) &&
+            {(files && files.length > 0 && !params?.action) &&
             <FileActionCheckbox
                 type={'checkbox'}
                 css={tw`mx-4`}
