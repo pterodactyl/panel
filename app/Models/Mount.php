@@ -2,6 +2,9 @@
 
 namespace Pterodactyl\Models;
 
+use MountNode;
+use MountServer;
+
 /**
  * @property int $id
  * @property string $uuid
@@ -45,11 +48,6 @@ class Mount extends Model
      */
     protected $attributes = [
         'id' => 'int',
-        'uuid' => 'string',
-        'name' => 'string',
-        'description' => 'string',
-        'source' => 'string',
-        'target' => 'string',
         'read_only' => 'bool',
         'user_mountable' => 'bool',
     ];
@@ -89,20 +87,18 @@ class Mount extends Model
     /**
      * Returns all nodes that have this mount assigned.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function nodes()
     {
-        return $this->belongsToMany(Node::class);
+        return $this->hasManyThrough(Server::class, MountNode::class);
     }
 
     /**
-     * Returns all servers that have this mount assigned.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function servers()
     {
-        return $this->belongsToMany(Server::class);
+        return $this->hasManyThrough(Server::class, MountServer::class);
     }
 }
