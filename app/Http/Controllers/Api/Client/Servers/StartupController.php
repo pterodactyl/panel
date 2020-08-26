@@ -5,12 +5,14 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Services\Servers\StartupCommandService;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
 use Pterodactyl\Transformers\Api\Client\EggVariableTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\GetStartupRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRequest;
 
 class StartupController extends ClientApiController
@@ -26,17 +28,44 @@ class StartupController extends ClientApiController
     private $repository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\StartupCommandService
+     */
+    private $startupCommandService;
+
+    /**
      * StartupController constructor.
      *
      * @param \Pterodactyl\Services\Servers\VariableValidatorService $service
+     * @param \Pterodactyl\Services\Servers\StartupCommandService $startupCommandService
      * @param \Pterodactyl\Repositories\Eloquent\ServerVariableRepository $repository
      */
-    public function __construct(VariableValidatorService $service, ServerVariableRepository $repository)
+    public function __construct(VariableValidatorService $service, StartupCommandService $startupCommandService, ServerVariableRepository $repository)
     {
         parent::__construct();
 
         $this->service = $service;
         $this->repository = $repository;
+        $this->startupCommandService = $startupCommandService;
+    }
+
+    /**
+     * Returns the startup information for the server including all of the variables.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Startup\GetStartupRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @return array
+     */
+    public function index(GetStartupRequest $request, Server $server)
+    {
+        $startup = $this->startupCommandService->handle($server, false);
+
+        return $this->fractal->collection($server->variables)
+            ->transformWith($this->getTransformer(EggVariableTransformer::class))
+            ->addMeta([
+                'startup_command' => $startup,
+                'raw_startup_command' => $server->startup,
+            ])
+            ->toArray();
     }
 
     /**
@@ -78,8 +107,14 @@ class StartupController extends ClientApiController
         $variable = $variable->refresh();
         $variable->server_value = $request->input('value');
 
+        $startup = $this->startupCommandService->handle($server, false);
+
         return $this->fractal->item($variable)
             ->transformWith($this->getTransformer(EggVariableTransformer::class))
+            ->addMeta([
+                'startup_command' => $startup,
+                'raw_startup_command' => $server->startup,
+            ])
             ->toArray();
     }
 }
