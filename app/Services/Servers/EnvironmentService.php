@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\EggVariable;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
@@ -63,35 +64,33 @@ class EnvironmentService
      *
      * @param \Pterodactyl\Models\Server $server
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server): array
     {
-        $variables = $this->repository->getVariablesWithValues($server->id);
+        $variables = $server->variables->toBase()->mapWithKeys(function (EggVariable $variable) {
+            return [$variable->env_variable => $variable->server_value ?? $variable->default_value];
+        });
 
         // Process environment variables defined in this file. This is done first
         // in order to allow run-time and config defined variables to take
         // priority over built-in values.
         foreach ($this->getEnvironmentMappings() as $key => $object) {
-            $variables[$key] = object_get($server, $object);
+            $variables->put($key, object_get($server, $object));
         }
 
         // Process variables set in the configuration file.
         foreach ($this->config->get('pterodactyl.environment_variables', []) as $key => $object) {
-            if (is_callable($object)) {
-                $variables[$key] = call_user_func($object, $server);
-            } else {
-                $variables[$key] = object_get($server, $object);
-            }
+            $variables->put(
+                $key, is_callable($object) ? call_user_func($object, $server) : object_get($server, $object)
+            );
         }
 
         // Process dynamically included environment variables.
         foreach ($this->additional as $key => $closure) {
-            $variables[$key] = call_user_func($closure, $server);
+            $variables->put($key, call_user_func($closure, $server));
         }
 
-        return $variables;
+        return $variables->toArray();
     }
 
     /**

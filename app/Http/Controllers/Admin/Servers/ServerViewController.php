@@ -9,6 +9,7 @@ use Pterodactyl\Models\Server;
 use Illuminate\Contracts\View\Factory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
@@ -57,6 +58,11 @@ class ServerViewController extends Controller
     private $nodeRepository;
 
     /**
+     * @var \Pterodactyl\Services\Servers\EnvironmentService
+     */
+    private $environmentService;
+
+    /**
      * ServerViewController constructor.
      *
      * @param \Illuminate\Contracts\View\Factory $view
@@ -66,6 +72,7 @@ class ServerViewController extends Controller
      * @param \Pterodactyl\Repositories\Eloquent\NestRepository $nestRepository
      * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \Pterodactyl\Services\Servers\EnvironmentService $environmentService
      */
     public function __construct(
         Factory $view,
@@ -74,7 +81,8 @@ class ServerViewController extends Controller
         MountRepository $mountRepository,
         NestRepository $nestRepository,
         NodeRepository $nodeRepository,
-        ServerRepository $repository
+        ServerRepository $repository,
+        EnvironmentService $environmentService
     ) {
         $this->view = $view;
         $this->databaseHostRepository = $databaseHostRepository;
@@ -83,6 +91,7 @@ class ServerViewController extends Controller
         $this->nestRepository = $nestRepository;
         $this->nodeRepository = $nodeRepository;
         $this->repository = $repository;
+        $this->environmentService = $environmentService;
     }
 
     /**
@@ -138,12 +147,12 @@ class ServerViewController extends Controller
      */
     public function startup(Request $request, Server $server)
     {
-        $parameters = $this->repository->getVariablesWithValues($server->id, true);
         $nests = $this->nestRepository->getWithEggs();
+        $variables = $this->environmentService->handle($server);
 
         $this->plainInject([
             'server' => $server,
-            'server_variables' => $parameters->data,
+            'server_variables' => $variables,
             'nests' => $nests->map(function (Nest $item) {
                 return array_merge($item->toArray(), [
                     'eggs' => $item->eggs->keyBy('id')->toArray(),
