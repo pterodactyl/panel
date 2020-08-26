@@ -15,7 +15,7 @@ import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/components/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
-import { useDeepMemo } from '@/plugins/useDeepMemo';
+import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Label from '@/components/elements/Label';
@@ -63,7 +63,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
     const loggedInPermissions = ServerContext.useStoreState(state => state.server.permissions);
 
     // The permissions that can be modified by this user.
-    const editablePermissions = useDeepMemo(() => {
+    const editablePermissions = useDeepCompareMemo(() => {
         const cleaned = Object.keys(permissions)
             .map(key => Object.keys(permissions[key].keys).map(pkey => `${key}.${pkey}`));
 

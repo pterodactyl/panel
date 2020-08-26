@@ -22,7 +22,6 @@ import ServerError from '@/components/screens/ServerError';
 import { httpErrorToHuman } from '@/api/http';
 import NotFound from '@/components/screens/NotFound';
 import { useStoreState } from 'easy-peasy';
-import useServer from '@/plugins/useServer';
 import ScreenBlock from '@/components/screens/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
@@ -34,7 +33,10 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     const { rootAdmin } = useStoreState(state => state.user.data!);
     const [ error, setError ] = useState('');
     const [ installing, setInstalling ] = useState(false);
-    const server = useServer();
+
+    const id = ServerContext.useStoreState(state => state.server.data?.id);
+    const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
+    const isInstalling = ServerContext.useStoreState(state => state.server.data?.isInstalling);
     const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
 
@@ -43,8 +45,8 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     }, []);
 
     useEffect(() => {
-        setInstalling(server?.isInstalling !== false);
-    }, [ server?.isInstalling ]);
+        setInstalling(!!isInstalling);
+    }, [ isInstalling ]);
 
     useEffect(() => {
         setError('');
@@ -71,7 +73,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     return (
         <React.Fragment key={'server-router'}>
             <NavigationBar/>
-            {!server ?
+            {(!uuid || !id) ?
                 error ?
                     <ServerError message={error}/>
                     :
@@ -111,7 +113,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     </CSSTransition>
                     <InstallListener/>
                     <WebsocketHandler/>
-                    {(installing && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${server.id}`)))) ?
+                    {(installing && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
                         <ScreenBlock
                             title={'Your server is installing.'}
                             image={'/assets/svgs/server_installing.svg'}
@@ -136,17 +138,37 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                         )}
                                         exact
                                     />
-                                    <Route path={`${match.path}/databases`} component={requireServerPermission(DatabasesContainer, 'database.*')} exact/>
-                                    <Route path={`${match.path}/schedules`} component={requireServerPermission(ScheduleContainer, 'schedule.*')} exact/>
+                                    <Route
+                                        path={`${match.path}/databases`}
+                                        component={requireServerPermission(DatabasesContainer, 'database.*')}
+                                        exact
+                                    />
+                                    <Route
+                                        path={`${match.path}/schedules`}
+                                        component={requireServerPermission(ScheduleContainer, 'schedule.*')}
+                                        exact
+                                    />
                                     <Route
                                         path={`${match.path}/schedules/:id`}
                                         component={ScheduleEditContainer}
                                         exact
                                     />
-                                    <Route path={`${match.path}/users`} component={requireServerPermission(UsersContainer, 'user.*')} exact/>
-                                    <Route path={`${match.path}/backups`} component={requireServerPermission(BackupContainer, 'backup.*')} exact/>
-                                    <Route path={`${match.path}/network`} component={requireServerPermission(NetworkContainer, 'allocation.*')} exact/>
-                                    <Route path={`${match.path}/startup`} component={requireServerPermission(StartupContainer, 'startup.*')} exact/>
+                                    <Route
+                                        path={`${match.path}/users`}
+                                        component={requireServerPermission(UsersContainer, 'user.*')}
+                                        exact
+                                    />
+                                    <Route
+                                        path={`${match.path}/backups`}
+                                        component={requireServerPermission(BackupContainer, 'backup.*')}
+                                        exact
+                                    />
+                                    <Route
+                                        path={`${match.path}/network`}
+                                        component={requireServerPermission(NetworkContainer, 'allocation.*')}
+                                        exact
+                                    />
+                                    <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
                                     <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
                                     <Route path={'*'} component={NotFound}/>
                                 </Switch>
