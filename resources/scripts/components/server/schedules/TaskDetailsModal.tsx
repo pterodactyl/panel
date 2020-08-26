@@ -9,7 +9,6 @@ import Field from '@/components/elements/Field';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { number, object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
-import useServer from '@/plugins/useServer';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import tw from 'twin.macro';
 import Label from '@/components/elements/Label';
@@ -108,7 +107,7 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
 };
 
 export default ({ task, schedule, onDismissed }: Props) => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, addError } = useFlash();
     const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 

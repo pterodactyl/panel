@@ -7,7 +7,6 @@ import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
 import Can from '@/components/elements/Can';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
@@ -32,7 +31,7 @@ const getActionDetails = (action: string): [ string, any ] => {
 };
 
 export default ({ schedule, task }: Props) => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, addError } = useFlash();
     const [ visible, setVisible ] = useState(false);
     const [ isLoading, setIsLoading ] = useState(false);

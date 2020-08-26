@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDatabase, faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faDatabase, faEye, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import Modal from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
@@ -12,7 +12,6 @@ import { httpErrorToHuman } from '@/api/http';
 import RotatePasswordButton from '@/components/server/databases/RotatePasswordButton';
 import Can from '@/components/elements/Can';
 import { ServerDatabase } from '@/api/server/getServerDatabases';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
@@ -26,7 +25,7 @@ interface Props {
 }
 
 export default ({ database, className }: Props) => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
     const [ connectionVisible, setConnectionVisible ] = useState(false);

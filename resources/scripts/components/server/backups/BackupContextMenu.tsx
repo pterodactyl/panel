@@ -6,20 +6,20 @@ import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import useFlash from '@/plugins/useFlash';
 import ChecksumModal from '@/components/server/backups/ChecksumModal';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import useServer from '@/plugins/useServer';
 import deleteBackup from '@/api/server/backups/deleteBackup';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import Can from '@/components/elements/Can';
 import tw from 'twin.macro';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
+import { ServerContext } from '@/state/server';
 
 interface Props {
     backup: ServerBackup;
 }
 
 export default ({ backup }: Props) => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [ loading, setLoading ] = useState(false);
     const [ visible, setVisible ] = useState(false);
     const [ deleteVisible, setDeleteVisible ] = useState(false);
