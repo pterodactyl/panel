@@ -35,19 +35,19 @@ export default () => {
 
     let fetchFileContent: null | (() => Promise<string>) = null;
 
-    if (action !== 'new') {
-        useEffect(() => {
-            setLoading(true);
-            setError('');
-            getFileContents(uuid, hash.replace(/^#/, ''))
-                .then(setContent)
-                .catch(error => {
-                    console.error(error);
-                    setError(httpErrorToHuman(error));
-                })
-                .then(() => setLoading(false));
-        }, [ uuid, hash ]);
-    }
+    useEffect(() => {
+        if (action === 'new') return;
+
+        setLoading(true);
+        setError('');
+        getFileContents(uuid, hash.replace(/^#/, ''))
+            .then(setContent)
+            .catch(error => {
+                console.error(error);
+                setError(httpErrorToHuman(error));
+            })
+            .then(() => setLoading(false));
+    }, [ action, uuid, hash ]);
 
     const save = (name?: string) => {
         if (!fetchFileContent) {
