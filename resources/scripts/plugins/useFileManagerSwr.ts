@@ -1,11 +1,10 @@
 import useSWR from 'swr';
 import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import { cleanDirectoryPath } from '@/helpers';
-import useServer from '@/plugins/useServer';
 import { ServerContext } from '@/state/server';
 
 export default () => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     return useSWR<FileObject[]>(

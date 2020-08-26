@@ -19,7 +19,6 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import copyFile from '@/api/server/files/copyFile';
 import Can from '@/components/elements/Can';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import { FileObject } from '@/api/server/files/loadDirectory';
@@ -56,7 +55,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const [ showSpinner, setShowSpinner ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
 
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);

@@ -7,7 +7,6 @@ import Input from '@/components/elements/Input';
 import tw from 'twin.macro';
 import { debounce } from 'debounce';
 import updateStartupVariable from '@/api/server/updateStartupVariable';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerStartup from '@/api/swr/getServerStartup';

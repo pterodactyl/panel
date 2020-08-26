@@ -8,7 +8,6 @@ import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import useServer from '@/plugins/useServer';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
@@ -36,7 +35,7 @@ const generateDirectoryData = (name: string): FileObject => ({
 });
 
 export default () => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
 
