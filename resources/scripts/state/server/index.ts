@@ -6,6 +6,7 @@ import subusers, { ServerSubuserStore } from '@/state/server/subusers';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import schedules, { ServerScheduleStore } from '@/state/server/schedules';
 import databases, { ServerDatabaseStore } from '@/state/server/databases';
+import isEqual from 'react-fast-compare';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
 
@@ -15,6 +16,7 @@ interface ServerDataStore {
 
     getServer: Thunk<ServerDataStore, string, Record<string, unknown>, ServerStore, Promise<void>>;
     setServer: Action<ServerDataStore, Server>;
+    setServerFromState: Action<ServerDataStore, (s: Server) => Server>;
     setPermissions: Action<ServerDataStore, string[]>;
 }
 
@@ -29,11 +31,22 @@ const server: ServerDataStore = {
     }),
 
     setServer: action((state, payload) => {
-        state.data = payload;
+        if (!isEqual(payload, state.data)) {
+            state.data = payload;
+        }
+    }),
+
+    setServerFromState: action((state, payload) => {
+        const output = payload(state.data!);
+        if (!isEqual(output, state.data)) {
+            state.data = output;
+        }
     }),
 
     setPermissions: action((state, payload) => {
-        state.permissions = payload;
+        if (!isEqual(payload, state.permissions)) {
+            state.permissions = payload;
+        }
     }),
 };
 

@@ -5,13 +5,13 @@ import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import useFlash from '@/plugins/useFlash';
-import useServer from '@/plugins/useServer';
 import createServerBackup from '@/api/server/backups/createServerBackup';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
 import { Textarea } from '@/components/elements/Input';
 import getServerBackups from '@/api/swr/getServerBackups';
+import { ServerContext } from '@/state/server';
 
 interface Values {
     name: string;
@@ -58,7 +58,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
 };
 
 export default () => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
     const { mutate } = getServerBackups();

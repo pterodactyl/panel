@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { usePermissions } from '@/plugins/usePermissions';
+import isEqual from 'react-fast-compare';
 
 interface Props {
     action: string | string[];
@@ -23,4 +24,4 @@ const Can = ({ action, matchAny = false, renderOnError, children }: Props) => {
     );
 };
 
-export default Can;
+export default memo(Can, isEqual);

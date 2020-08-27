@@ -6,7 +6,6 @@ import styled from 'styled-components/macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Button from '@/components/elements/Button';
 import Can from '@/components/elements/Can';
-import useServer from '@/plugins/useServer';
 import useSWR from 'swr';
 import getServerAllocations from '@/api/server/network/getServerAllocations';
 import { Allocation } from '@/api/server/getServer';
@@ -18,12 +17,16 @@ import setServerAllocationNotes from '@/api/server/network/setServerAllocationNo
 import { debounce } from 'debounce';
 import InputSpinner from '@/components/elements/InputSpinner';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import { ServerContext } from '@/state/server';
+import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 
 const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm block`}`;
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
 
 const NetworkContainer = () => {
-    const { uuid, allocations } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
+
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ loading, setLoading ] = useState<false | number>(false);
     const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), { initialData: allocations });

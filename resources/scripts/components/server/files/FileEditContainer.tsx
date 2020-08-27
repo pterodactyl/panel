@@ -14,8 +14,8 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Select from '@/components/elements/Select';
 import modes from '@/modes';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
+import { ServerContext } from '@/state/server';
 
 const LazyAceEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/AceEditor'));
 
@@ -30,24 +30,25 @@ export default () => {
     const history = useHistory();
     const { hash } = useLocation();
 
-    const { id, uuid } = useServer();
+    const id = ServerContext.useStoreState(state => state.server.data!.id);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
 
     let fetchFileContent: null | (() => Promise<string>) = null;
 
-    if (action !== 'new') {
-        useEffect(() => {
-            setLoading(true);
-            setError('');
-            getFileContents(uuid, hash.replace(/^#/, ''))
-                .then(setContent)
-                .catch(error => {
-                    console.error(error);
-                    setError(httpErrorToHuman(error));
-                })
-                .then(() => setLoading(false));
-        }, [ uuid, hash ]);
-    }
+    useEffect(() => {
+        if (action === 'new') return;
+
+        setLoading(true);
+        setError('');
+        getFileContents(uuid, hash.replace(/^#/, ''))
+            .then(setContent)
+            .catch(error => {
+                console.error(error);
+                setError(httpErrorToHuman(error));
+            })
+            .then(() => setLoading(false));
+    }, [ action, uuid, hash ]);
 
     const save = (name?: string) => {
         if (!fetchFileContent) {

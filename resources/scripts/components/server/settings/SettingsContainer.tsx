@@ -1,29 +1,25 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import { useStoreState } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import { UserData } from '@/state/user';
 import RenameServerBox from '@/components/server/settings/RenameServerBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/components/elements/Can';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import { LinkButton } from '@/components/elements/Button';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 export default () => {
-    const user = useStoreState<ApplicationStore, UserData>(state => state.user.data!);
-    const server = ServerContext.useStoreState(state => state.server.data!);
+    const username = useStoreState(state => state.user.data!.username);
+    const id = ServerContext.useStoreState(state => state.server.data!.id);
+    const sftpIp = ServerContext.useStoreState(state => state.server.data!.sftpDetails.ip);
+    const sftpPort = ServerContext.useStoreState(state => state.server.data!.sftpDetails.port);
 
     return (
-        <PageContentBlock>
-            <Helmet>
-                <title> {server.name} | Settings </title>
-            </Helmet>
+        <ServerContentBlock title={'Settings'}>
             <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
             <div css={tw`md:flex`}>
                 <div css={tw`w-full md:flex-1 md:mr-10`}>
@@ -33,7 +29,7 @@ export default () => {
                                 <Label>Server Address</Label>
                                 <Input
                                     type={'text'}
-                                    value={`sftp://${server.sftpDetails.ip}:${server.sftpDetails.port}`}
+                                    value={`sftp://${sftpIp}:${sftpPort}`}
                                     readOnly
                                 />
                             </div>
@@ -41,7 +37,7 @@ export default () => {
                                 <Label>Username</Label>
                                 <Input
                                     type={'text'}
-                                    value={`${user.username}.${server.id}`}
+                                    value={`${username}.${id}`}
                                     readOnly
                                 />
                             </div>
@@ -56,7 +52,7 @@ export default () => {
                                 <div css={tw`ml-4`}>
                                     <LinkButton
                                         isSecondary
-                                        href={`sftp://${user.username}.${server.id}@${server.sftpDetails.ip}:${server.sftpDetails.port}`}
+                                        href={`sftp://${username}.${id}@${sftpIp}:${sftpPort}`}
                                     >
                                         Launch SFTP
                                     </LinkButton>
@@ -76,6 +72,6 @@ export default () => {
                     </Can>
                 </div>
             </div>
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };

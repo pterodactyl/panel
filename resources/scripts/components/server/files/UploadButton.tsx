@@ -1,6 +1,5 @@
 import axios from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
-import useServer from '@/plugins/useServer';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
@@ -19,7 +18,7 @@ const InnerContainer = styled.div`
 `;
 
 export default () => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [ visible, setVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
     const { mutate } = useFileManagerSwr();

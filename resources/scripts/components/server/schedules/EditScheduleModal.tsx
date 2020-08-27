@@ -8,7 +8,6 @@ import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedul
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
@@ -75,7 +74,7 @@ const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdate
 };
 
 export default ({ schedule, visible, ...props }: Props) => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [ modalVisible, setModalVisible ] = useState(visible);
 

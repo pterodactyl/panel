@@ -7,7 +7,6 @@ import renameFiles from '@/api/server/files/renameFiles';
 import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import useServer from '@/plugins/useServer';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 
@@ -18,7 +17,7 @@ interface FormikValues {
 type OwnProps = RequiredModalProps & { files: string[]; useMoveTerminology?: boolean };
 
 const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);

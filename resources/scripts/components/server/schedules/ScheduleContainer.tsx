@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
@@ -9,15 +8,14 @@ import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import { httpErrorToHuman } from '@/api/http';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import Can from '@/components/elements/Can';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Button from '@/components/elements/Button';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 export default ({ match, history }: RouteComponentProps) => {
-    const { uuid, name: serverName } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, addError } = useFlash();
     const [ loading, setLoading ] = useState(true);
     const [ visible, setVisible ] = useState(false);
@@ -37,10 +35,7 @@ export default ({ match, history }: RouteComponentProps) => {
     }, []);
 
     return (
-        <PageContentBlock>
-            <Helmet>
-                <title> {serverName} | Schedules </title>
-            </Helmet>
+        <ServerContentBlock title={'Schedules'}>
             <FlashMessageRender byKey={'schedules'} css={tw`mb-4`}/>
             {(!schedules.length && loading) ?
                 <Spinner size={'large'} centered/>
@@ -77,6 +72,6 @@ export default ({ match, history }: RouteComponentProps) => {
                     </Can>
                 </>
             }
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };

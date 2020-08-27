@@ -8,14 +8,14 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 import compressFiles from '@/api/server/files/compressFiles';
-import useServer from '@/plugins/useServer';
 import { ServerContext } from '@/state/server';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 
 const MassActionsBar = () => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ loading, setLoading ] = useState(false);

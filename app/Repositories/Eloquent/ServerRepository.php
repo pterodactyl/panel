@@ -132,45 +132,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Return all of the server variables possible and default to the variable
-     * default if there is no value defined for the specific server requested.
-     *
-     * @param int $id
-     * @param bool $returnAsObject
-     * @return array|object
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getVariablesWithValues(int $id, bool $returnAsObject = false)
-    {
-        $this->getBuilder()
-            ->with('variables', 'egg.variables')
-            ->findOrFail($id);
-
-        try {
-            $instance = $this->getBuilder()->with('variables', 'egg.variables')->find($id, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
-        }
-
-        $data = [];
-        $instance->getRelation('egg')->getRelation('variables')->each(function ($item) use (&$data, $instance) {
-            $display = $instance->getRelation('variables')->where('variable_id', $item->id)->pluck('variable_value')->first();
-
-            $data[$item->env_variable] = $display ?? $item->default_value;
-        });
-
-        if ($returnAsObject) {
-            return (object) [
-                'data' => $data,
-                'server' => $instance,
-            ];
-        }
-
-        return $data;
-    }
-
-    /**
      * Return enough data to be used for the creation of a server via the daemon.
      *
      * @param \Pterodactyl\Models\Server $server

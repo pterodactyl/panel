@@ -1,5 +1,4 @@
 import React, { lazy, useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
@@ -7,11 +6,11 @@ import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import Can from '@/components/elements/Can';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import ContentContainer from '@/components/elements/ContentContainer';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import StopOrKillButton from '@/components/server/StopOrKillButton';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -23,10 +22,13 @@ export default () => {
     const [ cpu, setCpu ] = useState(0);
     const [ disk, setDisk ] = useState(0);
 
-    const server = ServerContext.useStoreState(state => state.server.data!);
+    const name = ServerContext.useStoreState(state => state.server.data!.name);
+    const limits = ServerContext.useStoreState(state => state.server.data!.limits);
+    const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
     const status = ServerContext.useStoreState(state => state.status.value);
 
-    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
+    const connected = ServerContext.useStoreState(state => state.socket.connected);
+    const instance = ServerContext.useStoreState(state => state.socket.instance);
 
     const statsListener = (data: string) => {
         let stats: any = {};
@@ -57,16 +59,13 @@ export default () => {
         };
     }, [ instance, connected ]);
 
-    const disklimit = server.limits.disk ? megabytesToHuman(server.limits.disk) : 'Unlimited';
-    const memorylimit = server.limits.memory ? megabytesToHuman(server.limits.memory) : 'Unlimited';
+    const disklimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
+    const memorylimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
 
     return (
-        <PageContentBlock css={tw`flex flex-wrap`}>
-            <Helmet>
-                <title> {server.name} | Console </title>
-            </Helmet>
+        <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
             <div css={tw`w-full md:w-1/4`}>
-                <TitledGreyBox title={server.name} icon={faServer}>
+                <TitledGreyBox title={name} icon={faServer}>
                     <p css={tw`text-xs uppercase`}>
                         <FontAwesomeIcon
                             icon={faCircle}
@@ -90,7 +89,7 @@ export default () => {
                         <span css={tw`text-neutral-500`}> / {disklimit}</span>
                     </p>
                 </TitledGreyBox>
-                {!server.isInstalling ?
+                {!isInstalling ?
                     <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
                         <div css={tw`shadow-md bg-neutral-700 rounded p-3 flex text-xs mt-4 justify-center`}>
                             <Can action={'control.start'}>
@@ -143,6 +142,6 @@ export default () => {
                     <ChunkedStatGraphs/>
                 </SuspenseSpinner>
             </div>
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };

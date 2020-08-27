@@ -1,21 +1,20 @@
 import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import Spinner from '@/components/elements/Spinner';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
 import CreateBackupButton from '@/components/server/backups/CreateBackupButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import BackupRow from '@/components/server/backups/BackupRow';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import getServerBackups from '@/api/swr/getServerBackups';
+import { ServerContext } from '@/state/server';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { featureLimits, name: serverName } = useServer();
-
     const { data: backups, error, isValidating } = getServerBackups();
+
+    const backupLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.backups);
 
     useEffect(() => {
         if (!error) {
@@ -32,10 +31,7 @@ export default () => {
     }
 
     return (
-        <PageContentBlock>
-            <Helmet>
-                <title>{serverName} | Backups</title>
-            </Helmet>
+        <ServerContentBlock title={'Backups'}>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             {!backups.items.length ?
                 <p css={tw`text-center text-sm text-neutral-400`}>
@@ -50,23 +46,23 @@ export default () => {
                     />)}
                 </div>
             }
-            {featureLimits.backups === 0 &&
+            {backupLimit === 0 &&
             <p css={tw`text-center text-sm text-neutral-400`}>
                 Backups cannot be created for this server.
             </p>
             }
             <Can action={'backup.create'}>
-                {(featureLimits.backups > 0 && backups.items.length > 0) &&
+                {(backupLimit > 0 && backups.items.length > 0) &&
                 <p css={tw`text-center text-xs text-neutral-400 mt-2`}>
-                    {backups.items.length} of {featureLimits.backups} backups have been created for this server.
+                    {backups.items.length} of {backupLimit} backups have been created for this server.
                 </p>
                 }
-                {featureLimits.backups > 0 && featureLimits.backups !== backups.items.length &&
+                {backupLimit > 0 && backupLimit !== backups.items.length &&
                 <div css={tw`mt-6 flex justify-end`}>
                     <CreateBackupButton/>
                 </div>
                 }
             </Can>
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };

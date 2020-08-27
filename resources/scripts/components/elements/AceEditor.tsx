@@ -28,7 +28,7 @@ export interface Props {
     filename?: string;
     onModeChanged: (mode: string) => void;
     fetchContent: (callback: () => Promise<string>) => void;
-    onContentSaved: (content: string) => void;
+    onContentSaved: () => void;
 }
 
 export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
@@ -70,7 +70,7 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
         editor.commands.addCommand({
             name: 'Save',
             bindKey: { win: 'Ctrl-s', mac: 'Command-s' },
-            exec: (editor: Editor) => onContentSaved(editor.session.getValue()),
+            exec: () => onContentSaved(),
         });
 
         fetchContent(() => Promise.resolve(editor.session.getValue()));

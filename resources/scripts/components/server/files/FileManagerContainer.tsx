@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
@@ -9,15 +8,14 @@ import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { Link, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import ServerError from '@/components/screens/ServerError';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import useServer from '@/plugins/useServer';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import UploadButton from '@/components/server/files/UploadButton';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -25,7 +23,7 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
-    const { id, name: serverName } = useServer();
+    const id = ServerContext.useStoreState(state => state.server.data!.id);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
 
@@ -44,10 +42,7 @@ export default () => {
     }
 
     return (
-        <PageContentBlock showFlashKey={'files'}>
-            <Helmet>
-                <title> {serverName} | File Manager </title>
-            </Helmet>
+        <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
             <FileManagerBreadcrumbs/>
             {
                 !files ?
@@ -93,6 +88,6 @@ export default () => {
                         </Can>
                     </>
             }
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { ServerEggVariable } from '@/api/server/types';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -7,10 +7,11 @@ import Input from '@/components/elements/Input';
 import tw from 'twin.macro';
 import { debounce } from 'debounce';
 import updateStartupVariable from '@/api/server/updateStartupVariable';
-import useServer from '@/plugins/useServer';
-import { ServerContext } from '@/state/server';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import getServerStartup from '@/api/swr/getServerStartup';
+import isEqual from 'react-fast-compare';
+import { ServerContext } from '@/state/server';
 
 interface Props {
     variable: ServerEggVariable;
@@ -19,22 +20,21 @@ interface Props {
 const VariableBox = ({ variable }: Props) => {
     const FLASH_KEY = `server:startup:${variable.envVariable}`;
 
-    const server = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [ loading, setLoading ] = useState(false);
     const [ canEdit ] = usePermissions([ 'startup.update' ]);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-
-    const setServer = ServerContext.useStoreActions(actions => actions.server.setServer);
+    const { mutate } = getServerStartup(uuid);
 
     const setVariableValue = debounce((value: string) => {
         setLoading(true);
         clearFlashes(FLASH_KEY);
 
-        updateStartupVariable(server.uuid, variable.envVariable, value)
-            .then(response => setServer({
-                ...server,
-                variables: server.variables.map(v => v.envVariable === response.envVariable ? response : v),
-            }))
+        updateStartupVariable(uuid, variable.envVariable, value)
+            .then(([ response, invocation ]) => mutate(data => ({
+                invocation,
+                variables: data.variables.map(v => v.envVariable === response.envVariable ? response : v),
+            }), false))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ error, key: FLASH_KEY });
@@ -74,4 +74,4 @@ const VariableBox = ({ variable }: Props) => {
     );
 };
 
-export default VariableBox;
+export default memo(VariableBox, isEqual);
