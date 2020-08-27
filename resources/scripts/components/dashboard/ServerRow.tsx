@@ -60,14 +60,6 @@ export default ({ server, className }: { server: Server; className?: string }) =
             </div>
             <div css={tw`flex-1 md:ml-4`}>
                 <div css={tw`flex items-center`}>
-                    <div
-                        css={[
-                            tw`w-3 h-3 rounded-full mr-2`,
-                            (!stats?.status || stats?.status === 'offline')
-                                ? tw`bg-red-500`
-                                : (stats?.status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`),
-                        ]}
-                    />
                     <p css={tw`text-lg`}>{server.name}</p>
                 </div>
             </div>
@@ -102,7 +94,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </div>
                     :
                     <React.Fragment>
-                        <div css={tw`flex-1 flex ml-4 sm:flex hidden justify-center`}>
+                        <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>
                             <FontAwesomeIcon
                                 icon={faMicrochip}
                                 css={[
@@ -141,7 +133,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
                         </div>
-                        <div css={tw`flex-1 ml-4 md:block hidden`}>
+                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
                                 <FontAwesomeIcon
                                     icon={faHdd}
@@ -161,6 +153,19 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                 </p>
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
+                        </div>
+                        
+                        <div css={tw`flex-1 flex justify-end sm:hidden`}>
+                            <div css={tw`flex items-end text-right`}>
+                                <div
+                                    css={[
+                                        tw`w-3 h-3 rounded-full`,
+                                        (!stats?.status || stats?.status === 'offline')
+                                            ? tw`bg-red-500`
+                                            : (stats?.status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`),
+                                    ]}
+                                />
+                            </div>
                         </div>
                     </React.Fragment>
                 }
