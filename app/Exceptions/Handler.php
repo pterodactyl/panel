@@ -169,14 +169,30 @@ class Handler extends ExceptionHandler
      */
     public function invalidJson($request, ValidationException $exception)
     {
-        $errors = collect($exception->errors())->map(function ($errors, $field) use ($exception) {
+        $codes = collect($exception->validator->failed())->mapWithKeys(function ($reasons, $field) {
+            $cleaned = [];
+            foreach ($reasons as $reason => $attrs) {
+                $cleaned[] = snake_case($reason);
+            }
+
+            return [str_replace('.', '_', $field) => $cleaned];
+        })->toArray();
+
+        $errors = collect($exception->errors())->map(function ($errors, $field) use ($codes, $exception) {
             $response = [];
             foreach ($errors as $key => $error) {
-                $converted = self::convertToArray($exception)['errors'][0];
-                $response[] = array_merge($converted, [
-                    'detail' => $error,
+                $meta = [
                     'source_field' => $field,
-                ]);
+                    'rule' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', array_get(
+                        $codes, str_replace('.', '_', $field) . '.' . $key
+                    )),
+                ];
+
+                $converted = self::convertToArray($exception)['errors'][0];
+                $converted['detail'] = $error;
+                $converted['meta'] = is_array($converted['meta']) ? array_merge($converted['meta'], $meta) : $meta;
+
+                $response[] = $converted;
             }
 
             return $response;
