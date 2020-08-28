@@ -133,7 +133,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonPath('errors.0.code', 'required');
+        $response->assertJsonPath('errors.0.meta.rule', 'required');
         $response->assertJsonPath('errors.0.detail', 'The description field is required.');
     }
 

@@ -71,7 +71,7 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
                 'day_of_week' => '*',
             ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonPath('errors.0.code', 'boolean');
+            ->assertJsonPath('errors.0.meta.rule', 'boolean');
     }
 
     /**

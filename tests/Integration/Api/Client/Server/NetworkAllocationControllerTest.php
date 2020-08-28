@@ -63,7 +63,7 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
 
         $this->actingAs($user)->postJson($this->link($allocation), [])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonPath('errors.0.code', 'present');
+            ->assertJsonPath('errors.0.meta.rule', 'present');
 
         $this->actingAs($user)->postJson($this->link($allocation), ['notes' => 'Test notes'])
             ->assertOk()

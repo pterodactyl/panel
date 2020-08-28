@@ -66,7 +66,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
             'time_offset' => 0,
         ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonPath('errors.0.code', 'in')
+            ->assertJsonPath('errors.0.meta.rule', 'in')
             ->assertJsonPath('errors.0.source.field', 'action');
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
@@ -74,7 +74,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
             'time_offset' => 0,
         ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonPath('errors.0.code', 'required_unless')
+            ->assertJsonPath('errors.0.meta.rule', 'required_unless')
             ->assertJsonPath('errors.0.source.field', 'payload');
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
@@ -84,7 +84,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
             'sequence_id' => 'hodor',
         ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-            ->assertJsonPath('errors.0.code', 'numeric')
+            ->assertJsonPath('errors.0.meta.rule', 'numeric')
             ->assertJsonPath('errors.0.source.field', 'sequence_id');
     }
 
