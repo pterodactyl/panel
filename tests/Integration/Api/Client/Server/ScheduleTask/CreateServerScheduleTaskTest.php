@@ -56,8 +56,8 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         $response = $this->actingAs($user)->postJson($this->link($schedule, '/tasks'))->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         foreach (['action', 'payload', 'time_offset'] as $i => $field) {
-            $response->assertJsonPath("errors.{$i}.code", $field === 'payload' ? 'required_unless' : 'required');
-            $response->assertJsonPath("errors.{$i}.source.field", $field);
+            $response->assertJsonPath("errors.{$i}.meta.rule", $field === 'payload' ? 'required_unless' : 'required');
+            $response->assertJsonPath("errors.{$i}.meta.source_field", $field);
         }
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
@@ -67,7 +67,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonPath('errors.0.meta.rule', 'in')
-            ->assertJsonPath('errors.0.source.field', 'action');
+            ->assertJsonPath('errors.0.meta.source_field', 'action');
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
             'action' => 'command',
@@ -75,7 +75,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonPath('errors.0.meta.rule', 'required_unless')
-            ->assertJsonPath('errors.0.source.field', 'payload');
+            ->assertJsonPath('errors.0.meta.source_field', 'payload');
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
             'action' => 'command',
@@ -85,7 +85,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
             ->assertJsonPath('errors.0.meta.rule', 'numeric')
-            ->assertJsonPath('errors.0.source.field', 'sequence_id');
+            ->assertJsonPath('errors.0.meta.source_field', 'sequence_id');
     }
 
     /**
