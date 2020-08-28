@@ -48,12 +48,13 @@ class BackupStatusController extends Controller
             );
         }
 
-        $model->update([
-            'is_successful' => $request->input('successful') ? true : false,
-            'checksum' => $request->input('checksum_type') . ':' . $request->input('checksum'),
-            'bytes' => $request->input('size'),
+        $successful = $request->input('successful') ? true : false;
+        $model->forceFill([
+            'is_successful' => $successful,
+            'checksum' => $successful ? ($request->input('checksum_type') . ':' . $request->input('checksum')) : null,
+            'bytes' => $successful ? $request->input('size') : 0,
             'completed_at' => CarbonImmutable::now(),
-        ]);
+        ])->save();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
