@@ -28,7 +28,7 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonPath('errors.0.code', 'required');
+        $response->assertJsonPath('errors.0.meta.rule', 'required');
 
         $server = $server->refresh();
         $this->assertSame($originalName, $server->name);

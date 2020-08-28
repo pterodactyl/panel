@@ -178,16 +178,21 @@ class Handler extends ExceptionHandler
             return [str_replace('.', '_', $field) => $cleaned];
         })->toArray();
 
-        $errors = collect($exception->errors())->map(function ($errors, $field) use ($codes) {
+        $errors = collect($exception->errors())->map(function ($errors, $field) use ($codes, $exception) {
             $response = [];
             foreach ($errors as $key => $error) {
-                $response[] = [
-                    'code' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', array_get(
+                $meta = [
+                    'source_field' => $field,
+                    'rule' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', array_get(
                         $codes, str_replace('.', '_', $field) . '.' . $key
                     )),
-                    'detail' => $error,
-                    'source' => ['field' => $field],
                 ];
+
+                $converted = self::convertToArray($exception)['errors'][0];
+                $converted['detail'] = $error;
+                $converted['meta'] = is_array($converted['meta']) ? array_merge($converted['meta'], $meta) : $meta;
+
+                $response[] = $converted;
             }
 
             return $response;
@@ -209,7 +214,9 @@ class Handler extends ExceptionHandler
     {
         $error = [
             'code' => class_basename($exception),
-            'status' => method_exists($exception, 'getStatusCode') ? strval($exception->getStatusCode()) : '500',
+            'status' => method_exists($exception, 'getStatusCode')
+                ? strval($exception->getStatusCode())
+                : ($exception instanceof ValidationException ? '422' : '500'),
             'detail' => 'An error was encountered while processing this request.',
         ];
 
