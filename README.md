@@ -36,6 +36,9 @@ in becoming a sponsor?](https://github.com/sponsors/DaneEveritt)
 > Skynode provides blazing fast game servers along with a top notch user experience. Whatever our clients are looking
 > for, we're able to provide it!
 
+#### [XCORE-SERVER.de](https://xcore-server.de)
+> XCORE-SERVER.de offers High-End Servers for hosting and gaming since 2012. Fast, excellent and well known for eSports Gaming.
+
 ## Support & Documentation
 Support for using Pterodactyl can be found on our [Documentation Website](https://pterodactyl.io/project/introduction.html), [Guides Website](https://pterodactyl.io/community/about.html), or via our [Discord Chat](https://discord.gg/QRDZvVm).
 
