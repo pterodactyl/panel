@@ -169,25 +169,14 @@ class Handler extends ExceptionHandler
      */
     public function invalidJson($request, ValidationException $exception)
     {
-        $codes = collect($exception->validator->failed())->mapWithKeys(function ($reasons, $field) {
-            $cleaned = [];
-            foreach ($reasons as $reason => $attrs) {
-                $cleaned[] = snake_case($reason);
-            }
-
-            return [str_replace('.', '_', $field) => $cleaned];
-        })->toArray();
-
-        $errors = collect($exception->errors())->map(function ($errors, $field) use ($codes) {
+        $errors = collect($exception->errors())->map(function ($errors, $field) use ($exception) {
             $response = [];
             foreach ($errors as $key => $error) {
-                $response[] = [
-                    'code' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', array_get(
-                        $codes, str_replace('.', '_', $field) . '.' . $key
-                    )),
+                $converted = self::convertToArray($exception)['errors'][0];
+                $response[] = array_merge($converted, [
                     'detail' => $error,
-                    'source' => ['field' => $field],
-                ];
+                    'source_field' => $field,
+                ]);
             }
 
             return $response;
@@ -209,7 +198,9 @@ class Handler extends ExceptionHandler
     {
         $error = [
             'code' => class_basename($exception),
-            'status' => method_exists($exception, 'getStatusCode') ? strval($exception->getStatusCode()) : '500',
+            'status' => method_exists($exception, 'getStatusCode')
+                ? strval($exception->getStatusCode())
+                : ($exception instanceof ValidationException ? '422' : '500'),
             'detail' => 'An error was encountered while processing this request.',
         ];
 
