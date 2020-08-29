@@ -1,7 +1,8 @@
-import React from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
+import React, { useContext } from 'react';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import asModal from '@/hoc/asModal';
+import ModalContext from '@/context/ModalContext';
 
 type Props = {
     title: string;
@@ -9,26 +10,29 @@ type Props = {
     children: string;
     onConfirmed: () => void;
     showSpinnerOverlay?: boolean;
-} & RequiredModalProps;
+};
 
-const ConfirmationModal = ({ title, appear, children, visible, buttonText, onConfirmed, showSpinnerOverlay, onDismissed }: Props) => (
-    <Modal
-        appear={appear || true}
-        visible={visible}
-        showSpinnerOverlay={showSpinnerOverlay}
-        onDismissed={() => onDismissed()}
-    >
-        <h2 css={tw`text-2xl mb-6`}>{title}</h2>
-        <p css={tw`text-sm`}>{children}</p>
-        <div css={tw`flex items-center justify-end mt-8`}>
-            <Button isSecondary onClick={() => onDismissed()}>
-                Cancel
-            </Button>
-            <Button color={'red'} css={tw`ml-4`} onClick={() => onConfirmed()}>
-                {buttonText}
-            </Button>
-        </div>
-    </Modal>
-);
+const ConfirmationModal = ({ title, children, buttonText, onConfirmed }: Props) => {
+    const { dismiss } = useContext(ModalContext);
 
-export default ConfirmationModal;
+    return (
+        <>
+            <h2 css={tw`text-2xl mb-6`}>{title}</h2>
+            <p css={tw`text-sm`}>{children}</p>
+            <div css={tw`flex items-center justify-end mt-8`}>
+                <Button isSecondary onClick={() => dismiss()}>
+                    Cancel
+                </Button>
+                <Button color={'red'} css={tw`ml-4`} onClick={() => onConfirmed()}>
+                    {buttonText}
+                </Button>
+            </div>
+        </>
+    );
+};
+
+ConfirmationModal.displayName = 'ConfirmationModal';
+
+export default asModal<Props>(props => ({
+    showSpinnerOverlay: props.showSpinnerOverlay,
+}))(ConfirmationModal);

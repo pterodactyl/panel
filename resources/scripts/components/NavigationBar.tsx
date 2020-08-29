@@ -43,8 +43,8 @@ const RightNavigation = styled.div`
 `;
 
 export default () => {
-    const user = useStoreState((state: ApplicationStore) => state.user.data!);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
+    const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
 
     return (
         <Navigation>
@@ -62,7 +62,7 @@ export default () => {
                     <NavLink to={'/account'}>
                         <FontAwesomeIcon icon={faUserCircle}/>
                     </NavLink>
-                    {user.rootAdmin &&
+                    {rootAdmin &&
                     <a href={'/admin'} target={'_blank'} rel={'noreferrer'}>
                         <FontAwesomeIcon icon={faCogs}/>
                     </a>

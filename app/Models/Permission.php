@@ -55,6 +55,9 @@ class Permission extends Model
     const ACTION_FILE_ARCHIVE = 'file.archive';
     const ACTION_FILE_SFTP = 'file.sftp';
 
+    const ACTION_STARTUP_READ = 'startup.read';
+    const ACTION_STARTUP_UPDATE = 'startup.update';
+
     const ACTION_SETTINGS_RENAME = 'settings.rename';
     const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
 
@@ -169,8 +172,8 @@ class Permission extends Model
         'startup' => [
             'description' => 'Permissions that control a user\'s ability to view this server\'s startup parameters.',
             'keys' => [
-                'read' => '',
-                'update' => '',
+                'read' => 'Allows a user to view the startup variables for a server.',
+                'update' => 'Allows a user to modify the startup variables for the server.',
             ],
         ],
 

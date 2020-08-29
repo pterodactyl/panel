@@ -11,7 +11,6 @@ import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import NewTaskButton from '@/components/server/schedules/NewTaskButton';
 import DeleteScheduleButton from '@/components/server/schedules/DeleteScheduleButton';
 import Can from '@/components/elements/Can';
-import useServer from '@/plugins/useServer';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import PageContentBlock from '@/components/elements/PageContentBlock';
@@ -28,7 +27,9 @@ interface State {
 }
 
 export default ({ match, history, location: { state } }: RouteComponentProps<Params, Record<string, unknown>, State>) => {
-    const { id, uuid } = useServer();
+    const id = ServerContext.useStoreState(state => state.server.data!.id);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+
     const { clearFlashes, addError } = useFlash();
     const [ isLoading, setIsLoading ] = useState(true);
     const [ showEditModal, setShowEditModal ] = useState(false);

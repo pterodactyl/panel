@@ -66,18 +66,6 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
     public function getPrimaryAllocation(Server $server, bool $refresh = false): Server;
 
     /**
-     * Return all of the server variables possible and default to the variable
-     * default if there is no value defined for the specific server requested.
-     *
-     * @param int $id
-     * @param bool $returnAsObject
-     * @return array|object
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getVariablesWithValues(int $id, bool $returnAsObject = false);
-
-    /**
      * Return enough data to be used for the creation of a server via the daemon.
      *
      * @param \Pterodactyl\Models\Server $server

@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Models;
 
+use Pterodactyl\Rules\ResolvesToIPAddress;
+
 class DatabaseHost extends Model
 {
     /**
@@ -51,12 +53,24 @@ class DatabaseHost extends Model
      */
     public static $validationRules = [
         'name' => 'required|string|max:255',
-        'host' => 'required|unique:database_hosts,host',
+        'host' => 'required|string',
         'port' => 'required|numeric|between:1,65535',
         'username' => 'required|string|max:32',
         'password' => 'nullable|string',
         'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
     ];
+
+    /**
+     * @return array
+     */
+    public static function getRules()
+    {
+        $rules = parent::getRules();
+
+        $rules['host'] = array_merge($rules['host'], [ new ResolvesToIPAddress() ]);
+
+        return $rules;
+    }
 
     /**
      * Gets the node associated with a database host.

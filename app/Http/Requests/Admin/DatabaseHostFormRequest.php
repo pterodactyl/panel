@@ -29,10 +29,6 @@ class DatabaseHostFormRequest extends AdminFormRequest
             $this->merge(['node_id' => null]);
         }
 
-        $this->merge([
-            'host' => gethostbyname($this->input('host')),
-        ]);
-
         return parent::getValidatorInstance();
     }
 }

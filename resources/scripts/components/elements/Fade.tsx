@@ -8,14 +8,14 @@ interface Props extends Omit<CSSTransitionProps, 'timeout' | 'classNames'> {
 }
 
 const Container = styled.div<{ timeout: number }>`
-    .fade-enter, .fade-exit {
+    .fade-enter, .fade-exit, .fade-appear {
         will-change: opacity;
     }
     
-    .fade-enter {
+    .fade-enter, .fade-appear {
         ${tw`opacity-0`};
         
-        &.fade-enter-active {
+        &.fade-enter-active, &.fade-appear-active {
             ${tw`opacity-100 transition-opacity ease-in`};
             transition-duration: ${props => props.timeout}ms;
         }

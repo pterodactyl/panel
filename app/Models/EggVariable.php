@@ -2,6 +2,27 @@
 
 namespace Pterodactyl\Models;
 
+/**
+ * @property int $id
+ * @property int $egg_id
+ * @property string $name
+ * @property string $description
+ * @property string $env_variable
+ * @property string $default_value
+ * @property bool $user_viewable
+ * @property bool $user_editable
+ * @property string $rules
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property \Carbon\CarbonImmutable $updated_at
+ *
+ * @property bool $required
+ * @property \Pterodactyl\Models\Egg $egg
+ * @property \Pterodactyl\Models\ServerVariable $serverVariable
+ *
+ * The "server_value" variable is only present on the object if you've loaded this model
+ * using the server relationship.
+ * @property string|null $server_value
+ */
 class EggVariable extends Model
 {
     /**
@@ -16,6 +37,11 @@ class EggVariable extends Model
      * @var string
      */
     const RESERVED_ENV_NAMES = 'SERVER_MEMORY,SERVER_IP,SERVER_PORT,ENV,HOME,USER,STARTUP,SERVER_UUID,UUID';
+
+    /**
+     * @var bool
+     */
+    protected $immutableDates = true;
 
     /**
      * The table associated with the model.
@@ -38,8 +64,8 @@ class EggVariable extends Model
      */
     protected $casts = [
         'egg_id' => 'integer',
-        'user_viewable' => 'integer',
-        'user_editable' => 'integer',
+        'user_viewable' => 'bool',
+        'user_editable' => 'bool',
     ];
 
     /**
@@ -65,12 +91,19 @@ class EggVariable extends Model
     ];
 
     /**
-     * @param $value
      * @return bool
      */
-    public function getRequiredAttribute($value)
+    public function getRequiredAttribute()
     {
-        return $this->rules === 'required' || str_contains($this->rules, ['required|', '|required']);
+        return in_array('required', explode('|', $this->rules));
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function egg()
+    {
+        return $this->hasOne(Egg::class);
     }
 
     /**

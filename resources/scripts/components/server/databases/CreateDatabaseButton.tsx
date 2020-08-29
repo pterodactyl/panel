@@ -8,7 +8,6 @@ import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
-import useServer from '@/plugins/useServer';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
 
@@ -29,7 +28,7 @@ const schema = object().shape({
 });
 
 export default () => {
-    const { uuid } = useServer();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
 

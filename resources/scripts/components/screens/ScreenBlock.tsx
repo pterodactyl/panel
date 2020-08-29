@@ -52,8 +52,8 @@ export default ({ title, image, message, onBack, onRetry }: Props) => (
                     </ActionButton>
                 </div>
                 }
-                <img src={image} css={tw`w-2/3 h-auto select-none`}/>
-                <h2 css={tw`mt-6 text-neutral-900 font-bold`}>{title}</h2>
+                <img src={image} css={tw`w-2/3 h-auto select-none mx-auto`}/>
+                <h2 css={tw`mt-10 text-neutral-900 font-bold text-4xl`}>{title}</h2>
                 <p css={tw`text-sm text-neutral-700 mt-2`}>
                     {message}
                 </p>

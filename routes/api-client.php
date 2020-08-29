@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Pterodactyl\Http\Middleware\Api\Client\Server\SubuserBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AllocationBelongsToServer;
 
@@ -63,6 +64,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/decompress', 'Servers\FileController@decompress');
         Route::post('/delete', 'Servers\FileController@delete');
         Route::post('/create-folder', 'Servers\FileController@create');
+        Route::get('/upload', 'Servers\FileUploadController');
     });
 
     Route::group(['prefix' => '/schedules'], function () {
@@ -84,12 +86,12 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::delete('/allocations/{allocation}', 'Servers\NetworkAllocationController@delete');
     });
 
-    Route::group(['prefix' => '/users'], function () {
+    Route::group(['prefix' => '/users', 'middleware' => [SubuserBelongsToServer::class]], function () {
         Route::get('/', 'Servers\SubuserController@index');
         Route::post('/', 'Servers\SubuserController@store');
-        Route::get('/{subuser}', 'Servers\SubuserController@view');
-        Route::post('/{subuser}', 'Servers\SubuserController@update');
-        Route::delete('/{subuser}', 'Servers\SubuserController@delete');
+        Route::get('/{user}', 'Servers\SubuserController@view');
+        Route::post('/{user}', 'Servers\SubuserController@update');
+        Route::delete('/{user}', 'Servers\SubuserController@delete');
     });
 
     Route::group(['prefix' => '/backups'], function () {
@@ -98,6 +100,11 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::get('/{backup}', 'Servers\BackupController@view');
         Route::get('/{backup}/download', 'Servers\DownloadBackupController');
         Route::delete('/{backup}', 'Servers\BackupController@delete');
+    });
+
+    Route::group(['prefix' => '/startup'], function () {
+        Route::get('/', 'Servers\StartupController@index');
+        Route::put('/variable', 'Servers\StartupController@update');
     });
 
     Route::group(['prefix' => '/settings'], function () {

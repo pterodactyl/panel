@@ -45,4 +45,10 @@ const Spinner = ({ centered, ...props }: Props) => (
 );
 Spinner.DisplayName = 'Spinner';
 
+Spinner.Size = {
+    SMALL: 'small' as SpinnerSize,
+    BASE: 'base' as SpinnerSize,
+    LARGE: 'large' as SpinnerSize,
+};
+
 export default Spinner;

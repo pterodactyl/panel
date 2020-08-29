@@ -46,10 +46,10 @@ export default () => {
             <ConfirmationModal
                 title={'Confirm server reinstallation'}
                 buttonText={'Yes, reinstall server'}
-                onConfirmed={() => reinstall()}
+                onConfirmed={reinstall}
                 showSpinnerOverlay={isSubmitting}
                 visible={modalVisible}
-                onDismissed={() => setModalVisible(false)}
+                onModalDismissed={() => setModalVisible(false)}
             >
                 Your server will be stopped and some files may be deleted or modified during this process, are you sure
                 you wish to continue?

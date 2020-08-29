@@ -5,14 +5,13 @@ import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import useFlash from '@/plugins/useFlash';
-import useServer from '@/plugins/useServer';
 import createServerBackup from '@/api/server/backups/createServerBackup';
-import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { ServerContext } from '@/state/server';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
 import { Textarea } from '@/components/elements/Input';
+import getServerBackups from '@/api/swr/getServerBackups';
+import { ServerContext } from '@/state/server';
 
 interface Values {
     name: string;
@@ -59,11 +58,10 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
 };
 
 export default () => {
-    const { uuid } = useServer();
-    const { addError, clearFlashes } = useFlash();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
-
-    const appendBackup = ServerContext.useStoreActions(actions => actions.backups.appendBackup);
+    const { mutate } = getServerBackups();
 
     useEffect(() => {
         clearFlashes('backups:create');
@@ -73,12 +71,11 @@ export default () => {
         clearFlashes('backups:create');
         createServerBackup(uuid, name, ignored)
             .then(backup => {
-                appendBackup(backup);
+                mutate(data => ({ ...data, items: data.items.concat(backup) }), false);
                 setVisible(false);
             })
             .catch(error => {
-                console.error(error);
-                addError({ key: 'backups:create', message: httpErrorToHuman(error) });
+                clearAndAddHttpError({ key: 'backups:create', error });
                 setSubmitting(false);
             });
     };

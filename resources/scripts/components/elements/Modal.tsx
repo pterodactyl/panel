@@ -13,14 +13,14 @@ export interface RequiredModalProps {
     top?: boolean;
 }
 
-interface Props extends RequiredModalProps {
+export interface ModalProps extends RequiredModalProps {
     dismissable?: boolean;
     closeOnEscape?: boolean;
     closeOnBackground?: boolean;
     showSpinnerOverlay?: boolean;
 }
 
-const ModalMask = styled.div`
+export const ModalMask = styled.div`
     ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
     background: rgba(0, 0, 0, 0.70);
 `;
@@ -40,7 +40,7 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     }
 `;
 
-const Modal: React.FC<Props> = ({ visible, appear, dismissable, showSpinnerOverlay, top = true, closeOnBackground = true, closeOnEscape = true, onDismissed, children }) => {
+const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinnerOverlay, top = true, closeOnBackground = true, closeOnEscape = true, onDismissed, children }) => {
     const [ render, setRender ] = useState(visible);
 
     const isDismissable = useMemo(() => {
@@ -62,7 +62,13 @@ const Modal: React.FC<Props> = ({ visible, appear, dismissable, showSpinnerOverl
     }, [ render ]);
 
     return (
-        <Fade timeout={150} appear={appear} in={render} unmountOnExit onExited={onDismissed}>
+        <Fade
+            in={render}
+            timeout={150}
+            appear={appear || true}
+            unmountOnExit
+            onExited={() => onDismissed()}
+        >
             <ModalMask
                 onClick={e => {
                     if (isDismissable && closeOnBackground) {
@@ -80,12 +86,14 @@ const Modal: React.FC<Props> = ({ visible, appear, dismissable, showSpinnerOverl
                     </div>
                     }
                     {showSpinnerOverlay &&
-                    <div
-                        css={tw`absolute w-full h-full rounded flex items-center justify-center`}
-                        style={{ background: 'hsla(211, 10%, 53%, 0.25)' }}
-                    >
-                        <Spinner/>
-                    </div>
+                    <Fade timeout={150} appear in>
+                        <div
+                            css={tw`absolute w-full h-full rounded flex items-center justify-center`}
+                            style={{ background: 'hsla(211, 10%, 53%, 0.25)' }}
+                        >
+                            <Spinner/>
+                        </div>
+                    </Fade>
                     }
                     <div css={tw`bg-neutral-800 p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}>
                         {children}

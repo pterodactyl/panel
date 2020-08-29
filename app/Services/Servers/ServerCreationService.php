@@ -242,16 +242,16 @@ class ServerCreationService
             'io' => Arr::get($data, 'io'),
             'cpu' => Arr::get($data, 'cpu'),
             'threads' => Arr::get($data, 'threads'),
-            'oom_disabled' => Arr::get($data, 'oom_disabled', true),
+            'oom_disabled' => Arr::get($data, 'oom_disabled') ?? true,
             'allocation_id' => Arr::get($data, 'allocation_id'),
             'nest_id' => Arr::get($data, 'nest_id'),
             'egg_id' => Arr::get($data, 'egg_id'),
             'pack_id' => empty($data['pack_id']) ? null : $data['pack_id'],
             'startup' => Arr::get($data, 'startup'),
             'image' => Arr::get($data, 'image'),
-            'database_limit' => Arr::get($data, 'database_limit', 0),
-            'allocation_limit' => Arr::get($data, 'allocation_limit', 0),
-            'backup_limit' => Arr::get($data, 'backup_limit', 0),
+            'database_limit' => Arr::get($data, 'database_limit') ?? 0,
+            'allocation_limit' => Arr::get($data, 'allocation_limit') ?? 0,
+            'backup_limit' => Arr::get($data, 'backup_limit') ?? 0,
         ]);
 
         return $model;

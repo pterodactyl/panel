@@ -1,3 +1,4 @@
+// This file must be plain Javascript since we're using it within Webpack.
 module.exports = {
     assembly_x86: 'Assembly (x86)',
     c_cpp: 'C++',

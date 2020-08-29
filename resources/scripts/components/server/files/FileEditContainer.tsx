@@ -1,8 +1,5 @@
 import React, { lazy, useEffect, useState } from 'react';
-import { ServerContext } from '@/state/server';
 import getFileContents from '@/api/server/files/getFileContents';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import saveFileContents from '@/api/server/files/saveFileContents';
@@ -15,6 +12,10 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import ServerError from '@/components/screens/ServerError';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import Select from '@/components/elements/Select';
+import modes from '@/modes';
+import useFlash from '@/plugins/useFlash';
+import { ServerContext } from '@/state/server';
 
 const LazyAceEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/AceEditor'));
 
@@ -24,28 +25,30 @@ export default () => {
     const [ loading, setLoading ] = useState(action === 'edit');
     const [ content, setContent ] = useState('');
     const [ modalVisible, setModalVisible ] = useState(false);
+    const [ mode, setMode ] = useState('plain_text');
 
     const history = useHistory();
     const { hash } = useLocation();
 
-    const { id, uuid } = ServerContext.useStoreState(state => state.server.data!);
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const id = ServerContext.useStoreState(state => state.server.data!.id);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const { addError, clearFlashes } = useFlash();
 
     let fetchFileContent: null | (() => Promise<string>) = null;
 
-    if (action !== 'new') {
-        useEffect(() => {
-            setLoading(true);
-            setError('');
-            getFileContents(uuid, hash.replace(/^#/, ''))
-                .then(setContent)
-                .catch(error => {
-                    console.error(error);
-                    setError(httpErrorToHuman(error));
-                })
-                .then(() => setLoading(false));
-        }, [ uuid, hash ]);
-    }
+    useEffect(() => {
+        if (action === 'new') return;
+
+        setLoading(true);
+        setError('');
+        getFileContents(uuid, hash.replace(/^#/, ''))
+            .then(setContent)
+            .catch(error => {
+                console.error(error);
+                setError(httpErrorToHuman(error));
+            })
+            .then(() => setLoading(false));
+    }, [ action, uuid, hash ]);
 
     const save = (name?: string) => {
         if (!fetchFileContent) {
@@ -75,10 +78,7 @@ export default () => {
 
     if (error) {
         return (
-            <ServerError
-                message={error}
-                onBack={() => history.goBack()}
-            />
+            <ServerError message={error} onBack={() => history.goBack()}/>
         );
     }
 
@@ -109,15 +109,24 @@ export default () => {
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading}/>
                 <LazyAceEditor
-                    initialModePath={hash.replace(/^#/, '') || 'plain_text'}
+                    mode={mode}
+                    filename={hash.replace(/^#/, '')}
+                    onModeChanged={setMode}
                     initialContent={content}
                     fetchContent={value => {
                         fetchFileContent = value;
                     }}
-                    onContentSaved={() => save()}
+                    onContentSaved={save}
                 />
             </div>
             <div css={tw`flex justify-end mt-4`}>
+                <div css={tw`rounded bg-neutral-900 mr-4`}>
+                    <Select value={mode} onChange={e => setMode(e.currentTarget.value)}>
+                        {Object.keys(modes).map(key => (
+                            <option key={key} value={key}>{modes[key]}</option>
+                        ))}
+                    </Select>
+                </div>
                 {action === 'edit' ?
                     <Can action={'file.update'}>
                         <Button onClick={() => save()}>

@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Pterodactyl\Models\Traits\Searchable;
+use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
@@ -38,14 +39,14 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Pterodactyl\Models\User $user
- * @property \Pterodactyl\Models\User[]|\Illuminate\Database\Eloquent\Collection $subusers
+ * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subusers
  * @property \Pterodactyl\Models\Allocation $allocation
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  * @property \Pterodactyl\Models\Pack|null $pack
  * @property \Pterodactyl\Models\Node $node
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Pterodactyl\Models\Egg $egg
- * @property \Pterodactyl\Models\ServerVariable[]|\Illuminate\Database\Eloquent\Collection $variables
+ * @property \Pterodactyl\Models\EggVariable[]|\Illuminate\Database\Eloquent\Collection $variables
  * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection $schedule
  * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
  * @property \Pterodactyl\Models\Location $location
@@ -270,7 +271,17 @@ class Server extends Model
      */
     public function variables()
     {
-        return $this->hasMany(ServerVariable::class);
+        return $this->hasMany(EggVariable::class, 'egg_id', 'egg_id')
+            ->select(['egg_variables.*', 'server_variables.variable_value as server_value'])
+            ->leftJoin('server_variables', function (JoinClause $join) {
+                // Don't forget to join against the server ID as well since the way we're using this relationship
+                // would actually return all of the variables and their values for _all_ servers using that egg,\
+                // rather than only the server for this model.
+                //
+                // @see https://github.com/pterodactyl/panel/issues/2250
+                $join->on('server_variables.variable_id', 'egg_variables.id')
+                    ->where('server_variables.server_id', $this->id);
+            });
     }
 
     /**

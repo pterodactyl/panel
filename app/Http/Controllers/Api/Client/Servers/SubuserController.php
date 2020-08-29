@@ -3,7 +3,9 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
@@ -58,6 +60,21 @@ class SubuserController extends ClientApiController
     }
 
     /**
+     * Returns a single subuser associated with this server instance.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\GetSubuserRequest $request
+     * @return array
+     */
+    public function view(GetSubuserRequest $request)
+    {
+        $subuser = $request->attributes->get('subuser');
+
+        return $this->fractal->item($subuser)
+            ->transformWith($this->getTransformer(SubuserTransformer::class))
+            ->toArray();
+    }
+
+    /**
      * Create a new subuser for the given server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\StoreSubuserRequest $request
@@ -84,15 +101,16 @@ class SubuserController extends ClientApiController
      * Update a given subuser in the system for the server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\UpdateSubuserRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateSubuserRequest $request, Server $server): array
+    public function update(UpdateSubuserRequest $request): array
     {
-        $subuser = $request->endpointSubuser();
+        /** @var \Pterodactyl\Models\Subuser $subuser */
+        $subuser = $request->attributes->get('subuser');
+
         $this->repository->update($subuser->id, [
             'permissions' => $this->getDefaultPermissions($request),
         ]);
@@ -106,14 +124,16 @@ class SubuserController extends ClientApiController
      * Removes a subusers from a server's assignment.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\DeleteSubuserRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeleteSubuserRequest $request, Server $server)
+    public function delete(DeleteSubuserRequest $request)
     {
-        $this->repository->delete($request->endpointSubuser()->id);
+        /** @var \Pterodactyl\Models\Subuser $subuser */
+        $subuser = $request->attributes->get('subuser');
 
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        $this->repository->delete($subuser->id);
+
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
