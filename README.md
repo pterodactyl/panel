@@ -6,48 +6,40 @@
 [![Discord](https://img.shields.io/discord/122900397965705216.svg?style=flat-square&label=Discord)](https://pterodactyl.io/discord)
 
 # Pterodactyl Panel
+Pterodactyl is an open-source game server management panel built with PHP 7, React, and Go. Designed with security 
+in mind, Pterodactyl runs all game servers in isolated Docker container while exposing a beautiful and intuitive
+UI to end users.
 
-Pterodactyl is the open-source game server management panel built with PHP7, Nodejs, and Go. Designed with security in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive UI to administrators and users.
-What more are you waiting for? Make game servers a first class citizen on your platform today.
+Stop settling for less. Make game servers a first class citizen on your platform.
 
 ![Image](https://cdn.pterodactyl.io/site-assets/mockup-macbook-grey.png)
 
 ## Sponsors
-I would like to extend my sincere thanks to the following sponsors for funding Pterodactyl's developement. [Interested
-in becoming a sponsor?](https://github.com/sponsors/DaneEveritt)
+I would like to extend my sincere thanks to the following sponsors for helping find Pterodactyl's developement.
+[Interested in becoming a sponsor?](https://github.com/sponsors/DaneEveritt)
 
-#### [BloomVPS](https://bloomvps.com)
-> BloomVPS offers dedicated core VPS and Minecraft hosting with Ryzen 9 processors. With owned-hardware, we offer truly
-> unbeatable prices on high-performance hosting.
+| Company | About |
+| ------- | ----- |
+| [**BloomVPS**](https://bloomvps.com) | BloomVPS offers dedicated core VPS and Minecraft hosting with Ryzen 9 processors. With owned-hardware, we offer truly unbeatable prices on high-performance hosting. |
+| [**VersatileNode**](https://versatilenode.com/) | Looking to host a minecraft server, vps, or a website? VersatileNode is one of the most affordable hosting providers to provide quality yet cheap services with incredible support. |
+| [**MineStrator**](https://minestrator.com/) | Looking for a French highend hosting company for you minecraft server? More than 14,000 members on our discord, trust us. |
+| [**DedicatedMC**](https://dedicatedmc.io/) | DedicatedMC provides Raw Power hosting at affordable pricing, making sure to never compromise on your performance and giving you the best performance money can buy. |
+| [**Skynode**](https://www.skynode.pro/) | Skynode provides blazing fast game servers along with a top-notch user experience. Whatever our clients are looking for, we're able to provide it! |
+| [**XCORE-SERVER.de**](https://xcore-server.de/) | XCORE-SERVER.de offers High-End Servers for hosting and gaming since 2012. Fast, excellent and well-known for eSports Gaming. |
 
-#### [VersatileNode](https://versatilenode.com/)
-> Looking to host a minecraft server, vps, or a website? VersatileNode is one of the most affordable hosting providers
-> to provide quality yet cheap services with incredible support.
-
-#### [MineStrator](https://minestrator.com/)
-> Looking for a French highend hosting company for you minecraft server? More than 14,000 members on our discord
-> trust us.
-
-#### [DedicatedMC](https://dedicatedmc.io/)
-> DedicatedMC provides Raw Power hosting at affordable pricing, making sure to never compromise on your performance
-> and giving you the best performance money can buy.
-
-#### [Skynode](https://www.skynode.pro/)
-> Skynode provides blazing fast game servers along with a top notch user experience. Whatever our clients are looking
-> for, we're able to provide it!
-
-#### [XCORE-SERVER.de](https://xcore-server.de)
-> XCORE-SERVER.de offers High-End Servers for hosting and gaming since 2012. Fast, excellent and well known for eSports Gaming.
-
-## Support & Documentation
-Support for using Pterodactyl can be found on our [Documentation Website](https://pterodactyl.io/project/introduction.html), [Guides Website](https://pterodactyl.io/community/about.html), or via our [Discord Chat](https://discord.gg/QRDZvVm).
+## Documentation
+* [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
+* [Wings Documentation](https://pterodactyl.io/wings/1.0/installing.html)
+* [Community Guides](https://pterodactyl.io/community/about.html)
+* Or, get additional help [via Discord](https://discord.gg/pterodactyl)
 
 ### Supported Games
-We support a huge variety of games by utilizing Docker containers to isolate each instance, giving you the power to host your games across the world without having to bloat each physical machine with additional dependencies.
+We support a huge variety of games by utilizing Docker containers to isolate each instance, giving you the power to
+host your games across the world without having to bloat each physical machine with additional dependencies.
 
 Some of our core supported games include:
 
-* Minecraft — including Spigot, Sponge, Bungeecord, Waterfall, and more
+* Minecraft — including Paper, Sponge, Bungeecord, Waterfall, and more
 * Rust
 * Terraria
 * Teamspeak
@@ -57,7 +49,8 @@ Some of our core supported games include:
 * Garry's Mod
 * ARK: Survival Evolved
 
-In addition to our standard nest of supported games, our community is constantly pushing the limits of this software and there are plenty more games available provided by the community. Some of these games include:
+In addition to our standard nest of supported games, our community is constantly pushing the limits of this software
+and there are plenty more games available provided by the community. Some of these games include:
 
 * Factorio
 * San Andreas: MP
@@ -65,22 +58,13 @@ In addition to our standard nest of supported games, our community is constantly
 * Squad
 * FiveM
 * Xonotic
-* Discord ATLBot
-
-## Credits
-This software would not be possible without the work of other open-source authors who provide tools such as:
-
-[Ace Editor](https://ace.c9.io), [AdminLTE](https://adminlte.io), [Animate.css](http://daneden.github.io/animate.css/), [AnsiUp](https://github.com/drudru/ansi_up), [Async.js](https://github.com/caolan/async), 
-[Bootstrap](http://getbootstrap.com), [Bootstrap Notify](http://bootstrap-notify.remabledesigns.com), [Chart.js](http://www.chartjs.org), [FontAwesome](http://fontawesome.io),
-[FontAwesome Animations](https://github.com/l-lin/font-awesome-animation), [jQuery](http://jquery.com), [Laravel](https://laravel.com), [Lodash](https://lodash.com),
-[Select2](https://select2.github.io), [Socket.io](http://socket.io), [Socket.io File Upload](https://github.com/vote539/socketio-file-upload), [SweetAlert](http://t4t5.github.io/sweetalert),
-[Typeahead](https://github.com/bassjobsen/Bootstrap-3-Typeahead), and [Particles.js](http://vincentgarreau.com/particles.js).
-
-Some Javascript and CSS used within the panel is licensed under a `MIT` or `Apache 2.0` license. Please check their respective header files for more information.
+* Starmade
+* Discord ATLBot, and most other Node.js/Python discord bots
+* [and many more...](https://github.com/parkervcp/eggs)
 
 ## License
 ```
-Copyright (c) 2015 - 2018 Dane Everitt <dane@daneeveritt.com>.
+Copyright (c) 2015 - 2020 Dane Everitt <dane@daneeveritt.com> & Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -100,3 +84,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+Some Javascript and CSS used within the panel are licensed under a `MIT` or `Apache 2.0` license. Please check their
+respective header files for more information.
