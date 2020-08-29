@@ -1,7 +1,6 @@
 [![Logo Image](https://cdn.pterodactyl.io/logos/new/pterodactyl_logo.png)](https://pterodactyl.io)
 
 [![Build status](https://img.shields.io/travis/pterodactyl/panel/develop.svg?style=flat-square)](https://travis-ci.org/pterodactyl/panel)
-[![StyleCI](https://styleci.io/repos/47508644/shield?branch=develop)](https://styleci.io/repos/47508644)
 [![Codecov](https://img.shields.io/codecov/c/github/pterodactyl/panel/develop.svg?style=flat-square)](https://codecov.io/gh/Pterodactyl/Panel)
 [![Discord](https://img.shields.io/discord/122900397965705216.svg?style=flat-square&label=Discord)](https://pterodactyl.io/discord)
 
