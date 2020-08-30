@@ -59,20 +59,13 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 <FontAwesomeIcon icon={faServer}/>
             </div>
             <div css={tw`flex-1 ml-4`}>
-                <div css={tw`flex items-center`}>
-                    <div
-                        css={[
-                            tw`w-3 h-3 rounded-full mr-2`,
-                            (!stats?.status || stats?.status === 'offline')
-                                ? tw`bg-red-500`
-                                : (stats?.status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`),
-                        ]}
-                    />
-                    <p css={tw`text-lg`}>{server.name}</p>
-                </div>
+                <p css={tw`text-lg`}>{server.name}</p>
+                {!!server.description &&
+                <p css={tw`text-sm text-neutral-300`}>{server.description}</p>
+                }
             </div>
-            <div css={tw`w-1/4 overflow-hidden`}>
-                <div css={tw`flex ml-4`}>
+            <div css={tw`w-48 overflow-hidden self-start`}>
+                <div css={tw`flex ml-4 justify-end`}>
                     <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
                         {
