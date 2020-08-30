@@ -178,20 +178,6 @@ return [
     */
     'files' => [
         'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 1024 * 1024 * 4),
-        'editable' => [
-            'application/json',
-            'application/javascript',
-            'application/xml',
-            'application/xhtml+xml',
-            'inode/x-empty',
-            'text/xml',
-            'text/css',
-            'text/html',
-            'text/plain',
-            'text/x-perl',
-            'text/x-shellscript',
-            'text/x-python',
-        ],
     ],
 
     /*

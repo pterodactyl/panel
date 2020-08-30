@@ -16,7 +16,7 @@ const Row = styled.div`
     ${tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};
 `;
 
-const FileObjectRow = ({ file }: { file: FileObject }) => {
+const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     const history = useHistory();
@@ -35,48 +35,59 @@ const FileObjectRow = ({ file }: { file: FileObject }) => {
     };
 
     return (
-        <Row
-            key={file.name}
-            onContextMenu={e => {
-                e.preventDefault();
-                window.dispatchEvent(new CustomEvent(`pterodactyl:files:ctx:${file.key}`, { detail: e.clientX }));
-            }}
-        >
-            <SelectFileCheckbox name={file.name}/>
+        file.isFile && !file.isEditable() ?
+            <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default`}>
+                {children}
+            </div>
+            :
             <NavLink
                 to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
                 css={tw`flex flex-1 text-neutral-300 no-underline p-3`}
                 onClick={onRowClick}
             >
-                <div css={tw`flex-none self-center text-neutral-400 mr-4 text-lg pl-3 ml-6`}>
-                    {file.isFile ?
-                        <FontAwesomeIcon icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}/>
-                        :
-                        <FontAwesomeIcon icon={faFolder}/>
-                    }
-                </div>
-                <div css={tw`flex-1`}>
-                    {file.name}
-                </div>
-                {file.isFile &&
-                <div css={tw`w-1/6 text-right mr-4`}>
-                    {bytesToHuman(file.size)}
-                </div>
-                }
-                <div
-                    css={tw`w-1/5 text-right mr-4`}
-                    title={file.modifiedAt.toString()}
-                >
-                    {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
-                        format(file.modifiedAt, 'MMM do, yyyy h:mma')
-                        :
-                        formatDistanceToNow(file.modifiedAt, { addSuffix: true })
-                    }
-                </div>
+                {children}
             </NavLink>
-            <FileDropdownMenu file={file}/>
-        </Row>
     );
-};
+}, isEqual);
 
-export default memo(FileObjectRow, (prevProps, nextProps) => isEqual(prevProps.file, nextProps.file));
+const FileObjectRow = ({ file }: { file: FileObject }) => (
+    <Row
+        key={file.name}
+        onContextMenu={e => {
+            e.preventDefault();
+            window.dispatchEvent(new CustomEvent(`pterodactyl:files:ctx:${file.key}`, { detail: e.clientX }));
+        }}
+    >
+        <SelectFileCheckbox name={file.name}/>
+        <Clickable file={file}>
+            <div css={tw`flex-none self-center text-neutral-400 mr-4 text-lg pl-3 ml-6`}>
+                {file.isFile ?
+                    <FontAwesomeIcon icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}/>
+                    :
+                    <FontAwesomeIcon icon={faFolder}/>
+                }
+            </div>
+            <div css={tw`flex-1`}>
+                {file.name}
+            </div>
+            {file.isFile &&
+            <div css={tw`w-1/6 text-right mr-4`}>
+                {bytesToHuman(file.size)}
+            </div>
+            }
+            <div
+                css={tw`w-1/5 text-right mr-4`}
+                title={file.modifiedAt.toString()}
+            >
+                {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
+                    format(file.modifiedAt, 'MMM do, yyyy h:mma')
+                    :
+                    formatDistanceToNow(file.modifiedAt, { addSuffix: true })
+                }
+            </div>
+        </Clickable>
+        <FileDropdownMenu file={file}/>
+    </Row>
+);
+
+export default memo(FileObjectRow, isEqual);

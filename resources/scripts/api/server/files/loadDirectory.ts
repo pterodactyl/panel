@@ -8,11 +8,11 @@ export interface FileObject {
     size: number;
     isFile: boolean;
     isSymlink: boolean;
-    isEditable: boolean;
     mimetype: string;
     createdAt: Date;
     modifiedAt: Date;
     isArchiveType: () => boolean;
+    isEditable: () => boolean;
 }
 
 export default async (uuid: string, directory?: string): Promise<FileObject[]> => {

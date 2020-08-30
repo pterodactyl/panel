@@ -19,7 +19,6 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
     size: Number(data.attributes.size),
     isFile: data.attributes.is_file,
     isSymlink: data.attributes.is_symlink,
-    isEditable: data.attributes.is_editable,
     mimetype: data.attributes.mimetype,
     createdAt: new Date(data.attributes.created_at),
     modifiedAt: new Date(data.attributes.modified_at),
@@ -38,6 +37,19 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
             'application/zstd', // .tar.zst, .zst
             'application/zip', // .zip
         ].indexOf(this.mimetype) >= 0;
+    },
+
+    isEditable: function () {
+        if (this.isArchiveType() || !this.isFile) return false;
+
+        const matches = [
+            'application/jar',
+            'application/octet-stream',
+            'inode/directory',
+            /^image\//,
+        ];
+
+        return matches.every(m => !this.mimetype.match(m));
     },
 });
 
