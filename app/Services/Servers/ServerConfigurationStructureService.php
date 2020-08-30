@@ -87,6 +87,7 @@ class ServerConfigurationStructureService
             'suspended' => (bool) $server->suspended,
             'environment' => $this->environment->handle($server),
             'invocation' => $server->startup,
+            'skip_egg_scripts' => $server->skip_scripts,
             'build' => [
                 'memory_limit' => $server->memory,
                 'swap' => $server->swap,
@@ -94,11 +95,6 @@ class ServerConfigurationStructureService
                 'cpu_limit' => $server->cpu,
                 'threads' => $server->threads,
                 'disk_space' => $server->disk,
-            ],
-            'service' => [
-                'egg' => $server->egg->uuid,
-                'pack' => $server->pack ? $server->pack->uuid : null,
-                'skip_scripts' => $server->skip_scripts,
             ],
             'container' => [
                 'image' => $server->image,
