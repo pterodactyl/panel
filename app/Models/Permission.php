@@ -49,6 +49,7 @@ class Permission extends Model
     const ACTION_ALLOCATION_DELETE = 'allocation.delete';
 
     const ACTION_FILE_READ = 'file.read';
+    const ACTION_FILE_READ_CONTENT = 'file.read-content';
     const ACTION_FILE_CREATE = 'file.create';
     const ACTION_FILE_UPDATE = 'file.update';
     const ACTION_FILE_DELETE = 'file.delete';
@@ -138,7 +139,8 @@ class Permission extends Model
             'description' => 'Permissions that control a user\'s ability to modify the filesystem for this server.',
             'keys' => [
                 'create' => 'Allows a user to create additional files and folders via the Panel or direct upload.',
-                'read' => 'Allows a user to view the contents of a directory and read the contents of a file. Users with this permission can also download files.',
+                'read' => 'Allows a user to view the contents of a directory, but not view the contents of or download files.',
+                'read-content' => 'Allows a user to view the contents of a given file. This will also allow the user to download files.',
                 'update' => 'Allows a user to update the contents of an existing file or directory.',
                 'delete' => 'Allows a user to delete files or directories.',
                 'archive' => 'Allows a user to archive the contents of a directory as well as decompress existing archives on the system.',

@@ -11,12 +11,14 @@ import tw from 'twin.macro';
 import isEqual from 'react-fast-compare';
 import styled from 'styled-components/macro';
 import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
+import { usePermissions } from '@/plugins/usePermissions';
 
 const Row = styled.div`
     ${tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};
 `;
 
 const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
+    const [ canReadContents ] = usePermissions([ 'file.read-content' ]);
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     const history = useHistory();
@@ -35,7 +37,7 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
     };
 
     return (
-        file.isFile && !file.isEditable() ?
+        (!canReadContents || (file.isFile && !file.isEditable())) ?
             <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default`}>
                 {children}
             </div>

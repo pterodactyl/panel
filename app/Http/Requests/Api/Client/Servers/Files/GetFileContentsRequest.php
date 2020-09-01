@@ -17,7 +17,7 @@ class GetFileContentsRequest extends ClientApiRequest implements ClientPermissio
      */
     public function permission(): string
     {
-        return Permission::ACTION_FILE_READ;
+        return Permission::ACTION_FILE_READ_CONTENT;
     }
 
     /**
