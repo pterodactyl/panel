@@ -10,7 +10,7 @@ return [
     | setup on the panel. When set to true, configurations stored in the
     | database will not be applied.
     */
-    'load_environment_only' => (bool) env('APP_ENVIRONMENT_ONLY', false),
+    'load_environment_only' => (bool)env('APP_ENVIRONMENT_ONLY', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -104,29 +104,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Console Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Configure the speed at which data is rendered to the console.
-    */
-    'console' => [
-        'count' => env('CONSOLE_PUSH_COUNT', 10),
-        'frequency' => env('CONSOLE_PUSH_FREQ', 200),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Daemon Connection Details
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for support of the new Golang based daemon.
-    */
-    'daemon' => [
-        'use_new_daemon' => (bool) env('APP_USE_NEW_DAEMON', false),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Task Timers
     |--------------------------------------------------------------------------
     |
@@ -211,5 +188,16 @@ return [
     */
     'environment_variables' => [
         'P_SERVER_ALLOCATION_LIMIT' => 'allocation_limit',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Asset Verification
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the output format for JS & CSS assets.
+    */
+    'assets' => [
+        'use_hash' => env('PTERODACTYL_USE_ASSET_HASH', false),
     ],
 ];
