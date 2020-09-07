@@ -16,6 +16,7 @@ import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import UploadButton from '@/components/server/files/UploadButton';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import { useStoreActions } from '@/state/hooks';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -26,11 +27,12 @@ export default () => {
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
-
+    const clearFlashes = useStoreActions(actions => actions.flashes.clearFlashes);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
     useEffect(() => {
+        clearFlashes('files');
         setSelectedFiles([]);
         setDirectory(hash.length > 0 ? hash : '/');
     }, [ hash ]);
