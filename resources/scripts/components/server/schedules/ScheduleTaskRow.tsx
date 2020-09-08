@@ -56,7 +56,7 @@ export default ({ schedule, task }: Props) => {
     const [ title, icon ] = getActionDetails(task.action);
 
     return (
-        <div css={tw`flex items-center bg-neutral-700 border border-neutral-600 mb-2 px-6 py-4 rounded`}>
+        <div css={tw`flex flex-wrap items-center bg-neutral-700 border border-neutral-600 mb-2 px-6 py-4 rounded`}>
             <SpinnerOverlay visible={isLoading} fixed size={'large'}/>
             {isEditing && <TaskDetailsModal
                 schedule={schedule}
@@ -73,7 +73,7 @@ export default ({ schedule, task }: Props) => {
                 Are you sure you want to delete this task? This action cannot be undone.
             </ConfirmationModal>
             <FontAwesomeIcon icon={icon} css={tw`text-lg text-white hidden md:block`}/>
-            <div css={tw`flex-1`}>
+            <div css={tw`flex-none sm:flex-1 mb-4 sm:mb-0 w-full md:w-auto overflow-x-auto`}>
                 <p css={tw`md:ml-6 text-neutral-300 uppercase text-xs`}>
                     {title}
                 </p>
@@ -101,7 +101,7 @@ export default ({ schedule, task }: Props) => {
                 <button
                     type={'button'}
                     aria-label={'Edit scheduled task'}
-                    css={tw`block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mr-4`}
+                    css={tw`block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
                     onClick={() => setIsEditing(true)}
                 >
                     <FontAwesomeIcon icon={faPencilAlt}/>
