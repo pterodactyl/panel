@@ -53,7 +53,7 @@ const VariableBox = ({ variable }: Props) => {
                 </p>
             }
         >
-            <FlashMessageRender byKey={FLASH_KEY} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={FLASH_KEY} css={tw`mb-2 md:mb-4`}/>
             <InputSpinner visible={loading}>
                 <Input
                     onKeyUp={e => {
