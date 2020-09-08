@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Server } from '@/api/server/getServer';
-import { ApplicationStore } from '@/state';
 import getServers from '@/api/getServers';
 import ServerRow from '@/components/dashboard/ServerRow';
 import Spinner from '@/components/elements/Spinner';
@@ -20,7 +18,6 @@ export default () => {
     const [ page, setPage ] = useState(1);
     const { rootAdmin } = useStoreState(state => state.user.data!);
     const [ showOnlyAdmin, setShowOnlyAdmin ] = usePersistedState('show_all_servers', false);
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
         [ '/api/client/servers', showOnlyAdmin, page ],
@@ -33,10 +30,7 @@ export default () => {
     }, [ error ]);
 
     return (
-        <PageContentBlock showFlashKey={'dashboard'}>
-            <Helmet>
-                <title> {name} | Dashboard</title>
-            </Helmet>
+        <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
             {rootAdmin &&
             <div css={tw`mb-2 flex justify-end items-center`}>
                 <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
