@@ -26,12 +26,12 @@ const generateDirectoryData = (name: string): FileObject => ({
     mode: '0644',
     size: 0,
     isFile: false,
-    isEditable: false,
     isSymlink: false,
     mimetype: '',
     createdAt: new Date(),
     modifiedAt: new Date(),
     isArchiveType: () => false,
+    isEditable: () => false,
 });
 
 export default () => {

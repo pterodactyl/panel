@@ -82,12 +82,24 @@ class AssetHashService
      */
     public function css(string $resource): string
     {
-        return '<link href="' . $this->url($resource) . '"
-                    rel="stylesheet preload"
-                    as="style"
-                    crossorigin="anonymous"
-                    integrity="' . $this->integrity($resource) . '"
-                    referrerpolicy="no-referrer">';
+        $attributes = [
+            'href' => $this->url($resource),
+            'rel' => 'stylesheet preload',
+            'as' => 'style',
+            'crossorigin' => 'anonymous',
+            'referrerpolicy' => 'no-referrer',
+        ];
+
+        if (config('pterodactyl.assets.use_hash')) {
+            $attributes['integrity'] = $this->integrity($resource);
+        }
+
+        $output = '<link';
+        foreach ($attributes as $key => $value) {
+            $output .= " $key=\"$value\"";
+        }
+
+        return $output . '>';
     }
 
     /**
@@ -100,9 +112,21 @@ class AssetHashService
      */
     public function js(string $resource): string
     {
-        return '<script src="' . $this->url($resource) . '"
-                    integrity="' . $this->integrity($resource) . '"
-                    crossorigin="anonymous"></script>';
+        $attributes = [
+            'src' => $this->url($resource),
+            'crossorigin' => 'anonymous',
+        ];
+
+        if (config('pterodactyl.assets.use_hash')) {
+            $attributes['integrity'] = $this->integrity($resource);
+        }
+
+        $output = '<script';
+        foreach ($attributes as $key => $value) {
+            $output .= " $key=\"$value\"";
+        }
+
+        return $output . '></script>';
     }
 
     /**

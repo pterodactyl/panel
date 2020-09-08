@@ -8,6 +8,7 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateServerAccess
@@ -64,8 +65,10 @@ class AuthenticateServerAccess
             }
         }
 
-        if ($server->suspended) {
-            throw new AccessDeniedHttpException('This server is currently suspended and the functionality requested is unavailable.');
+        if ($server->suspended && !$request->routeIs('api:client:server.resources')) {
+            throw new BadRequestHttpException(
+                'This server is currently suspended and the functionality requested is unavailable.'
+            );
         }
 
         if (! $server->isInstalled()) {

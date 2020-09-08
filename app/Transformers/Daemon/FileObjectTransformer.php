@@ -15,14 +15,6 @@ class FileObjectTransformer extends BaseDaemonTransformer
     private $editable = [];
 
     /**
-     * FileObjectTransformer constructor.
-     */
-    public function __construct()
-    {
-        $this->editable = config('pterodactyl.files.editable', []);
-    }
-
-    /**
      * Transform a file object response from the daemon into a standardized response.
      *
      * @param array $item
@@ -36,8 +28,7 @@ class FileObjectTransformer extends BaseDaemonTransformer
             'size' => Arr::get($item, 'size'),
             'is_file' => Arr::get($item, 'file', true),
             'is_symlink' => Arr::get($item, 'symlink', false),
-            'is_editable' => in_array(Arr::get($item, 'mime', ''), $this->editable),
-            'mimetype' => Arr::get($item, 'mime'),
+            'mimetype' => Arr::get($item, 'mime', 'application/octet-stream'),
             'created_at' => Carbon::parse(Arr::get($item, 'created', ''))->toIso8601String(),
             'modified_at' => Carbon::parse(Arr::get($item, 'modified', ''))->toIso8601String(),
         ];
