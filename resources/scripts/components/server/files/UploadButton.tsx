@@ -2,7 +2,7 @@ import axios from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import { ModalMask } from '@/components/elements/Modal';
 import Fade from '@/components/elements/Fade';
@@ -18,6 +18,7 @@ const InnerContainer = styled.div`
 `;
 
 export default () => {
+    const fileUploadInput = useRef<HTMLInputElement>(null);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [ visible, setVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
@@ -46,17 +47,9 @@ export default () => {
         };
     }, [ visible ]);
 
-    const onFileDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        setVisible(false);
-        if (e.dataTransfer === undefined || e.dataTransfer === null) {
-            return;
-        }
-
+    const onFileSubmission = (files: FileList) => {
         const form = new FormData();
-        Array.from(e.dataTransfer.files).forEach(file => form.append('files', file));
+        Array.from(files).forEach(file => form.append('files', file));
 
         setLoading(true);
         clearFlashes('files');
@@ -84,7 +77,21 @@ export default () => {
                 key={'upload_modal_mask'}
                 unmountOnExit
             >
-                <ModalMask onClick={() => setVisible(false)} onDrop={onFileDrop} onDragOver={e => e.preventDefault()}>
+                <ModalMask
+                    onClick={() => setVisible(false)}
+                    onDragOver={e => e.preventDefault()}
+                    onDrop={e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        setVisible(false);
+                        if (e.dataTransfer === undefined || e.dataTransfer === null) {
+                            return;
+                        }
+
+                        onFileSubmission(e.dataTransfer.files);
+                    }}
+                >
                     <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
                         <InnerContainer>
                             <p css={tw`text-lg text-neutral-200 text-center`}>
@@ -95,7 +102,27 @@ export default () => {
                 </ModalMask>
             </Fade>
             <SpinnerOverlay visible={loading} size={'large'}/>
-            <Button css={tw`mr-2`} onClick={() => setVisible(true)}>
+            <input
+                type={'file'}
+                ref={fileUploadInput}
+                css={tw`hidden`}
+                onChange={e => {
+                    if (!e.currentTarget.files) return;
+
+                    onFileSubmission(e.currentTarget.files);
+                    if (fileUploadInput.current) {
+                        fileUploadInput.current.files = null;
+                    }
+                }}
+            />
+            <Button
+                css={tw`mr-2`}
+                onClick={() => {
+                    fileUploadInput.current
+                        ? fileUploadInput.current.click()
+                        : setVisible(true);
+                }}
+            >
                 Upload
             </Button>
         </>
