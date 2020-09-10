@@ -40,16 +40,16 @@ const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdate
                 />
                 <div css={tw`flex mt-6`}>
                     <div css={tw`flex-1 mr-4`}>
-                        <Field name={'dayOfWeek'} label={'Day of week'}/>
-                    </div>
-                    <div css={tw`flex-1 mr-4`}>
-                        <Field name={'dayOfMonth'} label={'Day of month'}/>
+                        <Field name={'minute'} label={'Minute'}/>
                     </div>
                     <div css={tw`flex-1 mr-4`}>
                         <Field name={'hour'} label={'Hour'}/>
                     </div>
+                    <div css={tw`flex-1 mr-4`}>
+                        <Field name={'dayOfMonth'} label={'Day of month'}/>
+                    </div>
                     <div css={tw`flex-1`}>
-                        <Field name={'minute'} label={'Minute'}/>
+                        <Field name={'dayOfWeek'} label={'Day of week'}/>
                     </div>
                 </div>
                 <p css={tw`text-neutral-400 text-xs mt-2`}>
