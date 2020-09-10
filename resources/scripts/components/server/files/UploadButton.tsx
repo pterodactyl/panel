@@ -101,7 +101,7 @@ export default () => {
                     </div>
                 </ModalMask>
             </Fade>
-            <SpinnerOverlay visible={loading} size={'large'}/>
+            <SpinnerOverlay visible={loading} size={'large'} fixed/>
             <input
                 type={'file'}
                 ref={fileUploadInput}
