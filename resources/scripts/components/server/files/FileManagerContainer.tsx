@@ -27,6 +27,7 @@ export default () => {
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
+    const directory = ServerContext.useStoreState(state => state.files.directory);
     const clearFlashes = useStoreActions(actions => actions.flashes.clearFlashes);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
@@ -36,6 +37,10 @@ export default () => {
         setSelectedFiles([]);
         setDirectory(hash.length > 0 ? hash : '/');
     }, [ hash ]);
+
+    useEffect(() => {
+        mutate();
+    }, [ directory ]);
 
     if (error) {
         return (
