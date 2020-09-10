@@ -85,9 +85,7 @@ export default () => {
                         e.stopPropagation();
 
                         setVisible(false);
-                        if (e.dataTransfer === undefined || e.dataTransfer === null) {
-                            return;
-                        }
+                        if (!e.dataTransfer?.files.length) return;
 
                         onFileSubmission(e.dataTransfer.files);
                     }}
