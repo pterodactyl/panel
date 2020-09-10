@@ -47,19 +47,20 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
         return (dismissable || true) && !(showSpinnerOverlay || false);
     }, [ dismissable, showSpinnerOverlay ]);
 
-    const handleEscapeEvent = (e: KeyboardEvent) => {
-        if (isDismissable && closeOnEscape && e.key === 'Escape') {
-            setRender(false);
-        }
-    };
+    useEffect(() => {
+        if (!isDismissable || !closeOnEscape) return;
+
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setRender(false);
+        };
+
+        window.addEventListener('keydown', handler);
+        return () => {
+            window.removeEventListener('keydown', handler);
+        };
+    }, [ isDismissable, closeOnEscape, render ]);
 
     useEffect(() => setRender(visible), [ visible ]);
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleEscapeEvent);
-
-        return () => window.removeEventListener('keydown', handleEscapeEvent);
-    }, [ render ]);
 
     return (
         <Fade
@@ -70,7 +71,8 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
             onExited={() => onDismissed()}
         >
             <ModalMask
-                onClick={e => {
+                onClick={e => e.stopPropagation()}
+                onMouseDown={e => {
                     if (isDismissable && closeOnBackground) {
                         e.stopPropagation();
                         if (e.target === e.currentTarget) {
