@@ -8,7 +8,7 @@ import schedules, { ServerScheduleStore } from '@/state/server/schedules';
 import databases, { ServerDatabaseStore } from '@/state/server/databases';
 import isEqual from 'react-fast-compare';
 
-export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running';
+export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | null;
 
 interface ServerDataStore {
     data?: Server;
@@ -56,7 +56,7 @@ interface ServerStatusStore {
 }
 
 const status: ServerStatusStore = {
-    value: 'offline',
+    value: null,
     setServerStatus: action((state, payload) => {
         state.value = payload;
     }),

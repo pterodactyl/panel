@@ -75,7 +75,7 @@ export default () => {
                                 status === 'offline' ? tw`text-red-500` : (status === 'running' ? tw`text-green-500` : tw`text-yellow-500`),
                             ]}
                         />
-                        &nbsp;{status}
+                        &nbsp;{!status ? 'Connecting...' : status}
                     </p>
                     <p css={tw`text-xs mt-2`}>
                         <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {cpu.toFixed(2)}%
@@ -112,6 +112,7 @@ export default () => {
                                     size={'xsmall'}
                                     isSecondary
                                     css={tw`mr-2`}
+                                    disabled={!status}
                                     onClick={e => {
                                         e.preventDefault();
                                         sendPowerCommand('restart');
