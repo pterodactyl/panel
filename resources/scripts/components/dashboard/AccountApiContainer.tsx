@@ -14,7 +14,25 @@ import { httpErrorToHuman } from '@/api/http';
 import { format } from 'date-fns';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
+import { breakpoint } from '@/theme';
+import styled from 'styled-components/macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
+
+const Container = styled.div`
+    ${tw`flex flex-wrap my-10`};
+
+    & > div {
+        ${tw`w-full`};
+
+        ${breakpoint('md')`
+            width: calc(50% - 1rem);
+        `}
+
+        ${breakpoint('xl')`
+            ${tw`w-auto flex-1`};
+        `}
+    }
+`;
 
 export default () => {
     const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
@@ -50,11 +68,11 @@ export default () => {
     return (
         <PageContentBlock title={'Account API'}>
             <FlashMessageRender byKey={'account'} css={tw`mb-4`}/>
-            <div css={tw`flex`}>
-                <ContentBox title={'Create API Key'} css={tw`flex-1`}>
+            <Container>
+                <ContentBox title={'Create API Key'}>
                     <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
-                <ContentBox title={'API Keys'} css={tw`ml-10 flex-1`}>
+                <ContentBox title={'API Keys'} css={tw`mt-8 md:mt-0 md:ml-8`}>
                     <SpinnerOverlay visible={loading}/>
                     <ConfirmationModal
                         visible={!!deleteIdentifier}
@@ -106,7 +124,7 @@ export default () => {
                             ))
                     }
                 </ContentBox>
-            </div>
+            </Container>
         </PageContentBlock>
     );
 };

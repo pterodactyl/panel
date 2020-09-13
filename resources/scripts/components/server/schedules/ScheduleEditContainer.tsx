@@ -60,7 +60,7 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                 <Spinner size={'large'} centered/>
                 :
                 <>
-                    <GreyRowBox>
+                    <GreyRowBox css={tw`cursor-pointer mb-2 flex-wrap`}>
                         <ScheduleRow schedule={schedule}/>
                     </GreyRowBox>
                     <EditScheduleModal

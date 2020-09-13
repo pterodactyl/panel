@@ -4,6 +4,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
 import styled from 'styled-components/macro';
+import { breakpoint } from '@/theme';
 import Fade from '@/components/elements/Fade';
 
 export interface RequiredModalProps {
@@ -26,9 +27,16 @@ export const ModalMask = styled.div`
 `;
 
 const ModalContainer = styled.div<{ alignTop?: boolean }>`
+    ${breakpoint('xs')`
+        max-width: 95%;
+    `};
+
+    ${breakpoint('md')`
+        max-width: 50%;
+    `};
+
     ${tw`relative flex flex-col w-full m-auto`};
     max-height: calc(100vh - 8rem);
-    max-width: 50%;
     // @todo max-w-screen-lg perhaps?
     ${props => props.alignTop && 'margin-top: 10%'};
     

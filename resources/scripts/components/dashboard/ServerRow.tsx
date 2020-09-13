@@ -55,16 +55,16 @@ export default ({ server, className }: { server: Server; className?: string }) =
 
     return (
         <GreyRowBox as={Link} to={`/server/${server.id}`} className={className}>
-            <div className={'icon'}>
+            <div className={'icon'} css={tw`hidden md:block`}>
                 <FontAwesomeIcon icon={faServer}/>
             </div>
-            <div css={tw`flex-1 ml-4`}>
+            <div css={tw`flex-1 md:ml-4`}>
                 <p css={tw`text-lg`}>{server.name}</p>
                 {!!server.description &&
                 <p css={tw`text-sm text-neutral-300`}>{server.description}</p>
                 }
             </div>
-            <div css={tw`w-48 overflow-hidden self-start`}>
+            <div css={tw`w-48 overflow-hidden self-start hidden lg:block`}>
                 <div css={tw`flex ml-4 justify-end`}>
                     <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
@@ -76,7 +76,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     </p>
                 </div>
             </div>
-            <div css={tw`w-1/3 flex items-baseline justify-center relative`}>
+            <div css={tw`w-1/3 sm:w-1/2 lg:w-1/3 flex items-baseline justify-center relative`}>
                 {!stats ?
                     !statsError ?
                         <Spinner size={'small'}/>
@@ -95,7 +95,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </div>
                     :
                     <React.Fragment>
-                        <div css={tw`flex-1 flex ml-4 justify-center`}>
+                        <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>
                             <FontAwesomeIcon
                                 icon={faMicrochip}
                                 css={[
@@ -113,7 +113,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                 {stats.cpuUsagePercent} %
                             </p>
                         </div>
-                        <div css={tw`flex-1 ml-4`}>
+                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
                                 <FontAwesomeIcon
                                     icon={faMemory}
@@ -134,7 +134,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
                         </div>
-                        <div css={tw`flex-1 ml-4`}>
+                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
                                 <FontAwesomeIcon
                                     icon={faHdd}
@@ -154,6 +154,19 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                 </p>
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
+                        </div>
+                        
+                        <div css={tw`flex-1 flex justify-end sm:hidden`}>
+                            <div css={tw`flex items-end text-right`}>
+                                <div
+                                    css={[
+                                        tw`w-3 h-3 rounded-full`,
+                                        (!stats?.status || stats?.status === 'offline')
+                                            ? tw`bg-red-500`
+                                            : (stats?.status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`),
+                                    ]}
+                                />
+                            </div>
                         </div>
                     </React.Fragment>
                 }

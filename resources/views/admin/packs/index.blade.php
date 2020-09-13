@@ -48,8 +48,8 @@
                         </tr>
                         @foreach ($packs as $pack)
                             <tr>
-                                <td class="middle" data-toggle="tooltip" data-placement="right" title="{{ $pack->uuid }}"><code>{{ $pack->id }}</code></td>
-                                <td class="middle"><a href="{{ route('admin.packs.view', $pack->id) }}">{{ $pack->name }}</a></td>
+                                <td class="middle"><code>{{ $pack->id }}</code></td>
+                                <td class="middle"><a href="{{ route('admin.packs.view', $pack->id) }}" data-toggle="tooltip" data-placement="right" title="{{ $pack->uuid }}">{{ $pack->name }}</a></td>
                                 <td class="middle"><code>{{ $pack->version }}</code></td>
                                 <td class="col-md-6">{{ str_limit($pack->description, 150) }}</td>
                                 <td class="middle"><a href="{{ route('admin.nests.egg.view', $pack->egg->id) }}">{{ $pack->egg->name }}</a></td>

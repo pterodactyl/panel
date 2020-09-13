@@ -9,7 +9,7 @@ const ChecksumModal = ({ checksum, ...props }: RequiredModalProps & { checksum: 
             The checksum of this file is:
         </p>
         <pre css={tw`mt-2 text-sm p-2 bg-neutral-900 rounded`}>
-            <code css={tw`block font-mono`}>{checksum}</code>
+            <code css={tw`block font-mono overflow-auto`}>{checksum}</code>
         </pre>
     </Modal>
 );

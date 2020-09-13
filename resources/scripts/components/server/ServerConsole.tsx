@@ -63,8 +63,8 @@ export default () => {
     const memorylimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
 
     return (
-        <ServerContentBlock title={'Console'} css={tw`flex`}>
-            <div css={tw`w-1/4`}>
+        <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
+            <div css={tw`w-full md:w-1/4`}>
                 <TitledGreyBox title={name} icon={faServer}>
                     <p css={tw`text-xs uppercase`}>
                         <FontAwesomeIcon
@@ -137,7 +137,7 @@ export default () => {
                     </div>
                 }
             </div>
-            <div css={tw`flex-1 ml-4`}>
+            <div css={tw`w-full md:flex-1 md:ml-4 mt-4 md:mt-0`}>
                 <SuspenseSpinner>
                     <ChunkedConsole/>
                     <ChunkedStatGraphs/>

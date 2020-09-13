@@ -4,14 +4,14 @@ import tw from 'twin.macro';
 import config from '../../../../tailwind.config';
 
 const SubNavigation = styled.div`
-    ${tw`w-full bg-neutral-700 shadow`};
+    ${tw`w-full bg-neutral-700 shadow overflow-x-auto`};
     
     & > div {
         ${tw`flex items-center text-sm mx-auto px-2`};
         max-width: 1200px;
         
         & > a, & > div {
-            ${tw`inline-block py-3 px-4 text-neutral-300 no-underline transition-all duration-150`};
+            ${tw`inline-block py-3 px-4 text-neutral-300 no-underline whitespace-no-wrap transition-all duration-150`};
             
             &:not(:first-of-type) {
                 ${tw`ml-2`};

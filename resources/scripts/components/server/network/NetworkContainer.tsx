@@ -68,8 +68,8 @@ const NetworkContainer = () => {
                 <Spinner size={'large'} centered/>
                 :
                 data.map(({ id, ip, port, alias, notes, isDefault }, index) => (
-                    <GreyRowBox key={`${ip}:${port}`} css={index > 0 ? tw`mt-2` : undefined} $hoverable={false}>
-                        <div css={tw`pl-4 pr-6 text-neutral-400`}>
+                    <GreyRowBox key={`${ip}:${port}`} css={index > 0 ? tw`mt-2 overflow-x-auto` : tw`overflow-x-auto`} $hoverable={false}>
+                        <div css={tw`hidden md:block pl-4 pr-6 text-neutral-400`}>
                             <FontAwesomeIcon icon={faNetworkWired}/>
                         </div>
                         <div css={tw`mr-4`}>
@@ -80,7 +80,7 @@ const NetworkContainer = () => {
                             <Code>{port}</Code>
                             <Label>Port</Label>
                         </div>
-                        <div css={tw`px-8 flex-1 self-start`}>
+                        <div css={tw`px-8 flex-none sm:flex-1 self-start`}>
                             <InputSpinner visible={loading === id}>
                                 <Textarea
                                     css={tw`bg-neutral-800 hover:border-neutral-600 border-transparent`}
@@ -90,7 +90,7 @@ const NetworkContainer = () => {
                                 />
                             </InputSpinner>
                         </div>
-                        <div css={tw`w-32 text-right`}>
+                        <div css={tw`w-32 text-right mr-2 md:mr-0`}>
                             {isDefault ?
                                 <span css={tw`bg-green-500 py-1 px-2 rounded text-green-50 text-xs`}>
                                     Primary

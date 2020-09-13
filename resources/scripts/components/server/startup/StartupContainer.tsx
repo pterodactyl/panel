@@ -55,7 +55,7 @@ const StartupContainer = () => {
                         </p>
                     </div>
                 </TitledGreyBox>
-                <div css={tw`grid gap-8 grid-cols-2 mt-10`}>
+                <div css={tw`grid gap-8 md:grid-cols-2 mt-10`}>
                     {data.variables.map(variable => <VariableBox key={variable.envVariable} variable={variable}/>)}
                 </div>
             </ServerContentBlock>
