@@ -15,7 +15,7 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerConfigurationStructureService
 {
-    const REQUIRED_RELATIONS = ['allocation', 'allocations', 'pack', 'egg'];
+    const REQUIRED_RELATIONS = ['allocation', 'allocations', 'egg'];
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
@@ -139,7 +139,6 @@ class ServerConfigurationStructureService
             ],
             'service' => [
                 'egg' => $server->egg->uuid,
-                'pack' => $server->pack ? $server->pack->uuid : null,
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,

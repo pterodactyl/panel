@@ -63,7 +63,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForRebuild(int $server = null, int $node = null): Collection
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg', 'node']);
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
@@ -83,7 +83,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForReinstall(int $server = null, int $node = null): Collection
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg', 'node']);
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
@@ -140,7 +140,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForCreation(Server $server, bool $refresh = false): Server
     {
-        foreach (['allocation', 'allocations', 'pack', 'egg'] as $relation) {
+        foreach (['allocation', 'allocations', 'egg'] as $relation) {
             if (! $server->relationLoaded($relation) || $refresh) {
                 $server->load($relation);
             }
@@ -167,7 +167,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Get data for use when updating a server on the Daemon. Returns an array of
-     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * the egg which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
      *
      * @param \Pterodactyl\Models\Server $server
@@ -180,13 +180,8 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             $server->load('egg');
         }
 
-        if (! $server->relationLoaded('pack') || $refresh) {
-            $server->load('pack');
-        }
-
         return [
             'egg' => $server->getRelation('egg')->uuid,
-            'pack' => is_null($server->getRelation('pack')) ? null : $server->getRelation('pack')->uuid,
         ];
     }
 

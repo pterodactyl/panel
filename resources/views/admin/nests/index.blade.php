@@ -42,7 +42,6 @@
                         <th>Name</th>
                         <th>Description</th>
                         <th class="text-center">Eggs</th>
-                        <th class="text-center">Packs</th>
                         <th class="text-center">Servers</th>
                     </tr>
                     @foreach($nests as $nest)
@@ -51,7 +50,6 @@
                             <td class="middle"><a href="{{ route('admin.nests.view', $nest->id) }}" data-toggle="tooltip" data-placement="right" title="{{ $nest->author }}">{{ $nest->name }}</a></td>
                             <td class="col-xs-6 middle">{{ $nest->description }}</td>
                             <td class="text-center middle">{{ $nest->eggs_count }}</td>
-                            <td class="text-center middle">{{ $nest->packs_count }}</td>
                             <td class="text-center middle">{{ $nest->servers_count }}</td>
                         </tr>
                     @endforeach

@@ -240,7 +240,7 @@ class ServersController extends Controller
     }
 
     /**
-     * Reinstalls the server with the currently assigned pack and service.
+     * Reinstalls the server with the currently assigned service.
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse

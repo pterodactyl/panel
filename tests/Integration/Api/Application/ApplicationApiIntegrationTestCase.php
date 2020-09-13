@@ -118,7 +118,6 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
             'r_eggs' => AdminAcl::READ | AdminAcl::WRITE,
             'r_database_hosts' => AdminAcl::READ | AdminAcl::WRITE,
             'r_server_databases' => AdminAcl::READ | AdminAcl::WRITE,
-            'r_packs' => AdminAcl::READ | AdminAcl::WRITE,
         ], $permissions));
     }
 

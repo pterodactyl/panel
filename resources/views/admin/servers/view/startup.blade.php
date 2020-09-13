@@ -54,7 +54,7 @@
                     <div class="col-xs-12">
                         <p class="small text-danger">
                             Changing any of the below values will result in the server processing a re-install command. The server will be stopped and will then proceed.
-                            If you are changing the pack, existing data <em>may</em> be overwritten. If you would like the service scripts to not run, ensure the box is checked at the bottom.
+                            If you would like the service scripts to not run, ensure the box is checked at the bottom.
                         </p>
                         <p class="small text-danger">
                             <strong>This is a destructive operation in many cases. This server will be stopped immediately in order for this action to proceed.</strong>
@@ -79,16 +79,11 @@
                         <p class="small text-muted no-margin">Select the Egg that will provide processing data for this server.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="pPackId">Data Pack</label>
-                        <select name="pack_id" id="pPackId" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select a data pack to be automatically installed on this server when first created.</p>
-                    </div>
-                    <div class="form-group col-xs-12">
                         <div class="checkbox checkbox-primary no-margin-bottom">
                             <input id="pSkipScripting" name="skip_scripts" type="checkbox" value="1" @if($server->skip_scripts) checked @endif />
                             <label for="pSkipScripting" class="strong">Skip Egg Install Script</label>
                         </div>
-                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
+                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during install. If you would like to skip this step, check this box.</p>
                     </div>
                 </div>
             </div>
@@ -117,7 +112,6 @@
     {!! Theme::js('vendor/lodash/lodash.js') !!}
     <script>
     $(document).ready(function () {
-        $('#pPackId').select2({placeholder: 'Select a Service Pack'});
         $('#pEggId').select2({placeholder: 'Select a Nest Egg'}).on('change', function () {
             var selectedEgg = _.isNull($(this).val()) ? $(this).find('option').first().val() : $(this).val();
             var parentChain = _.get(Pterodactyl.nests, $("#pNestId").val());
@@ -133,21 +127,6 @@
                 $('#pDefaultStartupCommand').val(_.get(parentChain, 'startup', 'ERROR: Startup Not Defined!'));
             } else {
                 $('#pDefaultStartupCommand').val(_.get(objectChain, 'startup'));
-            }
-
-            $('#pPackId').html('').select2({
-                data: [{id: '0', text: 'No Service Pack'}].concat(
-                    $.map(_.get(objectChain, 'packs', []), function (item, i) {
-                        return {
-                            id: item.id,
-                            text: item.name + ' (' + item.version + ')',
-                        };
-                    })
-                ),
-            });
-
-            if (Pterodactyl.server.pack_id !== null) {
-                $('#pPackId').val(Pterodactyl.server.pack_id);
             }
 
             $('#appendVariablesTo').html('');

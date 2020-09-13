@@ -32,7 +32,6 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker $faker) {
         'io' => 500,
         'cpu' => 0,
         'oom_disabled' => 0,
-        'pack_id' => null,
         'installed' => 1,
         'database_limit' => null,
         'allocation_limit' => null,
@@ -130,18 +129,6 @@ $factory->state(Pterodactyl\Models\EggVariable::class, 'viewable', function () {
 
 $factory->state(Pterodactyl\Models\EggVariable::class, 'editable', function () {
     return ['user_editable' => 1];
-});
-
-$factory->define(Pterodactyl\Models\Pack::class, function (Faker $faker) {
-    return [
-        'uuid' => $faker->uuid,
-        'name' => $faker->word,
-        'description' => null,
-        'version' => $faker->randomNumber(),
-        'selectable' => 1,
-        'visible' => 1,
-        'locked' => 0,
-    ];
 });
 
 $factory->define(Pterodactyl\Models\Subuser::class, function (Faker $faker) {

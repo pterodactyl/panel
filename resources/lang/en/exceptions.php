@@ -32,15 +32,6 @@ return [
             'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
         ],
     ],
-    'packs' => [
-        'delete_has_servers' => 'Cannot delete a pack that is attached to active servers.',
-        'update_has_servers' => 'Cannot modify the associated option ID when servers are currently attached to a pack.',
-        'invalid_upload' => 'The file provided does not appear to be valid.',
-        'invalid_mime' => 'The file provided does not meet the required type :type',
-        'unreadable' => 'The archive provided could not be opened by the server.',
-        'zip_extraction' => 'An exception was encountered while attempting to extract the archive provided onto the server.',
-        'invalid_archive_exception' => 'The pack archive provided appears to be missing a required archive.tar.gz or import.json file in the base directory.',
-    ],
     'subusers' => [
         'editing_self' => 'Editing your own subuser account is not permitted.',
         'user_is_owner' => 'You cannot add the server owner as a subuser for this server.',

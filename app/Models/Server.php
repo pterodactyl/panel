@@ -28,7 +28,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $allocation_id
  * @property int $nest_id
  * @property int $egg_id
- * @property int|null $pack_id
  * @property string $startup
  * @property string $image
  * @property int $installed
@@ -42,7 +41,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subusers
  * @property \Pterodactyl\Models\Allocation $allocation
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
- * @property \Pterodactyl\Models\Pack|null $pack
  * @property \Pterodactyl\Models\Node $node
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Pterodactyl\Models\Egg $egg
@@ -122,7 +120,6 @@ class Server extends Model
         'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
         'nest_id' => 'required|exists:nests,id',
         'egg_id' => 'required|exists:eggs,id',
-        'pack_id' => 'sometimes|nullable|numeric|min:0',
         'startup' => 'required|string',
         'skip_scripts' => 'sometimes|boolean',
         'image' => 'required|string|max:255',
@@ -151,7 +148,6 @@ class Server extends Model
         'allocation_id' => 'integer',
         'nest_id' => 'integer',
         'egg_id' => 'integer',
-        'pack_id' => 'integer',
         'installed' => 'integer',
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
@@ -171,7 +167,6 @@ class Server extends Model
         'user.email' => 40,
         'user.username' => 30,
         'node.name' => 10,
-        'pack.name' => 10,
     ];
 
     /**
@@ -232,16 +227,6 @@ class Server extends Model
     public function allocations()
     {
         return $this->hasMany(Allocation::class, 'server_id');
-    }
-
-    /**
-     * Gets information for the pack associated with this server.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function pack()
-    {
-        return $this->belongsTo(Pack::class);
     }
 
     /**

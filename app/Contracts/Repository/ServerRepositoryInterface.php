@@ -85,7 +85,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
 
     /**
      * Get data for use when updating a server on the Daemon. Returns an array of
-     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * the egg which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
      *
      * @param \Pterodactyl\Models\Server $server
