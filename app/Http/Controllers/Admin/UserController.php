@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Translation\Translator;
@@ -83,7 +84,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->repository->setSearchTerm($request->input('query'))->getAllUsersWithCounts();
+        $users = QueryBuilder::for(User::query()->withCount('servers'))
+            ->allowedIncludes(['username', 'email', 'uuid'])
+            ->allowedSorts(['id', 'uuid'])
+            ->paginate(50);
 
         return view('admin.users.index', ['users' => $users]);
     }

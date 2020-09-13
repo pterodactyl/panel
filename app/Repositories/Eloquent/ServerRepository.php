@@ -23,17 +23,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Returns a listing of all servers that exist including relationships.
-     *
-     * @param int $paginate
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getAllServers(int $paginate): LengthAwarePaginator
-    {
-        return $this->getBuilder()->with('node', 'user', 'allocation')->paginate($paginate, $this->getColumns());
-    }
-
-    /**
      * Load the egg relations onto the server model.
      *
      * @param \Pterodactyl\Models\Server $server

@@ -20,16 +20,6 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
     }
 
     /**
-     * Return all users with counts of servers and subusers of servers.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getAllUsersWithCounts(): LengthAwarePaginator
-    {
-        return $this->getBuilder()->withCount('servers')->paginate(50, $this->getColumns());
-    }
-
-    /**
      * Return all matching models for a user in a format that can be used for dropdowns.
      *
      * @param string|null $query

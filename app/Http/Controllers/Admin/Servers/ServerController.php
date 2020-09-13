@@ -3,6 +3,8 @@
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
+use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Contracts\View\Factory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -42,10 +44,11 @@ class ServerController extends Controller
      */
     public function index(Request $request)
     {
-        return $this->view->make('admin.servers.index', [
-            'servers' => $this->repository->setSearchTerm($request->input('query'))->getAllServers(
-                config()->get('pterodactyl.paginate.admin.servers')
-            ),
-        ]);
+        $servers = QueryBuilder::for(Server::query()->with('node', 'user', 'allocation'))
+            ->allowedIncludes(['uuid', 'name', 'image'])
+            ->allowedSorts(['id', 'uuid'])
+            ->paginate(config()->get('pterodactyl.paginate.admin.servers'));
+
+        return $this->view->make('admin.servers.index', ['servers' => $servers]);
     }
 }

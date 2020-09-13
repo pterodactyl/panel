@@ -9,14 +9,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 interface ServerRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Returns a listing of all servers that exist including relationships.
-     *
-     * @param int $paginate
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getAllServers(int $paginate): LengthAwarePaginator;
-
-    /**
      * Load the egg relations onto the server model.
      *
      * @param \Pterodactyl\Models\Server $server

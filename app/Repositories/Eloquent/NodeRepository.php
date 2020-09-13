@@ -83,16 +83,6 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     }
 
     /**
-     * Return all available nodes with a searchable interface.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getNodeListingData(): LengthAwarePaginator
-    {
-        return $this->getBuilder()->with('location')->withCount('servers')->paginate(25, $this->getColumns());
-    }
-
-    /**
      * Return a single node with location and server information.
      *
      * @param \Pterodactyl\Models\Node $node

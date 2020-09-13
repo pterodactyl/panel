@@ -30,13 +30,6 @@ interface NodeRepositoryInterface extends RepositoryInterface
     public function getUsageStatsRaw(Node $node): array;
 
     /**
-     * Return all available nodes with a searchable interface.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getNodeListingData(): LengthAwarePaginator;
-
-    /**
      * Return a single node with location and server information.
      *
      * @param \Pterodactyl\Models\Node $node
