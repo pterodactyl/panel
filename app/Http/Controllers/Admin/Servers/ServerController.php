@@ -45,7 +45,7 @@ class ServerController extends Controller
     public function index(Request $request)
     {
         $servers = QueryBuilder::for(Server::query()->with('node', 'user', 'allocation'))
-            ->allowedIncludes(['uuid', 'name', 'image'])
+            ->allowedFilters(['uuid', 'name', 'image'])
             ->allowedSorts(['id', 'uuid'])
             ->paginate(config()->get('pterodactyl.paginate.admin.servers'));
 

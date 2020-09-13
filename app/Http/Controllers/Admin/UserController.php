@@ -85,7 +85,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = QueryBuilder::for(User::query()->withCount('servers'))
-            ->allowedIncludes(['username', 'email', 'uuid'])
+            ->allowedFilters(['username', 'email', 'uuid'])
             ->allowedSorts(['id', 'uuid'])
             ->paginate(50);
 
