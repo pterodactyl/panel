@@ -43,13 +43,8 @@ class Mount extends Model
      *
      * @var array
      */
-    protected $attributes = [
+    protected $casts = [
         'id' => 'int',
-        'uuid' => 'string',
-        'name' => 'string',
-        'description' => 'string',
-        'source' => 'string',
-        'target' => 'string',
         'read_only' => 'bool',
         'user_mountable' => 'bool',
     ];
@@ -60,7 +55,6 @@ class Mount extends Model
      * @var string
      */
     public static $validationRules = [
-        // 'uuid' => 'required|string|size:36|unique:mounts,uuid',
         'name' => 'required|string|min:2|max:64|unique:mounts,name',
         'description' => 'nullable|string|max:255',
         'source' => 'required|string',
