@@ -47,8 +47,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection $schedule
  * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
  * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\DaemonKey $key
- * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  * @property \Pterodactyl\Models\ServerTransfer $transfer
  * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
  * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
@@ -292,26 +290,6 @@ class Server extends Model
     public function location()
     {
         return $this->belongsToThrough(Location::class, Node::class);
-    }
-
-    /**
-     * Return the key belonging to the server owner.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function key()
-    {
-        return $this->hasOne(DaemonKey::class, 'user_id', 'owner_id');
-    }
-
-    /**
-     * Returns all of the daemon keys belonging to this server.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function keys()
-    {
-        return $this->hasMany(DaemonKey::class);
     }
 
     /**

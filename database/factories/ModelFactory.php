@@ -181,13 +181,6 @@ $factory->define(Pterodactyl\Models\Task::class, function (Faker $faker) {
     ];
 });
 
-$factory->define(Pterodactyl\Models\DaemonKey::class, function (Faker $faker) {
-    return [
-        'secret' => 'i_' . str_random(40),
-        'expires_at' => \Carbon\Carbon::now()->addMinutes(10)->toDateTimeString(),
-    ];
-});
-
 $factory->define(Pterodactyl\Models\ApiKey::class, function (Faker $faker) {
     static $token;
 

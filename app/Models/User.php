@@ -38,7 +38,6 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string $name
  * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
  */
 class User extends Model implements
@@ -212,16 +211,6 @@ class User extends Model implements
     public function servers()
     {
         return $this->hasMany(Server::class, 'owner_id');
-    }
-
-    /**
-     * Return all of the daemon keys that a user belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function keys()
-    {
-        return $this->hasMany(DaemonKey::class);
     }
 
     /**

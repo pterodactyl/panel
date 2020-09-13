@@ -11,9 +11,7 @@ use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
-use Pterodactyl\Services\Subusers\PermissionCreationService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
@@ -28,17 +26,7 @@ class SubuserCreationServiceTest extends TestCase
     protected $connection;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService|\Mockery\Mock
-     */
-    protected $keyCreationService;
-
-    /**
-     * @var \Pterodactyl\Services\Subusers\PermissionCreationService|\Mockery\Mock
-     */
-    protected $permissionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Repositories\Eloquent\SubuserRepository|\Mockery\Mock
      */
     protected $subuserRepository;
 
@@ -70,8 +58,6 @@ class SubuserCreationServiceTest extends TestCase
         parent::setUp();
 
         $this->connection = m::mock(ConnectionInterface::class);
-        $this->keyCreationService = m::mock(DaemonKeyCreationService::class);
-        $this->permissionService = m::mock(PermissionCreationService::class);
         $this->subuserRepository = m::mock(SubuserRepositoryInterface::class);
         $this->serverRepository = m::mock(ServerRepositoryInterface::class);
         $this->userCreationService = m::mock(UserCreationService::class);
@@ -107,8 +93,6 @@ class SubuserCreationServiceTest extends TestCase
 
         $this->subuserRepository->shouldReceive('create')->with(['user_id' => $user->id, 'server_id' => $server->id])
             ->once()->andReturn($subuser);
-        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturnNull();
-        $this->permissionService->shouldReceive('handle')->with($subuser->id, array_keys($permissions))->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->getService()->handle($server, $user->email, array_keys($permissions));
@@ -136,8 +120,6 @@ class SubuserCreationServiceTest extends TestCase
 
         $this->subuserRepository->shouldReceive('create')->with(['user_id' => $user->id, 'server_id' => $server->id])
             ->once()->andReturn($subuser);
-        $this->keyCreationService->shouldReceive('handle')->with($server->id, $user->id)->once()->andReturnNull();
-        $this->permissionService->shouldReceive('handle')->with($subuser->id, $permissions)->once()->andReturnNull();
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
         $response = $this->getService()->handle($server->id, $user->email, $permissions);
@@ -196,9 +178,6 @@ class SubuserCreationServiceTest extends TestCase
     {
         return new SubuserCreationService(
             $this->connection,
-            $this->keyCreationService,
-            $this->permissionService,
-            $this->serverRepository,
             $this->subuserRepository,
             $this->userCreationService,
             $this->userRepository
