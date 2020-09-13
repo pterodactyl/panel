@@ -185,11 +185,20 @@ class UserController extends Controller
      */
     public function json(Request $request)
     {
+        $users = QueryBuilder::for(User::query())->allowedFilters(['email'])->paginate(25);
+
         // Handle single user requests.
         if ($request->query('user_id')) {
-            return $this->repository->filterById($request->input('user_id'));
+            $user = User::query()->findOrFail($request->input('user_id'));
+            $user->md5 = md5(strtolower($user->email));
+
+            return $user;
         }
 
-        return $this->repository->filterUsersByQuery($request->input('q'));
+        return $users->map(function ($item) {
+            $item->md5 = md5(strtolower($item->email));
+
+            return $item;
+        });
     }
 }

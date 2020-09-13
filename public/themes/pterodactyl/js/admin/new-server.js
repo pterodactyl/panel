@@ -161,7 +161,7 @@ function initUserIdSelect(data) {
 
             data: function (params) {
                 return {
-                    q: params.term, // search term
+                    filter: { email: params.term },
                     page: params.page,
                 };
             },

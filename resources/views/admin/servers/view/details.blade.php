@@ -73,7 +73,7 @@
             delay: 250,
             data: function (params) {
                 return {
-                    q: params.term, // search term
+                    filter: { email: params.term },
                     page: params.page,
                 };
             },
