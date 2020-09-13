@@ -33,6 +33,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Pterodactyl\Models\Location $location
+ * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
@@ -182,6 +183,7 @@ class Node extends Model
                     'bind_port' => $this->daemonSFTP,
                 ],
             ],
+            'allowed_mounts' => $this->mounts->pluck('source')->toArray(),
             'remote' => route('index'),
         ];
     }
@@ -217,6 +219,14 @@ class Node extends Model
         return (string) Container::getInstance()->make(Encrypter::class)->decrypt(
             $this->daemon_token
         );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function mounts()
+    {
+        return $this->hasManyThrough(Mount::class, MountNode::class, 'node_id', 'id', 'id', 'mount_id');
     }
 
     /**

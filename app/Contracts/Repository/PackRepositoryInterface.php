@@ -4,9 +4,8 @@ namespace Pterodactyl\Contracts\Repository;
 
 use Pterodactyl\Models\Pack;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-interface PackRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface PackRepositoryInterface extends RepositoryInterface
 {
     /**
      * Return a pack with the associated server models attached to it.

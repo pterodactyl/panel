@@ -12,6 +12,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Pack;
 use Prologue\Alerts\AlertsMessageBag;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Packs\ExportPackService;
 use Pterodactyl\Services\Packs\PackUpdateService;
@@ -114,7 +115,7 @@ class PackController extends Controller
     public function index(Request $request)
     {
         return view('admin.packs.index', [
-            'packs' => $this->repository->setSearchTerm($request->input('query'))->paginateWithEggAndServerCount(),
+            'packs' => $this->repository->paginateWithEggAndServerCount(),
         ]);
     }
 

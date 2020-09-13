@@ -9,6 +9,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
@@ -66,22 +67,9 @@ class ServerConfigurationStructureService
      *
      * @param \Pterodactyl\Models\Server $server
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     protected function returnCurrentFormat(Server $server)
     {
-        $mounts = $server->mounts;
-        foreach ($mounts as $mount) {
-            unset($mount->id);
-            unset($mount->uuid);
-            unset($mount->name);
-            unset($mount->description);
-            $mount->read_only = $mount->read_only == 1;
-            unset($mount->user_mountable);
-            unset($mount->pivot);
-        }
-
         return [
             'uuid' => $server->uuid,
             'suspended' => (bool) $server->suspended,
@@ -108,7 +96,13 @@ class ServerConfigurationStructureService
                 ],
                 'mappings' => $server->getAllocationMappings(),
             ],
-            'mounts' => $mounts,
+            'mounts' => $server->mounts->map(function (Mount $mount) {
+                return [
+                    'source' => $mount->source,
+                    'target' => $mount->target,
+                    'read_only' => $mount->read_only,
+                ];
+            }),
         ];
     }
 
