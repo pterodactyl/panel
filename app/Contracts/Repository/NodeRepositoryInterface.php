@@ -8,7 +8,7 @@ use Illuminate\Support\LazyCollection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface NodeRepositoryInterface extends RepositoryInterface
 {
     const THRESHOLD_PERCENTAGE_LOW = 75;
     const THRESHOLD_PERCENTAGE_MEDIUM = 90;

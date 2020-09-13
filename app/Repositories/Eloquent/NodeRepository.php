@@ -5,14 +5,11 @@ namespace Pterodactyl\Repositories\Eloquent;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Illuminate\Support\LazyCollection;
-use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface
 {
-    use Searchable;
-
     /**
      * Return the model backing this repository.
      *
@@ -92,13 +89,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodeListingData(): LengthAwarePaginator
     {
-        $instance = $this->getBuilder()->with('location')->withCount('servers');
-
-        if ($this->hasSearchTerm()) {
-            $instance->search($this->getSearchTerm());
-        }
-
-        return $instance->paginate(25, $this->getColumns());
+        return $this->getBuilder()->with('location')->withCount('servers')->paginate(25, $this->getColumns());
     }
 
     /**

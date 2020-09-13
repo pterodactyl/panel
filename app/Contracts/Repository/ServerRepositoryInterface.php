@@ -5,9 +5,8 @@ namespace Pterodactyl\Contracts\Repository;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface ServerRepositoryInterface extends RepositoryInterface
 {
     /**
      * Returns a listing of all servers that exist including relationships.

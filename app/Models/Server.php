@@ -3,7 +3,6 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Pterodactyl\Models\Traits\Searchable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
@@ -58,7 +57,6 @@ class Server extends Model
 {
     use BelongsToThrough;
     use Notifiable;
-    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -152,21 +150,6 @@ class Server extends Model
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
         'backup_limit' => 'integer',
-    ];
-
-    /**
-     * Parameters for search querying.
-     *
-     * @var array
-     */
-    protected $searchableColumns = [
-        'name' => 100,
-        'uuid' => 80,
-        'uuidShort' => 80,
-        'external_id' => 50,
-        'user.email' => 40,
-        'user.username' => 30,
-        'node.name' => 10,
     ];
 
     /**

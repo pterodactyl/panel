@@ -4,14 +4,11 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
-use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserRepository extends EloquentRepository implements UserRepositoryInterface
 {
-    use Searchable;
-
     /**
      * Return the model backing this repository.
      *
@@ -29,9 +26,7 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
      */
     public function getAllUsersWithCounts(): LengthAwarePaginator
     {
-        return $this->getBuilder()->withCount('servers')
-            ->search($this->getSearchTerm())
-            ->paginate(50, $this->getColumns());
+        return $this->getBuilder()->withCount('servers')->paginate(50, $this->getColumns());
     }
 
     /**
@@ -46,7 +41,7 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
             'id', 'email', 'username', 'name_first', 'name_last',
         ]);
 
-        $instance = $this->getBuilder()->search($query)->get($this->getColumns());
+        $instance = $this->getBuilder()->get($this->getColumns());
 
         return $instance->transform(function ($item) {
             $item->md5 = md5(strtolower($item->email));

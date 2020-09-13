@@ -4,9 +4,8 @@ namespace Pterodactyl\Contracts\Repository;
 
 use Pterodactyl\Models\Location;
 use Illuminate\Support\Collection;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-interface LocationRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface LocationRepositoryInterface extends RepositoryInterface
 {
     /**
      * Return locations with a count of nodes and servers attached to it.

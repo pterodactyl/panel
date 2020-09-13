@@ -8,7 +8,6 @@ use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
-use Pterodactyl\Models\Traits\Searchable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -52,7 +51,6 @@ class User extends Model implements
     use AvailableLanguages;
     use CanResetPassword;
     use Notifiable;
-    use Searchable;
 
     const USER_LEVEL_USER = 0;
     const USER_LEVEL_ADMIN = 1;
@@ -119,20 +117,6 @@ class User extends Model implements
      * @var array
      */
     protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
-
-    /**
-     * Parameters for search querying.
-     *
-     * @var array
-     */
-    protected $searchableColumns = [
-        'username' => 100,
-        'email' => 100,
-        'external_id' => 80,
-        'uuid' => 80,
-        'name_first' => 40,
-        'name_last' => 40,
-    ];
 
     /**
      * Default values for specific fields in the database.

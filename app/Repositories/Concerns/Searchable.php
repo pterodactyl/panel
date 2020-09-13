@@ -12,18 +12,6 @@ trait Searchable
     protected $searchTerm;
 
     /**
-     * Set the search term.
-     *
-     * @param string|null $term
-     * @return $this
-     * @deprecated
-     */
-    public function search($term)
-    {
-        return $this->setSearchTerm($term);
-    }
-
-    /**
      * Set the search term to use when requesting all records from
      * the model.
      *
@@ -40,25 +28,5 @@ trait Searchable
         $clone->searchTerm = $term;
 
         return $clone;
-    }
-
-    /**
-     * Determine if a valid search term is set on this repository.
-     *
-     * @return bool
-     */
-    public function hasSearchTerm(): bool
-    {
-        return ! empty($this->searchTerm);
-    }
-
-    /**
-     * Return the search term.
-     *
-     * @return string|null
-     */
-    public function getSearchTerm()
-    {
-        return $this->searchTerm;
     }
 }

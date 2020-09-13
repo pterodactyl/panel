@@ -5,7 +5,6 @@ namespace Pterodactyl\Repositories\Eloquent;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
-use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -13,8 +12,6 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerRepository extends EloquentRepository implements ServerRepositoryInterface
 {
-    use Searchable;
-
     /**
      * Return the model backing this repository.
      *
@@ -33,9 +30,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getAllServers(int $paginate): LengthAwarePaginator
     {
-        $instance = $this->getBuilder()->with('node', 'user', 'allocation')->search($this->getSearchTerm());
-
-        return $instance->paginate($paginate, $this->getColumns());
+        return $this->getBuilder()->with('node', 'user', 'allocation')->paginate($paginate, $this->getColumns());
     }
 
     /**
@@ -67,7 +62,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && ! is_null($node)) {
+        } else if (is_null($server) && ! is_null($node)) {
             $instance = $instance->where('node_id', '=', $node);
         }
 
@@ -87,7 +82,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && ! is_null($node)) {
+        } else if (is_null($server) && ! is_null($node)) {
             $instance = $instance->where('node_id', '=', $node);
         }
 
@@ -224,9 +219,9 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
         if (! empty($nodes) && ! empty($servers)) {
             $instance->whereIn('id', $servers)->orWhereIn('node_id', $nodes);
-        } elseif (empty($nodes) && ! empty($servers)) {
+        } else if (empty($nodes) && ! empty($servers)) {
             $instance->whereIn('id', $servers);
-        } elseif (! empty($nodes) && empty($servers)) {
+        } else if (! empty($nodes) && empty($servers)) {
             $instance->whereIn('node_id', $nodes);
         }
 

@@ -5,7 +5,6 @@ namespace Pterodactyl\Models;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
-use Pterodactyl\Models\Traits\Searchable;
 use Illuminate\Contracts\Encryption\Encrypter;
 
 /**
@@ -40,7 +39,6 @@ use Illuminate\Contracts\Encryption\Encrypter;
 class Node extends Model
 {
     use Notifiable;
-    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -93,18 +91,6 @@ class Node extends Model
         'disk_overallocate', 'upload_size', 'daemonBase',
         'daemonSFTP', 'daemonListen',
         'description', 'maintenance_mode',
-    ];
-
-    /**
-     * Fields that are searchable.
-     *
-     * @var array
-     */
-    protected $searchableColumns = [
-        'name' => 10,
-        'fqdn' => 8,
-        'location.short' => 4,
-        'location.long' => 4,
     ];
 
     /**
@@ -216,7 +202,7 @@ class Node extends Model
      */
     public function getDecryptedKey(): string
     {
-        return (string) Container::getInstance()->make(Encrypter::class)->decrypt(
+        return (string)Container::getInstance()->make(Encrypter::class)->decrypt(
             $this->daemon_token
         );
     }

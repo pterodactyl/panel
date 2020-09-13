@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-interface UserRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface UserRepositoryInterface extends RepositoryInterface
 {
     /**
      * Return all users with counts of servers and subusers of servers.
