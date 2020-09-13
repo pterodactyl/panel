@@ -6,7 +6,7 @@ import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
-import { Link, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';
 import ServerError from '@/components/screens/ServerError';
 import tw from 'twin.macro';
@@ -81,16 +81,17 @@ export default () => {
                             </CSSTransition>
                         }
                         <Can action={'file.create'}>
-                            <div css={tw`flex justify-end mt-8`}>
-                                <NewDirectoryButton/>
-                                <UploadButton/>
-                                <Button
-                                    // @ts-ignore
-                                    as={Link}
+                            <div css={tw`flex flex-wrap-reverse justify-end mt-4`}>
+                                <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`}/>
+                                <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`}/>
+                                <NavLink
                                     to={`/server/${id}/files/new${window.location.hash}`}
+                                    css={tw`flex-1 sm:flex-none sm:mt-0`}
                                 >
-                                    New File
-                                </Button>
+                                    <Button css={tw`w-full`}>
+                                        New File
+                                    </Button>
+                                </NavLink>
                             </div>
                         </Can>
                     </>

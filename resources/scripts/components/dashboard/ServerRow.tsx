@@ -155,7 +155,6 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
                         </div>
-                        
                         <div css={tw`flex-1 flex justify-end sm:hidden`}>
                             <div css={tw`flex items-end text-right`}>
                                 <div

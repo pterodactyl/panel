@@ -11,13 +11,14 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
+import { WithClassname } from '@/components/types';
 
 const InnerContainer = styled.div`
   max-width: 600px;
   ${tw`bg-black w-full border-4 border-primary-500 border-dashed rounded p-10 mx-10`}
 `;
 
-export default () => {
+export default ({ className }: WithClassname) => {
     const fileUploadInput = useRef<HTMLInputElement>(null);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [ visible, setVisible ] = useState(false);
@@ -114,7 +115,7 @@ export default () => {
                 }}
             />
             <Button
-                css={tw`mr-2`}
+                className={className}
                 onClick={() => {
                     fileUploadInput.current
                         ? fileUploadInput.current.click()

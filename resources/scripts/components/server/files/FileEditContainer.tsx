@@ -120,7 +120,7 @@ export default () => {
                 />
             </div>
             <div css={tw`flex justify-end mt-4`}>
-                <div css={tw`rounded bg-neutral-900 mr-4`}>
+                <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
                     <Select value={mode} onChange={e => setMode(e.currentTarget.value)}>
                         {Object.keys(modes).map(key => (
                             <option key={key} value={key}>{modes[key]}</option>
@@ -129,13 +129,13 @@ export default () => {
                 </div>
                 {action === 'edit' ?
                     <Can action={'file.update'}>
-                        <Button onClick={() => save()}>
+                        <Button css={tw`flex-1 sm:flex-none`} onClick={() => save()}>
                             Save Content
                         </Button>
                     </Can>
                     :
                     <Can action={'file.create'}>
-                        <Button onClick={() => setModalVisible(true)}>
+                        <Button css={tw`flex-1 sm:flex-none`} onClick={() => setModalVisible(true)}>
                             Create File
                         </Button>
                     </Can>
