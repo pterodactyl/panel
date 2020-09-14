@@ -48,7 +48,7 @@ class EggExporterService
 
         $struct = [
             'meta' => [
-                'version' => 'PTDL_v1',
+                'version' => 'PTDL_v2',
                 'update_url' => $egg->update_url,
             ],
             'exported_at' => Carbon::now()->toIso8601String(),

@@ -8,17 +8,15 @@ description: 'Counter-Strike: Global Offensive is a multiplayer first-person sho
 image: 'quay.io/pterodactyl/core:source'
 startup: './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}'
 config:
-  files: '{}'
+  files: '{  }'
   startup: |
-    {
-        "done": "Connection to Steam servers successful",
-        "userInteraction": []
-    }
+    done: 'Connection to Steam servers successful'
+    userInteraction: {  }
+    
   logs: |
-    {
-        "custom": true,
-        "location": "logs/latest.log"
-    }
+    custom: true
+    location: logs/latest.log
+    
   stop: quit
 scripts:
   installation:
@@ -60,6 +58,7 @@ scripts:
       ## set up 64 bit libraries
       mkdir -p /mnt/server/.steam/sdk64
       cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
+      
     container: 'ubuntu:18.04'
     entrypoint: bash
 variables:

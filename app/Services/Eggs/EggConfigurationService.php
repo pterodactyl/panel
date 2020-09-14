@@ -5,6 +5,8 @@ namespace Pterodactyl\Services\Eggs;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Server;
+use Symfony\Component\Yaml\Yaml;
+use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class EggConfigurationService
@@ -33,11 +35,11 @@ class EggConfigurationService
     public function handle(Server $server): array
     {
         $configs = $this->replacePlaceholders(
-            $server, json_decode($server->egg->inherit_config_files)
+            $server, Yaml::parse($server->egg->inherit_config_files, Yaml::PARSE_OBJECT_FOR_MAP)
         );
 
         return [
-            'startup' => $this->convertStartupToNewFormat(json_decode($server->egg->inherit_config_startup, true)),
+            'startup' => $this->convertStartupToNewFormat(Yaml::parse($server->egg->inherit_config_startup)),
             'stop' => $this->convertStopToNewFormat($server->egg->inherit_config_stop),
             'configs' => $configs,
         ];

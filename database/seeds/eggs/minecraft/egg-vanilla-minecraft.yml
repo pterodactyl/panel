@@ -9,28 +9,22 @@ image: 'quay.io/pterodactyl/core:java'
 startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
 config:
   files: |
-    {
-        "server.properties": {
-            "parser": "properties",
-            "find": {
-                "server-ip": "0.0.0.0",
-                "enable-query": "true",
-                "server-port": "{{server.build.default.port}}"
-            }
-        }
-    }
+    server.properties:
+      parser: properties
+      find:
+        server-ip: 0.0.0.0
+        enable-query: 'true'
+        server-port: '{{server.build.default.port}}'
+    
   startup: |
-    {
-        "done": ")! For help, type ",
-        "userInteraction": [
-            "Go to eula.txt for more info."
-        ]
-    }
+    done: ')! For help, type '
+    userInteraction:
+      - 'Go to eula.txt for more info.'
+    
   logs: |
-    {
-        "custom": false,
-        "location": "logs/latest.log"
-    }
+    custom: false
+    location: logs/latest.log
+    
   stop: stop
 scripts:
   installation:
@@ -60,6 +54,7 @@ scripts:
       curl -o ${SERVER_JARFILE} $DOWNLOAD_URL
       
       echo -e "Install Complete"
+      
     container: 'alpine:3.10'
     entrypoint: ash
 variables:

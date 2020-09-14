@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api\Application;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
+use Symfony\Component\Yaml\Yaml;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
@@ -51,10 +52,10 @@ class EggTransformer extends BaseTransformer
             'docker_image' => count($model->docker_images) > 0 ? $model->docker_images[0] : '',
             'docker_images' => $model->docker_images,
             'config' => [
-                'files' => json_decode($model->config_files, true),
-                'startup' => json_decode($model->config_startup, true),
+                'files' => Yaml::parse($model->config_files),
+                'startup' => Yaml::parse($model->config_startup),
                 'stop' => $model->config_stop,
-                'logs' => json_decode($model->config_logs, true),
+                'logs' => Yaml::parse($model->config_logs),
                 'extends' => $model->config_from,
             ],
             'startup' => $model->startup,
@@ -123,10 +124,10 @@ class EggTransformer extends BaseTransformer
 
         return $this->item($model, function (Egg $model) {
             return [
-                'files' => json_decode($model->inherit_config_files),
-                'startup' => json_decode($model->inherit_config_startup),
+                'files' => Yaml::parse($model->inherit_config_files),
+                'startup' => Yaml::parse($model->inherit_config_startup),
                 'stop' => $model->inherit_config_stop,
-                'logs' => json_decode($model->inherit_config_logs),
+                'logs' => Yaml::parse($model->inherit_config_logs),
             ];
         });
     }

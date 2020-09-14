@@ -8,9 +8,24 @@ description: 'Mumble is an open source, low-latency, high quality voice chat sof
 image: 'quay.io/pterodactyl/core:glibc'
 startup: './murmur.x86 -fg'
 config:
-  files: '{"murmur.ini":{"parser": "ini", "find":{"logfile": "murmur.log", "port": "{{server.build.default.port}}", "host": "0.0.0.0", "users": "{{server.build.env.MAX_USERS}}"}}}'
-  startup: '{"done": "Server listening on", "userInteraction": [ "Generating new server certificate"]}'
-  logs: '{"custom": true, "location": "logs/murmur.log"}'
+  files: |
+    murmur.ini:
+      parser: ini
+      find:
+        logfile: murmur.log
+        port: '{{server.build.default.port}}'
+        host: 0.0.0.0
+        users: '{{server.build.env.MAX_USERS}}'
+    
+  startup: |
+    done: 'Server listening on'
+    userInteraction:
+      - 'Generating new server certificate'
+    
+  logs: |
+    custom: true
+    location: logs/murmur.log
+    
   stop: ^C
 scripts:
   installation:
@@ -28,6 +43,7 @@ scripts:
       
       tar -xjvf murmur-static_x86-${MUMBLE_VERSION}.tar.bz2
       cp -r murmur-static_x86-${MUMBLE_VERSION}/* /mnt/server
+      
     container: 'alpine:3.9'
     entrypoint: ash
 variables:

@@ -9,29 +9,23 @@ image: 'quay.io/pterodactyl/core:java'
 startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
 config:
   files: |
-    {
-        "server.properties": {
-            "parser": "properties",
-            "find": {
-                "server-ip": "0.0.0.0",
-                "enable-query": "true",
-                "server-port": "{{server.build.default.port}}",
-                "query.port": "{{server.build.default.port}}"
-            }
-        }
-    }
+    server.properties:
+      parser: properties
+      find:
+        server-ip: 0.0.0.0
+        enable-query: 'true'
+        server-port: '{{server.build.default.port}}'
+        query.port: '{{server.build.default.port}}'
+    
   startup: |
-    {
-        "done": ")! For help, type ",
-        "userInteraction": [
-            "Go to eula.txt for more info."
-        ]
-    }
+    done: ')! For help, type '
+    userInteraction:
+      - 'Go to eula.txt for more info.'
+    
   logs: |
-    {
-        "custom": false,
-        "location": "logs/latest.log"
-    }
+    custom: false
+    location: logs/latest.log
+    
   stop: stop
 scripts:
   installation:
@@ -135,6 +129,7 @@ scripts:
       #Deleting installer.jar
       echo -e "Deleting installer.jar file.\n"
       rm -rf installer.jar
+      
     container: 'openjdk:8-jdk-slim'
     entrypoint: bash
 variables:
@@ -152,6 +147,7 @@ variables:
       The version of minecraft you want to install for.
       
       Leaving latest will install the latest recommended version.
+      
     env_variable: MC_VERSION
     default_value: latest
     user_viewable: 1
@@ -163,6 +159,7 @@ variables:
       The type of server jar to download from forge.
       
       Valid types are "recommended" and "latest".
+      
     env_variable: BUILD_TYPE
     default_value: recommended
     user_viewable: 1
@@ -176,6 +173,7 @@ variables:
       Ex. 1.15.2-31.2.4
       
       Overrides MC_VERSION and BUILD_TYPE. If it fails to download the server files it will fail to install.
+      
     env_variable: FORGE_VERSION
     default_value: ''
     user_viewable: 1

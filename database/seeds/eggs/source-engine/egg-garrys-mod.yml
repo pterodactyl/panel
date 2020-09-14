@@ -8,17 +8,15 @@ description: 'Garrys Mod, is a sandbox physics game created by Garry Newman, and
 image: 'quay.io/pterodactyl/core:source'
 startup: './srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}} +maxplayers {{MAX_PLAYERS}}  -tickrate {{TICKRATE}}'
 config:
-  files: '{}'
+  files: '{  }'
   startup: |
-    {
-        "done": "gameserver Steam ID",
-        "userInteraction": []
-    }
+    done: 'gameserver Steam ID'
+    userInteraction: {  }
+    
   logs: |
-    {
-        "custom": true,
-        "location": "logs/latest.log"
-    }
+    custom: true
+    location: logs/latest.log
+    
   stop: quit
 scripts:
   installation:
@@ -118,6 +116,7 @@ scripts:
       
       // Add custom lines under here
       ' > server.cfg
+      
     container: 'ubuntu:18.04'
     entrypoint: bash
 variables:

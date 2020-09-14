@@ -8,17 +8,15 @@ description: 'As a man or woman stranded, naked, freezing, and starving on the u
 image: 'quay.io/pterodactyl/core:source'
 startup: '"cd ShooterGame/Binaries/Linux && ./ShooterGameServer {{SERVER_MAP}}?listen?SessionName=''{{SESSION_NAME}}''?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}?RCONPort={{RCON_PORT}}?QueryPort={{QUERY_PORT}}?RCONEnabled={{ENABLE_RCON}} -server -log"'
 config:
-  files: '{}'
+  files: '{  }'
   startup: |
-    {
-        "done": "Setting breakpad minidump AppID = 346110",
-        "userInteraction": []
-    }
+    done: 'Setting breakpad minidump AppID = 346110'
+    userInteraction: {  }
+    
   logs: |
-    {
-        "custom": true,
-        "location": "logs/latest.log"
-    }
+    custom: true
+    location: logs/latest.log
+    
   stop: ^C
 scripts:
   installation:
@@ -56,6 +54,7 @@ scripts:
       ln -sf ../../../../../Steam/steamapps steamapps
       
       cd /mnt/server
+      
     container: 'ubuntu:16.04'
     entrypoint: bash
 variables:

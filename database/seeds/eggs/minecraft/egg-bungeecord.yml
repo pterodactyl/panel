@@ -9,31 +9,24 @@ image: 'quay.io/pterodactyl/core:java'
 startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
 config:
   files: |
-    {
-        "config.yml": {
-            "parser": "yaml",
-            "find": {
-                "listeners[0].query_enabled": true,
-                "listeners[0].query_port": "{{server.build.default.port}}",
-                "listeners[0].host": "0.0.0.0:{{server.build.default.port}}",
-                "servers.*.address": {
-                    "regex:^(127\\.0\\.0\\.1|localhost)(:\\d{1,5})?$": "{{config.docker.interface}}$2"
-                }
-            }
-        }
-    }
+    config.yml:
+      parser: yaml
+      find:
+        'listeners[0].query_enabled': true
+        'listeners[0].query_port': '{{server.build.default.port}}'
+        'listeners[0].host': '0.0.0.0:{{server.build.default.port}}'
+        'servers.*.address':
+          'regex:^(127\.0\.0\.1|localhost)(:\d{1,5})?$': '{{config.docker.interface}}$2'
+    
   startup: |
-    {
-        "done": "Listening on ",
-        "userInteraction": [
-            "Listening on /0.0.0.0:25577"
-        ]
-    }
+    done: 'Listening on '
+    userInteraction:
+      - 'Listening on /0.0.0.0:25577'
+    
   logs: |
-    {
-        "custom": false,
-        "location": "proxy.log.0"
-    }
+    custom: false
+    location: proxy.log.0
+    
   stop: end
 scripts:
   installation:
@@ -52,6 +45,7 @@ scripts:
       fi
       
       curl -o ${SERVER_JARFILE} https://ci.md-5.net/job/BungeeCord/${BUNGEE_VERSION}/artifact/bootstrap/target/BungeeCord.jar
+      
     container: 'alpine:3.9'
     entrypoint: ash
 variables:

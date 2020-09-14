@@ -8,9 +8,15 @@ description: 'Take to the streets for intense close quarters combat, where a tea
 image: 'quay.io/pterodactyl/core:source'
 startup: './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart'
 config:
-  files: '{}'
-  startup: '{"done": "gameserver Steam ID", "userInteraction": []}'
-  logs: '{"custom": true, "location": "logs/latest.log"}'
+  files: '{  }'
+  startup: |
+    done: 'gameserver Steam ID'
+    userInteraction: {  }
+    
+  logs: |
+    custom: true
+    location: logs/latest.log
+    
   stop: quit
 scripts:
   installation:
@@ -52,6 +58,7 @@ scripts:
       ## set up 64 bit libraries
       mkdir -p /mnt/server/.steam/sdk64
       cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
+      
     container: 'ubuntu:18.04'
     entrypoint: bash
 variables:

@@ -8,17 +8,15 @@ description: 'VoIP software designed with security in mind, featuring crystal cl
 image: 'quay.io/parkervcp/pterodactyl-images:base_debian'
 startup: './ts3server default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}} filetransfer_ip=0.0.0.0 filetransfer_port={{FILE_TRANSFER}} license_accepted=1'
 config:
-  files: '{}'
+  files: '{  }'
   startup: |
-    {
-        "done": "listening on 0.0.0.0:",
-        "userInteraction": []
-    }
+    done: 'listening on 0.0.0.0:'
+    userInteraction: {  }
+    
   logs: |
-    {
-        "custom": true,
-        "location": "logs/ts3.log"
-    }
+    custom: true
+    location: logs/ts3.log
+    
   stop: ^C
 scripts:
   installation:
@@ -38,6 +36,7 @@ scripts:
       
       echo -e "getting files from http://files.teamspeak-services.com/releases/server/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2"
       curl http://files.teamspeak-services.com/releases/server/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar xj --strip-components=1
+      
     container: 'alpine:3.9'
     entrypoint: ash
 variables:

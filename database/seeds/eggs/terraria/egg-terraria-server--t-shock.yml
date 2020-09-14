@@ -8,9 +8,21 @@ description: 'TShock is a server modification for Terraria, written in C#, and b
 image: 'quay.io/pterodactyl/core:mono'
 startup: null
 config:
-  files: '{"tshock/config.json":{"parser": "json", "find":{"ServerPort": "{{server.build.default.port}}", "MaxSlots": "{{server.build.env.MAX_SLOTS}}"}}}'
-  startup: '{"done": "Type ''help'' for a list of commands", "userInteraction": []}'
-  logs: '{"custom": false, "location": "ServerLog.txt"}'
+  files: |
+    tshock/config.json:
+      parser: json
+      find:
+        ServerPort: '{{server.build.default.port}}'
+        MaxSlots: '{{server.build.env.MAX_SLOTS}}'
+    
+  startup: |
+    done: 'Type ''help'' for a list of commands'
+    userInteraction: {  }
+    
+  logs: |
+    custom: false
+    location: ServerLog.txt
+    
   stop: exit
 scripts:
   installation:
@@ -27,6 +39,7 @@ scripts:
       curl -sSLO https://github.com/NyxStudios/TShock/releases/download/v${T_VERSION}/tshock_${T_VERSION}.zip
       
       unzip -o tshock_${T_VERSION}.zip -d /mnt/server
+      
     container: 'alpine:3.9'
     entrypoint: ash
 variables:

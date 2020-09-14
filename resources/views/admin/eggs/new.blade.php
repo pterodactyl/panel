@@ -95,19 +95,19 @@
                             <div class="form-group">
                                 <label for="pConfigLogs" class="form-label">Log Configuration</label>
                                 <textarea data-action="handle-tabs" id="pConfigLogs" name="config_logs" class="form-control" rows="6">{{ old('config_logs') }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of where log files are stored, and whether or not the daemon should be creating custom logs.</p>
+                                <p class="text-muted small">This should be a YAML representation of where log files are stored, and whether or not the daemon should be creating custom logs.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="pConfigFiles" class="form-label">Configuration Files</label>
                                 <textarea data-action="handle-tabs" id="pConfigFiles" name="config_files" class="form-control" rows="6">{{ old('config_files') }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of configuration files to modify and what parts should be changed.</p>
+                                <p class="text-muted small">This should be a YAML representation of configuration files to modify and what parts should be changed.</p>
                             </div>
                             <div class="form-group">
                                 <label for="pConfigStartup" class="form-label">Start Configuration</label>
                                 <textarea data-action="handle-tabs" id="pConfigStartup" name="config_startup" class="form-control" rows="6">{{ old('config_startup') }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of what values the daemon should be looking for when booting a server to determine completion.</p>
+                                <p class="text-muted small">This should be a YAML representation of what values the daemon should be looking for when booting a server to determine completion.</p>
                             </div>
                         </div>
                     </div>

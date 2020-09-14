@@ -9,23 +9,18 @@ image: 'quay.io/pterodactyl/core:java'
 startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}'
 config:
   files: |
-    {
-        "server.properties": {
-            "parser": "properties",
-            "find": {
-                "server-ip": "0.0.0.0",
-                "server-port": "{{server.build.default.port}}"
-            }
-        }
-    }
+    server.properties:
+      parser: properties
+      find:
+        server-ip: 0.0.0.0
+        server-port: '{{server.build.default.port}}'
+    
   startup: |
-    {
-        "done": ")! For help, type ",
-        "userInteraction": [
-            "Go to eula.txt for more info."
-        ]
-    }
-  logs: '{}'
+    done: ')! For help, type '
+    userInteraction:
+      - 'Go to eula.txt for more info.'
+    
+  logs: '{  }'
   stop: stop
 scripts:
   installation:
@@ -80,6 +75,7 @@ scripts:
           echo -e "Downloading MC server.properties"
           curl -o server.properties https://raw.githubusercontent.com/parkervcp/eggs/master/minecraft_java/server.properties
       fi
+      
     container: 'alpine:3.9'
     entrypoint: ash
 variables:
@@ -89,6 +85,7 @@ variables:
       The version of minecraft to download. 
       
       Leave at latest to always get the latest version. Invalid versions will default to latest.
+      
     env_variable: MINECRAFT_VERSION
     default_value: latest
     user_viewable: 1
@@ -116,6 +113,7 @@ variables:
       The build number for the paper release.
       
       Leave at latest to always get the latest version. Invalid versions will default to latest.
+      
     env_variable: BUILD_NUMBER
     default_value: latest
     user_viewable: 1

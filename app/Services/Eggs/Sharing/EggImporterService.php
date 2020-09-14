@@ -97,7 +97,14 @@ class EggImporterService
             }
         }
 
-        if (object_get($parsed, 'meta.version') !== 'PTDL_v1') {
+        if (object_get($parsed, 'meta.version') === 'PTDL_v1') {
+            $parsed['meta']['version'] = 'PTDL_v2';
+            $parsed['config']['files'] = Yaml::dump(json_decode($parsed['config']['files'], true), 8, 2);
+            $parsed['config']['startup'] = Yaml::dump(json_decode($parsed['config']['startup'], true), 8, 2);
+            $parsed['config']['logs'] = Yaml::dump(json_decode($parsed['config']['logs'], true), 8, 2);
+        }
+
+        if (object_get($parsed, 'meta.version') !== 'PTDL_v2') {
             throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_egg'));
         }
 

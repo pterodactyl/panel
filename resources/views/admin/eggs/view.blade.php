@@ -134,20 +134,20 @@
                             </div>
                             <div class="form-group">
                                 <label for="pConfigLogs" class="form-label">Log Configuration</label>
-                                <textarea data-action="handle-tabs" id="pConfigLogs" name="config_logs" class="form-control" rows="6">{{ ! is_null($egg->config_logs) ? json_encode(json_decode($egg->config_logs), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '' }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of where log files are stored, and whether or not the daemon should be creating custom logs.</p>
+                                <textarea data-action="handle-tabs" id="pConfigLogs" name="config_logs" class="form-control" rows="6">{{ ! is_null($egg->config_logs) ? $egg->config_logs : '' }}</textarea>
+                                <p class="text-muted small">This should be a YAML representation of where log files are stored, and whether or not the daemon should be creating custom logs.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="pConfigFiles" class="form-label">Configuration Files</label>
-                                <textarea data-action="handle-tabs" id="pConfigFiles" name="config_files" class="form-control" rows="6">{{ ! is_null($egg->config_files) ? json_encode(json_decode($egg->config_files), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '' }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of configuration files to modify and what parts should be changed.</p>
+                                <textarea data-action="handle-tabs" id="pConfigFiles" name="config_files" class="form-control" rows="6">{{ ! is_null($egg->config_files) ? $egg->config_files : '' }}</textarea>
+                                <p class="text-muted small">This should be a YAML representation of configuration files to modify and what parts should be changed.</p>
                             </div>
                             <div class="form-group">
                                 <label for="pConfigStartup" class="form-label">Start Configuration</label>
-                                <textarea data-action="handle-tabs" id="pConfigStartup" name="config_startup" class="form-control" rows="6">{{ ! is_null($egg->config_startup) ? json_encode(json_decode($egg->config_startup), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) : '' }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of what values the daemon should be looking for when booting a server to determine completion.</p>
+                                <textarea data-action="handle-tabs" id="pConfigStartup" name="config_startup" class="form-control" rows="6">{{ ! is_null($egg->config_startup) ? $egg->config_startup : '' }}</textarea>
+                                <p class="text-muted small">This should be a YAML representation of what values the daemon should be looking for when booting a server to determine completion.</p>
                             </div>
                         </div>
                     </div>
