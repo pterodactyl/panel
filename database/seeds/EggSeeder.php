@@ -2,6 +2,7 @@
 
 use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
@@ -10,6 +11,7 @@ use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService;
+use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 
 class EggSeeder extends Seeder
 {
@@ -114,14 +116,16 @@ class EggSeeder extends Seeder
         $this->command->alert('Updating Eggs for Nest: ' . $nest->name);
         Collection::make($files)->each(function ($file) use ($nest) {
             /* @var \Symfony\Component\Finder\SplFileInfo $file */
-            $decoded = json_decode($file->getContents());
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $this->command->error('JSON decode exception for ' . $file->getFilename() . ': ' . json_last_error_msg());
+            $decoded = null;
+            try {
+                $decoded = Yaml::parse($file->getContents(), Yaml::PARSE_OBJECT_FOR_MAP);
+            } catch (YamlParseException $exception) {
+                $this->command->error('YAML decode exception for ' . $file->getFilename() . ': ' . $exception->getMessage());
 
                 return;
             }
 
-            $file = new UploadedFile($file->getPathname(), $file->getFilename(), 'application/json');
+            $file = new UploadedFile($file->getPathname(), $file->getFilename(), 'application/x-yaml');
 
             try {
                 $egg = $this->repository->setColumns('id')->findFirstWhere([

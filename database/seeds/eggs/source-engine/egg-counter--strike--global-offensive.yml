@@ -1,0 +1,89 @@
+# DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
+meta:
+  version: PTDL_v1
+exported_at: '2019-12-08T10:52:19-05:00'
+name: 'Counter-Strike: Global Offensive'
+author: support@pterodactyl.io
+description: 'Counter-Strike: Global Offensive is a multiplayer first-person shooter video game developed by Hidden Path Entertainment and Valve Corporation.'
+image: 'quay.io/pterodactyl/core:source'
+startup: './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}'
+config:
+  files: '{}'
+  startup: |
+    {
+        "done": "Connection to Steam servers successful",
+        "userInteraction": []
+    }
+  logs: |
+    {
+        "custom": true,
+        "location": "logs/latest.log"
+    }
+  stop: quit
+scripts:
+  installation:
+    script: |
+      #!/bin/bash
+      # steamcmd Base Installation Script
+      #
+      # Server Files: /mnt/server
+      # Image to install with is 'ubuntu:18.04'
+      apt -y update
+      apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
+      
+      ## just in case someone removed the defaults.
+      if [ "${STEAM_USER}" == "" ]; then
+          STEAM_USER=anonymous
+          STEAM_PASS=""
+          STEAM_AUTH=""
+      fi
+      
+      ## download and install steamcmd
+      cd /tmp
+      mkdir -p /mnt/server/steamcmd
+      curl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+      tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+      cd /mnt/server/steamcmd
+      
+      # SteamCMD fails otherwise for some reason, even running as root.
+      # This is changed at the end of the install process anyways.
+      chown -R root:root /mnt
+      export HOME=/mnt/server
+      
+      ## install game using steamcmd
+      ./steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} +force_install_dir /mnt/server +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} +quit ## other flags may be needed depending on install. looking at you cs 1.6
+      
+      ## set up 32 bit libraries
+      mkdir -p /mnt/server/.steam/sdk32
+      cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+      
+      ## set up 64 bit libraries
+      mkdir -p /mnt/server/.steam/sdk64
+      cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
+    container: 'ubuntu:18.04'
+    entrypoint: bash
+variables:
+  -
+    name: Map
+    description: 'The default map for the server.'
+    env_variable: SRCDS_MAP
+    default_value: de_dust2
+    user_viewable: 1
+    user_editable: 1
+    rules: required|string|alpha_dash
+  -
+    name: 'Steam Account Token'
+    description: 'The Steam Account Token required for the server to be displayed publicly.'
+    env_variable: STEAM_ACC
+    default_value: ''
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|string|alpha_num|size:32'
+  -
+    name: 'Source AppID'
+    description: 'Required for game to update on server restart. Do not modify this.'
+    env_variable: SRCDS_APPID
+    default_value: '740'
+    user_viewable: 0
+    user_editable: 0
+    rules: 'required|string|max:20'

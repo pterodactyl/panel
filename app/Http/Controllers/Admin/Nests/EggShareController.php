@@ -74,8 +74,8 @@ class EggShareController extends Controller
         return response($this->exporterService->handle($egg->id), 200, [
             'Content-Transfer-Encoding' => 'binary',
             'Content-Description' => 'File Transfer',
-            'Content-Disposition' => 'attachment; filename=egg-' . $filename . '.json',
-            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename=egg-' . $filename . '.yml',
+            'Content-Type' => 'application/x-yaml',
         ]);
     }
 
@@ -87,7 +87,7 @@ class EggShareController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\BadEggFormatException
      * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      */
     public function import(EggImportFormRequest $request): RedirectResponse
@@ -107,7 +107,7 @@ class EggShareController extends Controller
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\BadEggFormatException
      * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      */
     public function update(EggImportFormRequest $request, Egg $egg): RedirectResponse

@@ -1,0 +1,141 @@
+# DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
+meta:
+  version: PTDL_v1
+exported_at: '2018-10-29T20:51:32+01:00'
+name: 'Ark: Survival Evolved'
+author: support@pterodactyl.io
+description: 'As a man or woman stranded, naked, freezing, and starving on the unforgiving shores of a mysterious island called ARK, use your skill and cunning to kill or tame and ride the plethora of leviathan dinosaurs and other primeval creatures roaming the land. Hunt, harvest resources, craft items, grow crops, research technologies, and build shelters to withstand the elements and store valuables, all while teaming up with (or preying upon) hundreds of other players to survive, dominate... and escape! — Gamepedia: ARK'
+image: 'quay.io/pterodactyl/core:source'
+startup: '"cd ShooterGame/Binaries/Linux && ./ShooterGameServer {{SERVER_MAP}}?listen?SessionName=''{{SESSION_NAME}}''?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}?RCONPort={{RCON_PORT}}?QueryPort={{QUERY_PORT}}?RCONEnabled={{ENABLE_RCON}} -server -log"'
+config:
+  files: '{}'
+  startup: |
+    {
+        "done": "Setting breakpad minidump AppID = 346110",
+        "userInteraction": []
+    }
+  logs: |
+    {
+        "custom": true,
+        "location": "logs/latest.log"
+    }
+  stop: ^C
+scripts:
+  installation:
+    script: |
+      #!/bin/bash
+      # ARK: Installation Script
+      #
+      # Server Files: /mnt/server
+      apt -y update
+      apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
+      
+      cd /tmp
+      curl -sSL -o steamcmd.tar.gz http://media.steampowered.com/installer/steamcmd_linux.tar.gz
+      
+      mkdir -p /mnt/server/steamcmd
+      mkdir -p /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Linux
+      
+      tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+      tar -xzvf steamcmd.tar.gz -C /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Linux
+      
+      cd /mnt/server/steamcmd
+      
+      # SteamCMD fails otherwise for some reason, even running as root.
+      # This is changed at the end of the install process anyways.
+      chown -R root:root /mnt
+      
+      export HOME=/mnt/server
+      ./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 376030 +quit
+      
+      mkdir -p /mnt/server/.steam/sdk32
+      cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+      
+      cd /mnt/server/Engine/Binaries/ThirdParty/SteamCMD/Linux
+      
+      ln -sf ../../../../../Steam/steamapps steamapps
+      
+      cd /mnt/server
+    container: 'ubuntu:16.04'
+    entrypoint: bash
+variables:
+  -
+    name: 'Server Name'
+    description: 'ARK server name'
+    env_variable: SESSION_NAME
+    default_value: 'ARK SERVER'
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|string|max:128'
+  -
+    name: 'Server Password'
+    description: 'If specified, players must provide this password to join the server.'
+    env_variable: ARK_PASSWORD
+    default_value: ''
+    user_viewable: 1
+    user_editable: 1
+    rules: 'nullable|alpha_dash|between:1,100'
+  -
+    name: 'Admin Password'
+    description: 'If specified, players must provide this password (via the in-game console) to gain access to administrator commands on the server.'
+    env_variable: ARK_ADMIN_PASSWORD
+    default_value: ''
+    user_viewable: 1
+    user_editable: 1
+    rules: 'nullable|alpha_dash|between:1,100'
+  -
+    name: 'Server Port'
+    description: 'ARK server port used by client.'
+    env_variable: PORT
+    default_value: '7777'
+    user_viewable: 1
+    user_editable: 1
+    rules: required|numeric
+  -
+    name: 'Use Rcon'
+    description: 'Enable or disable rcon system. (true or false)'
+    env_variable: ENABLE_RCON
+    default_value: 'false'
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|string|max:5'
+  -
+    name: 'Rcon Port'
+    description: 'ARK rcon port used by rcon tools.'
+    env_variable: RCON_PORT
+    default_value: '27020'
+    user_viewable: 1
+    user_editable: 1
+    rules: required|numeric
+  -
+    name: 'Query Port'
+    description: 'ARK query port used by steam server browser and ark client server browser.'
+    env_variable: QUERY_PORT
+    default_value: '27015'
+    user_viewable: 1
+    user_editable: 1
+    rules: required|numeric
+  -
+    name: 'Maximum Players'
+    description: 'Specifies the maximum number of players that can play on the server simultaneously.'
+    env_variable: SERVER_MAX_PLAYERS
+    default_value: '20'
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|numeric|digits_between:1,4'
+  -
+    name: 'App ID'
+    description: 'ARK steam app id for auto updates. Leave blank to avoid auto update.'
+    env_variable: SRCDS_APPID
+    default_value: '376030'
+    user_viewable: 1
+    user_editable: 0
+    rules: nullable|numeric
+  -
+    name: 'Server Map'
+    description: 'Available Maps: TheIsland, TheCenter, Ragnarok, ScorchedEarth_P, Aberration_P, Extinction'
+    env_variable: SERVER_MAP
+    default_value: TheIsland
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|string|max:20'

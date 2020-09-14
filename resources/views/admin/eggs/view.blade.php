@@ -41,8 +41,8 @@
                             <div class="form-group no-margin-bottom">
                                 <label for="pName" class="control-label">Egg File</label>
                                 <div>
-                                    <input type="file" name="import_file" class="form-control" style="border: 0;margin-left:-10px;" />
-                                    <p class="text-muted small no-margin-bottom">If you would like to replace settings for this Egg by uploading a new JSON file, simply select it here and press "Update Egg". This will not change any existing startup strings or Docker images for existing servers.</p>
+                                    <input type="file" name="import_file" class="form-control" style="border: 0;margin-left:-10px;" accept="application/x-yaml" />
+                                    <p class="text-muted small no-margin-bottom">If you would like to replace settings for this Egg by uploading a new YAML file, simply select it here and press "Update Egg". This will not change any existing startup strings or Docker images for existing servers.</p>
                                 </div>
                             </div>
                         </div>

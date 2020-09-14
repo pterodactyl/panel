@@ -19,7 +19,7 @@ class EggImportFormRequest extends AdminFormRequest
     public function rules()
     {
         $rules = [
-            'import_file' => 'bail|required|file|max:1000|mimetypes:application/json,text/plain',
+            'import_file' => 'bail|required|file|max:1000|mimetypes:application/json,application/x-yaml,text/plain',
         ];
 
         if ($this->method() !== 'PUT') {

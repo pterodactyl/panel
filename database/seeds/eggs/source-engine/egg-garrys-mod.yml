@@ -1,0 +1,179 @@
+# DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
+meta:
+  version: PTDL_v1
+exported_at: '2019-12-08T10:56:42-05:00'
+name: 'Garrys Mod'
+author: support@pterodactyl.io
+description: 'Garrys Mod, is a sandbox physics game created by Garry Newman, and developed by his company, Facepunch Studios.'
+image: 'quay.io/pterodactyl/core:source'
+startup: './srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}} +maxplayers {{MAX_PLAYERS}}  -tickrate {{TICKRATE}}'
+config:
+  files: '{}'
+  startup: |
+    {
+        "done": "gameserver Steam ID",
+        "userInteraction": []
+    }
+  logs: |
+    {
+        "custom": true,
+        "location": "logs/latest.log"
+    }
+  stop: quit
+scripts:
+  installation:
+    script: |
+      #!/bin/bash
+      # steamcmd Base Installation Script
+      #
+      # Server Files: /mnt/server
+      # Image to install with is 'ubuntu:18.04'
+      apt -y update
+      apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
+      
+      ## just in case someone removed the defaults.
+      if [ "${STEAM_USER}" == "" ]; then
+          STEAM_USER=anonymous
+          STEAM_PASS=""
+          STEAM_AUTH=""
+      fi
+      
+      ## download and install steamcmd
+      cd /tmp
+      mkdir -p /mnt/server/steamcmd
+      curl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+      tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+      cd /mnt/server/steamcmd
+      
+      # SteamCMD fails otherwise for some reason, even running as root.
+      # This is changed at the end of the install process anyways.
+      chown -R root:root /mnt
+      export HOME=/mnt/server
+      
+      ## install game using steamcmd
+      ./steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} +force_install_dir /mnt/server +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} +quit ## other flags may be needed depending on install. looking at you cs 1.6
+      
+      ## set up 32 bit libraries
+      mkdir -p /mnt/server/.steam/sdk32
+      cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+      
+      ## set up 64 bit libraries
+      mkdir -p /mnt/server/.steam/sdk64
+      cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
+      
+      # Creating needed default files for the game
+      cd /mnt/server/garrysmod/lua/autorun/server
+      echo '
+      -- Docs: https://wiki.garrysmod.com/page/resource/AddWorkshop
+      -- Place the ID of the workshop addon you want to be downloaded to people who join your server, not the collection ID
+      -- Use https://beta.configcreator.com/create/gmod/resources.lua to easily create a list based on your collection ID
+      
+      resource.AddWorkshop( "" )
+      ' > workshop.lua
+      
+      cd /mnt/server/garrysmod/cfg
+      echo '
+      // Please do not set RCon in here, use the startup parameters.
+      
+      hostname		"New Gmod Server"
+      sv_password		""
+      sv_loadingurl   ""
+      
+      // Steam Server List Settings
+      sv_region "255"
+      sv_lan "0"
+      sv_max_queries_sec_global "30000"
+      sv_max_queries_window "45"
+      sv_max_queries_sec "5"
+      
+      // Server Limits
+      sbox_maxprops		100
+      sbox_maxragdolls	5
+      sbox_maxnpcs		10
+      sbox_maxballoons	10
+      sbox_maxeffects		10
+      sbox_maxdynamite	10
+      sbox_maxlamps		10
+      sbox_maxthrusters	10
+      sbox_maxwheels		10
+      sbox_maxhoverballs	10
+      sbox_maxvehicles	20
+      sbox_maxbuttons		10
+      sbox_maxsents		20
+      sbox_maxemitters	5
+      sbox_godmode		0
+      sbox_noclip		    0
+      
+      // Network Settings - Please keep these set to default.
+      
+      sv_minrate		75000
+      sv_maxrate		0
+      gmod_physiterations	2
+      net_splitpacket_maxrate	45000
+      decalfrequency		12 
+      
+      // Execute Ban Files - Please do not edit
+      exec banned_ip.cfg 
+      exec banned_user.cfg 
+      
+      // Add custom lines under here
+      ' > server.cfg
+    container: 'ubuntu:18.04'
+    entrypoint: bash
+variables:
+  -
+    name: Map
+    description: 'The default map for the server.'
+    env_variable: SRCDS_MAP
+    default_value: gm_flatgrass
+    user_viewable: 1
+    user_editable: 1
+    rules: required|string|alpha_dash
+  -
+    name: 'Steam Account Token'
+    description: 'The Steam Account Token required for the server to be displayed publicly.'
+    env_variable: STEAM_ACC
+    default_value: ''
+    user_viewable: 1
+    user_editable: 1
+    rules: 'nullable|string|alpha_num|size:32'
+  -
+    name: 'Source AppID'
+    description: 'Required for game to update on server restart. Do not modify this.'
+    env_variable: SRCDS_APPID
+    default_value: '4020'
+    user_viewable: 0
+    user_editable: 0
+    rules: 'required|string|max:20'
+  -
+    name: 'Workshop ID'
+    description: 'The ID of your workshop collection (the numbers at the end of the URL)'
+    env_variable: WORKSHOP_ID
+    default_value: ''
+    user_viewable: 1
+    user_editable: 1
+    rules: nullable|integer
+  -
+    name: Gamemode
+    description: 'The gamemode of your server.'
+    env_variable: GAMEMODE
+    default_value: sandbox
+    user_viewable: 1
+    user_editable: 1
+    rules: required|string
+  -
+    name: 'Max Players'
+    description: 'The maximum amount of players allowed on your game server.'
+    env_variable: MAX_PLAYERS
+    default_value: '32'
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|integer|max:128'
+  -
+    name: Tickrate
+    description: 'The tickrate defines how fast the server will update each entities location.'
+    env_variable: TICKRATE
+    default_value: '22'
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|integer|max:100'

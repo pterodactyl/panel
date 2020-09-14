@@ -1,0 +1,89 @@
+# DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
+meta:
+  version: PTDL_v1
+exported_at: '2019-12-08T10:54:26-05:00'
+name: 'Custom Source Engine Game'
+author: support@pterodactyl.io
+description: 'This option allows modifying the startup arguments and other details to run a custom SRCDS based game on the panel.'
+image: 'quay.io/pterodactyl/core:source'
+startup: './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart'
+config:
+  files: '{}'
+  startup: |
+    {
+        "done": "gameserver Steam ID",
+        "userInteraction": []
+    }
+  logs: |
+    {
+        "custom": true,
+        "location": "logs/latest.log"
+    }
+  stop: quit
+scripts:
+  installation:
+    script: |
+      #!/bin/bash
+      # steamcmd Base Installation Script
+      #
+      # Server Files: /mnt/server
+      # Image to install with is 'ubuntu:18.04'
+      apt -y update
+      apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
+      
+      ## just in case someone removed the defaults.
+      if [ "${STEAM_USER}" == "" ]; then
+          STEAM_USER=anonymous
+          STEAM_PASS=""
+          STEAM_AUTH=""
+      fi
+      
+      ## download and install steamcmd
+      cd /tmp
+      mkdir -p /mnt/server/steamcmd
+      curl -sSL -o steamcmd.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+      tar -xzvf steamcmd.tar.gz -C /mnt/server/steamcmd
+      cd /mnt/server/steamcmd
+      
+      # SteamCMD fails otherwise for some reason, even running as root.
+      # This is changed at the end of the install process anyways.
+      chown -R root:root /mnt
+      export HOME=/mnt/server
+      
+      ## install game using steamcmd
+      ./steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} +force_install_dir /mnt/server +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} +quit ## other flags may be needed depending on install. looking at you cs 1.6
+      
+      ## set up 32 bit libraries
+      mkdir -p /mnt/server/.steam/sdk32
+      cp -v linux32/steamclient.so ../.steam/sdk32/steamclient.so
+      
+      ## set up 64 bit libraries
+      mkdir -p /mnt/server/.steam/sdk64
+      cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
+    container: 'ubuntu:18.04'
+    entrypoint: bash
+variables:
+  -
+    name: 'Game ID'
+    description: 'The ID corresponding to the game to download and run using SRCDS.'
+    env_variable: SRCDS_APPID
+    default_value: ''
+    user_viewable: 1
+    user_editable: 0
+    rules: 'required|numeric|digits_between:1,6'
+  -
+    name: 'Game Name'
+    description: 'The name corresponding to the game to download and run using SRCDS.'
+    env_variable: SRCDS_GAME
+    default_value: ''
+    user_viewable: 1
+    user_editable: 0
+    rules: 'required|alpha_dash|between:1,100'
+  -
+    name: Map
+    description: 'The default map for the server.'
+    env_variable: SRCDS_MAP
+    default_value: ''
+    user_viewable: 1
+    user_editable: 1
+    rules: required|string|alpha_dash

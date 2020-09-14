@@ -4,13 +4,15 @@ namespace Pterodactyl\Services\Eggs\Sharing;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
+use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
+use Pterodactyl\Exceptions\Service\Egg\BadEggFormatException;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 
 class EggImporterService
 {
@@ -55,7 +57,7 @@ class EggImporterService
     }
 
     /**
-     * Take an uploaded JSON file and parse it into a new egg.
+     * Take an uploaded YAML file and parse it into a new egg.
      *
      * @param \Illuminate\Http\UploadedFile $file
      * @param int $nest
@@ -63,7 +65,7 @@ class EggImporterService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\BadEggFormatException
      * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      */
     public function handle(UploadedFile $file, int $nest): Egg
@@ -81,15 +83,22 @@ class EggImporterService
             );
         }
 
-        $parsed = json_decode($file->openFile()->fread($file->getSize()));
-        if (json_last_error() !== 0) {
-            throw new BadJsonFormatException(trans('exceptions.nest.importer.json_error', [
-                'error' => json_last_error_msg(),
-            ]));
+        $fileContent = $file->openFile()->fread($file->getSize());
+
+        $parsed = null;
+        try {
+            $parsed = Yaml::parse($fileContent, Yaml::PARSE_OBJECT_FOR_MAP);
+        } catch (YamlParseException $exception) {
+            $parsed = json_decode($fileContent);
+            if (json_last_error() !== 0) {
+                throw new BadEggFormatException(trans('exceptions.nest.importer.parse_error', [
+                    'error' => $exception->getMessage(),
+                ]), $exception);
+            }
         }
 
         if (object_get($parsed, 'meta.version') !== 'PTDL_v1') {
-            throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_json_provided'));
+            throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_egg'));
         }
 
         $nest = $this->nestRepository->getWithEggs($nest);

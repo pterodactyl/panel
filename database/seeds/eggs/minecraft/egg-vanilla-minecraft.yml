@@ -1,0 +1,81 @@
+# DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
+meta:
+  version: PTDL_v1
+exported_at: '2019-12-25T19:55:01-05:00'
+name: 'Vanilla Minecraft'
+author: support@pterodactyl.io
+description: 'Minecraft is a game about placing blocks and going on adventures. Explore randomly generated worlds and build amazing things from the simplest of homes to the grandest of castles. Play in Creative Mode with unlimited resources or mine deep in Survival Mode, crafting weapons and armor to fend off dangerous mobs. Do all this alone or with friends.'
+image: 'quay.io/pterodactyl/core:java'
+startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
+config:
+  files: |
+    {
+        "server.properties": {
+            "parser": "properties",
+            "find": {
+                "server-ip": "0.0.0.0",
+                "enable-query": "true",
+                "server-port": "{{server.build.default.port}}"
+            }
+        }
+    }
+  startup: |
+    {
+        "done": ")! For help, type ",
+        "userInteraction": [
+            "Go to eula.txt for more info."
+        ]
+    }
+  logs: |
+    {
+        "custom": false,
+        "location": "logs/latest.log"
+    }
+  stop: stop
+scripts:
+  installation:
+    script: |
+      #!/bin/ash
+      # Vanilla MC Installation Script
+      #
+      # Server Files: /mnt/server
+      apk add curl --no-cache --update jq
+      
+      mkdir -p /mnt/server
+      cd /mnt/server
+      
+      LATEST_VERSION=`curl https://launchermeta.mojang.com/mc/game/version_manifest.json | jq -r '.latest.release'`
+      
+      echo -e "latest version is $LATEST_VERSION"
+      
+      if [ -z "$VANILLA_VERSION" ] || [ "$VANILLA_VERSION" == "latest" ]; then
+        MANIFEST_URL=$(curl -sSL https://launchermeta.mojang.com/mc/game/version_manifest.json | jq --arg VERSION $LATEST_VERSION -r '.versions | .[] | select(.id== $VERSION )|.url')
+      else
+        MANIFEST_URL=$(curl -sSL https://launchermeta.mojang.com/mc/game/version_manifest.json | jq --arg VERSION $VANILLA_VERSION -r '.versions | .[] | select(.id== $VERSION )|.url')
+      fi
+      
+      DOWNLOAD_URL=$(curl ${MANIFEST_URL} | jq .downloads.server | jq -r '. | .url')
+      
+      echo -e "running: curl -o ${SERVER_JARFILE} $DOWNLOAD_URL"
+      curl -o ${SERVER_JARFILE} $DOWNLOAD_URL
+      
+      echo -e "Install Complete"
+    container: 'alpine:3.10'
+    entrypoint: ash
+variables:
+  -
+    name: 'Server Jar File'
+    description: 'The name of the server jarfile to run the server with.'
+    env_variable: SERVER_JARFILE
+    default_value: server.jar
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|regex:/^([\w\d._-]+)(\.jar)$/'
+  -
+    name: 'Server Version'
+    description: 'The version of Minecraft Vanilla to install. Use "latest" to install the latest version.'
+    env_variable: VANILLA_VERSION
+    default_value: latest
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|string|between:3,15'

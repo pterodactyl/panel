@@ -27,9 +27,9 @@ return [
             'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
         ],
         'importer' => [
-            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
-            'file_error' => 'The JSON file provided was not valid.',
-            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
+            'parse_error' => 'There was an error while attempting to parse the file: :error.',
+            'file_error' => 'The file provided was not valid.',
+            'invalid_egg' => 'The file provided is not in a format that can be recognized.',
         ],
     ],
     'subusers' => [

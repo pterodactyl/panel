@@ -70,8 +70,8 @@
                     <div class="form-group">
                         <label class="control-label" for="pImportFile">Egg File <span class="field-required"></span></label>
                         <div>
-                            <input id="pImportFile" type="file" name="import_file" class="form-control" accept="application/json" />
-                            <p class="small text-muted">Select the <code>.json</code> file for the new egg that you wish to import.</p>
+                            <input id="pImportFile" type="file" name="import_file" class="form-control" accept="application/x-yaml" />
+                            <p class="small text-muted">Select the <code>.yml</code> file for the new egg that you wish to import.</p>
                         </div>
                     </div>
                     <div class="form-group">

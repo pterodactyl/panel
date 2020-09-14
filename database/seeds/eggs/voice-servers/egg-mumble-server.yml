@@ -1,0 +1,49 @@
+# DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
+meta:
+  version: PTDL_v1
+exported_at: '2018-01-21T17:01:44-06:00'
+name: 'Mumble Server'
+author: support@pterodactyl.io
+description: 'Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.'
+image: 'quay.io/pterodactyl/core:glibc'
+startup: './murmur.x86 -fg'
+config:
+  files: '{"murmur.ini":{"parser": "ini", "find":{"logfile": "murmur.log", "port": "{{server.build.default.port}}", "host": "0.0.0.0", "users": "{{server.build.env.MAX_USERS}}"}}}'
+  startup: '{"done": "Server listening on", "userInteraction": [ "Generating new server certificate"]}'
+  logs: '{"custom": true, "location": "logs/murmur.log"}'
+  stop: ^C
+scripts:
+  installation:
+    script: |
+      #!/bin/ash
+      # Mumble Installation Script
+      #
+      # Server Files: /mnt/server
+      apk update
+      apk add tar curl
+      
+      cd /tmp
+      
+      curl -sSLO https://github.com/mumble-voip/mumble/releases/download/${MUMBLE_VERSION}/murmur-static_x86-${MUMBLE_VERSION}.tar.bz2
+      
+      tar -xjvf murmur-static_x86-${MUMBLE_VERSION}.tar.bz2
+      cp -r murmur-static_x86-${MUMBLE_VERSION}/* /mnt/server
+    container: 'alpine:3.9'
+    entrypoint: ash
+variables:
+  -
+    name: 'Maximum Users'
+    description: 'Maximum concurrent users on the mumble server.'
+    env_variable: MAX_USERS
+    default_value: '100'
+    user_viewable: 1
+    user_editable: 0
+    rules: 'required|numeric|digits_between:1,5'
+  -
+    name: 'Server Version'
+    description: 'Version of Mumble Server to download and use.'
+    env_variable: MUMBLE_VERSION
+    default_value: 1.3.1
+    user_viewable: 1
+    user_editable: 1
+    rules: 'required|regex:/^([0-9_\.-]{5,8})$/'
