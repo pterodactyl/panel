@@ -26,7 +26,7 @@ class CreateBackupsTable extends Migration
         // Take any of the results, most likely "backups" and "backup_logs" and rename them to have a
         // suffix so data isn't completely lost, but they're no longer in the way of this migration...
         foreach ($results as $result) {
-            Schema::rename($result['TABLE_NAME'], $result['TABLE_NAME'] . '_plugin_bak');
+            Schema::rename($result->TABLE_NAME, $result->TABLE_NAME. '_plugin_bak');
         }
 
         Schema::create('backups', function (Blueprint $table) {
