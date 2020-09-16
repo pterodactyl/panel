@@ -1,6 +1,6 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
-  version: PTDL_v1
+  version: PTDL_v2
 exported_at: '2018-01-21T16:58:36-06:00'
 name: Rust
 author: support@pterodactyl.io
@@ -8,15 +8,13 @@ description: 'The only aim in Rust is to survive. To do this you will need to ov
 image: 'quay.io/pterodactyl/core:rust'
 startup: './RustDedicated -batchmode +server.port {{SERVER_PORT}} +server.identity "rust" +rcon.port {{RCON_PORT}} +rcon.web true +server.hostname \"{{HOSTNAME}}\" +server.level \"{{LEVEL}}\" +server.description \"{{DESCRIPTION}}\" +server.url \"{{SERVER_URL}}\" +server.headerimage \"{{SERVER_IMG}}\" +server.worldsize \"{{WORLD_SIZE}}\" +server.seed \"{{WORLD_SEED}}\" +server.maxplayers {{MAX_PLAYERS}} +rcon.password \"{{RCON_PASS}}\" +server.saveinterval {{SAVEINTERVAL}} {{ADDITIONAL_ARGS}}'
 config:
-  files: '{  }'
-  startup: |
+  files: {  }
+  startup:
     done: 'Server startup complete'
     userInteraction: {  }
-    
-  logs: |
+  logs:
     custom: false
     location: latest.log
-    
   stop: quit
 scripts:
   installation:
@@ -35,7 +33,6 @@ scripts:
       ./steamcmd.sh +login anonymous +force_install_dir /mnt/server +app_update 258550 +quit
       mkdir -p /mnt/server/.steam/sdk32
       cp -v /mnt/server/steam/linux32/steamclient.so /mnt/server/.steam/sdk32/steamclient.so
-      
     container: 'ubuntu:16.04'
     entrypoint: bash
 variables:

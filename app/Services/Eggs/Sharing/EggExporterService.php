@@ -28,7 +28,7 @@ class EggExporterService
     private function crlfToLf($string)
     {
         if (! is_string($string)) {
-            return $string;
+            return "";
         }
 
         return str_replace("\r\n", "\n", $string);
@@ -59,9 +59,9 @@ class EggExporterService
             'images' => $egg->docker_images,
             'startup' => $this->crlfToLf($egg->startup),
             'config' => [
-                'files' => $this->crlfToLf($egg->inherit_config_files),
-                'startup' => $this->crlfToLf($egg->inherit_config_startup),
-                'logs' => $this->crlfToLf($egg->inherit_config_logs),
+                'files' => Yaml::parse($this->crlfToLf($egg->inherit_config_files)),
+                'startup' => Yaml::parse($this->crlfToLf($egg->inherit_config_startup)),
+                'logs' => Yaml::parse($this->crlfToLf($egg->inherit_config_logs)),
                 'stop' => $egg->inherit_config_stop,
             ],
             'scripts' => [

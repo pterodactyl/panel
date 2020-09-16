@@ -1,6 +1,6 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
-  version: PTDL_v1
+  version: PTDL_v2
 exported_at: '2018-10-29T20:51:32+01:00'
 name: 'Ark: Survival Evolved'
 author: support@pterodactyl.io
@@ -8,15 +8,13 @@ description: 'As a man or woman stranded, naked, freezing, and starving on the u
 image: 'quay.io/pterodactyl/core:source'
 startup: '"cd ShooterGame/Binaries/Linux && ./ShooterGameServer {{SERVER_MAP}}?listen?SessionName=''{{SESSION_NAME}}''?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{PORT}}?MaxPlayers={{SERVER_MAX_PLAYERS}}?RCONPort={{RCON_PORT}}?QueryPort={{QUERY_PORT}}?RCONEnabled={{ENABLE_RCON}} -server -log"'
 config:
-  files: '{  }'
-  startup: |
+  files: {  }
+  startup:
     done: 'Setting breakpad minidump AppID = 346110'
     userInteraction: {  }
-    
-  logs: |
+  logs:
     custom: true
     location: logs/latest.log
-    
   stop: ^C
 scripts:
   installation:
@@ -54,7 +52,6 @@ scripts:
       ln -sf ../../../../../Steam/steamapps steamapps
       
       cd /mnt/server
-      
     container: 'ubuntu:16.04'
     entrypoint: bash
 variables:

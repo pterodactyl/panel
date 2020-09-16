@@ -88,9 +88,9 @@ class EggUpdateImporterService
 
         if (object_get($parsed, 'meta.version') === 'PTDL_v1') {
             $parsed['meta']['version'] = 'PTDL_v2';
-            $parsed['config']['files'] = Yaml::dump(json_decode($parsed['config']['files'], true), 8, 2);
-            $parsed['config']['startup'] = Yaml::dump(json_decode($parsed['config']['startup'], true), 8, 2);
-            $parsed['config']['logs'] = Yaml::dump(json_decode($parsed['config']['logs'], true), 8, 2);
+            $parsed['config']['files'] = json_decode($parsed['config']['files'], true);
+            $parsed['config']['startup'] = json_decode($parsed['config']['startup'], true);
+            $parsed['config']['logs'] = json_decode($parsed['config']['logs'], true);
         }
 
         if (object_get($parsed, 'meta.version') !== 'PTDL_v2') {
@@ -106,9 +106,9 @@ class EggUpdateImporterService
             // Maintain backwards compatibility for eggs that are still using the old single image
             // string format. New eggs can provide an array of Docker images that can be used.
             'docker_images' => object_get($parsed, 'images') ?? [object_get($parsed, 'image')],
-            'config_files' => object_get($parsed, 'config.files'),
-            'config_startup' => object_get($parsed, 'config.startup'),
-            'config_logs' => object_get($parsed, 'config.logs'),
+            'config_files' => Yaml::dump(object_get($parsed, 'config.files'), 8, 2, Yaml::DUMP_OBJECT_AS_MAP),
+            'config_startup' => Yaml::dump(object_get($parsed, 'config.startup'), 8, 2, Yaml::DUMP_OBJECT_AS_MAP),
+            'config_logs' => Yaml::dump(object_get($parsed, 'config.logs'), 8, 2, Yaml::DUMP_OBJECT_AS_MAP),
             'config_stop' => object_get($parsed, 'config.stop'),
             'startup' => object_get($parsed, 'startup'),
             'script_install' => object_get($parsed, 'scripts.installation.script'),

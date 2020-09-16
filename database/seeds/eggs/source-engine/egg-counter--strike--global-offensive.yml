@@ -1,6 +1,6 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
-  version: PTDL_v1
+  version: PTDL_v2
 exported_at: '2019-12-08T10:52:19-05:00'
 name: 'Counter-Strike: Global Offensive'
 author: support@pterodactyl.io
@@ -8,15 +8,13 @@ description: 'Counter-Strike: Global Offensive is a multiplayer first-person sho
 image: 'quay.io/pterodactyl/core:source'
 startup: './srcds_run -game csgo -console -port {{SERVER_PORT}} +ip 0.0.0.0 +map {{SRCDS_MAP}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}'
 config:
-  files: '{  }'
-  startup: |
+  files: {  }
+  startup:
     done: 'Connection to Steam servers successful'
     userInteraction: {  }
-    
-  logs: |
+  logs:
     custom: true
     location: logs/latest.log
-    
   stop: quit
 scripts:
   installation:
@@ -58,7 +56,6 @@ scripts:
       ## set up 64 bit libraries
       mkdir -p /mnt/server/.steam/sdk64
       cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
-      
     container: 'ubuntu:18.04'
     entrypoint: bash
 variables:

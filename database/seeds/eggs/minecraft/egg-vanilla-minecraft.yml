@@ -1,6 +1,6 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
-  version: PTDL_v1
+  version: PTDL_v2
 exported_at: '2019-12-25T19:55:01-05:00'
 name: 'Vanilla Minecraft'
 author: support@pterodactyl.io
@@ -8,23 +8,20 @@ description: 'Minecraft is a game about placing blocks and going on adventures. 
 image: 'quay.io/pterodactyl/core:java'
 startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
 config:
-  files: |
+  files:
     server.properties:
       parser: properties
       find:
         server-ip: 0.0.0.0
         enable-query: 'true'
         server-port: '{{server.build.default.port}}'
-    
-  startup: |
+  startup:
     done: ')! For help, type '
     userInteraction:
       - 'Go to eula.txt for more info.'
-    
-  logs: |
+  logs:
     custom: false
     location: logs/latest.log
-    
   stop: stop
 scripts:
   installation:
@@ -54,7 +51,6 @@ scripts:
       curl -o ${SERVER_JARFILE} $DOWNLOAD_URL
       
       echo -e "Install Complete"
-      
     container: 'alpine:3.10'
     entrypoint: ash
 variables:

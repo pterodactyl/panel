@@ -1,6 +1,6 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
-  version: PTDL_v1
+  version: PTDL_v2
 exported_at: '2020-04-12T16:00:51-07:00'
 name: Bungeecord
 author: support@pterodactyl.io
@@ -8,7 +8,7 @@ description: 'For a long time, Minecraft server owners have had a dream that enc
 image: 'quay.io/pterodactyl/core:java'
 startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
 config:
-  files: |
+  files:
     config.yml:
       parser: yaml
       find:
@@ -17,16 +17,13 @@ config:
         'listeners[0].host': '0.0.0.0:{{server.build.default.port}}'
         'servers.*.address':
           'regex:^(127\.0\.0\.1|localhost)(:\d{1,5})?$': '{{config.docker.interface}}$2'
-    
-  startup: |
+  startup:
     done: 'Listening on '
     userInteraction:
       - 'Listening on /0.0.0.0:25577'
-    
-  logs: |
+  logs:
     custom: false
     location: proxy.log.0
-    
   stop: end
 scripts:
   installation:
@@ -45,7 +42,6 @@ scripts:
       fi
       
       curl -o ${SERVER_JARFILE} https://ci.md-5.net/job/BungeeCord/${BUNGEE_VERSION}/artifact/bootstrap/target/BungeeCord.jar
-      
     container: 'alpine:3.9'
     entrypoint: ash
 variables:

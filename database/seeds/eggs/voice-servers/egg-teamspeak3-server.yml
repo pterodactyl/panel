@@ -1,6 +1,6 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
-  version: PTDL_v1
+  version: PTDL_v2
 exported_at: '2019-07-05T11:59:29-04:00'
 name: 'Teamspeak3 Server'
 author: support@pterodactyl.io
@@ -8,15 +8,13 @@ description: 'VoIP software designed with security in mind, featuring crystal cl
 image: 'quay.io/parkervcp/pterodactyl-images:base_debian'
 startup: './ts3server default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}} filetransfer_ip=0.0.0.0 filetransfer_port={{FILE_TRANSFER}} license_accepted=1'
 config:
-  files: '{  }'
-  startup: |
+  files: {  }
+  startup:
     done: 'listening on 0.0.0.0:'
     userInteraction: {  }
-    
-  logs: |
+  logs:
     custom: true
     location: logs/ts3.log
-    
   stop: ^C
 scripts:
   installation:
@@ -36,7 +34,6 @@ scripts:
       
       echo -e "getting files from http://files.teamspeak-services.com/releases/server/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2"
       curl http://files.teamspeak-services.com/releases/server/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar xj --strip-components=1
-      
     container: 'alpine:3.9'
     entrypoint: ash
 variables:

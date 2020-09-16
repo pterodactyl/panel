@@ -1,6 +1,6 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
-  version: PTDL_v1
+  version: PTDL_v2
 exported_at: '2018-01-21T17:01:31-06:00'
 name: 'Terraria Server (TShock)'
 author: support@pterodactyl.io
@@ -8,21 +8,18 @@ description: 'TShock is a server modification for Terraria, written in C#, and b
 image: 'quay.io/pterodactyl/core:mono'
 startup: null
 config:
-  files: |
+  files:
     tshock/config.json:
       parser: json
       find:
         ServerPort: '{{server.build.default.port}}'
         MaxSlots: '{{server.build.env.MAX_SLOTS}}'
-    
-  startup: |
+  startup:
     done: 'Type ''help'' for a list of commands'
     userInteraction: {  }
-    
-  logs: |
+  logs:
     custom: false
     location: ServerLog.txt
-    
   stop: exit
 scripts:
   installation:
@@ -39,7 +36,6 @@ scripts:
       curl -sSLO https://github.com/NyxStudios/TShock/releases/download/v${T_VERSION}/tshock_${T_VERSION}.zip
       
       unzip -o tshock_${T_VERSION}.zip -d /mnt/server
-      
     container: 'alpine:3.9'
     entrypoint: ash
 variables:

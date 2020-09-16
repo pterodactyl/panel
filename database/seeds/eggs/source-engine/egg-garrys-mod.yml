@@ -1,6 +1,6 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
-  version: PTDL_v1
+  version: PTDL_v2
 exported_at: '2019-12-08T10:56:42-05:00'
 name: 'Garrys Mod'
 author: support@pterodactyl.io
@@ -8,15 +8,13 @@ description: 'Garrys Mod, is a sandbox physics game created by Garry Newman, and
 image: 'quay.io/pterodactyl/core:source'
 startup: './srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}} +maxplayers {{MAX_PLAYERS}}  -tickrate {{TICKRATE}}'
 config:
-  files: '{  }'
-  startup: |
+  files: {  }
+  startup:
     done: 'gameserver Steam ID'
     userInteraction: {  }
-    
-  logs: |
+  logs:
     custom: true
     location: logs/latest.log
-    
   stop: quit
 scripts:
   installation:
@@ -116,7 +114,6 @@ scripts:
       
       // Add custom lines under here
       ' > server.cfg
-      
     container: 'ubuntu:18.04'
     entrypoint: bash
 variables:
