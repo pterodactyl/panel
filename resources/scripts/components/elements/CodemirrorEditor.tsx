@@ -5,17 +5,12 @@ import tw from 'twin.macro';
 import modes, { Mode } from '@/modes';
 
 require('codemirror/lib/codemirror.css');
-
-// Themes
 require('codemirror/theme/ayu-mirage.css');
-
-// Addons
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/trailingspace');
-
 require('codemirror/addon/fold/foldcode');
 require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/foldgutter');
@@ -24,7 +19,6 @@ require('codemirror/addon/fold/comment-fold');
 require('codemirror/addon/fold/indent-fold');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/xml-fold');
-
 require('codemirror/addon/hint/css-hint');
 require('codemirror/addon/hint/html-hint');
 require('codemirror/addon/hint/javascript-hint');
@@ -32,17 +26,13 @@ require('codemirror/addon/hint/show-hint.css');
 require('codemirror/addon/hint/show-hint');
 require('codemirror/addon/hint/sql-hint');
 require('codemirror/addon/hint/xml-hint');
-
 require('codemirror/addon/mode/simple');
-
 require('codemirror/addon/dialog/dialog.css');
 require('codemirror/addon/dialog/dialog');
-
 require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/scroll/scrollpastend');
 require('codemirror/addon/scroll/simplescrollbars.css');
 require('codemirror/addon/scroll/simplescrollbars');
-
 require('codemirror/addon/search/jump-to-line');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/search/matchesonscrollbar.css');
@@ -50,7 +40,6 @@ require('codemirror/addon/search/matchesonscrollbar');
 require('codemirror/addon/search/search');
 require('codemirror/addon/search/searchcursor');
 
-// Modes
 require('codemirror/mode/brainfuck/brainfuck');
 require('codemirror/mode/clike/clike');
 require('codemirror/mode/css/css');
@@ -126,48 +115,64 @@ export interface Props {
     onContentSaved: () => void;
 }
 
+const findModeByFilename = (filename: string) => {
+    for (let i = 0; i < modes.length; i++) {
+        const info = modes[i];
+
+        if (info.file && info.file.test(filename)) {
+            return info;
+        }
+    }
+
+    const dot = filename.lastIndexOf('.');
+    const ext = dot > -1 && filename.substring(dot + 1, filename.length);
+
+    if (ext) {
+        for (let i = 0; i < modes.length; i++) {
+            const info = modes[i];
+            if (info.ext) {
+                for (let j = 0; j < info.ext.length; j++) {
+                    if (info.ext[j] === ext) {
+                        return info;
+                    }
+                }
+            }
+        }
+    }
+
+    return undefined;
+};
+
 export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
     const [ editor, setEditor ] = useState<CodeMirror.Editor>();
 
     const ref = useCallback((node) => {
-        if (!node) {
-            return;
-        }
+        if (!node) return;
 
         const e = CodeMirror.fromTextArea(node, {
             mode: 'text/plain',
             theme: 'ayu-mirage',
-
             indentUnit: 4,
             smartIndent: true,
             tabSize: 4,
-            indentWithTabs: true,
-
+            indentWithTabs: false,
             lineWrapping: true,
             lineNumbers: true,
-
             foldGutter: true,
             fixedGutter: true,
-
             scrollbarStyle: 'overlay',
             coverGutterNextToScrollbar: false,
-
             readOnly: false,
-
             showCursorWhenSelecting: false,
-
             autofocus: false,
-
             spellcheck: true,
             autocorrect: false,
             autocapitalize: false,
             lint: false,
-
             // This property is actually used, the d.ts file for CodeMirror is incorrect.
             // @ts-ignore
             autoCloseBrackets: true,
             matchBrackets: true,
-
             gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ],
         });
 
@@ -178,35 +183,6 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
         if (filename === undefined) {
             return;
         }
-
-        const findModeByFilename = (filename: string): Mode|undefined => {
-            for (let i = 0; i < modes.length; i++) {
-                const info = modes[i];
-
-                if (info.file && info.file.test(filename)) {
-                    return info;
-                }
-            }
-
-            const dot = filename.lastIndexOf('.');
-            const ext = dot > -1 && filename.substring(dot + 1, filename.length);
-
-            if (ext) {
-                for (let i = 0; i < modes.length; i++) {
-                    const info = modes[i];
-
-                    if (info.ext) {
-                        for (let j = 0; j < info.ext.length; j++) {
-                            if (info.ext[j] === ext) {
-                                return info;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return undefined;
-        };
 
         onModeChanged(findModeByFilename(filename)?.mime || 'text/plain');
     }, [ filename ]);

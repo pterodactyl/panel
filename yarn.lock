@@ -1615,10 +1615,6 @@ axios@^0.19.2:
   dependencies:
     follow-redirects "1.5.10"
 
-ayu-ace@^2.0.4:
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/ayu-ace/-/ayu-ace-2.0.4.tgz#3877d4cbf8668e639de6f67e34c2a88c1589b082"
-
 babel-loader@^8.0.6:
   version "8.0.6"
   resolved "https://registry.yarnpkg.com/babel-loader/-/babel-loader-8.0.6.tgz#e33bdb6f362b03f4bb141a0c21ab87c501b70dfb"
@@ -1753,10 +1749,6 @@ brace-expansion@^1.1.7:
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
-
-brace@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/brace/-/brace-0.11.1.tgz#4896fcc9d544eef45f4bb7660db320d3b379fe58"
 
 braces@^2.3.1, braces@^2.3.2:
   version "2.3.2"

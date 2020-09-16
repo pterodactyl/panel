@@ -82,11 +82,6 @@ export default () => {
         );
     }
 
-    const actualModes: React.ReactChild[] = [];
-    for (let i = 0; i < modes.length; i++) {
-        actualModes.push(<option key={modes[i].mime} value={modes[i].mime}>{modes[i].name}</option>);
-    }
-
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'files:view'} css={tw`mb-4`}/>
@@ -127,7 +122,11 @@ export default () => {
             <div css={tw`flex justify-end mt-4`}>
                 <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
                     <Select value={mode} onChange={e => setMode(e.currentTarget.value)}>
-                        {actualModes}
+                        {modes.map(mode => (
+                            <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
+                                {mode.name}
+                            </option>
+                        ))}
                     </Select>
                 </div>
                 {action === 'edit' ?
