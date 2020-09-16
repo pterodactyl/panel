@@ -1,6 +1,7 @@
 <?php
 
 use Symfony\Component\Yaml\Yaml;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
 
 class ReplaceEggJsonWithYaml extends Migration
