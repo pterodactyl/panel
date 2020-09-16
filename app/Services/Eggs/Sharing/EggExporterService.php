@@ -23,8 +23,7 @@ class EggExporterService
         $this->repository = $repository;
     }
 
-    // Currently symfony/yaml doesn't support crlf newlines so we just strip them
-    // https://github.com/symfony/symfony/issues/38171
+    // Currently symfony/yaml doesn't support crlf newlines in scalar blocks so we just strip them
     private function crlfToLf($string)
     {
         if (! is_string($string)) {
@@ -59,9 +58,9 @@ class EggExporterService
             'images' => $egg->docker_images,
             'startup' => $this->crlfToLf($egg->startup),
             'config' => [
-                'files' => Yaml::parse($this->crlfToLf($egg->inherit_config_files)),
-                'startup' => Yaml::parse($this->crlfToLf($egg->inherit_config_startup)),
-                'logs' => Yaml::parse($this->crlfToLf($egg->inherit_config_logs)),
+                'files' => Yaml::parse($egg->inherit_config_files),
+                'startup' => Yaml::parse($egg->inherit_config_startup),
+                'logs' => Yaml::parse($egg->inherit_config_logs),
                 'stop' => $egg->inherit_config_stop,
             ],
             'scripts' => [
@@ -72,13 +71,10 @@ class EggExporterService
                 ],
             ],
             'variables' => $egg->variables->transform(function ($item) {
-                $exportItem = collect($item->toArray())->except([
-                    'id', 'egg_id', 'description', 'created_at', 'updated_at',
-                ])->toArray();
-
-                $exportItem['description'] = $this->crlfToLf($item->description);
-
-                return $exportItem;
+                return collect($item->toArray())
+                    ->except(['id', 'egg_id', 'created_at', 'updated_at'])
+                    ->merge(['description' => $this->crlfToLf($item->description)])
+                    ->toArray();
             })->toArray(),
         ];
 
