@@ -85,16 +85,16 @@ export default () => {
                                         description={'Where connections should be allowed from. Use % for wildcards.'}
                                     />
                                 </div>
-                                <div css={tw`mt-6 text-right`}>
+                                <div css={tw`flex flex-wrap justify-end mt-6`}>
                                     <Button
                                         type={'button'}
                                         isSecondary
-                                        css={tw`mr-2`}
+                                        css={tw`w-full sm:w-auto sm:mr-2`}
                                         onClick={() => setVisible(false)}
                                     >
                                         Cancel
                                     </Button>
-                                    <Button type={'submit'}>
+                                    <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
                                         Create Database
                                     </Button>
                                 </div>

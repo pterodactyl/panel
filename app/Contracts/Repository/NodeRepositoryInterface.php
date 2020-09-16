@@ -8,7 +8,7 @@ use Illuminate\Support\LazyCollection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface NodeRepositoryInterface extends RepositoryInterface
 {
     const THRESHOLD_PERCENTAGE_LOW = 75;
     const THRESHOLD_PERCENTAGE_MEDIUM = 90;
@@ -28,13 +28,6 @@ interface NodeRepositoryInterface extends RepositoryInterface, SearchableInterfa
      * @return array
      */
     public function getUsageStatsRaw(Node $node): array;
-
-    /**
-     * Return all available nodes with a searchable interface.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getNodeListingData(): LengthAwarePaginator;
 
     /**
      * Return a single node with location and server information.

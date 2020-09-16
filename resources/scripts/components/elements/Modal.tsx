@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
-import styled from 'styled-components/macro';
+import styled, { css } from 'styled-components/macro';
+import { breakpoint } from '@/theme';
 import Fade from '@/components/elements/Fade';
 
 export interface RequiredModalProps {
@@ -25,18 +24,27 @@ export const ModalMask = styled.div`
     background: rgba(0, 0, 0, 0.70);
 `;
 
-const ModalContainer = styled.div<{ alignTop?: boolean }>`
-    ${tw`relative flex flex-col w-full m-auto`};
+const ModalContainer = styled.div<{ alignTop?: boolean }>`    
+    max-width: 95%;
     max-height: calc(100vh - 8rem);
-    max-width: 50%;
-    // @todo max-w-screen-lg perhaps?
-    ${props => props.alignTop && 'margin-top: 10%'};
+    ${breakpoint('md')`max-width: 75%`};
+    ${breakpoint('lg')`max-width: 50%`};
+
+    ${tw`relative flex flex-col w-full m-auto`};
+    ${props => props.alignTop && css`
+        margin-top: 20%;
+        ${breakpoint('md')`margin-top: 10%`};
+    `};
     
     & > .close-icon {
         ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
-        top: -2rem;
+        top: -2.5rem;
         
         &:hover {${tw`transform rotate-90`}}
+        
+        & > svg {
+            ${tw`w-6 h-6`};
+        }
     }
 `;
 
@@ -47,19 +55,20 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
         return (dismissable || true) && !(showSpinnerOverlay || false);
     }, [ dismissable, showSpinnerOverlay ]);
 
-    const handleEscapeEvent = (e: KeyboardEvent) => {
-        if (isDismissable && closeOnEscape && e.key === 'Escape') {
-            setRender(false);
-        }
-    };
+    useEffect(() => {
+        if (!isDismissable || !closeOnEscape) return;
+
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setRender(false);
+        };
+
+        window.addEventListener('keydown', handler);
+        return () => {
+            window.removeEventListener('keydown', handler);
+        };
+    }, [ isDismissable, closeOnEscape, render ]);
 
     useEffect(() => setRender(visible), [ visible ]);
-
-    useEffect(() => {
-        window.addEventListener('keydown', handleEscapeEvent);
-
-        return () => window.removeEventListener('keydown', handleEscapeEvent);
-    }, [ render ]);
 
     return (
         <Fade
@@ -70,7 +79,9 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
             onExited={() => onDismissed()}
         >
             <ModalMask
-                onClick={e => {
+                onClick={e => e.stopPropagation()}
+                onContextMenu={e => e.stopPropagation()}
+                onMouseDown={e => {
                     if (isDismissable && closeOnBackground) {
                         e.stopPropagation();
                         if (e.target === e.currentTarget) {
@@ -82,7 +93,14 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
                 <ModalContainer alignTop={top}>
                     {isDismissable &&
                     <div className={'close-icon'} onClick={() => setRender(false)}>
-                        <FontAwesomeIcon icon={faTimes}/>
+                        <svg xmlns={'http://www.w3.org/2000/svg'} fill={'none'} viewBox={'0 0 24 24'} stroke={'currentColor'}>
+                            <path
+                                strokeLinecap={'round'}
+                                strokeLinejoin={'round'}
+                                strokeWidth={'2'}
+                                d={'M6 18L18 6M6 6l12 12'}
+                            />
+                        </svg>
                     </div>
                     }
                     {showSpinnerOverlay &&
@@ -95,7 +113,7 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
                         </div>
                     </Fade>
                     }
-                    <div css={tw`bg-neutral-800 p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}>
+                    <div css={tw`bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}>
                         {children}
                     </div>
                 </ModalContainer>

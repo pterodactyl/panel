@@ -5,7 +5,6 @@ namespace Pterodactyl\Models;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
-use Pterodactyl\Models\Traits\Searchable;
 use Illuminate\Contracts\Encryption\Encrypter;
 
 /**
@@ -33,13 +32,13 @@ use Illuminate\Contracts\Encryption\Encrypter;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Pterodactyl\Models\Location $location
+ * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
 class Node extends Model
 {
     use Notifiable;
-    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -92,18 +91,6 @@ class Node extends Model
         'disk_overallocate', 'upload_size', 'daemonBase',
         'daemonSFTP', 'daemonListen',
         'description', 'maintenance_mode',
-    ];
-
-    /**
-     * Fields that are searchable.
-     *
-     * @var array
-     */
-    protected $searchableColumns = [
-        'name' => 10,
-        'fqdn' => 8,
-        'location.short' => 4,
-        'location.long' => 4,
     ];
 
     /**
@@ -182,6 +169,7 @@ class Node extends Model
                     'bind_port' => $this->daemonSFTP,
                 ],
             ],
+            'allowed_mounts' => $this->mounts->pluck('source')->toArray(),
             'remote' => route('index'),
         ];
     }
@@ -214,9 +202,17 @@ class Node extends Model
      */
     public function getDecryptedKey(): string
     {
-        return (string) Container::getInstance()->make(Encrypter::class)->decrypt(
+        return (string)Container::getInstance()->make(Encrypter::class)->decrypt(
             $this->daemon_token
         );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function mounts()
+    {
+        return $this->hasManyThrough(Mount::class, MountNode::class, 'node_id', 'id', 'id', 'mount_id');
     }
 
     /**

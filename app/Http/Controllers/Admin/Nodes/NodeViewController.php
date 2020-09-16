@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Admin\Nodes;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
+use Pterodactyl\Models\Allocation;
 use Illuminate\Contracts\View\Factory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
@@ -134,7 +135,10 @@ class NodeViewController extends Controller
 
         return $this->view->make('admin.nodes.view.allocation', [
             'node' => $node,
-            'allocations' => $this->allocationRepository->setColumns(['ip'])->getUniqueAllocationIpsForNode($node->id),
+            'allocations' => Allocation::query()->where('node_id', $node->id)
+                ->groupBy('ip')
+                ->orderByRaw('INET_ATON(ip) ASC')
+                ->get(['ip']),
         ]);
     }
 

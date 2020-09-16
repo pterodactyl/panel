@@ -11,6 +11,7 @@ import Button from '@/components/elements/Button';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import { WithClassname } from '@/components/types';
 
 interface Values {
     directoryName: string;
@@ -26,15 +27,15 @@ const generateDirectoryData = (name: string): FileObject => ({
     mode: '0644',
     size: 0,
     isFile: false,
-    isEditable: false,
     isSymlink: false,
     mimetype: '',
     createdAt: new Date(),
     modifiedAt: new Date(),
     isArchiveType: () => false,
+    isEditable: () => false,
 });
 
-export default () => {
+export default ({ className }: WithClassname) => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
@@ -95,7 +96,7 @@ export default () => {
                     </Modal>
                 )}
             </Formik>
-            <Button isSecondary css={tw`mr-2`} onClick={() => setVisible(true)}>
+            <Button isSecondary onClick={() => setVisible(true)} className={className}>
                 Create Directory
             </Button>
         </>

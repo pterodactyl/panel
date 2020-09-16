@@ -9,12 +9,13 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerConfigurationStructureService
 {
-    const REQUIRED_RELATIONS = ['allocation', 'allocations', 'pack', 'egg'];
+    const REQUIRED_RELATIONS = ['allocation', 'allocations', 'egg'];
 
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
@@ -66,27 +67,15 @@ class ServerConfigurationStructureService
      *
      * @param \Pterodactyl\Models\Server $server
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     protected function returnCurrentFormat(Server $server)
     {
-        $mounts = $server->mounts;
-        foreach ($mounts as $mount) {
-            unset($mount->id);
-            unset($mount->uuid);
-            unset($mount->name);
-            unset($mount->description);
-            $mount->read_only = $mount->read_only == 1;
-            unset($mount->user_mountable);
-            unset($mount->pivot);
-        }
-
         return [
             'uuid' => $server->uuid,
             'suspended' => (bool) $server->suspended,
             'environment' => $this->environment->handle($server),
             'invocation' => $server->startup,
+            'skip_egg_scripts' => $server->skip_scripts,
             'build' => [
                 'memory_limit' => $server->memory,
                 'swap' => $server->swap,
@@ -94,11 +83,6 @@ class ServerConfigurationStructureService
                 'cpu_limit' => $server->cpu,
                 'threads' => $server->threads,
                 'disk_space' => $server->disk,
-            ],
-            'service' => [
-                'egg' => $server->egg->uuid,
-                'pack' => $server->pack ? $server->pack->uuid : null,
-                'skip_scripts' => $server->skip_scripts,
             ],
             'container' => [
                 'image' => $server->image,
@@ -112,7 +96,13 @@ class ServerConfigurationStructureService
                 ],
                 'mappings' => $server->getAllocationMappings(),
             ],
-            'mounts' => $mounts,
+            'mounts' => $server->mounts->map(function (Mount $mount) {
+                return [
+                    'source' => $mount->source,
+                    'target' => $mount->target,
+                    'read_only' => $mount->read_only,
+                ];
+            }),
         ];
     }
 
@@ -149,7 +139,6 @@ class ServerConfigurationStructureService
             ],
             'service' => [
                 'egg' => $server->egg->uuid,
-                'pack' => $server->pack ? $server->pack->uuid : null,
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,

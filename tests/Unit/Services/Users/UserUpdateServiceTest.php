@@ -9,7 +9,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService;
 
 class UserUpdateServiceTest extends TestCase
 {
@@ -19,14 +18,9 @@ class UserUpdateServiceTest extends TestCase
     private $hasher;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface|\Mockery\Mock
+     * @var \Pterodactyl\Repositories\Eloquent\UserRepository|\Mockery\Mock
      */
     private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\DaemonKeys\RevokeMultipleDaemonKeysService|\Mockery\Mock
-     */
-    private $revocationService;
 
     /**
      * Setup tests.
@@ -37,7 +31,6 @@ class UserUpdateServiceTest extends TestCase
 
         $this->hasher = m::mock(Hasher::class);
         $this->repository = m::mock(UserRepositoryInterface::class);
-        $this->revocationService = m::mock(RevokeMultipleDaemonKeysService::class);
     }
 
     /**
@@ -49,7 +42,6 @@ class UserUpdateServiceTest extends TestCase
     public function testUpdateUserWithoutTouchingHasherIfNoPasswordPassed(array $data)
     {
         $user = factory(User::class)->make();
-        $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
         $this->repository->shouldReceive('update')->with($user->id, ['test-data' => 'value'])->once()->andReturnNull();
 
         $response = $this->getService()->handle($user, $data);
@@ -80,7 +72,6 @@ class UserUpdateServiceTest extends TestCase
     {
         $user = factory(User::class)->make();
         $this->hasher->shouldReceive('make')->with('raw_pass')->once()->andReturn('enc_pass');
-        $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
         $this->repository->shouldReceive('update')->with($user->id, ['password' => 'enc_pass'])->once()->andReturnNull();
 
         $response = $this->getService()->handle($user, ['password' => 'raw_pass']);
@@ -98,8 +89,6 @@ class UserUpdateServiceTest extends TestCase
         $service = $this->getService();
         $service->setUserLevel(User::USER_LEVEL_ADMIN);
 
-        $this->revocationService->shouldReceive('handle')->with($user, false)->once()->andReturnNull();
-        $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
         $this->repository->shouldReceive('update')->with($user->id, ['root_admin' => false])->once()->andReturnNull();
 
         $response = $service->handle($user, ['root_admin' => false]);
@@ -117,7 +106,6 @@ class UserUpdateServiceTest extends TestCase
         $service = $this->getService();
         $service->setUserLevel(User::USER_LEVEL_USER);
 
-        $this->revocationService->shouldReceive('getExceptions')->withNoArgs()->once()->andReturn([]);
         $this->repository->shouldReceive('update')->with($user->id, [])->once()->andReturnNull();
 
         $response = $service->handle($user, ['root_admin' => true]);
@@ -133,6 +121,6 @@ class UserUpdateServiceTest extends TestCase
      */
     private function getService(): UserUpdateService
     {
-        return new UserUpdateService($this->hasher, $this->revocationService, $this->repository);
+        return new UserUpdateService($this->hasher, $this->repository);
     }
 }

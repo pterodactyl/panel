@@ -246,7 +246,6 @@ class ServerCreationService
             'allocation_id' => Arr::get($data, 'allocation_id'),
             'nest_id' => Arr::get($data, 'nest_id'),
             'egg_id' => Arr::get($data, 'egg_id'),
-            'pack_id' => empty($data['pack_id']) ? null : $data['pack_id'],
             'startup' => Arr::get($data, 'startup'),
             'image' => Arr::get($data, 'image'),
             'database_limit' => Arr::get($data, 'database_limit') ?? 0,

@@ -10,6 +10,7 @@
 namespace Pterodactyl\Console\Commands\User;
 
 use Webmozart\Assert\Assert;
+use Pterodactyl\Models\User;
 use Illuminate\Console\Command;
 use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -40,16 +41,11 @@ class DeleteUserCommand extends Command
      * DeleteUserCommand constructor.
      *
      * @param \Pterodactyl\Services\Users\UserDeletionService $deletionService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
-    public function __construct(
-        UserDeletionService $deletionService,
-        UserRepositoryInterface $repository
-    ) {
+    public function __construct(UserDeletionService $deletionService) {
         parent::__construct();
 
         $this->deletionService = $deletionService;
-        $this->repository = $repository;
     }
 
     /**
@@ -59,9 +55,13 @@ class DeleteUserCommand extends Command
     public function handle()
     {
         $search = $this->option('user') ?? $this->ask(trans('command/messages.user.search_users'));
-        Assert::notEmpty($search, 'Search term must be a non-null value, received %s.');
+        Assert::notEmpty($search, 'Search term should be an email address, got: %s.');
 
-        $results = $this->repository->setSearchTerm($search)->all();
+        $results = User::query()
+            ->where('email', 'LIKE', "$search%")
+            ->where('username', 'LIKE', "$search%")
+            ->get();
+
         if (count($results) < 1) {
             $this->error(trans('command/messages.user.no_users_found'));
             if ($this->input->isInteractive()) {
@@ -95,5 +95,7 @@ class DeleteUserCommand extends Command
             $this->deletionService->handle($deleteUser);
             $this->info(trans('command/messages.user.deleted'));
         }
+
+        return;
     }
 }

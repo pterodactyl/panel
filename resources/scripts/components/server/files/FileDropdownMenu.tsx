@@ -29,6 +29,7 @@ import useEventListener from '@/plugins/useEventListener';
 import compressFiles from '@/api/server/files/compressFiles';
 import decompressFiles from '@/api/server/files/decompressFiles';
 import isEqual from 'react-fast-compare';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 type ModalType = 'rename' | 'move';
 
@@ -54,6 +55,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const onClickRef = useRef<DropdownMenu>(null);
     const [ showSpinner, setShowSpinner ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
+    const [ showConfirmation, setShowConfirmation ] = useState(false);
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
@@ -123,47 +125,58 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     };
 
     return (
-        <DropdownMenu
-            ref={onClickRef}
-            renderToggle={onClick => (
-                <div css={tw`p-3 hover:text-white`} onClick={onClick}>
-                    <FontAwesomeIcon icon={faEllipsisH}/>
-                    {!!modal &&
-                    <RenameFileModal
-                        visible
-                        appear
-                        files={[ file.name ]}
-                        useMoveTerminology={modal === 'move'}
-                        onDismissed={() => setModal(null)}
-                    />
-                    }
-                    <SpinnerOverlay visible={showSpinner} fixed size={'large'}/>
-                </div>
-            )}
-        >
-            <Can action={'file.update'}>
-                <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'}/>
-                <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'}/>
-            </Can>
-            {file.isFile &&
-            <Can action={'file.create'}>
-                <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
-            </Can>
-            }
-            {file.isArchiveType() ?
+        <>
+            <ConfirmationModal
+                visible={showConfirmation}
+                title={`Delete this ${file.isFile ? 'File' : 'Directory'}?`}
+                buttonText={`Yes, Delete ${file.isFile ? 'File' : 'Directory'}`}
+                onConfirmed={doDeletion}
+                onModalDismissed={() => setShowConfirmation(false)}
+            >
+                Deleting files is a permanent operation, you cannot undo this action.
+            </ConfirmationModal>
+            <DropdownMenu
+                ref={onClickRef}
+                renderToggle={onClick => (
+                    <div css={tw`p-3 hover:text-white`} onClick={onClick}>
+                        <FontAwesomeIcon icon={faEllipsisH}/>
+                        {!!modal &&
+                        <RenameFileModal
+                            visible
+                            appear
+                            files={[ file.name ]}
+                            useMoveTerminology={modal === 'move'}
+                            onDismissed={() => setModal(null)}
+                        />
+                        }
+                        <SpinnerOverlay visible={showSpinner} fixed size={'large'}/>
+                    </div>
+                )}
+            >
+                <Can action={'file.update'}>
+                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'}/>
+                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'}/>
+                </Can>
+                {file.isFile &&
                 <Can action={'file.create'}>
-                    <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                    <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
                 </Can>
-                :
-                <Can action={'file.archive'}>
-                    <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+                }
+                {file.isArchiveType() ?
+                    <Can action={'file.create'}>
+                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                    </Can>
+                    :
+                    <Can action={'file.archive'}>
+                        <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+                    </Can>
+                }
+                <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
+                <Can action={'file.delete'}>
+                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger/>
                 </Can>
-            }
-            <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
-            <Can action={'file.delete'}>
-                <Row onClick={doDeletion} icon={faTrashAlt} title={'Delete'} $danger/>
-            </Can>
-        </DropdownMenu>
+            </DropdownMenu>
+        </>
     );
 };
 

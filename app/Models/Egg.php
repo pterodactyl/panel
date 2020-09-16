@@ -35,7 +35,6 @@ namespace Pterodactyl\Models;
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\EggVariable[] $variables
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Pack[] $packs
  * @property \Pterodactyl\Models\Egg|null $scriptFrom
  * @property \Pterodactyl\Models\Egg|null $configFrom
  */
@@ -245,16 +244,6 @@ class Egg extends Model
     public function variables()
     {
         return $this->hasMany(EggVariable::class, 'egg_id');
-    }
-
-    /**
-     * Gets all packs associated with this egg.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function packs()
-    {
-        return $this->hasMany(Pack::class, 'egg_id');
     }
 
     /**

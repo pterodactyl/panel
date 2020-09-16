@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\JsonResponse;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Locations\LocationUpdateService;
 use Pterodactyl\Services\Locations\LocationCreationService;
 use Pterodactyl\Services\Locations\LocationDeletionService;
@@ -69,7 +70,10 @@ class LocationController extends ApplicationApiController
      */
     public function index(GetLocationsRequest $request): array
     {
-        $locations = $this->repository->setSearchTerm($request->input('search'))->paginated(50);
+        $locations = QueryBuilder::for(Location::query())
+            ->allowedFilters(['short', 'long'])
+            ->allowedSorts(['id'])
+            ->paginate(100);
 
         return $this->fractal->collection($locations)
             ->transformWith($this->getTransformer(LocationTransformer::class))

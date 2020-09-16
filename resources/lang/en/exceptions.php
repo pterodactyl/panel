@@ -4,7 +4,7 @@ return [
     'daemon_connection_failed' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
     'node' => [
         'servers_attached' => 'A node must have no servers linked to it in order to be deleted.',
-        'daemon_off_config_updated' => 'The daemon configuration <strong>has been updated</strong>, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (core.json) for the daemon to apply these changes.',
+        'daemon_off_config_updated' => 'The daemon configuration <strong>has been updated</strong>, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
     ],
     'allocations' => [
         'server_using' => 'A server is currently assigned to this allocation. An allocation can only be deleted if no server is currently assigned.',
@@ -31,15 +31,6 @@ return [
             'file_error' => 'The JSON file provided was not valid.',
             'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
         ],
-    ],
-    'packs' => [
-        'delete_has_servers' => 'Cannot delete a pack that is attached to active servers.',
-        'update_has_servers' => 'Cannot modify the associated option ID when servers are currently attached to a pack.',
-        'invalid_upload' => 'The file provided does not appear to be valid.',
-        'invalid_mime' => 'The file provided does not meet the required type :type',
-        'unreadable' => 'The archive provided could not be opened by the server.',
-        'zip_extraction' => 'An exception was encountered while attempting to extract the archive provided onto the server.',
-        'invalid_archive_exception' => 'The pack archive provided appears to be missing a required archive.tar.gz or import.json file in the base directory.',
     ],
     'subusers' => [
         'editing_self' => 'Editing your own subuser account is not permitted.',

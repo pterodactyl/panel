@@ -13,7 +13,6 @@ namespace Pterodactyl\Models;
  *
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Egg[] $eggs
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Pack[] $packs
  */
 class Nest extends Model
 {
@@ -57,16 +56,6 @@ class Nest extends Model
     public function eggs()
     {
         return $this->hasMany(Egg::class);
-    }
-
-    /**
-     * Returns all of the packs associated with a nest, regardless of the egg.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
-     */
-    public function packs()
-    {
-        return $this->hasManyThrough(Pack::class, Egg::class, 'nest_id', 'egg_id');
     }
 
     /**

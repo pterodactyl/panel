@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Servers;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -59,7 +60,10 @@ class ServerController extends ApplicationApiController
      */
     public function index(GetServersRequest $request): array
     {
-        $servers = $this->repository->setSearchTerm($request->input('search'))->paginated(50);
+        $servers = QueryBuilder::for(Server::query())
+            ->allowedFilters(['uuid', 'name', 'image', 'external_id'])
+            ->allowedSorts(['id', 'uuid'])
+            ->paginate(100);
 
         return $this->fractal->collection($servers)
             ->transformWith($this->getTransformer(ServerTransformer::class))

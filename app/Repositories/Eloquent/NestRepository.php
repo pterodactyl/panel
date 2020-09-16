@@ -26,7 +26,7 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     }
 
     /**
-     * Return a nest or all nests with their associated eggs, variables, and packs.
+     * Return a nest or all nests with their associated eggs and variables.
      *
      * @param int $id
      * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Nest
@@ -35,7 +35,7 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
      */
     public function getWithEggs(int $id = null)
     {
-        $instance = $this->getBuilder()->with('eggs.packs', 'eggs.variables');
+        $instance = $this->getBuilder()->with('eggs', 'eggs.variables');
 
         if (! is_null($id)) {
             $instance = $instance->find($id, $this->getColumns());
@@ -50,7 +50,7 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     }
 
     /**
-     * Return a nest or all nests and the count of eggs, packs, and servers for that nest.
+     * Return a nest or all nests and the count of eggs and servers for that nest.
      *
      * @param int|null $id
      * @return \Pterodactyl\Models\Nest|\Illuminate\Database\Eloquent\Collection
@@ -59,7 +59,7 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
      */
     public function getWithCounts(int $id = null)
     {
-        $instance = $this->getBuilder()->withCount(['eggs', 'packs', 'servers']);
+        $instance = $this->getBuilder()->withCount(['eggs', 'servers']);
 
         if (! is_null($id)) {
             $instance = $instance->find($id, $this->getColumns());

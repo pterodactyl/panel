@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Models;
 
-use Pterodactyl\Rules\ResolvesToIPAddress;
-
 class DatabaseHost extends Model
 {
     /**
@@ -59,18 +57,6 @@ class DatabaseHost extends Model
         'password' => 'nullable|string',
         'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
     ];
-
-    /**
-     * @return array
-     */
-    public static function getRules()
-    {
-        $rules = parent::getRules();
-
-        $rules['host'] = array_merge($rules['host'], [ new ResolvesToIPAddress() ]);
-
-        return $rules;
-    }
 
     /**
      * Gets the node associated with a database host.

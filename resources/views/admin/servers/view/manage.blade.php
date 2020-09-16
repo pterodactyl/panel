@@ -28,7 +28,7 @@
                     <h3 class="box-title">Reinstall Server</h3>
                 </div>
                 <div class="box-body">
-                    <p>This will reinstall the server with the assigned pack and service scripts. <strong>Danger!</strong> This could overwrite server data.</p>
+                    <p>This will reinstall the server with the assigned service scripts. <strong>Danger!</strong> This could overwrite server data.</p>
                 </div>
                 <div class="box-footer">
                     @if($server->installed === 1)

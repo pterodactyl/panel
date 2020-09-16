@@ -5,18 +5,9 @@ namespace Pterodactyl\Contracts\Repository;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface ServerRepositoryInterface extends RepositoryInterface
 {
-    /**
-     * Returns a listing of all servers that exist including relationships.
-     *
-     * @param int $paginate
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getAllServers(int $paginate): LengthAwarePaginator;
-
     /**
      * Load the egg relations onto the server model.
      *
@@ -85,7 +76,7 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
 
     /**
      * Get data for use when updating a server on the Daemon. Returns an array of
-     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * the egg which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
      *
      * @param \Pterodactyl\Models\Server $server

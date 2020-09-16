@@ -7,14 +7,6 @@ use Illuminate\Support\Collection;
 interface AllocationRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Return all of the unique IPs that exist for a given node.
-     *
-     * @param int $node
-     * @return \Illuminate\Support\Collection
-     */
-    public function getUniqueAllocationIpsForNode(int $node): Collection;
-
-    /**
      * Return all of the allocations that exist for a node that are not currently
      * allocated.
      *
@@ -22,27 +14,6 @@ interface AllocationRepositoryInterface extends RepositoryInterface
      * @return array
      */
     public function getUnassignedAllocationIds(int $node): array;
-
-    /**
-     * Get an array of all allocations that are currently assigned to a given server.
-     *
-     * @param int $server
-     * @return array
-     */
-    public function getAssignedAllocationIds(int $server): array;
-
-    /**
-     * Return a concatenated result set of node ips that already have at least one
-     * server assigned to that IP. This allows for filtering out sets for
-     * dedicated allocation IPs.
-     *
-     * If an array of nodes is passed the results will be limited to allocations
-     * in those nodes.
-     *
-     * @param array $nodes
-     * @return array
-     */
-    public function getDiscardableDedicatedAllocations(array $nodes = []): array;
 
     /**
      * Return a single allocation from those meeting the requirements.

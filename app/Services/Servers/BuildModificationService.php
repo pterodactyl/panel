@@ -159,7 +159,7 @@ class BuildModificationService
 
         // Handle removal of allocations from this server.
         if (array_key_exists('remove_allocations', $data) && ! empty($data['remove_allocations'])) {
-            $assigned = $this->allocationRepository->getAssignedAllocationIds($server->id);
+            $assigned = $server->allocations->pluck('id')->toArray();
 
             $updateIds = [];
             foreach ($data['remove_allocations'] as $allocation) {

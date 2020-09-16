@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Users;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
@@ -70,7 +71,10 @@ class UserController extends ApplicationApiController
      */
     public function index(GetUsersRequest $request): array
     {
-        $users = $this->repository->setSearchTerm($request->input('search'))->paginated(50);
+        $users = QueryBuilder::for(User::query())
+            ->allowedFilters(['email', 'uuid', 'username', 'external_id'])
+            ->allowedSorts(['id', 'uuid'])
+            ->paginate(100);
 
         return $this->fractal->collection($users)
             ->transformWith($this->getTransformer(UserTransformer::class))
@@ -82,11 +86,12 @@ class UserController extends ApplicationApiController
      * were defined in the request.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest $request
+     * @param \Pterodactyl\Models\User $user
      * @return array
      */
-    public function view(GetUsersRequest $request): array
+    public function view(GetUsersRequest $request, User $user): array
     {
-        return $this->fractal->item($request->getModel(User::class))
+        return $this->fractal->item($user)
             ->transformWith($this->getTransformer(UserTransformer::class))
             ->toArray();
     }
@@ -146,14 +151,15 @@ class UserController extends ApplicationApiController
      * on successful deletion.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest $request
-     * @return \Illuminate\Http\Response
+     * @param \Pterodactyl\Models\User $user
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(DeleteUserRequest $request): Response
+    public function delete(DeleteUserRequest $request, User $user): JsonResponse
     {
-        $this->deletionService->handle($request->getModel(User::class));
+        $this->deletionService->handle($user);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

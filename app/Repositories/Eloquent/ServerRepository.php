@@ -5,7 +5,6 @@ namespace Pterodactyl\Repositories\Eloquent;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
-use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -13,8 +12,6 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerRepository extends EloquentRepository implements ServerRepositoryInterface
 {
-    use Searchable;
-
     /**
      * Return the model backing this repository.
      *
@@ -23,19 +20,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     public function model()
     {
         return Server::class;
-    }
-
-    /**
-     * Returns a listing of all servers that exist including relationships.
-     *
-     * @param int $paginate
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getAllServers(int $paginate): LengthAwarePaginator
-    {
-        $instance = $this->getBuilder()->with('node', 'user', 'allocation')->search($this->getSearchTerm());
-
-        return $instance->paginate($paginate, $this->getColumns());
     }
 
     /**
@@ -63,11 +47,11 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForRebuild(int $server = null, int $node = null): Collection
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg', 'node']);
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && ! is_null($node)) {
+        } else if (is_null($server) && ! is_null($node)) {
             $instance = $instance->where('node_id', '=', $node);
         }
 
@@ -83,11 +67,11 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForReinstall(int $server = null, int $node = null): Collection
     {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'pack', 'egg', 'node']);
+        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && ! is_null($node)) {
+        } else if (is_null($server) && ! is_null($node)) {
             $instance = $instance->where('node_id', '=', $node);
         }
 
@@ -140,7 +124,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      */
     public function getDataForCreation(Server $server, bool $refresh = false): Server
     {
-        foreach (['allocation', 'allocations', 'pack', 'egg'] as $relation) {
+        foreach (['allocation', 'allocations', 'egg'] as $relation) {
             if (! $server->relationLoaded($relation) || $refresh) {
                 $server->load($relation);
             }
@@ -167,7 +151,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Get data for use when updating a server on the Daemon. Returns an array of
-     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * the egg which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
      *
      * @param \Pterodactyl\Models\Server $server
@@ -180,13 +164,8 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             $server->load('egg');
         }
 
-        if (! $server->relationLoaded('pack') || $refresh) {
-            $server->load('pack');
-        }
-
         return [
             'egg' => $server->getRelation('egg')->uuid,
-            'pack' => is_null($server->getRelation('pack')) ? null : $server->getRelation('pack')->uuid,
         ];
     }
 
@@ -229,9 +208,9 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
         if (! empty($nodes) && ! empty($servers)) {
             $instance->whereIn('id', $servers)->orWhereIn('node_id', $nodes);
-        } elseif (empty($nodes) && ! empty($servers)) {
+        } else if (empty($nodes) && ! empty($servers)) {
             $instance->whereIn('id', $servers);
-        } elseif (! empty($nodes) && empty($servers)) {
+        } else if (! empty($nodes) && empty($servers)) {
             $instance->whereIn('node_id', $nodes);
         }
 

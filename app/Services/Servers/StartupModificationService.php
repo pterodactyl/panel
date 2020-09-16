@@ -140,7 +140,6 @@ class StartupModificationService
             'startup' => array_get($data, 'startup', $server->startup),
             'nest_id' => array_get($data, 'nest_id', $server->nest_id),
             'egg_id' => array_get($data, 'egg_id', $server->egg_id),
-            'pack_id' => array_get($data, 'pack_id', $server->pack_id) > 0 ? array_get($data, 'pack_id', $server->pack_id) : null,
             'skip_scripts' => array_get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
             'image' => array_get($data, 'docker_image', $server->image),
         ]);

@@ -289,12 +289,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function all(): Collection
     {
-        $instance = $this->getBuilder();
-        if (is_subclass_of(get_called_class(), SearchableInterface::class) && $this->hasSearchTerm()) {
-            $instance = $instance->search($this->getSearchTerm());
-        }
-
-        return $instance->get($this->getColumns());
+        return $this->getBuilder()->get($this->getColumns());
     }
 
     /**
@@ -305,12 +300,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function paginated(int $perPage): LengthAwarePaginator
     {
-        $instance = $this->getBuilder();
-        if (is_subclass_of(get_called_class(), SearchableInterface::class) && $this->hasSearchTerm()) {
-            $instance = $instance->search($this->getSearchTerm());
-        }
-
-        return $instance->paginate($perPage, $this->getColumns());
+        return $this->getBuilder()->paginate($perPage, $this->getColumns());
     }
 
     /**

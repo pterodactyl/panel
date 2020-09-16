@@ -11,7 +11,7 @@ import styled from 'styled-components/macro';
 import * as config from '@/../../tailwind.config.js';
 
 const Navigation = styled.div`
-    ${tw`w-full bg-neutral-900 shadow-md`};
+    ${tw`w-full bg-neutral-900 shadow-md overflow-x-auto`};
     
     & > div {
         ${tw`mx-auto w-full flex items-center`};

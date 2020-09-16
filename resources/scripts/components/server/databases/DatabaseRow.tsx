@@ -111,8 +111,20 @@ export default ({ database, className }: Props) => {
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
                 <FlashMessageRender byKey={'database-connection-modal'} css={tw`mb-6`}/>
                 <h3 css={tw`mb-6`}>Database connection details</h3>
+                <div>
+                    <Label>Endpoint</Label>
+                    <Input type={'text'} readOnly value={database.connectionString} />
+                </div>
+                <div css={tw`mt-6`}>
+                    <Label>Connections from</Label>
+                    <Input type={'text'} readOnly value={database.allowConnectionsFrom} />
+                </div>
+                <div css={tw`mt-6`}>
+                    <Label>Username</Label>
+                    <Input type={'text'} readOnly value={database.username} />
+                </div>
                 <Can action={'database.view_password'}>
-                    <div>
+                    <div css={tw`mt-6`}>
                         <Label>Password</Label>
                         <Input type={'text'} readOnly value={database.password}/>
                     </div>
@@ -134,22 +146,22 @@ export default ({ database, className }: Props) => {
                     </Button>
                 </div>
             </Modal>
-            <GreyRowBox $hoverable={false} className={className}>
-                <div>
+            <GreyRowBox $hoverable={false} className={className} css={tw`mb-2`}>
+                <div css={tw`hidden md:block`}>
                     <FontAwesomeIcon icon={faDatabase} fixedWidth/>
                 </div>
                 <div css={tw`flex-1 ml-4`}>
                     <p css={tw`text-lg`}>{database.name}</p>
                 </div>
-                <div css={tw`ml-8 text-center`}>
+                <div css={tw`ml-8 text-center hidden md:block`}>
                     <p css={tw`text-sm`}>{database.connectionString}</p>
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Endpoint</p>
                 </div>
-                <div css={tw`ml-8 text-center`}>
+                <div css={tw`ml-8 text-center hidden md:block`}>
                     <p css={tw`text-sm`}>{database.allowConnectionsFrom}</p>
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Connections from</p>
                 </div>
-                <div css={tw`ml-8 text-center`}>
+                <div css={tw`ml-8 text-center hidden md:block`}>
                     <p css={tw`text-sm`}>{database.username}</p>
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Username</p>
                 </div>

@@ -3,7 +3,6 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Pterodactyl\Models\Traits\Searchable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
@@ -28,7 +27,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $allocation_id
  * @property int $nest_id
  * @property int $egg_id
- * @property int|null $pack_id
  * @property string $startup
  * @property string $image
  * @property int $installed
@@ -42,7 +40,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subusers
  * @property \Pterodactyl\Models\Allocation $allocation
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
- * @property \Pterodactyl\Models\Pack|null $pack
  * @property \Pterodactyl\Models\Node $node
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Pterodactyl\Models\Egg $egg
@@ -50,8 +47,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection $schedule
  * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
  * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\DaemonKey $key
- * @property \Pterodactyl\Models\DaemonKey[]|\Illuminate\Database\Eloquent\Collection $keys
  * @property \Pterodactyl\Models\ServerTransfer $transfer
  * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
  * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
@@ -60,7 +55,6 @@ class Server extends Model
 {
     use BelongsToThrough;
     use Notifiable;
-    use Searchable;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -122,7 +116,6 @@ class Server extends Model
         'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
         'nest_id' => 'required|exists:nests,id',
         'egg_id' => 'required|exists:eggs,id',
-        'pack_id' => 'sometimes|nullable|numeric|min:0',
         'startup' => 'required|string',
         'skip_scripts' => 'sometimes|boolean',
         'image' => 'required|string|max:255',
@@ -151,27 +144,10 @@ class Server extends Model
         'allocation_id' => 'integer',
         'nest_id' => 'integer',
         'egg_id' => 'integer',
-        'pack_id' => 'integer',
         'installed' => 'integer',
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
         'backup_limit' => 'integer',
-    ];
-
-    /**
-     * Parameters for search querying.
-     *
-     * @var array
-     */
-    protected $searchableColumns = [
-        'name' => 100,
-        'uuid' => 80,
-        'uuidShort' => 80,
-        'external_id' => 50,
-        'user.email' => 40,
-        'user.username' => 30,
-        'node.name' => 10,
-        'pack.name' => 10,
     ];
 
     /**
@@ -232,16 +208,6 @@ class Server extends Model
     public function allocations()
     {
         return $this->hasMany(Allocation::class, 'server_id');
-    }
-
-    /**
-     * Gets information for the pack associated with this server.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function pack()
-    {
-        return $this->belongsTo(Pack::class);
     }
 
     /**
@@ -327,26 +293,6 @@ class Server extends Model
     }
 
     /**
-     * Return the key belonging to the server owner.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function key()
-    {
-        return $this->hasOne(DaemonKey::class, 'user_id', 'owner_id');
-    }
-
-    /**
-     * Returns all of the daemon keys belonging to this server.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function keys()
-    {
-        return $this->hasMany(DaemonKey::class);
-    }
-
-    /**
      * Returns the associated server transfer.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -367,10 +313,10 @@ class Server extends Model
     /**
      * Returns all mounts that have this server has mounted.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function mounts()
     {
-        return $this->belongsToMany(Mount::class);
+        return $this->hasManyThrough(Mount::class, MountServer::class, 'server_id', 'id', 'id', 'mount_id');
     }
 }

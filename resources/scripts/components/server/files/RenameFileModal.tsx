@@ -62,11 +62,11 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                     <Form css={tw`m-0`}>
                         <div
                             css={[
-                                tw`flex`,
+                                tw`flex flex-wrap`,
                                 useMoveTerminology ? tw`items-center` : tw`items-end`,
                             ]}
                         >
-                            <div css={tw`flex-1 mr-6`}>
+                            <div css={tw`w-full sm:flex-1 sm:mr-4`}>
                                 <Field
                                     type={'string'}
                                     id={'file_name'}
@@ -79,8 +79,8 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                                     autoFocus
                                 />
                             </div>
-                            <div>
-                                <Button>{useMoveTerminology ? 'Move' : 'Rename'}</Button>
+                            <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
+                                <Button css={tw`w-full`}>{useMoveTerminology ? 'Move' : 'Rename'}</Button>
                             </div>
                         </div>
                         {useMoveTerminology &&

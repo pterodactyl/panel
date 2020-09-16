@@ -31,7 +31,7 @@ interface Values {
 }
 
 const PermissionLabel = styled.label`
-  ${tw`flex items-center border border-transparent rounded p-2`};
+  ${tw`flex items-center border border-transparent rounded md:p-2`};
   text-transform: none;
 
   &:not(.disabled) {
@@ -146,7 +146,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                 htmlFor={`permission_${key}_${pkey}`}
                                 css={[
                                     tw`transition-colors duration-75`,
-                                    index > 0 ? tw`mt-2` : undefined,
+                                    index > 0 ? tw`mt-4 sm:mt-2` : undefined,
                                 ]}
                                 className={(!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0) ? 'disabled' : undefined}
                             >
@@ -174,7 +174,7 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
             </div>
             <Can action={subuser ? 'user.update' : 'user.create'}>
                 <div css={tw`pb-6 flex justify-end`}>
-                    <Button type={'submit'}>
+                    <Button type={'submit'} css={tw`w-full sm:w-auto`}>
                         {subuser ? 'Save' : 'Invite User'}
                     </Button>
                 </div>

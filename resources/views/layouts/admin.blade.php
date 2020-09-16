@@ -127,11 +127,6 @@
                                 <i class="fa fa-th-large"></i> <span>Nests</span>
                             </a>
                         </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.packs') ?: 'active' }}">
-                            <a href="{{ route('admin.packs') }}">
-                                <i class="fa fa-archive"></i> <span>Packs</span>
-                            </a>
-                        </li>
                     </ul>
                 </section>
             </aside>

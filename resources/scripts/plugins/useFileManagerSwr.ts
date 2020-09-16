@@ -11,7 +11,8 @@ export default () => {
         `${uuid}:files:${directory}`,
         () => loadDirectory(uuid, cleanDirectoryPath(directory)),
         {
-            revalidateOnMount: true,
+            focusThrottleInterval: 30000,
+            revalidateOnMount: false,
             refreshInterval: 0,
         },
     );

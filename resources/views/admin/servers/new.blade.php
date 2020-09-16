@@ -244,20 +244,13 @@
                         <select id="pEggId" name="egg_id" class="form-control"></select>
                         <p class="small text-muted no-margin">Select the Egg that will define how this server should operate.</p>
                     </div>
-
-                    <div class="form-group col-xs-12">
-                        <label for="pPackId">Data Pack</label>
-                        <select id="pPackId" name="pack_id" class="form-control"></select>
-                        <p class="small text-muted no-margin">Select a data pack to be automatically installed on this server when first created.</p>
-                    </div>
-
                     <div class="form-group col-xs-12">
                         <div class="checkbox checkbox-primary no-margin-bottom">
                             <input type="checkbox" id="pSkipScripting" name="skip_scripts" value="1" {{ \Pterodactyl\Helpers\Utilities::checked('skip_scripts', 0) }} />
                             <label for="pSkipScripting" class="strong">Skip Egg Install Script</label>
                         </div>
 
-                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during install after the pack is installed. If you would like to skip this step, check this box.</p>
+                        <p class="small text-muted no-margin">If the selected Egg has an install script attached to it, the script will run during the install. If you would like to skip this step, check this box.</p>
                     </div>
                 </div>
             </div>
@@ -334,7 +327,7 @@
         // END Persist 'Service Variables'
     </script>
 
-    {!! Theme::js('js/admin/new-server.js') !!}
+    {!! Theme::js('js/admin/new-server.js?v=20200913') !!}
 
     <script type="application/javascript">
         $(document).ready(function() {
@@ -384,12 +377,6 @@
                     $('#pEggId').val('{{ old('egg_id') }}').change();
                 @endif
                 // END Persist 'Egg' select2
-
-                // Persist 'Data Pack' select2
-                @if (old('pack_id'))
-                    $('#pPackId').val('{{ old('pack_id') }}').change();
-                @endif
-                // END Persist 'Data Pack' select2
             @endif
             // END Persist 'Nest' select2
         });

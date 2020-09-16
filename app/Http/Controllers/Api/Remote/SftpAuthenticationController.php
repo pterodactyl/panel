@@ -14,6 +14,7 @@ use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class SftpAuthenticationController extends Controller
 {
@@ -71,11 +72,12 @@ class SftpAuthenticationController extends Controller
             'server' => strrev(array_get($parts, 0)),
         ];
 
-        $this->incrementLoginAttempts($request);
         if ($this->hasTooManyLoginAttempts($request)) {
-            return JsonResponse::create([
-                'error' => 'Too many logins attempted too quickly.',
-            ], JsonResponse::HTTP_TOO_MANY_REQUESTS);
+            $seconds = $this->limiter()->availableIn($this->throttleKey($request));
+
+            throw new TooManyRequestsHttpException(
+                $seconds, "Too many login attempts for this account, please try again in {$seconds} seconds."
+            );
         }
 
         /** @var \Pterodactyl\Models\Node $node */
@@ -91,6 +93,8 @@ class SftpAuthenticationController extends Controller
 
         $server = $this->serverRepository->getByUuid($connection['server'] ?? '');
         if (! password_verify($request->input('password'), $user->password) || $server->node_id !== $node->id) {
+            $this->incrementLoginAttempts($request);
+
             throw new HttpForbiddenException(
                 'Authorization credentials were not correct, please try again.'
             );

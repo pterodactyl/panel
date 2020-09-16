@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Translation\Translator;
@@ -83,7 +84,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = $this->repository->setSearchTerm($request->input('query'))->getAllUsersWithCounts();
+        $users = QueryBuilder::for(User::query()->withCount('servers'))
+            ->allowedFilters(['username', 'email', 'uuid'])
+            ->allowedSorts(['id', 'uuid'])
+            ->paginate(50);
 
         return view('admin.users.index', ['users' => $users]);
     }
@@ -181,11 +185,20 @@ class UserController extends Controller
      */
     public function json(Request $request)
     {
+        $users = QueryBuilder::for(User::query())->allowedFilters(['email'])->paginate(25);
+
         // Handle single user requests.
         if ($request->query('user_id')) {
-            return $this->repository->filterById($request->input('user_id'));
+            $user = User::query()->findOrFail($request->input('user_id'));
+            $user->md5 = md5(strtolower($user->email));
+
+            return $user;
         }
 
-        return $this->repository->filterUsersByQuery($request->input('q'));
+        return $users->map(function ($item) {
+            $item->md5 = md5(strtolower($item->email));
+
+            return $item;
+        });
     }
 }

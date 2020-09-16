@@ -42,7 +42,6 @@ class ServerConfigurationStructureServiceTest extends TestCase
     {
         /** @var \Pterodactyl\Models\Server $model */
         $model = factory(Server::class)->make();
-        $model->setRelation('pack', null);
         $model->setRelation('allocation', factory(Allocation::class)->make());
         $model->setRelation('allocations', collect(factory(Allocation::class)->times(2)->make()));
         $model->setRelation('egg', factory(Egg::class)->make());
@@ -82,7 +81,6 @@ class ServerConfigurationStructureServiceTest extends TestCase
 
         $this->assertSame([
             'egg' => $model->egg->uuid,
-            'pack' => null,
             'skip_scripts' => $model->skip_scripts,
         ], $response['service']);
 
