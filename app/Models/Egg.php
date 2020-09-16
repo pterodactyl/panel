@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Models;
 
-use Pterodactyl\Rules\Yaml;
+use Pterodactyl\Rules\IsYaml;
 
 /**
  * @property int $id
@@ -149,9 +149,9 @@ class Egg extends Model
     {
         $rules = parent::getRules();
 
-        $rules['config_startup'][] = new Yaml;
-        $rules['config_logs'][] = new Yaml;
-        $rules['config_files'][] = new Yaml;
+        $rules['config_startup'][] = new IsYaml;
+        $rules['config_logs'][] = new IsYaml;
+        $rules['config_files'][] = new IsYaml;
 
         return $rules;
     }

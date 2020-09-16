@@ -3,10 +3,10 @@
 namespace Pterodactyl\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Symfony\Component\Yaml\Yaml as syYaml;
+use Symfony\Component\Yaml\Yaml as Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
 
-class Yaml implements Rule
+class IsYaml implements Rule
 {
     /**
      * Determine if the validation rule passes.
@@ -18,7 +18,7 @@ class Yaml implements Rule
     public function passes($attribute, $value)
     {
         try {
-            syYaml::parse($value);
+            Yaml::parse($value);
         } catch (ParseException $ignored) {
             return false;
         }

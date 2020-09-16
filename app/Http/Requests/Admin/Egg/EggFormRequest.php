@@ -9,7 +9,7 @@
 
 namespace Pterodactyl\Http\Requests\Admin\Egg;
 
-use Pterodactyl\Rules\Yaml;
+use Pterodactyl\Rules\IsYaml;
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class EggFormRequest extends AdminFormRequest
@@ -26,9 +26,9 @@ class EggFormRequest extends AdminFormRequest
             'startup' => 'required|string',
             'config_from' => 'sometimes|bail|nullable|numeric',
             'config_stop' => 'required_without:config_from|nullable|string|max:191',
-            'config_startup' => ['required_without:config_from|nullable', new Yaml],
-            'config_logs' => ['required_without:config_from|nullable', new Yaml],
-            'config_files' => ['required_without:config_from|nullable', new Yaml],
+            'config_startup' => ['required_without:config_from|nullable', new IsYaml],
+            'config_logs' => ['required_without:config_from|nullable', new IsYaml],
+            'config_files' => ['required_without:config_from|nullable', new IsYaml],
         ];
 
         if ($this->method() === 'POST') {
