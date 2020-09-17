@@ -57,45 +57,46 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                         </FormikField>
                     </FormikFieldWrapper>
                 </div>
-                <div css={tw`flex-1`}>
-                    {action === 'command' ?
-                        <Field
-                            name={'payload'}
-                            label={'Payload'}
-                            description={'The command to send to the server when this task executes.'}
-                        />
-                        :
-                        action === 'power' ?
-                            <div>
-                                <Label>Payload</Label>
-                                <FormikFieldWrapper name={'payload'}>
-                                    <FormikField as={Select} name={'payload'}>
-                                        <option value={'start'}>Start the server</option>
-                                        <option value={'restart'}>Restart the server</option>
-                                        <option value={'stop'}>Stop the server</option>
-                                        <option value={'kill'}>Terminate the server</option>
-                                    </FormikField>
-                                </FormikFieldWrapper>
-                            </div>
-                            :
-                            <div>
-                                <Label>Ignored Files</Label>
-                                <FormikFieldWrapper
-                                    name={'payload'}
-                                    description={'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used.'}
-                                >
-                                    <FormikField as={Textarea} name={'payload'} rows={6}/>
-                                </FormikFieldWrapper>
-                            </div>
-                    }
+                <div css={tw`flex-1 ml-6`}>
+                    <Field
+                        name={'timeOffset'}
+                        label={'Time offset (in seconds)'}
+                        description={'The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'}
+                    />
                 </div>
             </div>
             <div css={tw`mt-6`}>
-                <Field
-                    name={'timeOffset'}
-                    label={'Time offset (in seconds)'}
-                    description={'The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'}
-                />
+                {action === 'command' ?
+                    <div>
+                        <Label>Payload</Label>
+                        <FormikFieldWrapper name={'payload'}>
+                            <FormikField as={Textarea} name={'payload'} rows={6} />
+                        </FormikFieldWrapper>
+                    </div>
+                    :
+                    action === 'power' ?
+                        <div>
+                            <Label>Payload</Label>
+                            <FormikFieldWrapper name={'payload'}>
+                                <FormikField as={Select} name={'payload'}>
+                                    <option value={'start'}>Start the server</option>
+                                    <option value={'restart'}>Restart the server</option>
+                                    <option value={'stop'}>Stop the server</option>
+                                    <option value={'kill'}>Terminate the server</option>
+                                </FormikField>
+                            </FormikFieldWrapper>
+                        </div>
+                        :
+                        <div>
+                            <Label>Ignored Files</Label>
+                            <FormikFieldWrapper
+                                name={'payload'}
+                                description={'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used.'}
+                            >
+                                <FormikField as={Textarea} name={'payload'} rows={6} />
+                            </FormikFieldWrapper>
+                        </div>
+                }
             </div>
             <div css={tw`flex justify-end mt-6`}>
                 <Button type={'submit'} disabled={isSubmitting}>
@@ -162,8 +163,8 @@ export default ({ task, schedule, onDismissed }: Props) => {
                     onDismissed={() => onDismissed()}
                     showSpinnerOverlay={isSubmitting}
                 >
-                    <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`}/>
-                    <TaskDetailsForm isEditingTask={typeof task !== 'undefined'}/>
+                    <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`} />
+                    <TaskDetailsForm isEditingTask={typeof task !== 'undefined'} />
                 </Modal>
             )}
         </Formik>
