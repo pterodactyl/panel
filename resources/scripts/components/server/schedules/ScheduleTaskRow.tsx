@@ -81,7 +81,7 @@ export default ({ schedule, task }: Props) => {
                 <div css={tw`md:ml-6 mt-2`}>
                     {task.action === 'backup' &&
                     <p css={tw`text-xs uppercase text-neutral-400 mb-1`}>Ignoring files & folders:</p>}
-                    <div css={tw`font-mono bg-neutral-800 rounded py-1 px-2 text-sm w-auto whitespace-pre inline-block`}>
+                    <div css={tw`font-mono bg-neutral-800 rounded py-1 px-2 text-sm w-auto inline-block break-all`}>
                         {task.payload}
                     </div>
                 </div>
