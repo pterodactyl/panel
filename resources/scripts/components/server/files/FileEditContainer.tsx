@@ -17,7 +17,7 @@ import modes from '@/modes';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 
-const LazyAceEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/AceEditor'));
+const LazyCodemirrorEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/CodemirrorEditor'));
 
 export default () => {
     const [ error, setError ] = useState('');
@@ -25,7 +25,7 @@ export default () => {
     const [ loading, setLoading ] = useState(action === 'edit');
     const [ content, setContent ] = useState('');
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [ mode, setMode ] = useState('plain_text');
+    const [ mode, setMode ] = useState('text/plain');
 
     const history = useHistory();
     const { hash } = useLocation();
@@ -108,7 +108,7 @@ export default () => {
             />
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading}/>
-                <LazyAceEditor
+                <LazyCodemirrorEditor
                     mode={mode}
                     filename={hash.replace(/^#/, '')}
                     onModeChanged={setMode}
@@ -122,8 +122,10 @@ export default () => {
             <div css={tw`flex justify-end mt-4`}>
                 <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
                     <Select value={mode} onChange={e => setMode(e.currentTarget.value)}>
-                        {Object.keys(modes).map(key => (
-                            <option key={key} value={key}>{modes[key]}</option>
+                        {modes.map(mode => (
+                            <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
+                                {mode.name}
+                            </option>
                         ))}
                     </Select>
                 </div>
