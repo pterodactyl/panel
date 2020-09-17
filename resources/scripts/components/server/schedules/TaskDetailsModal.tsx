@@ -84,7 +84,7 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                                     name={'payload'}
                                     description={'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used.'}
                                 >
-                                    <FormikField as={Textarea} name={'payload'} css={tw`h-32`}/>
+                                    <FormikField as={Textarea} name={'payload'} rows={6}/>
                                 </FormikFieldWrapper>
                             </div>
                     }

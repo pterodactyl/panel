@@ -12,6 +12,7 @@ import tw from 'twin.macro';
 import { Textarea } from '@/components/elements/Input';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerContext } from '@/state/server';
+import styled from 'styled-components/macro';
 
 interface Values {
     name: string;
@@ -44,7 +45,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                             prefixing the path with an exclamation point.
                         `}
                     >
-                        <FormikField as={Textarea} name={'ignored'} css={tw`h-32`}/>
+                        <FormikField as={Textarea} name={'ignored'} rows={6}/>
                     </FormikFieldWrapper>
                 </div>
                 <div css={tw`flex justify-end`}>
