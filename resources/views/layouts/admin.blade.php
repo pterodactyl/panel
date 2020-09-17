@@ -176,7 +176,6 @@
             {!! Theme::js('vendor/bootstrap/bootstrap.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/slimscroll/jquery.slimscroll.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/adminlte/app.min.js?t={cache-version}') !!}
-            {!! Theme::js('vendor/socketio/socket.io.v203.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/bootstrap-notify/bootstrap-notify.min.js?t={cache-version}') !!}
             {!! Theme::js('vendor/select2/select2.full.min.js?t={cache-version}') !!}
             {!! Theme::js('js/admin/functions.js?t={cache-version}') !!}
