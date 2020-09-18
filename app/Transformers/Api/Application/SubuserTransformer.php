@@ -37,9 +37,7 @@ class SubuserTransformer extends BaseTransformer
             'id' => $subuser->id,
             'user_id' => $subuser->user_id,
             'server_id' => $subuser->server_id,
-            'permissions' => $subuser->permissions->map(function (Permission $permission) {
-                return $permission->permission;
-            }),
+            'permissions' => $subuser->permissions,
             'created_at' => $this->formatTimestamp($subuser->created_at),
             'updated_at' => $this->formatTimestamp($subuser->updated_at),
         ];
