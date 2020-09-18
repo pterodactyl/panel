@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import CodeMirror from 'codemirror';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
-import modes, { Mode } from '@/modes';
+import modes from '@/modes';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/ayu-mirage.css');
