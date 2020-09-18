@@ -185,7 +185,7 @@ class UserController extends Controller
      */
     public function json(Request $request)
     {
-        $users = QueryBuilder::for(User::query())->allowedFilters(['email'])->paginate(25);
+        $users = QueryBuilder::for(User::query())->allowedFilters(['username', 'email', 'name_first', 'name_last'])->paginate(25);
 
         // Handle single user requests.
         if ($request->query('user_id')) {
