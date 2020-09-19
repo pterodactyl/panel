@@ -7,7 +7,7 @@ export default () => {
         <AdminContentBlock>
             <div>
                 <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Mounts</h2>
-                <p css={tw`text-base text-neutral-400`}>SoonTM</p>
+                <p css={tw`text-base text-neutral-400`}>Configure and manage additional mount points for servers.</p>
             </div>
         </AdminContentBlock>
     );

@@ -34,7 +34,7 @@ export default () => {
                                     <img src={'/assets/svgs/not_found.svg'} alt={'No Items'} css={tw`h-full select-none`}/>
                                 </div>
 
-                                <p css={tw`text-xl text-neutral-400 text-center font-normal sm:mt-8`}>No items could be found, it&apos;s almost like they are hiding.</p>
+                                <p css={tw`text-lg text-neutral-300 text-center font-normal sm:mt-8`}>No items could be found, it&apos;s almost like they are hiding.</p>
                             </div>
                             :
                             null
