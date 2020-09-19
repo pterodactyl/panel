@@ -13,7 +13,6 @@ import NodesContainer from '@/components/admin/nodes/NodesContainer';
 import LocationsContainer from '@/components/admin/locations/LocationsContainer';
 import ServersContainer from '@/components/admin/servers/ServersContainer';
 import UsersContainer from '@/components/admin/users/UsersContainer';
-import PacksContainer from '@/components/admin/packs/PacksContainer';
 import NestsContainer from '@/components/admin/nests/NestsContainer';
 import MountsContainer from '@/components/admin/mounts/MountsContainer';
 
@@ -134,10 +133,6 @@ export default ({ location, match }: RouteComponentProps) => {
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
                         <span>Nests</span>
                     </NavLink>
-                    <NavLink to={`${match.url}/packs`}>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
-                        <span>Packs</span>
-                    </NavLink>
                     <NavLink to={`${match.url}/mounts`}>
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
                         <span>Mounts</span>
@@ -177,7 +172,6 @@ export default ({ location, match }: RouteComponentProps) => {
                         <Route path={`${match.path}/users`} component={UsersContainer}/>
 
                         <Route path={`${match.path}/nests`} component={NestsContainer}/>
-                        <Route path={`${match.path}/packs`} component={PacksContainer}/>
                         <Route path={`${match.path}/mounts`} component={MountsContainer}/>
 
                         <Route path={'*'} component={NotFound}/>
