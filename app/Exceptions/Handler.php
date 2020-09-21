@@ -190,7 +190,7 @@ class Handler extends ExceptionHandler
 
                 $converted = self::convertToArray($exception)['errors'][0];
                 $converted['detail'] = $error;
-                $converted['meta'] = is_array($converted['meta']) ? array_merge($converted['meta'], $meta) : $meta;
+                $converted['meta'] = isset($converted['meta']) && is_array($converted['meta']) ? array_merge($converted['meta'], $meta) : $meta;
 
                 $response[] = $converted;
             }
@@ -279,6 +279,6 @@ class Handler extends ExceptionHandler
      */
     protected function convertExceptionToArray(Throwable $exception)
     {
-        return self::convertToArray($exception);
+        return self::convertToArray($exception, ['detail' => $exception->getMessage()]);
     }
 }
