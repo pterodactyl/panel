@@ -112,7 +112,7 @@ class SftpAuthenticationController extends Controller
 
         // Remeber, for security purposes, only reveal the existence of the server to people that
         // have provided valid credentials, and have permissions to know about it.
-        if ($server->installed !== 1 || $server->suspended) {
+        if (! $user->root_admin && ($server->installed !== 1 || $server->suspended)) {
             throw new BadRequestHttpException(
                 'Server is not installed or is currently suspended.'
             );
