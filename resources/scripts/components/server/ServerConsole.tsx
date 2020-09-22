@@ -25,6 +25,7 @@ export default () => {
     const name = ServerContext.useStoreState(state => state.server.data!.name);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
+    const isSuspended = ServerContext.useStoreState(state => state.server.data!.isSuspended);
     const status = ServerContext.useStoreState(state => state.status.value);
 
     const connected = ServerContext.useStoreState(state => state.socket.connected);
@@ -89,52 +90,64 @@ export default () => {
                         <span css={tw`text-neutral-500`}> / {disklimit}</span>
                     </p>
                 </TitledGreyBox>
-                {!isInstalling ?
-                    <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
-                        <div css={tw`shadow-md bg-neutral-700 rounded p-3 flex text-xs mt-4 justify-center`}>
-                            <Can action={'control.start'}>
-                                <Button
-                                    size={'xsmall'}
-                                    color={'green'}
-                                    isSecondary
-                                    css={tw`mr-2`}
-                                    disabled={status !== 'offline'}
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        sendPowerCommand('start');
-                                    }}
-                                >
-                                    Start
-                                </Button>
+                {
+                    (() => {
+                        if (isInstalling) {
+                            return <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
+                                <ContentContainer>
+                                    <p css={tw`text-sm text-yellow-900`}>
+                                        This server is currently running its installation process and most actions are
+                                        unavailable.
+                                    </p>
+                                </ContentContainer>
+                            </div>
+                        } else if (isSuspended) {
+                            return <div css={tw`mt-4 rounded bg-red-500 p-3`}>
+                                <ContentContainer>
+                                    <p css={tw`text-sm text-red-900`}>
+                                        This server is currently suspended and the functionality requested is unavailable.
+                                    </p>
+                                </ContentContainer>
+                            </div>
+                        } else {
+                            return <Can action={['control.start', 'control.stop', 'control.restart']} matchAny>
+                                <div css={tw`shadow-md bg-neutral-700 rounded p-3 flex text-xs mt-4 justify-center`}>
+                                    <Can action={'control.start'}>
+                                        <Button
+                                            size={'xsmall'}
+                                            color={'green'}
+                                            isSecondary
+                                            css={tw`mr-2`}
+                                            disabled={status !== 'offline'}
+                                            onClick={e => {
+                                                e.preventDefault();
+                                                sendPowerCommand('start');
+                                            }}
+                                        >
+                                            Start
+                                        </Button>
+                                    </Can>
+                                    <Can action={'control.restart'}>
+                                        <Button
+                                            size={'xsmall'}
+                                            isSecondary
+                                            css={tw`mr-2`}
+                                            disabled={!status}
+                                            onClick={e => {
+                                                e.preventDefault();
+                                                sendPowerCommand('restart');
+                                            }}
+                                        >
+                                            Restart
+                                        </Button>
+                                    </Can>
+                                    <Can action={'control.stop'}>
+                                        <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
+                                    </Can>
+                                </div>
                             </Can>
-                            <Can action={'control.restart'}>
-                                <Button
-                                    size={'xsmall'}
-                                    isSecondary
-                                    css={tw`mr-2`}
-                                    disabled={!status}
-                                    onClick={e => {
-                                        e.preventDefault();
-                                        sendPowerCommand('restart');
-                                    }}
-                                >
-                                    Restart
-                                </Button>
-                            </Can>
-                            <Can action={'control.stop'}>
-                                <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
-                            </Can>
-                        </div>
-                    </Can>
-                    :
-                    <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
-                        <ContentContainer>
-                            <p css={tw`text-sm text-yellow-900`}>
-                                This server is currently running its installation process and most actions are
-                                unavailable.
-                            </p>
-                        </ContentContainer>
-                    </div>
+                        }
+                    })()
                 }
             </div>
             <div css={tw`w-full md:flex-1 md:ml-4 mt-4 md:mt-0`}>
