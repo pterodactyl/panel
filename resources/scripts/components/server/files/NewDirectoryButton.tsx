@@ -88,7 +88,7 @@ export default ({ className }: WithClassname) => {
                                 name={'directoryName'}
                                 label={'Directory Name'}
                             />
-                            <p css={tw`text-xs mt-2 text-neutral-400`}>
+                            <p css={tw`text-xs mt-2 text-neutral-400 break-all`}>
                                 <span css={tw`text-neutral-200`}>This directory will be created as</span>
                                 &nbsp;/home/container/
                                 <span css={tw`text-cyan-200`}>
