@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '@/components/elements/Modal';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -12,6 +12,7 @@ import { FileObject } from '@/api/server/files/loadDirectory';
 import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { WithClassname } from '@/components/types';
+import FlashMessageRender from '@/components/FlashMessageRender';
 
 interface Values {
     directoryName: string;
@@ -22,8 +23,8 @@ const schema = object().shape({
 });
 
 const generateDirectoryData = (name: string): FileObject => ({
-    key: `dir_${name}`,
-    name: name,
+    key: `dir_${name.split('/', 1)[0] ?? name}`,
+    name: name.split('/', 1)[0] ?? name,
     mode: '0644',
     size: 0,
     isFile: false,
@@ -37,11 +38,19 @@ const generateDirectoryData = (name: string): FileObject => ({
 
 export default ({ className }: WithClassname) => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const { clearAndAddHttpError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
 
     const { mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState(state => state.files.directory);
+
+    useEffect(() => {
+        if (visible) {
+            return () => {
+                clearFlashes('files:directory-modal');
+            };
+        }
+    }, [ visible ]);
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, directoryName)
@@ -50,7 +59,7 @@ export default ({ className }: WithClassname) => {
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
-                clearAndAddHttpError({ key: 'files', error });
+                clearAndAddHttpError({ key: 'files:directory-modal', error });
             });
     };
 
@@ -71,6 +80,7 @@ export default ({ className }: WithClassname) => {
                             resetForm();
                         }}
                     >
+                        <FlashMessageRender key={'files:directory-modal'}/>
                         <Form css={tw`m-0`}>
                             <Field
                                 autoFocus
