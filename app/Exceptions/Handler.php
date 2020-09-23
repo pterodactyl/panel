@@ -279,6 +279,6 @@ class Handler extends ExceptionHandler
      */
     protected function convertExceptionToArray(Throwable $exception)
     {
-        return self::convertToArray($exception, ['detail' => $exception->getMessage()]);
+        return self::convertToArray($exception);
     }
 }
