@@ -45,11 +45,11 @@ export default ({ className }: WithClassname) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     useEffect(() => {
-        if (visible) {
-            return () => {
-                clearFlashes('files:directory-modal');
-            };
-        }
+        if (!visible) return;
+
+        return () => {
+            clearFlashes('files:directory-modal');
+        };
     }, [ visible ]);
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
