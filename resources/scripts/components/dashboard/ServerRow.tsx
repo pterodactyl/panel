@@ -59,9 +59,9 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 <FontAwesomeIcon icon={faServer}/>
             </div>
             <div css={tw`flex-1 md:ml-4`}>
-                <p css={tw`text-lg`}>{server.name}</p>
+                <p css={tw`text-lg break-all`}>{server.name}</p>
                 {!!server.description &&
-                <p css={tw`text-sm text-neutral-300`}>{server.description}</p>
+                <p css={tw`text-sm text-neutral-300 break-all`}>{server.description}</p>
                 }
             </div>
             <div css={tw`w-48 overflow-hidden self-start hidden lg:block`}>

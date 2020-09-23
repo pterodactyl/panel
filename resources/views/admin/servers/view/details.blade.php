@@ -32,7 +32,7 @@
                     <div class="form-group">
                         <label for="name" class="control-label">Server Name <span class="field-required"></span></label>
                         <input type="text" name="name" value="{{ old('name', $server->name) }}" class="form-control" />
-                        <p class="text-muted small">Character limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code> (max 35 characters).</p>
+                        <p class="text-muted small">Character limits: <code>a-zA-Z0-9_-</code> and <code>[Space]</code>.</p>
                     </div>
                     <div class="form-group">
                         <label for="external_id" class="control-label">External Identifier</label>

@@ -65,7 +65,7 @@ export default () => {
     return (
         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
             <div css={tw`w-full md:w-1/4`}>
-                <TitledGreyBox title={name} icon={faServer}>
+                <TitledGreyBox css={tw`break-all`} title={name} icon={faServer}>
                     <p css={tw`text-xs uppercase`}>
                         <FontAwesomeIcon
                             icon={faCircle}
