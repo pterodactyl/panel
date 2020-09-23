@@ -55,7 +55,9 @@ export default ({ backup, className }: Props) => {
                         Failed
                     </span>
                     }
-                    {backup.name}
+                    <div css={tw`break-all`}>
+                        {backup.name}
+                    </div>
                     {(backup.completedAt && backup.isSuccessful) &&
                     <span css={tw`ml-3 text-neutral-300 text-xs font-thin hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
                     }
