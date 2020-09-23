@@ -84,7 +84,14 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $users = QueryBuilder::for(User::query()->withCount('servers'))
+        $users = QueryBuilder::for(
+            User::query()->select('users.*')
+                ->selectRaw('COUNT(subusers.id) as subuser_of_count')
+                ->selectRaw('COUNT(servers.id) as servers_count')
+                ->leftJoin('subusers', 'subusers.user_id', '=', 'users.id')
+                ->leftJoin('servers', 'servers.owner_id', '=', 'users.id')
+                ->groupBy('users.id')
+        )
             ->allowedFilters(['username', 'email', 'uuid'])
             ->allowedSorts(['id', 'uuid'])
             ->paginate(50);
