@@ -181,7 +181,7 @@ class Node extends Model
      */
     public function getYamlConfiguration()
     {
-        return Yaml::dump($this->getConfiguration(), 4, 2);
+        return Yaml::dump($this->getConfiguration(), 4, 2, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
     }
 
     /**
