@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef } from 'react';
+import React, { forwardRef, memo, useCallback, useEffect, useRef } from 'react';
 import { Subuser } from '@/state/server/subusers';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { array, object, string } from 'yup';
@@ -11,7 +11,6 @@ import Checkbox from '@/components/elements/Checkbox';
 import styled from 'styled-components/macro';
 import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
 import { ServerContext } from '@/state/server';
-import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Can from '@/components/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -20,6 +19,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Label from '@/components/elements/Label';
 import Input from '@/components/elements/Input';
+import isEqual from 'react-fast-compare';
 
 type Props = {
     subuser?: Subuser;
@@ -31,7 +31,7 @@ interface Values {
 }
 
 const PermissionLabel = styled.label`
-  ${tw`flex items-center border border-transparent rounded md:p-2`};
+  ${tw`flex items-center border border-transparent rounded md:p-2 transition-colors duration-75`};
   text-transform: none;
 
   &:not(.disabled) {
@@ -40,6 +40,10 @@ const PermissionLabel = styled.label`
       &:hover {
         ${tw`border-neutral-500 bg-neutral-800`};
       }
+  }
+  
+  &:not(:first-of-type) {
+      ${tw`mt-4 sm:mt-2`};
   }
 
   &.disabled {
@@ -51,8 +55,58 @@ const PermissionLabel = styled.label`
   }
 `;
 
+interface TitleProps {
+    isEditable: boolean;
+    permission: string;
+    permissions: string[];
+    children: React.ReactNode;
+    className?: string;
+}
+
+const PermissionTitledBox = memo(({ isEditable, permission, permissions, className, children }: TitleProps) => {
+    const { values, setFieldValue } = useFormikContext<Values>();
+
+    const onCheckboxClicked = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(e.currentTarget.checked, [
+            ...values.permissions,
+            ...permissions.filter(p => !values.permissions.includes(p)),
+        ]);
+
+        if (e.currentTarget.checked) {
+            setFieldValue('permissions', [
+                ...values.permissions,
+                ...permissions.filter(p => !values.permissions.includes(p)),
+            ]);
+        } else {
+            setFieldValue('permissions', [
+                ...values.permissions.filter(p => !permissions.includes(p)),
+            ]);
+        }
+    }, [ permissions, values.permissions ]);
+
+    return (
+        <TitledGreyBox
+            title={
+                <div css={tw`flex items-center`}>
+                    <p css={tw`text-sm uppercase flex-1`}>{permission}</p>
+                    {isEditable &&
+                    <Input
+                        type={'checkbox'}
+                        checked={permissions.every(p => values.permissions.includes(p))}
+                        onChange={onCheckboxClicked}
+                    />
+                    }
+                </div>
+            }
+            className={className}
+        >
+            {children}
+        </TitledGreyBox>
+    );
+}, isEqual);
+
 const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...props }, ref) => {
-    const { values, isSubmitting, setFieldValue } = useFormikContext<Values>();
+    const { isSubmitting } = useFormikContext<Values>();
     const [ canEditUser ] = usePermissions(subuser ? [ 'user.update' ] : [ 'user.create' ]);
     const permissions = useStoreState(state => state.permissions.data);
 
@@ -104,73 +158,48 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
             </div>
             }
             <div css={tw`my-6`}>
-                {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => (
-                    <TitledGreyBox
-                        key={key}
-                        title={
-                            <div css={tw`flex items-center`}>
-                                <p css={tw`text-sm uppercase flex-1`}>{key}</p>
-                                {canEditUser &&
-                                <Input
-                                    type={'checkbox'}
-                                    onClick={e => {
-                                        if (e.currentTarget.checked) {
-                                            setFieldValue('permissions', [
-                                                ...values.permissions,
-                                                ...Object.keys(permissions[key].keys)
-                                                    .map(pkey => `${key}.${pkey}`)
-                                                    .filter(permission => values.permissions.indexOf(permission) === -1),
-                                            ]);
-                                        } else {
-                                            setFieldValue('permissions', [
-                                                ...values.permissions.filter(
-                                                    permission => Object.keys(permissions[key].keys)
-                                                        .map(pkey => `${key}.${pkey}`)
-                                                        .indexOf(permission) < 0,
-                                                ),
-                                            ]);
+                {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => {
+                    const group = Object.keys(permissions[key].keys).map(pkey => `${key}.${pkey}`);
+
+                    return (
+                        <PermissionTitledBox
+                            key={`permission_${key}`}
+                            isEditable={canEditUser}
+                            permission={key}
+                            permissions={group}
+                            css={index > 0 ? tw`mt-4` : undefined}
+                        >
+                            <p css={tw`text-sm text-neutral-400 mb-4`}>
+                                {permissions[key].description}
+                            </p>
+                            {Object.keys(permissions[key].keys).map(pkey => (
+                                <PermissionLabel
+                                    key={`permission_${key}_${pkey}`}
+                                    htmlFor={`permission_${key}_${pkey}`}
+                                    className={(!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0) ? 'disabled' : undefined}
+                                >
+                                    <div css={tw`p-2`}>
+                                        <Checkbox
+                                            id={`permission_${key}_${pkey}`}
+                                            name={'permissions'}
+                                            value={`${key}.${pkey}`}
+                                            css={tw`w-5 h-5 mr-2`}
+                                            disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
+                                        />
+                                    </div>
+                                    <div css={tw`flex-1`}>
+                                        <Label as={'p'} css={tw`font-medium`}>{pkey}</Label>
+                                        {permissions[key].keys[pkey].length > 0 &&
+                                        <p css={tw`text-xs text-neutral-400 mt-1`}>
+                                            {permissions[key].keys[pkey]}
+                                        </p>
                                         }
-                                    }}
-                                />
-                                }
-                            </div>
-                        }
-                        css={index > 0 ? tw`mt-4` : undefined}
-                    >
-                        <p css={tw`text-sm text-neutral-400 mb-4`}>
-                            {permissions[key].description}
-                        </p>
-                        {Object.keys(permissions[key].keys).map((pkey, index) => (
-                            <PermissionLabel
-                                key={`permission_${key}_${pkey}`}
-                                htmlFor={`permission_${key}_${pkey}`}
-                                css={[
-                                    tw`transition-colors duration-75`,
-                                    index > 0 ? tw`mt-4 sm:mt-2` : undefined,
-                                ]}
-                                className={(!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0) ? 'disabled' : undefined}
-                            >
-                                <div css={tw`p-2`}>
-                                    <Checkbox
-                                        id={`permission_${key}_${pkey}`}
-                                        name={'permissions'}
-                                        value={`${key}.${pkey}`}
-                                        css={tw`w-5 h-5 mr-2`}
-                                        disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
-                                    />
-                                </div>
-                                <div css={tw`flex-1`}>
-                                    <Label css={tw`font-medium`}>{pkey}</Label>
-                                    {permissions[key].keys[pkey].length > 0 &&
-                                    <p css={tw`text-xs text-neutral-400 mt-1`}>
-                                        {permissions[key].keys[pkey]}
-                                    </p>
-                                    }
-                                </div>
-                            </PermissionLabel>
-                        ))}
-                    </TitledGreyBox>
-                ))}
+                                    </div>
+                                </PermissionLabel>
+                            ))}
+                        </PermissionTitledBox>
+                    );
+                })}
             </div>
             <Can action={subuser ? 'user.update' : 'user.create'}>
                 <div css={tw`pb-6 flex justify-end`}>
@@ -187,8 +216,7 @@ export default ({ subuser, ...props }: Props) => {
     const ref = useRef<HTMLHeadingElement>(null);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const appendSubuser = ServerContext.useStoreActions(actions => actions.subusers.appendSubuser);
-
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('user:edit');
@@ -200,7 +228,7 @@ export default ({ subuser, ...props }: Props) => {
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
-                addError({ key: 'user:edit', message: httpErrorToHuman(error) });
+                clearAndAddHttpError({ key: 'user:edit', error });
 
                 if (ref.current) {
                     ref.current.scrollIntoView();
@@ -209,7 +237,9 @@ export default ({ subuser, ...props }: Props) => {
     };
 
     useEffect(() => {
-        clearFlashes('user:edit');
+        return () => {
+            clearFlashes('user:edit');
+        };
     }, []);
 
     return (
