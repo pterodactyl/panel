@@ -190,7 +190,7 @@ class Handler extends ExceptionHandler
 
                 $converted = self::convertToArray($exception)['errors'][0];
                 $converted['detail'] = $error;
-                $converted['meta'] = is_array($converted['meta']) ? array_merge($converted['meta'], $meta) : $meta;
+                $converted['meta'] = is_array($converted['meta'] ?? null) ? array_merge($converted['meta'], $meta) : $meta;
 
                 $response[] = $converted;
             }
