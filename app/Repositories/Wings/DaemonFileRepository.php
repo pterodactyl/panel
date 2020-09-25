@@ -117,8 +117,8 @@ class DaemonFileRepository extends DaemonRepository
                 sprintf('/api/servers/%s/files/create-directory', $this->server->uuid),
                 [
                     'json' => [
-                        'name' => urldecode($name),
-                        'path' => urldecode($path),
+                        'name' => $name,
+                        'path' => $path,
                     ],
                 ]
             );
@@ -172,7 +172,7 @@ class DaemonFileRepository extends DaemonRepository
                 sprintf('/api/servers/%s/files/copy', $this->server->uuid),
                 [
                     'json' => [
-                        'location' => urldecode($location),
+                        'location' => $location,
                     ],
                 ]
             );
