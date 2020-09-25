@@ -54,9 +54,9 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                         <FormikField as={Select} name={'action'}>
                             <option value={'command'}>Send command</option>
                             {backupLimit !== 0 &&
-                            <option value={'power'}>Send power action</option>
-                            }
                             <option value={'backup'}>Create backup</option>
+                            }
+                            <option value={'power'}>Send power action</option>
                         </FormikField>
                     </FormikFieldWrapper>
                 </div>
