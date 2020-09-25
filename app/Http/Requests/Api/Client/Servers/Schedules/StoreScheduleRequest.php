@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Schedules;
 
+use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Permission;
 
 class StoreScheduleRequest extends ViewScheduleRequest
@@ -19,13 +20,15 @@ class StoreScheduleRequest extends ViewScheduleRequest
      */
     public function rules(): array
     {
+        $rules = Schedule::getRules();
+
         return [
-            'name' => 'required|string|min:1',
-            'is_active' => 'filled|boolean',
-            'minute' => 'required|string',
-            'hour' => 'required|string',
-            'day_of_month' => 'required|string',
-            'day_of_week' => 'required|string',
+            'name' => $rules['name'],
+            'is_active' => array_merge(['filled'], $rules['is_active']),
+            'minute' => $rules['cron_minute'],
+            'hour' => $rules['cron_hour'],
+            'day_of_month' => $rules['cron_day_of_month'],
+            'day_of_week' => $rules['cron_day_of_week'],
         ];
     }
 }
