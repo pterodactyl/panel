@@ -65,7 +65,7 @@ class Database extends Model
     public static $validationRules = [
         'server_id' => 'required|numeric|exists:servers,id',
         'database_host_id' => 'required|exists:database_hosts,id',
-        'database' => 'required|string|alpha_dash|between:3,100',
+        'database' => 'required|string|alpha_dash|between:3,48',
         'username' => 'string|alpha_dash|between:3,100',
         'max_connections' => 'nullable|integer',
         'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',

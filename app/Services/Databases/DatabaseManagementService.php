@@ -104,9 +104,12 @@ class DatabaseManagementService
             }
         }
 
+        // Max of 48 characters, including the s123_ that we append to the front.
+        $truncatedName = substr($data['database'], 0, 48 - strlen("s{$server->id}_"));
+
         $data = array_merge($data, [
             'server_id' => $server->id,
-            'database' => sprintf('s%d_%s', $server->id, $data['database']),
+            'database' => $truncatedName,
             'username' => sprintf('u%d_%s', $server->id, str_random(10)),
             'password' => $this->encrypter->encrypt(
                 Utilities::randomStringWithSpecialCharacters(24)

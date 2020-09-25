@@ -19,9 +19,9 @@ interface Values {
 const schema = object().shape({
     databaseName: string()
         .required('A database name must be provided.')
-        .min(5, 'Database name must be at least 5 characters.')
-        .max(64, 'Database name must not exceed 64 characters.')
-        .matches(/^[A-Za-z0-9_\-.]{5,64}$/, 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'),
+        .min(3, 'Database name must be at least 3 characters.')
+        .max(48, 'Database name must not exceed 48 characters.')
+        .matches(/^[A-Za-z0-9_\-.]{3,48}$/, 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'),
     connectionsFrom: string()
         .required('A connection value must be provided.')
         .matches(/^([1-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, 'A valid connection address must be provided.'),

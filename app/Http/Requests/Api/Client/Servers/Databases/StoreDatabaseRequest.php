@@ -22,7 +22,7 @@ class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissions
     public function rules(): array
     {
         return [
-            'database' => 'required|alpha_dash|min:1|max:100',
+            'database' => 'required|alpha_dash|min:3|max:48',
             'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
         ];
     }
