@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Subusers;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\ConnectionInterface;
@@ -84,9 +85,13 @@ class SubuserCreationService
                     throw new ServerSubuserExistsException(trans('exceptions.subusers.subuser_exists'));
                 }
             } catch (RecordNotFoundException $exception) {
+                // Just cap the username generated at 64 characters at most and then append a random string
+                // to the end to make it "unique"...
+                $username = substr(preg_replace('/([^\w\.-]+)/', '', strtok($email, '@')), 0, 64) . Str::random(3);
+
                 $user = $this->userCreationService->handle([
                     'email' => $email,
-                    'username' => preg_replace('/([^\w\.-]+)/', '', strtok($email, '@')) . str_random(3),
+                    'username' => $username,
                     'name_first' => 'Server',
                     'name_last' => 'Subuser',
                     'root_admin' => false,
