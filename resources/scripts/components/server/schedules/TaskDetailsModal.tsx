@@ -32,6 +32,7 @@ interface Values {
 
 const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
     const { values: { action }, initialValues, setFieldValue, setFieldTouched, isSubmitting } = useFormikContext<Values>();
+    const backupLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.backups);
 
     useEffect(() => {
         if (action !== initialValues.action) {
@@ -52,7 +53,9 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                     <FormikFieldWrapper name={'action'}>
                         <FormikField as={Select} name={'action'}>
                             <option value={'command'}>Send command</option>
+                            {backupLimit !== 0 &&
                             <option value={'power'}>Send power action</option>
+                            }
                             <option value={'backup'}>Create backup</option>
                         </FormikField>
                     </FormikFieldWrapper>
