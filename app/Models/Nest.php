@@ -44,7 +44,7 @@ class Nest extends Model
      */
     public static $validationRules = [
         'author' => 'required|string|email',
-        'name' => 'required|string|max:255',
+        'name' => 'required|string|max:191',
         'description' => 'nullable|string',
     ];
 

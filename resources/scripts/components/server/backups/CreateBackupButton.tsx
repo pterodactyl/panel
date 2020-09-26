@@ -87,7 +87,7 @@ export default () => {
                 onSubmit={submit}
                 initialValues={{ name: '', ignored: '' }}
                 validationSchema={object().shape({
-                    name: string().max(255),
+                    name: string().max(191),
                     ignored: string(),
                 })}
             >
