@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
@@ -8,14 +8,29 @@ import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
+import styled from 'styled-components/macro';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import isEqual from 'react-fast-compare';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
-const isAlarmState = (current: number, limit: number): boolean => {
-    const limitInBytes = limit * 1024 * 1024;
+const isAlarmState = (current: number, limit: number): boolean => limit > 0 && (current / (limit * 1024 * 1024) >= 0.90);
 
-    return current / limitInBytes >= 0.90;
-};
+interface IconProps {
+    icon: IconProp;
+    usage: number;
+    limit: string;
+    isAlarm: boolean;
+}
+
+const Icon = memo(styled(FontAwesomeIcon)<{ $alarm: boolean }>`
+    ${props => props.$alarm ? tw`text-red-400` : tw`text-neutral-500`};
+`, isEqual);
+
+const IconDescription = styled.p<{ $alarm: boolean }>`
+    ${tw`text-sm ml-2`};
+    ${props => props.$alarm ? tw`text-white` : tw`text-neutral-400`};
+`;
 
 export default ({ server, className }: { server: Server; className?: string }) => {
     const interval = useRef<number>(null);
@@ -96,62 +111,26 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     :
                     <React.Fragment>
                         <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>
-                            <FontAwesomeIcon
-                                icon={faMicrochip}
-                                css={[
-                                    !alarms.cpu && tw`text-neutral-500`,
-                                    alarms.cpu && tw`text-red-400`,
-                                ]}
-                            />
-                            <p
-                                css={[
-                                    tw`text-sm ml-2`,
-                                    !alarms.cpu && tw`text-neutral-400`,
-                                    alarms.cpu && tw`text-white`,
-                                ]}
-                            >
+                            <Icon icon={faMicrochip} $alarm={alarms.cpu}/>
+                            <IconDescription $alarm={alarms.cpu}>
                                 {stats.cpuUsagePercent} %
-                            </p>
+                            </IconDescription>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
-                                <FontAwesomeIcon
-                                    icon={faMemory}
-                                    css={[
-                                        !alarms.memory && tw`text-neutral-500`,
-                                        alarms.memory && tw`text-red-400`,
-                                    ]}
-                                />
-                                <p
-                                    css={[
-                                        tw`text-sm ml-2`,
-                                        !alarms.memory && tw`text-neutral-400`,
-                                        alarms.memory && tw`text-white`,
-                                    ]}
-                                >
+                                <Icon icon={faMemory} $alarm={alarms.memory}/>
+                                <IconDescription $alarm={alarms.memory}>
                                     {bytesToHuman(stats.memoryUsageInBytes)}
-                                </p>
+                                </IconDescription>
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
-                                <FontAwesomeIcon
-                                    icon={faHdd}
-                                    css={[
-                                        !alarms.disk && tw`text-neutral-500`,
-                                        alarms.disk && tw`text-red-400`,
-                                    ]}
-                                />
-                                <p
-                                    css={[
-                                        tw`text-sm ml-2`,
-                                        !alarms.disk && tw`text-neutral-400`,
-                                        alarms.disk && tw`text-white`,
-                                    ]}
-                                >
+                                <Icon icon={faHdd} $alarm={alarms.disk}/>
+                                <IconDescription $alarm={alarms.disk}>
                                     {bytesToHuman(stats.diskUsageInBytes)}
-                                </p>
+                                </IconDescription>
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
                         </div>
