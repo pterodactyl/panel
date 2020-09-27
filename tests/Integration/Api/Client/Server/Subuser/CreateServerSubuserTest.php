@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server\Schedule;
+namespace Pterodactyl\Tests\Integration\Api\Client\Server\Subuser;
 
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;

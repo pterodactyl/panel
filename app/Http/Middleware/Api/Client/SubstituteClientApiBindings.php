@@ -49,11 +49,11 @@ class SubstituteClientApiBindings extends ApiSubstituteBindings
             return Database::query()->where('id', $id)->firstOrFail();
         });
 
-        $this->router->model('backup', Backup::class, function ($value) {
+        $this->router->bind('backup', function ($value) {
             return Backup::query()->where('uuid', $value)->firstOrFail();
         });
 
-        $this->router->model('user', User::class, function ($value) {
+        $this->router->bind('user', function ($value) {
             return User::query()->where('uuid', $value)->firstOrFail();
         });
 
