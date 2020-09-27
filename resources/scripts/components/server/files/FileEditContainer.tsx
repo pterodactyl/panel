@@ -116,7 +116,13 @@ export default () => {
                     fetchContent={value => {
                         fetchFileContent = value;
                     }}
-                    onContentSaved={save}
+                    onContentSaved={() => {
+                        if (action !== 'edit') {
+                            setModalVisible(true);
+                        } else {
+                            save();
+                        }
+                    }}
                 />
             </div>
             <div css={tw`flex justify-end mt-4`}>
