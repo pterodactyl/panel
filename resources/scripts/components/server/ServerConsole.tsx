@@ -53,6 +53,7 @@ export default () => {
         }
 
         instance.addListener('stats', statsListener);
+        instance.send('send stats');
 
         return () => {
             instance.removeListener('stats', statsListener);

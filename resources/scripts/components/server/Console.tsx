@@ -52,6 +52,7 @@ const TerminalDiv = styled.div`
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const [ terminalElement, setTerminalElement ] = useState<HTMLDivElement | null>(null);
+
     const useRef = useCallback(node => setTerminalElement(node), []);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
