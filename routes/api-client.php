@@ -83,6 +83,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::get('/allocations', 'Servers\NetworkAllocationController@index');
         Route::post('/allocations/{allocation}', 'Servers\NetworkAllocationController@update');
         Route::post('/allocations/{allocation}/primary', 'Servers\NetworkAllocationController@setPrimary');
+        Route::get('/allocations/new', 'Servers\NetworkAllocationController@addNew');
         Route::delete('/allocations/{allocation}', 'Servers\NetworkAllocationController@delete');
     });
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import getServerAllocations from '@/api/server/network/getServerAllocations';
 import { Allocation } from '@/api/server/getServer';
@@ -9,10 +9,15 @@ import { ServerContext } from '@/state/server';
 import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import AllocationRow from '@/components/server/network/AllocationRow';
 import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
+import Button from '@/components/elements/Button';
+import newServerAllocation from '@/api/server/network/newServerAllocation';
+import tw from 'twin.macro';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 
 const NetworkContainer = () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
+    const [ addingAllocation, setAddingAllocation ] = useState(false);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), {
@@ -39,6 +44,22 @@ const NetworkContainer = () => {
             });
     }, []);
 
+    const getNewAllocation = () => {
+        clearFlashes('server:network');
+        setAddingAllocation(true);
+
+        newServerAllocation(uuid)
+            .then(allocation => {
+                mutate(data => ({ ...data, items: data.concat(allocation) }), false);
+                setAddingAllocation(false);
+            })
+            .catch(error => {
+                clearAndAddHttpError({ key: 'server:network', error });
+                mutate(data, false);
+                setAddingAllocation(false);
+            });
+    };
+
     const onNotesAdded = useCallback((id: number, notes: string) => {
         mutate(data?.map(a => a.id === id ? { ...a, notes } : a), false);
     }, []);
@@ -57,6 +78,23 @@ const NetworkContainer = () => {
                     />
                 ))
             }
+            <GreyRowBox
+                $hoverable={false}
+                css={tw`mt-2 overflow-x-auto flex items-center justify-center`}
+            >
+                {addingAllocation ?
+                    <Spinner size={'base'} centered/>
+                    :
+                    <Button
+                        color={'primary'}
+                        isSecondary
+                        onClick={() => getNewAllocation() }
+                        css={tw`my-2`}
+                    >
+                        Add New Allocation
+                    </Button>
+                }
+            </GreyRowBox>
         </ServerContentBlock>
     );
 };

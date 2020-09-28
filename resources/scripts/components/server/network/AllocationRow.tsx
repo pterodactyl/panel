@@ -42,7 +42,7 @@ const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
     return (
         <GreyRowBox
             $hoverable={false}
-            // css={index > 0 ? tw`mt-2 overflow-x-auto` : tw`overflow-x-auto`}
+            css={tw`mt-2 overflow-x-auto`}
         >
             <div css={tw`hidden md:block pl-4 pr-6 text-neutral-400`}>
                 <FontAwesomeIcon icon={faNetworkWired}/>
