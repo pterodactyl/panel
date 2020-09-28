@@ -21,6 +21,9 @@ class AdvancedSettingsFormRequest extends AdminFormRequest
             'pterodactyl:guzzle:connect_timeout' => 'required|integer|between:1,60',
             'pterodactyl:console:count' => 'required|integer|min:1',
             'pterodactyl:console:frequency' => 'required|integer|min:10',
+            'allocation:enabled' => 'required|in:true,false',
+            'pterodactyl:allocation:start' => 'required|integer|between:2000,65535',
+            'pterodactyl:allocation:stop' => 'required|integer|between:2000,65535',
         ];
     }
 
@@ -37,6 +40,9 @@ class AdvancedSettingsFormRequest extends AdminFormRequest
             'pterodactyl:guzzle:connect_timeout' => 'HTTP Connection Timeout',
             'pterodactyl:console:count' => 'Console Message Count',
             'pterodactyl:console:frequency' => 'Console Frequency Tick',
+            'allocation:enabled' => 'Auto Create Allocations Enabled',
+            'pterodactyl:allocation:start' => 'Starting Port',
+            'pterodactyl:allocation:stop' => 'Ending Port',
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
@@ -16,7 +17,6 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Network\UpdateAllocationRequest
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationRequest;
 use Pterodactyl\Services\Allocations\AssignmentService;
-use Illuminate\Support\Facades\Log;
 
 class NetworkAllocationController extends ClientApiController
 {
@@ -41,17 +41,27 @@ class NetworkAllocationController extends ClientApiController
      * @param \Pterodactyl\Repositories\Eloquent\AllocationRepository $repository
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $serverRepository
      * @param \Pterodactyl\Services\Allocations\AssignmentService $assignmentService
+     * @param \Illuminate\Contracts\Config\Repository $config
      */
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    private $config;
+
     public function __construct(
         AllocationRepository $repository,
         ServerRepository $serverRepository,
-        AssignmentService $assignmentService
+        AssignmentService $assignmentService,
+        Repository $config
+
     ) {
         parent::__construct();
 
         $this->repository = $repository;
         $this->serverRepository = $serverRepository;
         $this->assignmentService = $assignmentService;
+        $this->config = $config;
     }
 
     /**
@@ -126,8 +136,10 @@ class NetworkAllocationController extends ClientApiController
     public function addNew(NewAllocationRequest $request, Server $server): array
     {
         Log::info('addNew()');
-        $topRange = 25700;
-        $bottomRange = 25565;
+        $topRange =  config('pterodactyl.allocation.start');
+        $bottomRange = config('pterodactyl.allocation.stop');
+        Log::error($bottomRange);
+        Log::error($topRange);
 
         if($server->allocation_limit <= $server->allocations->count()) {
             Log::error('You have created the maximum number of allocations!');
@@ -139,7 +151,7 @@ class NetworkAllocationController extends ClientApiController
         $allocation = $server->node->allocations()->where('ip',$server->allocation->ip)->whereNull('server_id')->first();
 
         if(!$allocation) {
-            if($server->node->allocations()->where('ip',$server->allocation->ip)->count() >= $topRange-$bottomRange) {
+            if($server->node->allocations()->where('ip',$server->allocation->ip)->where([['port', '>=', $bottomRange ], ['port', '<=', $topRange],])->count() >= $topRange-$bottomRange || config('pterodactyl.allocation.enabled', 0)) {
                 Log::error('No allocations available!');
                 throw new DisplayException(
                     'No more allocations available!'

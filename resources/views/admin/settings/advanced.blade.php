@@ -105,6 +105,39 @@
                         </div>
                     </div>
                 </div>
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Automatic Allocation Creation</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Status</label>
+                                <div>
+                                    <select class="form-control" name="allocation:enabled">
+                                        <option value="true" @if(old('allocation:enabled', config('allocation.enabled')) == '1') selected @endif>Enabled</option>
+                                        <option value="false">Disabled</option>
+                                    </select>
+                                    <p class="text-muted small">If enabled, the panel will attempt to auto create a new allocation in the range specified if there are no more allocations already created on the node.</p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Starting Port</label>
+                                <div>
+                                    <input type="number" required class="form-control" name="pterodactyl:allocation:start" value="{{ old('pterodactyl:allocation:start', config('pterodactyl.allocation.start')) }}">
+                                    <p class="text-muted small">The starting port in the range that can be automatically allocated.</p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Ending Port</label>
+                                <div>
+                                    <input type="number" required class="form-control" name="pterodactyl:allocation:stop" value="{{ old('pterodactyl:allocation:stop', config('pterodactyl.allocation.stop')) }}">
+                                    <p class="text-muted small">The ending port in the range that can be automatically allocated.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="box box-primary">
                     <div class="box-footer">
                         {{ csrf_field() }}
