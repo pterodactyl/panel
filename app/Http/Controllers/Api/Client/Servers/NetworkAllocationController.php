@@ -17,6 +17,7 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Network\UpdateAllocationRequest
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationRequest;
 use Pterodactyl\Services\Allocations\AssignmentService;
+use Illuminate\Support\Facades\Log;
 
 class NetworkAllocationController extends ClientApiController
 {
@@ -136,8 +137,8 @@ class NetworkAllocationController extends ClientApiController
     public function addNew(NewAllocationRequest $request, Server $server): array
     {
         Log::info('addNew()');
-        $topRange =  config('pterodactyl.allocation.start');
-        $bottomRange = config('pterodactyl.allocation.stop');
+        $topRange =  config('pterodactyl.allocation.stop',0);
+        $bottomRange = config('pterodactyl.allocation.start',0);
         Log::error($bottomRange);
         Log::error($topRange);
 
@@ -151,7 +152,7 @@ class NetworkAllocationController extends ClientApiController
         $allocation = $server->node->allocations()->where('ip',$server->allocation->ip)->whereNull('server_id')->first();
 
         if(!$allocation) {
-            if($server->node->allocations()->where('ip',$server->allocation->ip)->where([['port', '>=', $bottomRange ], ['port', '<=', $topRange],])->count() >= $topRange-$bottomRange || config('pterodactyl.allocation.enabled', 0)) {
+            if($server->node->allocations()->where('ip',$server->allocation->ip)->where([['port', '>=', $bottomRange ], ['port', '<=', $topRange],])->count() >= $topRange-$bottomRange+1 || !config('allocation.enabled', false)) {
                 Log::error('No allocations available!');
                 throw new DisplayException(
                     'No more allocations available!'
@@ -163,7 +164,6 @@ class NetworkAllocationController extends ClientApiController
             do {
                 $port = rand($bottomRange, $topRange);
                 Log::info('Picking port....');
-                // TODO ADD ITERATOR THAT TIMES OUT AFTER SEARCHING FOR SO MUCH TIME?
             } while(array_search($port, $allPorts));
 
             $this->assignmentService->handle($server->node,[

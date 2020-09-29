@@ -115,8 +115,8 @@
                                 <label class="control-label">Status</label>
                                 <div>
                                     <select class="form-control" name="allocation:enabled">
-                                        <option value="true" @if(old('allocation:enabled', config('allocation.enabled')) == '1') selected @endif>Enabled</option>
                                         <option value="false">Disabled</option>
+                                        <option value="true" @if(old('allocation:enabled', config('allocation.enabled'))) selected @endif>Enabled</option>
                                     </select>
                                     <p class="text-muted small">If enabled, the panel will attempt to auto create a new allocation in the range specified if there are no more allocations already created on the node.</p>
                                 </div>
