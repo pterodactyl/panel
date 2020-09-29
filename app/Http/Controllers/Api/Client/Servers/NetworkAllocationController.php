@@ -136,14 +136,10 @@ class NetworkAllocationController extends ClientApiController
      */
     public function addNew(NewAllocationRequest $request, Server $server): array
     {
-        Log::info('addNew()');
         $topRange =  config('pterodactyl.allocation.stop',0);
         $bottomRange = config('pterodactyl.allocation.start',0);
-        Log::error($bottomRange);
-        Log::error($topRange);
 
         if($server->allocation_limit <= $server->allocations->count()) {
-            Log::error('You have created the maximum number of allocations!');
             throw new DisplayException(
                 'You have created the maximum number of allocations!'
             );
@@ -153,17 +149,15 @@ class NetworkAllocationController extends ClientApiController
 
         if(!$allocation) {
             if($server->node->allocations()->where('ip',$server->allocation->ip)->where([['port', '>=', $bottomRange ], ['port', '<=', $topRange],])->count() >= $topRange-$bottomRange+1 || !config('allocation.enabled', false)) {
-                Log::error('No allocations available!');
                 throw new DisplayException(
                     'No more allocations available!'
                 );
             }
-            Log::info('Creating new allocation...');
+
             $allPorts = $server->node->allocations()->select(['port'])->where('ip',$server->allocation->ip)->get()->pluck('port')->toArray();
 
             do {
                 $port = rand($bottomRange, $topRange);
-                Log::info('Picking port....');
             } while(array_search($port, $allPorts));
 
             $this->assignmentService->handle($server->node,[
