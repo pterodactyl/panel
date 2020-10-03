@@ -12,6 +12,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
 use Prologue\Alerts\AlertsMessageBag;
 use GuzzleHttp\Exception\RequestException;
@@ -412,12 +413,18 @@ class ServersController extends Controller
      * Add a mount to a server.
      *
      * @param Server $server
-     * @param int $mount_id
+     * @param \Pterodactyl\Models\Mount $mount
      * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function addMount(Server $server, int $mount_id)
+    public function addMount(Server $server, Mount $mount)
     {
-        $server->mounts()->attach($mount_id);
+        $server->mounts()->updateOrCreate([
+            'mount_id' => $mount->id,
+            'server_id' => $server->id,
+        ]);
 
         $data = $this->serverConfigurationStructureService->handle($server);
 
@@ -438,15 +445,18 @@ class ServersController extends Controller
      * Remove a mount from a server.
      *
      * @param Server $server
-     * @param int $mount_id
+     * @param \Pterodactyl\Models\Mount $mount
      * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function deleteMount(Server $server, int $mount_id)
+    public function deleteMount(Server $server, Mount $mount)
     {
-        $server->mounts()->detach($mount_id);
+        $server->mounts()
+            ->where('mount_id', $mount->id)
+            ->where('server_id', $server->id)
+            ->delete();
 
         $data = $this->serverConfigurationStructureService->handle($server);
 
