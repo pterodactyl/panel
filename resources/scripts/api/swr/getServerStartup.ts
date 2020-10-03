@@ -9,7 +9,6 @@ interface Response {
 }
 
 export default (uuid: string, initialData?: Response) => useSWR([ uuid, '/startup' ], async (): Promise<Response> => {
-    console.log('firing getServerStartup');
     const { data } = await http.get(`/api/client/servers/${uuid}/startup`);
 
     const variables = ((data as FractalResponseList).data || []).map(rawDataToServerEggVariable);
