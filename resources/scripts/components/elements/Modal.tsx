@@ -35,6 +35,8 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
         margin-top: 20%;
         ${breakpoint('md')`margin-top: 10%`};
     `};
+
+    margin-bottom: 5%;
     
     & > .close-icon {
         ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
