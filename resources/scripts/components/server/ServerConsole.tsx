@@ -65,7 +65,7 @@ export default () => {
 
     return (
         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
-            <div css={tw`w-full md:w-1/4`}>
+            <div css={tw`w-full lg:w-1/4`}>
                 <TitledGreyBox css={tw`break-all`} title={name} icon={faServer}>
                     <p css={tw`text-xs uppercase`}>
                         <FontAwesomeIcon
@@ -138,7 +138,7 @@ export default () => {
                     </div>
                 }
             </div>
-            <div css={tw`w-full md:flex-1 md:ml-4 mt-4 md:mt-0`}>
+            <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
                 <SuspenseSpinner>
                     <ChunkedConsole/>
                     <ChunkedStatGraphs/>
