@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
-import getServerResourceUsage, { ServerStats } from '@/api/server/getServerResourceUsage';
+import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
@@ -22,6 +22,21 @@ const Icon = memo(styled(FontAwesomeIcon)<{ $alarm: boolean }>`
 const IconDescription = styled.p<{ $alarm: boolean }>`
     ${tw`text-sm ml-2`};
     ${props => props.$alarm ? tw`text-white` : tw`text-neutral-400`};
+`;
+
+const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
+    ${tw`grid grid-cols-12 gap-4 relative`};
+    
+    & .status-bar {
+        ${tw`w-2 bg-red-500 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
+        height: calc(100% - 0.5rem);
+        
+        ${({ $status }) => (!$status || $status === 'offline') ? tw`bg-red-500` : ($status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`)};
+    }
+    
+    &:hover .status-bar {
+        ${tw`opacity-75`};
+    }
 `;
 
 export default ({ server, className }: { server: Server; className?: string }) => {
@@ -61,15 +76,15 @@ export default ({ server, className }: { server: Server; className?: string }) =
     const memorylimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : 'Unlimited';
 
     return (
-        <GreyRowBox as={Link} to={`/server/${server.id}`} className={className} css={tw`grid grid-cols-12 gap-4`}>
-            <div css={tw`flex items-center col-span-11 sm:col-span-5 lg:col-span-6`}>
+        <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
+            <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
                 <div className={'icon'} css={tw`mr-4`}>
                     <FontAwesomeIcon icon={faServer}/>
                 </div>
                 <div>
                     <p css={tw`text-lg break-words`}>{server.name}</p>
                     {!!server.description &&
-                    <p css={tw`text-sm text-neutral-300 break-all`}>{server.description}</p>
+                    <p css={tw`text-sm text-neutral-300 break-words`}>{server.description}</p>
                     }
                 </div>
             </div>
@@ -131,16 +146,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     </React.Fragment>
                 }
             </div>
-            <div css={tw`col-span-1 sm:hidden flex justify-end`}>
-                <div
-                    css={[
-                        tw`w-3 h-3 rounded-full`,
-                        (!stats?.status || stats?.status === 'offline')
-                            ? tw`bg-red-500`
-                            : (stats?.status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`),
-                    ]}
-                />
-            </div>
-        </GreyRowBox>
+            <div className={'status-bar'}/>
+        </StatusIndicatorBox>
     );
 };
