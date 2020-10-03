@@ -94,7 +94,7 @@ export default () => {
                 <ModalContent appear visible={visible} onDismissed={() => setVisible(false)}/>
             </Formik>
             }
-            <Button onClick={() => setVisible(true)}>
+            <Button css={tw`w-full sm:w-auto`} onClick={() => setVisible(true)}>
                 Create backup
             </Button>
         </>

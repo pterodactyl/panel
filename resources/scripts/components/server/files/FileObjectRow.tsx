@@ -38,13 +38,13 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
 
     return (
         (!canReadContents || (file.isFile && !file.isEditable())) ?
-            <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default`}>
+            <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default overflow-hidden truncate`}>
                 {children}
             </div>
             :
             <NavLink
                 to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
-                css={tw`flex flex-1 text-neutral-300 no-underline p-3`}
+                css={tw`flex flex-1 text-neutral-300 no-underline p-3 overflow-hidden truncate`}
                 onClick={onRowClick}
             >
                 {children}
@@ -69,7 +69,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
                     <FontAwesomeIcon icon={faFolder}/>
                 }
             </div>
-            <div css={tw`flex-1 break-all`}>
+            <div css={tw`flex-1 break-all truncate`}>
                 {file.name}
             </div>
             {file.isFile &&
