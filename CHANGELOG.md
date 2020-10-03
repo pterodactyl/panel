@@ -3,6 +3,15 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.19 (Derelict Dermodactylus)
+### Fixed
+* **[Security]** Fixes XSS in the admin area's server owner selection.
+
+## v0.7.18 (Derelict Dermodactylus)
+### Fixed
+* **[Security]** Re-addressed missed endpoint that would not properly limit a user account to 5 API keys.
+* **[Security]** Addresses a Client API vulnerability that would allow a user to list all servers on the system ([`GHSA-6888-7f3w-92jx`](https://github.com/pterodactyl/panel/security/advisories/GHSA-6888-7f3w-92jx))
+
 ## v0.7.17 (Derelict Dermodactylus)
 ### Fixed
 * Limited accounts to 5 API keys at a time.
@@ -301,7 +310,7 @@ the response from the server `GET` endpoint.
 * Nest and Egg listings now show the associated ID in order to make API requests easier.
 * Added star indicators to user listing in Admin CP to indicate users who are set as a root admin.
 * Creating a new node will now requires a SSL connection if the Panel is configured to use SSL as well.
-* Connector error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
+* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
 * File manager now supports mass deletion option for files and folders.
 * Support for CS:GO as a default service option selection.
 * Support for GMOD as a default service option selection.
@@ -431,7 +440,7 @@ the response from the server `GET` endpoint.
 * Changed 2FA login process to be more secure. Previously authentication checking happened on the 2FA post page, now it happens prior and is passed along to the 2FA page to avoid storing any credentials.
 
 ### Added
-* Connector error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
+* Socketio error messages due to permissions are now rendered correctly in the UI rather than causing a silent failure.
 
 ## v0.7.0-beta.1 (Derelict Dermodactylus)
 ### Added
