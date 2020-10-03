@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v0.7.19 (Derelict Dermodactylus)
+### Fixed
+* **[Security]** Fixes XSS in the admin area's server owner selection.
+
 ## v0.7.18 (Derelict Dermodactylus)
 ### Fixed
 * **[Security]** Re-addressed missed endpoint that would not properly limit a user account to 5 API keys.
