@@ -259,5 +259,5 @@
 @section('footer-scripts')
     @parent
     {!! Theme::js('vendor/lodash/lodash.js') !!}
-    {!! Theme::js('js/admin/new-server.js') !!}
+    {!! Theme::js('js/admin/new-server.js?v=20201003.100600') !!}
 @endsection
