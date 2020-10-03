@@ -49,7 +49,7 @@ export default ({ backup, className }: Props) => {
                 }
             </div>
             <div css={tw`flex-1`}>
-                <p css={tw`text-sm mb-1`}>
+                <p css={tw`flex items-center text-sm mb-1`}>
                     {!backup.isSuccessful &&
                     <span css={tw`bg-red-500 py-px px-2 rounded-full text-white text-xs uppercase border border-red-600 mr-2`}>
                         Failed
