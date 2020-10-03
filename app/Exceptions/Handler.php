@@ -220,7 +220,7 @@ class Handler extends ExceptionHandler
                 : ($exception instanceof ValidationException ? '422' : '500'),
             'detail' => $exception instanceof HttpExceptionInterface
                 ? $exception->getMessage()
-                : 'An unexpected error was ecnountered while processing this request, please try again.',
+                : 'An unexpected error was encountered while processing this request, please try again.',
         ];
 
         if ($exception instanceof ModelNotFoundException || $exception->getPrevious() instanceof ModelNotFoundException) {
