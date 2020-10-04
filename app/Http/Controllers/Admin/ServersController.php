@@ -333,13 +333,18 @@ class ServersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function saveStartup(Request $request, Server $server)
     {
-        $this->startupModificationService->setUserLevel(User::USER_LEVEL_ADMIN);
-        $this->startupModificationService->handle($server, $request->except('_token'));
+        try {
+            $this->startupModificationService
+                ->setUserLevel(User::USER_LEVEL_ADMIN)
+                ->handle($server, $request->except('_token'));
+        } catch (DataValidationException $exception) {
+            throw new ValidationException($exception->validator);
+        }
+
         $this->alert->success(trans('admin/server.alerts.startup_changed'))->flash();
 
         return redirect()->route('admin.servers.view.startup', $server->id);
