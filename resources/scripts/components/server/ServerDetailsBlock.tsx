@@ -15,6 +15,7 @@ interface Stats {
 const ServerDetailsBlock = () => {
     const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0 });
 
+    const status = ServerContext.useStoreState(state => state.status.value);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
     const instance = ServerContext.useStoreState(state => state.socket.instance);
 
