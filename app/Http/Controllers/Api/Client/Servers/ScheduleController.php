@@ -120,15 +120,27 @@ class ScheduleController extends ClientApiController
      */
     public function update(UpdateScheduleRequest $request, Server $server, Schedule $schedule)
     {
-        $this->repository->update($schedule->id, [
+        $active = (bool) $request->input('is_active');
+
+        $data = [
             'name' => $request->input('name'),
             'cron_day_of_week' => $request->input('day_of_week'),
             'cron_day_of_month' => $request->input('day_of_month'),
             'cron_hour' => $request->input('hour'),
             'cron_minute' => $request->input('minute'),
-            'is_active' => (bool) $request->input('is_active'),
+            'is_active' => $active,
             'next_run_at' => $this->getNextRunAt($request),
-        ]);
+        ];
+
+        // Toggle the processing state of the scheduled task when it is enabled or disabled so that an
+        // invalid state can be reset without manual database intervention.
+        //
+        // @see https://github.com/pterodactyl/panel/issues/2425
+        if ($schedule->is_active !== $active) {
+            $data['is_processing'] = false;
+        }
+
+        $this->repository->update($schedule->id, $data);
 
         return $this->fractal->item($schedule->refresh())
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
