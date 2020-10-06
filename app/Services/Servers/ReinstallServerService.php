@@ -20,25 +20,17 @@ class ReinstallServerService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
      * ReinstallService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      */
     public function __construct(
         ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository,
-        ServerRepository $repository
+        DaemonServerRepository $daemonServerRepository
     ) {
         $this->daemonServerRepository = $daemonServerRepository;
         $this->connection = $connection;
-        $this->repository = $repository;
     }
 
     /**
@@ -49,16 +41,14 @@ class ReinstallServerService
      *
      * @throws \Throwable
      */
-    public function reinstall(Server $server)
+    public function handle(Server $server)
     {
         return $this->connection->transaction(function () use ($server) {
-            $updated = $this->repository->update($server->id, [
-                'installed' => Server::STATUS_INSTALLING,
-            ], true, true);
+            $server->forceFill(['installed' => Server::STATUS_INSTALLING])->save();
 
             $this->daemonServerRepository->setServer($server)->reinstall();
 
-            return $updated;
+            return $server->refresh();
         });
     }
 }

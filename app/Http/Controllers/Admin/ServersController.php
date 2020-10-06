@@ -252,7 +252,7 @@ class ServersController extends Controller
      */
     public function reinstallServer(Server $server)
     {
-        $this->reinstallService->reinstall($server);
+        $this->reinstallService->handle($server);
         $this->alert->success(trans('admin/server.alerts.server_reinstalled'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $server->id);

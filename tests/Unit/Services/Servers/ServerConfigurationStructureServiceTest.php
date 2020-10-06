@@ -57,8 +57,8 @@ class ServerConfigurationStructureServiceTest extends TestCase
         $this->assertArrayHasKey('suspended', $response);
         $this->assertArrayHasKey('environment', $response);
         $this->assertArrayHasKey('invocation', $response);
+        $this->assertArrayHasKey('skip_egg_scripts', $response);
         $this->assertArrayHasKey('build', $response);
-        $this->assertArrayHasKey('service', $response);
         $this->assertArrayHasKey('container', $response);
         $this->assertArrayHasKey('allocations', $response);
 
@@ -80,11 +80,6 @@ class ServerConfigurationStructureServiceTest extends TestCase
         ], $response['build']);
 
         $this->assertSame([
-            'egg' => $model->egg->uuid,
-            'skip_scripts' => $model->skip_scripts,
-        ], $response['service']);
-
-        $this->assertSame([
             'image' => $model->image,
             'oom_disabled' => $model->oom_disabled,
             'requires_rebuild' => false,
@@ -103,6 +98,6 @@ class ServerConfigurationStructureServiceTest extends TestCase
      */
     private function getService(): ServerConfigurationStructureService
     {
-        return new ServerConfigurationStructureService($this->repository, $this->environment);
+        return new ServerConfigurationStructureService($this->environment);
     }
 }
