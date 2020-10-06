@@ -68,7 +68,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>CPU Threads</td>
+                                <td>CPU Pinning</td>
                                 <td>
                                     @if($server->threads != null)
                                         <code>{{ $server->threads }}</code>
