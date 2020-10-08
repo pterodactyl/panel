@@ -86,7 +86,7 @@ class ServerConfigurationStructureServiceTest extends TestCase
         ], $response['container']);
 
         $this->assertSame($model->uuid, $response['uuid']);
-        $this->assertSame((bool) $model->suspended, $response['suspended']);
+        $this->assertSame($model->suspended, $response['suspended']);
         $this->assertSame(['environment_array'], $response['environment']);
         $this->assertSame($model->startup, $response['invocation']);
     }

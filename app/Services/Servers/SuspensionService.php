@@ -2,12 +2,10 @@
 
 namespace Pterodactyl\Services\Servers;
 
-use Psr\Log\LoggerInterface;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class SuspensionService
 {
@@ -20,16 +18,6 @@ class SuspensionService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $writer;
-
-    /**
      * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
     private $daemonServerRepository;
@@ -39,25 +27,19 @@ class SuspensionService
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
-     * @param \Psr\Log\LoggerInterface $writer
      */
     public function __construct(
         ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository,
-        ServerRepositoryInterface $repository,
-        LoggerInterface $writer
+        DaemonServerRepository $daemonServerRepository
     ) {
         $this->connection = $connection;
-        $this->repository = $repository;
-        $this->writer = $writer;
         $this->daemonServerRepository = $daemonServerRepository;
     }
 
     /**
      * Suspends a server on the system.
      *
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      * @param string $action
      *
      * @throws \Throwable
@@ -66,15 +48,16 @@ class SuspensionService
     {
         Assert::oneOf($action, [self::ACTION_SUSPEND, self::ACTION_UNSUSPEND]);
 
-        if (
-            $action === self::ACTION_SUSPEND && $server->suspended ||
-            $action === self::ACTION_UNSUSPEND && ! $server->suspended
-        ) {
+        $isSuspending = $action === self::ACTION_SUSPEND;
+        // Nothing needs to happen if we're suspending the server and it is already
+        // suspended in the database. Additionally, nothing needs to happen if the server
+        // is not suspended and we try to un-suspend the instance.
+        if ($isSuspending === $server->suspended) {
             return;
         }
 
         $this->connection->transaction(function () use ($action, $server) {
-            $this->repository->withoutFreshModel()->update($server->id, [
+            $server->update([
                 'suspended' => $action === self::ACTION_SUSPEND,
             ]);
 
