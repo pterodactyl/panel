@@ -203,7 +203,7 @@ function pushToTerminal(string) {
     });
 
     Socket.on('console', function (data) {
-        if(data.line) {
+        if(typeof data.line === "string") {
             data.line.split(/\n/g).forEach(function (item) {
                 TerminalQueue.push(item);
             });
