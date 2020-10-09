@@ -89,22 +89,21 @@ class StartupModificationService
      */
     protected function updateAdministrativeSettings(array $data, Server &$server)
     {
-        if (
-            is_digit(Arr::get($data, 'egg_id'))
-            && $data['egg_id'] != $server->egg_id
-            && is_null(Arr::get($data, 'nest_id'))
-        ) {
-            /** @var \Pterodactyl\Models\Egg $egg */
-            $egg = Egg::query()->select(['nest_id'])->findOrFail($data['egg_id']);
+        $eggId = Arr::get($data, 'egg_id');
 
-            $data['nest_id'] = $egg->nest_id;
+        if (is_digit($eggId) && $server->egg_id !== (int)$eggId) {
+            /** @var \Pterodactyl\Models\Egg $egg */
+            $egg = Egg::query()->findOrFail($data['egg_id']);
+
+            $server = $server->forceFill([
+                'egg_id' => $egg->id,
+                'nest_id' => $egg->nest_id,
+            ]);
         }
 
         $server->forceFill([
             'installed' => 0,
             'startup' => $data['startup'] ?? $server->startup,
-            'nest_id' => $data['nest_id'] ?? $server->nest_id,
-            'egg_id' => $data['egg_id'] ?? $server->egg_id,
             'skip_scripts' => $data['skip_scripts'] ?? isset($data['skip_scripts']),
             'image' => $data['docker_image'] ?? $server->image,
         ])->save();
