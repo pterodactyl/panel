@@ -94,7 +94,6 @@ export default () => {
                     }
                     <div css={tw`mt-6 text-center`}>
                         <Link
-                            type={'button'}
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                         >
