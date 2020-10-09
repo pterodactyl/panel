@@ -409,7 +409,7 @@ class ServersController extends Controller
             ['id', '=', $database],
         ]);
 
-        $this->databaseManagementService->delete($database->id);
+        $this->databaseManagementService->delete($database);
 
         return response('', 204);
     }

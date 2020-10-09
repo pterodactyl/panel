@@ -133,7 +133,7 @@ class DatabaseController extends ApplicationApiController
      */
     public function delete(ServerDatabaseWriteRequest $request): Response
     {
-        $this->databaseManagementService->delete($request->getModel(Database::class)->id);
+        $this->databaseManagementService->delete($request->getModel(Database::class));
 
         return response('', 204);
     }

@@ -151,20 +151,19 @@ class DatabaseManagementService
     /**
      * Delete a database from the given host server.
      *
-     * @param int $id
+     * @param \Pterodactyl\Models\Database $database
      * @return bool|null
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Exception
      */
-    public function delete($id)
+    public function delete(Database $database)
     {
-        $database = $this->repository->find($id);
         $this->dynamic->set('dynamic', $database->database_host_id);
 
         $this->repository->dropDatabase($database->database);
         $this->repository->dropUser($database->username, $database->remote);
         $this->repository->flush();
 
-        return $this->repository->delete($id);
+        return $database->delete();
     }
 }
