@@ -33,8 +33,6 @@ class ServerConfigurationStructureService
      * @param \Pterodactyl\Models\Server $server
      * @param bool $legacy
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server, bool $legacy = false): array
     {

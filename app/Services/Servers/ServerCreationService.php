@@ -123,15 +123,12 @@ class ServerCreationService
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      */
     public function handle(array $data, DeploymentObject $deployment = null): Server
     {
-        $this->connection->beginTransaction();
-
         // If a deployment object has been passed we need to get the allocation
         // that the server should use, and assign the node from that allocation.
         if ($deployment instanceof DeploymentObject) {
@@ -158,23 +155,26 @@ class ServerCreationService
             ->setUserLevel(User::USER_LEVEL_ADMIN)
             ->handle(Arr::get($data, 'egg_id'), Arr::get($data, 'environment', []));
 
-        // Create the server and assign any additional allocations to it.
-        $server = $this->createModel($data);
-
-        $this->storeAssignedAllocations($server, $data);
-        $this->storeEggVariables($server, $eggVariableData);
-
         // Due to the design of the Daemon, we need to persist this server to the disk
         // before we can actually create it on the Daemon.
         //
         // If that connection fails out we will attempt to perform a cleanup by just
         // deleting the server itself from the system.
-        $this->connection->commit();
+        /** @var \Pterodactyl\Models\Server $server */
+        $server = $this->connection->transaction(function () use ($data, $eggVariableData) {
+            // Create the server and assign any additional allocations to it.
+            $server = $this->createModel($data);
 
-        $structure = $this->configurationStructureService->handle($server);
+            $this->storeAssignedAllocations($server, $data);
+            $this->storeEggVariables($server, $eggVariableData);
+
+            return $server;
+        });
 
         try {
-            $this->daemonServerRepository->setServer($server)->create($structure);
+            $this->daemonServerRepository->setServer($server)->create(
+                $this->configurationStructureService->handle($server)
+            );
         } catch (DaemonConnectionException $exception) {
             $this->serverDeletionService->withForce(true)->handle($server);
 
