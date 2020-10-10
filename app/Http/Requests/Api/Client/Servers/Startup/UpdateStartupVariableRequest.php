@@ -24,7 +24,7 @@ class UpdateStartupVariableRequest extends ClientApiRequest
     {
         return [
             'key' => 'required|string',
-            'value' => 'present|string',
+            'value' => 'present',
         ];
     }
 }
