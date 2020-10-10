@@ -54,15 +54,4 @@ interface NodeRepositoryInterface extends RepositoryInterface
      * @return \Illuminate\Support\Collection
      */
     public function getNodesForServerCreation(): Collection;
-
-    /**
-     * Return the IDs of all nodes that exist in the provided locations and have the space
-     * available to support the additional disk and memory provided.
-     *
-     * @param array $locations
-     * @param int $disk
-     * @param int $memory
-     * @return \Illuminate\Support\LazyCollection
-     */
-    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): LazyCollection;
 }

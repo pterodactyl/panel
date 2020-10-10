@@ -203,7 +203,7 @@ class ServerCreationService
             ->handle();
 
         return $this->allocationSelectionService->setDedicated($deployment->isDedicated())
-            ->setNodes($nodes)
+            ->setNodes($nodes->pluck('id')->toArray())
             ->setPorts($deployment->getPorts())
             ->handle();
     }
