@@ -9,6 +9,7 @@ use Pterodactyl\Models\Permission;
 use Illuminate\Database\Query\Builder;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Services\Databases\DatabaseManagementService;
 
 class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
@@ -33,19 +34,23 @@ class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissions
             'database' => [
                 'required',
                 'alpha_dash',
-                'min:3',
+                'min:1',
                 'max:48',
                 // Yes, I am aware that you could have the same database name across two unique hosts. However,
                 // I don't really care about that for this validation. We just want to make sure it is unique to
                 // the server itself. No need for complexity.
-                Rule::unique('databases', 'database')->where(function (Builder $query) use ($server) {
-                    $query->where('server_id', $server->id);
+                Rule::unique('databases')->where(function (Builder $query) use ($server) {
+                    $query->where('server_id', $server->id)
+                        ->where('database', DatabaseManagementService::generateUniqueDatabaseName($this->input('database'), $server->id));
                 }),
             ],
             'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
         ];
     }
 
+    /**
+     * @return array
+     */
     public function messages()
     {
         return [

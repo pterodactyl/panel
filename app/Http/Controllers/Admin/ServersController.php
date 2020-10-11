@@ -362,7 +362,7 @@ class ServersController extends Controller
     public function newDatabase(StoreServerDatabaseRequest $request, Server $server)
     {
         $this->databaseManagementService->create($server, [
-            'database' => $request->input('database'),
+            'database' => DatabaseManagementService::generateUniqueDatabaseName($request->input('database'), $server->id),
             'remote' => $request->input('remote'),
             'database_host_id' => $request->input('database_host_id'),
             'max_connections' => $request->input('max_connections'),

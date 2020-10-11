@@ -110,7 +110,9 @@ class DatabaseController extends ApplicationApiController
      */
     public function store(StoreServerDatabaseRequest $request, Server $server): JsonResponse
     {
-        $database = $this->databaseManagementService->create($server, $request->validated());
+        $database = $this->databaseManagementService->create($server, array_merge($request->validated(), [
+            'database' => $request->databaseName(),
+        ]));
 
         return $this->fractal->item($database)
             ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))

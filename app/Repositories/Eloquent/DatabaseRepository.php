@@ -94,31 +94,6 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     }
 
     /**
-     * Create a new database if it does not already exist on the host with
-     * the provided details.
-     *
-     * @param array $data
-     * @return \Pterodactyl\Models\Database
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
-     */
-    public function createIfNotExists(array $data): Database
-    {
-        $count = $this->getBuilder()->where([
-            ['server_id', '=', array_get($data, 'server_id')],
-            ['database_host_id', '=', array_get($data, 'database_host_id')],
-            ['database', '=', array_get($data, 'database')],
-        ])->count();
-
-        if ($count > 0) {
-            throw new DuplicateDatabaseNameException('A database with those details already exists for the specified server.');
-        }
-
-        return $this->create($data);
-    }
-
-    /**
      * Create a new database on a given connection.
      *
      * @param string $database
