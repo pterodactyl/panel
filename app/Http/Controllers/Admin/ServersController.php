@@ -252,7 +252,7 @@ class ServersController extends Controller
      */
     public function reinstallServer(Server $server)
     {
-        $this->reinstallService->reinstall($server);
+        $this->reinstallService->handle($server);
         $this->alert->success(trans('admin/server.alerts.server_reinstalled'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $server->id);
@@ -362,7 +362,7 @@ class ServersController extends Controller
     public function newDatabase(StoreServerDatabaseRequest $request, Server $server)
     {
         $this->databaseManagementService->create($server, [
-            'database' => $request->input('database'),
+            'database' => DatabaseManagementService::generateUniqueDatabaseName($request->input('database'), $server->id),
             'remote' => $request->input('remote'),
             'database_host_id' => $request->input('database_host_id'),
             'max_connections' => $request->input('max_connections'),
@@ -409,7 +409,7 @@ class ServersController extends Controller
             ['id', '=', $database],
         ]);
 
-        $this->databaseManagementService->delete($database->id);
+        $this->databaseManagementService->delete($database);
 
         return response('', 204);
     }

@@ -15,7 +15,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property string $name
  * @property string $description
  * @property bool $skip_scripts
- * @property int $suspended
+ * @property bool $suspended
  * @property int $owner_id
  * @property int $memory
  * @property int $swap
@@ -133,7 +133,7 @@ class Server extends Model
     protected $casts = [
         'node_id' => 'integer',
         'skip_scripts' => 'boolean',
-        'suspended' => 'integer',
+        'suspended' => 'boolean',
         'owner_id' => 'integer',
         'memory' => 'integer',
         'swap' => 'integer',

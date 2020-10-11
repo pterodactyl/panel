@@ -2,44 +2,27 @@
 
 namespace Pterodactyl\Services\Databases;
 
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
+use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 
 class DeployServerDatabaseService
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
-     */
-    private $databaseHostRepository;
-
     /**
      * @var \Pterodactyl\Services\Databases\DatabaseManagementService
      */
     private $managementService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * ServerDatabaseCreationService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $databaseHostRepository
      * @param \Pterodactyl\Services\Databases\DatabaseManagementService $managementService
      */
-    public function __construct(
-        DatabaseRepositoryInterface $repository,
-        DatabaseHostRepositoryInterface $databaseHostRepository,
-        DatabaseManagementService $managementService
-    ) {
-        $this->databaseHostRepository = $databaseHostRepository;
+    public function __construct(DatabaseManagementService $managementService)
+    {
         $this->managementService = $managementService;
-        $this->repository = $repository;
     }
 
     /**
@@ -53,28 +36,26 @@ class DeployServerDatabaseService
      */
     public function handle(Server $server, array $data): Database
     {
-        $allowRandom = config('pterodactyl.client_features.databases.allow_random');
-        $hosts = $this->databaseHostRepository->setColumns(['id'])->findWhere([
-            ['node_id', '=', $server->node_id],
-        ]);
+        Assert::notEmpty($data['database'] ?? null);
+        Assert::notEmpty($data['remote'] ?? null);
 
-        if ($hosts->isEmpty() && ! $allowRandom) {
-            throw new NoSuitableDatabaseHostException;
-        }
-
+        $hosts = DatabaseHost::query()->get()->toBase();
         if ($hosts->isEmpty()) {
-            $hosts = $this->databaseHostRepository->setColumns(['id'])->all();
-            if ($hosts->isEmpty()) {
+            throw new NoSuitableDatabaseHostException;
+        } else {
+            $nodeHosts = $hosts->where('node_id', $server->node_id)->toBase();
+
+            if ($nodeHosts->isEmpty() && ! config('pterodactyl.client_features.databases.allow_random')) {
                 throw new NoSuitableDatabaseHostException;
             }
         }
 
-        $host = $hosts->random();
-
         return $this->managementService->create($server, [
-            'database_host_id' => $host->id,
-            'database' => array_get($data, 'database'),
-            'remote' => array_get($data, 'remote'),
+            'database_host_id' => $nodeHosts->isEmpty()
+                ? $hosts->random()->id
+                : $nodeHosts->random()->id,
+            'database' => DatabaseManagementService::generateUniqueDatabaseName($data['database'], $server->id),
+            'remote' => $data['remote'],
         ]);
     }
 }

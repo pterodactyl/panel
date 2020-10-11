@@ -4,9 +4,7 @@ namespace Tests\Unit\Services\Servers;
 
 use Mockery as m;
 use Tests\TestCase;
-use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
-use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Servers\StartupCommandService;
@@ -34,43 +32,33 @@ class StartupCommandViewServiceTest extends TestCase
      */
     public function testServiceResponse()
     {
-        $allocation = factory(Allocation::class)->make();
-        $egg = factory(Egg::class)->make();
+
         $server = factory(Server::class)->make([
+            'id' => 123,
             'startup' => 'example {{SERVER_MEMORY}} {{SERVER_IP}} {{SERVER_PORT}} {{TEST_VARIABLE}} {{TEST_VARIABLE_HIDDEN}} {{UNKNOWN}}',
         ]);
 
         $variables = collect([
-            factory(EggVariable::class)->make(['env_variable' => 'TEST_VARIABLE', 'user_viewable' => 1]),
-            factory(EggVariable::class)->make(['env_variable' => 'TEST_VARIABLE_HIDDEN', 'user_viewable' => 0]),
+            factory(EggVariable::class)->make([
+                'env_variable' => 'TEST_VARIABLE',
+                'server_value' => 'Test Value',
+                'user_viewable' => 1,
+            ]),
+            factory(EggVariable::class)->make([
+                'env_variable' => 'TEST_VARIABLE_HIDDEN',
+                'server_value' => 'Hidden Value',
+                'user_viewable' => 0,
+            ]),
         ]);
 
-        $egg->setRelation('variables', $variables);
-        $server->setRelation('allocation', $allocation);
-        $server->setRelation('egg', $egg);
+        $server->setRelation('variables', $variables);
+        $server->setRelation('allocation', $allocation = factory(Allocation::class)->make());
 
-        $this->repository->shouldReceive('getVariablesWithValues')->once()->with($server->id, true)->andReturn((object) [
-            'data' => [
-                'TEST_VARIABLE' => 'Test Value',
-                'TEST_VARIABLE_HIDDEN' => 'Hidden Value',
-            ],
-            'server' => $server,
-        ]);
-
-        $this->repository->shouldReceive('getPrimaryAllocation')->once()->with($server)->andReturn($server);
-
-        $response = $this->getService()->handle($server->id);
-        $this->assertInstanceOf(Collection::class, $response);
-
+        $response = $this->getService()->handle($server);
         $this->assertSame(
             sprintf('example %s %s %s %s %s {{UNKNOWN}}', $server->memory, $allocation->ip, $allocation->port, 'Test Value', '[hidden]'),
-            $response->get('startup')
+            $response
         );
-        $this->assertEquals($variables->only(0), $response->get('variables'));
-        $this->assertSame([
-            'TEST_VARIABLE' => 'Test Value',
-            'TEST_VARIABLE_HIDDEN' => 'Hidden Value',
-        ], $response->get('server_values'));
     }
 
     /**
@@ -80,6 +68,6 @@ class StartupCommandViewServiceTest extends TestCase
      */
     private function getService(): StartupCommandService
     {
-        return new StartupCommandService($this->repository);
+        return new StartupCommandService;
     }
 }

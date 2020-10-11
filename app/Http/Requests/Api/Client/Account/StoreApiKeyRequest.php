@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Account;
 
+use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class StoreApiKeyRequest extends ClientApiRequest
@@ -11,9 +12,11 @@ class StoreApiKeyRequest extends ClientApiRequest
      */
     public function rules(): array
     {
+        $rules = ApiKey::getRules();
+
         return [
-            'description' => 'required|string|min:4',
-            'allowed_ips' => 'array',
+            'description' => $rules['memo'],
+            'allowed_ips' => $rules['allowed_ips'],
             'allowed_ips.*' => 'ip',
         ];
     }

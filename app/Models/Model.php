@@ -7,6 +7,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 
 abstract class Model extends IlluminateModel
 {
@@ -55,7 +56,11 @@ abstract class Model extends IlluminateModel
         static::$validatorFactory = Container::getInstance()->make(Factory::class);
 
         static::saving(function (Model $model) {
-            return $model->validate();
+            if (! $model->validate()) {
+                throw new DataValidationException($model->getValidator());
+            }
+
+            return true;
         });
     }
 
@@ -147,9 +152,9 @@ abstract class Model extends IlluminateModel
         }
 
         return $this->getValidator()->setData(
-            // Trying to do self::toArray() here will leave out keys based on the whitelist/blacklist
-            // for that model. Doing this will return all of the attributes in a format that can
-            // properly be validated.
+        // Trying to do self::toArray() here will leave out keys based on the whitelist/blacklist
+        // for that model. Doing this will return all of the attributes in a format that can
+        // properly be validated.
             $this->addCastAttributesToArray(
                 $this->getAttributes(), $this->getMutatedAttributes()
             )

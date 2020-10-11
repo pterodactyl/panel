@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Nodes;
 
@@ -90,7 +83,7 @@ class NodeDeletionServiceTest extends TestCase
      */
     public function testModelCanBePassedToFunctionInPlaceOfNodeId()
     {
-        $node = factory(Node::class)->make();
+        $node = factory(Node::class)->make(['id' => 123]);
 
         $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['node_id', '=', $node->id]])->once()->andReturn(0);

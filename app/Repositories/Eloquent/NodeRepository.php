@@ -171,28 +171,4 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
         return $instance->first();
     }
-
-    /**
-     * Return the IDs of all nodes that exist in the provided locations and have the space
-     * available to support the additional disk and memory provided.
-     *
-     * @param array $locations
-     * @param int $disk
-     * @param int $memory
-     * @return \Illuminate\Support\LazyCollection
-     */
-    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): LazyCollection
-    {
-        $instance = $this->getBuilder()
-            ->select(['nodes.id', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('nodes.public', 1);
-
-        if (! empty($locations)) {
-            $instance->whereIn('nodes.location_id', $locations);
-        }
-
-        return $instance->groupBy('nodes.id')->cursor();
-    }
 }

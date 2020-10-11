@@ -9,7 +9,6 @@ use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Model;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Location;

@@ -100,7 +100,7 @@ class StartupController extends ClientApiController
             'server_id' => $server->id,
             'variable_id' => $variable->id,
         ], [
-            'variable_value' => $request->input('value'),
+            'variable_value' => $request->input('value') ?? '',
         ]);
 
         $variable = $variable->refresh();
