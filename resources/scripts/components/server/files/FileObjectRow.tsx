@@ -69,7 +69,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
                     <FontAwesomeIcon icon={faFolder}/>
                 }
             </div>
-            <div css={tw`flex-1 break-all truncate`}>
+            <div css={tw`flex-1 truncate`}>
                 {file.name}
             </div>
             {file.isFile &&

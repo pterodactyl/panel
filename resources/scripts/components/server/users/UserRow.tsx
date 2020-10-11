@@ -30,8 +30,8 @@ export default ({ subuser }: Props) => {
             <div css={tw`w-10 h-10 rounded-full bg-white border-2 border-neutral-800 overflow-hidden hidden md:block`}>
                 <img css={tw`w-full h-full`} src={`${subuser.image}?s=400`}/>
             </div>
-            <div css={tw`ml-4 flex-1`}>
-                <p css={tw`text-sm break-all`}>{subuser.email}</p>
+            <div css={tw`ml-4 flex-1 overflow-hidden`}>
+                <p css={tw`text-sm truncate`}>{subuser.email}</p>
             </div>
             <div css={tw`ml-4`}>
                 <p css={tw`font-medium text-center`}>

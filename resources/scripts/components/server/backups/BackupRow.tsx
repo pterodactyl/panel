@@ -56,7 +56,7 @@ export default ({ backup, className }: Props) => {
                             Failed
                         </span>
                         }
-                        <p css={tw`break-all truncate`}>
+                        <p css={tw`break-words truncate`}>
                             {backup.name}
                         </p>
                         {(backup.completedAt && backup.isSuccessful) &&
