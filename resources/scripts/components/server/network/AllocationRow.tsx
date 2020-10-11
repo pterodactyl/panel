@@ -15,7 +15,7 @@ import setServerAllocationNotes from '@/api/server/network/setServerAllocationNo
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 
-const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm inline-block break-all`}`;
+const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm inline-block`}`;
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
 
 interface Props {
