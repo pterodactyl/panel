@@ -86,8 +86,8 @@ class UserController extends Controller
     {
         $users = QueryBuilder::for(
             User::query()->select('users.*')
-                ->selectRaw('COUNT(subusers.id) as subuser_of_count')
-                ->selectRaw('COUNT(servers.id) as servers_count')
+                ->selectRaw('COUNT(DISTINCT(subusers.id)) as subuser_of_count')
+                ->selectRaw('COUNT(DISTINCT(servers.id)) as servers_count')
                 ->leftJoin('subusers', 'subusers.user_id', '=', 'users.id')
                 ->leftJoin('servers', 'servers.owner_id', '=', 'users.id')
                 ->groupBy('users.id')
