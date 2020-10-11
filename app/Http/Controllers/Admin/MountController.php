@@ -102,9 +102,11 @@ class MountController extends Controller
     public function create(MountFormRequest $request)
     {
         /** @var \Pterodactyl\Models\Mount $mount */
-        $mount = Mount::query()->create(array_merge($request->validated(), [
-            'uuid' => Uuid::uuid4()->toString(),
-        ]));
+        $model = (new Mount())->fill($request->validated());
+        $model->forceFill(['uuid' => Uuid::uuid4()->toString()]);
+
+        $model->saveOrFail();
+        $mount = $model->fresh();
 
         $this->alert->success('Mount was created successfully.')->flash();
 
