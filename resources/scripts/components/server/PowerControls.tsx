@@ -49,7 +49,7 @@ const PowerControls = () => {
                 <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
             </Can>
         </div>
-    )
+    );
 };
 
 export default PowerControls;
