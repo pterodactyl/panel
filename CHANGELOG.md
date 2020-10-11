@@ -3,6 +3,40 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.0.0
+Pterodactyl 1.0 represents the culmination of over two years of work, almost 2,000 commits, endless bug and feature requests, and a dream that
+has been in the making since 2013. 🎉
+
+Due to the sheer size and timeline of this release I've massively truncated the listing below. There are numerous smaller
+bug fixes and changes that would simply be too difficult to keep track of here. Please feel free to browse through the releases
+tab for this repository to see more specific changes that have been made.
+
+### Added
+* Adds a new client-facing API allowing a user to control all aspects of their individual servers, or servers
+which they have been granted access to as a subuser.
+* Adds the ability for backups to be created for a server both manually and via a scheduled task.
+* Adds the ability for users to modify their server allocations on the fly and include notes for each allocation.
+* Adds the ability for users to generate recovery tokens for 2FA protected logins which can be used in place of
+a code should their device be inaccessible.
+* Adds support for transfering servers between Nodes via the Panel.
+* Adds the ability to assign specific CPU cores to a server (CPU Pinning) process.
+* Server owners can now reinstall their assigned server egg automatically with a button on the frontend.
+
+### Changed
+* The entire user frontend has been replaced with a responsive, React backed design implemented using Tailwind CSS.
+* Replaces a large amount of complex daemon authentication logic by funneling most API calls through the Panel, and using
+JSON Web Tokens where necessary to handle one-time direct authentication with Wings.
+* Frontend server listing now includes a toggle to show or hide servers which an administrator has access to, rather
+than always showing all servers on the system when logged into an admin account.
+* We've replaced Ace Editor on the frontend with a better solution to allow lighter builds and more end-user functionality.
+* Server permissions have been overhauled to be both easier to understand in the codebase, and allows plugins to better
+hook into the permission system.
+
+### Removed
+* Removes large swaths of code complexity and confusing interface designs that caused a lot of pain to new developers
+trying to jump into the codebase. We've simplified this to stick to more established Laravel design standards to make
+it easy to parse through the project and make contributions.
+
 ## v0.7.19 (Derelict Dermodactylus)
 ### Fixed
 * **[Security]** Fixes XSS in the admin area's server owner selection.
