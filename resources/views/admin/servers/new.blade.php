@@ -158,7 +158,7 @@
                     </div>
 
                     <div class="form-group col-xs-6">
-                        <label for="pThreads">CPU Threads</label>
+                        <label for="pThreads">CPU Pinning</label>
 
                         <div>
                             <input type="text" id="pThreads" name="threads" class="form-control" value="{{ old('threads') }}" />
