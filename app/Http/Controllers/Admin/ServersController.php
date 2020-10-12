@@ -426,11 +426,6 @@ class ServersController extends Controller
      */
     public function addMount(Server $server, Mount $mount)
     {
-        /*$server->mounts()->updateOrCreate([
-            'mount_id' => $mount->id,
-            'server_id' => $server->id,
-        ]);*/
-
         $mountServer = new MountServer;
         $mountServer->mount_id = $mount->id;
         $mountServer->server_id = $server->id;
