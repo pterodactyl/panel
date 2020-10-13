@@ -1,37 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import tw from 'twin.macro';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
-import styled from 'styled-components/macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
-import Button from '@/components/elements/Button';
-import Can from '@/components/elements/Can';
+import React, { useCallback, useEffect } from 'react';
 import useSWR from 'swr';
 import getServerAllocations from '@/api/server/network/getServerAllocations';
 import { Allocation } from '@/api/server/getServer';
 import Spinner from '@/components/elements/Spinner';
-import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import useFlash from '@/plugins/useFlash';
-import { Textarea } from '@/components/elements/Input';
-import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
-import { debounce } from 'debounce';
-import InputSpinner from '@/components/elements/InputSpinner';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { ServerContext } from '@/state/server';
 import { useDeepMemoize } from '@/plugins/useDeepMemoize';
-
-const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm block`}`;
-const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
+import AllocationRow from '@/components/server/network/AllocationRow';
+import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 
 const NetworkContainer = () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const [ loading, setLoading ] = useState<false | number>(false);
-    const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), { initialData: allocations });
+    const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), {
+        initialData: allocations,
+        revalidateOnFocus: false,
+    });
 
-    const setPrimaryAllocation = (id: number) => {
+    useEffect(() => {
+        if (error) {
+            clearAndAddHttpError({ key: 'server:network', error });
+        }
+    }, [ error ]);
+
+    const setPrimaryAllocation = useCallback((id: number) => {
         clearFlashes('server:network');
 
         const initial = data;
@@ -42,77 +37,24 @@ const NetworkContainer = () => {
                 clearAndAddHttpError({ key: 'server:network', error });
                 mutate(initial, false);
             });
-    };
+    }, []);
 
-    const setAllocationNotes = debounce((id: number, notes: string) => {
-        setLoading(id);
-        clearFlashes('server:network');
-
-        setServerAllocationNotes(uuid, id, notes)
-            .then(() => mutate(data?.map(a => a.id === id ? { ...a, notes } : a), false))
-            .catch(error => {
-                clearAndAddHttpError({ key: 'server:network', error });
-            })
-            .then(() => setLoading(false));
-    }, 750);
-
-    useEffect(() => {
-        if (error) {
-            clearAndAddHttpError({ key: 'server:network', error });
-        }
-    }, [ error ]);
+    const onNotesAdded = useCallback((id: number, notes: string) => {
+        mutate(data?.map(a => a.id === id ? { ...a, notes } : a), false);
+    }, []);
 
     return (
         <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
             {!data ?
                 <Spinner size={'large'} centered/>
                 :
-                data.map(({ id, ip, port, alias, notes, isDefault }, index) => (
-                    <GreyRowBox
-                        $hoverable={false}
-                        key={`${ip}:${port}`}
-                        css={index > 0 ? tw`mt-2 overflow-x-auto` : tw`overflow-x-auto`}
-                    >
-                        <div css={tw`hidden md:block pl-4 pr-6 text-neutral-400`}>
-                            <FontAwesomeIcon icon={faNetworkWired}/>
-                        </div>
-                        <div css={tw`mr-4`}>
-                            <Code>{alias || ip}</Code>
-                            <Label>IP Address</Label>
-                        </div>
-                        <div>
-                            <Code>{port}</Code>
-                            <Label>Port</Label>
-                        </div>
-                        <div css={tw`px-8 flex-none sm:flex-1 self-start`}>
-                            <InputSpinner visible={loading === id}>
-                                <Textarea
-                                    css={tw`bg-neutral-800 hover:border-neutral-600 border-transparent`}
-                                    placeholder={'Notes'}
-                                    defaultValue={notes || undefined}
-                                    onChange={e => setAllocationNotes(id, e.currentTarget.value)}
-                                />
-                            </InputSpinner>
-                        </div>
-                        <div css={tw`w-32 text-right pr-4 sm:pr-0`}>
-                            {isDefault ?
-                                <span css={tw`bg-green-500 py-1 px-2 rounded text-green-50 text-xs`}>
-                                    Primary
-                                </span>
-                                :
-                                <Can action={'allocations.update'}>
-                                    <Button
-                                        isSecondary
-                                        size={'xsmall'}
-                                        color={'primary'}
-                                        onClick={() => setPrimaryAllocation(id)}
-                                    >
-                                        Make Primary
-                                    </Button>
-                                </Can>
-                            }
-                        </div>
-                    </GreyRowBox>
+                data.map(allocation => (
+                    <AllocationRow
+                        key={`${allocation.ip}:${allocation.port}`}
+                        allocation={allocation}
+                        onSetPrimary={setPrimaryAllocation}
+                        onNotesChanged={onNotesAdded}
+                    />
                 ))
             }
         </ServerContentBlock>

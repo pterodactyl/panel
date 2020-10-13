@@ -14,25 +14,7 @@ import { httpErrorToHuman } from '@/api/http';
 import { format } from 'date-fns';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
-import { breakpoint } from '@/theme';
-import styled from 'styled-components/macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-
-const Container = styled.div`
-    ${tw`flex flex-wrap my-10`};
-
-    & > div {
-        ${tw`w-full`};
-
-        ${breakpoint('md')`
-            width: calc(50% - 1rem);
-        `}
-
-        ${breakpoint('xl')`
-            ${tw`w-auto flex-1`};
-        `}
-    }
-`;
 
 export default () => {
     const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
@@ -67,12 +49,12 @@ export default () => {
 
     return (
         <PageContentBlock title={'Account API'}>
-            <FlashMessageRender byKey={'account'} css={tw`mb-4`}/>
-            <Container>
-                <ContentBox title={'Create API Key'}>
+            <FlashMessageRender byKey={'account'}/>
+            <div css={tw`md:flex flex-no-wrap my-10`}>
+                <ContentBox title={'Create API Key'} css={tw`flex-none w-full md:w-1/2`}>
                     <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
-                <ContentBox title={'API Keys'} css={tw`mt-8 md:mt-0 md:ml-8`}>
+                <ContentBox title={'API Keys'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
                     <SpinnerOverlay visible={loading}/>
                     <ConfirmationModal
                         visible={!!deleteIdentifier}
@@ -99,14 +81,14 @@ export default () => {
                                     css={[ tw`bg-neutral-600 flex items-center`, index > 0 && tw`mt-2` ]}
                                 >
                                     <FontAwesomeIcon icon={faKey} css={tw`text-neutral-300`}/>
-                                    <div css={tw`ml-4 flex-1`}>
-                                        <p css={tw`text-sm`}>{key.description}</p>
+                                    <div css={tw`ml-4 flex-1 overflow-hidden`}>
+                                        <p css={tw`text-sm break-words`}>{key.description}</p>
                                         <p css={tw`text-2xs text-neutral-300 uppercase`}>
                                             Last used:&nbsp;
                                             {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : 'Never'}
                                         </p>
                                     </div>
-                                    <p css={tw`text-sm ml-4`}>
+                                    <p css={tw`text-sm ml-4 hidden md:block`}>
                                         <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded`}>
                                             {key.identifier}
                                         </code>
@@ -124,7 +106,7 @@ export default () => {
                             ))
                     }
                 </ContentBox>
-            </Container>
+            </div>
         </PageContentBlock>
     );
 };

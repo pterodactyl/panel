@@ -103,7 +103,7 @@ class Schedule extends Model
      */
     public static $validationRules = [
         'server_id' => 'required|exists:servers,id',
-        'name' => 'nullable|string|max:255',
+        'name' => 'required|string|max:191',
         'cron_day_of_week' => 'required|string',
         'cron_day_of_month' => 'required|string',
         'cron_hour' => 'required|string',

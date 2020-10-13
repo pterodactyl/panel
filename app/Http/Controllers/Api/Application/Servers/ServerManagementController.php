@@ -82,7 +82,7 @@ class ServerManagementController extends ApplicationApiController
      */
     public function reinstall(ServerWriteRequest $request, Server $server): Response
     {
-        $this->reinstallServerService->reinstall($server);
+        $this->reinstallServerService->handle($server);
 
         return $this->returnNoContent();
     }

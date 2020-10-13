@@ -137,11 +137,11 @@ class User extends Model implements
      */
     public static $validationRules = [
         'uuid' => 'required|string|size:36|unique:users,uuid',
-        'email' => 'required|email|unique:users,email',
-        'external_id' => 'sometimes|nullable|string|max:255|unique:users,external_id',
-        'username' => 'required|between:1,255|unique:users,username',
-        'name_first' => 'required|string|between:1,255',
-        'name_last' => 'required|string|between:1,255',
+        'email' => 'required|email|between:1,191|unique:users,email',
+        'external_id' => 'sometimes|nullable|string|max:191|unique:users,external_id',
+        'username' => 'required|between:1,191|unique:users,username',
+        'name_first' => 'required|string|between:1,191',
+        'name_last' => 'required|string|between:1,191',
         'password' => 'sometimes|nullable|string',
         'root_admin' => 'boolean',
         'language' => 'string',

@@ -129,7 +129,7 @@ class DatabaseController extends ClientApiController
      */
     public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
     {
-        $this->managementService->delete($database->id);
+        $this->managementService->delete($database);
 
         return Response::create('', Response::HTTP_NO_CONTENT);
     }

@@ -44,7 +44,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                             prefixing the path with an exclamation point.
                         `}
                     >
-                        <FormikField as={Textarea} name={'ignored'} css={tw`h-32`}/>
+                        <FormikField as={Textarea} name={'ignored'} rows={6}/>
                     </FormikFieldWrapper>
                 </div>
                 <div css={tw`flex justify-end`}>
@@ -87,14 +87,14 @@ export default () => {
                 onSubmit={submit}
                 initialValues={{ name: '', ignored: '' }}
                 validationSchema={object().shape({
-                    name: string().max(255),
+                    name: string().max(191),
                     ignored: string(),
                 })}
             >
                 <ModalContent appear visible={visible} onDismissed={() => setVisible(false)}/>
             </Formik>
             }
-            <Button onClick={() => setVisible(true)}>
+            <Button css={tw`w-full sm:w-auto`} onClick={() => setVisible(true)}>
                 Create backup
             </Button>
         </>

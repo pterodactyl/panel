@@ -38,13 +38,13 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
 
     return (
         (!canReadContents || (file.isFile && !file.isEditable())) ?
-            <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default`}>
+            <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default overflow-hidden truncate`}>
                 {children}
             </div>
             :
             <NavLink
                 to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
-                css={tw`flex flex-1 text-neutral-300 no-underline p-3`}
+                css={tw`flex flex-1 text-neutral-300 no-underline p-3 overflow-hidden truncate`}
                 onClick={onRowClick}
             >
                 {children}
@@ -69,7 +69,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
                     <FontAwesomeIcon icon={faFolder}/>
                 }
             </div>
-            <div css={tw`flex-1`}>
+            <div css={tw`flex-1 truncate`}>
                 {file.name}
             </div>
             {file.isFile &&
@@ -92,4 +92,11 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
     </Row>
 );
 
-export default memo(FileObjectRow, isEqual);
+export default memo(FileObjectRow, (prevProps, nextProps) => {
+    /* eslint-disable @typescript-eslint/no-unused-vars */
+    const { isArchiveType, isEditable, ...prevFile } = prevProps.file;
+    const { isArchiveType: nextIsArchiveType, isEditable: nextIsEditable, ...nextFile } = nextProps.file;
+    /* eslint-enable @typescript-eslint/no-unused-vars */
+
+    return isEqual(prevFile, nextFile);
+});

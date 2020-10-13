@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { ITerminalOptions, Terminal } from 'xterm';
 import * as TerminalFit from 'xterm/lib/addons/fit/fit';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -7,6 +7,8 @@ import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
 import tw from 'twin.macro';
 import 'xterm/dist/xterm.css';
+import useEventListener from '@/plugins/useEventListener';
+import { debounce } from 'debounce';
 
 const theme = {
     background: 'transparent',
@@ -51,8 +53,7 @@ const TerminalDiv = styled.div`
 
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
-    const [ terminalElement, setTerminalElement ] = useState<HTMLDivElement | null>(null);
-    const useRef = useCallback(node => setTerminalElement(node), []);
+    const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
@@ -79,8 +80,8 @@ export default () => {
     };
 
     useEffect(() => {
-        if (connected && terminalElement && !terminal.element) {
-            terminal.open(terminalElement);
+        if (connected && ref.current && !terminal.element) {
+            terminal.open(ref.current);
 
             // @see https://github.com/xtermjs/xterm.js/issues/2265
             // @see https://github.com/xtermjs/xterm.js/issues/2230
@@ -97,7 +98,13 @@ export default () => {
                 return true;
             });
         }
-    }, [ terminal, connected, terminalElement ]);
+    }, [ terminal, connected ]);
+
+    const fit = debounce(() => {
+        TerminalFit.fit(terminal);
+    }, 100);
+
+    useEventListener('resize', () => fit());
 
     useEffect(() => {
         if (connected && instance) {
@@ -134,7 +141,7 @@ export default () => {
                     maxHeight: '32rem',
                 }}
             >
-                <TerminalDiv id={'terminal'} ref={useRef}/>
+                <TerminalDiv id={'terminal'} ref={ref}/>
             </div>
             {canSendCommands &&
             <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex`}>

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import tw from 'twin.macro';
+import isEqual from 'react-fast-compare';
 
 interface Props {
     icon?: IconProp;
@@ -27,4 +28,4 @@ const TitledGreyBox = ({ icon, title, children, className }: Props) => (
     </div>
 );
 
-export default TitledGreyBox;
+export default memo(TitledGreyBox, isEqual);

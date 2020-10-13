@@ -70,7 +70,7 @@
                         <div class="col-md-12">
                             <label for="pLongModal" class="form-label">Description</label>
                             <textarea name="long" id="pLongModal" class="form-control" rows="4"></textarea>
-                            <p class="text-muted small">A longer description of this location. Must be less than 255 characters.</p>
+                            <p class="text-muted small">A longer description of this location. Must be less than 191 characters.</p>
                         </div>
                     </div>
                 </div>

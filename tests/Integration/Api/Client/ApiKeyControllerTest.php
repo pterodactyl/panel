@@ -121,6 +121,8 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 
     /**
      * Test that a bad request results in a validation error being returned by the API.
+     *
+     * @see https://github.com/pterodactyl/panel/issues/2457
      */
     public function testValidationErrorIsReturnedForBadRequests()
     {
@@ -135,6 +137,15 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonPath('errors.0.meta.rule', 'required');
         $response->assertJsonPath('errors.0.detail', 'The description field is required.');
+
+        $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
+            'description' => str_repeat('a', 501),
+            'allowed_ips' => ['127.0.0.1'],
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonPath('errors.0.meta.rule', 'max');
+        $response->assertJsonPath('errors.0.detail', 'The description may not be greater than 500 characters.');
     }
 
     /**

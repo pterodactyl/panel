@@ -40,31 +40,35 @@ export default ({ backup, className }: Props) => {
     });
 
     return (
-        <GreyRowBox css={tw`flex items-center`} className={className}>
-            <div css={tw`mr-4`}>
-                {backup.completedAt ?
-                    <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300 hidden md:block`}/>
-                    :
-                    <Spinner size={'small'}/>
-                }
-            </div>
-            <div css={tw`flex-1`}>
-                <p css={tw`text-sm mb-1`}>
-                    {!backup.isSuccessful &&
-                    <span css={tw`bg-red-500 py-px px-2 rounded-full text-white text-xs uppercase border border-red-600 mr-2`}>
-                        Failed
-                    </span>
+        <GreyRowBox css={tw`flex-wrap md:flex-no-wrap items-center`} className={className}>
+            <div css={tw`flex items-center truncate w-full md:flex-1`}>
+                <div css={tw`mr-4`}>
+                    {backup.completedAt ?
+                        <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
+                        :
+                        <Spinner size={'small'}/>
                     }
-                    {backup.name}
-                    {(backup.completedAt && backup.isSuccessful) &&
-                    <span css={tw`ml-3 text-neutral-300 text-xs font-thin hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
-                    }
-                </p>
-                <p css={tw`text-xs text-neutral-400 font-mono hidden md:block`}>
-                    {backup.uuid}
-                </p>
+                </div>
+                <div css={tw`flex flex-col truncate`}>
+                    <div css={tw`flex items-center text-sm mb-1`}>
+                        {!backup.isSuccessful &&
+                        <span css={tw`bg-red-500 py-px px-2 rounded-full text-white text-xs uppercase border border-red-600 mr-2`}>
+                            Failed
+                        </span>
+                        }
+                        <p css={tw`break-words truncate`}>
+                            {backup.name}
+                        </p>
+                        {(backup.completedAt && backup.isSuccessful) &&
+                        <span css={tw`ml-3 text-neutral-300 text-xs font-thin hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
+                        }
+                    </div>
+                    <p css={tw`mt-1 md:mt-0 text-xs text-neutral-400 font-mono truncate`}>
+                        {backup.uuid}
+                    </p>
+                </div>
             </div>
-            <div css={tw`ml-8 text-center`}>
+            <div css={tw`flex-1 md:flex-none md:w-48 mt-4 md:mt-0 md:ml-8 md:text-center`}>
                 <p
                     title={format(backup.createdAt, 'ddd, MMMM do, yyyy HH:mm:ss')}
                     css={tw`text-sm`}
@@ -74,7 +78,7 @@ export default ({ backup, className }: Props) => {
                 <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>Created</p>
             </div>
             <Can action={'backup.download'}>
-                <div css={tw`ml-6`} style={{ marginRight: '-0.5rem' }}>
+                <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ?
                         <div css={tw`p-2 invisible`}>
                             <FontAwesomeIcon icon={faEllipsisH}/>

@@ -1,17 +1,9 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class ServerConfigurationStructureService
 {
@@ -23,21 +15,12 @@ class ServerConfigurationStructureService
     private $environment;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * ServerConfigurationStructureService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      * @param \Pterodactyl\Services\Servers\EnvironmentService $environment
      */
-    public function __construct(
-        ServerRepositoryInterface $repository,
-        EnvironmentService $environment
-    ) {
-        $this->repository = $repository;
+    public function __construct(EnvironmentService $environment)
+    {
         $this->environment = $environment;
     }
 
@@ -50,8 +33,6 @@ class ServerConfigurationStructureService
      * @param \Pterodactyl\Models\Server $server
      * @param bool $legacy
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(Server $server, bool $legacy = false): array
     {
@@ -72,7 +53,7 @@ class ServerConfigurationStructureService
     {
         return [
             'uuid' => $server->uuid,
-            'suspended' => (bool) $server->suspended,
+            'suspended' => $server->suspended,
             'environment' => $this->environment->handle($server),
             'invocation' => $server->startup,
             'skip_egg_scripts' => $server->skip_scripts,
@@ -112,8 +93,6 @@ class ServerConfigurationStructureService
      *
      * @param \Pterodactyl\Models\Server $server
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     protected function returnLegacyFormat(Server $server)
     {

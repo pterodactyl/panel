@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Cake\Chronos\Chronos;
 use Illuminate\Support\Str;
@@ -7,6 +8,7 @@ use Pterodactyl\Models\Node;
 use Faker\Generator as Faker;
 use Pterodactyl\Models\ApiKey;
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -35,8 +37,8 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker $faker) {
         'installed' => 1,
         'database_limit' => null,
         'allocation_limit' => null,
-        'created_at' => \Carbon\Carbon::now(),
-        'updated_at' => \Carbon\Carbon::now(),
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now(),
     ];
 });
 
@@ -160,8 +162,8 @@ $factory->define(Pterodactyl\Models\Database::class, function (Faker $faker) {
         'username' => str_random(10),
         'remote' => '%',
         'password' => $password ?: bcrypt('test123'),
-        'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
-        'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
+        'created_at' => Carbon::now()->toDateTimeString(),
+        'updated_at' => Carbon::now()->toDateTimeString(),
     ];
 });
 
@@ -190,7 +192,7 @@ $factory->define(Pterodactyl\Models\ApiKey::class, function (Faker $faker) {
         'token' => $token ?: $token = encrypt(str_random(Pterodactyl\Models\ApiKey::KEY_LENGTH)),
         'allowed_ips' => null,
         'memo' => 'Test Function Key',
-        'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
-        'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
+        'created_at' => Carbon::now()->toDateTimeString(),
+        'updated_at' => Carbon::now()->toDateTimeString(),
     ];
 });

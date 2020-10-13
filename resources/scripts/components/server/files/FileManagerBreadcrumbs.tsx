@@ -45,13 +45,15 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
 
     return (
         <div css={tw`flex items-center text-sm mb-4 text-neutral-500`}>
-            {(files && files.length > 0 && !params?.action) &&
-            <FileActionCheckbox
-                type={'checkbox'}
-                css={tw`mx-4`}
-                checked={selectedFilesLength === (files ? files.length : -1)}
-                onChange={onSelectAllClick}
-            />
+            {(files && files.length > 0 && !params?.action) ?
+                <FileActionCheckbox
+                    type={'checkbox'}
+                    css={tw`mx-4`}
+                    checked={selectedFilesLength === (files ? files.length : -1)}
+                    onChange={onSelectAllClick}
+                />
+                :
+                <div css={tw`w-12`}/>
             }
             /<span css={tw`px-1 text-neutral-300`}>home</span>/
             <NavLink

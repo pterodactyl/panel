@@ -41,7 +41,7 @@ class Location extends Model
      */
     public static $validationRules = [
         'short' => 'required|string|between:1,60|unique:locations,short',
-        'long' => 'string|nullable|between:1,255',
+        'long' => 'string|nullable|between:1,191',
     ];
 
     /**

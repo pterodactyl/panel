@@ -69,6 +69,7 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
             {({ isSubmitting }) => (
                 <Modal
                     {...props}
+                    top={false}
                     onDismissed={dismiss}
                     dismissable={!isSubmitting}
                     showSpinnerOverlay={loading || isSubmitting}

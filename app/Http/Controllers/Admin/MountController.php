@@ -2,10 +2,12 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Mount;
+use Pterodactyl\Models\Location;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Mounts\MountUpdateService;
 use Pterodactyl\Http\Requests\Admin\MountFormRequest;
@@ -38,47 +40,23 @@ class MountController extends Controller
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Mounts\MountCreationService
-     */
-    protected $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Mounts\MountDeletionService
-     */
-    protected $deletionService;
-
-    /**
-     * @var \Pterodactyl\Services\Mounts\MountUpdateService
-     */
-    protected $updateService;
-
-    /**
      * MountController constructor.
      *
      * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $nestRepository
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $locationRepository
      * @param \Pterodactyl\Repositories\Eloquent\MountRepository $repository
-     * @param \Pterodactyl\Services\Mounts\MountCreationService $creationService
-     * @param \Pterodactyl\Services\Mounts\MountDeletionService $deletionService
-     * @param \Pterodactyl\Services\Mounts\MountUpdateService $updateService
      */
     public function __construct(
         AlertsMessageBag $alert,
         NestRepositoryInterface $nestRepository,
         LocationRepositoryInterface $locationRepository,
-        MountRepository $repository,
-        MountCreationService $creationService,
-        MountDeletionService $deletionService,
-        MountUpdateService $updateService
+        MountRepository $repository
     ) {
         $this->alert = $alert;
         $this->nestRepository = $nestRepository;
         $this->locationRepository = $locationRepository;
         $this->repository = $repository;
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->updateService = $updateService;
     }
 
     /**
@@ -103,11 +81,8 @@ class MountController extends Controller
      */
     public function view($id)
     {
-        $nests = $this->nestRepository->all();
-        $nests->load('eggs');
-
-        $locations = $this->locationRepository->all();
-        $locations->load('nodes');
+        $nests = Nest::query()->with('eggs')->get();
+        $locations = Location::query()->with('nodes')->get();
 
         return view('admin.mounts.view', [
             'mount' => $this->repository->getWithRelations($id),
@@ -126,7 +101,13 @@ class MountController extends Controller
      */
     public function create(MountFormRequest $request)
     {
-        $mount = $this->creationService->handle($request->normalize());
+        /** @var \Pterodactyl\Models\Mount $mount */
+        $model = (new Mount())->fill($request->validated());
+        $model->forceFill(['uuid' => Uuid::uuid4()->toString()]);
+
+        $model->saveOrFail();
+        $mount = $model->fresh();
+
         $this->alert->success('Mount was created successfully.')->flash();
 
         return redirect()->route('admin.mounts.view', $mount->id);
@@ -147,7 +128,8 @@ class MountController extends Controller
             return $this->delete($mount);
         }
 
-        $this->updateService->handle($mount->id, $request->normalize());
+        $mount->forceFill($request->validated())->save();
+
         $this->alert->success('Mount was updated successfully.')->flash();
 
         return redirect()->route('admin.mounts.view', $mount->id);
@@ -163,15 +145,9 @@ class MountController extends Controller
      */
     public function delete(Mount $mount)
     {
-        try {
-            $this->deletionService->handle($mount->id);
+        $mount->delete();
 
-            return redirect()->route('admin.mounts');
-        } catch (DisplayException $ex) {
-            $this->alert->danger($ex->getMessage())->flash();
-        }
-
-        return redirect()->route('admin.mounts.view', $mount->id);
+        return redirect()->route('admin.mounts');
     }
 
     /**
@@ -188,10 +164,11 @@ class MountController extends Controller
         ]);
 
         $eggs = $validatedData['eggs'] ?? [];
-        if (sizeof($eggs) > 0) {
-            $mount->eggs()->attach(array_map('intval', $eggs));
-            $this->alert->success('Mount was updated successfully.')->flash();
+        if (count($eggs) > 0) {
+            $mount->eggs()->attach($eggs);
         }
+
+        $this->alert->success('Mount was updated successfully.')->flash();
 
         return redirect()->route('admin.mounts.view', $mount->id);
     }
@@ -205,15 +182,14 @@ class MountController extends Controller
      */
     public function addNodes(Request $request, Mount $mount)
     {
-        $validatedData = $request->validate([
-            'nodes' => 'required|exists:nodes,id',
-        ]);
+        $data = $request->validate(['nodes' => 'required|exists:nodes,id']);
 
-        $nodes = $validatedData['nodes'] ?? [];
-        if (sizeof($nodes) > 0) {
-            $mount->nodes()->attach(array_map('intval', $nodes));
-            $this->alert->success('Mount was updated successfully.')->flash();
+        $nodes = $data['nodes'] ?? [];
+        if (count($nodes) > 0) {
+            $mount->nodes()->attach($nodes);
         }
+
+        $this->alert->success('Mount was updated successfully.')->flash();
 
         return redirect()->route('admin.mounts.view', $mount->id);
     }

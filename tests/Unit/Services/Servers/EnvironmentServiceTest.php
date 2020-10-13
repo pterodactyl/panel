@@ -6,19 +6,13 @@ use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Support\Collection;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EnvironmentServiceTest extends TestCase
 {
-    const CONFIG_MAPPING = 'pterodactyl.environment_variables';
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository|\Mockery\Mock
-     */
-    private $config;
-
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface|\Mockery\Mock
      */
@@ -30,9 +24,7 @@ class EnvironmentServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->config = m::mock(Repository::class);
-        $this->repository = m::mock(ServerRepositoryInterface::class);
+        config()->set('pterodactyl.environment_variables', []);
     }
 
     /**
@@ -55,15 +47,17 @@ class EnvironmentServiceTest extends TestCase
      */
     public function testProcessShouldReturnDefaultEnvironmentVariablesForAServer()
     {
-        $model = $this->getServerModel();
-        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([]);
-        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([
-            'TEST_VARIABLE' => 'Test Variable',
+        $model = $this->getServerModel([
+            'TEST_VARIABLE' => factory(EggVariable::class)->make([
+                'id' => 987,
+                'env_variable' => 'TEST_VARIABLE',
+                'default_value' => 'Test Variable',
+            ]),
         ]);
 
         $response = $this->getService()->handle($model);
         $this->assertNotEmpty($response);
-        $this->assertEquals(4, count($response));
+        $this->assertCount(4, $response);
         $this->assertArrayHasKey('TEST_VARIABLE', $response);
         $this->assertSame('Test Variable', $response['TEST_VARIABLE']);
     }
@@ -73,10 +67,7 @@ class EnvironmentServiceTest extends TestCase
      */
     public function testProcessShouldReturnKeySetAtRuntime()
     {
-        $model = $this->getServerModel();
-        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([]);
-        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);
-
+        $model = $this->getServerModel([]);
         $service = $this->getService();
         $service->setEnvironmentKey('TEST_VARIABLE', function ($server) {
             return $server->uuidShort;
@@ -94,12 +85,11 @@ class EnvironmentServiceTest extends TestCase
      */
     public function testProcessShouldAllowOverwritingVariablesWithConfigurationFile()
     {
-        $model = $this->getServerModel();
-        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);
-        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([
+        config()->set('pterodactyl.environment_variables', [
             'P_SERVER_UUID' => 'name',
         ]);
 
+        $model = $this->getServerModel([]);
         $response = $this->getService()->handle($model);
 
         $this->assertNotEmpty($response);
@@ -113,14 +103,13 @@ class EnvironmentServiceTest extends TestCase
      */
     public function testVariablesSetInConfigurationAllowForClosures()
     {
-        $model = $this->getServerModel();
-        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([
+        config()->set('pterodactyl.environment_variables', [
             'P_SERVER_UUID' => function ($server) {
                 return $server->id * 2;
             },
         ]);
-        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);
 
+        $model = $this->getServerModel([]);
         $response = $this->getService()->handle($model);
 
         $this->assertNotEmpty($response);
@@ -135,12 +124,11 @@ class EnvironmentServiceTest extends TestCase
      */
     public function testProcessShouldAllowOverwritingDefaultVariablesWithRuntimeProvided()
     {
-        $model = $this->getServerModel();
-        $this->config->shouldReceive('get')->with(self::CONFIG_MAPPING, [])->once()->andReturn([
+        config()->set('pterodactyl.environment_variables', [
             'P_SERVER_UUID' => 'overwritten-config',
         ]);
-        $this->repository->shouldReceive('getVariablesWithValues')->with($model->id)->once()->andReturn([]);
 
+        $model = $this->getServerModel([]);
         $service = $this->getService();
         $service->setEnvironmentKey('P_SERVER_UUID', function ($model) {
             return 'overwritten';
@@ -161,18 +149,25 @@ class EnvironmentServiceTest extends TestCase
      */
     private function getService(): EnvironmentService
     {
-        return new EnvironmentService($this->config, $this->repository);
+        return new EnvironmentService;
     }
 
     /**
      * Return a server model with a location relationship to be used in the tests.
      *
+     * @param array $variables
      * @return \Pterodactyl\Models\Server
      */
-    private function getServerModel(): Server
+    private function getServerModel(array $variables): Server
     {
-        return factory(Server::class)->make([
+        /** @var \Pterodactyl\Models\Server $server */
+        $server = factory(Server::class)->make([
+            'id' => 123,
             'location' => factory(Location::class)->make(),
         ]);
+
+        $server->setRelation('variables', Collection::make($variables));
+
+        return $server;
     }
 }

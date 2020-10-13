@@ -56,7 +56,7 @@ class Mount extends Model
      */
     public static $validationRules = [
         'name' => 'required|string|min:2|max:64|unique:mounts,name',
-        'description' => 'nullable|string|max:255',
+        'description' => 'nullable|string|max:191',
         'source' => 'required|string',
         'target' => 'required|string',
         'read_only' => 'sometimes|boolean',

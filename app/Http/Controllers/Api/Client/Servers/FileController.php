@@ -70,7 +70,7 @@ class FileController extends ClientApiController
     {
         $contents = $this->fileRepository
             ->setServer($server)
-            ->getDirectory($request->get('directory') ?? '/');
+            ->getDirectory(urlencode(urldecode($request->get('directory') ?? '/')));
 
         return $this->fractal->collection($contents)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -91,7 +91,7 @@ class FileController extends ClientApiController
     {
         return new Response(
             $this->fileRepository->setServer($server)->getContent(
-                $request->get('file'), config('pterodactyl.files.max_edit_size')
+                urlencode(urldecode($request->get('file'))), config('pterodactyl.files.max_edit_size')
             ),
             Response::HTTP_OK,
             ['Content-Type' => 'text/plain']

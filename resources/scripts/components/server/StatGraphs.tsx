@@ -142,24 +142,28 @@ export default () => {
 
     return (
         <div css={tw`flex flex-wrap mt-4`}>
-            <TitledGreyBox title={'Memory usage'} icon={faMemory} css={tw`md:flex-1 w-full md:w-1/2 md:mr-2`}>
-                {status !== 'offline' ?
-                    <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
-                    :
-                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
-                    </p>
-                }
-            </TitledGreyBox>
-            <TitledGreyBox title={'CPU usage'} icon={faMicrochip} css={tw`md:flex-1 w-full md:w-1/2 md:ml-2 mt-4 md:mt-0`}>
-                {status !== 'offline' ?
-                    <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
-                    :
-                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
-                    </p>
-                }
-            </TitledGreyBox>
+            <div css={tw`w-full sm:w-1/2`}>
+                <TitledGreyBox title={'Memory usage'} icon={faMemory} css={tw`mr-0 sm:mr-4`}>
+                    {status !== 'offline' ?
+                        <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
+                        :
+                        <p css={tw`text-xs text-neutral-400 text-center p-3`}>
+                            Server is offline.
+                        </p>
+                    }
+                </TitledGreyBox>
+            </div>
+            <div css={tw`w-full sm:w-1/2 mt-4 sm:mt-0`}>
+                <TitledGreyBox title={'CPU usage'} icon={faMicrochip} css={tw`ml-0 sm:ml-4`}>
+                    {status !== 'offline' ?
+                        <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
+                        :
+                        <p css={tw`text-xs text-neutral-400 text-center p-3`}>
+                            Server is offline.
+                        </p>
+                    }
+                </TitledGreyBox>
+            </div>
         </div>
     );
 };
