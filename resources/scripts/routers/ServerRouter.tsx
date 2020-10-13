@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactGA from 'react-ga';
-import { NavLink, Route, RouteComponentProps, Switch, Redirect } from 'react-router-dom';
+import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
 import TransitionRouter from '@/TransitionRouter';
@@ -123,7 +123,6 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                         <>
                             <TransitionRouter>
                                 <Switch location={location}>
-                                    <Redirect from="/:url*(/+)" to={location.pathname.slice(0, -1)} />
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
                                     <Route
                                         path={`${match.path}/files`}

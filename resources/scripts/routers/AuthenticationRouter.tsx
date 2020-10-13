@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga';
-import { Route, RouteComponentProps, Switch, Redirect } from 'react-router-dom';
+import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import LoginContainer from '@/components/auth/LoginContainer';
 import ForgotPasswordContainer from '@/components/auth/ForgotPasswordContainer';
 import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
@@ -15,7 +15,6 @@ export default ({ location, history, match }: RouteComponentProps) => {
     return (
         <div className={'pt-8 xl:pt-32'}>
             <Switch location={location}>
-                <Redirect from="/:url*(/+)" to={location.pathname.slice(0, -1)} />
                 <Route path={`${match.path}/login`} component={LoginContainer} exact/>
                 <Route path={`${match.path}/login/checkpoint`} component={LoginCheckpointContainer}/>
                 <Route path={`${match.path}/password`} component={ForgotPasswordContainer} exact/>
