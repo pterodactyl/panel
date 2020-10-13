@@ -3,6 +3,19 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.0.1
+### Fixed
+* Fixes 500 error when mounting a mount to a server, and other related errors when handling mounts.
+* Ensures that `server_transfers` database is deleted if it already exists to avoid unnecessary error.
+* Fixes servers getting marked as "not installed" when modifying their startup arguments.
+* Fixes filemanager breadcrumbs being set incorrectly when navigating between files and folders.
+
+### Changed
+* Change the requests per minute from 240 to 720 for the client API to avoid unecessarily displaying
+"Too Many Requests" errors.
+* Added error output to certain commands that will output and terminate the command execution if the database
+migrations have not been run correctly for the instance.
+
 ## v1.0.0
 Pterodactyl 1.0 represents the culmination of over two years of work, almost 2,000 commits, endless bug and feature requests, and a dream that
 has been in the making since 2013. 🎉
