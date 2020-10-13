@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga';
-import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { NavLink, Route, RouteComponentProps, Switch, Redirect } from 'react-router-dom';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
@@ -27,6 +27,7 @@ export default ({ location }: RouteComponentProps) => {
             }
             <TransitionRouter>
                 <Switch location={location}>
+                    <Redirect from="/:url*(/+)" to={location.pathname.slice(0, -1)} />
                     <Route path={'/'} component={DashboardContainer} exact />
                     <Route path={'/account'} component={AccountOverviewContainer} exact/>
                     <Route path={'/account/api'} component={AccountApiContainer} exact/>

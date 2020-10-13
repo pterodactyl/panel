@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\MountServer;
 use Prologue\Alerts\AlertsMessageBag;
 use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
@@ -419,17 +420,16 @@ class ServersController extends Controller
      *
      * @param Server $server
      * @param \Pterodactyl\Models\Mount $mount
-     * @return \Illuminate\Http\RedirectResponse
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException|\Throwable
      */
     public function addMount(Server $server, Mount $mount)
     {
-        $server->mounts()->updateOrCreate([
-            'mount_id' => $mount->id,
-            'server_id' => $server->id,
-        ]);
+        $mountServer = new MountServer;
+        $mountServer->mount_id = $mount->id;
+        $mountServer->server_id = $server->id;
+        $mountServer->saveOrFail();
 
         $data = $this->serverConfigurationStructureService->handle($server);
 
@@ -458,10 +458,7 @@ class ServersController extends Controller
      */
     public function deleteMount(Server $server, Mount $mount)
     {
-        $server->mounts()
-            ->where('mount_id', $mount->id)
-            ->where('server_id', $server->id)
-            ->delete();
+        MountServer::where('mount_id', $mount->id)->where('server_id', $server->id)->delete();
 
         $data = $this->serverConfigurationStructureService->handle($server);
 
