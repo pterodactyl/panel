@@ -30,7 +30,7 @@ import StartupContainer from '@/components/server/startup/StartupContainer';
 import requireServerPermission from '@/hoc/requireServerPermission';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
-    const { rootAdmin } = useStoreState(state => state.user.data!);
+    const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ error, setError ] = useState('');
     const [ installing, setInstalling ] = useState(false);
 

@@ -73,7 +73,7 @@ class ProcessScheduleService
         $this->taskRepository->update($task->id, ['is_queued' => true]);
 
         $this->dispatcher->dispatch(
-            (new RunTaskJob($task->id, $schedule->id))->delay($task->time_offset)
+            (new RunTaskJob($task))->delay($task->time_offset)
         );
     }
 }

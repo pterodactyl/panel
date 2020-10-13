@@ -12,6 +12,11 @@ class MountServer extends Model
     protected $table = 'mount_server';
 
     /**
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * @var null
      */
     protected $primaryKey = null;

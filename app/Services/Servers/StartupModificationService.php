@@ -2,13 +2,13 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Arr;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\ServerVariable;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Traits\Services\HasUserLevels;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class StartupModificationService
 {
@@ -20,62 +20,20 @@ class StartupModificationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    private $eggRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
-     */
-    private $environmentService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface
-     */
-    private $serverVariableRepository;
-
-    /**
      * @var \Pterodactyl\Services\Servers\VariableValidatorService
      */
     private $validatorService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
-     */
-    private $structureService;
-
-    /**
      * StartupModificationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $eggRepository
-     * @param \Pterodactyl\Services\Servers\EnvironmentService $environmentService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $structureService
-     * @param \Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface $serverVariableRepository
      * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
      */
-    public function __construct(
-        ConnectionInterface $connection,
-        EggRepositoryInterface $eggRepository,
-        EnvironmentService $environmentService,
-        ServerRepositoryInterface $repository,
-        ServerConfigurationStructureService $structureService,
-        ServerVariableRepositoryInterface $serverVariableRepository,
-        VariableValidatorService $validatorService
-    ) {
+    public function __construct(ConnectionInterface $connection, VariableValidatorService $validatorService)
+    {
         $this->connection = $connection;
-        $this->eggRepository = $eggRepository;
-        $this->environmentService = $environmentService;
-        $this->repository = $repository;
-        $this->serverVariableRepository = $serverVariableRepository;
         $this->validatorService = $validatorService;
-        $this->structureService = $structureService;
     }
 
     /**
@@ -85,34 +43,42 @@ class StartupModificationService
      * @param array $data
      * @return \Pterodactyl\Models\Server
      *
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function handle(Server $server, array $data): Server
     {
-        $this->connection->beginTransaction();
-        if (! is_null(array_get($data, 'environment'))) {
-            $this->validatorService->setUserLevel($this->getUserLevel());
-            $results = $this->validatorService->handle(array_get($data, 'egg_id', $server->egg_id), array_get($data, 'environment', []));
+        return $this->connection->transaction(function () use ($server, $data) {
+            if (! empty($data['environment'])) {
+                $egg = $this->isUserLevel(User::USER_LEVEL_ADMIN) ? ($data['egg_id'] ?? $server->egg_id) : $server->egg_id;
 
-            $results->each(function ($result) use ($server) {
-                $this->serverVariableRepository->withoutFreshModel()->updateOrCreate([
-                    'server_id' => $server->id,
-                    'variable_id' => $result->id,
-                ], [
-                    'variable_value' => $result->value ?? '',
-                ]);
-            });
-        }
+                $results = $this->validatorService
+                    ->setUserLevel($this->getUserLevel())
+                    ->handle($egg, $data['environment']);
 
-        if ($this->isUserLevel(User::USER_LEVEL_ADMIN)) {
-            $this->updateAdministrativeSettings($data, $server);
-        }
+                foreach ($results as $result) {
+                    ServerVariable::query()->updateOrCreate(
+                        [
+                            'server_id' => $server->id,
+                            'variable_id' => $result->id,
+                        ],
+                        ['variable_value' => $result->value ?? '']
+                    );
+                }
+            }
 
-        $this->connection->commit();
+            if ($this->isUserLevel(User::USER_LEVEL_ADMIN)) {
+                $this->updateAdministrativeSettings($data, $server);
+            }
 
-        return $server;
+            // Calling ->refresh() rather than ->fresh() here causes it to return the
+            // variables as triplicates for some reason? Not entirely sure, should dig
+            // in more to figure it out, but luckily we have a test case covering this
+            // specific call so we can be assured we're not breaking it _here_ at least.
+            //
+            // TODO(dane): this seems like a red-flag for the code powering the relationship
+            //  that should be looked into more.
+            return $server->fresh();
+        });
     }
 
     /**
@@ -120,28 +86,25 @@ class StartupModificationService
      *
      * @param array $data
      * @param \Pterodactyl\Models\Server $server
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    private function updateAdministrativeSettings(array $data, Server &$server)
+    protected function updateAdministrativeSettings(array $data, Server &$server)
     {
-        if (
-            is_digit(array_get($data, 'egg_id'))
-            && $data['egg_id'] != $server->egg_id
-            && is_null(array_get($data, 'nest_id'))
-        ) {
-            $egg = $this->eggRepository->setColumns(['id', 'nest_id'])->find($data['egg_id']);
-            $data['nest_id'] = $egg->nest_id;
+        $eggId = Arr::get($data, 'egg_id');
+
+        if (is_digit($eggId) && $server->egg_id !== (int)$eggId) {
+            /** @var \Pterodactyl\Models\Egg $egg */
+            $egg = Egg::query()->findOrFail($data['egg_id']);
+
+            $server = $server->forceFill([
+                'egg_id' => $egg->id,
+                'nest_id' => $egg->nest_id,
+            ]);
         }
 
-        $server = $this->repository->update($server->id, [
-            'installed' => 0,
-            'startup' => array_get($data, 'startup', $server->startup),
-            'nest_id' => array_get($data, 'nest_id', $server->nest_id),
-            'egg_id' => array_get($data, 'egg_id', $server->egg_id),
-            'skip_scripts' => array_get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
-            'image' => array_get($data, 'docker_image', $server->image),
-        ]);
+        $server->fill([
+            'startup' => $data['startup'] ?? $server->startup,
+            'skip_scripts' => $data['skip_scripts'] ?? isset($data['skip_scripts']),
+            'image' => $data['docker_image'] ?? $server->image,
+        ])->save();
     }
 }

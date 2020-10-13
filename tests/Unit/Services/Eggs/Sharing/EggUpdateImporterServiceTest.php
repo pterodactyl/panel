@@ -62,7 +62,7 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testEggIsUpdated()
     {
-        $egg = factory(Egg::class)->make();
+        $egg = factory(Egg::class)->make(['id' => 123]);
         $variable = factory(EggVariable::class)->make();
 
         $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
@@ -91,7 +91,7 @@ class EggUpdateImporterServiceTest extends TestCase
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->service->handle($egg->id, $this->file);
+        $this->service->handle($egg, $this->file);
         $this->assertTrue(true);
     }
 
@@ -101,7 +101,7 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testVariablesMissingFromImportAreDeleted()
     {
-        $egg = factory(Egg::class)->make();
+        $egg = factory(Egg::class)->make(['id' => 123]);
         $variable1 = factory(EggVariable::class)->make();
         $variable2 = factory(EggVariable::class)->make();
 
@@ -136,7 +136,7 @@ class EggUpdateImporterServiceTest extends TestCase
 
         $this->connection->shouldReceive('commit')->withNoArgs()->once()->andReturnNull();
 
-        $this->service->handle($egg->id, $this->file);
+        $this->service->handle($egg, $this->file);
         $this->assertTrue(true);
     }
 
@@ -145,13 +145,13 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfFileIsInvalid()
     {
-        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_NO_FILE);
-        try {
-            $this->service->handle(1234, $this->file);
-        } catch (PterodactylException $exception) {
-            $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('exceptions.nest.importer.file_error'), $exception->getMessage());
-        }
+        $egg = factory(Egg::class)->make(['id' => 123]);
+
+        $this->expectException(InvalidFileUploadException::class);
+        $this->expectExceptionMessageMatches('/^The selected file \["test\.txt"\] was not in a valid format to import\./');
+        $file = new UploadedFile('test.txt', 'original.txt', 'application/json', UPLOAD_ERR_NO_FILE, true);
+
+        $this->service->handle($egg, $file);
     }
 
     /**
@@ -159,15 +159,18 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfFileIsNotAFile()
     {
-        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
-        $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(false);
+        $egg = factory(Egg::class)->make(['id' => 123]);
 
-        try {
-            $this->service->handle(1234, $this->file);
-        } catch (PterodactylException $exception) {
-            $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('exceptions.nest.importer.file_error'), $exception->getMessage());
-        }
+        $this->expectException(InvalidFileUploadException::class);
+        $this->expectExceptionMessageMatches('/^The selected file \["test\.txt"\] was not in a valid format to import\./');
+
+        $file = m::mock(
+            new UploadedFile('test.txt', 'original.txt', 'application/json', UPLOAD_ERR_INI_SIZE, true)
+        )->makePartial();
+
+        $file->expects('isFile')->andReturnFalse();
+
+        $this->service->handle($egg, $file);
     }
 
     /**
@@ -175,6 +178,8 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfJsonMetaDataIsInvalid()
     {
+        $egg = factory(Egg::class)->make(['id' => 123]);
+
         $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
@@ -183,7 +188,7 @@ class EggUpdateImporterServiceTest extends TestCase
         ]));
 
         try {
-            $this->service->handle(1234, $this->file);
+            $this->service->handle($egg, $this->file);
         } catch (PterodactylException $exception) {
             $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
             $this->assertEquals(trans('exceptions.nest.importer.invalid_json_provided'), $exception->getMessage());
@@ -195,13 +200,15 @@ class EggUpdateImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfBadJsonIsProvided()
     {
+        $egg = factory(Egg::class)->make(['id' => 123]);
+
         $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
         $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
         $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
         $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn('}');
 
         try {
-            $this->service->handle(1234, $this->file);
+            $this->service->handle($egg, $this->file);
         } catch (PterodactylException $exception) {
             $this->assertInstanceOf(BadJsonFormatException::class, $exception);
             $this->assertEquals(trans('exceptions.nest.importer.json_error', [

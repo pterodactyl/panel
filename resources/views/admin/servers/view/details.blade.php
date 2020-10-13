@@ -66,6 +66,12 @@
 @section('footer-scripts')
     @parent
     <script>
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
+
     $('#pUserId').select2({
         ajax: {
             url: '/admin/users/accounts.json',
@@ -85,14 +91,14 @@
         escapeMarkup: function (markup) { return markup; },
         minimumInputLength: 2,
         templateResult: function (data) {
-            if (data.loading) return data.text;
+            if (data.loading) return escapeHtml(data.text);
 
             return '<div class="user-block"> \
-                <img class="img-circle img-bordered-xs" src="https://www.gravatar.com/avatar/' + data.md5 + '?s=120" alt="User Image"> \
+                <img class="img-circle img-bordered-xs" src="https://www.gravatar.com/avatar/' + escapeHtml(data.md5) + '?s=120" alt="User Image"> \
                 <span class="username"> \
-                    <a href="#">' + data.name_first + ' ' + data.name_last +'</a> \
+                    <a href="#">' + escapeHtml(data.name_first) + ' ' + escapeHtml(data.name_last) +'</a> \
                 </span> \
-                <span class="description"><strong>' + data.email + '</strong> - ' + data.username + '</span> \
+                <span class="description"><strong>' + escapeHtml(data.email) + '</strong> - ' + escapeHtml(data.username) + '</span> \
             </div>';
         },
         templateSelection: function (data) {
@@ -108,10 +114,10 @@
 
             return '<div> \
                 <span> \
-                    <img class="img-rounded img-bordered-xs" src="https://www.gravatar.com/avatar/' + data.md5 + '?s=120" style="height:28px;margin-top:-4px;" alt="User Image"> \
+                    <img class="img-rounded img-bordered-xs" src="https://www.gravatar.com/avatar/' + escapeHtml(data.md5) + '?s=120" style="height:28px;margin-top:-4px;" alt="User Image"> \
                 </span> \
                 <span style="padding-left:5px;"> \
-                    ' + data.name_first + ' ' + data.name_last + ' (<strong>' + data.email + '</strong>) \
+                    ' + escapeHtml(data.name_first) + ' ' + escapeHtml(data.name_last) + ' (<strong>' + escapeHtml(data.email) + '</strong>) \
                 </span> \
             </div>';
         }

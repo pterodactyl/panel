@@ -15,7 +15,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property string $name
  * @property string $description
  * @property bool $skip_scripts
- * @property int $suspended
+ * @property bool $suspended
  * @property int $owner_id
  * @property int $memory
  * @property int $swap
@@ -103,7 +103,7 @@ class Server extends Model
     public static $validationRules = [
         'external_id' => 'sometimes|nullable|string|between:1,191|unique:servers',
         'owner_id' => 'required|integer|exists:users,id',
-        'name' => 'required|string|min:1|max:255',
+        'name' => 'required|string|min:1|max:191',
         'node_id' => 'required|exists:nodes,id',
         'description' => 'string',
         'memory' => 'required|numeric|min:0',
@@ -118,7 +118,7 @@ class Server extends Model
         'egg_id' => 'required|exists:eggs,id',
         'startup' => 'required|string',
         'skip_scripts' => 'sometimes|boolean',
-        'image' => 'required|string|max:255',
+        'image' => 'required|string|max:191',
         'installed' => 'in:0,1,2',
         'database_limit' => 'present|nullable|integer|min:0',
         'allocation_limit' => 'sometimes|nullable|integer|min:0',
@@ -133,7 +133,7 @@ class Server extends Model
     protected $casts = [
         'node_id' => 'integer',
         'skip_scripts' => 'boolean',
-        'suspended' => 'integer',
+        'suspended' => 'boolean',
         'owner_id' => 'integer',
         'memory' => 'integer',
         'swap' => 'integer',

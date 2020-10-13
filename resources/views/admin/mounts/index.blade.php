@@ -84,7 +84,7 @@
                             <div class="col-md-12">
                                 <label for="pDescription" class="form-label">Description</label>
                                 <textarea id="pDescription" name="description" class="form-control" rows="4"></textarea>
-                                <p class="text-muted small">A longer description for this mount, must be less than 255 characters.</p>
+                                <p class="text-muted small">A longer description for this mount, must be less than 191 characters.</p>
                             </div>
 
                             <div class="col-md-6">

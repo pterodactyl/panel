@@ -1,13 +1,6 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
-namespace Tests\Unit\Services\Services\Options;
+namespace Tests\Unit\Services\Eggs\Scripts;
 
 use Exception;
 use Mockery as m;
@@ -31,19 +24,9 @@ class InstallScriptServiceTest extends TestCase
     ];
 
     /**
-     * @var \Pterodactyl\Models\Egg
-     */
-    protected $model;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Eggs\Scripts\InstallScriptService
-     */
-    protected $service;
 
     /**
      * Setup tests.
@@ -52,10 +35,7 @@ class InstallScriptServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = factory(Egg::class)->make();
         $this->repository = m::mock(EggRepositoryInterface::class);
-
-        $this->service = new InstallScriptService($this->repository);
     }
 
     /**
@@ -63,13 +43,13 @@ class InstallScriptServiceTest extends TestCase
      */
     public function testUpdateWithValidCopyScriptFromAttribute()
     {
+        $model = factory(Egg::class)->make(['id' => 123, 'nest_id' => 456]);
         $this->data['copy_script_from'] = 1;
 
-        $this->repository->shouldReceive('isCopyableScript')->with(1, $this->model->nest_id)->once()->andReturn(true);
-        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->model->id, $this->data)->andReturnNull();
+        $this->repository->shouldReceive('isCopyableScript')->with(1, $model->nest_id)->once()->andReturn(true);
+        $this->repository->expects('withoutFreshModel->update')->with($model->id, $this->data)->andReturnNull();
 
-        $this->service->handle($this->model, $this->data);
+        $this->getService()->handle($model, $this->data);
     }
 
     /**
@@ -79,13 +59,13 @@ class InstallScriptServiceTest extends TestCase
     {
         $this->data['copy_script_from'] = 1;
 
-        $this->repository->shouldReceive('isCopyableScript')->with(1, $this->model->nest_id)->once()->andReturn(false);
-        try {
-            $this->service->handle($this->model, $this->data);
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(InvalidCopyFromException::class, $exception);
-            $this->assertEquals(trans('exceptions.nest.egg.invalid_copy_id'), $exception->getMessage());
-        }
+        $this->expectException(InvalidCopyFromException::class);
+        $this->expectExceptionMessage(trans('exceptions.nest.egg.invalid_copy_id'));
+
+        $model = factory(Egg::class)->make(['id' => 123, 'nest_id' => 456]);
+
+        $this->repository->expects('isCopyableScript')->with(1, $model->nest_id)->andReturn(false);
+        $this->getService()->handle($model, $this->data);
     }
 
     /**
@@ -93,21 +73,15 @@ class InstallScriptServiceTest extends TestCase
      */
     public function testUpdateWithoutNewCopyScriptFromAttribute()
     {
-        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->model->id, $this->data)->andReturnNull();
+        $model = factory(Egg::class)->make(['id' => 123, 'nest_id' => 456]);
 
-        $this->service->handle($this->model, $this->data);
+        $this->repository->expects('withoutFreshModel->update')->with($model->id, $this->data)->andReturnNull();
+
+        $this->getService()->handle($model, $this->data);
     }
 
-    /**
-     * Test that an integer can be passed in place of a model.
-     */
-    public function testFunctionAcceptsIntegerInPlaceOfModel()
+    private function getService()
     {
-        $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
-        $this->repository->shouldReceive('withoutFreshModel')->withNoArgs()->once()->andReturnSelf()
-            ->shouldReceive('update')->with($this->model->id, $this->data)->andReturnNull();
-
-        $this->service->handle($this->model->id, $this->data);
+        return new InstallScriptService($this->repository);
     }
 }

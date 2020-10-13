@@ -15,7 +15,7 @@ import setServerAllocationNotes from '@/api/server/network/setServerAllocationNo
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 
-const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm block`}`;
+const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm inline-block`}`;
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
 
 interface Props {
@@ -40,22 +40,21 @@ const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
     }, 750);
 
     return (
-        <GreyRowBox
-            $hoverable={false}
-            css={tw`mt-2 overflow-x-auto`}
-        >
-            <div css={tw`hidden md:block pl-4 pr-6 text-neutral-400`}>
-                <FontAwesomeIcon icon={faNetworkWired}/>
+        <GreyRowBox $hoverable={false} css={tw`flex-wrap md:flex-no-wrap mt-2`}>
+            <div css={tw`flex items-center w-full md:w-auto`}>
+                <div css={tw`pl-4 pr-6 text-neutral-400`}>
+                    <FontAwesomeIcon icon={faNetworkWired}/>
+                </div>
+                <div css={tw`mr-4 flex-1 md:w-40`}>
+                    <Code>{allocation.alias || allocation.ip}</Code>
+                    <Label>IP Address</Label>
+                </div>
+                <div css={tw`w-16 md:w-24 overflow-hidden`}>
+                    <Code>{allocation.port}</Code>
+                    <Label>Port</Label>
+                </div>
             </div>
-            <div css={tw`mr-4`}>
-                <Code>{allocation.alias || allocation.ip}</Code>
-                <Label>IP Address</Label>
-            </div>
-            <div>
-                <Code>{allocation.port}</Code>
-                <Label>Port</Label>
-            </div>
-            <div css={tw`px-8 flex-none sm:flex-1 self-start`}>
+            <div css={tw`mt-4 w-full md:mt-0 md:flex-1 md:w-auto`}>
                 <InputSpinner visible={loading}>
                     <Textarea
                         css={tw`bg-neutral-800 hover:border-neutral-600 border-transparent`}
@@ -65,7 +64,7 @@ const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
                     />
                 </InputSpinner>
             </div>
-            <div css={tw`w-32 text-right pr-4 sm:pr-0`}>
+            <div css={tw`w-full md:flex-none md:w-32 md:text-center mt-4 md:mt-0 text-right ml-4`}>
                 {allocation.isDefault ?
                     <span css={tw`bg-green-500 py-1 px-2 rounded text-green-50 text-xs`}>Primary</span>
                     :

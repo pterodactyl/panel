@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class Handler extends ExceptionHandler
 {
@@ -217,7 +218,9 @@ class Handler extends ExceptionHandler
             'status' => method_exists($exception, 'getStatusCode')
                 ? strval($exception->getStatusCode())
                 : ($exception instanceof ValidationException ? '422' : '500'),
-            'detail' => 'An error was encountered while processing this request.',
+            'detail' => $exception instanceof HttpExceptionInterface
+                ? $exception->getMessage()
+                : 'An unexpected error was encountered while processing this request, please try again.',
         ];
 
         if ($exception instanceof ModelNotFoundException || $exception->getPrevious() instanceof ModelNotFoundException) {

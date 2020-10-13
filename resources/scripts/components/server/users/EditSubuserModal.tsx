@@ -250,7 +250,10 @@ export default ({ subuser, ...props }: Props) => {
                 permissions: subuser?.permissions || [],
             } as Values}
             validationSchema={object().shape({
-                email: string().email('A valid email address must be provided.').required('A valid email address must be provided.'),
+                email: string()
+                    .max(191, 'Email addresses must not exceed 191 characters.')
+                    .email('A valid email address must be provided.')
+                    .required('A valid email address must be provided.'),
                 permissions: array().of(string()),
             })}
         >

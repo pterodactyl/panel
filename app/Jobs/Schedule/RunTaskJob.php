@@ -3,10 +3,10 @@
 namespace Pterodactyl\Jobs\Schedule;
 
 use Exception;
-use Carbon\Carbon;
 use Pterodactyl\Jobs\Job;
+use Carbon\CarbonImmutable;
+use Pterodactyl\Models\Task;
 use InvalidArgumentException;
-use Illuminate\Container\Container;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -15,39 +15,25 @@ use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ScheduleRepositoryInterface;
 
 class RunTaskJob extends Job implements ShouldQueue
 {
     use DispatchesJobs, InteractsWithQueue, SerializesModels;
 
     /**
-     * @var int
-     */
-    public $schedule;
-
-    /**
-     * @var int
+     * @var \Pterodactyl\Models\Task
      */
     public $task;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\TaskRepository
-     */
-    protected $taskRepository;
-
-    /**
      * RunTaskJob constructor.
      *
-     * @param int $task
-     * @param int $schedule
+     * @param \Pterodactyl\Models\Task $task
      */
-    public function __construct(int $task, int $schedule)
+    public function __construct(Task $task)
     {
         $this->queue = config('pterodactyl.queues.standard');
         $this->task = $task;
-        $this->schedule = $schedule;
     }
 
     /**
@@ -58,7 +44,6 @@ class RunTaskJob extends Job implements ShouldQueue
      * @param \Pterodactyl\Repositories\Wings\DaemonPowerRepository $powerRepository
      * @param \Pterodactyl\Repositories\Eloquent\TaskRepository $taskRepository
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Throwable
      */
     public function handle(
@@ -67,36 +52,32 @@ class RunTaskJob extends Job implements ShouldQueue
         DaemonPowerRepository $powerRepository,
         TaskRepository $taskRepository
     ) {
-        $this->taskRepository = $taskRepository;
-
-        $task = $this->taskRepository->getTaskForJobProcess($this->task);
-        $server = $task->getRelation('server');
-
         // Do not process a task that is not set to active.
-        if (! $task->getRelation('schedule')->is_active) {
+        if (! $this->task->schedule->is_active) {
             $this->markTaskNotQueued();
             $this->markScheduleComplete();
 
             return;
         }
 
+        $server = $this->task->server;
         // Perform the provided task against the daemon.
-        switch ($task->action) {
+        switch ($this->task->action) {
             case 'power':
-                $powerRepository->setServer($server)->send($task->payload);
+                $powerRepository->setServer($server)->send($this->task->payload);
                 break;
             case 'command':
-                $commandRepository->setServer($server)->send($task->payload);
+                $commandRepository->setServer($server)->send($this->task->payload);
                 break;
             case 'backup':
-                $backupService->setIgnoredFiles(explode(PHP_EOL, $task->payload))->handle($server, null);
+                $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null);
                 break;
             default:
                 throw new InvalidArgumentException('Cannot run a task that points to a non-existent action.');
         }
 
         $this->markTaskNotQueued();
-        $this->queueNextTask($task->sequence_id);
+        $this->queueNextTask();
     }
 
     /**
@@ -112,23 +93,23 @@ class RunTaskJob extends Job implements ShouldQueue
 
     /**
      * Get the next task in the schedule and queue it for running after the defined period of wait time.
-     *
-     * @param int $sequence
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    private function queueNextTask($sequence)
+    private function queueNextTask()
     {
-        $nextTask = $this->taskRepository->getNextTask($this->schedule, $sequence);
+        /** @var \Pterodactyl\Models\Task|null $nextTask */
+        $nextTask = Task::query()->where('schedule_id', $this->task->schedule_id)
+            ->where('sequence_id', $this->task->sequence_id + 1)
+            ->first();
+
         if (is_null($nextTask)) {
             $this->markScheduleComplete();
 
             return;
         }
 
-        $this->taskRepository->update($nextTask->id, ['is_queued' => true]);
-        $this->dispatch((new self($nextTask->id, $this->schedule))->delay($nextTask->time_offset));
+        $nextTask->update(['is_queued' => true]);
+
+        $this->dispatch((new self($nextTask))->delay($nextTask->time_offset));
     }
 
     /**
@@ -136,13 +117,10 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     private function markScheduleComplete()
     {
-        Container::getInstance()
-            ->make(ScheduleRepositoryInterface::class)
-            ->withoutFreshModel()
-            ->update($this->schedule, [
-                'is_processing' => false,
-                'last_run_at' => Carbon::now()->toDateTimeString(),
-            ]);
+        $this->task->schedule()->update([
+            'is_processing' => false,
+            'last_run_at' => CarbonImmutable::now()->toDateTimeString(),
+        ]);
     }
 
     /**
@@ -150,8 +128,6 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     private function markTaskNotQueued()
     {
-        Container::getInstance()
-            ->make(TaskRepositoryInterface::class)
-            ->update($this->task, ['is_queued' => false]);
+        $this->task->update(['is_queued' => false]);
     }
 }

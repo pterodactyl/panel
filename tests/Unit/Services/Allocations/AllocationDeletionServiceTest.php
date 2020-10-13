@@ -28,9 +28,9 @@ class AllocationDeletionServiceTest extends TestCase
      */
     public function testAllocationIsDeleted()
     {
-        $model = factory(Allocation::class)->make();
+        $model = factory(Allocation::class)->make(['id' => 123]);
 
-        $this->repository->shouldReceive('delete')->with($model->id)->once()->andReturn(1);
+        $this->repository->expects('delete')->with($model->id)->andReturns(1);
 
         $response = $this->getService()->handle($model);
         $this->assertEquals(1, $response);

@@ -158,7 +158,7 @@
                     </div>
 
                     <div class="form-group col-xs-6">
-                        <label for="pThreads">CPU Threads</label>
+                        <label for="pThreads">CPU Pinning</label>
 
                         <div>
                             <input type="text" id="pThreads" name="threads" class="form-control" value="{{ old('threads') }}" />
@@ -327,7 +327,7 @@
         // END Persist 'Service Variables'
     </script>
 
-    {!! Theme::js('js/admin/new-server.js?v=20200913') !!}
+    {!! Theme::js('js/admin/new-server.js?v=20201003') !!}
 
     <script type="application/javascript">
         $(document).ready(function() {

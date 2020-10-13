@@ -1,8 +1,10 @@
 [![Logo Image](https://cdn.pterodactyl.io/logos/new/pterodactyl_logo.png)](https://pterodactyl.io)
 
-[![Build status](https://img.shields.io/travis/pterodactyl/panel/develop.svg?style=flat-square)](https://travis-ci.org/pterodactyl/panel)
-[![Codecov](https://img.shields.io/codecov/c/github/pterodactyl/panel/develop.svg?style=flat-square)](https://codecov.io/gh/Pterodactyl/Panel)
-[![Discord](https://img.shields.io/discord/122900397965705216.svg?style=flat-square&label=Discord)](https://pterodactyl.io/discord)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/pterodactyl/panel/tests?label=Tests&style=for-the-badge)
+![Discord](https://img.shields.io/discord/122900397965705216?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
+![GitHub Releases](https://img.shields.io/github/downloads/pterodactyl/panel/latest/total?style=for-the-badge)
+![GitHub Pre-Releases](https://img.shields.io/github/downloads-pre/pterodactyl/panel/v1.0.0-rc.7/total?style=for-the-badge)
+![GitHub contributors](https://img.shields.io/github/contributors/pterodactyl/panel?style=for-the-badge)
 
 # Pterodactyl Panel
 Pterodactyl is an open-source game server management panel built with PHP 7, React, and Go. Designed with security 

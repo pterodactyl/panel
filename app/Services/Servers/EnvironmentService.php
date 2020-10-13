@@ -4,8 +4,6 @@ namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\EggVariable;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EnvironmentService
 {
@@ -13,28 +11,6 @@ class EnvironmentService
      * @var array
      */
     private $additional = [];
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $config;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * EnvironmentService constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
-     */
-    public function __construct(ConfigRepository $config, ServerRepositoryInterface $repository)
-    {
-        $this->config = $config;
-        $this->repository = $repository;
-    }
 
     /**
      * Dynamically configure additional environment variables to be assigned
@@ -79,7 +55,7 @@ class EnvironmentService
         }
 
         // Process variables set in the configuration file.
-        foreach ($this->config->get('pterodactyl.environment_variables', []) as $key => $object) {
+        foreach (config('pterodactyl.environment_variables', []) as $key => $object) {
             $variables->put(
                 $key, is_callable($object) ? call_user_func($object, $server) : object_get($server, $object)
             );

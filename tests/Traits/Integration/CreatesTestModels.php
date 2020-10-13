@@ -2,6 +2,7 @@
 
 namespace Tests\Traits\Integration;
 
+use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
@@ -73,5 +74,28 @@ trait CreatesTestModels
         return Server::with([
             'location', 'user', 'node', 'allocation', 'nest', 'egg',
         ])->findOrFail($server->id);
+    }
+
+    /**
+     * Clones a given egg allowing us to make modifications that don't affect other
+     * tests that rely on the egg existing in the correct state.
+     *
+     * @param \Pterodactyl\Models\Egg $egg
+     * @return \Pterodactyl\Models\Egg
+     */
+    protected function cloneEggAndVariables(Egg $egg): Egg
+    {
+        $model = $egg->replicate(['id', 'uuid']);
+        $model->uuid = Uuid::uuid4()->toString();
+        $model->push();
+
+        /** @var \Pterodactyl\Models\Egg $model */
+        $model = $model->fresh();
+
+        foreach ($egg->variables as $variable) {
+            $variable->replicate(['id', 'egg_id'])->forceFill(['egg_id' => $model->id])->push();
+        }
+
+        return $model->fresh();
     }
 }

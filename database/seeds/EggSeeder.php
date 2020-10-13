@@ -130,7 +130,7 @@ class EggSeeder extends Seeder
                     ['nest_id', '=', $nest->id],
                 ]);
 
-                $this->updateImporterService->handle($egg->id, $file);
+                $this->updateImporterService->handle($egg, $file);
 
                 $this->command->info('Updated ' . $decoded->name);
             } catch (RecordNotFoundException $exception) {

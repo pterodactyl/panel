@@ -69,7 +69,7 @@ class SettingsController extends ClientApiController
      */
     public function reinstall(ReinstallServerRequest $request, Server $server)
     {
-        $this->reinstallServerService->reinstall($server);
+        $this->reinstallServerService->handle($server);
 
         return new JsonResponse([], Response::HTTP_ACCEPTED);
     }

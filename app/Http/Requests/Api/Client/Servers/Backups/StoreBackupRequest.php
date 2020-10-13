@@ -21,7 +21,7 @@ class StoreBackupRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string|max:255',
+            'name' => 'nullable|string|max:191',
             'ignored' => 'nullable|string',
         ];
     }
