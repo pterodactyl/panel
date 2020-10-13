@@ -13,6 +13,10 @@ class AddTableServerTransfers extends Migration
      */
     public function up()
     {
+        // Nuclear approach to whatever plugins are out there and not properly namespacing their own tables
+        // leading to constant support requests from people...
+        Schema::dropIfExists('server_transfers');
+
         Schema::create('server_transfers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('server_id')->unsigned();
