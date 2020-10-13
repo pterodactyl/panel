@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Services\Options;
 
@@ -37,11 +30,11 @@ class EggUpdateServiceTest extends TestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->model = factory(Egg::class)->make();
+        $this->model = factory(Egg::class)->make(['id' => 123]);
         $this->repository = m::mock(EggRepositoryInterface::class);
 
         $this->service = new EggUpdateService($this->repository);

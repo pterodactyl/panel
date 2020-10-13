@@ -31,8 +31,8 @@ class TwoFactorSetupService
     /**
      * TwoFactorSetupService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                   $config
-     * @param \Illuminate\Contracts\Encryption\Encrypter                $encrypter
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
@@ -71,7 +71,7 @@ class TwoFactorSetupService
             'totp_secret' => $this->encrypter->encrypt($secret),
         ]);
 
-        $company = preg_replace('/\s/', '', $this->config->get('app.name'));
+        $company = urlencode(preg_replace('/\s/', '', $this->config->get('app.name')));
 
         return sprintf(
             'otpauth://totp/%1$s:%2$s?secret=%3$s&issuer=%1$s',

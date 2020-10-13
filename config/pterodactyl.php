@@ -10,7 +10,7 @@ return [
     | setup on the panel. When set to true, configurations stored in the
     | database will not be applied.
     */
-    'load_environment_only' => (bool) env('APP_ENVIRONMENT_ONLY', false),
+    'load_environment_only' => (bool)env('APP_ENVIRONMENT_ONLY', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -56,7 +56,6 @@ return [
         'admin' => [
             'servers' => env('APP_PAGINATE_ADMIN_SERVERS', 25),
             'users' => env('APP_PAGINATE_ADMIN_USERS', 25),
-            'packs' => env('APP_PAGINATE_ADMIN_PACKS', 50),
         ],
         'api' => [
             'nodes' => env('APP_PAGINATE_API_NODES', 25),
@@ -85,8 +84,8 @@ return [
     | Configure the timeout to be used for Guzzle connections here.
     */
     'guzzle' => [
-        'timeout' => env('GUZZLE_TIMEOUT', 5),
-        'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 3),
+        'timeout' => env('GUZZLE_TIMEOUT', 30),
+        'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 10),
     ],
 
     /*
@@ -100,29 +99,6 @@ return [
         'low' => env('QUEUE_LOW', 'low'),
         'standard' => env('QUEUE_STANDARD', 'standard'),
         'high' => env('QUEUE_HIGH', 'high'),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Console Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Configure the speed at which data is rendered to the console.
-    */
-    'console' => [
-        'count' => env('CONSOLE_PUSH_COUNT', 10),
-        'frequency' => env('CONSOLE_PUSH_FREQ', 200),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Daemon Connection Details
-    |--------------------------------------------------------------------------
-    |
-    | Configuration for support of the new Golang based daemon.
-    */
-    'daemon' => [
-        'use_new_daemon' => (bool) env('APP_USE_NEW_DAEMON', false),
     ],
 
     /*
@@ -162,6 +138,11 @@ return [
             'enabled' => env('PTERODACTYL_CLIENT_DATABASES_ENABLED', true),
             'allow_random' => env('PTERODACTYL_CLIENT_DATABASES_ALLOW_RANDOM', true),
         ],
+
+        'schedules' => [
+            // The total number of tasks that can exist for any given schedule at once.
+            'per_schedule_task_limit' => 10,
+        ],
     ],
 
     /*
@@ -172,21 +153,7 @@ return [
     | This array includes the MIME filetypes that can be edited via the web.
     */
     'files' => [
-        'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 50000),
-        'editable' => [
-            'application/json',
-            'application/javascript',
-            'application/xml',
-            'application/xhtml+xml',
-            'inode/x-empty',
-            'text/xml',
-            'text/css',
-            'text/html',
-            'text/plain',
-            'text/x-perl',
-            'text/x-shellscript',
-            'text/x-python',
-        ],
+        'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 1024 * 1024 * 4),
     ],
 
     /*
@@ -218,5 +185,18 @@ return [
     |
     | 'P_SERVER_CREATED_AT' => 'created_at'
     */
-    'environment_variables' => [],
+    'environment_variables' => [
+        'P_SERVER_ALLOCATION_LIMIT' => 'allocation_limit',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Asset Verification
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the output format for JS & CSS assets.
+    */
+    'assets' => [
+        'use_hash' => env('PTERODACTYL_USE_ASSET_HASH', false),
+    ],
 ];

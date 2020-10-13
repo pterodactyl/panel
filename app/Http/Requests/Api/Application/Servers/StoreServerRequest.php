@@ -28,7 +28,7 @@ class StoreServerRequest extends ApplicationApiRequest
      */
     public function rules(): array
     {
-        $rules = Server::getCreateRules();
+        $rules = Server::getRules();
 
         return [
             'external_id' => $rules['external_id'],
@@ -36,7 +36,6 @@ class StoreServerRequest extends ApplicationApiRequest
             'description' => array_merge(['nullable'], $rules['description']),
             'user' => $rules['owner_id'],
             'egg' => $rules['egg_id'],
-            'pack' => $rules['pack_id'],
             'docker_image' => $rules['image'],
             'startup' => $rules['startup'],
             'environment' => 'present|array',
@@ -49,6 +48,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'limits.swap' => $rules['swap'],
             'limits.disk' => $rules['disk'],
             'limits.io' => $rules['io'],
+            'limits.threads' => $rules['threads'],
             'limits.cpu' => $rules['cpu'],
 
             // Application Resource Limits
@@ -87,7 +87,6 @@ class StoreServerRequest extends ApplicationApiRequest
             'description' => array_get($data, 'description'),
             'owner_id' => array_get($data, 'user'),
             'egg_id' => array_get($data, 'egg'),
-            'pack_id' => array_get($data, 'pack'),
             'image' => array_get($data, 'docker_image'),
             'startup' => array_get($data, 'startup'),
             'environment' => array_get($data, 'environment'),
@@ -96,6 +95,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'disk' => array_get($data, 'limits.disk'),
             'io' => array_get($data, 'limits.io'),
             'cpu' => array_get($data, 'limits.cpu'),
+            'threads' => array_get($data, 'limits.threads'),
             'skip_scripts' => array_get($data, 'skip_scripts', false),
             'allocation_id' => array_get($data, 'allocation.default'),
             'allocation_additional' => array_get($data, 'allocation.additional'),

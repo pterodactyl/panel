@@ -6,13 +6,13 @@ use Illuminate\Console\Command;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Factory as ValidatorFactory;
+use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface;
 
 class BulkPowerActionCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface
+     * @var \Pterodactyl\Repositories\Wings\DaemonPowerRepository
      */
     private $powerRepository;
 
@@ -42,27 +42,26 @@ class BulkPowerActionCommand extends Command
     /**
      * BulkPowerActionCommand constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\PowerRepositoryInterface $powerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface       $repository
-     * @param \Illuminate\Validation\Factory                                    $validator
+     * @param \Pterodactyl\Repositories\Wings\DaemonPowerRepository $powerRepository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
+     * @param \Illuminate\Validation\Factory $validator
      */
     public function __construct(
-        PowerRepositoryInterface $powerRepository,
+        DaemonPowerRepository $powerRepository,
         ServerRepositoryInterface $repository,
         ValidatorFactory $validator
     ) {
         parent::__construct();
 
-        $this->powerRepository = $powerRepository;
         $this->repository = $repository;
         $this->validator = $validator;
+        $this->powerRepository = $powerRepository;
     }
 
     /**
      * Handle the bulk power request.
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\Daemon\InvalidPowerSignalException
      */
     public function handle()
     {
@@ -91,21 +90,21 @@ class BulkPowerActionCommand extends Command
         }
 
         $count = $this->repository->getServersForPowerActionCount($servers, $nodes);
-        if (! $this->confirm(trans('command/messages.server.power.confirm', ['action' => $action, 'count' => $count]))) {
+        if (! $this->confirm(trans('command/messages.server.power.confirm', ['action' => $action, 'count' => $count])) && $this->input->isInteractive()) {
             return;
         }
 
         $bar = $this->output->createProgressBar($count);
         $servers = $this->repository->getServersForPowerAction($servers, $nodes);
 
-        foreach ($servers as $server) {
+        $servers->each(function ($server) use ($action, &$bar) {
             $bar->clear();
 
             try {
                 $this->powerRepository
                     ->setNode($server->node)
                     ->setServer($server)
-                    ->sendSignal($action);
+                    ->send($action);
             } catch (RequestException $exception) {
                 $this->output->error(trans('command/messages.server.power.action_failed', [
                     'name' => $server->name,
@@ -117,7 +116,7 @@ class BulkPowerActionCommand extends Command
 
             $bar->advance();
             $bar->display();
-        }
+        });
 
         $this->line('');
     }

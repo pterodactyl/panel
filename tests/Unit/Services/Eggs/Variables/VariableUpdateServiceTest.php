@@ -11,6 +11,8 @@ use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Eggs\Variables\VariableUpdateService;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException;
+use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableUpdateServiceTest extends TestCase
 {
@@ -32,7 +34,7 @@ class VariableUpdateServiceTest extends TestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -159,21 +161,22 @@ class VariableUpdateServiceTest extends TestCase
      * Test that all of the reserved variables defined in the model trigger an exception.
      *
      * @dataProvider reservedNamesProvider
-     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
     public function testExceptionIsThrownIfEnvironmentVariableIsInListOfReservedNames(string $variable)
     {
+        $this->expectException(ReservedVariableNameException::class);
+
         $this->getService()->handle($this->model, ['env_variable' => $variable]);
     }
 
     /**
      * Test that validation errors due to invalid rules are caught and handled properly.
-     *
-     * @expectedException \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
-     * @expectedExceptionMessage The validation rule "hodor_door" is not a valid rule for this application.
      */
     public function testInvalidValidationRulesResultInException()
     {
+        $this->expectException(BadValidationRuleException::class);
+        $this->expectExceptionMessage('The validation rule "hodor_door" is not a valid rule for this application.');
+
         $data = ['env_variable' => 'TEST_VAR_123', 'rules' => 'string|hodorDoor'];
 
         $this->repository->shouldReceive('setColumns->findCountWhere')->once()->andReturn(0);
@@ -191,12 +194,12 @@ class VariableUpdateServiceTest extends TestCase
 
     /**
      * Test that an exception not stemming from a bad rule is not caught.
-     *
-     * @expectedException \BadMethodCallException
-     * @expectedExceptionMessage Received something, but no expectations were specified.
      */
     public function testExceptionNotCausedByBadRuleIsNotCaught()
     {
+        $this->expectException(BadMethodCallException::class);
+        $this->expectExceptionMessage('Received something, but no expectations were specified.');
+
         $data = ['rules' => 'string'];
 
         $this->validator->shouldReceive('make')->once()

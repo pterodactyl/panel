@@ -31,7 +31,7 @@ class EggCreationService
     /**
      * EggCreationService constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository                  $config
+     * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(ConfigRepository $config, EggRepositoryInterface $repository)

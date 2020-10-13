@@ -13,7 +13,7 @@ env:
     - TEST_SUITE=Coverage
     - TEST_SUITE=Integration
 php:
-  - 7.2
+  - 7.4
 sudo: false
 cache:
   directories:
@@ -32,13 +32,5 @@ script:
   - if [ "$TEST_SUITE" = "Integration" ]; then vendor/bin/phpunit tests/Integration; fi;
 notifications:
   email: false
-  webhooks:
-    urls:
-      - https://misc.schrej.net/travistodiscord/pterodev.php
-    on_success: change
-    on_failure: always
-    on_error: always
-    on_cancel: always
-    on_start: never
 after_success:
   - bash <(curl -s https://codecov.io/bash)

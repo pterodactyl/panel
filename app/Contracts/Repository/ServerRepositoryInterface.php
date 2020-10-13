@@ -2,27 +2,17 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
-interface ServerRepositoryInterface extends RepositoryInterface, SearchableInterface
+interface ServerRepositoryInterface extends RepositoryInterface
 {
-    /**
-     * Returns a listing of all servers that exist including relationships.
-     *
-     * @param int $paginate
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getAllServers(int $paginate): LengthAwarePaginator;
-
     /**
      * Load the egg relations onto the server model.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Server
      */
     public function loadEggRelations(Server $server, bool $refresh = false): Server;
@@ -35,6 +25,15 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return \Illuminate\Support\Collection
      */
     public function getDataForRebuild(int $server = null, int $node = null): Collection;
+
+    /**
+     * Return a collection of servers with their associated data for reinstall operations.
+     *
+     * @param int|null $server
+     * @param int|null $node
+     * @return \Illuminate\Support\Collection
+     */
+    public function getDataForReinstall(int $server = null, int $node = null): Collection;
 
     /**
      * Return a server model and all variables associated with the server.
@@ -52,28 +51,16 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * return the server from the database.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Server
      */
     public function getPrimaryAllocation(Server $server, bool $refresh = false): Server;
 
     /**
-     * Return all of the server variables possible and default to the variable
-     * default if there is no value defined for the specific server requested.
-     *
-     * @param int  $id
-     * @param bool $returnAsObject
-     * @return array|object
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getVariablesWithValues(int $id, bool $returnAsObject = false);
-
-    /**
      * Return enough data to be used for the creation of a server via the daemon.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Server
      */
     public function getDataForCreation(Server $server, bool $refresh = false): Server;
@@ -82,31 +69,21 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * Load associated databases onto the server model.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Server
      */
     public function loadDatabaseRelations(Server $server, bool $refresh = false): Server;
 
     /**
      * Get data for use when updating a server on the Daemon. Returns an array of
-     * the egg and pack UUID which are used for build and rebuild. Only loads relations
+     * the egg which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool                       $refresh
+     * @param bool $refresh
      * @return array
      */
     public function getDaemonServiceData(Server $server, bool $refresh = false): array;
-
-    /**
-     * Return a paginated list of servers that a user can access at a given level.
-     *
-     * @param \Pterodactyl\Models\User $user
-     * @param int                      $level
-     * @param bool|int                 $paginate
-     * @return \Illuminate\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection
-     */
-    public function filterUserAccessServers(User $user, int $level, $paginate = 25);
 
     /**
      * Return a server by UUID.
@@ -123,8 +100,8 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      *
      * @param int[] $servers
      * @param int[] $nodes
-     * @param bool  $returnCount
-     * @return int|\Generator
+     * @param bool $returnCount
+     * @return int|\Illuminate\Support\LazyCollection
      */
     public function getServersForPowerAction(array $servers = [], array $nodes = [], bool $returnCount = false);
 
@@ -162,4 +139,16 @@ interface ServerRepositoryInterface extends RepositoryInterface, SearchableInter
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator;
+
+    /**
+     * Returns every server that exists for a given node.
+     *
+     * This is different from {@see loadAllServersForNode} because
+     * it does not paginate the response.
+     *
+     * @param int $node
+     *
+     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
+     */
+    public function loadEveryServerForNode(int $node);
 }

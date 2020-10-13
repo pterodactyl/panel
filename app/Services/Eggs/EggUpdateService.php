@@ -34,7 +34,7 @@ class EggUpdateService
      * Update a service option.
      *
      * @param int|\Pterodactyl\Models\Egg $egg
-     * @param array                       $data
+     * @param array $data
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

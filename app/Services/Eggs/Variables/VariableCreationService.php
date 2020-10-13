@@ -26,7 +26,7 @@ class VariableCreationService
      * VariableCreationService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Validation\Factory                         $validator
+     * @param \Illuminate\Contracts\Validation\Factory $validator
      */
     public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
     {
@@ -48,7 +48,7 @@ class VariableCreationService
     /**
      * Create a new variable for a given Egg.
      *
-     * @param int   $egg
+     * @param int $egg
      * @param array $data
      * @return \Pterodactyl\Models\EggVariable
      *

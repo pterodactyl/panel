@@ -1,17 +1,14 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Nodes;
 
 use Mockery as m;
 use Tests\TestCase;
+use Ramsey\Uuid\Uuid;
 use phpmock\phpunit\PHPMock;
+use Pterodactyl\Models\Node;
+use Ramsey\Uuid\UuidFactory;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
@@ -20,25 +17,31 @@ class NodeCreationServiceTest extends TestCase
     use PHPMock;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * @var \Mockery\MockInterface
      */
-    protected $repository;
+    private $repository;
 
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeCreationService
+     * @var \Mockery\MockInterface
      */
-    protected $service;
+    private $encrypter;
 
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->repository = m::mock(NodeRepositoryInterface::class);
+        /* @noinspection PhpParamsInspection */
+        Uuid::setFactory(
+            m::mock(UuidFactory::class . '[uuid4]', [
+                'uuid4' => Uuid::fromString('00000000-0000-0000-0000-000000000000'),
+            ])
+        );
 
-        $this->service = new NodeCreationService($this->repository);
+        $this->repository = m::mock(NodeRepositoryInterface::class);
+        $this->encrypter = m::mock(Encrypter::class);
     }
 
     /**
@@ -46,14 +49,31 @@ class NodeCreationServiceTest extends TestCase
      */
     public function testNodeIsCreatedAndDaemonSecretIsGenerated()
     {
-        $this->getFunctionMock('\\Pterodactyl\\Services\\Nodes', 'str_random')
-            ->expects($this->once())->willReturn('random_string');
+        /** @var \Pterodactyl\Models\Node $node */
+        $node = factory(Node::class)->make();
 
-        $this->repository->shouldReceive('create')->with([
-            'name' => 'NodeName',
-            'daemonSecret' => 'random_string',
-        ])->once()->andReturnNull();
+        $this->encrypter->expects('encrypt')->with(m::on(function ($value) {
+            return strlen($value) === Node::DAEMON_TOKEN_LENGTH;
+        }))->andReturns('encrypted_value');
 
-        $this->assertNull($this->service->handle(['name' => 'NodeName']));
+        $this->repository->expects('create')->with(m::on(function ($value) {
+            $this->assertTrue(is_array($value));
+            $this->assertSame('NodeName', $value['name']);
+            $this->assertSame('00000000-0000-0000-0000-000000000000', $value['uuid']);
+            $this->assertSame('encrypted_value', $value['daemon_token']);
+            $this->assertTrue(strlen($value['daemon_token_id']) === Node::DAEMON_TOKEN_ID_LENGTH);
+
+            return true;
+        }), true, true)->andReturn($node);
+
+        $this->assertSame($node, $this->getService()->handle(['name' => 'NodeName']));
+    }
+
+    /**
+     * @return \Pterodactyl\Services\Nodes\NodeCreationService
+     */
+    private function getService()
+    {
+        return new NodeCreationService($this->encrypter, $this->repository);
     }
 }

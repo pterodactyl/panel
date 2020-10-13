@@ -34,10 +34,10 @@ class DatabasePasswordService
     /**
      * DatabasePasswordService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                      $connection
+     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection             $dynamic
-     * @param \Illuminate\Contracts\Encryption\Encrypter                    $encrypter
+     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -71,7 +71,7 @@ class DatabasePasswordService
             ]);
 
             $this->repository->dropUser($database->username, $database->remote);
-            $this->repository->createUser($database->username, $database->remote, $password);
+            $this->repository->createUser($database->username, $database->remote, $password, $database->max_connections);
             $this->repository->assignUserToDatabase($database->database, $database->username, $database->remote);
             $this->repository->flush();
         });

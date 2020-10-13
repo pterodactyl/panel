@@ -2,26 +2,10 @@
 
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\Server;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface;
+use Illuminate\Support\Arr;
 
 class StatsTransformer extends BaseClientTransformer
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * Perform dependency injection.
-     *
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $repository
-     */
-    public function handle(ServerRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
-    }
-
     /**
      * @return string
      */
@@ -34,55 +18,21 @@ class StatsTransformer extends BaseClientTransformer
      * Transform stats from the daemon into a result set that can be used in
      * the client API.
      *
-     * @param \Pterodactyl\Models\Server $model
+     * @param array $data
      * @return array
      */
-    public function transform(Server $model)
+    public function transform(array $data)
     {
-        try {
-            $stats = $this->repository->setServer($model)->details();
-        } catch (RequestException $exception) {
-            throw new DaemonConnectionException($exception);
-        }
-
-        $object = json_decode($stats->getBody()->getContents());
-
         return [
-            'state' => $this->transformState(object_get($object, 'status', 0)),
-            'memory' => [
-                'current' => round(object_get($object, 'proc.memory.total', 0) / 1024 / 1024),
-                'limit' => floatval($model->memory),
-            ],
-            'cpu' => [
-                'current' => object_get($object, 'proc.cpu.total', 0),
-                'cores' => object_get($object, 'proc.cpu.cores', []),
-                'limit' => floatval($model->cpu),
-            ],
-            'disk' => [
-                'current' => round(object_get($object, 'proc.disk.used', 0)),
-                'limit' => floatval($model->disk),
+            'current_state' => Arr::get($data, 'state', 'stopped'),
+            'is_suspended' => Arr::get($data, 'suspended', false),
+            'resources' => [
+                'memory_bytes' => Arr::get($data, 'memory_bytes', 0),
+                'cpu_absolute' => Arr::get($data, 'cpu_absolute', 0),
+                'disk_bytes' => Arr::get($data, 'disk_bytes', 0),
+                'network_rx_bytes' => Arr::get($data, 'network.rx_bytes', 0),
+                'network_tx_bytes' => Arr::get($data, 'network.tx_bytes', 0),
             ],
         ];
-    }
-
-    /**
-     * Transform the state returned by the daemon into a human readable string.
-     *
-     * @param int $state
-     * @return string
-     */
-    private function transformState(int $state): string
-    {
-        switch ($state) {
-            case 1:
-                return 'on';
-            case 2:
-                return 'starting';
-            case 3:
-                return 'stopping';
-            case 0:
-            default:
-                return 'off';
-        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Eggs\Sharing;
 
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
@@ -29,8 +30,8 @@ class EggUpdateImporterService
     /**
      * EggUpdateImporterService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                         $connection
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface         $repository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
      */
     public function __construct(
@@ -46,7 +47,7 @@ class EggUpdateImporterService
     /**
      * Update an existing Egg using an uploaded JSON file.
      *
-     * @param int                           $egg
+     * @param \Pterodactyl\Models\Egg $egg
      * @param \Illuminate\Http\UploadedFile $file
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -54,10 +55,19 @@ class EggUpdateImporterService
      * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
      * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      */
-    public function handle(int $egg, UploadedFile $file)
+    public function handle(Egg $egg, UploadedFile $file)
     {
         if ($file->getError() !== UPLOAD_ERR_OK || ! $file->isFile()) {
-            throw new InvalidFileUploadException(trans('exceptions.nest.importer.file_error'));
+            throw new InvalidFileUploadException(
+                sprintf(
+                    'The selected file ["%s"] was not in a valid format to import. (is_file: %s is_valid: %s err_code: %s err: %s)',
+                    $file->getFilename(),
+                    $file->isFile() ? 'true' : 'false',
+                    $file->isValid() ? 'true' : 'false',
+                    $file->getError(),
+                    $file->getErrorMessage()
+                )
+            );
         }
 
         $parsed = json_decode($file->openFile()->fread($file->getSize()));
@@ -72,7 +82,7 @@ class EggUpdateImporterService
         }
 
         $this->connection->beginTransaction();
-        $this->repository->update($egg, [
+        $this->repository->update($egg->id, [
             'author' => object_get($parsed, 'author'),
             'name' => object_get($parsed, 'name'),
             'description' => object_get($parsed, 'description'),
@@ -90,19 +100,19 @@ class EggUpdateImporterService
         // Update Existing Variables
         collect($parsed->variables)->each(function ($variable) use ($egg) {
             $this->variableRepository->withoutFreshModel()->updateOrCreate([
-                'egg_id' => $egg,
+                'egg_id' => $egg->id,
                 'env_variable' => $variable->env_variable,
             ], collect($variable)->except(['egg_id', 'env_variable'])->toArray());
         });
 
         $imported = collect($parsed->variables)->pluck('env_variable')->toArray();
-        $existing = $this->variableRepository->setColumns(['id', 'env_variable'])->findWhere([['egg_id', '=', $egg]]);
+        $existing = $this->variableRepository->setColumns(['id', 'env_variable'])->findWhere([['egg_id', '=', $egg->id]]);
 
         // Delete variables not present in the import.
         collect($existing)->each(function ($variable) use ($egg, $imported) {
             if (! in_array($variable->env_variable, $imported)) {
                 $this->variableRepository->deleteWhere([
-                    ['egg_id', '=', $egg],
+                    ['egg_id', '=', $egg->id],
                     ['env_variable', '=', $variable->env_variable],
                 ]);
             }

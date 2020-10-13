@@ -2,16 +2,43 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
+use Symfony\Component\Yaml\Yaml;
+use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
+use Illuminate\Contracts\Encryption\Encrypter;
 
-class Node extends Model implements CleansAttributes, ValidableContract
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property bool $public
+ * @property string $name
+ * @property string|null $description
+ * @property int $location_id
+ * @property string $fqdn
+ * @property string $scheme
+ * @property bool $behind_proxy
+ * @property bool $maintenance_mode
+ * @property int $memory
+ * @property int $memory_overallocate
+ * @property int $disk
+ * @property int $disk_overallocate
+ * @property int $upload_size
+ * @property string $daemon_token_id
+ * @property string $daemon_token
+ * @property int $daemonListen
+ * @property int $daemonSFTP
+ * @property string $daemonBase
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property \Pterodactyl\Models\Location $location
+ * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
+ */
+class Node extends Model
 {
-    use Eloquence, Notifiable, Validable;
+    use Notifiable;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -19,7 +46,8 @@ class Node extends Model implements CleansAttributes, ValidableContract
      */
     const RESOURCE_NAME = 'node';
 
-    const DAEMON_SECRET_LENGTH = 36;
+    const DAEMON_TOKEN_ID_LENGTH = 16;
+    const DAEMON_TOKEN_LENGTH = 64;
 
     /**
      * The table associated with the model.
@@ -33,7 +61,7 @@ class Node extends Model implements CleansAttributes, ValidableContract
      *
      * @var array
      */
-    protected $hidden = ['daemonSecret'];
+    protected $hidden = ['daemon_token_id', 'daemon_token'];
 
     /**
      * Cast values to correct type.
@@ -60,58 +88,29 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'public', 'name', 'location_id',
         'fqdn', 'scheme', 'behind_proxy',
         'memory', 'memory_overallocate', 'disk',
-        'disk_overallocate', 'upload_size',
-        'daemonSecret', 'daemonBase',
+        'disk_overallocate', 'upload_size', 'daemonBase',
         'daemonSFTP', 'daemonListen',
         'description', 'maintenance_mode',
     ];
 
     /**
-     * Fields that are searchable.
-     *
      * @var array
      */
-    protected $searchableColumns = [
-        'name' => 10,
-        'fqdn' => 8,
-        'location.short' => 4,
-        'location.long' => 4,
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $applicationRules = [
-        'name' => 'required',
-        'location_id' => 'required',
-        'fqdn' => 'required',
-        'scheme' => 'required',
-        'memory' => 'required',
-        'memory_overallocate' => 'required',
-        'disk' => 'required',
-        'disk_overallocate' => 'required',
-        'daemonBase' => 'sometimes|required',
-        'daemonSFTP' => 'required',
-        'daemonListen' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'name' => 'regex:/^([\w .-]{1,100})$/',
-        'description' => 'string',
-        'location_id' => 'exists:locations,id',
+    public static $validationRules = [
+        'name' => 'required|regex:/^([\w .-]{1,100})$/',
+        'description' => 'string|nullable',
+        'location_id' => 'required|exists:locations,id',
         'public' => 'boolean',
-        'fqdn' => 'string',
+        'fqdn' => 'required|string',
+        'scheme' => 'required',
         'behind_proxy' => 'boolean',
-        'memory' => 'numeric|min:1',
-        'memory_overallocate' => 'numeric|min:-1',
-        'disk' => 'numeric|min:1',
-        'disk_overallocate' => 'numeric|min:-1',
-        'daemonBase' => 'regex:/^([\/][\d\w.\-\/]+)$/',
-        'daemonSFTP' => 'numeric|between:1,65535',
-        'daemonListen' => 'numeric|between:1,65535',
+        'memory' => 'required|numeric|min:1',
+        'memory_overallocate' => 'required|numeric|min:-1',
+        'disk' => 'required|numeric|min:1',
+        'disk_overallocate' => 'required|numeric|min:-1',
+        'daemonBase' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
+        'daemonSFTP' => 'required|numeric|between:1,65535',
+        'daemonListen' => 'required|numeric|between:1,65535',
         'maintenance_mode' => 'boolean',
         'upload_size' => 'int|between:1,1024',
     ];
@@ -126,11 +125,64 @@ class Node extends Model implements CleansAttributes, ValidableContract
         'behind_proxy' => false,
         'memory_overallocate' => 0,
         'disk_overallocate' => 0,
-        'daemonBase' => '/srv/daemon-data',
+        'daemonBase' => '/var/lib/pterodactyl/volumes',
         'daemonSFTP' => 2022,
         'daemonListen' => 8080,
         'maintenance_mode' => false,
     ];
+
+    /**
+     * Get the connection address to use when making calls to this node.
+     *
+     * @return string
+     */
+    public function getConnectionAddress(): string
+    {
+        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
+    }
+
+    /**
+     * Returns the configuration as an array.
+     *
+     * @return array
+     */
+    public function getConfiguration()
+    {
+        return [
+            'debug' => false,
+            'uuid' => $this->uuid,
+            'token_id' => $this->daemon_token_id,
+            'token' => Container::getInstance()->make(Encrypter::class)->decrypt($this->daemon_token),
+            'api' => [
+                'host' => '0.0.0.0',
+                'port' => $this->daemonListen,
+                'ssl' => [
+                    'enabled' => (! $this->behind_proxy && $this->scheme === 'https'),
+                    'cert' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
+                    'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
+                ],
+                'upload_limit' => $this->upload_size,
+            ],
+            'system' => [
+                'data' => $this->daemonBase,
+                'sftp' => [
+                    'bind_port' => $this->daemonSFTP,
+                ],
+            ],
+            'allowed_mounts' => $this->mounts->pluck('source')->toArray(),
+            'remote' => route('index'),
+        ];
+    }
+
+    /**
+     * Returns the configuration in Yaml format.
+     *
+     * @return string
+     */
+    public function getYamlConfiguration()
+    {
+        return Yaml::dump($this->getConfiguration(), 4, 2, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
+    }
 
     /**
      * Returns the configuration in JSON format.
@@ -138,68 +190,29 @@ class Node extends Model implements CleansAttributes, ValidableContract
      * @param bool $pretty
      * @return string
      */
-    public function getConfigurationAsJson($pretty = false)
+    public function getJsonConfiguration(bool $pretty = false)
     {
-        $config = [
-            'web' => [
-                'host' => '0.0.0.0',
-                'listen' => $this->daemonListen,
-                'ssl' => [
-                    'enabled' => (! $this->behind_proxy && $this->scheme === 'https'),
-                    'certificate' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
-                    'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
-                ],
-            ],
-            'docker' => [
-                'container' => [
-                    'user' => null,
-                ],
-                'network' => [
-                    'name' => 'pterodactyl_nw',
-                ],
-                'socket' => '/var/run/docker.sock',
-                'autoupdate_images' => true,
-            ],
-            'filesystem' => [
-                'server_logs' => '/tmp/pterodactyl',
-            ],
-            'internals' => [
-                'disk_use_seconds' => 30,
-                'set_permissions_on_boot' => true,
-                'throttle' => [
-                    'enabled' => true,
-                    'kill_at_count' => 5,
-                    'decay' => 10,
-                    'lines' => 1000,
-                    'check_interval_ms' => 100,
-                ],
-            ],
-            'sftp' => [
-                'path' => $this->daemonBase,
-                'ip' => '0.0.0.0',
-                'port' => $this->daemonSFTP,
-                'keypair' => [
-                    'bits' => 2048,
-                    'e' => 65537,
-                ],
-            ],
-            'logger' => [
-                'path' => 'logs/',
-                'src' => false,
-                'level' => 'info',
-                'period' => '1d',
-                'count' => 3,
-            ],
-            'remote' => [
-                'base' => route('index'),
-            ],
-            'uploads' => [
-                'size_limit' => $this->upload_size,
-            ],
-            'keys' => [$this->daemonSecret],
-        ];
+        return json_encode($this->getConfiguration(), $pretty ? JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_SLASHES);
+    }
 
-        return json_encode($config, ($pretty) ? JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT : JSON_UNESCAPED_SLASHES);
+    /**
+     * Helper function to return the decrypted key for a node.
+     *
+     * @return string
+     */
+    public function getDecryptedKey(): string
+    {
+        return (string)Container::getInstance()->make(Encrypter::class)->decrypt(
+            $this->daemon_token
+        );
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function mounts()
+    {
+        return $this->hasManyThrough(Mount::class, MountNode::class, 'node_id', 'id', 'id', 'mount_id');
     }
 
     /**
@@ -230,5 +243,20 @@ class Node extends Model implements CleansAttributes, ValidableContract
     public function allocations()
     {
         return $this->hasMany(Allocation::class);
+    }
+
+    /**
+     * Returns a boolean if the node is viable for an additional server to be placed on it.
+     *
+     * @param int $memory
+     * @param int $disk
+     * @return bool
+     */
+    public function isViable(int $memory, int $disk): bool
+    {
+        $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
+        $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
+
+        return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }
 }

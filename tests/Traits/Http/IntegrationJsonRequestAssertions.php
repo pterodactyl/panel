@@ -3,14 +3,14 @@
 namespace Tests\Traits\Http;
 
 use Illuminate\Http\Response;
-use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Testing\TestResponse;
 
 trait IntegrationJsonRequestAssertions
 {
     /**
      * Make assertions about a 404 response on the API.
      *
-     * @param \Illuminate\Foundation\Testing\TestResponse $response
+     * @param \Illuminate\Testing\TestResponse $response
      */
     public function assertNotFoundJson(TestResponse $response)
     {
@@ -31,7 +31,7 @@ trait IntegrationJsonRequestAssertions
     /**
      * Make assertions about a 403 error returned by the API.
      *
-     * @param \Illuminate\Foundation\Testing\TestResponse $response
+     * @param \Illuminate\Testing\TestResponse $response
      */
     public function assertAccessDeniedJson(TestResponse $response)
     {

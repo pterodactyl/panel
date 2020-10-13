@@ -59,8 +59,8 @@ class DatabaseSettingsCommand extends Command
      * DatabaseSettingsCommand constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Illuminate\Database\DatabaseManager    $database
-     * @param \Illuminate\Contracts\Console\Kernel    $console
+     * @param \Illuminate\Database\DatabaseManager $database
+     * @param \Illuminate\Contracts\Console\Kernel $console
      */
     public function __construct(ConfigRepository $config, DatabaseManager $database, Kernel $console)
     {
@@ -82,21 +82,21 @@ class DatabaseSettingsCommand extends Command
     {
         $this->output->note(trans('command/messages.environment.database.host_warning'));
         $this->variables['DB_HOST'] = $this->option('host') ?? $this->ask(
-            trans('command/messages.environment.database.host'), $this->config->get('database.connections.mysql.host', '127.0.0.1')
-        );
+                trans('command/messages.environment.database.host'), $this->config->get('database.connections.mysql.host', '127.0.0.1')
+            );
 
         $this->variables['DB_PORT'] = $this->option('port') ?? $this->ask(
-            trans('command/messages.environment.database.port'), $this->config->get('database.connections.mysql.port', 3306)
-        );
+                trans('command/messages.environment.database.port'), $this->config->get('database.connections.mysql.port', 3306)
+            );
 
         $this->variables['DB_DATABASE'] = $this->option('database') ?? $this->ask(
-            trans('command/messages.environment.database.database'), $this->config->get('database.connections.mysql.database', 'panel')
-        );
+                trans('command/messages.environment.database.database'), $this->config->get('database.connections.mysql.database', 'panel')
+            );
 
         $this->output->note(trans('command/messages.environment.database.username_warning'));
         $this->variables['DB_USERNAME'] = $this->option('username') ?? $this->ask(
-            trans('command/messages.environment.database.username'), $this->config->get('database.connections.mysql.username', 'pterodactyl')
-        );
+                trans('command/messages.environment.database.username'), $this->config->get('database.connections.mysql.username', 'pterodactyl')
+            );
 
         $askForMySQLPassword = true;
         if (! empty($this->config->get('database.connections.mysql.password')) && $this->input->isInteractive()) {
@@ -136,15 +136,15 @@ class DatabaseSettingsCommand extends Command
     private function testMySQLConnection()
     {
         $this->config->set('database.connections._pterodactyl_command_test', [
-           'driver' => 'mysql',
-           'host' => $this->variables['DB_HOST'],
-           'port' => $this->variables['DB_PORT'],
-           'database' => $this->variables['DB_DATABASE'],
-           'username' => $this->variables['DB_USERNAME'],
-           'password' => $this->variables['DB_PASSWORD'],
-           'charset' => 'utf8mb4',
-           'collation' => 'utf8mb4_unicode_ci',
-           'strict' => true,
+            'driver' => 'mysql',
+            'host' => $this->variables['DB_HOST'],
+            'port' => $this->variables['DB_PORT'],
+            'database' => $this->variables['DB_DATABASE'],
+            'username' => $this->variables['DB_USERNAME'],
+            'password' => $this->variables['DB_PASSWORD'],
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'strict' => true,
         ]);
 
         $this->database->connection('_pterodactyl_command_test')->getPdo();

@@ -1,34 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
-if (! function_exists('human_readable')) {
-    /**
-     * Generate a human-readable filesize for a given file path.
-     *
-     * @param string $path
-     * @param int    $precision
-     * @return string
-     */
-    function human_readable($path, $precision = 2)
-    {
-        if (is_numeric($path)) {
-            $i = 0;
-            while (($path / 1024) > 0.9) {
-                $path = $path / 1024;
-                $i++;
-            }
-
-            return round($path, $precision) . ['B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'][$i];
-        }
-
-        return app('file')->humanReadableSize($path, $precision);
-    }
-}
 
 if (! function_exists('is_digit')) {
     /**
@@ -51,7 +21,7 @@ if (! function_exists('object_get_strict')) {
      *
      * @param object $object
      * @param string $key
-     * @param null   $default
+     * @param null $default
      * @return mixed
      */
     function object_get_strict($object, $key, $default = null)

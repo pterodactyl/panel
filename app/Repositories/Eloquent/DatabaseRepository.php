@@ -25,7 +25,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     /**
      * DatabaseRepository constructor.
      *
-     * @param \Illuminate\Foundation\Application   $application
+     * @param \Illuminate\Foundation\Application $application
      * @param \Illuminate\Database\DatabaseManager $database
      */
     public function __construct(Application $application, DatabaseManager $database)
@@ -76,7 +76,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
      */
     public function getDatabasesForServer(int $server): Collection
     {
-        return $this->getBuilder()->where('server_id', $server)->get($this->getColumns());
+        return $this->getBuilder()->with('host')->where('server_id', $server)->get($this->getColumns());
     }
 
     /**
@@ -91,31 +91,6 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
         return $this->getBuilder()->with('server')
             ->where('database_host_id', $host)
             ->paginate($count, $this->getColumns());
-    }
-
-    /**
-     * Create a new database if it does not already exist on the host with
-     * the provided details.
-     *
-     * @param array $data
-     * @return \Pterodactyl\Models\Database
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
-     */
-    public function createIfNotExists(array $data): Database
-    {
-        $count = $this->getBuilder()->where([
-            ['server_id', '=', array_get($data, 'server_id')],
-            ['database_host_id', '=', array_get($data, 'database_host_id')],
-            ['database', '=', array_get($data, 'database')],
-        ])->count();
-
-        if ($count > 0) {
-            throw new DuplicateDatabaseNameException('A database with those details already exists for the specified server.');
-        }
-
-        return $this->create($data);
     }
 
     /**
@@ -135,11 +110,16 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
      * @param string $username
      * @param string $remote
      * @param string $password
+     * @param $max_connections
      * @return bool
      */
-    public function createUser(string $username, string $remote, string $password): bool
+    public function createUser(string $username, string $remote, string $password, $max_connections): bool
     {
-        return $this->run(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password));
+        if (! $max_connections) {
+            return $this->run(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password));
+        } else {
+            return $this->run(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\' WITH MAX_USER_CONNECTIONS %s', $username, $remote, $password, $max_connections));
+        }
     }
 
     /**

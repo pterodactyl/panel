@@ -35,9 +35,9 @@ class NodeDeletionService
     /**
      * DeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface   $repository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Illuminate\Contracts\Translation\Translator                $translator
+     * @param \Illuminate\Contracts\Translation\Translator $translator
      */
     public function __construct(
         NodeRepositoryInterface $repository,

@@ -36,9 +36,9 @@ class AdvancedController extends Controller
     /**
      * AdvancedController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                             $alert
-     * @param \Illuminate\Contracts\Config\Repository                       $config
-     * @param \Illuminate\Contracts\Console\Kernel                          $kernel
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Illuminate\Contracts\Console\Kernel $kernel
      * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
      */
     public function __construct(

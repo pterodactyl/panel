@@ -1,45 +1,56 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Policies;
 
-use Cache;
-use Carbon;
+use Carbon\Carbon;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 class ServerPolicy
 {
     /**
+     * @var \Illuminate\Contracts\Cache\Repository
+     */
+    private $cache;
+
+    /**
+     * ServerPolicy constructor.
+     *
+     * @param \Illuminate\Contracts\Cache\Repository $cache
+     */
+    public function __construct(CacheRepository $cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
      * Checks if the user has the given permission on/for the server.
      *
-     * @param \Pterodactyl\Models\User   $user
+     * @param \Pterodactyl\Models\User $user
      * @param \Pterodactyl\Models\Server $server
-     * @param string                     $permission
+     * @param string $permission
      * @return bool
      */
     protected function checkPermission(User $user, Server $server, $permission)
     {
-        $permissions = Cache::remember('ServerPolicy.' . $user->uuid . $server->uuid, Carbon::now()->addSeconds(5), function () use ($user, $server) {
-            return $user->permissions()->server($server)->get()->transform(function ($item) {
-                return $item->permission;
-            })->values();
+        $key = sprintf('ServerPolicy.%s.%s', $user->uuid, $server->uuid);
+
+        $permissions = $this->cache->remember($key, Carbon::now()->addSeconds(5), function () use ($user, $server) {
+            /** @var \Pterodactyl\Models\Subuser|null $subuser */
+            $subuser = $server->subusers()->where('user_id', $user->id)->first();
+
+            return $subuser ? $subuser->permissions : [];
         });
 
-        return $permissions->search($permission, true) !== false;
+        return in_array($permission, $permissions);
     }
 
     /**
      * Runs before any of the functions are called. Used to determine if user is root admin, if so, ignore permissions.
      *
-     * @param \Pterodactyl\Models\User   $user
-     * @param string                     $ability
+     * @param \Pterodactyl\Models\User $user
+     * @param string $ability
      * @param \Pterodactyl\Models\Server $server
      * @return bool
      */
@@ -58,7 +69,7 @@ class ServerPolicy
      * policy permission.
      *
      * @param string $name
-     * @param mixed  $arguments
+     * @param mixed $arguments
      */
     public function __call($name, $arguments)
     {

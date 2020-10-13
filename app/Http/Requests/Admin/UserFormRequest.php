@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Requests\Admin;
 
 use Pterodactyl\Models\User;
+use Illuminate\Support\Collection;
 
 class UserFormRequest extends AdminFormRequest
 {
@@ -12,16 +13,16 @@ class UserFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        $rules = collect(User::getCreateRules());
-        if ($this->method() === 'PATCH') {
-            $rules = collect(User::getUpdateRulesForId($this->route()->parameter('user')->id))->merge([
-                'ignore_connection_error' => ['sometimes', 'nullable', 'boolean'],
-            ]);
-        }
-
-        return $rules->only([
-            'email', 'username', 'name_first', 'name_last', 'password',
-            'language', 'ignore_connection_error', 'root_admin',
+        return Collection::make(
+            User::getRulesForUpdate($this->route()->parameter('user'))
+        )->only([
+            'email',
+            'username',
+            'name_first',
+            'name_last',
+            'password',
+            'language',
+            'root_admin',
         ])->toArray();
     }
 }

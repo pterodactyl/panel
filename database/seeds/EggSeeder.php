@@ -112,14 +112,16 @@ class EggSeeder extends Seeder
         $files = $this->filesystem->allFiles(database_path('seeds/eggs/' . kebab_case($nest->name)));
 
         $this->command->alert('Updating Eggs for Nest: ' . $nest->name);
-        collect($files)->each(function ($file) use ($nest) {
+        Collection::make($files)->each(function ($file) use ($nest) {
             /* @var \Symfony\Component\Finder\SplFileInfo $file */
             $decoded = json_decode($file->getContents());
             if (json_last_error() !== JSON_ERROR_NONE) {
-                return $this->command->error('JSON decode exception for ' . $file->getFilename() . ': ' . json_last_error_msg());
+                $this->command->error('JSON decode exception for ' . $file->getFilename() . ': ' . json_last_error_msg());
+
+                return;
             }
 
-            $file = new UploadedFile($file->getPathname(), $file->getFilename(), 'application/json', $file->getSize());
+            $file = new UploadedFile($file->getPathname(), $file->getFilename(), 'application/json');
 
             try {
                 $egg = $this->repository->setColumns('id')->findFirstWhere([
@@ -128,13 +130,13 @@ class EggSeeder extends Seeder
                     ['nest_id', '=', $nest->id],
                 ]);
 
-                $this->updateImporterService->handle($egg->id, $file);
+                $this->updateImporterService->handle($egg, $file);
 
-                return $this->command->info('Updated ' . $decoded->name);
+                $this->command->info('Updated ' . $decoded->name);
             } catch (RecordNotFoundException $exception) {
                 $this->importerService->handle($file, $nest->id);
 
-                return $this->command->comment('Created ' . $decoded->name);
+                $this->command->comment('Created ' . $decoded->name);
             }
         });
 

@@ -3,7 +3,10 @@
 namespace Pterodactyl\Helpers;
 
 use Exception;
+use Carbon\Carbon;
+use Cron\CronExpression;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\ViewErrorBag;
 
 class Utilities
 {
@@ -31,5 +34,32 @@ class Utilities
         }
 
         return $string;
+    }
+
+    /**
+     * Converts schedule cron data into a carbon object.
+     *
+     * @param string $minute
+     * @param string $hour
+     * @param string $dayOfMonth
+     * @param string $dayOfWeek
+     * @return \Carbon\Carbon
+     */
+    public static function getScheduleNextRunDate(string $minute, string $hour, string $dayOfMonth, string $dayOfWeek)
+    {
+        return Carbon::instance(CronExpression::factory(
+            sprintf('%s %s %s * %s', $minute, $hour, $dayOfMonth, $dayOfWeek)
+        )->getNextRunDate());
+    }
+
+    public static function checked($name, $default)
+    {
+        $errors = session('errors');
+
+        if (isset($errors) && $errors instanceof ViewErrorBag && $errors->any()) {
+            return old($name) ? 'checked' : '';
+        }
+
+        return ($default) ? 'checked' : '';
     }
 }

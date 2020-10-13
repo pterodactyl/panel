@@ -22,7 +22,6 @@ class ServerTransformer extends BaseTransformer
         'allocations',
         'user',
         'subusers',
-        'pack',
         'nest',
         'egg',
         'variables',
@@ -75,17 +74,18 @@ class ServerTransformer extends BaseTransformer
                 'disk' => $server->disk,
                 'io' => $server->io,
                 'cpu' => $server->cpu,
+                'threads' => $server->threads,
             ],
             'feature_limits' => [
                 'databases' => $server->database_limit,
                 'allocations' => $server->allocation_limit,
+                'backups' => $server->backup_limit,
             ],
             'user' => $server->owner_id,
             'node' => $server->node_id,
             'allocation' => $server->allocation_id,
             'nest' => $server->nest_id,
             'egg' => $server->egg_id,
-            'pack' => $server->pack_id,
             'container' => [
                 'startup_command' => $server->startup,
                 'image' => $server->image,
@@ -155,28 +155,6 @@ class ServerTransformer extends BaseTransformer
     }
 
     /**
-     * Return a generic array with pack information for this server.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     */
-    public function includePack(Server $server)
-    {
-        if (! $this->authorize(AdminAcl::RESOURCE_PACKS)) {
-            return $this->null();
-        }
-
-        $server->loadMissing('pack');
-        if (is_null($server->getRelation('pack'))) {
-            return $this->null();
-        }
-
-        return $this->item($server->getRelation('pack'), $this->makeTransformer(PackTransformer::class), 'pack');
-    }
-
-    /**
      * Return a generic array with nest information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
@@ -234,7 +212,7 @@ class ServerTransformer extends BaseTransformer
     }
 
     /**
-     * Return a generic array with pack information for this server.
+     * Return a generic array with location information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
@@ -253,7 +231,7 @@ class ServerTransformer extends BaseTransformer
     }
 
     /**
-     * Return a generic array with pack information for this server.
+     * Return a generic array with node information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource

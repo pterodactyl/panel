@@ -68,7 +68,7 @@ class AppSettingsCommand extends Command
                             {--redis-host= : Redis host to use for connections.}
                             {--redis-pass= : Password used to connect to redis.}
                             {--redis-port= : Port to connect to redis over.}
-                            {--disable-settings-ui}';
+                            {--settings-ui= : Enable or disable the settings UI.}';
 
     /**
      * @var array
@@ -79,7 +79,7 @@ class AppSettingsCommand extends Command
      * AppSettingsCommand constructor.
      *
      * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Illuminate\Contracts\Console\Kernel    $command
+     * @param \Illuminate\Contracts\Console\Kernel $command
      */
     public function __construct(ConfigRepository $config, Kernel $command)
     {
@@ -102,44 +102,44 @@ class AppSettingsCommand extends Command
 
         $this->output->comment(trans('command/messages.environment.app.author_help'));
         $this->variables['APP_SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
-            trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'unknown@unknown.com')
-        );
+                trans('command/messages.environment.app.author'), $this->config->get('pterodactyl.service.author', 'unknown@unknown.com')
+            );
 
         $this->output->comment(trans('command/messages.environment.app.app_url_help'));
         $this->variables['APP_URL'] = $this->option('url') ?? $this->ask(
-            trans('command/messages.environment.app.app_url'), $this->config->get('app.url', 'http://example.org')
-        );
+                trans('command/messages.environment.app.app_url'), $this->config->get('app.url', 'http://example.org')
+            );
 
         $this->output->comment(trans('command/messages.environment.app.timezone_help'));
         $this->variables['APP_TIMEZONE'] = $this->option('timezone') ?? $this->anticipate(
-            trans('command/messages.environment.app.timezone'),
-            DateTimeZone::listIdentifiers(DateTimeZone::ALL),
-            $this->config->get('app.timezone')
-        );
+                trans('command/messages.environment.app.timezone'),
+                DateTimeZone::listIdentifiers(DateTimeZone::ALL),
+                $this->config->get('app.timezone')
+            );
 
         $selected = $this->config->get('cache.default', 'redis');
         $this->variables['CACHE_DRIVER'] = $this->option('cache') ?? $this->choice(
-            trans('command/messages.environment.app.cache_driver'),
-            self::ALLOWED_CACHE_DRIVERS,
-            array_key_exists($selected, self::ALLOWED_CACHE_DRIVERS) ? $selected : null
-        );
+                trans('command/messages.environment.app.cache_driver'),
+                self::ALLOWED_CACHE_DRIVERS,
+                array_key_exists($selected, self::ALLOWED_CACHE_DRIVERS) ? $selected : null
+            );
 
         $selected = $this->config->get('session.driver', 'redis');
         $this->variables['SESSION_DRIVER'] = $this->option('session') ?? $this->choice(
-            trans('command/messages.environment.app.session_driver'),
-            self::ALLOWED_SESSION_DRIVERS,
-            array_key_exists($selected, self::ALLOWED_SESSION_DRIVERS) ? $selected : null
-        );
+                trans('command/messages.environment.app.session_driver'),
+                self::ALLOWED_SESSION_DRIVERS,
+                array_key_exists($selected, self::ALLOWED_SESSION_DRIVERS) ? $selected : null
+            );
 
         $selected = $this->config->get('queue.default', 'redis');
         $this->variables['QUEUE_CONNECTION'] = $this->option('queue') ?? $this->choice(
-            trans('command/messages.environment.app.queue_driver'),
-            self::ALLOWED_QUEUE_DRIVERS,
-            array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null
-        );
+                trans('command/messages.environment.app.queue_driver'),
+                self::ALLOWED_QUEUE_DRIVERS,
+                array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null
+            );
 
-        if ($this->option('disable-settings-ui')) {
-            $this->variables['APP_ENVIRONMENT_ONLY'] = 'true';
+        if (! is_null($this->option('settings-ui'))) {
+            $this->variables['APP_ENVIRONMENT_ONLY'] = $this->option('settings-ui') == 'true' ? 'false' : 'true';
         } else {
             $this->variables['APP_ENVIRONMENT_ONLY'] = $this->confirm(trans('command/messages.environment.app.settings'), true) ? 'false' : 'true';
         }
@@ -166,8 +166,8 @@ class AppSettingsCommand extends Command
 
         $this->output->note(trans('command/messages.environment.app.using_redis'));
         $this->variables['REDIS_HOST'] = $this->option('redis-host') ?? $this->ask(
-            trans('command/messages.environment.app.redis_host'), $this->config->get('database.redis.default.host')
-        );
+                trans('command/messages.environment.app.redis_host'), $this->config->get('database.redis.default.host')
+            );
 
         $askForRedisPassword = true;
         if (! empty($this->config->get('database.redis.default.password'))) {
@@ -178,8 +178,8 @@ class AppSettingsCommand extends Command
         if ($askForRedisPassword) {
             $this->output->comment(trans('command/messages.environment.app.redis_pass_help'));
             $this->variables['REDIS_PASSWORD'] = $this->option('redis-pass') ?? $this->output->askHidden(
-                trans('command/messages.environment.app.redis_password')
-            );
+                    trans('command/messages.environment.app.redis_password')
+                );
         }
 
         if (empty($this->variables['REDIS_PASSWORD'])) {
@@ -187,7 +187,7 @@ class AppSettingsCommand extends Command
         }
 
         $this->variables['REDIS_PORT'] = $this->option('redis-port') ?? $this->ask(
-            trans('command/messages.environment.app.redis_port'), $this->config->get('database.redis.default.port')
-        );
+                trans('command/messages.environment.app.redis_port'), $this->config->get('database.redis.default.port')
+            );
     }
 }

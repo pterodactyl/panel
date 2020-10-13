@@ -1,33 +1,35 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Nodes;
 
+use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str;
+use Pterodactyl\Models\Node;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeCreationService
 {
-    const DAEMON_SECRET_LENGTH = 36;
-
     /**
      * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
      */
     protected $repository;
 
     /**
+     * @var \Illuminate\Contracts\Encryption\Encrypter
+     */
+    private $encrypter;
+
+    /**
      * CreationService constructor.
      *
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
-    public function __construct(NodeRepositoryInterface $repository)
+    public function __construct(Encrypter $encrypter, NodeRepositoryInterface $repository)
     {
         $this->repository = $repository;
+        $this->encrypter = $encrypter;
     }
 
     /**
@@ -40,8 +42,10 @@ class NodeCreationService
      */
     public function handle(array $data)
     {
-        $data['daemonSecret'] = str_random(self::DAEMON_SECRET_LENGTH);
+        $data['uuid'] = Uuid::uuid4()->toString();
+        $data['daemon_token'] = $this->encrypter->encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));
+        $data['daemon_token_id'] = Str::random(Node::DAEMON_TOKEN_ID_LENGTH);
 
-        return $this->repository->create($data);
+        return $this->repository->create($data, true, true);
     }
 }

@@ -36,8 +36,8 @@ class UserDeletionService
      * DeletionService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Illuminate\Contracts\Translation\Translator                $translator
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface   $repository
+     * @param \Illuminate\Contracts\Translation\Translator $translator
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,

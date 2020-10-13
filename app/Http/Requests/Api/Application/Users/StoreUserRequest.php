@@ -26,7 +26,7 @@ class StoreUserRequest extends ApplicationApiRequest
      */
     public function rules(array $rules = null): array
     {
-        $rules = $rules ?? User::getCreateRules();
+        $rules = $rules ?? User::getRules();
 
         $response = collect($rules)->only([
             'external_id',

@@ -34,7 +34,6 @@ class AdminAcl
     const RESOURCE_EGGS = 'eggs';
     const RESOURCE_DATABASE_HOSTS = 'database_hosts';
     const RESOURCE_SERVER_DATABASES = 'server_databases';
-    const RESOURCE_PACKS = 'packs';
 
     /**
      * Determine if an API key has permission to perform a specific read/write operation.
@@ -57,8 +56,8 @@ class AdminAcl
      * at a specific action level.
      *
      * @param \Pterodactyl\Models\ApiKey $key
-     * @param string                     $resource
-     * @param int                        $action
+     * @param string $resource
+     * @param int $action
      * @return bool
      */
     public static function check(ApiKey $key, string $resource, int $action = self::READ)

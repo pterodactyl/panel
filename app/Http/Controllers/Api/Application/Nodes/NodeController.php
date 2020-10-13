@@ -3,8 +3,8 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
 use Pterodactyl\Models\Node;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
 use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\NodeDeletionService;
@@ -42,9 +42,9 @@ class NodeController extends ApplicationApiController
     /**
      * NodeController constructor.
      *
-     * @param \Pterodactyl\Services\Nodes\NodeCreationService           $creationService
-     * @param \Pterodactyl\Services\Nodes\NodeDeletionService           $deletionService
-     * @param \Pterodactyl\Services\Nodes\NodeUpdateService             $updateService
+     * @param \Pterodactyl\Services\Nodes\NodeCreationService $creationService
+     * @param \Pterodactyl\Services\Nodes\NodeDeletionService $deletionService
+     * @param \Pterodactyl\Services\Nodes\NodeUpdateService $updateService
      * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(
@@ -69,7 +69,10 @@ class NodeController extends ApplicationApiController
      */
     public function index(GetNodesRequest $request): array
     {
-        $nodes = $this->repository->setSearchTerm($request->input('search'))->paginated(50);
+        $nodes = QueryBuilder::for(Node::query())
+            ->allowedFilters(['uuid', 'name', 'fqdn', 'daemon_token_id'])
+            ->allowedSorts(['id', 'uuid', 'memory', 'disk'])
+            ->paginate(100);
 
         return $this->fractal->collection($nodes)
             ->transformWith($this->getTransformer(NodeTransformer::class))
@@ -80,11 +83,12 @@ class NodeController extends ApplicationApiController
      * Return data for a single instance of a node.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest $request
+     * @param \Pterodactyl\Models\Node $node
      * @return array
      */
-    public function view(GetNodeRequest $request): array
+    public function view(GetNodeRequest $request, Node $node): array
     {
-        return $this->fractal->item($request->getModel(Node::class))
+        return $this->fractal->item($node)
             ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
@@ -116,16 +120,15 @@ class NodeController extends ApplicationApiController
      * Update an existing node on the Panel.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\UpdateNodeRequest $request
+     * @param \Pterodactyl\Models\Node $node
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
-    public function update(UpdateNodeRequest $request): array
+    public function update(UpdateNodeRequest $request, Node $node): array
     {
         $node = $this->updateService->handle(
-            $request->getModel(Node::class), $request->validated(), $request->input('reset_secret') === true
+            $node, $request->validated(), $request->input('reset_secret') === true
         );
 
         return $this->fractal->item($node)
@@ -138,14 +141,15 @@ class NodeController extends ApplicationApiController
      * currently attached to it.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest $request
-     * @return \Illuminate\Http\Response
+     * @param \Pterodactyl\Models\Node $node
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function delete(DeleteNodeRequest $request): Response
+    public function delete(DeleteNodeRequest $request, Node $node): JsonResponse
     {
-        $this->deletionService->handle($request->getModel(Node::class));
+        $this->deletionService->handle($node);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

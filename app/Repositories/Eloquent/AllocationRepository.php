@@ -2,10 +2,8 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class AllocationRepository extends EloquentRepository implements AllocationRepositoryInterface
@@ -21,55 +19,6 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
     }
 
     /**
-     * Set an array of allocation IDs to be assigned to a specific server.
-     *
-     * @param int|null $server
-     * @param array    $ids
-     * @return int
-     */
-    public function assignAllocationsToServer(int $server = null, array $ids): int
-    {
-        return $this->getBuilder()->whereIn('id', $ids)->update(['server_id' => $server]);
-    }
-
-    /**
-     * Return all of the allocations for a specific node.
-     *
-     * @param int $node
-     * @return \Illuminate\Support\Collection
-     */
-    public function getAllocationsForNode(int $node): Collection
-    {
-        return $this->getBuilder()->where('node_id', $node)->get($this->getColumns());
-    }
-
-    /**
-     * Return all of the allocations for a node in a paginated format.
-     *
-     * @param int $node
-     * @param int $perPage
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getPaginatedAllocationsForNode(int $node, int $perPage = 100): LengthAwarePaginator
-    {
-        return $this->getBuilder()->where('node_id', $node)->paginate($perPage, $this->getColumns());
-    }
-
-    /**
-     * Return all of the unique IPs that exist for a given node.
-     *
-     * @param int $node
-     * @return \Illuminate\Support\Collection
-     */
-    public function getUniqueAllocationIpsForNode(int $node): Collection
-    {
-        return $this->getBuilder()->where('node_id', $node)
-            ->groupBy('ip')
-            ->orderByRaw('INET_ATON(ip) ASC')
-            ->get($this->getColumns());
-    }
-
-    /**
      * Return all of the allocations that exist for a node that are not currently
      * allocated.
      *
@@ -78,22 +27,12 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      */
     public function getUnassignedAllocationIds(int $node): array
     {
-        $results = $this->getBuilder()->select('id')->whereNull('server_id')->where('node_id', $node)->get();
-
-        return $results->pluck('id')->toArray();
-    }
-
-    /**
-     * Get an array of all allocations that are currently assigned to a given server.
-     *
-     * @param int $server
-     * @return array
-     */
-    public function getAssignedAllocationIds(int $server): array
-    {
-        $results = $this->getBuilder()->select('id')->where('server_id', $server)->get();
-
-        return $results->pluck('id')->toArray();
+        return Allocation::query()->select('id')
+            ->whereNull('server_id')
+            ->where('node_id', $node)
+            ->get()
+            ->pluck('id')
+            ->toArray();
     }
 
     /**
@@ -107,21 +46,19 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      * @param array $nodes
      * @return array
      */
-    public function getDiscardableDedicatedAllocations(array $nodes = []): array
+    protected function getDiscardableDedicatedAllocations(array $nodes = []): array
     {
-        $instance = $this->getBuilder()->select(
-            $this->getBuilder()->raw('CONCAT_WS("-", node_id, ip) as result')
-        );
+        $query = Allocation::query()->selectRaw('CONCAT_WS("-", node_id, ip) as result');
 
         if (! empty($nodes)) {
-            $instance->whereIn('node_id', $nodes);
+            $query->whereIn('node_id', $nodes);
         }
 
-        $results = $instance->whereNotNull('server_id')
-            ->groupBy($this->getBuilder()->raw('CONCAT(node_id, ip)'))
-            ->get();
-
-        return $results->pluck('result')->toArray();
+        return $query->whereNotNull('server_id')
+            ->groupByRaw('CONCAT(node_id, ip)')
+            ->get()
+            ->pluck('result')
+            ->toArray();
     }
 
     /**
@@ -129,23 +66,23 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      *
      * @param array $nodes
      * @param array $ports
-     * @param bool  $dedicated
+     * @param bool $dedicated
      * @return \Pterodactyl\Models\Allocation|null
      */
     public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false)
     {
-        $instance = $this->getBuilder()->whereNull('server_id');
+        $query = Allocation::query()->whereNull('server_id');
 
         if (! empty($nodes)) {
-            $instance->whereIn('node_id', $nodes);
+            $query->whereIn('node_id', $nodes);
         }
 
         if (! empty($ports)) {
-            $instance->where(function (Builder $query) use ($ports) {
+            $query->where(function (Builder $inner) use ($ports) {
                 $whereIn = [];
                 foreach ($ports as $port) {
                     if (is_array($port)) {
-                        $query->orWhereBetween('port', $port);
+                        $inner->orWhereBetween('port', $port);
                         continue;
                     }
 
@@ -153,7 +90,7 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
                 }
 
                 if (! empty($whereIn)) {
-                    $query->orWhereIn('port', $whereIn);
+                    $inner->orWhereIn('port', $whereIn);
                 }
             });
         }
@@ -164,12 +101,12 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
             $discard = $this->getDiscardableDedicatedAllocations($nodes);
 
             if (! empty($discard)) {
-                $instance->whereNotIn(
+                $query->whereNotIn(
                     $this->getBuilder()->raw('CONCAT_WS("-", node_id, ip)'), $discard
                 );
             }
         }
 
-        return $instance->inRandomOrder()->first();
+        return $query->inRandomOrder()->first();
     }
 }

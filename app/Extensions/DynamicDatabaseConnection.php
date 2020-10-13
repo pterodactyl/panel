@@ -38,9 +38,9 @@ class DynamicDatabaseConnection
     /**
      * DynamicDatabaseConnection constructor.
      *
-     * @param \Illuminate\Config\Repository                                     $config
+     * @param \Illuminate\Config\Repository $config
      * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Encryption\Encrypter                        $encrypter
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         ConfigRepository $config,
@@ -55,9 +55,9 @@ class DynamicDatabaseConnection
     /**
      * Adds a dynamic database connection entry to the runtime config.
      *
-     * @param string                               $connection
+     * @param string $connection
      * @param \Pterodactyl\Models\DatabaseHost|int $host
-     * @param string                               $database
+     * @param string $database
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

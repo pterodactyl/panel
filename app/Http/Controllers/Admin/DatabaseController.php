@@ -57,13 +57,13 @@ class DatabaseController extends Controller
     /**
      * DatabaseController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                                 $alert
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface     $databaseRepository
-     * @param \Pterodactyl\Services\Databases\Hosts\HostCreationService         $creationService
-     * @param \Pterodactyl\Services\Databases\Hosts\HostDeletionService         $deletionService
-     * @param \Pterodactyl\Services\Databases\Hosts\HostUpdateService           $updateService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface     $locationRepository
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
+     * @param \Pterodactyl\Services\Databases\Hosts\HostCreationService $creationService
+     * @param \Pterodactyl\Services\Databases\Hosts\HostDeletionService $deletionService
+     * @param \Pterodactyl\Services\Databases\Hosts\HostUpdateService $updateService
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $locationRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -146,7 +146,7 @@ class DatabaseController extends Controller
      * Handle updating database host.
      *
      * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
-     * @param \Pterodactyl\Models\DatabaseHost                         $host
+     * @param \Pterodactyl\Models\DatabaseHost $host
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
@@ -165,6 +165,7 @@ class DatabaseController extends Controller
                 $this->alert->danger(
                     sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage())
                 )->flash();
+
                 return $redirect->withInput($request->normalize());
             } else {
                 throw $exception;

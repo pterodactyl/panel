@@ -36,7 +36,7 @@ class DeleteLocationCommandTest extends CommandTestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -63,7 +63,7 @@ class DeleteLocationCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], [$location2->short]);
 
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.location.deleted'), $display);
+        $this->assertStringContainsString(trans('command/messages.location.deleted'), $display);
     }
 
     /**
@@ -84,7 +84,7 @@ class DeleteLocationCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.location.deleted'), $display);
+        $this->assertStringContainsString(trans('command/messages.location.deleted'), $display);
     }
 
     /**
@@ -103,8 +103,8 @@ class DeleteLocationCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], ['123_not_exist', 'another_not_exist', $location2->short]);
 
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.location.no_location_found'), $display);
-        $this->assertContains(trans('command/messages.location.deleted'), $display);
+        $this->assertStringContainsString(trans('command/messages.location.no_location_found'), $display);
+        $this->assertStringContainsString(trans('command/messages.location.deleted'), $display);
     }
 
     /**
@@ -123,6 +123,6 @@ class DeleteLocationCommandTest extends CommandTestCase
         $display = $this->withoutInteraction()->runCommand($this->command, ['--short' => 'randomTestString']);
 
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.location.no_location_found'), $display);
+        $this->assertStringContainsString(trans('command/messages.location.no_location_found'), $display);
     }
 }

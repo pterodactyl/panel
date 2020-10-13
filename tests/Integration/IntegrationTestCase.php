@@ -5,14 +5,17 @@ namespace Pterodactyl\Tests\Integration;
 use Tests\TestCase;
 use Cake\Chronos\Chronos;
 use Illuminate\Database\Eloquent\Model;
+use Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class IntegrationTestCase extends TestCase
 {
+    use CreatesTestModels;
+
     /**
      * Setup base integration test cases.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

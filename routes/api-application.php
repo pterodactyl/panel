@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | User Controller Routes
@@ -8,6 +10,7 @@
 | Endpoint: /api/application/users
 |
 */
+
 Route::group(['prefix' => '/users'], function () {
     Route::get('/', 'Users\UserController@index')->name('api.application.users');
     Route::get('/{user}', 'Users\UserController@view')->name('api.application.users.view');
@@ -30,6 +33,7 @@ Route::group(['prefix' => '/users'], function () {
 Route::group(['prefix' => '/nodes'], function () {
     Route::get('/', 'Nodes\NodeController@index')->name('api.application.nodes');
     Route::get('/{node}', 'Nodes\NodeController@view')->name('api.application.nodes.view');
+    Route::get('/{node}/configuration', 'Nodes\NodeConfigurationController');
 
     Route::post('/', 'Nodes\NodeController@store');
     Route::patch('/{node}', 'Nodes\NodeController@update');
@@ -38,9 +42,7 @@ Route::group(['prefix' => '/nodes'], function () {
 
     Route::group(['prefix' => '/{node}/allocations'], function () {
         Route::get('/', 'Nodes\AllocationController@index')->name('api.application.allocations');
-
         Route::post('/', 'Nodes\AllocationController@store');
-
         Route::delete('/{allocation}', 'Nodes\AllocationController@delete')->name('api.application.allocations.view');
     });
 });
@@ -84,7 +86,6 @@ Route::group(['prefix' => '/servers'], function () {
     Route::post('/{server}/suspend', 'Servers\ServerManagementController@suspend')->name('api.application.servers.suspend');
     Route::post('/{server}/unsuspend', 'Servers\ServerManagementController@unsuspend')->name('api.application.servers.unsuspend');
     Route::post('/{server}/reinstall', 'Servers\ServerManagementController@reinstall')->name('api.application.servers.reinstall');
-    Route::post('/{server}/rebuild', 'Servers\ServerManagementController@rebuild')->name('api.application.servers.rebuild');
 
     Route::delete('/{server}', 'Servers\ServerController@delete');
     Route::delete('/{server}/{force?}', 'Servers\ServerController@delete');

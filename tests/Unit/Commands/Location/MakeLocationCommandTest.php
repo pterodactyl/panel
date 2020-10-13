@@ -30,7 +30,7 @@ class MakeLocationCommandTest extends CommandTestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -55,7 +55,7 @@ class MakeLocationCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], [$location->short, $location->long]);
 
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.location.created', [
+        $this->assertStringContainsString(trans('command/messages.location.created', [
             'name' => $location->short,
             'id' => $location->id,
         ]), $display);
@@ -79,7 +79,7 @@ class MakeLocationCommandTest extends CommandTestCase
         ]);
 
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.location.created', [
+        $this->assertStringContainsString(trans('command/messages.location.created', [
             'name' => $location->short,
             'id' => $location->id,
         ]), $display);

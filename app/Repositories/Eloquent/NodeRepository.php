@@ -2,17 +2,14 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
-use Generator;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
-use Pterodactyl\Repositories\Concerns\Searchable;
+use Illuminate\Support\LazyCollection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface
 {
-    use Searchable;
-
     /**
      * Return the model backing this repository.
      *
@@ -31,27 +28,31 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getUsageStats(Node $node): array
     {
-        $stats = $this->getBuilder()->select(
-            $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-        )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
+        $stats = $this->getBuilder()
+            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->join('servers', 'servers.node_id', '=', 'nodes.id')
+            ->where('node_id', '=', $node->id)
+            ->first();
 
-        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($node) {
-            $maxUsage = $node->{$key};
-            if ($node->{$key . '_overallocate'} > 0) {
-                $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
-            }
+        return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
+            ->mapWithKeys(function ($value, $key) use ($node) {
+                $maxUsage = $node->{$key};
+                if ($node->{$key . '_overallocate'} > 0) {
+                    $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
+                }
 
-            $percent = ($value / $maxUsage) * 100;
+                $percent = ($value / $maxUsage) * 100;
 
-            return [
-                $key => [
-                    'value' => number_format($value),
-                    'max' => number_format($maxUsage),
-                    'percent' => $percent,
-                    'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
-                ],
-            ];
-        })->toArray();
+                return [
+                    $key => [
+                        'value' => number_format($value),
+                        'max' => number_format($maxUsage),
+                        'percent' => $percent,
+                        'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
+                    ],
+                ];
+            })
+            ->toArray();
     }
 
     /**
@@ -82,26 +83,10 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     }
 
     /**
-     * Return all available nodes with a searchable interface.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
-    public function getNodeListingData(): LengthAwarePaginator
-    {
-        $instance = $this->getBuilder()->with('location')->withCount('servers');
-
-        if ($this->hasSearchTerm()) {
-            $instance->search($this->getSearchTerm());
-        }
-
-        return $instance->paginate(25, $this->getColumns());
-    }
-
-    /**
      * Return a single node with location and server information.
      *
      * @param \Pterodactyl\Models\Node $node
-     * @param bool                     $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Node
      */
     public function loadLocationAndServerCount(Node $node, bool $refresh = false): Node
@@ -126,13 +111,18 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      * any servers that are also attached to those allocations.
      *
      * @param \Pterodactyl\Models\Node $node
-     * @param bool                     $refresh
+     * @param bool $refresh
      * @return \Pterodactyl\Models\Node
      */
     public function loadNodeAllocations(Node $node, bool $refresh = false): Node
     {
         $node->setRelation('allocations',
-            $node->allocations()->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')->orderByRaw('INET_ATON(ip) ASC')->orderBy('port', 'asc')->with('server:id,name')->paginate(50)
+            $node->allocations()
+                ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
+                ->orderByRaw('INET_ATON(ip) ASC')
+                ->orderBy('port', 'asc')
+                ->with('server:id,name')
+                ->paginate(50)
         );
 
         return $node;
@@ -166,26 +156,19 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     }
 
     /**
-     * Return the IDs of all nodes that exist in the provided locations and have the space
-     * available to support the additional disk and memory provided.
+     * Returns a node with the given id with the Node's resource usage.
      *
-     * @param array $locations
-     * @param int   $disk
-     * @param int   $memory
-     * @return \Generator
+     * @param int $node_id
+     * @return Node
      */
-    public function getNodesWithResourceUse(array $locations, int $disk, int $memory): Generator
+    public function getNodeWithResourceUsage(int $node_id): Node
     {
         $instance = $this->getBuilder()
-            ->select(['nodes.id', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
+            ->select(['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
             ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
             ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('nodes.public', 1);
+            ->where('nodes.id', $node_id);
 
-        if (! empty($locations)) {
-            $instance->whereIn('nodes.location_id', $locations);
-        }
-
-        return $instance->groupBy('nodes.id')->cursor();
+        return $instance->first();
     }
 }

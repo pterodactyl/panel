@@ -21,7 +21,7 @@ class HostDeletionService
     /**
      * HostDeletionService constructor.
      *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface     $databaseRepository
+     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
      * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
      */
     public function __construct(

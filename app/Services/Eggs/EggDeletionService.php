@@ -30,7 +30,7 @@ class EggDeletionService
      * EggDeletionService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface    $repository
+     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,

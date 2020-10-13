@@ -27,7 +27,7 @@ class KeyCreationService
      * ApiKeyService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Encryption\Encrypter                  $encrypter
+     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(ApiKeyRepositoryInterface $repository, Encrypter $encrypter)
     {
@@ -72,8 +72,6 @@ class KeyCreationService
             $data = array_merge($data, $permissions);
         }
 
-        $instance = $this->repository->create($data, true, true);
-
-        return $instance;
+        return $this->repository->create($data, true, true);
     }
 }

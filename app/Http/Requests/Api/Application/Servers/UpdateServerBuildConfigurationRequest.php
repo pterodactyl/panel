@@ -14,7 +14,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = Server::getUpdateRulesForId($this->getModel(Server::class)->id);
+        $rules = Server::getRulesForUpdate($this->getModel(Server::class));
 
         return [
             'allocation' => $rules['allocation_id'],
@@ -25,6 +25,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'limits.swap' => $this->requiredToOptional('swap', $rules['swap'], true),
             'limits.io' => $this->requiredToOptional('io', $rules['io'], true),
             'limits.cpu' => $this->requiredToOptional('cpu', $rules['cpu'], true),
+            'limits.threads' => $this->requiredToOptional('threads', $rules['threads'], true),
             'limits.disk' => $this->requiredToOptional('disk', $rules['disk'], true),
 
             // Legacy rules to maintain backwards compatable API support without requiring
@@ -35,6 +36,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'swap' => $this->requiredToOptional('swap', $rules['swap']),
             'io' => $this->requiredToOptional('io', $rules['io']),
             'cpu' => $this->requiredToOptional('cpu', $rules['cpu']),
+            'threads' => $this->requiredToOptional('threads', $rules['threads']),
             'disk' => $this->requiredToOptional('disk', $rules['disk']),
 
             'add_allocations' => 'bail|array',
@@ -97,8 +99,8 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      * call.
      *
      * @param string $field
-     * @param array  $rules
-     * @param bool   $limits
+     * @param array $rules
+     * @param bool $limits
      * @return array
      *
      * @see https://github.com/pterodactyl/panel/issues/1500

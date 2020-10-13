@@ -2,16 +2,8 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
-
-class DatabaseHost extends Model implements CleansAttributes, ValidableContract
+class DatabaseHost extends Model
 {
-    use Eloquence, Validable;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -53,30 +45,17 @@ class DatabaseHost extends Model implements CleansAttributes, ValidableContract
     ];
 
     /**
-     * Application validation rules.
-     *
-     * @var array
-     */
-    protected static $applicationRules = [
-        'name' => 'required',
-        'host' => 'required',
-        'port' => 'required',
-        'username' => 'required',
-        'node_id' => 'sometimes',
-    ];
-
-    /**
      * Validation rules to assign to this model.
      *
      * @var array
      */
-    protected static $dataIntegrityRules = [
-        'name' => 'string|max:255',
-        'host' => 'unique:database_hosts,host',
-        'port' => 'numeric|between:1,65535',
-        'username' => 'string|max:32',
+    public static $validationRules = [
+        'name' => 'required|string|max:191',
+        'host' => 'required|string',
+        'port' => 'required|numeric|between:1,65535',
+        'username' => 'required|string|max:32',
         'password' => 'nullable|string',
-        'node_id' => 'nullable|integer|exists:nodes,id',
+        'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
     ];
 
     /**

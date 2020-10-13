@@ -44,9 +44,9 @@ class EggShareController extends Controller
     /**
      * OptionShareController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                           $alert
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService       $exporterService
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService       $importerService
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService $exporterService
+     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService $importerService
      * @param \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService $updateImporterService
      */
     public function __construct(
@@ -102,7 +102,7 @@ class EggShareController extends Controller
      * Update an existing Egg using a new imported file.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Egg\EggImportFormRequest $request
-     * @param int                                                       $egg
+     * @param \Pterodactyl\Models\Egg $egg
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -110,7 +110,7 @@ class EggShareController extends Controller
      * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
      * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
      */
-    public function update(EggImportFormRequest $request, int $egg): RedirectResponse
+    public function update(EggImportFormRequest $request, Egg $egg): RedirectResponse
     {
         $this->updateImporterService->handle($egg, $request->file('import_file'));
         $this->alert->success(trans('admin/nests.eggs.notices.updated_via_import'))->flash();

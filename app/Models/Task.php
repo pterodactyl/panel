@@ -2,16 +2,29 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Container\Container;
 use Znck\Eloquent\Traits\BelongsToThrough;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
+use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
-class Task extends Model implements CleansAttributes, ValidableContract
+/**
+ * @property int $id
+ * @property int $schedule_id
+ * @property int $sequence_id
+ * @property string $action
+ * @property string $payload
+ * @property int $time_offset
+ * @property bool $is_queued
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property string $hashid
+ *
+ * @property \Pterodactyl\Models\Schedule $schedule
+ * @property \Pterodactyl\Models\Server $server
+ */
+class Task extends Model
 {
-    use BelongsToThrough, Eloquence, Validable;
+    use BelongsToThrough;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -66,29 +79,19 @@ class Task extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $attributes = [
+        'time_offset' => 0,
         'is_queued' => false,
     ];
 
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'schedule_id' => 'required',
-        'sequence_id' => 'required',
-        'action' => 'required',
-        'payload' => 'required',
-        'time_offset' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'schedule_id' => 'numeric|exists:schedules,id',
-        'sequence_id' => 'numeric|min:1',
-        'action' => 'string',
-        'payload' => 'string',
-        'time_offset' => 'numeric|between:0,900',
+    public static $validationRules = [
+        'schedule_id' => 'required|numeric|exists:schedules,id',
+        'sequence_id' => 'required|numeric|min:1',
+        'action' => 'required|string',
+        'payload' => 'required_unless:action,backup|string',
+        'time_offset' => 'required|numeric|between:0,900',
         'is_queued' => 'boolean',
     ];
 
@@ -99,7 +102,7 @@ class Task extends Model implements CleansAttributes, ValidableContract
      */
     public function getHashidAttribute()
     {
-        return app()->make('hashids')->encode($this->id);
+        return Container::getInstance()->make(HashidsInterface::class)->encode($this->id);
     }
 
     /**

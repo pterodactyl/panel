@@ -1,22 +1,15 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Subusers;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Users\UserCreationService;
+use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
 use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 
@@ -25,113 +18,91 @@ class SubuserCreationService
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $connection;
+    private $connection;
 
     /**
-     * @var \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService
+     * @var \Pterodactyl\Repositories\Eloquent\SubuserRepository
      */
-    protected $keyCreationService;
-
-    /**
-     * @var \Pterodactyl\Services\Subusers\PermissionCreationService
-     */
-    protected $permissionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface
-     */
-    protected $subuserRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    protected $serverRepository;
+    private $subuserRepository;
 
     /**
      * @var \Pterodactyl\Services\Users\UserCreationService
      */
-    protected $userCreationService;
+    private $userCreationService;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
      */
-    protected $userRepository;
+    private $userRepository;
 
     /**
      * SubuserCreationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                     $connection
-     * @param \Pterodactyl\Services\DaemonKeys\DaemonKeyCreationService    $keyCreationService
-     * @param \Pterodactyl\Services\Subusers\PermissionCreationService     $permissionService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface  $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\SubuserRepositoryInterface $subuserRepository
-     * @param \Pterodactyl\Services\Users\UserCreationService              $userCreationService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface    $userRepository
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Repositories\Eloquent\SubuserRepository $subuserRepository
+     * @param \Pterodactyl\Services\Users\UserCreationService $userCreationService
+     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $userRepository
      */
     public function __construct(
         ConnectionInterface $connection,
-        DaemonKeyCreationService $keyCreationService,
-        PermissionCreationService $permissionService,
-        ServerRepositoryInterface $serverRepository,
-        SubuserRepositoryInterface $subuserRepository,
+        SubuserRepository $subuserRepository,
         UserCreationService $userCreationService,
         UserRepositoryInterface $userRepository
     ) {
         $this->connection = $connection;
-        $this->keyCreationService = $keyCreationService;
-        $this->permissionService = $permissionService;
-        $this->serverRepository = $serverRepository;
         $this->subuserRepository = $subuserRepository;
         $this->userRepository = $userRepository;
         $this->userCreationService = $userCreationService;
     }
 
     /**
-     * @param int|\Pterodactyl\Models\Server $server
-     * @param string                         $email
-     * @param array                          $permissions
+     * Creates a new user on the system and assigns them access to the provided server.
+     * If the email address already belongs to a user on the system a new user will not
+     * be created.
+     *
+     * @param \Pterodactyl\Models\Server $server
+     * @param string $email
+     * @param array $permissions
      * @return \Pterodactyl\Models\Subuser
      *
-     * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
      * @throws \Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException
+     * @throws \Throwable
      */
-    public function handle($server, $email, array $permissions)
+    public function handle(Server $server, string $email, array $permissions): Subuser
     {
-        if (! $server instanceof Server) {
-            $server = $this->serverRepository->find($server);
-        }
+        return $this->connection->transaction(function () use ($server, $email, $permissions) {
+            try {
+                $user = $this->userRepository->findFirstWhere([['email', '=', $email]]);
 
-        $this->connection->beginTransaction();
-        try {
-            $user = $this->userRepository->findFirstWhere([['email', '=', $email]]);
+                if ($server->owner_id === $user->id) {
+                    throw new UserIsServerOwnerException(trans('exceptions.subusers.user_is_owner'));
+                }
 
-            if ($server->owner_id === $user->id) {
-                throw new UserIsServerOwnerException(trans('exceptions.subusers.user_is_owner'));
+                $subuserCount = $this->subuserRepository->findCountWhere([['user_id', '=', $user->id], ['server_id', '=', $server->id]]);
+                if ($subuserCount !== 0) {
+                    throw new ServerSubuserExistsException(trans('exceptions.subusers.subuser_exists'));
+                }
+            } catch (RecordNotFoundException $exception) {
+                // Just cap the username generated at 64 characters at most and then append a random string
+                // to the end to make it "unique"...
+                $username = substr(preg_replace('/([^\w\.-]+)/', '', strtok($email, '@')), 0, 64) . Str::random(3);
+
+                $user = $this->userCreationService->handle([
+                    'email' => $email,
+                    'username' => $username,
+                    'name_first' => 'Server',
+                    'name_last' => 'Subuser',
+                    'root_admin' => false,
+                ]);
             }
 
-            $subuserCount = $this->subuserRepository->findCountWhere([['user_id', '=', $user->id], ['server_id', '=', $server->id]]);
-            if ($subuserCount !== 0) {
-                throw new ServerSubuserExistsException(trans('exceptions.subusers.subuser_exists'));
-            }
-        } catch (RecordNotFoundException $exception) {
-            $username = preg_replace('/([^\w\.-]+)/', '', strtok($email, '@'));
-            $user = $this->userCreationService->handle([
-                'email' => $email,
-                'username' => $username . str_random(3),
-                'name_first' => 'Server',
-                'name_last' => 'Subuser',
-                'root_admin' => false,
+            return $this->subuserRepository->create([
+                'user_id' => $user->id,
+                'server_id' => $server->id,
+                'permissions' => array_unique($permissions),
             ]);
-        }
-
-        $subuser = $this->subuserRepository->create(['user_id' => $user->id, 'server_id' => $server->id]);
-        $this->keyCreationService->handle($server->id, $user->id);
-        $this->permissionService->handle($subuser->id, $permissions);
-        $this->connection->commit();
-
-        return $subuser;
+        });
     }
 }

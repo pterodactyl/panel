@@ -33,7 +33,7 @@ class ProcessScheduleServiceTest extends TestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -47,7 +47,7 @@ class ProcessScheduleServiceTest extends TestCase
      */
     public function testScheduleIsUpdatedAndRun()
     {
-        $model = factory(Schedule::class)->make();
+        $model = factory(Schedule::class)->make(['id' => 123]);
         $model->setRelation('tasks', collect([$task = factory(Task::class)->make([
             'sequence_id' => 1,
         ])]));
@@ -65,14 +65,12 @@ class ProcessScheduleServiceTest extends TestCase
         $this->dispatcher->shouldReceive('dispatch')->with(m::on(function ($class) use ($model, $task) {
             $this->assertInstanceOf(RunTaskJob::class, $class);
             $this->assertSame($task->time_offset, $class->delay);
-            $this->assertSame($task->id, $class->task);
-            $this->assertSame($model->id, $class->schedule);
+            $this->assertSame($task->id, $class->task->id);
 
             return true;
         }))->once();
 
         $this->getService()->handle($model);
-        $this->assertTrue(true);
     }
 
     /**

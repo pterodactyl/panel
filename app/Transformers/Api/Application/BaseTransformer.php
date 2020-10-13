@@ -8,7 +8,6 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
 use League\Fractal\TransformerAbstract;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 
 /**
@@ -82,7 +81,7 @@ abstract class BaseTransformer extends TransformerAbstract
      * set API key.
      *
      * @param string $abstract
-     * @param array  $parameters
+     * @param array $parameters
      * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
@@ -93,7 +92,7 @@ abstract class BaseTransformer extends TransformerAbstract
         $transformer = Container::getInstance()->makeWith($abstract, $parameters);
         $transformer->setKey($this->getKey());
 
-        if (! $transformer instanceof self || $transformer instanceof BaseClientTransformer) {
+        if (! $transformer instanceof self) {
             throw new InvalidTransformerLevelException('Calls to ' . __METHOD__ . ' must return a transformer that is an instance of ' . __CLASS__);
         }
 

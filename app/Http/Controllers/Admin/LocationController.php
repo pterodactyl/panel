@@ -49,11 +49,11 @@ class LocationController extends Controller
     /**
      * LocationController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                             $alert
-     * @param \Pterodactyl\Services\Locations\LocationCreationService       $creationService
-     * @param \Pterodactyl\Services\Locations\LocationDeletionService       $deletionService
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Services\Locations\LocationCreationService $creationService
+     * @param \Pterodactyl\Services\Locations\LocationDeletionService $deletionService
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Locations\LocationUpdateService         $updateService
+     * @param \Pterodactyl\Services\Locations\LocationUpdateService $updateService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -116,7 +116,7 @@ class LocationController extends Controller
      * Handle request to update or delete location.
      *
      * @param \Pterodactyl\Http\Requests\Admin\LocationFormRequest $request
-     * @param \Pterodactyl\Models\Location                         $location
+     * @param \Pterodactyl\Models\Location $location
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable

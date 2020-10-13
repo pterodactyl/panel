@@ -19,7 +19,7 @@ abstract class ControllerTestCase extends TestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -64,6 +64,19 @@ abstract class ControllerTestCase extends TestCase
 
             $controller->shouldReceive('injectJavascript')->with($with)->once()->andReturnNull();
         }
+    }
+
+    /**
+     * Mocks a request input call.
+     *
+     * @param string $param
+     * @param mixed  $return
+     */
+    protected function mockRequestInput(string $param, $return = null)
+    {
+        $this->request->shouldReceive('input')->withArgs(function ($k) use ($param) {
+            return $k === $param;
+        })->andReturn($return);
     }
 
     /**

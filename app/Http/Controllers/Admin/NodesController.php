@@ -9,7 +9,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Javascript;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
@@ -96,18 +95,18 @@ class NodesController extends Controller
     /**
      * NodesController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                               $alert
-     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService     $allocationDeletionService
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService $allocationDeletionService
      * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
-     * @param \Pterodactyl\Services\Allocations\AssignmentService             $assignmentService
-     * @param \Illuminate\Cache\Repository                                    $cache
-     * @param \Pterodactyl\Services\Nodes\NodeCreationService                 $creationService
-     * @param \Pterodactyl\Services\Nodes\NodeDeletionService                 $deletionService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface   $locationRepository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface       $repository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface     $serverRepository
-     * @param \Pterodactyl\Services\Nodes\NodeUpdateService                   $updateService
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService            $versionService
+     * @param \Pterodactyl\Services\Allocations\AssignmentService $assignmentService
+     * @param \Illuminate\Cache\Repository $cache
+     * @param \Pterodactyl\Services\Nodes\NodeCreationService $creationService
+     * @param \Pterodactyl\Services\Nodes\NodeDeletionService $deletionService
+     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $locationRepository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
+     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
+     * @param \Pterodactyl\Services\Nodes\NodeUpdateService $updateService
+     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $versionService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -135,19 +134,6 @@ class NodesController extends Controller
         $this->serverRepository = $serverRepository;
         $this->updateService = $updateService;
         $this->versionService = $versionService;
-    }
-
-    /**
-     * Displays the index page listing all nodes on the panel.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\View\View
-     */
-    public function index(Request $request)
-    {
-        return view('admin.nodes.index', [
-            'nodes' => $this->repository->setSearchTerm($request->input('query'))->getNodeListingData(),
-        ]);
     }
 
     /**
@@ -184,83 +170,10 @@ class NodesController extends Controller
     }
 
     /**
-     * Shows the index overview page for a specific node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return \Illuminate\View\View
-     */
-    public function viewIndex(Node $node)
-    {
-        return view('admin.nodes.view.index', [
-            'node' => $this->repository->loadLocationAndServerCount($node),
-            'stats' => $this->repository->getUsageStats($node),
-            'version' => $this->versionService,
-        ]);
-    }
-
-    /**
-     * Shows the settings page for a specific node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return \Illuminate\View\View
-     */
-    public function viewSettings(Node $node)
-    {
-        return view('admin.nodes.view.settings', [
-            'node' => $node,
-            'locations' => $this->locationRepository->all(),
-        ]);
-    }
-
-    /**
-     * Shows the configuration page for a specific node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return \Illuminate\View\View
-     */
-    public function viewConfiguration(Node $node)
-    {
-        return view('admin.nodes.view.configuration', ['node' => $node]);
-    }
-
-    /**
-     * Shows the allocation page for a specific node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return \Illuminate\View\View
-     */
-    public function viewAllocation(Node $node)
-    {
-        $this->repository->loadNodeAllocations($node);
-        Javascript::put(['node' => collect($node)->only(['id'])]);
-
-        return view('admin.nodes.view.allocation', [
-            'allocations' => $this->allocationRepository->setColumns(['ip'])->getUniqueAllocationIpsForNode($node->id),
-            'node' => $node,
-        ]);
-    }
-
-    /**
-     * Shows the server listing page for a specific node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return \Illuminate\View\View
-     */
-    public function viewServers(Node $node)
-    {
-        $servers = $this->serverRepository->loadAllServersForNode($node->id, 25);
-        Javascript::put([
-            'node' => collect($node->makeVisible('daemonSecret'))->only(['scheme', 'fqdn', 'daemonListen', 'daemonSecret']),
-        ]);
-
-        return view('admin.nodes.view.servers', ['node' => $node, 'servers' => $servers]);
-    }
-
-    /**
      * Updates settings for a node.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest $request
-     * @param \Pterodactyl\Models\Node                              $node
+     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -278,7 +191,7 @@ class NodesController extends Controller
     /**
      * Removes a single allocation from a node.
      *
-     * @param int                            $node
+     * @param int $node
      * @param \Pterodactyl\Models\Allocation $allocation
      * @return \Illuminate\Http\Response
      *
@@ -295,7 +208,7 @@ class NodesController extends Controller
      * Removes multiple individual allocations from a node.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $node
+     * @param int $node
      * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
@@ -316,7 +229,7 @@ class NodesController extends Controller
      * Remove all allocations for a specific IP at once on a node.
      *
      * @param \Illuminate\Http\Request $request
-     * @param int                      $node
+     * @param int $node
      * @return \Illuminate\Http\RedirectResponse
      */
     public function allocationRemoveBlock(Request $request, $node)
@@ -355,7 +268,7 @@ class NodesController extends Controller
      * Creates new allocations on a node.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest $request
-     * @param int|\Pterodactyl\Models\Node                                $node
+     * @param int|\Pterodactyl\Models\Node $node
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
@@ -385,19 +298,5 @@ class NodesController extends Controller
         $this->alert->success(trans('admin/node.notices.node_deleted'))->flash();
 
         return redirect()->route('admin.nodes');
-    }
-
-    /**
-     * Returns the configuration token to auto-deploy a node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function setToken(Node $node)
-    {
-        $token = bin2hex(random_bytes(16));
-        $this->cache->put('Node:Configuration:' . $token, $node->id, 5);
-
-        return response()->json(['token' => $token]);
     }
 }

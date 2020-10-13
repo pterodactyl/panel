@@ -31,7 +31,7 @@ class AccountCreated extends Notification implements ShouldQueue
      * Create a new notification instance.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param string|null              $token
+     * @param string|null $token
      */
     public function __construct(User $user, string $token = null)
     {

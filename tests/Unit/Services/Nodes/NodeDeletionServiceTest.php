@@ -1,17 +1,11 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Nodes;
 
 use Mockery as m;
 use Tests\TestCase;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
@@ -42,7 +36,7 @@ class NodeDeletionServiceTest extends TestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -71,11 +65,11 @@ class NodeDeletionServiceTest extends TestCase
 
     /**
      * Test that an exception is thrown if servers are attached to the node.
-     *
-     * @expectedException \Pterodactyl\Exceptions\DisplayException
      */
     public function testExceptionIsThrownIfServersAreAttachedToNode()
     {
+        $this->expectException(DisplayException::class);
+
         $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['node_id', '=', 1]])->once()->andReturn(1);
         $this->translator->shouldReceive('trans')->with('exceptions.node.servers_attached')->once()->andReturnNull();
@@ -89,7 +83,7 @@ class NodeDeletionServiceTest extends TestCase
      */
     public function testModelCanBePassedToFunctionInPlaceOfNodeId()
     {
-        $node = factory(Node::class)->make();
+        $node = factory(Node::class)->make(['id' => 123]);
 
         $this->serverRepository->shouldReceive('setColumns')->with('id')->once()->andReturnSelf()
             ->shouldReceive('findCountWhere')->with([['node_id', '=', $node->id]])->once()->andReturn(0);

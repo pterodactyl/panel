@@ -39,10 +39,10 @@ class IndexController extends Controller
     /**
      * IndexController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                             $alert
-     * @param \Illuminate\Contracts\Console\Kernel                          $kernel
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
+     * @param \Illuminate\Contracts\Console\Kernel $kernel
      * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService          $versionService
+     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $versionService
      */
     public function __construct(
         AlertsMessageBag $alert,

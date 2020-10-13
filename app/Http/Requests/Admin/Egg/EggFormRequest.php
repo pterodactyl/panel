@@ -19,12 +19,12 @@ class EggFormRequest extends AdminFormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'docker_image' => 'required|string|max:255',
+            'name' => 'required|string|max:191',
+            'description' => 'nullable|string',
+            'docker_image' => 'required|string|max:191',
             'startup' => 'required|string',
             'config_from' => 'sometimes|bail|nullable|numeric',
-            'config_stop' => 'required_without:config_from|nullable|string|max:255',
+            'config_stop' => 'required_without:config_from|nullable|string|max:191',
             'config_startup' => 'required_without:config_from|nullable|json',
             'config_logs' => 'required_without:config_from|nullable|json',
             'config_files' => 'required_without:config_from|nullable|json',

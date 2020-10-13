@@ -1,15 +1,9 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Admin\Nests;
 
 use Illuminate\View\View;
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
@@ -37,9 +31,9 @@ class EggScriptController extends Controller
     /**
      * EggScriptController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                        $alert
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Eggs\Scripts\InstallScriptService  $installScriptService
+     * @param \Pterodactyl\Services\Eggs\Scripts\InstallScriptService $installScriptService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -81,14 +75,14 @@ class EggScriptController extends Controller
      * Handle a request to update the installation script for an Egg.
      *
      * @param \Pterodactyl\Http\Requests\Admin\Egg\EggScriptFormRequest $request
-     * @param int                                                       $egg
+     * @param \Pterodactyl\Models\Egg $egg
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException
      */
-    public function update(EggScriptFormRequest $request, int $egg): RedirectResponse
+    public function update(EggScriptFormRequest $request, Egg $egg): RedirectResponse
     {
         $this->installScriptService->handle($egg, $request->normalize());
         $this->alert->success(trans('admin/nests.eggs.notices.script_updated'))->flash();

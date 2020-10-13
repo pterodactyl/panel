@@ -43,18 +43,6 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     public function getDatabasesForHost(int $host, int $count = 25): LengthAwarePaginator;
 
     /**
-     * Create a new database if it does not already exist on the host with
-     * the provided details.
-     *
-     * @param array $data
-     * @return \Pterodactyl\Models\Database
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
-     */
-    public function createIfNotExists(array $data): Database;
-
-    /**
      * Create a new database on a given connection.
      *
      * @param string $database
@@ -68,9 +56,10 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
      * @param string $username
      * @param string $remote
      * @param string $password
+     * @param $max_connections
      * @return bool
      */
-    public function createUser(string $username, string $remote, string $password): bool;
+    public function createUser(string $username, string $remote, string $password, string $max_connections): bool;
 
     /**
      * Give a specific user access to a given database.

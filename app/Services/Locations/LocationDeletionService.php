@@ -31,7 +31,7 @@ class LocationDeletionService
      * LocationDeletionService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface     $nodeRepository
+     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $nodeRepository
      */
     public function __construct(
         LocationRepositoryInterface $repository,

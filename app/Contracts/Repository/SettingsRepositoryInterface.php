@@ -7,7 +7,7 @@ interface SettingsRepositoryInterface extends RepositoryInterface
     /**
      * Store a new persistent setting in the database.
      *
-     * @param string      $key
+     * @param string $key
      * @param string|null $value
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -19,7 +19,7 @@ interface SettingsRepositoryInterface extends RepositoryInterface
      * Retrieve a persistent setting from the database.
      *
      * @param string $key
-     * @param mixed  $default
+     * @param mixed $default
      * @return mixed
      */
     public function get(string $key, $default);

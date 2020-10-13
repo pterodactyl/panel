@@ -1,19 +1,20 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\API\Application;
+namespace Tests\Unit\Http\Middleware\Api\Application;
 
 use Tests\Unit\Http\Middleware\MiddlewareTestCase;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 
 class AuthenticateUserTest extends MiddlewareTestCase
 {
     /**
      * Test that no user defined results in an access denied exception.
-     *
-     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testNoUserDefined()
     {
+        $this->expectException(AccessDeniedHttpException::class);
+
         $this->setRequestUserModel(null);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
@@ -21,11 +22,11 @@ class AuthenticateUserTest extends MiddlewareTestCase
 
     /**
      * Test that a non-admin user results an an exception.
-     *
-     * @expectedException \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function testNonAdminUser()
     {
+        $this->expectException(AccessDeniedHttpException::class);
+
         $this->generateRequestUserModel(['root_admin' => false]);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());

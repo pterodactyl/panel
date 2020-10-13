@@ -15,12 +15,10 @@ class AdvancedSettingsFormRequest extends AdminFormRequest
     {
         return [
             'recaptcha:enabled' => 'required|in:true,false',
-            'recaptcha:secret_key' => 'required|string|max:255',
-            'recaptcha:website_key' => 'required|string|max:255',
+            'recaptcha:secret_key' => 'required|string|max:191',
+            'recaptcha:website_key' => 'required|string|max:191',
             'pterodactyl:guzzle:timeout' => 'required|integer|between:1,60',
             'pterodactyl:guzzle:connect_timeout' => 'required|integer|between:1,60',
-            'pterodactyl:console:count' => 'required|integer|min:1',
-            'pterodactyl:console:frequency' => 'required|integer|min:10',
         ];
     }
 
@@ -35,8 +33,6 @@ class AdvancedSettingsFormRequest extends AdminFormRequest
             'recaptcha:website_key' => 'reCAPTCHA Website Key',
             'pterodactyl:guzzle:timeout' => 'HTTP Request Timeout',
             'pterodactyl:guzzle:connect_timeout' => 'HTTP Connection Timeout',
-            'pterodactyl:console:count' => 'Console Message Count',
-            'pterodactyl:console:frequency' => 'Console Frequency Tick',
         ];
     }
 }

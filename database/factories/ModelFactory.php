@@ -1,9 +1,14 @@
 <?php
 
+use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
 use Cake\Chronos\Chronos;
+use Illuminate\Support\Str;
+use Pterodactyl\Models\Node;
 use Faker\Generator as Faker;
 use Pterodactyl\Models\ApiKey;
 
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -17,9 +22,7 @@ use Pterodactyl\Models\ApiKey;
 
 $factory->define(Pterodactyl\Models\Server::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
-        'node_id' => $faker->randomNumber(),
-        'uuid' => $faker->unique()->uuid,
+        'uuid' => Uuid::uuid4()->toString(),
         'uuidShort' => str_random(8),
         'name' => $faker->firstName,
         'description' => implode(' ', $faker->sentences()),
@@ -31,15 +34,11 @@ $factory->define(Pterodactyl\Models\Server::class, function (Faker $faker) {
         'io' => 500,
         'cpu' => 0,
         'oom_disabled' => 0,
-        'allocation_id' => $faker->randomNumber(),
-        'nest_id' => $faker->randomNumber(),
-        'egg_id' => $faker->randomNumber(),
-        'pack_id' => null,
         'installed' => 1,
         'database_limit' => null,
         'allocation_limit' => null,
-        'created_at' => \Carbon\Carbon::now(),
-        'updated_at' => \Carbon\Carbon::now(),
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now(),
     ];
 });
 
@@ -47,7 +46,6 @@ $factory->define(Pterodactyl\Models\User::class, function (Faker $faker) {
     static $password;
 
     return [
-        'id' => $faker->unique()->randomNumber(),
         'external_id' => $faker->unique()->isbn10,
         'uuid' => $faker->uuid,
         'username' => $faker->userName,
@@ -71,15 +69,14 @@ $factory->state(Pterodactyl\Models\User::class, 'admin', function () {
 
 $factory->define(Pterodactyl\Models\Location::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
-        'short' => $faker->unique()->domainWord,
+        'short' => Str::random(8),
         'long' => $faker->catchPhrase,
     ];
 });
 
 $factory->define(Pterodactyl\Models\Node::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
+        'uuid' => Uuid::uuid4()->toString(),
         'public' => true,
         'name' => $faker->firstName,
         'fqdn' => $faker->ipv4,
@@ -90,16 +87,16 @@ $factory->define(Pterodactyl\Models\Node::class, function (Faker $faker) {
         'disk' => 10240,
         'disk_overallocate' => 0,
         'upload_size' => 100,
-        'daemonSecret' => $faker->uuid,
+        'daemon_token_id' => Str::random(Node::DAEMON_TOKEN_ID_LENGTH),
+        'daemon_token' => encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH)),
         'daemonListen' => 8080,
         'daemonSFTP' => 2022,
-        'daemonBase' => '/srv/daemon',
+        'daemonBase' => '/var/lib/pterodactyl/volumes',
     ];
 });
 
 $factory->define(Pterodactyl\Models\Nest::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
         'uuid' => $faker->unique()->uuid,
         'author' => 'testauthor@example.com',
         'name' => $faker->word,
@@ -109,9 +106,7 @@ $factory->define(Pterodactyl\Models\Nest::class, function (Faker $faker) {
 
 $factory->define(Pterodactyl\Models\Egg::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
         'uuid' => $faker->unique()->uuid,
-        'nest_id' => $faker->unique()->randomNumber(),
         'name' => $faker->name,
         'description' => implode(' ', $faker->sentences(3)),
         'startup' => 'java -jar test.jar',
@@ -120,7 +115,6 @@ $factory->define(Pterodactyl\Models\Egg::class, function (Faker $faker) {
 
 $factory->define(Pterodactyl\Models\EggVariable::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
         'name' => $faker->firstName,
         'description' => $faker->sentence(),
         'env_variable' => strtoupper(str_replace(' ', '_', $faker->words(2, true))),
@@ -139,32 +133,12 @@ $factory->state(Pterodactyl\Models\EggVariable::class, 'editable', function () {
     return ['user_editable' => 1];
 });
 
-$factory->define(Pterodactyl\Models\Pack::class, function (Faker $faker) {
-    return [
-        'id' => $faker->unique()->randomNumber(),
-        'egg_id' => $faker->randomNumber(),
-        'uuid' => $faker->uuid,
-        'name' => $faker->word,
-        'description' => null,
-        'version' => $faker->randomNumber(),
-        'selectable' => 1,
-        'visible' => 1,
-        'locked' => 0,
-    ];
-});
-
 $factory->define(Pterodactyl\Models\Subuser::class, function (Faker $faker) {
-    return [
-        'id' => $faker->unique()->randomNumber(),
-        'user_id' => $faker->randomNumber(),
-        'server_id' => $faker->randomNumber(),
-    ];
+    return [];
 });
 
 $factory->define(Pterodactyl\Models\Allocation::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
-        'node_id' => $faker->randomNumber(),
         'ip' => $faker->ipv4,
         'port' => $faker->randomNumber(5),
     ];
@@ -172,13 +146,11 @@ $factory->define(Pterodactyl\Models\Allocation::class, function (Faker $faker) {
 
 $factory->define(Pterodactyl\Models\DatabaseHost::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
         'name' => $faker->colorName,
         'host' => $faker->unique()->ipv4,
         'port' => 3306,
         'username' => $faker->colorName,
         'password' => Crypt::encrypt($faker->word),
-        'node_id' => $faker->randomNumber(),
     ];
 });
 
@@ -186,30 +158,23 @@ $factory->define(Pterodactyl\Models\Database::class, function (Faker $faker) {
     static $password;
 
     return [
-        'id' => $faker->unique()->randomNumber(),
-        'server_id' => $faker->randomNumber(),
-        'database_host_id' => $faker->randomNumber(),
         'database' => str_random(10),
         'username' => str_random(10),
         'remote' => '%',
         'password' => $password ?: bcrypt('test123'),
-        'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
-        'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
+        'created_at' => Carbon::now()->toDateTimeString(),
+        'updated_at' => Carbon::now()->toDateTimeString(),
     ];
 });
 
 $factory->define(Pterodactyl\Models\Schedule::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
-        'server_id' => $faker->randomNumber(),
         'name' => $faker->firstName(),
     ];
 });
 
 $factory->define(Pterodactyl\Models\Task::class, function (Faker $faker) {
     return [
-        'id' => $faker->unique()->randomNumber(),
-        'schedule_id' => $faker->randomNumber(),
         'sequence_id' => $faker->randomNumber(1),
         'action' => 'command',
         'payload' => 'test command',
@@ -218,28 +183,16 @@ $factory->define(Pterodactyl\Models\Task::class, function (Faker $faker) {
     ];
 });
 
-$factory->define(Pterodactyl\Models\DaemonKey::class, function (Faker $faker) {
-    return [
-        'id' => $faker->unique()->randomNumber(),
-        'server_id' => $faker->randomNumber(),
-        'user_id' => $faker->randomNumber(),
-        'secret' => 'i_' . str_random(40),
-        'expires_at' => \Carbon\Carbon::now()->addMinutes(10)->toDateTimeString(),
-    ];
-});
-
 $factory->define(Pterodactyl\Models\ApiKey::class, function (Faker $faker) {
     static $token;
 
     return [
-        'id' => $faker->unique()->randomNumber(),
-        'user_id' => $faker->randomNumber(),
         'key_type' => ApiKey::TYPE_APPLICATION,
         'identifier' => str_random(Pterodactyl\Models\ApiKey::IDENTIFIER_LENGTH),
         'token' => $token ?: $token = encrypt(str_random(Pterodactyl\Models\ApiKey::KEY_LENGTH)),
         'allowed_ips' => null,
         'memo' => 'Test Function Key',
-        'created_at' => \Carbon\Carbon::now()->toDateTimeString(),
-        'updated_at' => \Carbon\Carbon::now()->toDateTimeString(),
+        'created_at' => Carbon::now()->toDateTimeString(),
+        'updated_at' => Carbon::now()->toDateTimeString(),
     ];
 });

@@ -30,7 +30,10 @@ trait EnvironmentWriterTrait
         $saveContents = file_get_contents($path);
         collect($values)->each(function ($value, $key) use (&$saveContents) {
             $key = strtoupper($key);
-            if (str_contains($value, ' ') && ! preg_match('/\"(.*)\"/', $value)) {
+            // If the key value is not sorrounded by quotation marks, and contains anything that could reasonably
+            // cause environment parsing issues, wrap it in quotes before writing it. This also adds slashes to the
+            // value to ensure quotes within it don't cause us issues.
+            if (! preg_match('/^\"(.*)\"$/', $value) && preg_match('/([^\w.\-+\/])+/', $value)) {
                 $value = sprintf('"%s"', addslashes($value));
             }
 

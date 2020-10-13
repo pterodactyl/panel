@@ -168,8 +168,8 @@ return [
     | Cast the given "real type" to the given "type".
     |
     */
-   'type_overrides' => [
+    'type_overrides' => [
         'integer' => 'int',
         'boolean' => 'bool',
-   ],
+    ],
 ];

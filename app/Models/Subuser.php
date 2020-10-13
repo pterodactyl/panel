@@ -2,16 +2,22 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
 
-class Subuser extends Model implements CleansAttributes, ValidableContract
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int $server_id
+ * @property array $permissions
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property \Pterodactyl\Models\User $user
+ * @property \Pterodactyl\Models\Server $server
+ */
+class Subuser extends Model
 {
-    use Eloquence, Notifiable, Validable;
+    use Notifiable;
 
     /**
      * The resource name for this model when it is transformed into an
@@ -39,24 +45,19 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
      * @var array
      */
     protected $casts = [
-        'user_id' => 'integer',
-        'server_id' => 'integer',
+        'user_id' => 'int',
+        'server_id' => 'int',
+        'permissions' => 'array',
     ];
 
     /**
      * @var array
      */
-    protected static $applicationRules = [
-        'user_id' => 'required',
-        'server_id' => 'required',
-    ];
-
-    /**
-     * @var array
-     */
-    protected static $dataIntegrityRules = [
-        'user_id' => 'numeric|exists:users,id',
-        'server_id' => 'numeric|exists:servers,id',
+    public static $validationRules = [
+        'user_id' => 'required|numeric|exists:users,id',
+        'server_id' => 'required|numeric|exists:servers,id',
+        'permissions' => 'nullable|array',
+        'permissions.*' => 'string',
     ];
 
     /**
@@ -97,15 +98,5 @@ class Subuser extends Model implements CleansAttributes, ValidableContract
     public function permissions()
     {
         return $this->hasMany(Permission::class);
-    }
-
-    /**
-     * Return the key that belongs to this subuser for the server.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function key()
-    {
-        return $this->hasOne(DaemonKey::class, 'server_id', 'server_id')->where('daemon_keys.user_id', '=', $this->user_id);
     }
 }

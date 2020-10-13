@@ -19,8 +19,8 @@ class StoreNestFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:1|max:255',
-            'description' => 'required|nullable|string',
+            'name' => 'required|string|min:1|max:191',
+            'description' => 'string|nullable',
         ];
     }
 }

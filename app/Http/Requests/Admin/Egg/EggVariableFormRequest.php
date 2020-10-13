@@ -15,9 +15,9 @@ class EggVariableFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|min:1|max:255',
+            'name' => 'required|string|min:1|max:191',
             'description' => 'sometimes|nullable|string',
-            'env_variable' => 'required|regex:/^[\w]{1,255}$/|notIn:' . EggVariable::RESERVED_ENV_NAMES,
+            'env_variable' => 'required|regex:/^[\w]{1,191}$/|notIn:' . EggVariable::RESERVED_ENV_NAMES,
             'options' => 'sometimes|required|array',
             'rules' => 'bail|required|string',
             'default_value' => 'present',

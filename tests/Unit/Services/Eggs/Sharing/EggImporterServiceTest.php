@@ -1,13 +1,6 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
-namespace Tests\Unit\Services\Services\Sharing;
+namespace Tests\Unit\Services\Eggs\Sharing;
 
 use Mockery as m;
 use Tests\TestCase;
@@ -17,7 +10,6 @@ use Tests\Traits\MocksUuids;
 use Illuminate\Http\UploadedFile;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Services\Eggs\Sharing\EggImporterService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
@@ -62,13 +54,13 @@ class EggImporterServiceTest extends TestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
+        $this->file = m::mock(UploadedFile::class);
         $this->connection = m::mock(ConnectionInterface::class);
         $this->eggVariableRepository = m::mock(EggVariableRepositoryInterface::class);
-        $this->file = m::mock(UploadedFile::class);
         $this->nestRepository = m::mock(NestRepositoryInterface::class);
         $this->repository = m::mock(EggRepositoryInterface::class);
 
@@ -82,13 +74,14 @@ class EggImporterServiceTest extends TestCase
      */
     public function testEggConfigurationIsImported()
     {
-        $egg = factory(Egg::class)->make();
-        $nest = factory(Nest::class)->make();
+        $egg = factory(Egg::class)->make(['id' => 123]);
+        $nest = factory(Nest::class)->make(['id' => 456]);
 
-        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
-        $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
-        $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
-        $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn(json_encode([
+        $this->file->expects('getError')->andReturn(UPLOAD_ERR_OK);
+        $this->file->expects('isFile')->andReturn(true);
+        $this->file->expects('getSize')->andReturn(100);
+
+        $this->file->expects('openFile->fread')->with(100)->once()->andReturn(json_encode([
             'meta' => ['version' => 'PTDL_v1'],
             'name' => $egg->name,
             'author' => $egg->author,
@@ -122,13 +115,18 @@ class EggImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfFileIsInvalid()
     {
-        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_NO_FILE);
-        try {
-            $this->service->handle($this->file, 1234);
-        } catch (PterodactylException $exception) {
-            $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('exceptions.nest.importer.file_error'), $exception->getMessage());
-        }
+        $this->expectException(InvalidFileUploadException::class);
+        $this->expectExceptionMessage(
+            'The selected file ["test.txt"] was not in a valid format to import. (is_file: true is_valid: true err_code: 4 err: UPLOAD_ERR_NO_FILE)'
+        );
+
+        $this->file->expects('getFilename')->andReturns('test.txt');
+        $this->file->expects('isFile')->andReturns(true);
+        $this->file->expects('isValid')->andReturns(true);
+        $this->file->expects('getError')->twice()->andReturns(UPLOAD_ERR_NO_FILE);
+        $this->file->expects('getErrorMessage')->andReturns('UPLOAD_ERR_NO_FILE');
+
+        $this->service->handle($this->file, 1234);
     }
 
     /**
@@ -136,15 +134,18 @@ class EggImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfFileIsNotAFile()
     {
-        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
-        $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(false);
+        $this->expectException(InvalidFileUploadException::class);
+        $this->expectExceptionMessage(
+            'The selected file ["test.txt"] was not in a valid format to import. (is_file: false is_valid: true err_code: 4 err: UPLOAD_ERR_NO_FILE)'
+        );
 
-        try {
-            $this->service->handle($this->file, 1234);
-        } catch (PterodactylException $exception) {
-            $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('exceptions.nest.importer.file_error'), $exception->getMessage());
-        }
+        $this->file->expects('getFilename')->andReturns('test.txt');
+        $this->file->expects('isFile')->andReturns(false);
+        $this->file->expects('isValid')->andReturns(true);
+        $this->file->expects('getError')->twice()->andReturns(UPLOAD_ERR_NO_FILE);
+        $this->file->expects('getErrorMessage')->andReturns('UPLOAD_ERR_NO_FILE');
+
+        $this->service->handle($this->file, 1234);
     }
 
     /**
@@ -152,19 +153,18 @@ class EggImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfJsonMetaDataIsInvalid()
     {
-        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
-        $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
-        $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
-        $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn(json_encode([
+        $this->expectException(InvalidFileUploadException::class);
+        $this->expectExceptionMessage(trans('exceptions.nest.importer.invalid_json_provided'));
+
+        $this->file->expects('getError')->andReturn(UPLOAD_ERR_OK);
+        $this->file->expects('isFile')->andReturn(true);
+        $this->file->expects('getSize')->andReturn(100);
+
+        $this->file->expects('openFile->fread')->with(100)->andReturn(json_encode([
             'meta' => ['version' => 'hodor'],
         ]));
 
-        try {
-            $this->service->handle($this->file, 1234);
-        } catch (PterodactylException $exception) {
-            $this->assertInstanceOf(InvalidFileUploadException::class, $exception);
-            $this->assertEquals(trans('exceptions.nest.importer.invalid_json_provided'), $exception->getMessage());
-        }
+        $this->service->handle($this->file, 1234);
     }
 
     /**
@@ -172,18 +172,16 @@ class EggImporterServiceTest extends TestCase
      */
     public function testExceptionIsThrownIfBadJsonIsProvided()
     {
-        $this->file->shouldReceive('getError')->withNoArgs()->once()->andReturn(UPLOAD_ERR_OK);
-        $this->file->shouldReceive('isFile')->withNoArgs()->once()->andReturn(true);
-        $this->file->shouldReceive('getSize')->withNoArgs()->once()->andReturn(100);
-        $this->file->shouldReceive('openFile->fread')->with(100)->once()->andReturn('}');
+        $this->expectException(BadJsonFormatException::class);
+        $this->expectExceptionMessage(trans('exceptions.nest.importer.json_error', [
+            'error' => 'Syntax error',
+        ]));
 
-        try {
-            $this->service->handle($this->file, 1234);
-        } catch (PterodactylException $exception) {
-            $this->assertInstanceOf(BadJsonFormatException::class, $exception);
-            $this->assertEquals(trans('exceptions.nest.importer.json_error', [
-                'error' => json_last_error_msg(),
-            ]), $exception->getMessage());
-        }
+        $this->file->expects('getError')->andReturn(UPLOAD_ERR_OK);
+        $this->file->expects('isFile')->andReturn(true);
+        $this->file->expects('getSize')->andReturn(100);
+        $this->file->expects('openFile->fread')->with(100)->andReturn('}');
+
+        $this->service->handle($this->file, 1234);
     }
 }

@@ -34,9 +34,9 @@ class ApiController extends Controller
     /**
      * ApplicationApiController constructor.
      *
-     * @param \Prologue\Alerts\AlertsMessageBag                           $alert
+     * @param \Prologue\Alerts\AlertsMessageBag $alert
      * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Api\KeyCreationService                $keyCreationService
+     * @param \Pterodactyl\Services\Api\KeyCreationService $keyCreationService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -106,7 +106,7 @@ class ApiController extends Controller
      * Delete an application API key from the database.
      *
      * @param \Illuminate\Http\Request $request
-     * @param string                   $identifier
+     * @param string $identifier
      * @return \Illuminate\Http\Response
      */
     public function delete(Request $request, string $identifier): Response

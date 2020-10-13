@@ -29,7 +29,7 @@ class NestDeletionService
      * NestDeletionService constructor.
      *
      * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface   $repository
+     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,

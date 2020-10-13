@@ -30,7 +30,7 @@ class DisableTwoFactorCommandTest extends CommandTestCase
     /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -58,7 +58,7 @@ class DisableTwoFactorCommandTest extends CommandTestCase
         $display = $this->runCommand($this->command, [], [$user->email]);
 
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.user.2fa_disabled', ['email' => $user->email]), $display);
+        $this->assertStringContainsString(trans('command/messages.user.2fa_disabled', ['email' => $user->email]), $display);
     }
 
     /**
@@ -78,6 +78,6 @@ class DisableTwoFactorCommandTest extends CommandTestCase
 
         $display = $this->withoutInteraction()->runCommand($this->command, ['--email' => $user->email]);
         $this->assertNotEmpty($display);
-        $this->assertContains(trans('command/messages.user.2fa_disabled', ['email' => $user->email]), $display);
+        $this->assertStringContainsString(trans('command/messages.user.2fa_disabled', ['email' => $user->email]), $display);
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Repository;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -15,6 +17,53 @@ use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 abstract class EloquentRepository extends Repository implements RepositoryInterface
 {
+    /**
+     * @var bool
+     */
+    protected $useRequestFilters = false;
+
+    /**
+     * Determines if the repository function should use filters off the request object
+     * present when returning results. This allows repository methods to be called in API
+     * context's such that we can pass through ?filter[name]=Dane&sort=desc for example.
+     *
+     * @param bool $usingFilters
+     * @return $this
+     */
+    public function usingRequestFilters($usingFilters = true)
+    {
+        $this->useRequestFilters = $usingFilters;
+
+        return $this;
+    }
+
+    /**
+     * Returns the request instance.
+     *
+     * @return \Illuminate\Http\Request
+     */
+    protected function request()
+    {
+        return $this->app->make(Request::class);
+    }
+
+    /**
+     * Paginate the response data based on the page para.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $instance
+     * @param int $default
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    protected function paginate(Builder $instance, int $default = 50)
+    {
+        if (! $this->useRequestFilters) {
+            return $instance->paginate($default);
+        }
+
+        return $instance->paginate($this->request()->query('per_page', $default));
+    }
+
     /**
      * Return an instance of the eloquent model bound to this
      * repository instance.
@@ -40,8 +89,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Create a new record in the database and return the associated model.
      *
      * @param array $fields
-     * @param bool  $validate
-     * @param bool  $force
+     * @param bool $validate
+     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model|bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -121,7 +170,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Delete a given record from the database.
      *
-     * @param int  $id
+     * @param int $id
      * @param bool $destroy
      * @return int
      */
@@ -134,7 +183,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Delete records matching the given attributes.
      *
      * @param array $attributes
-     * @param bool  $force
+     * @param bool $force
      * @return int
      */
     public function deleteWhere(array $attributes, bool $force = false): int
@@ -147,10 +196,10 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Update a given ID with the passed array of fields.
      *
-     * @param int   $id
+     * @param int $id
      * @param array $fields
-     * @param bool  $validate
-     * @param bool  $force
+     * @param bool $validate
+     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model|bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -178,12 +227,24 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     }
 
     /**
+     * Update a model using the attributes passed.
+     *
+     * @param array|\Closure $attributes
+     * @param array $values
+     * @return int
+     */
+    public function updateWhere($attributes, array $values)
+    {
+        return $this->getBuilder()->where($attributes)->update($values);
+    }
+
+    /**
      * Perform a mass update where matching records are updated using whereIn.
      * This does not perform any model data validation.
      *
      * @param string $column
-     * @param array  $values
-     * @param array  $fields
+     * @param array $values
+     * @param array $fields
      * @return int
      */
     public function updateWhereIn(string $column, array $values, array $fields): int
@@ -198,8 +259,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      *
      * @param array $where
      * @param array $fields
-     * @param bool  $validate
-     * @param bool  $force
+     * @param bool $validate
+     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -224,15 +285,11 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Return all records associated with the given model.
      *
      * @return \Illuminate\Support\Collection
+     * @deprecated Just use the model
      */
     public function all(): Collection
     {
-        $instance = $this->getBuilder();
-        if (is_subclass_of(get_called_class(), SearchableInterface::class) && $this->hasSearchTerm()) {
-            $instance = $instance->search($this->getSearchTerm());
-        }
-
-        return $instance->get($this->getColumns());
+        return $this->getBuilder()->get($this->getColumns());
     }
 
     /**
@@ -243,12 +300,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function paginated(int $perPage): LengthAwarePaginator
     {
-        $instance = $this->getBuilder();
-        if (is_subclass_of(get_called_class(), SearchableInterface::class) && $this->hasSearchTerm()) {
-            $instance = $instance->search($this->getSearchTerm());
-        }
-
-        return $instance->paginate($perPage, $this->getColumns());
+        return $this->getBuilder()->paginate($perPage, $this->getColumns());
     }
 
     /**
@@ -301,6 +353,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Get the amount of entries in the database.
      *
      * @return int
+     * @deprecated just use the count method off a model
      */
     public function count(): int
     {

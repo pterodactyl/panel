@@ -7,6 +7,7 @@ use Tests\TestCase;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException;
 
 class AllocationDeletionServiceTest extends TestCase
 {
@@ -15,7 +16,7 @@ class AllocationDeletionServiceTest extends TestCase
      */
     private $repository;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -27,9 +28,9 @@ class AllocationDeletionServiceTest extends TestCase
      */
     public function testAllocationIsDeleted()
     {
-        $model = factory(Allocation::class)->make();
+        $model = factory(Allocation::class)->make(['id' => 123]);
 
-        $this->repository->shouldReceive('delete')->with($model->id)->once()->andReturn(1);
+        $this->repository->expects('delete')->with($model->id)->andReturns(1);
 
         $response = $this->getService()->handle($model);
         $this->assertEquals(1, $response);
@@ -37,11 +38,11 @@ class AllocationDeletionServiceTest extends TestCase
 
     /**
      * Test that an exception gets thrown if an allocation is currently assigned to a server.
-     *
-     * @expectedException \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
     public function testExceptionThrownIfAssignedToServer()
     {
+        $this->expectException(ServerUsingAllocationException::class);
+
         $model = factory(Allocation::class)->make(['server_id' => 123]);
 
         $this->getService()->handle($model);

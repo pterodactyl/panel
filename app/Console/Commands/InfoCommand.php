@@ -38,7 +38,7 @@ class InfoCommand extends Command
     /**
      * VersionCommand constructor.
      *
-     * @param \Illuminate\Contracts\Config\Repository              $config
+     * @param \Illuminate\Contracts\Config\Repository $config
      * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $versionService
      */
     public function __construct(ConfigRepository $config, SoftwareVersionService $versionService)

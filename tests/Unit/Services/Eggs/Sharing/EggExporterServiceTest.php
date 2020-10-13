@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Tests\Unit\Services\Eggs\Sharing;
 
@@ -23,32 +16,20 @@ class EggExporterServiceTest extends TestCase
     use NestedObjectAssertionsTrait;
 
     /**
-     * @var \Carbon\Carbon
-     */
-    protected $carbon;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface|\Mockery\Mock
      */
     protected $repository;
 
     /**
-     * @var \Pterodactyl\Services\Eggs\Sharing\EggExporterService
-     */
-    protected $service;
-
-    /**
      * Setup tests.
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
         Carbon::setTestNow(Carbon::now());
-        $this->carbon = new Carbon();
-        $this->repository = m::mock(EggRepositoryInterface::class);
 
-        $this->service = new EggExporterService($this->repository);
+        $this->repository = m::mock(EggRepositoryInterface::class);
     }
 
     /**
@@ -56,12 +37,17 @@ class EggExporterServiceTest extends TestCase
      */
     public function testJsonStructureIsExported()
     {
-        $egg = factory(Egg::class)->make();
+        $egg = factory(Egg::class)->make([
+            'id' => 123,
+            'nest_id' => 456,
+        ]);
         $egg->variables = collect([$variable = factory(EggVariable::class)->make()]);
 
         $this->repository->shouldReceive('getWithExportAttributes')->with($egg->id)->once()->andReturn($egg);
 
-        $response = $this->service->handle($egg->id);
+        $service = new EggExporterService($this->repository);
+
+        $response = $service->handle($egg->id);
         $this->assertNotEmpty($response);
 
         $data = json_decode($response);

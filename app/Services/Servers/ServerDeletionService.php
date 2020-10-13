@@ -1,84 +1,53 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
-use Psr\Log\LoggerInterface as Writer;
-use GuzzleHttp\Exception\RequestException;
+use Exception;
+use Illuminate\Http\Response;
+use Pterodactyl\Models\Server;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface as DaemonServerRepositoryInterface;
 
 class ServerDeletionService
 {
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    protected $connection;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface
-     */
-    protected $daemonServerRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    protected $databaseManagementService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    protected $databaseRepository;
-
     /**
      * @var bool
      */
     protected $force = false;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     * @var \Illuminate\Database\ConnectionInterface
      */
-    protected $repository;
+    private $connection;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
-    protected $writer;
+    private $daemonServerRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     */
+    private $databaseManagementService;
 
     /**
      * DeletionService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface                           $connection
-     * @param \Pterodactyl\Contracts\Repository\Daemon\ServerRepositoryInterface $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface      $databaseRepository
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService          $databaseManagementService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface        $repository
-     * @param \Psr\Log\LoggerInterface                                           $writer
+     * @param \Illuminate\Database\ConnectionInterface $connection
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
+     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
      */
     public function __construct(
         ConnectionInterface $connection,
-        DaemonServerRepositoryInterface $daemonServerRepository,
-        DatabaseRepositoryInterface $databaseRepository,
-        DatabaseManagementService $databaseManagementService,
-        ServerRepositoryInterface $repository,
-        Writer $writer
+        DaemonServerRepository $daemonServerRepository,
+        DatabaseManagementService $databaseManagementService
     ) {
-        $this->daemonServerRepository = $daemonServerRepository;
         $this->connection = $connection;
+        $this->daemonServerRepository = $daemonServerRepository;
         $this->databaseManagementService = $databaseManagementService;
-        $this->databaseRepository = $databaseRepository;
-        $this->repository = $repository;
-        $this->writer = $writer;
     }
 
     /**
@@ -97,34 +66,49 @@ class ServerDeletionService
     /**
      * Delete a server from the panel and remove any associated databases from hosts.
      *
-     * @param int|\Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $server
      *
+     * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle($server)
+    public function handle(Server $server)
     {
         try {
             $this->daemonServerRepository->setServer($server)->delete();
-        } catch (RequestException $exception) {
-            $response = $exception->getResponse();
-
-            if (is_null($response) || (! is_null($response) && $response->getStatusCode() !== 404)) {
-                // If not forcing the deletion, throw an exception, otherwise just log it and
-                // continue with server deletion process in the panel.
-                if (! $this->force) {
-                    throw new DaemonConnectionException($exception);
-                } else {
-                    $this->writer->warning($exception);
-                }
+        } catch (DaemonConnectionException $exception) {
+            // If there is an error not caused a 404 error and this isn't a forced delete,
+            // go ahead and bail out. We specifically ignore a 404 since that can be assumed
+            // to be a safe error, meaning the server doesn't exist at all on Wings so there
+            // is no reason we need to bail out from that.
+            if (! $this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
+                throw $exception;
             }
+
+            Log::warning($exception);
         }
 
-        $this->connection->beginTransaction();
-        $this->databaseRepository->setColumns('id')->findWhere([['server_id', '=', $server->id]])->each(function ($item) {
-            $this->databaseManagementService->delete($item->id);
-        });
+        $this->connection->transaction(function () use ($server) {
+            foreach ($server->databases as $database) {
+                try {
+                    $this->databaseManagementService->delete($database);
+                } catch (Exception $exception) {
+                    if (!$this->force) {
+                        throw $exception;
+                    }
 
-        $this->repository->delete($server->id);
-        $this->connection->commit();
+                    // Oh well, just try to delete the database entry we have from the database
+                    // so that the server itself can be deleted. This will leave it dangling on
+                    // the host instance, but we couldn't delete it anyways so not sure how we would
+                    // handle this better anyways.
+                    //
+                    // @see https://github.com/pterodactyl/panel/issues/2085
+                    $database->delete();
+
+                    Log::warning($exception);
+                }
+            }
+
+            $server->delete();
+        });
     }
 }

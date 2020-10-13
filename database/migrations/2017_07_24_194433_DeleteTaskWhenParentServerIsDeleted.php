@@ -23,6 +23,5 @@ class DeleteTaskWhenParentServerIsDeleted extends Migration
      */
     public function down()
     {
-        //
     }
 }

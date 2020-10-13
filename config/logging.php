@@ -1,9 +1,9 @@
 <?php
 
+use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Default Log Channel
@@ -76,6 +76,10 @@ return [
             'driver' => 'errorlog',
             'level' => 'debug',
         ],
-    ],
 
+        'null' => [
+            'driver' => 'monolog',
+            'handler' => NullHandler::class,
+        ],
+    ],
 ];

@@ -27,7 +27,7 @@ class LanguageMiddleware
      * Handle an incoming request and set the user's preferred language.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure                 $next
+     * @param \Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)

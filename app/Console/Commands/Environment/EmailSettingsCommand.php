@@ -59,6 +59,7 @@ class EmailSettingsCommand extends Command
 
     /**
      * Handle command execution.
+     *
      * @throws \Pterodactyl\Exceptions\PterodactylException
      */
     public function handle()
@@ -79,16 +80,16 @@ class EmailSettingsCommand extends Command
         }
 
         $this->variables['MAIL_FROM'] = $this->option('email') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_mail_from'), $this->config->get('mail.from.address')
-        );
+                trans('command/messages.environment.mail.ask_mail_from'), $this->config->get('mail.from.address')
+            );
 
         $this->variables['MAIL_FROM_NAME'] = $this->option('from') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_mail_name'), $this->config->get('mail.from.name')
-        );
+                trans('command/messages.environment.mail.ask_mail_name'), $this->config->get('mail.from.name')
+            );
 
         $this->variables['MAIL_ENCRYPTION'] = $this->option('encryption') ?? $this->choice(
-            trans('command/messages.environment.mail.ask_encryption'), ['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None'], $this->config->get('mail.encryption', 'tls')
-        );
+                trans('command/messages.environment.mail.ask_encryption'), ['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None'], $this->config->get('mail.encryption', 'tls')
+            );
 
         $this->writeToEnvironment($this->variables);
 
@@ -102,20 +103,20 @@ class EmailSettingsCommand extends Command
     private function setupSmtpDriverVariables()
     {
         $this->variables['MAIL_HOST'] = $this->option('host') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_smtp_host'), $this->config->get('mail.host')
-        );
+                trans('command/messages.environment.mail.ask_smtp_host'), $this->config->get('mail.host')
+            );
 
         $this->variables['MAIL_PORT'] = $this->option('port') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_smtp_port'), $this->config->get('mail.port')
-        );
+                trans('command/messages.environment.mail.ask_smtp_port'), $this->config->get('mail.port')
+            );
 
         $this->variables['MAIL_USERNAME'] = $this->option('username') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_smtp_username'), $this->config->get('mail.username')
-        );
+                trans('command/messages.environment.mail.ask_smtp_username'), $this->config->get('mail.username')
+            );
 
         $this->variables['MAIL_PASSWORD'] = $this->option('password') ?? $this->secret(
-            trans('command/messages.environment.mail.ask_smtp_password')
-        );
+                trans('command/messages.environment.mail.ask_smtp_password')
+            );
     }
 
     /**
@@ -124,12 +125,12 @@ class EmailSettingsCommand extends Command
     private function setupMailgunDriverVariables()
     {
         $this->variables['MAILGUN_DOMAIN'] = $this->option('host') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_mailgun_domain'), $this->config->get('services.mailgun.domain')
-        );
+                trans('command/messages.environment.mail.ask_mailgun_domain'), $this->config->get('services.mailgun.domain')
+            );
 
         $this->variables['MAILGUN_SECRET'] = $this->option('password') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_mailgun_secret'), $this->config->get('services.mailgun.secret')
-        );
+                trans('command/messages.environment.mail.ask_mailgun_secret'), $this->config->get('services.mailgun.secret')
+            );
     }
 
     /**
@@ -138,8 +139,8 @@ class EmailSettingsCommand extends Command
     private function setupMandrillDriverVariables()
     {
         $this->variables['MANDRILL_SECRET'] = $this->option('password') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_mandrill_secret'), $this->config->get('services.mandrill.secret')
-        );
+                trans('command/messages.environment.mail.ask_mandrill_secret'), $this->config->get('services.mandrill.secret')
+            );
     }
 
     /**
@@ -151,7 +152,7 @@ class EmailSettingsCommand extends Command
         $this->variables['MAIL_HOST'] = 'smtp.postmarkapp.com';
         $this->variables['MAIL_PORT'] = 587;
         $this->variables['MAIL_USERNAME'] = $this->variables['MAIL_PASSWORD'] = $this->option('username') ?? $this->ask(
-            trans('command/messages.environment.mail.ask_postmark_username'), $this->config->get('mail.username')
-        );
+                trans('command/messages.environment.mail.ask_postmark_username'), $this->config->get('mail.username')
+            );
     }
 }

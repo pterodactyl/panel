@@ -4,15 +4,12 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Location;
 use Illuminate\Support\Collection;
-use Pterodactyl\Repositories\Concerns\Searchable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationRepository extends EloquentRepository implements LocationRepositoryInterface
 {
-    use Searchable;
-
     /**
      * Return the model backing this repository.
      *

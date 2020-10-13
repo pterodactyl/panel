@@ -2,16 +2,18 @@
 
 namespace Pterodactyl\Models;
 
-use Sofa\Eloquence\Eloquence;
-use Sofa\Eloquence\Validable;
-use Illuminate\Database\Eloquent\Model;
-use Sofa\Eloquence\Contracts\CleansAttributes;
-use Sofa\Eloquence\Contracts\Validable as ValidableContract;
-
-class Location extends Model implements CleansAttributes, ValidableContract
+/**
+ * @property int $id
+ * @property string $short
+ * @property string $long
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ *
+ * @property \Pterodactyl\Models\Node[] $nodes
+ * @property \Pterodactyl\Models\Server[] $servers
+ */
+class Location extends Model
 {
-    use Eloquence, Validable;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -33,23 +35,13 @@ class Location extends Model implements CleansAttributes, ValidableContract
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     /**
-     * Validation rules to apply to this model.
-     *
-     * @var array
-     */
-    protected static $applicationRules = [
-        'short' => 'required',
-        'long' => 'required',
-    ];
-
-    /**
      * Rules ensuring that the raw data stored in the database meets expectations.
      *
      * @var array
      */
-    protected static $dataIntegrityRules = [
-        'short' => 'string|between:1,60|unique:locations,short',
-        'long' => 'string|between:1,255',
+    public static $validationRules = [
+        'short' => 'required|string|between:1,60|unique:locations,short',
+        'long' => 'string|nullable|between:1,191',
     ];
 
     /**
