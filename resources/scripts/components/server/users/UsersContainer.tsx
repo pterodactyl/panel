@@ -9,7 +9,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerSubusers from '@/api/server/users/getServerSubusers';
 import { httpErrorToHuman } from '@/api/http';
 import Can from '@/components/elements/Can';
-import PageContentBlock from '@/components/elements/PageContentBlock';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import tw from 'twin.macro';
 
 export default () => {
@@ -48,7 +48,7 @@ export default () => {
     }
 
     return (
-        <PageContentBlock title={'Subusers'}>
+        <ServerContentBlock title={'Subusers'}>
             <FlashMessageRender byKey={'users'} css={tw`mb-4`}/>
             {!subusers.length ?
                 <p css={tw`text-center text-sm text-neutral-400`}>
@@ -64,6 +64,6 @@ export default () => {
                     <AddSubuserButton/>
                 </div>
             </Can>
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };
