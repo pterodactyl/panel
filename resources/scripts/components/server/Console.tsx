@@ -60,7 +60,7 @@ export default () => {
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const fitAddon = new FitAddon();
     const searchAddon = new SearchAddon();
-    const searchBarAddon = new SearchBarAddon({ searchAddon });
+    const SearchBar = new SearchBarAddon({ searchAddon });
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
 
@@ -90,24 +90,24 @@ export default () => {
             terminal.open(ref.current);
             terminal.loadAddon(fitAddon);
             terminal.loadAddon(searchAddon);
-            terminal.loadAddon(searchBarAddon);
+            terminal.loadAddon(SearchBar);
             fitAddon.fit();
 
             // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
             // Ctrl + C ( Copy )
-                if (e.ctrlKey && (e.key === 'c')) {
+                if (e.ctrlKey && e.key === 'c') {
                     document.execCommand('copy');
                     return false;
                 }
 
-                if (e.ctrlKey && (e.key === 'f')) {
-                    searchAddonBar.show();
+                if (e.ctrlKey && e.key === 'f') {
+                    SearchBar.show();
                     return false;
                 }
 
                 if (e.key === 'Escape') {
-                    searchAddonBar.hidden();
+                    SearchBar.hidden();
                 }
                 return true;
             });
