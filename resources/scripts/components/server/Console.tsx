@@ -106,6 +106,9 @@ export default () => {
                     return false;
                 }
 
+                if (e.key === 'Escape') {
+                    searchAddonBar.hidden();
+                }
                 return true;
             });
         }
