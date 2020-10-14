@@ -10,7 +10,7 @@ interface Props {
 export default ({ title, message, onBack }: Props) => (
     <ScreenBlock
         title={title || '404'}
-        image={'/assets/svgs/not_found.svg'}
+        image={'/themes/pterodactyl/assets/svgs/not_found.svg'}
         message={message || 'The requested resource was not found.'}
         onBack={onBack}
     />

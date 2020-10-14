@@ -12,7 +12,7 @@ export default ({ title, message, onBack, onRetry }: Props) => (
     // @ts-ignore
     <ScreenBlock
         title={title || 'Something went wrong'}
-        image={'/assets/svgs/server_error.svg'}
+        image={'/themes/pterodactyl/assets/svgs/server_error.svg'}
         message={message}
         onBack={onBack}
         onRetry={onRetry}
