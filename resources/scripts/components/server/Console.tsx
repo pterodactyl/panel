@@ -1,12 +1,14 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import { ITerminalOptions, Terminal } from 'xterm';
-import * as TerminalFit from 'xterm/lib/addons/fit/fit';
+import { FitAddon } from 'xterm-addon-fit';
+import { SearchAddon } from 'xterm-addon-search';
+import { SearchBarAddon } from 'xterm-addon-search-bar';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
 import tw from 'twin.macro';
-import 'xterm/dist/xterm.css';
+import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 
@@ -29,6 +31,7 @@ const theme = {
     brightMagenta: '#C792EA',
     brightCyan: '#89DDFF',
     brightWhite: '#ffffff',
+    selection: '#FAF089',
 };
 
 const terminalProps: ITerminalOptions = {
@@ -55,6 +58,9 @@ export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
+    const fitAddon = new FitAddon();
+    const searchAddon = new SearchAddon();
+    const searchAddonBar = new SearchBarAddon({ searchAddon });
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
 
@@ -82,16 +88,21 @@ export default () => {
     useEffect(() => {
         if (connected && ref.current && !terminal.element) {
             terminal.open(ref.current);
+            terminal.loadAddon(fitAddon);
+            terminal.loadAddon(searchAddon);
+            terminal.loadAddon(searchAddonBar);
+            fitAddon.fit();
 
-            // @see https://github.com/xtermjs/xterm.js/issues/2265
-            // @see https://github.com/xtermjs/xterm.js/issues/2230
-            TerminalFit.fit(terminal);
-
-            // Add support for copying terminal text.
+            // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-                // Ctrl + C
+            // Ctrl + C ( Copy )
                 if (e.ctrlKey && (e.key === 'c')) {
                     document.execCommand('copy');
+                    return false;
+                }
+
+                if (e.ctrlKey && (e.key === 'f')) {
+                    searchAddonBar.show();
                     return false;
                 }
 
@@ -101,7 +112,7 @@ export default () => {
     }, [ terminal, connected ]);
 
     const fit = debounce(() => {
-        TerminalFit.fit(terminal);
+        fitAddon.fit();
     }, 100);
 
     useEventListener('resize', () => fit());
