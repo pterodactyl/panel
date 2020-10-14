@@ -13,11 +13,11 @@
     "baseUrl": ".",
     "lib": ["es2015", "dom"],
     "importsNotUsedAsValues": "preserve",
-    "paths": {
-      "@/*": [
-        "./resources/scripts/*"
-      ]
-    },
+//    "paths": {
+//      "@/*": [
+//        "./resources/themes/non-needed/scripts/*"
+//      ]
+//    },
     "plugins": [
       {
         "name": "typescript-plugin-tw-template"
@@ -25,9 +25,9 @@
     ],
     "typeRoots": ["node_modules/@types"]
   },
-  "include": [
-    "./resources/scripts/**/*"
-  ],
+//  "include": [
+//    "./resources/themes/non-needed/scripts/**/*"
+//  ],
   "exclude": [
     "/node_modules/"
   ]

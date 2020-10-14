@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http;
 
+use Pterodactyl\Http\Middleware\ThemeSetter;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
@@ -65,6 +66,7 @@ class Kernel extends HttpKernel
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
+            ThemeSetter::class,
             LanguageMiddleware::class,
             RequireTwoFactorAuthentication::class,
         ],
