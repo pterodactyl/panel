@@ -32,6 +32,7 @@ export default () => {
 
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const { addError, clearFlashes } = useFlash();
 
     let fetchFileContent: null | (() => Promise<string>) = null;
@@ -39,8 +40,9 @@ export default () => {
     useEffect(() => {
         if (action === 'new') return;
 
-        setLoading(true);
         setError('');
+        setLoading(true);
+        setDirectory(hash.replace(/^#/, '').split('/').filter(v => !!v).slice(0, -1).join('/'));
         getFileContents(uuid, hash.replace(/^#/, ''))
             .then(setContent)
             .catch(error => {
