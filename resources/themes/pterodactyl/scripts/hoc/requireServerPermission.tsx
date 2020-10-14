@@ -15,7 +15,7 @@ const requireServerPermission = (Component: React.ComponentType<any>, permission
                     action={permissions}
                     renderOnError={
                         <ScreenBlock
-                            image={'/assets/svgs/server_error.svg'}
+                            image={'/themes/pterodactyl/assets/svgs/server_error.svg'}
                             title={'Access Denied'}
                             message={'You do not have permission to access this page.'}
                         />

@@ -21,6 +21,5 @@ return [
 
     'themes' => [
         'pterodactyl',
-        'pterodactyly',
     ]
 ];

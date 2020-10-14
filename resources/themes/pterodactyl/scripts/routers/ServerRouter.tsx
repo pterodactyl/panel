@@ -116,7 +116,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     {(installing && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
                         <ScreenBlock
                             title={'Your server is installing.'}
-                            image={'/assets/svgs/server_installing.svg'}
+                            image={'/themes/pterodactyl/assets/svgs/server_installing.svg'}
                             message={'Please check back in a few minutes.'}
                         />
                         :
