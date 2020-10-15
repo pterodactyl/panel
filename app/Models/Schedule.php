@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Models;
 
+use Cron\CronExpression;
+use Carbon\CarbonImmutable;
 use Illuminate\Container\Container;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
@@ -113,6 +115,20 @@ class Schedule extends Model
         'last_run_at' => 'nullable|date',
         'next_run_at' => 'nullable|date',
     ];
+
+    /**
+     * Returns the schedule's execution crontab entry as a string.
+     *
+     * @return \Carbon\CarbonImmutable
+     */
+    public function getNextRunDate()
+    {
+        $formatted = sprintf('%s %s %s * %s', $this->cron_minute, $this->cron_hour, $this->cron_day_of_month, $this->cron_day_of_week);
+
+        return CarbonImmutable::createFromTimestamp(
+            CronExpression::factory($formatted)->getNextRunDate()->getTimestamp()
+        );
+    }
 
     /**
      * Return a hashid encoded string to represent the ID of the schedule.

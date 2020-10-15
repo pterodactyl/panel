@@ -4,7 +4,6 @@ import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import getServerSchedule from '@/api/server/schedules/getServerSchedule';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { httpErrorToHuman } from '@/api/http';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import NewTaskButton from '@/components/server/schedules/NewTaskButton';
 import DeleteScheduleButton from '@/components/server/schedules/DeleteScheduleButton';
@@ -18,6 +17,7 @@ import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
 import isEqual from 'react-fast-compare';
 import { format } from 'date-fns';
 import ScheduleCronRow from '@/components/server/schedules/ScheduleCronRow';
+import RunScheduleButton from '@/components/server/schedules/RunScheduleButton';
 
 interface Params {
     id: string;
@@ -49,7 +49,7 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
-    const { clearFlashes, addError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ isLoading, setIsLoading ] = useState(true);
     const [ showEditModal, setShowEditModal ] = useState(false);
 
@@ -68,7 +68,7 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
             .then(schedule => appendSchedule(schedule))
             .catch(error => {
                 console.error(error);
-                addError({ message: httpErrorToHuman(error), key: 'schedules' });
+                clearAndAddHttpError({ error, key: 'schedules' });
             })
             .then(() => setIsLoading(false));
     }, [ match ]);
@@ -146,6 +146,11 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                                 onDeleted={() => history.push(`/server/${id}/schedules`)}
                             />
                         </Can>
+                        {schedule.isActive &&
+                        <Can action={'schedule.update'}>
+                            <RunScheduleButton schedule={schedule}/>
+                        </Can>
+                        }
                     </div>
                 </>
             }
