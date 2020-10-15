@@ -3,9 +3,9 @@
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Schedules;
 
 use Pterodactyl\Models\Permission;
-use Illuminate\Foundation\Http\FormRequest;
+use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class TriggerScheduleRequest extends FormRequest
+class TriggerScheduleRequest extends ClientApiRequest
 {
     /**
      * @return string
@@ -18,7 +18,7 @@ class TriggerScheduleRequest extends FormRequest
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [];
     }

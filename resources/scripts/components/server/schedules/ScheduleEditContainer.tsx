@@ -146,7 +146,7 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                                 onDeleted={() => history.push(`/server/${id}/schedules`)}
                             />
                         </Can>
-                        {schedule.isActive &&
+                        {schedule.isActive && schedule.tasks.length > 0 &&
                         <Can action={'schedule.update'}>
                             <RunScheduleButton schedule={schedule}/>
                         </Can>

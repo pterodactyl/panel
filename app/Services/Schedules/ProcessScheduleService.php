@@ -6,6 +6,7 @@ use Pterodactyl\Models\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Pterodactyl\Jobs\Schedule\RunTaskJob;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Exceptions\DisplayException;
 
 class ProcessScheduleService
 {
@@ -42,7 +43,13 @@ class ProcessScheduleService
     public function handle(Schedule $schedule, bool $now = false)
     {
         /** @var \Pterodactyl\Models\Task $task */
-        $task = $schedule->tasks()->where('sequence_id', 1)->firstOrFail();
+        $task = $schedule->tasks()->where('sequence_id', 1)->first();
+
+        if (is_null($task)) {
+            throw new DisplayException(
+                'Cannot process schedule for task execution: no tasks are registered.'
+            );
+        }
 
         $this->connection->transaction(function () use ($schedule, $task) {
             $schedule->forceFill([
