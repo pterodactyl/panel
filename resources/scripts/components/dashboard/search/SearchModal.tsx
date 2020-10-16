@@ -63,22 +63,24 @@ export default ({ ...props }: Props) => {
                 console.error(error);
                 addError({ key: 'search', message: httpErrorToHuman(error) });
             })
-            .then(() => setLoading(false));
+            .then(() => setLoading(false))
+            .then(() => ref.current?.focus());
     }, 500);
 
     useEffect(() => {
         if (props.visible) {
-            setTimeout(() => ref.current?.focus(), 250);
+            if (ref.current) ref.current.focus();
         }
     }, [ props.visible ]);
+
+    // Formik does not support an innerRef on custom components.
+    const InputWithRef = (props: any) => <Input {...props} ref={ref}/>;
 
     return (
         <Formik
             onSubmit={search}
             validationSchema={object().shape({
-                term: string()
-                    .min(3, 'Please enter at least three characters to begin searching.')
-                    .required('A search term must be provided.'),
+                term: string().min(3, 'Please enter at least three characters to begin searching.'),
             })}
             initialValues={{ term: '' } as Values}
         >
@@ -95,7 +97,7 @@ export default ({ ...props }: Props) => {
                     >
                         <SearchWatcher/>
                         <InputSpinner visible={loading}>
-                            <Field as={Input} innerRef={ref} name={'term'}/>
+                            <Field as={InputWithRef} name={'term'}/>
                         </InputSpinner>
                     </FormikFieldWrapper>
                 </Form>
