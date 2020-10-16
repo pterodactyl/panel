@@ -154,10 +154,42 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that no servers get returned if the user requests all admin level servers by using
-     * ?type=admin in the request.
+     * Test that all servers a user can access as an admin are returned if using ?filter=admin-all.
      */
-    public function testNoServersAreReturnedIfAdminFilterIsPassedByRegularUser()
+    public function testAllServersAreReturnedToAdmin()
+    {
+        /** @var \Pterodactyl\Models\User[] $users */
+        $users = factory(User::class)->times(4)->create();
+        $users[0]->update(['root_admin' => true]);
+
+        $servers = [
+            $this->createServerModel(['user_id' => $users[0]->id]),
+            $this->createServerModel(['user_id' => $users[1]->id]),
+            $this->createServerModel(['user_id' => $users[2]->id]),
+            $this->createServerModel(['user_id' => $users[3]->id]),
+        ];
+
+        Subuser::query()->create([
+            'user_id' => $users[0]->id,
+            'server_id' => $servers[1]->id,
+            'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
+        ]);
+
+        // All servers should be returned.
+        $response = $this->actingAs($users[0])->getJson('/api/client?type=admin-all');
+
+        $response->assertOk();
+        $response->assertJsonCount(4, 'data');
+    }
+
+    /**
+     * Test that no servers get returned if the user requests all admin level servers by using
+     * ?type=admin or ?type=admin-all in the request.
+     *
+     * @param string $type
+     * @dataProvider filterTypeDataProvider
+     */
+    public function testNoServersAreReturnedIfAdminFilterIsPassedByRegularUser($type)
     {
         /** @var \Pterodactyl\Models\User[] $users */
         $users = factory(User::class)->times(3)->create();
@@ -166,9 +198,17 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         $this->createServerModel(['user_id' => $users[1]->id]);
         $this->createServerModel(['user_id' => $users[2]->id]);
 
-        $response = $this->actingAs($users[0])->getJson('/api/client?type=admin');
+        $response = $this->actingAs($users[0])->getJson('/api/client?type=' . $type);
 
         $response->assertOk();
         $response->assertJsonCount(0, 'data');
+    }
+
+    /**
+     * @return array
+     */
+    public function filterTypeDataProvider()
+    {
+        return [['admin'], ['admin-all']];
     }
 }
