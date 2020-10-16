@@ -6,6 +6,7 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Permission;
+use Pterodactyl\Models\Allocation;
 
 class ClientControllerTest extends ClientApiIntegrationTestCase
 {
@@ -36,6 +37,105 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('data.0.attributes.server_owner', true);
         $response->assertJsonPath('meta.pagination.total', 1);
         $response->assertJsonPath('meta.pagination.per_page', 50);
+    }
+
+    /**
+     * Test that using ?filter[*]=name|uuid returns any server matching that name or UUID
+     * with the search filters.
+     */
+    public function testServersAreFilteredUsingNameAndUuidInformation()
+    {
+        /** @var \Pterodactyl\Models\User[] $users */
+        $users = factory(User::class)->times(2)->create();
+        $users[0]->update(['root_admin' => true]);
+
+        /** @var \Pterodactyl\Models\Server[] $servers */
+        $servers = [
+            $this->createServerModel(['user_id' => $users[0]->id, 'name' => 'Julia']),
+            $this->createServerModel(['user_id' => $users[1]->id, 'uuidShort' => '12121212', 'name' => 'Janice']),
+            $this->createServerModel(['user_id' => $users[1]->id, 'uuid' => '88788878-12356789', 'external_id' => 'ext123', 'name' => 'Julia']),
+            $this->createServerModel(['user_id' => $users[1]->id, 'uuid' => '88788878-abcdefgh', 'name' => 'Jennifer']),
+        ];
+
+        $this->actingAs($users[1])->getJson('/api/client?filter[*]=Julia')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $servers[2]->uuidShort);
+
+        $this->actingAs($users[1])->getJson('/api/client?filter[*]=ext123')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $servers[2]->uuidShort);
+
+        $this->actingAs($users[1])->getJson('/api/client?filter[*]=ext123')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $servers[2]->uuidShort);
+
+        $this->actingAs($users[1])->getJson('/api/client?filter[*]=12121212')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $servers[1]->uuidShort);
+
+        $this->actingAs($users[1])->getJson('/api/client?filter[*]=88788878')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $servers[2]->uuidShort)
+            ->assertJsonPath('data.1.attributes.identifier', $servers[3]->uuidShort);
+
+        $this->actingAs($users[1])->getJson('/api/client?filter[*]=88788878-abcd')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $servers[3]->uuidShort);
+
+        $this->actingAs($users[0])->getJson('/api/client?filter[*]=Julia&type=admin-all')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $servers[0]->uuidShort)
+            ->assertJsonPath('data.1.attributes.identifier', $servers[2]->uuidShort);
+    }
+
+    /**
+     * Test that using ?filter[*]=:25565 or ?filter[*]=192.168.1.1:25565 returns only those servers
+     * with the same allocation for the given user.
+     */
+    public function testServersAreFilteredUsingAllocationInformation()
+    {
+        /** @var \Pterodactyl\Models\User $user */
+        /** @var \Pterodactyl\Models\Server $server */
+        [$user, $server] = $this->generateTestAccount();
+        $server2 = $this->createServerModel(['user_id' => $user->id, 'node_id' => $server->node_id]);
+
+        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server->id, 'ip' => '192.168.1.1', 'port' => 25565]);
+        $allocation2 = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server2->id, 'ip' => '192.168.1.1', 'port' => 25570]);
+
+        $server->update(['allocation_id' => $allocation->id]);
+        $server2->update(['allocation_id' => $allocation2->id]);
+
+        $server->refresh();
+        $server2->refresh();
+
+        $this->actingAs($user)->getJson('/api/client?filter[*]=192.168.1.1')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $server->uuidShort)
+            ->assertJsonPath('data.1.attributes.identifier', $server2->uuidShort);
+
+        $this->actingAs($user)->getJson('/api/client?filter[*]=192.168.1.1:25565')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $server->uuidShort);
+
+        $this->actingAs($user)->getJson('/api/client?filter[*]=:25570')
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $server2->uuidShort);
+
+        $this->actingAs($user)->getJson('/api/client?filter[*]=:255')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $server->uuidShort)
+            ->assertJsonPath('data.1.attributes.identifier', $server2->uuidShort);
     }
 
     /**

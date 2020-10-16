@@ -48,12 +48,12 @@ class MultiFieldServerFilter implements Filter
                         function (Builder $builder) use ($parts) {
                             $builder->orWhere('allocations.ip', $parts[0]);
                             if (!is_null($parts[1] ?? null)) {
-                                $builder->where('allocations.port', 'LIKE', "%{$parts[1]}");
+                                $builder->where('allocations.port', 'LIKE', "{$parts[1]}%");
                             }
                         },
                         // Otherwise, just try to search for that specific port in the allocations.
                         function (Builder $builder) use ($value) {
-                            $builder->orWhere('allocations.port', substr($value, 1));
+                            $builder->orWhere('allocations.port', 'LIKE', substr($value, 1) . '%');
                         }
                     );
                 })
