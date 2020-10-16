@@ -16,16 +16,6 @@ interface ScheduleRepositoryInterface extends RepositoryInterface
     public function findServerSchedules(int $server): Collection;
 
     /**
-     * Load the tasks relationship onto the Schedule module if they are not
-     * already present.
-     *
-     * @param \Pterodactyl\Models\Schedule $schedule
-     * @param bool $refresh
-     * @return \Pterodactyl\Models\Schedule
-     */
-    public function loadTasks(Schedule $schedule, bool $refresh = false): Schedule;
-
-    /**
      * Return a schedule model with all of the associated tasks as a relationship.
      *
      * @param int $schedule

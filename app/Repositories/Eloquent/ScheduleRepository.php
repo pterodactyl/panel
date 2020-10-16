@@ -32,23 +32,6 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     }
 
     /**
-     * Load the tasks relationship onto the Schedule module if they are not
-     * already present.
-     *
-     * @param \Pterodactyl\Models\Schedule $schedule
-     * @param bool $refresh
-     * @return \Pterodactyl\Models\Schedule
-     */
-    public function loadTasks(Schedule $schedule, bool $refresh = false): Schedule
-    {
-        if (! $schedule->relationLoaded('tasks') || $refresh) {
-            $schedule->load('tasks');
-        }
-
-        return $schedule;
-    }
-
-    /**
      * Return a schedule model with all of the associated tasks as a relationship.
      *
      * @param int $schedule
