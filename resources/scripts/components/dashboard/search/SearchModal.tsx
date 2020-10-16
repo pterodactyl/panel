@@ -9,7 +9,6 @@ import InputSpinner from '@/components/elements/InputSpinner';
 import getServers from '@/api/getServers';
 import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
-import { httpErrorToHuman } from '@/api/http';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
