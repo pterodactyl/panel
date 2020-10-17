@@ -74,7 +74,7 @@ class Mount extends Model
         $rules = parent::getRules();
 
         $rules['source'][] = new NotIn(Mount::$invalidSourcePaths);
-        $rules['target'][] = new NotIn(Mount::$invalidSourcePaths);
+        $rules['target'][] = new NotIn(Mount::$invalidTargetPaths);
 
         return $rules;
     }
