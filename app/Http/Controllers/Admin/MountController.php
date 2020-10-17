@@ -105,6 +105,11 @@ class MountController extends Controller
         $model = (new Mount())->fill($request->validated());
         $model->forceFill(['uuid' => Uuid::uuid4()->toString()]);
 
+        if (str_starts_with($model->source, '/etc/pterodactyl')) {
+            $this->alert->danger('Invalid source path: "/etc/pterodactyl" cannot be used as a source path.')->flash();
+            return redirect()->route('admin.mounts');
+        }
+
         if (str_starts_with($model->source, '/var/lib/pterodactyl/volumes')) {
             $this->alert->danger('Invalid source path: "/var/lib/pterodactyl/volumes" cannot be used as a source path.')->flash();
             return redirect()->route('admin.mounts');
@@ -144,6 +149,11 @@ class MountController extends Controller
         }
 
         $mount->forceFill($request->validated());
+
+        if (str_starts_with($mount->source, '/etc/pterodactyl')) {
+            $this->alert->danger('Invalid source path: "/etc/pterodactyl" cannot be used as a source path.')->flash();
+            return redirect()->route('admin.mounts.view', $mount->id);
+        }
 
         if (str_starts_with($mount->source, '/var/lib/pterodactyl/volumes')) {
             $this->alert->danger('Invalid source path: "/var/lib/pterodactyl/volumes" cannot be used as a source path.')->flash();
