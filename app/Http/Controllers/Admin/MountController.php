@@ -105,6 +105,21 @@ class MountController extends Controller
         $model = (new Mount())->fill($request->validated());
         $model->forceFill(['uuid' => Uuid::uuid4()->toString()]);
 
+        if (str_starts_with($model->source, '/var/lib/pterodactyl/volumes')) {
+            $this->alert->danger('Invalid source path: "/var/lib/pterodactyl/volumes" cannot be used as a source path.')->flash();
+            return redirect()->route('admin.mounts');
+        }
+
+        if (str_starts_with($model->source, '/srv/daemon-data')) {
+            $this->alert->danger('Invalid source path: "/srv/daemon-data" cannot be used as a source path.')->flash();
+            return redirect()->route('admin.mounts');
+        }
+
+        if (str_starts_with($model->target, '/home/container')) {
+            $this->alert->danger('Invalid target path: "/home/container" cannot be used as a target path.')->flash();
+            return redirect()->route('admin.mounts');
+        }
+
         $model->saveOrFail();
         $mount = $model->fresh();
 
@@ -128,7 +143,24 @@ class MountController extends Controller
             return $this->delete($mount);
         }
 
-        $mount->forceFill($request->validated())->save();
+        $mount->forceFill($request->validated());
+
+        if (str_starts_with($mount->source, '/var/lib/pterodactyl/volumes')) {
+            $this->alert->danger('Invalid source path: "/var/lib/pterodactyl/volumes" cannot be used as a source path.')->flash();
+            return redirect()->route('admin.mounts.view', $mount->id);
+        }
+
+        if (str_starts_with($mount->source, '/srv/daemon-data')) {
+            $this->alert->danger('Invalid source path: "/srv/daemon-data" cannot be used as a source path.')->flash();
+            return redirect()->route('admin.mounts.view', $mount->id);
+        }
+
+        if (str_starts_with($mount->target, '/home/container')) {
+            $this->alert->danger('Invalid target path: "/home/container" cannot be used as a target path.')->flash();
+            return redirect()->route('admin.mounts.view', $mount->id);
+        }
+
+        $mount->save();
 
         $this->alert->success('Mount was updated successfully.')->flash();
 
