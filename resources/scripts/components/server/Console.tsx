@@ -7,15 +7,15 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
-import tw from 'twin.macro';
+import tw, { theme } from 'twin.macro';
 import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 
 const theme = {
-    background: 'transparent',
+    background: theme`colors.black`,
     cursor: 'transparent',
-    black: '#000000',
+    black: theme`colors.black`,
     red: '#E54B4B',
     green: '#9ECE58',
     yellow: '#FAED70',
