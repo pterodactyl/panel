@@ -108,7 +108,10 @@ export default ({ database, className }: Props) => {
                     )
                 }
             </Formik>
-            <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
+            <Modal
+                top={false}
+                visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}
+            >
                 <FlashMessageRender byKey={'database-connection-modal'} css={tw`mb-6`}/>
                 <h3 css={tw`mb-6`}>Database connection details</h3>
                 <div>
