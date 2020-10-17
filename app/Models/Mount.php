@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Validation\Rules\NotIn;
+
 /**
  * @property int $id
  * @property string $uuid
@@ -64,11 +66,45 @@ class Mount extends Model
     ];
 
     /**
+     * Implement language verification by overriding Eloquence's gather
+     * rules function.
+     */
+    public static function getRules()
+    {
+        $rules = parent::getRules();
+
+        $rules['source'][] = new NotIn(Mount::$invalidSourcePaths);
+        $rules['target'][] = new NotIn(Mount::$invalidTargetPaths);
+
+        return $rules;
+    }
+
+    /**
      * Disable timestamps on this model.
      *
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * Blacklisted source paths
+     *
+     * @var string[]
+     */
+    public static $invalidSourcePaths = [
+        '/etc/pterodactyl',
+        '/var/lib/pterodactyl/volumes',
+        '/srv/daemon-data',
+    ];
+
+    /**
+     * Blacklisted target paths
+     *
+     * @var string[]
+     */
+    public static $invalidTargetPaths = [
+        '/home/container',
+    ];
 
     /**
      * Returns all eggs that have this mount assigned.
