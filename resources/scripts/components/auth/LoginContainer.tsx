@@ -29,7 +29,13 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch(error => console.error(error));
+            ref.current!.execute().catch(error => {
+                console.error(error);
+
+                setSubmitting(false);
+                clearAndAddHttpError({ error });
+            });
+
             return;
         }
 
@@ -45,6 +51,9 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             })
             .catch(error => {
                 console.error(error);
+
+                setToken('');
+                if (ref.current) ref.current.reset();
 
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
@@ -63,23 +72,23 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
                     <Field
+                        light
                         type={'text'}
                         label={'Username or Email'}
-                        id={'username'}
                         name={'username'}
-                        light
+                        disabled={isSubmitting}
                     />
                     <div css={tw`mt-6`}>
                         <Field
+                            light
                             type={'password'}
                             label={'Password'}
-                            id={'password'}
                             name={'password'}
-                            light
+                            disabled={isSubmitting}
                         />
                     </div>
                     <div css={tw`mt-6`}>
-                        <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting}>
+                        <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
                             Login
                         </Button>
                     </div>

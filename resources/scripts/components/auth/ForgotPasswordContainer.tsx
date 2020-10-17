@@ -30,7 +30,13 @@ export default () => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch(error => console.error(error));
+            ref.current!.execute().catch(error => {
+                console.error(error);
+
+                setSubmitting(false);
+                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+            });
+
             return;
         }
 
@@ -43,7 +49,12 @@ export default () => {
                 console.error(error);
                 addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
             })
-            .then(() => setSubmitting(false));
+            .then(() => {
+                setToken('');
+                if (ref.current) ref.current.reset();
+
+                setSubmitting(false);
+            });
     };
 
     return (
