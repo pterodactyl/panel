@@ -3,7 +3,6 @@
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/pterodactyl/panel/tests?label=Tests&style=for-the-badge)
 ![Discord](https://img.shields.io/discord/122900397965705216?label=Discord&logo=Discord&logoColor=white&style=for-the-badge)
 ![GitHub Releases](https://img.shields.io/github/downloads/pterodactyl/panel/latest/total?style=for-the-badge)
-![GitHub Pre-Releases](https://img.shields.io/github/downloads-pre/pterodactyl/panel/v1.0.0-rc.7/total?style=for-the-badge)
 ![GitHub contributors](https://img.shields.io/github/contributors/pterodactyl/panel?style=for-the-badge)
 
 # Pterodactyl Panel
@@ -28,6 +27,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**Skynode**](https://www.skynode.pro/) | Skynode provides blazing fast game servers along with a top-notch user experience. Whatever our clients are looking for, we're able to provide it! |
 | [**XCORE-SERVER.de**](https://xcore-server.de/) | XCORE-SERVER.de offers High-End Servers for hosting and gaming since 2012. Fast, excellent and well-known for eSports Gaming. |
 | [**RoyaleHosting**](https://royalehosting.net/) |  Build your dreams and deploy them with RoyaleHosting’s reliable servers and network. Easy to use, provisioned in a couple of minutes. |
+| [**Spill Hosting**](https://spillhosting.no/) |  Spill Hosting is a Norwegian hosting service, which aims to cheap services on quality servers. Premium i9-9900K processors will run your game like a dream. |
 
 ## Documentation
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
