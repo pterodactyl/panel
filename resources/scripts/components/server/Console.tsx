@@ -11,9 +11,11 @@ import tw from 'twin.macro';
 import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
+// @ts-ignore
+import tailwindConfig from '../../../../tailwind.config.js';
 
 const theme = {
-    background: 'transparent',
+    background: tailwindConfig.theme.colors.black,
     cursor: 'transparent',
     black: '#000000',
     red: '#E54B4B',
