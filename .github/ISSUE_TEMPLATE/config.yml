@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: :shrug: Installation Help
+    url: https://discord.gg/pterodactyl
+    about: Please visit our Discord for help with your installation.
+  - name: :question: General Question
+    url: https://discord.gg/pterodactyl
+    about: Please visit our Discord for general questions about Pterodactyl.
