@@ -71,6 +71,26 @@ class Mount extends Model
     public $timestamps = false;
 
     /**
+     * Blacklisted source paths
+     *
+     * @var string[]
+     */
+    public static $invalidSourcePaths = [
+        '/etc/pterodactyl',
+        '/var/lib/pterodactyl/volumes',
+        '/srv/daemon-data',
+    ];
+
+    /**
+     * Blacklisted target paths
+     *
+     * @var string[]
+     */
+    public static $invalidTargetPaths = [
+        '/home/container',
+    ];
+
+    /**
      * Returns all eggs that have this mount assigned.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
