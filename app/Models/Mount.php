@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Validation\Rules\NotIn;
+
 /**
  * @property int $id
  * @property string $uuid
@@ -62,6 +64,20 @@ class Mount extends Model
         'read_only' => 'sometimes|boolean',
         'user_mountable' => 'sometimes|boolean',
     ];
+
+    /**
+     * Implement language verification by overriding Eloquence's gather
+     * rules function.
+     */
+    public static function getRules()
+    {
+        $rules = parent::getRules();
+
+        $rules['source'][] = new NotIn(Mount::$invalidSourcePaths);
+        $rules['target'][] = new NotIn(Mount::$invalidSourcePaths);
+
+        return $rules;
+    }
 
     /**
      * Disable timestamps on this model.

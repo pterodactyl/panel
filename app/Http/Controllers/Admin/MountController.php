@@ -105,20 +105,6 @@ class MountController extends Controller
         $model = (new Mount())->fill($request->validated());
         $model->forceFill(['uuid' => Uuid::uuid4()->toString()]);
 
-        foreach (Mount::$invalidSourcePaths as $path) {
-            if (Str::startsWith($model->source, $path)) {
-                $this->alert->danger('"' . $path . '" cannot be used as a source path.')->flash();
-                return redirect()->route('admin.mounts');
-            }
-        }
-
-        foreach (Mount::$invalidTargetPaths as $path) {
-            if (Str::startsWith($model->target, $path)) {
-                $this->alert->danger('"' . $path . '" cannot be used as a target path.')->flash();
-                return redirect()->route('admin.mounts');
-            }
-        }
-
         $model->saveOrFail();
         $mount = $model->fresh();
 
@@ -142,23 +128,7 @@ class MountController extends Controller
             return $this->delete($mount);
         }
 
-        $mount->forceFill($request->validated());
-
-        foreach (Mount::$invalidSourcePaths as $path) {
-            if (Str::startsWith($mount->source, $path)) {
-                $this->alert->danger('"' . $path . '" cannot be used as a source path.')->flash();
-                return redirect()->route('admin.mounts.view', $mount->id);
-            }
-        }
-
-        foreach (Mount::$invalidTargetPaths as $path) {
-            if (Str::startsWith($mount->target, $path)) {
-                $this->alert->danger('"' . $path . '" cannot be used as a target path.')->flash();
-                return redirect()->route('admin.mounts.view', $mount->id);
-            }
-        }
-
-        $mount->save();
+        $mount->forceFill($request->validated())->save();
 
         $this->alert->success('Mount was updated successfully.')->flash();
 
