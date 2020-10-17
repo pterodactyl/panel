@@ -55,6 +55,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'feature_limits' => 'required|array',
             'feature_limits.databases' => $rules['database_limit'],
             'feature_limits.allocations' => $rules['allocation_limit'],
+            'feature_limits.backups' => $rules['backup_limit'],
 
             // Placeholders for rules added in withValidator() function.
             'allocation.default' => '',
@@ -102,6 +103,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'start_on_completion' => array_get($data, 'start_on_completion', false),
             'database_limit' => array_get($data, 'feature_limits.databases'),
             'allocation_limit' => array_get($data, 'feature_limits.allocations'),
+            'backup_limit' => array_get($data, 'feature_limits.backups'),
         ];
     }
 

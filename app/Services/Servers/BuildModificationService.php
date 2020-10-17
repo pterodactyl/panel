@@ -101,9 +101,9 @@ class BuildModificationService
             'threads' => array_get($data, 'threads'),
             'disk' => array_get($data, 'disk'),
             'allocation_id' => array_get($data, 'allocation_id'),
-            'database_limit' => array_get($data, 'database_limit', 0),
-            'allocation_limit' => array_get($data, 'allocation_limit', 0),
-            'backup_limit' => array_get($data, 'backup_limit', 0),
+            'database_limit' => array_get($data, 'database_limit', 0) ?? null,
+            'allocation_limit' => array_get($data, 'allocation_limit', 0) ?? null,
+            'backup_limit' => array_get($data, 'backup_limit', 0) ?? null,
         ]);
 
         $updateData = $this->structureService->handle($server);
