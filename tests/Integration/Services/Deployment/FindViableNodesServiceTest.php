@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Tests\Integration\Services\Deployment;
 
+use Exception;
 use Pterodactyl\Models\Node;
 use InvalidArgumentException;
 use Pterodactyl\Models\Server;
@@ -37,6 +38,34 @@ class FindViableNodesServiceTest extends IntegrationTestCase
         $this->expectExceptionMessage('Memory usage must be an int, got NULL');
 
         $this->getService()->setDisk(10)->handle();
+    }
+
+    /**
+     * Ensure that errors are not thrown back when passing in expected values.
+     *
+     * @see https://github.com/pterodactyl/panel/issues/2529
+     */
+    public function testNoExceptionIsThrownIfStringifiedIntegersArePassedForLocations()
+    {
+        $this->getService()->setLocations([1, 2, 3]);
+        $this->getService()->setLocations(['1', '2', '3']);
+        $this->getService()->setLocations(['1', 2, 3]);
+
+        try {
+            $this->getService()->setLocations(['a']);
+            $this->assertTrue(false, 'This expectation should not be called.');
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
+            $this->assertSame('An array of location IDs should be provided when calling setLocations.', $exception->getMessage());
+        }
+
+        try {
+            $this->getService()->setLocations(['1.2', '1', 2]);
+            $this->assertTrue(false, 'This expectation should not be called.');
+        } catch (Exception $exception) {
+            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
+            $this->assertSame('An array of location IDs should be provided when calling setLocations.', $exception->getMessage());
+        }
     }
 
     public function testExpectedNodeIsReturnedForLocation()
