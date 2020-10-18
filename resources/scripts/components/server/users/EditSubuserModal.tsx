@@ -41,7 +41,7 @@ const PermissionLabel = styled.label`
         ${tw`border-neutral-500 bg-neutral-800`};
       }
   }
-  
+
   &:not(:first-of-type) {
       ${tw`mt-4 sm:mt-2`};
   }
@@ -90,11 +90,11 @@ const PermissionTitledBox = memo(({ isEditable, permission, permissions, classNa
                 <div css={tw`flex items-center`}>
                     <p css={tw`text-sm uppercase flex-1`}>{permission}</p>
                     {isEditable &&
-                    <Input
-                        type={'checkbox'}
-                        checked={permissions.every(p => values.permissions.includes(p))}
-                        onChange={onCheckboxClicked}
-                    />
+                        <Input
+                            type={'checkbox'}
+                            checked={permissions.every(p => values.permissions.includes(p))}
+                            onChange={onCheckboxClicked}
+                        />
                     }
                 </div>
             }
@@ -132,30 +132,39 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
 
     return (
         <Modal {...props} top={false} showSpinnerOverlay={isSubmitting}>
-            <h2 css={tw`text-2xl`} ref={ref}>
-                {subuser ?
-                    `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
-                    :
-                    'Create new subuser'
-                }
-            </h2>
-            <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`}/>
-            {(!user.rootAdmin && loggedInPermissions[0] !== '*') &&
-            <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
-                <p css={tw`text-sm text-neutral-300`}>
-                    Only permissions which your account is currently assigned may be selected when creating or
-                    modifying other users.
-                </p>
+            <div css={tw`flex justify-between`}>
+                <div>
+                    <h2 css={tw`text-2xl mr-4`} ref={ref}>
+                        {subuser ?
+                            `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
+                            :
+                            'Create new subuser '
+                        }
+                    </h2>
+                </div>
+                <div>
+                    <Button type={'submit'} css={tw`w-full sm:w-auto`}>
+                        {subuser ? 'Save' : 'Invite User'}
+                    </Button>
+                </div>
             </div>
+            <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
+            {(!user.rootAdmin && loggedInPermissions[0] !== '*') &&
+                <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
+                    <p css={tw`text-sm text-neutral-300`}>
+                        Only permissions which your account is currently assigned may be selected when creating or
+                        modifying other users.
+                    </p>
+                </div>
             }
             {!subuser &&
-            <div css={tw`mt-6`}>
-                <Field
-                    name={'email'}
-                    label={'User Email'}
-                    description={'Enter the email address of the user you wish to invite as a subuser for this server.'}
-                />
-            </div>
+                <div css={tw`mt-4`}>
+                    <Field
+                        name={'email'}
+                        label={'User Email'}
+                        description={'Enter the email address of the user you wish to invite as a subuser for this server.'}
+                    />
+                </div>
             }
             <div css={tw`my-6`}>
                 {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => {
@@ -190,9 +199,9 @@ const EditSubuserModal = forwardRef<HTMLHeadingElement, Props>(({ subuser, ...pr
                                     <div css={tw`flex-1`}>
                                         <Label as={'p'} css={tw`font-medium`}>{pkey}</Label>
                                         {permissions[key].keys[pkey].length > 0 &&
-                                        <p css={tw`text-xs text-neutral-400 mt-1`}>
-                                            {permissions[key].keys[pkey]}
-                                        </p>
+                                            <p css={tw`text-xs text-neutral-400 mt-1`}>
+                                                {permissions[key].keys[pkey]}
+                                            </p>
                                         }
                                     </div>
                                 </PermissionLabel>
@@ -258,7 +267,7 @@ export default ({ subuser, ...props }: Props) => {
             })}
         >
             <Form>
-                <EditSubuserModal ref={ref} subuser={subuser} {...props}/>
+                <EditSubuserModal ref={ref} subuser={subuser} {...props} />
             </Form>
         </Formik>
     );
