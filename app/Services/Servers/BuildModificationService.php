@@ -115,7 +115,7 @@ class BuildModificationService
             // one to reset the default allocation to.
             $freshlyAllocated = $query->pluck('id')->first();
 
-            $query->update(['server_id' => $server->id]);
+            $query->update(['server_id' => $server->id, 'notes' => null]);
         }
 
         if (! empty($data['remove_allocations'])) {

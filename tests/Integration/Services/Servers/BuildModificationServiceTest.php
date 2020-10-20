@@ -39,7 +39,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $server2 = $this->createServerModel();
 
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocations = factory(Allocation::class)->times(4)->create(['node_id' => $server->node_id]);
+        $allocations = factory(Allocation::class)->times(4)->create(['node_id' => $server->node_id, 'notes' => 'Random notes']);
 
         $initialAllocationId = $server->allocation_id;
         $allocations[0]->update(['server_id' => $server->id, 'notes' => 'Test notes']);
@@ -66,6 +66,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         // Only one allocation should exist for this server now.
         $this->assertCount(1, $response->allocations);
         $this->assertSame($allocations[1]->id, $response->allocation_id);
+        $this->assertNull($response->allocation->notes);
 
         // These two allocations should not have been touched.
         $this->assertDatabaseHas('allocations', ['id' => $allocations[2]->id, 'server_id' => $server2->id]);
