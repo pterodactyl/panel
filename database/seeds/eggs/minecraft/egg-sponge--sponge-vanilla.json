@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2017-11-03T22:20:03-05:00",
+    "exported_at": "2020-10-19T23:26:54+00:00",
     "name": "Sponge (SpongeVanilla)",
     "author": "support@pterodactyl.io",
     "description": "SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.",
@@ -17,9 +17,9 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\n# Sponge Installation Script\n#\n# Server Files: \/mnt\/server\n\napk update\napk add curl\n\ncd \/mnt\/server\n\ncurl -sSL \"https:\/\/repo.spongepowered.org\/maven\/org\/spongepowered\/spongevanilla\/${SPONGE_VERSION}\/spongevanilla-${SPONGE_VERSION}.jar\" -o ${SERVER_JARFILE}",
-            "container": "alpine:3.9",
-            "entrypoint": "ash"
+            "script": "#!\/bin\/bash\r\n# Sponge Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\napt update\r\napt install -y curl\r\n\r\ncd \/mnt\/server\r\n\r\ncurl -sSL \"https:\/\/repo.spongepowered.org\/maven\/org\/spongepowered\/spongevanilla\/${SPONGE_VERSION}\/spongevanilla-${SPONGE_VERSION}.jar\" -o ${SERVER_JARFILE}",
+            "container": "debian:buster-slim",
+            "entrypoint": "bash"
         }
     },
     "variables": [
@@ -28,8 +28,8 @@
             "description": "The version of SpongeVanilla to download and use.",
             "env_variable": "SPONGE_VERSION",
             "default_value": "1.11.2-6.1.0-BETA-21",
-            "user_viewable": 1,
-            "user_editable": 0,
+            "user_viewable": true,
+            "user_editable": false,
             "rules": "required|regex:\/^([a-zA-Z0-9.\\-_]+)$\/"
         },
         {
@@ -37,8 +37,8 @@
             "description": "The name of the Jarfile to use when running SpongeVanilla.",
             "env_variable": "SERVER_JARFILE",
             "default_value": "server.jar",
-            "user_viewable": 1,
-            "user_editable": 1,
+            "user_viewable": true,
+            "user_editable": true,
             "rules": "required|regex:\/^([\\w\\d._-]+)(\\.jar)$\/"
         }
     ]
