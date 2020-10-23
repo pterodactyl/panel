@@ -43,7 +43,7 @@ class ProcessScheduleService
     public function handle(Schedule $schedule, bool $now = false)
     {
         /** @var \Pterodactyl\Models\Task $task */
-        $task = $schedule->tasks()->where('sequence_id', 1)->first();
+        $task = $schedule->tasks()->orderBy('sequence_id', 'asc')->first();
 
         if (is_null($task)) {
             throw new DisplayException(

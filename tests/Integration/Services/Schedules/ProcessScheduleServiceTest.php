@@ -82,6 +82,37 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
     }
 
     /**
+     * Test that even if a schedule's task sequence gets messed up the first task based on
+     * the ascending order of tasks is used.
+     *
+     * @see https://github.com/pterodactyl/panel/issues/2534
+     */
+    public function testFirstSequenceTaskIsFound()
+    {
+        $this->swap(Dispatcher::class, $dispatcher = Mockery::mock(Dispatcher::class));
+
+        $server = $this->createServerModel();
+        /** @var \Pterodactyl\Models\Schedule $schedule */
+        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+
+        /** @var \Pterodactyl\Models\Task $task */
+        $task2 = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 4]);
+        $task = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 2]);
+        $task3 = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 3]);
+
+        $dispatcher->expects('dispatch')->with(Mockery::on(function (RunTaskJob $job) use ($task) {
+            return $task->id === $job->task->id;
+        }));
+
+        $this->getService()->handle($schedule);
+
+        $this->assertDatabaseHas('schedules', ['id' => $schedule->id, 'is_processing' => true]);
+        $this->assertDatabaseHas('tasks', ['id' => $task->id, 'is_queued' => true]);
+        $this->assertDatabaseHas('tasks', ['id' => $task2->id, 'is_queued' => false]);
+        $this->assertDatabaseHas('tasks', ['id' => $task3->id, 'is_queued' => false]);
+    }
+
+    /**
      * @return array
      */
     public function dispatchNowDataProvider(): array
