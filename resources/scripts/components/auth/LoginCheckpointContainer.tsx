@@ -91,7 +91,7 @@ const EnhancedForm = withFormik<Props, Values>({
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
-                clearAndAddHttpError({ error: error });
+                clearAndAddHttpError({ error });
             });
     },
 

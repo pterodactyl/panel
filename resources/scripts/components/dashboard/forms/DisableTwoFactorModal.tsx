@@ -27,7 +27,7 @@ export default ({ ...props }: RequiredModalProps) => {
             .catch(error => {
                 console.error(error);
 
-                clearAndAddHttpError({ error: error, key: 'account:two-factor' });
+                clearAndAddHttpError({ error, key: 'account:two-factor' });
                 setSubmitting(false);
             });
     };
