@@ -33,10 +33,10 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
         .filter(directory => !!directory)
         .map((directory, index, dirs) => {
             if (!withinFileEditor && index === dirs.length - 1) {
-                return { name: decodeURIComponent(directory) };
+                return { name: decodeURIComponent(encodeURIComponent(directory)) };
             }
 
-            return { name: decodeURIComponent(directory), path: `/${dirs.slice(0, index + 1).join('/')}` };
+            return { name: decodeURIComponent(encodeURIComponent(directory)), path: `/${dirs.slice(0, index + 1).join('/')}` };
         });
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +79,7 @@ export default ({ withinFileEditor, isNewFile }: Props) => {
             }
             {file &&
             <React.Fragment>
-                <span css={tw`px-1 text-neutral-300`}>{decodeURIComponent(file)}</span>
+                <span css={tw`px-1 text-neutral-300`}>{decodeURIComponent(encodeURIComponent(file))}</span>
             </React.Fragment>
             }
         </div>

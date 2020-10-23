@@ -16,6 +16,7 @@ import Select from '@/components/elements/Select';
 import modes from '@/modes';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
 
 const LazyCodemirrorEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/CodemirrorEditor'));
 
@@ -60,9 +61,7 @@ export default () => {
         setLoading(true);
         clearFlashes('files:view');
         fetchFileContent()
-            .then(content => {
-                return saveFileContents(uuid, name || hash.replace(/^#/, ''), content);
-            })
+            .then(content => saveFileContents(uuid, encodeURIComponent(name || hash.replace(/^#/, '')), content))
             .then(() => {
                 if (name) {
                     history.push(`/server/${id}/files/edit#/${name}`);
@@ -87,7 +86,9 @@ export default () => {
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'files:view'} css={tw`mb-4`}/>
-            <FileManagerBreadcrumbs withinFileEditor isNewFile={action !== 'edit'}/>
+            <ErrorBoundary>
+                <FileManagerBreadcrumbs withinFileEditor isNewFile={action !== 'edit'}/>
+            </ErrorBoundary>
             {hash.replace(/^#/, '').endsWith('.pteroignore') &&
             <div css={tw`mb-4 p-4 border-l-4 bg-neutral-900 rounded border-cyan-400`}>
                 <p css={tw`text-neutral-300 text-sm`}>
