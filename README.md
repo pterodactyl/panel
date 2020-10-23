@@ -15,7 +15,7 @@ Stop settling for less. Make game servers a first class citizen on your platform
 ![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
 
 ## Sponsors
-I would like to extend my sincere thanks to the following sponsors for helping find Pterodactyl's developement.
+I would like to extend my sincere thanks to the following sponsors for helping fund Pterodactyl's developement.
 [Interested in becoming a sponsor?](https://github.com/sponsors/DaneEveritt)
 
 | Company | About |
