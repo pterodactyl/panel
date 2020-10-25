@@ -144,6 +144,11 @@ class AppSettingsCommand extends Command
             $this->variables['APP_ENVIRONMENT_ONLY'] = $this->confirm(trans('command/messages.environment.app.settings'), true) ? 'false' : 'true';
         }
 
+        // Make sure session cookies are set as "secure" when using HTTPS
+        if (strpos($this->variables['APP_URL'], 'https://') === 0) {
+            $this->variables['SESSION_SECURE_COOKIE'] = 'true';
+        }
+
         $this->checkForRedis();
         $this->writeToEnvironment($this->variables);
 
