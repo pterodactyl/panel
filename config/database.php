@@ -1,5 +1,7 @@
 <?php
 
+use Pterodactyl\Helpers\Time;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -43,6 +45,7 @@ return [
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => env('DB_PREFIX', ''),
             'strict' => env('DB_STRICT_MODE', false),
+            'timezone' => env('DB_TIMEZONE', Time::getMySQLTimezoneOffset(env('APP_TIMEZONE')))
         ],
 
         /*
@@ -65,6 +68,7 @@ return [
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'strict' => false,
+            'timezone' => env('DB_TIMEZONE', Time::getMySQLTimezoneOffset(env('APP_TIMEZONE')))
         ],
     ],
 
