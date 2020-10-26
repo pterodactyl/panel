@@ -13,7 +13,6 @@ import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
 
 interface Values {
     directoryName: string;
@@ -94,7 +93,7 @@ export default ({ className }: WithClassname) => {
                                 &nbsp;/home/container/
                                 <span css={tw`text-cyan-200`}>
                                     {decodeURIComponent(encodeURIComponent(
-                                        join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')
+                                        join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, ''),
                                     ))}
                                 </span>
                             </p>
