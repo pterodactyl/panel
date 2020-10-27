@@ -44,7 +44,8 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertStatus(Response::HTTP_ACCEPTED);
 
         Bus::assertDispatched(function (RunTaskJob $job) use ($task) {
-            $this->assertSame($task->time_offset, $job->delay);
+            // A task executed right now should not have any job delay associated with it.
+            $this->assertNull($job->delay);
             $this->assertSame($task->id, $job->task->id);
 
             return true;

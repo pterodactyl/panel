@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Schedules;
 
+use Exception;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Pterodactyl\Jobs\Schedule\RunTaskJob;
@@ -60,8 +61,22 @@ class ProcessScheduleService
             $task->update(['is_queued' => true]);
         });
 
-        $this->dispatcher->{$now ? 'dispatchNow' : 'dispatch'}(
-            (new RunTaskJob($task))->delay($task->time_offset)
-        );
+        $job = new RunTaskJob($task);
+
+        if (! $now) {
+            $this->dispatcher->dispatch($job->delay($task->time_offset));
+        } else {
+            // When using dispatchNow the RunTaskJob::failed() function is not called automatically
+            // so we need to manually trigger it and then continue with the exception throw.
+            //
+            // @see https://github.com/pterodactyl/panel/issues/2550
+            try {
+                $this->dispatcher->dispatchNow($job);
+            } catch (Exception $exception) {
+                $job->failed($exception);
+
+                throw $exception;
+            }
+        }
     }
 }
