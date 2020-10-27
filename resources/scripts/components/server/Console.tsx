@@ -97,7 +97,7 @@ export default () => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory(prevHistory => [ command, ...prevHistory! ]);
+            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
