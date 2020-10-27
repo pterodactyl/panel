@@ -2,8 +2,11 @@
 
 namespace Pterodactyl\Console\Commands\Schedule;
 
+use Throwable;
+use Exception;
 use Illuminate\Console\Command;
 use Pterodactyl\Models\Schedule;
+use Illuminate\Support\Facades\Log;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
 
 class ProcessRunnableCommand extends Command
@@ -20,12 +23,8 @@ class ProcessRunnableCommand extends Command
 
     /**
      * Handle command execution.
-     *
-     * @param \Pterodactyl\Services\Schedules\ProcessScheduleService $service
-     *
-     * @throws \Throwable
      */
-    public function handle(ProcessScheduleService $service)
+    public function handle()
     {
         $schedules = Schedule::query()->with('tasks')
             ->where('is_active', true)
@@ -41,22 +40,40 @@ class ProcessRunnableCommand extends Command
 
         $bar = $this->output->createProgressBar(count($schedules));
         foreach ($schedules as $schedule) {
-            if ($schedule->tasks->isNotEmpty()) {
-                $service->handle($schedule);
-
-                if ($this->input->isInteractive()) {
-                    $bar->clear();
-                    $this->line(trans('command/messages.schedule.output_line', [
-                        'schedule' => $schedule->name,
-                        'hash' => $schedule->hashid,
-                    ]));
-                }
-            }
-
+            $bar->clear();
+            $this->processSchedule($schedule);
             $bar->advance();
             $bar->display();
         }
 
         $this->line('');
+    }
+
+    /**
+     * Processes a given schedule and logs and errors encountered the console output. This should
+     * never throw an exception out, otherwise you'll end up killing the entire run group causing
+     * any other schedules to not process correctly.
+     *
+     * @param \Pterodactyl\Models\Schedule $schedule
+     * @see https://github.com/pterodactyl/panel/issues/2609
+     */
+    protected function processSchedule(Schedule $schedule)
+    {
+        if ($schedule->tasks->isEmpty()) {
+            return;
+        }
+
+        try {
+            $this->getLaravel()->make(ProcessScheduleService::class)->handle($schedule);
+
+            $this->line(trans('command/messages.schedule.output_line', [
+                'schedule' => $schedule->name,
+                'hash' => $schedule->hashid,
+            ]));
+        } catch (Throwable | Exception $exception) {
+            Log::error($exception, ['schedule_id' => $schedule->id]);
+
+            $this->error("An error was encountered while processing Schedule #{$schedule->id}: " . $exception->getMessage());
+        }
     }
 }
