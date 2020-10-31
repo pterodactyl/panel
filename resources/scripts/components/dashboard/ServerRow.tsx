@@ -113,9 +113,9 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 {(!stats || isSuspended) ?
                     isSuspended ?
                         <div css={tw`flex-1 text-center`}>
-                                <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
-                                    {server.isSuspended ? 'Suspended' : 'Connection Error'}
-                                </span>
+                            <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
+                                {server.isSuspended ? 'Suspended' : 'Connection Error'}
+                            </span>
                         </div>
                         :
                         server.isInstalling ?
