@@ -92,9 +92,9 @@ export default ({ className }: WithClassname) => {
                                 <span css={tw`text-neutral-200`}>This directory will be created as</span>
                                 &nbsp;/home/container/
                                 <span css={tw`text-cyan-200`}>
-                                    {decodeURIComponent(
+                                    {decodeURIComponent(encodeURIComponent(
                                         join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, ''),
-                                    )}
+                                    ))}
                                 </span>
                             </p>
                             <div css={tw`flex justify-end`}>

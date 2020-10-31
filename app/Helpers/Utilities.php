@@ -52,7 +52,12 @@ class Utilities
         )->getNextRunDate());
     }
 
-    public static function checked($name, $default)
+    /**
+     * @param string $name
+     * @param mixed $default
+     * @return string
+     */
+    public static function checked(string $name, $default)
     {
         $errors = session('errors');
 

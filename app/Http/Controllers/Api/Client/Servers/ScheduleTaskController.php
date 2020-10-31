@@ -56,7 +56,8 @@ class ScheduleTaskController extends ClientApiController
             );
         }
 
-        $lastTask = $schedule->tasks->last();
+        /** @var \Pterodactyl\Models\Task|null $lastTask */
+        $lastTask = $schedule->tasks()->orderByDesc('sequence_id')->first();
 
         /** @var \Pterodactyl\Models\Task $task */
         $task = $this->repository->create([
@@ -102,13 +103,16 @@ class ScheduleTaskController extends ClientApiController
     }
 
     /**
-     * Determines if a user can delete the task for a given server.
+     * Delete a given task for a schedule. If there are subsequent tasks stored in the database
+     * for this schedule their sequence IDs are decremented properly.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\ClientApiRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @param \Pterodactyl\Models\Schedule $schedule
      * @param \Pterodactyl\Models\Task $task
      * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Exception
      */
     public function delete(ClientApiRequest $request, Server $server, Schedule $schedule, Task $task)
     {
@@ -120,8 +124,12 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException('You do not have permission to perform this action.');
         }
 
-        $this->repository->delete($task->id);
+        $schedule->tasks()->where('sequence_id', '>', $task->sequence_id)->update([
+            'sequence_id' => $schedule->tasks()->getConnection()->raw('(sequence_id - 1)'),
+        ]);
 
-        return JsonResponse::create(null, Response::HTTP_NO_CONTENT);
+        $task->delete();
+
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

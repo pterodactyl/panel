@@ -24,12 +24,4 @@ interface ScheduleRepositoryInterface extends RepositoryInterface
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getScheduleWithTasks(int $schedule): Schedule;
-
-    /**
-     * Return all of the schedules that should be processed.
-     *
-     * @param string $timestamp
-     * @return \Illuminate\Support\Collection
-     */
-    public function getSchedulesToProcess(string $timestamp): Collection;
 }

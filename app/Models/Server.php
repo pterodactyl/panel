@@ -84,6 +84,13 @@ class Server extends Model
     ];
 
     /**
+     * The default relationships to load for all server models.
+     *
+     * @var string[]
+     */
+    protected $with = ['allocation'];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array

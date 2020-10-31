@@ -69,7 +69,7 @@ class DaemonAuthenticate
         // Ensure that all of the correct parts are provided in the header.
         if (count($parts) !== 2 || empty($parts[0]) || empty($parts[1])) {
             throw new BadRequestHttpException(
-                'The Authorization headed provided was not in a valid format.'
+                'The Authorization header provided was not in a valid format.'
             );
         }
 

@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2019-12-25T19:55:01-05:00",
+    "exported_at": "2020-10-23T23:04:17+00:00",
     "name": "Vanilla Minecraft",
     "author": "support@pterodactyl.io",
     "description": "Minecraft is a game about placing blocks and going on adventures. Explore randomly generated worlds and build amazing things from the simplest of homes to the grandest of castles. Play in Creative Mode with unlimited resources or mine deep in Survival Mode, crafting weapons and armor to fend off dangerous mobs. Do all this alone or with friends.",
@@ -17,9 +17,9 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\r\n# Vanilla MC Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napk add curl --no-cache --update jq\r\n\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\n\r\nLATEST_VERSION=`curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq -r '.latest.release'`\r\n\r\necho -e \"latest version is $LATEST_VERSION\"\r\n\r\nif [ -z \"$VANILLA_VERSION\" ] || [ \"$VANILLA_VERSION\" == \"latest\" ]; then\r\n  MANIFEST_URL=$(curl -sSL https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq --arg VERSION $LATEST_VERSION -r '.versions | .[] | select(.id== $VERSION )|.url')\r\nelse\r\n  MANIFEST_URL=$(curl -sSL https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq --arg VERSION $VANILLA_VERSION -r '.versions | .[] | select(.id== $VERSION )|.url')\r\nfi\r\n\r\nDOWNLOAD_URL=$(curl ${MANIFEST_URL} | jq .downloads.server | jq -r '. | .url')\r\n\r\necho -e \"running: curl -o ${SERVER_JARFILE} $DOWNLOAD_URL\"\r\ncurl -o ${SERVER_JARFILE} $DOWNLOAD_URL\r\n\r\necho -e \"Install Complete\"",
-            "container": "alpine:3.10",
-            "entrypoint": "ash"
+            "script": "#!\/bin\/bash\r\n# Vanilla MC Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napt update\r\napt install -y jq curl\r\n\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\n\r\nLATEST_VERSION=`curl https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq -r '.latest.release'`\r\n\r\necho -e \"latest version is $LATEST_VERSION\"\r\n\r\nif [ -z \"$VANILLA_VERSION\" ] || [ \"$VANILLA_VERSION\" == \"latest\" ]; then\r\n  MANIFEST_URL=$(curl -sSL https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq --arg VERSION $LATEST_VERSION -r '.versions | .[] | select(.id== $VERSION )|.url')\r\nelse\r\n  MANIFEST_URL=$(curl -sSL https:\/\/launchermeta.mojang.com\/mc\/game\/version_manifest.json | jq --arg VERSION $VANILLA_VERSION -r '.versions | .[] | select(.id== $VERSION )|.url')\r\nfi\r\n\r\nDOWNLOAD_URL=$(curl ${MANIFEST_URL} | jq .downloads.server | jq -r '. | .url')\r\n\r\necho -e \"running: curl -o ${SERVER_JARFILE} $DOWNLOAD_URL\"\r\ncurl -o ${SERVER_JARFILE} $DOWNLOAD_URL\r\n\r\necho -e \"Install Complete\"",
+            "container": "debian:buster-slim",
+            "entrypoint": "bash"
         }
     },
     "variables": [
@@ -28,8 +28,8 @@
             "description": "The name of the server jarfile to run the server with.",
             "env_variable": "SERVER_JARFILE",
             "default_value": "server.jar",
-            "user_viewable": 1,
-            "user_editable": 1,
+            "user_viewable": true,
+            "user_editable": true,
             "rules": "required|regex:\/^([\\w\\d._-]+)(\\.jar)$\/"
         },
         {
@@ -37,8 +37,8 @@
             "description": "The version of Minecraft Vanilla to install. Use \"latest\" to install the latest version.",
             "env_variable": "VANILLA_VERSION",
             "default_value": "latest",
-            "user_viewable": 1,
-            "user_editable": 1,
+            "user_viewable": true,
+            "user_editable": true,
             "rules": "required|string|between:3,15"
         }
     ]
