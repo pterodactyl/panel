@@ -10,15 +10,16 @@ import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import AllocationRow from '@/components/server/network/AllocationRow';
 import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import Button from '@/components/elements/Button';
-import newServerAllocation from '@/api/server/network/newServerAllocation';
+import createServerAllocation from '@/api/server/network/createServerAllocation';
 import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
+import Can from '@/components/elements/Can';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
 const NetworkContainer = () => {
+    const [ loading, setLoading ] = useState(false);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const allocationLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.allocations);
     const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
-    const [ addingAllocation, setAddingAllocation ] = useState(false);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), {
@@ -32,7 +33,7 @@ const NetworkContainer = () => {
         }
     }, [ error ]);
 
-    const setPrimaryAllocation = useCallback((id: number) => {
+    const setPrimaryAllocation = (id: number) => {
         clearFlashes('server:network');
 
         const initial = data;
@@ -43,24 +44,16 @@ const NetworkContainer = () => {
                 clearAndAddHttpError({ key: 'server:network', error });
                 mutate(initial, false);
             });
-    }, []);
+    };
 
-    const getNewAllocation = () => {
+    const onCreateAllocation = () => {
         clearFlashes('server:network');
-        setAddingAllocation(true);
 
-        const initial = data;
-
-        newServerAllocation(uuid)
-            .then(allocation => {
-                mutate(data?.concat(allocation), false);
-                setAddingAllocation(false);
-            })
-            .catch(error => {
-                clearAndAddHttpError({ key: 'server:network', error });
-                mutate(initial, false);
-                setAddingAllocation(false);
-            });
+        setLoading(true);
+        createServerAllocation(uuid)
+            .then(allocation => mutate(data?.concat(allocation), false))
+            .catch(error => clearAndAddHttpError({ key: 'server:network', error }))
+            .then(() => setLoading(false));
     };
 
     const onNotesAdded = useCallback((id: number, notes: string) => {
@@ -72,37 +65,32 @@ const NetworkContainer = () => {
             {!data ?
                 <Spinner size={'large'} centered/>
                 :
-                data.map(allocation => (
-                    <AllocationRow
-                        key={`${allocation.ip}:${allocation.port}`}
-                        allocation={allocation}
-                        onSetPrimary={setPrimaryAllocation}
-                        onNotesChanged={onNotesAdded}
-                    />
-                ))
-            }
-            {allocationLimit > data!.length ?
-                <GreyRowBox
-                    $hoverable={false}
-                    css={tw`mt-2 overflow-x-auto flex items-center justify-center`}
-                >
-                    {addingAllocation ?
-                        <Spinner size={'base'} centered/>
-                        :
-                        <Button
-                            color={'primary'}
-                            isSecondary
-                            onClick={() => getNewAllocation()}
-                            css={tw`my-2`}
-                        >
-                            Add New Allocation
-                        </Button>
+                <>
+                    {
+                        data.map(allocation => (
+                            <AllocationRow
+                                key={`${allocation.ip}:${allocation.port}`}
+                                allocation={allocation}
+                                onSetPrimary={setPrimaryAllocation}
+                                onNotesChanged={onNotesAdded}
+                            />
+                        ))
                     }
-                </GreyRowBox>
-                :
-                <p css={tw`mt-2 text-center text-sm text-neutral-400`}>
-                    You have reached the max number of allocations allowed for your server.
-                </p>
+                    <Can action={'allocation.create'}>
+                        <SpinnerOverlay visible={loading}/>
+                        <div css={tw`mt-6 sm:flex items-center justify-end`}>
+                            <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
+                                You are currently using {data.length} of {allocationLimit} allowed allocations for this
+                                server.
+                            </p>
+                            {allocationLimit > data.length &&
+                            <Button css={tw`w-full sm:w-auto`} color={'primary'} onClick={onCreateAllocation}>
+                                Create Allocation
+                            </Button>
+                            }
+                        </div>
+                    </Can>
+                </>
             }
         </ServerContentBlock>
     );
