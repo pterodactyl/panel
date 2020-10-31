@@ -41,7 +41,6 @@ const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | unde
 
 export default ({ server, className }: { server: Server; className?: string }) => {
     const interval = useRef<number>(null);
-    const [ statsError, setStatsError ] = useState(false);
     const [ isSuspended, setIsSuspended ] = useState(server.isSuspended);
     const [ stats, setStats ] = useState<ServerStats | null>(null);
 
@@ -49,10 +48,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
         setStatsError(false);
         return getServerResourceUsage(server.uuid)
             .then(data => setStats(data))
-            .catch(error => {
-                setStatsError(true);
-                console.error(error);
-            });
+            .catch(error => console.error(error));
     };
 
     useEffect(() => {
