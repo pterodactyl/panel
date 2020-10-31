@@ -270,22 +270,4 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             ->where('node_id', '=', $node)
             ->paginate($limit);
     }
-
-    /**
-     * Returns every server that exists for a given node.
-     *
-     * This is different from {@see loadAllServersForNode} because
-     * it does not paginate the response.
-     *
-     * @param int $node
-     *
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function loadEveryServerForNode(int $node)
-    {
-        return $this->getBuilder()
-            ->with('nest')
-            ->where('node_id', '=', $node)
-            ->get();
-    }
 }

@@ -3,11 +3,13 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class ServerDetailsController extends Controller
@@ -28,11 +30,6 @@ class ServerDetailsController extends Controller
     private $configurationStructureService;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $nodeRepository;
-
-    /**
      * ServerConfigurationController constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
@@ -49,7 +46,6 @@ class ServerDetailsController extends Controller
         $this->eggConfigurationService = $eggConfigurationService;
         $this->repository = $repository;
         $this->configurationStructureService = $configurationStructureService;
-        $this->nodeRepository = $nodeRepository;
     }
 
     /**
@@ -66,7 +62,7 @@ class ServerDetailsController extends Controller
     {
         $server = $this->repository->getByUuid($uuid);
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'settings' => $this->configurationStructureService->handle($server),
             'process_configuration' => $this->eggConfigurationService->handle($server),
         ]);
@@ -76,25 +72,19 @@ class ServerDetailsController extends Controller
      * Lists all servers with their configurations that are assigned to the requesting node.
      *
      * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @return \Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection
      */
     public function list(Request $request)
     {
+        /** @var \Pterodactyl\Models\Node $node */
         $node = $request->attributes->get('node');
-        $servers = $this->repository->loadEveryServerForNode($node->id);
 
-        $configurations = [];
+        // Avoid run-away N+1 SQL queries by pre-loading the relationships that are used
+        // within each of the services called below.
+        $servers = Server::query()->with('allocations', 'egg', 'mounts', 'variables')
+            ->where('node_id', $node->id)
+            ->paginate($request->input('per_page', 50));
 
-        foreach ($servers as $server) {
-            $configurations[$server->uuid] = [
-                'settings' => $this->configurationStructureService->handle($server),
-                'process_configuration' => $this->eggConfigurationService->handle($server),
-            ];
-        }
-
-        return JsonResponse::create($configurations);
+        return new ServerConfigurationCollection($servers);
     }
 }
