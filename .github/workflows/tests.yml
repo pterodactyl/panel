@@ -72,11 +72,9 @@ jobs:
           severity: error
           username: Github Actions
           color: "#D01124"
-          description: Tests are currently failing.
-          details: |
-
-            Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          footer: ${GITHUB_SHA::8}
+          description: "Tests are currently failing on PHP ${{ matrix.php }}."
+          details: "https://github.com/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+          footer: "PHP ${{ matrix.php}} (${{ env.GITHUB_SHA }})"
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: notify discord
         if: ${{ success() }}
@@ -85,9 +83,7 @@ jobs:
           severity: info
           username: Github Actions
           color: "#0F8513"
-          description: Tests passed.
-          details: |
-
-            Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
-          footer: ${GITHUB_SHA::8}
+          description: Tests passing
+          details: "https://github.com/${{ env.GITHUB_REPOSITORY }}/actions/runs/${{ env.GITHUB_RUN_ID }}"
+          footer: "PHP ${{ matrix.php}} (${{ env.GITHUB_SHA }})"
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
