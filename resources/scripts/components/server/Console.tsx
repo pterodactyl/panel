@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ITerminalOptions, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
@@ -11,6 +11,7 @@ import tw, { theme as th } from 'twin.macro';
 import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
+import { usePersistedState } from '@/plugins/usePersistedState';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -63,6 +64,9 @@ export default () => {
     const searchBar = new SearchBarAddon({ searchAddon });
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
+    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
+    const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
+    const [ historyIndex, setHistoryIndex ] = useState(-1);
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -77,12 +81,28 @@ export default () => {
     );
 
     const handleCommandKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key !== 'Enter' || (e.key === 'Enter' && e.currentTarget.value.length < 1)) {
-            return;
+        if (e.key === 'ArrowUp') {
+            const newIndex = Math.min(historyIndex + 1, history!.length - 1);
+
+            setHistoryIndex(newIndex);
+            e.currentTarget.value = history![newIndex] || '';
         }
 
-        instance && instance.send('send command', e.currentTarget.value);
-        e.currentTarget.value = '';
+        if (e.key === 'ArrowDown') {
+            const newIndex = Math.max(historyIndex - 1, -1);
+
+            setHistoryIndex(newIndex);
+            e.currentTarget.value = history![newIndex] || '';
+        }
+
+        const command = e.currentTarget.value;
+        if (e.key === 'Enter' && command.length > 0) {
+            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
+            setHistoryIndex(-1);
+
+            instance && instance.send('send command', command);
+            e.currentTarget.value = '';
+        }
     };
 
     useEffect(() => {
