@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
@@ -11,13 +10,12 @@ use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Transformers\Api\Client\AllocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Services\Allocations\FindAssignableAllocationService;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\GetNetworkRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\DeleteAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\UpdateAllocationRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationRequest;
-use Pterodactyl\Services\Allocations\AssignmentService;
-use Illuminate\Support\Facades\Log;
 
 class NetworkAllocationController extends ClientApiController
 {
@@ -32,37 +30,27 @@ class NetworkAllocationController extends ClientApiController
     private $serverRepository;
 
     /**
-     * @var \Pterodactyl\Services\Allocations\AssignmentService
+     * @var \Pterodactyl\Services\Allocations\FindAssignableAllocationService
      */
-    protected $assignmentService;
+    private $assignableAllocationService;
 
     /**
      * NetworkController constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\AllocationRepository $repository
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $serverRepository
-     * @param \Pterodactyl\Services\Allocations\AssignmentService $assignmentService
-     * @param \Illuminate\Contracts\Config\Repository $config
+     * @param \Pterodactyl\Services\Allocations\FindAssignableAllocationService $assignableAllocationService
      */
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $config;
-
     public function __construct(
         AllocationRepository $repository,
         ServerRepository $serverRepository,
-        AssignmentService $assignmentService,
-        Repository $config
-
+        FindAssignableAllocationService $assignableAllocationService
     ) {
         parent::__construct();
 
         $this->repository = $repository;
         $this->serverRepository = $serverRepository;
-        $this->assignmentService = $assignmentService;
-        $this->config = $config;
+        $this->assignableAllocationService = $assignableAllocationService;
     }
 
     /**
@@ -125,52 +113,16 @@ class NetworkAllocationController extends ClientApiController
     /**
      * Set the notes for the allocation for a server.
      *s
+     *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest $request
      * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Allocation $allocation
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function addNew(NewAllocationRequest $request, Server $server): array
+    public function store(NewAllocationRequest $request, Server $server): array
     {
-        $topRange =  config('pterodactyl.allocation.stop',0);
-        $bottomRange = config('pterodactyl.allocation.start',0);
-
-        if($server->allocation_limit <= $server->allocations->count()) {
-            throw new DisplayException(
-                'You have created the maximum number of allocations!'
-            );
-        }
-
-        $allocation = $server->node->allocations()->where('ip',$server->allocation->ip)->whereNull('server_id')->first();
-
-        if(!$allocation) {
-            if($server->node->allocations()->where('ip',$server->allocation->ip)->where([['port', '>=', $bottomRange ], ['port', '<=', $topRange],])->count() >= $topRange-$bottomRange+1 || !config('allocation.enabled', false)) {
-                throw new DisplayException(
-                    'No more allocations available!'
-                );
-            }
-
-            $allPorts = $server->node->allocations()->select(['port'])->where('ip',$server->allocation->ip)->get()->pluck('port')->toArray();
-
-            do {
-                $port = rand($bottomRange, $topRange);
-            } while(array_search($port, $allPorts));
-
-            $this->assignmentService->handle($server->node,[
-                'allocation_ip'=>$server->allocation->ip,
-                'allocation_ports'=>[$port],
-                'server_id'=>$server->id
-            ]);
-
-            $allocation = $server->node->allocations()->where('ip',$server->allocation->ip)->where('port', $port)->first();
-
-        }
-
-        $allocation->update(['server_id' => $server->id]);
+        $allocation = $this->assignableAllocationService->handle($server);
 
         return $this->fractal->item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
