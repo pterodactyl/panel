@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Mount;
@@ -101,7 +102,6 @@ class MountController extends Controller
      */
     public function create(MountFormRequest $request)
     {
-        /** @var \Pterodactyl\Models\Mount $mount */
         $model = (new Mount())->fill($request->validated());
         $model->forceFill(['uuid' => Uuid::uuid4()->toString()]);
 

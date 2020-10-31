@@ -139,16 +139,4 @@ interface ServerRepositoryInterface extends RepositoryInterface
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator;
-
-    /**
-     * Returns every server that exists for a given node.
-     *
-     * This is different from {@see loadAllServersForNode} because
-     * it does not paginate the response.
-     *
-     * @param int $node
-     *
-     * @return \Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
-     */
-    public function loadEveryServerForNode(int $node);
 }

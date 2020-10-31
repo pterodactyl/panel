@@ -84,6 +84,13 @@ class Server extends Model
     ];
 
     /**
+     * The default relationships to load for all server models.
+     *
+     * @var string[]
+     */
+    protected $with = ['allocation'];
+
+    /**
      * The attributes that should be mutated to dates.
      *
      * @var array
@@ -122,7 +129,7 @@ class Server extends Model
         'installed' => 'in:0,1,2',
         'database_limit' => 'present|nullable|integer|min:0',
         'allocation_limit' => 'sometimes|nullable|integer|min:0',
-        'backup_limit' => 'present|integer|min:0',
+        'backup_limit' => 'present|nullable|integer|min:0',
     ];
 
     /**

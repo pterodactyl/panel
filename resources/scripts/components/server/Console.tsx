@@ -1,19 +1,22 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { ITerminalOptions, Terminal } from 'xterm';
-import * as TerminalFit from 'xterm/lib/addons/fit/fit';
+import { FitAddon } from 'xterm-addon-fit';
+import { SearchAddon } from 'xterm-addon-search';
+import { SearchBarAddon } from 'xterm-addon-search-bar';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
-import tw from 'twin.macro';
-import 'xterm/dist/xterm.css';
+import tw, { theme as th } from 'twin.macro';
+import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
+import { usePersistedState } from '@/plugins/usePersistedState';
 
 const theme = {
-    background: 'transparent',
+    background: th`colors.black`.toString(),
     cursor: 'transparent',
-    black: '#000000',
+    black: th`colors.black`.toString(),
     red: '#E54B4B',
     green: '#9ECE58',
     yellow: '#FAED70',
@@ -29,6 +32,7 @@ const theme = {
     brightMagenta: '#C792EA',
     brightCyan: '#89DDFF',
     brightWhite: '#ffffff',
+    selection: '#FAF089',
 };
 
 const terminalProps: ITerminalOptions = {
@@ -55,8 +59,14 @@ export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
+    const fitAddon = new FitAddon();
+    const searchAddon = new SearchAddon();
+    const searchBar = new SearchBarAddon({ searchAddon });
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
+    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
+    const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
+    const [ historyIndex, setHistoryIndex ] = useState(-1);
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -71,37 +81,61 @@ export default () => {
     );
 
     const handleCommandKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key !== 'Enter' || (e.key === 'Enter' && e.currentTarget.value.length < 1)) {
-            return;
+        if (e.key === 'ArrowUp') {
+            const newIndex = Math.min(historyIndex + 1, history!.length - 1);
+
+            setHistoryIndex(newIndex);
+            e.currentTarget.value = history![newIndex] || '';
         }
 
-        instance && instance.send('send command', e.currentTarget.value);
-        e.currentTarget.value = '';
+        if (e.key === 'ArrowDown') {
+            const newIndex = Math.max(historyIndex - 1, -1);
+
+            setHistoryIndex(newIndex);
+            e.currentTarget.value = history![newIndex] || '';
+        }
+
+        const command = e.currentTarget.value;
+        if (e.key === 'Enter' && command.length > 0) {
+            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
+            setHistoryIndex(-1);
+
+            instance && instance.send('send command', command);
+            e.currentTarget.value = '';
+        }
     };
 
     useEffect(() => {
         if (connected && ref.current && !terminal.element) {
             terminal.open(ref.current);
+            terminal.loadAddon(fitAddon);
+            terminal.loadAddon(searchAddon);
+            terminal.loadAddon(searchBar);
+            fitAddon.fit();
 
-            // @see https://github.com/xtermjs/xterm.js/issues/2265
-            // @see https://github.com/xtermjs/xterm.js/issues/2230
-            TerminalFit.fit(terminal);
-
-            // Add support for copying terminal text.
+            // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-                // Ctrl + C
-                if (e.ctrlKey && (e.key === 'c')) {
+            // Ctrl + C ( Copy )
+                if (e.ctrlKey && e.key === 'c') {
                     document.execCommand('copy');
                     return false;
                 }
 
+                if (e.ctrlKey && e.key === 'f') {
+                    searchBar.show();
+                    return false;
+                }
+
+                if (e.key === 'Escape') {
+                    searchBar.hidden();
+                }
                 return true;
             });
         }
     }, [ terminal, connected ]);
 
     const fit = debounce(() => {
-        TerminalFit.fit(terminal);
+        fitAddon.fit();
     }, 100);
 
     useEventListener('resize', () => fit());

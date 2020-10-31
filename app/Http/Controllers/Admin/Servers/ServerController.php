@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Contracts\View\Factory;
+use Spatie\QueryBuilder\AllowedFilter;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Models\Filters\AdminServerFilter;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 
 class ServerController extends Controller
@@ -45,8 +47,10 @@ class ServerController extends Controller
     public function index(Request $request)
     {
         $servers = QueryBuilder::for(Server::query()->with('node', 'user', 'allocation'))
-            ->allowedFilters(['uuid', 'name', 'image'])
-            ->allowedSorts(['id', 'uuid'])
+            ->allowedFilters([
+                AllowedFilter::exact('owner_id'),
+                AllowedFilter::custom('*', new AdminServerFilter),
+            ])
             ->paginate(config()->get('pterodactyl.paginate.admin.servers'));
 
         return $this->view->make('admin.servers.index', ['servers' => $servers]);

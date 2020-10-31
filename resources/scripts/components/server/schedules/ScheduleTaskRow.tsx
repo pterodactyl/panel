@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCode, faFileArchive, faPencilAlt, faToggleOn, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faCode, faFileArchive, faPencilAlt, faToggleOn, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -11,6 +11,7 @@ import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import Icon from '@/components/elements/Icon';
 
 interface Props {
     schedule: Schedule;
@@ -56,7 +57,7 @@ export default ({ schedule, task }: Props) => {
     const [ title, icon ] = getActionDetails(task.action);
 
     return (
-        <div css={tw`flex flex-wrap items-center bg-neutral-700 border border-neutral-600 mb-2 px-6 py-4 rounded`}>
+        <div css={tw`sm:flex items-center p-3 sm:p-6 border-b border-neutral-800`}>
             <SpinnerOverlay visible={isLoading} fixed size={'large'}/>
             {isEditing && <TaskDetailsModal
                 schedule={schedule}
@@ -73,8 +74,8 @@ export default ({ schedule, task }: Props) => {
                 Are you sure you want to delete this task? This action cannot be undone.
             </ConfirmationModal>
             <FontAwesomeIcon icon={icon} css={tw`text-lg text-white hidden md:block`}/>
-            <div css={tw`flex-none sm:flex-1 mb-4 sm:mb-0 w-full md:w-auto overflow-x-auto`}>
-                <p css={tw`md:ml-6 text-neutral-300 uppercase text-xs`}>
+            <div css={tw`flex-none sm:flex-1 w-full sm:w-auto overflow-x-auto`}>
+                <p css={tw`md:ml-6 text-neutral-200 uppercase text-sm`}>
                     {title}
                 </p>
                 {task.payload &&
@@ -87,36 +88,36 @@ export default ({ schedule, task }: Props) => {
                 </div>
                 }
             </div>
-            {task.sequenceId > 1 &&
-            <div css={tw`mr-6`}>
-                <p css={tw`text-center mb-1`}>
-                    {task.timeOffset}s
-                </p>
-                <p css={tw`text-neutral-300 uppercase text-2xs`}>
-                    Delay Run By
-                </p>
+            <div css={tw`mt-3 sm:mt-0 flex items-center w-full sm:w-auto`}>
+                {task.sequenceId > 1 && task.timeOffset > 0 &&
+                <div css={tw`mr-6`}>
+                    <div css={tw`flex items-center px-2 py-1 bg-neutral-500 text-sm rounded-full`}>
+                        <Icon icon={faClock} css={tw`w-3 h-3 mr-2`}/>
+                        {task.timeOffset}s later
+                    </div>
+                </div>
+                }
+                <Can action={'schedule.update'}>
+                    <button
+                        type={'button'}
+                        aria-label={'Edit scheduled task'}
+                        css={tw`block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
+                        onClick={() => setIsEditing(true)}
+                    >
+                        <FontAwesomeIcon icon={faPencilAlt}/>
+                    </button>
+                </Can>
+                <Can action={'schedule.update'}>
+                    <button
+                        type={'button'}
+                        aria-label={'Delete scheduled task'}
+                        css={tw`block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150`}
+                        onClick={() => setVisible(true)}
+                    >
+                        <FontAwesomeIcon icon={faTrashAlt}/>
+                    </button>
+                </Can>
             </div>
-            }
-            <Can action={'schedule.update'}>
-                <button
-                    type={'button'}
-                    aria-label={'Edit scheduled task'}
-                    css={tw`block text-sm p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mr-4 ml-auto sm:ml-0`}
-                    onClick={() => setIsEditing(true)}
-                >
-                    <FontAwesomeIcon icon={faPencilAlt}/>
-                </button>
-            </Can>
-            <Can action={'schedule.update'}>
-                <button
-                    type={'button'}
-                    aria-label={'Delete scheduled task'}
-                    css={tw`block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150`}
-                    onClick={() => setVisible(true)}
-                >
-                    <FontAwesomeIcon icon={faTrashAlt}/>
-                </button>
-            </Can>
         </div>
     );
 };

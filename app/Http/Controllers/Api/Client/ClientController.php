@@ -5,6 +5,8 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Permission;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Pterodactyl\Models\Filters\MultiFieldServerFilter;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
@@ -43,21 +45,32 @@ class ClientController extends ClientApiController
         // Start the query builder and ensure we eager load any requested relationships from the request.
         $builder = QueryBuilder::for(
             Server::query()->with($this->getIncludesForTransformer($transformer, ['node']))
-        )->allowedFilters('uuid', 'name', 'external_id');
+        )->allowedFilters([
+            'uuid',
+            'name',
+            'external_id',
+            AllowedFilter::custom('*', new MultiFieldServerFilter),
+        ]);
 
+        $type = $request->input('type');
         // Either return all of the servers the user has access to because they are an admin `?type=admin` or
         // just return all of the servers the user has access to because they are the owner or a subuser of the
-        // server.
-        if ($request->input('type') === 'admin') {
-            $builder = $user->root_admin
-                ? $builder->whereNotIn('id', $user->accessibleServers()->pluck('id')->all())
-                // If they aren't an admin but want all the admin servers don't fail the request, just
-                // make it a query that will never return any results back.
-                : $builder->whereRaw('1 = 2');
-        } elseif ($request->input('type') === 'owner') {
-            $builder = $builder->where('owner_id', $user->id);
+        // server. If ?type=admin-all is passed all servers on the system will be returned to the user, rather
+        // than only servers they can see because they are an admin.
+        if (in_array($type, ['admin', 'admin-all'])) {
+            // If they aren't an admin but want all the admin servers don't fail the request, just
+            // make it a query that will never return any results back.
+            if (! $user->root_admin) {
+                $builder->whereRaw('1 = 2');
+            } else {
+                $builder = $type === 'admin-all'
+                    ? $builder
+                    : $builder->whereNotIn('servers.id', $user->accessibleServers()->pluck('id')->all());
+            }
+        } else if ($type === 'owner') {
+            $builder = $builder->where('servers.owner_id', $user->id);
         } else {
-            $builder = $builder->whereIn('id', $user->accessibleServers()->pluck('id')->all());
+            $builder = $builder->whereIn('servers.id', $user->accessibleServers()->pluck('id')->all());
         }
 
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());

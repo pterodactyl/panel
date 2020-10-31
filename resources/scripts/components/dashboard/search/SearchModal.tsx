@@ -9,7 +9,6 @@ import InputSpinner from '@/components/elements/InputSpinner';
 import getServers from '@/api/getServers';
 import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
-import { httpErrorToHuman } from '@/api/http';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
@@ -47,88 +46,86 @@ const SearchWatcher = () => {
 
 export default ({ ...props }: Props) => {
     const ref = useRef<HTMLInputElement>(null);
-    const [ loading, setLoading ] = useState(false);
-    const [ servers, setServers ] = useState<Server[]>([]);
     const isAdmin = useStoreState(state => state.user.data!.rootAdmin);
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const [ servers, setServers ] = useState<Server[]>([]);
+    const { clearAndAddHttpError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const search = debounce(({ term }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        setLoading(true);
-        setSubmitting(false);
         clearFlashes('search');
 
-        getServers({ query: term })
+        // if (ref.current) ref.current.focus();
+        getServers({ query: term, type: isAdmin ? 'admin-all' : undefined })
             .then(servers => setServers(servers.items.filter((_, index) => index < 5)))
             .catch(error => {
                 console.error(error);
-                addError({ key: 'search', message: httpErrorToHuman(error) });
+                clearAndAddHttpError({ key: 'search', error });
             })
-            .then(() => setLoading(false));
+            .then(() => setSubmitting(false))
+            .then(() => ref.current?.focus());
     }, 500);
 
     useEffect(() => {
         if (props.visible) {
-            setTimeout(() => ref.current?.focus(), 250);
+            if (ref.current) ref.current.focus();
         }
     }, [ props.visible ]);
+
+    // Formik does not support an innerRef on custom components.
+    const InputWithRef = (props: any) => <Input autoFocus {...props} ref={ref}/>;
 
     return (
         <Formik
             onSubmit={search}
             validationSchema={object().shape({
-                term: string()
-                    .min(3, 'Please enter at least three characters to begin searching.')
-                    .required('A search term must be provided.'),
+                term: string().min(3, 'Please enter at least three characters to begin searching.'),
             })}
             initialValues={{ term: '' } as Values}
         >
-            <Modal {...props}>
-                <Form>
-                    <FormikFieldWrapper
-                        name={'term'}
-                        label={'Search term'}
-                        description={
-                            isAdmin
-                                ? 'Enter a server name, user email, or uuid to begin searching.'
-                                : 'Enter a server name to begin searching.'
+            {({ isSubmitting }) => (
+                <Modal {...props}>
+                    <Form>
+                        <FormikFieldWrapper
+                            name={'term'}
+                            label={'Search term'}
+                            description={'Enter a server name, uuid, or allocation to begin searching.'}
+                        >
+                            <SearchWatcher/>
+                            <InputSpinner visible={isSubmitting}>
+                                <Field as={InputWithRef} name={'term'}/>
+                            </InputSpinner>
+                        </FormikFieldWrapper>
+                    </Form>
+                    {servers.length > 0 &&
+                    <div css={tw`mt-6`}>
+                        {
+                            servers.map(server => (
+                                <ServerResult
+                                    key={server.uuid}
+                                    to={`/server/${server.id}`}
+                                    onClick={() => props.onDismissed()}
+                                >
+                                    <div css={tw`flex-1 mr-4`}>
+                                        <p css={tw`text-sm`}>{server.name}</p>
+                                        <p css={tw`mt-1 text-xs text-neutral-400`}>
+                                            {
+                                                server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
+                                                    <span key={allocation.ip + allocation.port.toString()}>{allocation.alias || allocation.ip}:{allocation.port}</span>
+                                                ))
+                                            }
+                                        </p>
+                                    </div>
+                                    <div css={tw`flex-none text-right`}>
+                                        <span css={tw`text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded`}>
+                                            {server.node}
+                                        </span>
+                                    </div>
+                                </ServerResult>
+                            ))
                         }
-                    >
-                        <SearchWatcher/>
-                        <InputSpinner visible={loading}>
-                            <Field as={Input} innerRef={ref} name={'term'}/>
-                        </InputSpinner>
-                    </FormikFieldWrapper>
-                </Form>
-                {servers.length > 0 &&
-                <div css={tw`mt-6`}>
-                    {
-                        servers.map(server => (
-                            <ServerResult
-                                key={server.uuid}
-                                to={`/server/${server.id}`}
-                                onClick={() => props.onDismissed()}
-                            >
-                                <div>
-                                    <p css={tw`text-sm`}>{server.name}</p>
-                                    <p css={tw`mt-1 text-xs text-neutral-400`}>
-                                        {
-                                            server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
-                                                <span key={allocation.ip + allocation.port.toString()}>{allocation.alias || allocation.ip}:{allocation.port}</span>
-                                            ))
-                                        }
-                                    </p>
-                                </div>
-                                <div css={tw`flex-1 text-right`}>
-                                    <span css={tw`text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded`}>
-                                        {server.node}
-                                    </span>
-                                </div>
-                            </ServerResult>
-                        ))
+                    </div>
                     }
-                </div>
-                }
-            </Modal>
+                </Modal>
+            )}
         </Formik>
     );
 };

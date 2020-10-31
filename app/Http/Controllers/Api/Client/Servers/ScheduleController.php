@@ -10,15 +10,19 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Helpers\Utilities;
+use Pterodactyl\Jobs\Schedule\RunTaskJob;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
+use Pterodactyl\Services\Schedules\ProcessScheduleService;
 use Pterodactyl\Transformers\Api\Client\ScheduleTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\ViewScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\UpdateScheduleRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\TriggerScheduleRequest;
 
 class ScheduleController extends ClientApiController
 {
@@ -28,15 +32,22 @@ class ScheduleController extends ClientApiController
     private $repository;
 
     /**
+     * @var \Pterodactyl\Services\Schedules\ProcessScheduleService
+     */
+    private $service;
+
+    /**
      * ScheduleController constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\ScheduleRepository $repository
+     * @param \Pterodactyl\Services\Schedules\ProcessScheduleService $service
      */
-    public function __construct(ScheduleRepository $repository)
+    public function __construct(ScheduleRepository $repository, ProcessScheduleService $service)
     {
         parent::__construct();
 
         $this->repository = $repository;
+        $this->service = $service;
     }
 
     /**
@@ -145,6 +156,30 @@ class ScheduleController extends ClientApiController
         return $this->fractal->item($schedule->refresh())
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
             ->toArray();
+    }
+
+    /**
+     * Executes a given schedule immediately rather than waiting on it's normally scheduled time
+     * to pass. This does not care about the schedule state.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\TriggerScheduleRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Schedule $schedule
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     */
+    public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule)
+    {
+        if (!$schedule->is_active) {
+            throw new BadRequestHttpException(
+                'Cannot trigger schedule exection for a schedule that is not currently active.'
+            );
+        }
+
+        $this->service->handle($schedule, true);
+
+        return new JsonResponse([], JsonResponse::HTTP_ACCEPTED);
     }
 
     /**

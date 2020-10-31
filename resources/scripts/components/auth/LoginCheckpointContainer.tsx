@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
-import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { ActionCreator } from 'easy-peasy';
 import { StaticContext } from 'react-router';
@@ -20,8 +19,7 @@ interface Values {
 type OwnProps = RouteComponentProps<Record<string, string | undefined>, StaticContext, { token?: string }>
 
 type Props = OwnProps & {
-    addError: ActionCreator<FlashStore['addError']['payload']>;
-    clearFlashes: ActionCreator<FlashStore['clearFlashes']['payload']>;
+    clearAndAddHttpError: ActionCreator<FlashStore['clearAndAddHttpError']['payload']>;
 }
 
 const LoginCheckpointContainer = () => {
@@ -79,9 +77,7 @@ const LoginCheckpointContainer = () => {
 };
 
 const EnhancedForm = withFormik<Props, Values>({
-    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { addError, clearFlashes, location } }) => {
-        clearFlashes();
-
+    handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, location } }) => {
         loginCheckpoint(location.state?.token || '', code, recoveryCode)
             .then(response => {
                 if (response.complete) {
@@ -95,7 +91,7 @@ const EnhancedForm = withFormik<Props, Values>({
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
-                addError({ message: httpErrorToHuman(error) });
+                clearAndAddHttpError({ error });
             });
     },
 
@@ -106,7 +102,7 @@ const EnhancedForm = withFormik<Props, Values>({
 })(LoginCheckpointContainer);
 
 export default ({ history, location, ...props }: OwnProps) => {
-    const { addError, clearFlashes } = useFlash();
+    const { clearAndAddHttpError } = useFlash();
 
     if (!location.state?.token) {
         history.replace('/auth/login');
@@ -115,8 +111,7 @@ export default ({ history, location, ...props }: OwnProps) => {
     }
 
     return <EnhancedForm
-        addError={addError}
-        clearFlashes={clearFlashes}
+        clearAndAddHttpError={clearAndAddHttpError}
         history={history}
         location={location}
         {...props}

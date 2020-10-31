@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2018-01-21T17:01:44-06:00",
+    "exported_at": "2020-10-25T22:34:06+00:00",
     "name": "Mumble Server",
     "author": "support@pterodactyl.io",
     "description": "Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.",
@@ -17,9 +17,9 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\n# Mumble Installation Script\n#\n# Server Files: \/mnt\/server\napk update\napk add tar curl\n\ncd \/tmp\n\ncurl -sSLO https:\/\/github.com\/mumble-voip\/mumble\/releases\/download\/${MUMBLE_VERSION}\/murmur-static_x86-${MUMBLE_VERSION}.tar.bz2\n\ntar -xjvf murmur-static_x86-${MUMBLE_VERSION}.tar.bz2\ncp -r murmur-static_x86-${MUMBLE_VERSION}\/* \/mnt\/server",
-            "container": "alpine:3.9",
-            "entrypoint": "ash"
+            "script": "#!\/bin\/bash\r\n# Mumble Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\nGITHUB_PACKAGE=mumble-voip\/mumble\r\nMATCH=murmur-static\r\n\r\napt update\r\napt install -y tar curl jq bzip2\r\n\r\nif [ ! -d \/mnt\/server\/ ]; then\r\n    mkdir \/mnt\/server\/\r\nfi\r\n\r\ncd \/mnt\/server\r\n\r\nif [ -z \"${GITHUB_USER}\" ] && [ -z \"${GITHUB_OAUTH_TOKEN}\" ] ; then\r\n    echo -e \"using anon api call\"\r\nelse\r\n    echo -e \"user and oauth token set\"\r\n    alias curl='curl -u ${GITHUB_USER}:${GITHUB_OAUTH_TOKEN} '\r\nfi\r\n\r\n## get release info and download links\r\nLATEST_JSON=$(curl --silent \"https:\/\/api.github.com\/repos\/${GITHUB_PACKAGE}\/releases\/latest\")\r\nRELEASES=$(curl --silent \"https:\/\/api.github.com\/repos\/${GITHUB_PACKAGE}\/releases\")\r\n\r\nif [ -z \"${VERSION}\" ] || [ \"${VERSION}\" == \"latest\" ]; then\r\n    DOWNLOAD_LINK=$(echo ${LATEST_JSON} | jq .assets | jq -r .[].browser_download_url | grep -m 1 -i ${MATCH})\r\nelse\r\n    VERSION_CHECK=$(echo ${RELEASES} | jq -r --arg VERSION \"${VERSION}\" '.[] | select(.tag_name==$VERSION) | .tag_name')\r\n    if [ \"${VERSION}\" == \"${VERSION_CHECK}\" ]; then\r\n        DOWNLOAD_LINK=$(echo ${RELEASES} | jq -r --arg VERSION \"${VERSION}\" '.[] | select(.tag_name==$VERSION) | .assets[].browser_download_url' | grep -m 1 -i ${MATCH})\r\n    else\r\n        echo -e \"defaulting to latest release\"\r\n        DOWNLOAD_LINK=$(echo ${LATEST_JSON} | jq .assets | jq -r .[].browser_download_url)\r\n    fi\r\nfi\r\n\r\ncurl -L ${DOWNLOAD_LINK} | tar xjv --strip-components=1",
+            "container": "debian:buster-slim",
+            "entrypoint": "bash"
         }
     },
     "variables": [
@@ -28,17 +28,17 @@
             "description": "Maximum concurrent users on the mumble server.",
             "env_variable": "MAX_USERS",
             "default_value": "100",
-            "user_viewable": 1,
-            "user_editable": 0,
+            "user_viewable": true,
+            "user_editable": false,
             "rules": "required|numeric|digits_between:1,5"
         },
         {
             "name": "Server Version",
             "description": "Version of Mumble Server to download and use.",
             "env_variable": "MUMBLE_VERSION",
-            "default_value": "1.3.1",
-            "user_viewable": 1,
-            "user_editable": 1,
+            "default_value": "latest",
+            "user_viewable": true,
+            "user_editable": true,
             "rules": "required|regex:\/^([0-9_\\.-]{5,8})$\/"
         }
     ]

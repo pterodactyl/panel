@@ -7,8 +7,6 @@ use Pterodactyl\Models\Server;
 
 class ServerConfigurationStructureService
 {
-    const REQUIRED_RELATIONS = ['allocation', 'allocations', 'egg'];
-
     /**
      * @var \Pterodactyl\Services\Servers\EnvironmentService
      */
@@ -31,13 +29,11 @@ class ServerConfigurationStructureService
      * daemon, if you modify the structure eggs will break unexpectedly.
      *
      * @param \Pterodactyl\Models\Server $server
-     * @param bool $legacy
+     * @param bool $legacy deprecated
      * @return array
      */
     public function handle(Server $server, bool $legacy = false): array
     {
-        $server->loadMissing(self::REQUIRED_RELATIONS);
-
         return $legacy ?
             $this->returnLegacyFormat($server)
             : $this->returnCurrentFormat($server);
@@ -93,6 +89,7 @@ class ServerConfigurationStructureService
      *
      * @param \Pterodactyl\Models\Server $server
      * @return array
+     * @deprecated
      */
     protected function returnLegacyFormat(Server $server)
     {

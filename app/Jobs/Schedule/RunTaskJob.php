@@ -7,11 +7,12 @@ use Pterodactyl\Jobs\Job;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Task;
 use InvalidArgumentException;
+use Pterodactyl\Models\Schedule;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
@@ -42,15 +43,13 @@ class RunTaskJob extends Job implements ShouldQueue
      * @param \Pterodactyl\Repositories\Wings\DaemonCommandRepository $commandRepository
      * @param \Pterodactyl\Services\Backups\InitiateBackupService $backupService
      * @param \Pterodactyl\Repositories\Wings\DaemonPowerRepository $powerRepository
-     * @param \Pterodactyl\Repositories\Eloquent\TaskRepository $taskRepository
      *
      * @throws \Throwable
      */
     public function handle(
         DaemonCommandRepository $commandRepository,
         InitiateBackupService $backupService,
-        DaemonPowerRepository $powerRepository,
-        TaskRepository $taskRepository
+        DaemonPowerRepository $powerRepository
     ) {
         // Do not process a task that is not set to active.
         if (! $this->task->schedule->is_active) {

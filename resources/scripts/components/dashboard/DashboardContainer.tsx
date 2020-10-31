@@ -21,7 +21,7 @@ export default () => {
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
         [ '/api/client/servers', showOnlyAdmin, page ],
-        () => getServers({ onlyAdmin: showOnlyAdmin, page }),
+        () => getServers({ page, type: showOnlyAdmin ? 'admin' : undefined }),
     );
 
     useEffect(() => {

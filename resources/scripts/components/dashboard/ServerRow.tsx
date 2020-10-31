@@ -41,8 +41,9 @@ const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | unde
 
 export default ({ server, className }: { server: Server; className?: string }) => {
     const interval = useRef<number>(null);
-    const [ stats, setStats ] = useState<ServerStats | null>(null);
     const [ statsError, setStatsError ] = useState(false);
+    const [ isSuspended, setIsSuspended ] = useState(server.isSuspended);
+    const [ stats, setStats ] = useState<ServerStats | null>(null);
 
     const getStats = () => {
         setStatsError(false);
@@ -55,6 +56,14 @@ export default ({ server, className }: { server: Server; className?: string }) =
     };
 
     useEffect(() => {
+        setIsSuspended(stats?.isSuspended || server.isSuspended);
+    }, [ stats?.isSuspended, server.isSuspended ]);
+
+    useEffect(() => {
+        // Don't waste a HTTP request if there is nothing important to show to the user because
+        // the server is suspended.
+        if (isSuspended) return;
+
         getStats().then(() => {
             // @ts-ignore
             interval.current = setInterval(() => getStats(), 20000);
@@ -63,7 +72,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
         return () => {
             interval.current && clearInterval(interval.current);
         };
-    }, []);
+    }, [ isSuspended ]);
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
@@ -101,9 +110,13 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 </p>
             </div>
             <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
-                {!stats ?
-                    !statsError ?
-                        <Spinner size={'small'}/>
+                {(!stats || isSuspended) ?
+                    isSuspended ?
+                        <div css={tw`flex-1 text-center`}>
+                            <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
+                                {server.isSuspended ? 'Suspended' : 'Connection Error'}
+                            </span>
+                        </div>
                         :
                         server.isInstalling ?
                             <div css={tw`flex-1 text-center`}>
@@ -112,11 +125,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                 </span>
                             </div>
                             :
-                            <div css={tw`flex-1 text-center`}>
-                                <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
-                                    {server.isSuspended ? 'Suspended' : 'Connection Error'}
-                                </span>
-                            </div>
+                            <Spinner size={'small'}/>
                     :
                     <React.Fragment>
                         <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>

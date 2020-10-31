@@ -7,7 +7,6 @@ import { object, string } from 'yup';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
-import { httpErrorToHuman } from '@/api/http';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 
@@ -16,11 +15,10 @@ interface Values {
 }
 
 export default ({ ...props }: RequiredModalProps) => {
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
 
     const submit = ({ password }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('account:two-factor');
         disableAccountTwoFactor(password)
             .then(() => {
                 updateUserData({ useTotp: false });
@@ -29,7 +27,7 @@ export default ({ ...props }: RequiredModalProps) => {
             .catch(error => {
                 console.error(error);
 
-                addError({ message: httpErrorToHuman(error), key: 'account:two-factor' });
+                clearAndAddHttpError({ error, key: 'account:two-factor' });
                 setSubmitting(false);
             });
     };

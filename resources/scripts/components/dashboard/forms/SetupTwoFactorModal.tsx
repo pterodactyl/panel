@@ -6,7 +6,6 @@ import getTwoFactorTokenUrl from '@/api/account/getTwoFactorTokenUrl';
 import enableAccountTwoFactor from '@/api/account/enableAccountTwoFactor';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
@@ -22,20 +21,18 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
     const [ recoveryTokens, setRecoveryTokens ] = useState<string[]>([]);
 
     const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     useEffect(() => {
-        clearFlashes('account:two-factor');
         getTwoFactorTokenUrl()
             .then(setToken)
             .catch(error => {
                 console.error(error);
-                addError({ message: httpErrorToHuman(error), key: 'account:two-factor' });
+                clearAndAddHttpError({ error, key: 'account:two-factor' });
             });
     }, []);
 
     const submit = ({ code }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('account:two-factor');
         enableAccountTwoFactor(code)
             .then(tokens => {
                 setRecoveryTokens(tokens);
@@ -43,7 +40,7 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
             .catch(error => {
                 console.error(error);
 
-                addError({ message: httpErrorToHuman(error), key: 'account:two-factor' });
+                clearAndAddHttpError({ error, key: 'account:two-factor' });
             })
             .then(() => setSubmitting(false));
     };

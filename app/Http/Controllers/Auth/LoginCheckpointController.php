@@ -2,11 +2,13 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -80,29 +82,31 @@ class LoginCheckpointController extends AbstractLoginController
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Exception
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function __invoke(LoginCheckpointRequest $request): JsonResponse
     {
-        $token = $request->input('confirmation_token');
-        $recoveryToken = $request->input('recovery_token');
-
-        try {
-            /** @var \Pterodactyl\Models\User $user */
-            $user = $this->repository->find($this->cache->get($token, 0));
-        } catch (RecordNotFoundException $exception) {
-            return $this->sendFailedLoginResponse($request, null, 'The authentication token provided has expired, please refresh the page and try again.');
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->sendLockoutResponse($request);
         }
 
-        // If we got a recovery token try to find one that matches for the user and then continue
-        // through the process (and delete the token).
-        if (! is_null($recoveryToken)) {
-            foreach ($user->recoveryTokens as $token) {
-                if (password_verify($recoveryToken, $token->token)) {
-                    $this->recoveryTokenRepository->delete($token->id);
+        $token = $request->input('confirmation_token');
+        try {
+            /** @var \Pterodactyl\Models\User $user */
+            $user = User::query()->findOrFail($this->cache->get($token, 0));
+        } catch (ModelNotFoundException $exception) {
+            $this->incrementLoginAttempts($request);
 
-                    return $this->sendLoginResponse($user, $request);
-                }
+            return $this->sendFailedLoginResponse(
+                $request, null, 'The authentication token provided has expired, please refresh the page and try again.'
+            );
+        }
+
+        // Recovery tokens go through a slightly different pathway for usage.
+        if (! is_null($recoveryToken = $request->input('recovery_token'))) {
+            if ($this->isValidRecoveryToken($user, $recoveryToken)) {
+                return $this->sendLoginResponse($user, $request);
             }
         } else {
             $decrypted = $this->encrypter->decrypt($user->totp_secret);
@@ -114,6 +118,31 @@ class LoginCheckpointController extends AbstractLoginController
             }
         }
 
+        $this->incrementLoginAttempts($request);
+
         return $this->sendFailedLoginResponse($request, $user, ! empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
+    }
+
+    /**
+     * Determines if a given recovery token is valid for the user account. If we find a matching token
+     * it will be deleted from the database.
+     *
+     * @param \Pterodactyl\Models\User $user
+     * @param string $value
+     * @return bool
+     *
+     * @throws \Exception
+     */
+    protected function isValidRecoveryToken(User $user, string $value)
+    {
+        foreach ($user->recoveryTokens as $token) {
+            if (password_verify($value, $token->token)) {
+                $token->delete();
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

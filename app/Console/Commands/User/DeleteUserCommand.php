@@ -58,8 +58,9 @@ class DeleteUserCommand extends Command
         Assert::notEmpty($search, 'Search term should be an email address, got: %s.');
 
         $results = User::query()
-            ->where('email', 'LIKE', "$search%")
-            ->where('username', 'LIKE', "$search%")
+            ->where('id', 'LIKE', "$search%")
+            ->orWhere('username', 'LIKE', "$search%")
+            ->orWhere('email', 'LIKE', "$search%")
             ->get();
 
         if (count($results) < 1) {

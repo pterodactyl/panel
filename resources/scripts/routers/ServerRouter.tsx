@@ -28,6 +28,7 @@ import NetworkContainer from '@/components/server/network/NetworkContainer';
 import InstallListener from '@/components/server/InstallListener';
 import StartupContainer from '@/components/server/startup/StartupContainer';
 import requireServerPermission from '@/hoc/requireServerPermission';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
@@ -120,7 +121,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             message={'Please check back in a few minutes.'}
                         />
                         :
-                        <>
+                        <ErrorBoundary>
                             <TransitionRouter>
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
@@ -173,7 +174,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     <Route path={'*'} component={NotFound}/>
                                 </Switch>
                             </TransitionRouter>
-                        </>
+                        </ErrorBoundary>
                     }
                 </>
             }
