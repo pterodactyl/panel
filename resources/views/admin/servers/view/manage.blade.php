@@ -96,30 +96,33 @@
             </div>
         @endif
 
-        @if($canTransfer)
-            <div class="col-sm-4">
-                <div class="box box-success">
-                    <div class="box-header with-border">
-                        <h3 class="box-title">Transfer Server</h3>
-                    </div>
-                    <div class="box-body">
-                        <p>
-                            Hopefully, you will soon be able to move servers around without needing to do a bunch of confusing
-                            operations manually and it will work fluidly and with no problems.
-                        </p>
-                    </div>
-                    <div class="box-footer">
+        <div class="col-sm-4">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Transfer Server</h3>
+                </div>
+                <div class="box-body">
+                    <p>
+                        Transfer this server to another node connected to this panel.
+                        <strong>Warning!</strong> This feature has not been fully tested and may have bugs.
+                    </p>
+                </div>
+
+                <div class="box-footer">
+                    @if($canTransfer)
                         <button class="btn btn-success" data-toggle="modal" data-target="#transferServerModal">Transfer Server</button>
-                    </div>
+                    @else
+                        <button class="btn btn-success disabled">Transfer Server</button>
+                        <p style="padding-top: 1rem;">Transferring a server requires more than one node to be configured on your panel.</p>
+                    @endif
                 </div>
             </div>
-        @endif
+        </div>
     </div>
 
     <div class="modal fade" id="transferServerModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <!-- TODO: Change route -->
                 <form action="{{ route('admin.servers.view.manage.transfer', $server->id) }}" method="POST">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
