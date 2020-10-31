@@ -12,9 +12,6 @@ use Pterodactyl\Repositories\Eloquent\BackupRepository;
 
 class BackupRemoteUploadController extends Controller
 {
-    // I would use 1024 but I'm unsure if AWS or other S3 servers,
-    // use SI gigabyte (base 10), or the proper IEC gibibyte (base 2).
-    // const PART_SIZE = 5 * 1000 * 1000 * 1000;
     const PART_SIZE = 5 * 1024 * 1024 * 1024;
 
     /**
