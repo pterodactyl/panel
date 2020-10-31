@@ -65,3 +65,29 @@ jobs:
         env:
           TESTING_DB_PORT: ${{ job.services.mysql.ports[3306] }}
           TESTING_DB_USERNAME: root
+      - name: notify discord
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: error
+          username: Github Actions
+          color: "#D01124"
+          description: Tests are currently failing.
+          details: |
+
+            Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          footer: ${GITHUB_SHA::8}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: notify discord
+        if: ${{ success() }}
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: info
+          username: Github Actions
+          color: "#0F8513"
+          description: Tests passed.
+          details: |
+
+            Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          footer: ${GITHUB_SHA::8}
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
