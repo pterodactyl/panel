@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
@@ -81,7 +82,7 @@ class ServerDetailsController extends Controller
 
         // Avoid run-away N+1 SQL queries by pre-loading the relationships that are used
         // within each of the services called below.
-        $servers = Server::query()->with('allocations', 'egg', 'mounts', 'variables')
+        $servers = Server::query()->with('allocations', 'egg', 'mounts', 'variables', 'location')
             ->where('node_id', $node->id)
             ->paginate($request->input('per_page', 50));
 
