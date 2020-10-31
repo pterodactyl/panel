@@ -44,12 +44,9 @@ export default ({ server, className }: { server: Server; className?: string }) =
     const [ isSuspended, setIsSuspended ] = useState(server.isSuspended);
     const [ stats, setStats ] = useState<ServerStats | null>(null);
 
-    const getStats = () => {
-        setStatsError(false);
-        return getServerResourceUsage(server.uuid)
-            .then(data => setStats(data))
-            .catch(error => console.error(error));
-    };
+    const getStats = () => getServerResourceUsage(server.uuid)
+        .then(data => setStats(data))
+        .catch(error => console.error(error));
 
     useEffect(() => {
         setIsSuspended(stats?.isSuspended || server.isSuspended);
