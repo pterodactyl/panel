@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import { faCircle, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
+import CopyOnClick from '@/components/elements/CopyOnClick';
 
 interface Stats {
     memory: number;
@@ -49,6 +50,9 @@ const ServerDetailsBlock = () => {
 
     const name = ServerContext.useStoreState(state => state.server.data!.name);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
+    const primaryAllocation = ServerContext.useStoreState(state => state.server.data!.allocations.filter(alloc => alloc.isDefault).map(
+        allocation => allocation.alias + ':' + allocation.port || allocation.ip + ':' + allocation.port
+    )).toString();
 
     const disklimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
     const memorylimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
@@ -66,6 +70,12 @@ const ServerDetailsBlock = () => {
                 />
                 &nbsp;{!status ? 'Connecting...' : status}
             </p>
+            <CopyOnClick text={primaryAllocation}>
+                <p css={tw`text-xs mt-2`}>
+                    <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
+                    <code css={tw`ml-1`}>{primaryAllocation}</code>
+                </p>
+            </CopyOnClick>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {stats.cpu.toFixed(2)}%
             </p>
