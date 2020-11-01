@@ -20,7 +20,7 @@ const ConfirmationModal = ({ title, children, buttonText, onConfirmed }: Props) 
             <h2 css={tw`text-2xl mb-6`}>{title}</h2>
             <p css={tw`text-sm`}>{children}</p>
             <div css={tw`flex flex-wrap items-center justify-end mt-8`}>
-                <Button isSecondary onClick={() => dismiss()} css={tw`w-full sm:w-auto`}>
+                <Button isSecondary onClick={() => dismiss()} css={tw`w-full sm:w-auto border-transparent`}>
                     Cancel
                 </Button>
                 <Button color={'red'} css={tw`w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4`} onClick={() => onConfirmed()}>

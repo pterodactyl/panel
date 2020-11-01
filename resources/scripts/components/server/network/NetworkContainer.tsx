@@ -1,24 +1,31 @@
-import React, { useCallback, useEffect } from 'react';
-import useSWR from 'swr';
-import getServerAllocations from '@/api/server/network/getServerAllocations';
-import { Allocation } from '@/api/server/getServer';
+import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import useFlash from '@/plugins/useFlash';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { ServerContext } from '@/state/server';
-import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import AllocationRow from '@/components/server/network/AllocationRow';
-import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
+import Button from '@/components/elements/Button';
+import createServerAllocation from '@/api/server/network/createServerAllocation';
+import tw from 'twin.macro';
+import Can from '@/components/elements/Can';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import getServerAllocations from '@/api/swr/getServerAllocations';
+import isEqual from 'react-fast-compare';
+import { Allocation } from '@/api/server/getServer';
 
 const NetworkContainer = () => {
+    const [ loading, setLoading ] = useState(false);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
+    const allocationLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.allocations);
+    // @ts-ignore
+    const allocations: Allocation[] = ServerContext.useStoreState(state => state.server.data!.allocations, isEqual);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), {
-        initialData: allocations,
-        revalidateOnFocus: false,
-    });
+    const { data, error, mutate } = getServerAllocations();
+
+    useEffect(() => {
+        mutate(allocations, false);
+    }, []);
 
     useEffect(() => {
         if (error) {
@@ -26,36 +33,45 @@ const NetworkContainer = () => {
         }
     }, [ error ]);
 
-    const setPrimaryAllocation = useCallback((id: number) => {
+    const onCreateAllocation = () => {
         clearFlashes('server:network');
 
-        const initial = data;
-        mutate(data?.map(a => a.id === id ? { ...a, isDefault: true } : { ...a, isDefault: false }), false);
-
-        setPrimaryServerAllocation(uuid, id)
-            .catch(error => {
-                clearAndAddHttpError({ key: 'server:network', error });
-                mutate(initial, false);
-            });
-    }, []);
-
-    const onNotesAdded = useCallback((id: number, notes: string) => {
-        mutate(data?.map(a => a.id === id ? { ...a, notes } : a), false);
-    }, []);
+        setLoading(true);
+        createServerAllocation(uuid)
+            .then(allocation => mutate(data?.concat(allocation), false))
+            .catch(error => clearAndAddHttpError({ key: 'server:network', error }))
+            .then(() => setLoading(false));
+    };
 
     return (
         <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
             {!data ?
                 <Spinner size={'large'} centered/>
                 :
-                data.map(allocation => (
-                    <AllocationRow
-                        key={`${allocation.ip}:${allocation.port}`}
-                        allocation={allocation}
-                        onSetPrimary={setPrimaryAllocation}
-                        onNotesChanged={onNotesAdded}
-                    />
-                ))
+                <>
+                    {
+                        data.map(allocation => (
+                            <AllocationRow
+                                key={`${allocation.ip}:${allocation.port}`}
+                                allocation={allocation}
+                            />
+                        ))
+                    }
+                    <Can action={'allocation.create'}>
+                        <SpinnerOverlay visible={loading}/>
+                        <div css={tw`mt-6 sm:flex items-center justify-end`}>
+                            <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
+                                You are currently using {data.length} of {allocationLimit} allowed allocations for this
+                                server.
+                            </p>
+                            {allocationLimit > data.length &&
+                            <Button css={tw`w-full sm:w-auto`} color={'primary'} onClick={onCreateAllocation}>
+                                Create Allocation
+                            </Button>
+                            }
+                        </div>
+                    </Can>
+                </>
             }
         </ServerContentBlock>
     );

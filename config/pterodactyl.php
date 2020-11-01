@@ -143,6 +143,12 @@ return [
             // The total number of tasks that can exist for any given schedule at once.
             'per_schedule_task_limit' => 10,
         ],
+
+        'allocations' => [
+            'enabled' => env('PTERODACTYL_CLIENT_ALLOCATIONS_ENABLED', false),
+            'range_start' => env('PTERODACTYL_CLIENT_ALLOCATIONS_RANGE_START'),
+            'range_end' => env('PTERODACTYL_CLIENT_ALLOCATIONS_RANGE_END'),
+        ],
     ],
 
     /*
