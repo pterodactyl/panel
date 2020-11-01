@@ -4,11 +4,13 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Backup;
 use Illuminate\Http\JsonResponse;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BackupRemoteUploadController extends Controller
 {
@@ -37,25 +39,26 @@ class BackupRemoteUploadController extends Controller
     }
 
     /**
-     * ?
+     * Returns the required presigned urls to upload a backup to S3 cloud storage.
      *
      * @param \Illuminate\Http\Request $request
      * @param string $backup
      *
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Exception
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function __invoke(Request $request, string $backup)
     {
+        // Get the size query parameter.
         $size = $request->query('size', null);
-        if ($size === null) {
-            return new JsonResponse([], JsonResponse::HTTP_BAD_REQUEST);
+        if (is_null($size)) {
+            throw new BadRequestHttpException('Missing size query parameter.');
         }
 
         /** @var \Pterodactyl\Models\Backup $model */
-        $model = $this->repository->findFirstWhere([[ 'uuid', '=', $backup ]]);
+        $model = Backup::query()->where([[ 'uuid', '=', $backup ]])->firstOrFail();
 
         // Prevent backups that have already been completed from trying to
         // be uploaded again.
@@ -66,52 +69,65 @@ class BackupRemoteUploadController extends Controller
         // Ensure we are using the S3 adapter.
         $adapter = $this->backupManager->adapter();
         if (! $adapter instanceof AwsS3Adapter) {
-            return new JsonResponse([], JsonResponse::HTTP);
+            throw new BadRequestHttpException('Backups are not using the s3 storage driver');
         }
 
+        // The path where backup will be uploaded to
         $path = sprintf('%s/%s.tar.gz', $model->server->uuid, $model->uuid);
 
+        // Get the S3 client
         $client = $adapter->getClient();
 
-        $result = $client->execute($client->getCommand('CreateMultipartUpload', [
+        // Params for generating the presigned urls
+        $params = [
             'Bucket' => $adapter->getBucket(),
             'Key' => $path,
             'ContentType' => 'application/x-gzip',
-        ]));
+        ];
+
+        // Execute the CreateMultipartUpload request
+        $result = $client->execute($client->getCommand('CreateMultipartUpload', $params));
+
+        // Get the UploadId from the CreateMultipartUpload request,
+        // this is needed to create the other presigned urls
         $uploadId = $result->get('UploadId');
 
+        // Create a CompleteMultipartUpload presigned url
         $completeMultipartUpload = $client->createPresignedRequest(
-            $client->getCommand('CompleteMultipartUpload', [
-                'Bucket' => $adapter->getBucket(),
-                'Key' => $path,
-                'ContentType' => 'application/x-gzip',
-                'UploadId' => $uploadId,
-            ]),
+            $client->getCommand(
+                'CompleteMultipartUpload',
+                array_merge($params, [
+                    'UploadId' => $uploadId,
+                ])
+            ),
             CarbonImmutable::now()->addMinutes(30)
         );
 
+        // Create a AbortMultipartUpload presigned url
         $abortMultipartUpload = $client->createPresignedRequest(
-            $client->getCommand('AbortMultipartUpload', [
-                'Bucket' => $adapter->getBucket(),
-                'Key' => $path,
-                'ContentType' => 'application/x-gzip',
-                'UploadId' => $uploadId,
-            ]),
+            $client->getCommand(
+                'AbortMultipartUpload',
+                array_merge($params, [
+                    'UploadId' => $uploadId,
+                ])
+            ),
             CarbonImmutable::now()->addMinutes(45)
         );
 
+        // Calculate the number of parts needed to upload the backup
         $partCount = (int) $size / (self::PART_SIZE);
 
+        // Create as many UploadPart presigned urls as needed
         $parts = [];
         for ($i = 0; $i < $partCount; $i++) {
             $part = $client->createPresignedRequest(
-                $client->getCommand('UploadPart', [
-                    'Bucket' => $adapter->getBucket(),
-                    'Key' => $path,
-                    'ContentType' => 'application/x-gzip',
-                    'UploadId' => $uploadId,
-                    'PartNumber' => $i + 1,
-                ]),
+                $client->getCommand(
+                    'UploadPart',
+                    array_merge($params, [
+                        'UploadId' => $uploadId,
+                        'PartNumber' => $i + 1,
+                    ])
+                ),
                 CarbonImmutable::now()->addMinutes(30)
             );
 
@@ -119,10 +135,10 @@ class BackupRemoteUploadController extends Controller
         }
 
         return new JsonResponse([
-            'CompleteMultipartUpload' => $completeMultipartUpload->getUri()->__toString(),
-            'AbortMultipartUpload' => $abortMultipartUpload->getUri()->__toString(),
-            'Parts' => $parts,
-            'PartSize' => self::PART_SIZE,
-        ], JsonResponse::HTTP_OK);
+            'complete_multipart_upload' => $completeMultipartUpload->getUri()->__toString(),
+            'abort_multipart_upload' => $abortMultipartUpload->getUri()->__toString(),
+            'parts' => $parts,
+            'part_size' => self::PART_SIZE,
+        ]);
     }
 }
