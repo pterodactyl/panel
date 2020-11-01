@@ -51,7 +51,7 @@ const ServerDetailsBlock = () => {
     const name = ServerContext.useStoreState(state => state.server.data!.name);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
     const primaryAllocation = ServerContext.useStoreState(state => state.server.data!.allocations.filter(alloc => alloc.isDefault).map(
-        allocation => allocation.alias + ':' + allocation.port || allocation.ip + ':' + allocation.port
+        allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
     )).toString();
 
     const disklimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
