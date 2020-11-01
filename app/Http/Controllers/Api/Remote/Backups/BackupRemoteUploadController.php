@@ -52,31 +52,32 @@ class BackupRemoteUploadController extends Controller
     public function __invoke(Request $request, string $backup)
     {
         // Get the size query parameter.
-        $size = $request->query('size', null);
-        if (is_null($size)) {
-            throw new BadRequestHttpException('Missing size query parameter.');
+        $size = (int)$request->query('size');
+        if (empty($size)) {
+            throw new BadRequestHttpException('A non-empty "size" query parameter must be provided.');
         }
 
-        /** @var \Pterodactyl\Models\Backup $model */
-        $model = Backup::query()->where([[ 'uuid', '=', $backup ]])->firstOrFail();
+        /** @var \Pterodactyl\Models\Backup $backup */
+        $backup = Backup::query()->where('uuid', $backup)->firstOrFail();
 
         // Prevent backups that have already been completed from trying to
         // be uploaded again.
-        if (! is_null($model->completed_at)) {
+        if (! is_null($backup->completed_at)) {
             return new JsonResponse([], JsonResponse::HTTP_CONFLICT);
         }
 
         // Ensure we are using the S3 adapter.
         $adapter = $this->backupManager->adapter();
         if (! $adapter instanceof AwsS3Adapter) {
-            throw new BadRequestHttpException('Backups are not using the s3 storage driver');
+            throw new BadRequestHttpException('The configured backup adapter is not an S3 compatiable adapter.');
         }
 
         // The path where backup will be uploaded to
-        $path = sprintf('%s/%s.tar.gz', $model->server->uuid, $model->uuid);
+        $path = sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid);
 
         // Get the S3 client
         $client = $adapter->getClient();
+        $expires = CarbonImmutable::now()->addMinutes(30);
 
         // Params for generating the presigned urls
         $params = [
@@ -88,57 +89,27 @@ class BackupRemoteUploadController extends Controller
         // Execute the CreateMultipartUpload request
         $result = $client->execute($client->getCommand('CreateMultipartUpload', $params));
 
-        // Get the UploadId from the CreateMultipartUpload request,
-        // this is needed to create the other presigned urls
-        $uploadId = $result->get('UploadId');
-
-        // Create a CompleteMultipartUpload presigned url
-        $completeMultipartUpload = $client->createPresignedRequest(
-            $client->getCommand(
-                'CompleteMultipartUpload',
-                array_merge($params, [
-                    'UploadId' => $uploadId,
-                ])
-            ),
-            CarbonImmutable::now()->addMinutes(30)
-        );
-
-        // Create a AbortMultipartUpload presigned url
-        $abortMultipartUpload = $client->createPresignedRequest(
-            $client->getCommand(
-                'AbortMultipartUpload',
-                array_merge($params, [
-                    'UploadId' => $uploadId,
-                ])
-            ),
-            CarbonImmutable::now()->addMinutes(45)
-        );
-
-        // Calculate the number of parts needed to upload the backup
-        $partCount = (int) $size / (self::PART_SIZE);
+        // Get the UploadId from the CreateMultipartUpload request, this is needed to create
+        // the other presigned urls.
+        $params['UploadId'] = $result->get('UploadId');
 
         // Create as many UploadPart presigned urls as needed
         $parts = [];
-        for ($i = 0; $i < $partCount; $i++) {
-            $part = $client->createPresignedRequest(
-                $client->getCommand(
-                    'UploadPart',
-                    array_merge($params, [
-                        'UploadId' => $uploadId,
-                        'PartNumber' => $i + 1,
-                    ])
-                ),
-                CarbonImmutable::now()->addMinutes(30)
-            );
-
-           array_push($parts, $part->getUri()->__toString());
+        for ($i = 0; $i < ($size / self::PART_SIZE); $i++) {
+            $parts[] = $client->createPresignedRequest(
+                $client->getCommand('UploadPart', array_merge($params, ['PartNumber' => $i + 1])), $expires
+            )->getUri()->__toString();
         }
 
         return new JsonResponse([
-            'complete_multipart_upload' => $completeMultipartUpload->getUri()->__toString(),
-            'abort_multipart_upload' => $abortMultipartUpload->getUri()->__toString(),
             'parts' => $parts,
             'part_size' => self::PART_SIZE,
+            'complete_multipart_upload' => $client->createPresignedRequest(
+                $client->getCommand('CompleteMultipartUpload', $params), $expires
+            )->getUri()->__toString(),
+            'abort_multipart_upload' => $client->createPresignedRequest(
+                $client->getCommand('AbortMultipartUpload', $params), $expires->addMinutes(15)
+            )->getUri()->__toString(),
         ]);
     }
 }
