@@ -44,7 +44,7 @@ export default () => {
         setError('');
         setLoading(true);
         setDirectory(hash.replace(/^#/, '').split('/').filter(v => !!v).slice(0, -1).join('/'));
-        getFileContents(uuid, hash.replace(/^#/, ''))
+        getFileContents(uuid, encodeURIComponent(hash.replace(/^#/, '')))
             .then(setContent)
             .catch(error => {
                 console.error(error);
