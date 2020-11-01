@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
@@ -84,7 +83,9 @@ class ServerDetailsController extends Controller
         // within each of the services called below.
         $servers = Server::query()->with('allocations', 'egg', 'mounts', 'variables', 'location')
             ->where('node_id', $node->id)
-            ->paginate($request->input('per_page', 50));
+            // If you don't cast this to a string you'll end up with a stringified per_page returned in
+            // the metadata, and then Wings will panic crash as a result.
+            ->paginate((int)$request->input('per_page', 50));
 
         return new ServerConfigurationCollection($servers);
     }
