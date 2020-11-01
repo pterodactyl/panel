@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,20 +16,25 @@ import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
+import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
+import getServerAllocations from '@/api/swr/getServerAllocations';
 
 const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm inline-block`}`;
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
 
 interface Props {
     allocation: Allocation;
-    onSetPrimary: (id: number) => void;
-    onNotesChanged: (id: number, notes: string) => void;
 }
 
-const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
+const AllocationRow = ({ allocation }: Props) => {
     const [ loading, setLoading ] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const { mutate } = getServerAllocations();
+
+    const onNotesChanged = useCallback((id: number, notes: string) => {
+        mutate(data => data?.map(a => a.id === id ? { ...a, notes } : a), false);
+    }, []);
 
     const setAllocationNotes = debounce((notes: string) => {
         setLoading(true);
@@ -40,6 +45,17 @@ const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
             .catch(error => clearAndAddHttpError({ key: 'server:network', error }))
             .then(() => setLoading(false));
     }, 750);
+
+    const setPrimaryAllocation = () => {
+        clearFlashes('server:network');
+        mutate(data => data?.map(a => ({ ...a, isDefault: a.id === allocation.id })), false);
+
+        setPrimaryServerAllocation(uuid, allocation.id)
+            .catch(error => {
+                clearAndAddHttpError({ key: 'server:network', error });
+                mutate();
+            });
+    };
 
     return (
         <GreyRowBox $hoverable={false} css={tw`flex-wrap md:flex-no-wrap mt-2`}>
@@ -81,7 +97,7 @@ const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
                                 isSecondary
                                 size={'xsmall'}
                                 color={'primary'}
-                                onClick={() => onSetPrimary(allocation.id)}
+                                onClick={setPrimaryAllocation}
                             >
                                 Make Primary
                             </Button>

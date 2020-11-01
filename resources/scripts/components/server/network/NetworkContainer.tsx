@@ -1,45 +1,37 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import useFlash from '@/plugins/useFlash';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { ServerContext } from '@/state/server';
-import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import AllocationRow from '@/components/server/network/AllocationRow';
-import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import Button from '@/components/elements/Button';
 import createServerAllocation from '@/api/server/network/createServerAllocation';
 import tw from 'twin.macro';
 import Can from '@/components/elements/Can';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerAllocations from '@/api/swr/getServerAllocations';
+import isEqual from 'react-fast-compare';
+import { Allocation } from '@/api/server/getServer';
 
 const NetworkContainer = () => {
     const [ loading, setLoading ] = useState(false);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const allocationLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.allocations);
-    const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
+    // @ts-ignore
+    const allocations: Allocation[] = ServerContext.useStoreState(state => state.server.data!.allocations, isEqual);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data, error, mutate } = getServerAllocations(allocations);
+    const { data, error, mutate } = getServerAllocations();
+
+    useEffect(() => {
+        mutate(allocations, false);
+    }, []);
 
     useEffect(() => {
         if (error) {
             clearAndAddHttpError({ key: 'server:network', error });
         }
     }, [ error ]);
-
-    const setPrimaryAllocation = (id: number) => {
-        clearFlashes('server:network');
-
-        const initial = data;
-        mutate(data?.map(a => a.id === id ? { ...a, isDefault: true } : { ...a, isDefault: false }), false);
-
-        setPrimaryServerAllocation(uuid, id)
-            .catch(error => {
-                clearAndAddHttpError({ key: 'server:network', error });
-                mutate(initial, false);
-            });
-    };
 
     const onCreateAllocation = () => {
         clearFlashes('server:network');
@@ -50,10 +42,6 @@ const NetworkContainer = () => {
             .catch(error => clearAndAddHttpError({ key: 'server:network', error }))
             .then(() => setLoading(false));
     };
-
-    const onNotesAdded = useCallback((id: number, notes: string) => {
-        mutate(data?.map(a => a.id === id ? { ...a, notes } : a), false);
-    }, []);
 
     return (
         <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
@@ -66,8 +54,6 @@ const NetworkContainer = () => {
                             <AllocationRow
                                 key={`${allocation.ip}:${allocation.port}`}
                                 allocation={allocation}
-                                onSetPrimary={setPrimaryAllocation}
-                                onNotesChanged={onNotesAdded}
                             />
                         ))
                     }
