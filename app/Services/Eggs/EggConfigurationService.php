@@ -104,46 +104,32 @@ class EggConfigurationService
         // can property map the egg placeholders to values.
         $structure = $this->configurationStructureService->handle($server, true);
 
-        foreach ($configs as $file => &$data) {
-            $this->iterate($data->find, $structure);
-        }
-
         $response = [];
         // Normalize the output of the configuration for the new Wings Daemon to more
         // easily ingest, as well as make things more flexible down the road.
         foreach ($configs as $file => $data) {
-            $append = ['file' => $file, 'replace' => []];
+            $append = array_merge((array)$data, ['file' => $file, 'replace' => []]);
 
-            /** @noinspection PhpParameterByRefIsNotUsedAsReferenceInspection */
-            // I like to think I understand PHP pretty well, but if you don't pass $value
-            // by reference here, you'll end up with a resursive array loop if the config
-            // file has two replacements that reference the same item in the configuration
-            // array for the server.
-            foreach ($data as $key => &$value) {
-                if ($key !== 'find') {
-                    $append[$key] = $value;
+            foreach ($this->iterate($data->find, $structure) as $find => $replace) {
+                if (is_object($replace)) {
+                    foreach ($replace as $match => $replaceWith) {
+                        $append['replace'][] = [
+                            'match' => $find,
+                            'if_value' => $match,
+                            'replace_with' => $replaceWith,
+                        ];
+                    }
+
                     continue;
                 }
 
-                foreach ($value as $find => $replace) {
-                    if (is_object($replace)) {
-                        foreach ($replace as $match => $replaceWith) {
-                            $append['replace'][] = [
-                                'match' => $find,
-                                'if_value' => $match,
-                                'replace_with' => $replaceWith,
-                            ];
-                        }
-
-                        continue;
-                    }
-
-                    $append['replace'][] = [
-                        'match' => $find,
-                        'replace_with' => $replace,
-                    ];
-                }
+                $append['replace'][] = [
+                    'match' => $find,
+                    'replace_with' => $replace,
+                ];
             }
+
+            unset($append['find']);
 
             $response[] = $append;
         }
@@ -248,21 +234,28 @@ class EggConfigurationService
      *
      * @param mixed $data
      * @param array $structure
+     * @return mixed
      */
-    private function iterate(&$data, array $structure)
+    private function iterate($data, array $structure)
     {
         if (! is_iterable($data) && ! is_object($data)) {
-            return;
+            return $data;
         }
 
-        foreach ($data as &$value) {
+        // Remember, in PHP objects are always passed by reference, so if we do not clone this object
+        // instance we'll end up making modifications to the object outside the scope of this function
+        // which leads to some fun behavior in the parser.
+        $clone = clone $data;
+        foreach ($clone as $key => &$value) {
             if (is_iterable($value) || is_object($value)) {
-                $this->iterate($value, $structure);
+                $value = $this->iterate($value, $structure);
 
                 continue;
             }
 
             $value = $this->matchAndReplaceKeys($value, $structure);
         }
+
+        return $clone;
     }
 }
