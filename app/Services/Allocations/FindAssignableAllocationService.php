@@ -108,7 +108,6 @@ class FindAssignableAllocationService
             throw new NoAutoAllocationSpaceAvailableException;
         }
 
-        // dd($available, array_rand($available));
         // Pick a random port out of the remaining available ports.
         /** @var int $port */
         $port = $available[array_rand($available)];

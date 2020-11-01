@@ -15,6 +15,7 @@ import setServerAllocationNotes from '@/api/server/network/setServerAllocationNo
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
 
 const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm inline-block`}`;
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
@@ -44,10 +45,11 @@ const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
         <GreyRowBox $hoverable={false} css={tw`flex-wrap md:flex-no-wrap mt-2`}>
             <div css={tw`flex items-center w-full md:w-auto`}>
                 <div css={tw`pl-4 pr-6 text-neutral-400`}>
-                    <FontAwesomeIcon icon={faNetworkWired} />
+                    <FontAwesomeIcon icon={faNetworkWired}/>
                 </div>
                 <div css={tw`mr-4 flex-1 md:w-40`}>
-                    {allocation.alias ? <CopyOnClick text={allocation.alias}><Code css={tw`w-40 truncate`}>{allocation.alias}</Code></CopyOnClick> :
+                    {allocation.alias ?
+                        <CopyOnClick text={allocation.alias}><Code css={tw`w-40 truncate`}>{allocation.alias}</Code></CopyOnClick> :
                         <CopyOnClick text={allocation.ip}><Code>{allocation.ip}</Code></CopyOnClick>}
                     <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
                 </div>
@@ -66,20 +68,25 @@ const AllocationRow = ({ allocation, onSetPrimary, onNotesChanged }: Props) => {
                     />
                 </InputSpinner>
             </div>
-            <div css={tw`w-full md:flex-none md:w-32 md:text-center mt-4 md:mt-0 text-right ml-4`}>
+            <div css={tw`w-full md:flex-none md:w-40 md:text-center mt-4 md:mt-0 ml-4 flex items-center justify-end`}>
                 {allocation.isDefault ?
                     <span css={tw`bg-green-500 py-1 px-2 rounded text-green-50 text-xs`}>Primary</span>
                     :
-                    <Can action={'allocations.update'}>
-                        <Button
-                            isSecondary
-                            size={'xsmall'}
-                            color={'primary'}
-                            onClick={() => onSetPrimary(allocation.id)}
-                        >
-                            Make Primary
-                        </Button>
-                    </Can>
+                    <>
+                        <Can action={'allocations.delete'}>
+                            <DeleteAllocationButton allocation={allocation.id}/>
+                        </Can>
+                        <Can action={'allocations.update'}>
+                            <Button
+                                isSecondary
+                                size={'xsmall'}
+                                color={'primary'}
+                                onClick={() => onSetPrimary(allocation.id)}
+                            >
+                                Make Primary
+                            </Button>
+                        </Can>
+                    </>
                 }
             </div>
         </GreyRowBox>

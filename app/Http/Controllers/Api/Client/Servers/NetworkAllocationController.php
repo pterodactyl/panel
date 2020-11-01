@@ -138,18 +138,19 @@ class NetworkAllocationController extends ClientApiController
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function delete(DeleteAllocationRequest $request, Server $server, Allocation $allocation)
     {
         if ($allocation->id === $server->allocation_id) {
             throw new DisplayException(
-                'Cannot delete the primary allocation for a server.'
+                'You cannot delete the primary allocation for this server.'
             );
         }
 
-        $this->repository->update($allocation->id, ['server_id' => null, 'notes' => null]);
+        Allocation::query()->where('id', $allocation->id)->update([
+            'notes' => null,
+            'server_id' => null,
+        ]);
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

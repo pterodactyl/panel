@@ -1,7 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import useSWR from 'swr';
-import getServerAllocations from '@/api/server/network/getServerAllocations';
-import { Allocation } from '@/api/server/getServer';
 import Spinner from '@/components/elements/Spinner';
 import useFlash from '@/plugins/useFlash';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
@@ -14,6 +11,7 @@ import createServerAllocation from '@/api/server/network/createServerAllocation'
 import tw from 'twin.macro';
 import Can from '@/components/elements/Can';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import getServerAllocations from '@/api/swr/getServerAllocations';
 
 const NetworkContainer = () => {
     const [ loading, setLoading ] = useState(false);
@@ -22,10 +20,7 @@ const NetworkContainer = () => {
     const allocations = useDeepMemoize(ServerContext.useStoreState(state => state.server.data!.allocations));
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data, error, mutate } = useSWR<Allocation[]>(uuid, key => getServerAllocations(key), {
-        initialData: allocations,
-        revalidateOnFocus: false,
-    });
+    const { data, error, mutate } = getServerAllocations(allocations);
 
     useEffect(() => {
         if (error) {
