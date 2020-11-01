@@ -5,7 +5,6 @@ namespace Pterodactyl\Services\Allocations;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
-use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Exceptions\Service\Allocation\AutoAllocationNotEnabledException;
 use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableException;
 
@@ -42,7 +41,7 @@ class FindAssignableAllocationService
      */
     public function handle(Server $server)
     {
-        if (!config('pterodactyl.client_features.allocations.enabled')) {
+        if (! config('pterodactyl.client_features.allocations.enabled')) {
             throw new AutoAllocationNotEnabledException;
         }
 
@@ -64,6 +63,10 @@ class FindAssignableAllocationService
     }
 
     /**
+     * Create a new allocation on the server's node with a random port from the defined range
+     * in the settings. If there are no matches in that range, or something is wrong with the
+     * range information provided an exception will be raised.
+     *
      * @param \Pterodactyl\Models\Server $server
      * @return \Pterodactyl\Models\Allocation
      *
@@ -78,7 +81,7 @@ class FindAssignableAllocationService
         $start = config('pterodactyl.client_features.allocations.range_start', null);
         $end = config('pterodactyl.client_features.allocations.range_end', null);
 
-        if (!$start || !$end) {
+        if (! $start || ! $end) {
             throw new NoAutoAllocationSpaceAvailableException;
         }
 
