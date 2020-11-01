@@ -46,12 +46,6 @@ class FindAssignableAllocationService
             throw new AutoAllocationNotEnabledException;
         }
 
-        if ($server->allocations()->count() >= $server->allocation_limit) {
-            throw new DisplayException(
-                'Cannot assign additional allocations to this server: limit has been reached.'
-            );
-        }
-
         // Attempt to find a given available allocation for a server. If one cannot be found
         // we will fall back to attempting to create a new allocation that can be used for the
         // server.

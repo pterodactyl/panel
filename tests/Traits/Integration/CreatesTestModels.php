@@ -71,6 +71,8 @@ trait CreatesTestModels
 
         $server = $factory->of(Server::class)->create($attributes);
 
+        Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);
+
         return Server::with([
             'location', 'user', 'node', 'allocation', 'nest', 'egg',
         ])->findOrFail($server->id);
