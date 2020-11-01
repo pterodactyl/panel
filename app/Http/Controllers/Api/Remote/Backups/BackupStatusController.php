@@ -2,12 +2,10 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
 
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
-use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 
@@ -42,7 +40,7 @@ class BackupStatusController extends Controller
         /** @var \Pterodactyl\Models\Backup $model */
         $model = $this->repository->findFirstWhere([[ 'uuid', '=', $backup ]]);
 
-        if (!is_null($model->completed_at)) {
+        if (! is_null($model->completed_at)) {
             throw new BadRequestHttpException(
                 'Cannot update the status of a backup that is already marked as completed.'
             );

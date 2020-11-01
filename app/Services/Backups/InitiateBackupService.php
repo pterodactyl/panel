@@ -7,7 +7,6 @@ use Carbon\CarbonImmutable;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
@@ -122,42 +121,11 @@ class InitiateBackupService
                 'disk' => $this->backupManager->getDefaultAdapter(),
             ], true, true);
 
-            $url = $this->getS3PresignedUrl(sprintf('%s/%s.tar.gz', $server->uuid, $backup->uuid));
-
             $this->daemonBackupRepository->setServer($server)
                 ->setBackupAdapter($this->backupManager->getDefaultAdapter())
-                ->backup($backup, $url);
+                ->backup($backup);
 
             return $backup;
         });
-    }
-
-    /**
-     * Generates a presigned URL for the wings daemon to upload the completed archive
-     * to. We use a 30 minute expiration on these URLs to avoid issues with large backups
-     * that may take some time to complete.
-     *
-     * @param string $path
-     * @return string|null
-     */
-    protected function getS3PresignedUrl(string $path)
-    {
-        $adapter = $this->backupManager->adapter();
-        if (! $adapter instanceof AwsS3Adapter) {
-            return null;
-        }
-
-        $client = $adapter->getClient();
-
-        $request = $client->createPresignedRequest(
-            $client->getCommand('PutObject', [
-                'Bucket' => $adapter->getBucket(),
-                'Key' => $path,
-                'ContentType' => 'application/x-gzip',
-            ]),
-            CarbonImmutable::now()->addMinutes(30)
-        );
-
-        return $request->getUri()->__toString();
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @property int $id
  * @property int $server_id
- * @property int $uuid
+ * @property string $uuid
  * @property bool $is_successful
  * @property string $name
  * @property string[] $ignored_files

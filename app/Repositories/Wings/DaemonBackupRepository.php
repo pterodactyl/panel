@@ -33,12 +33,11 @@ class DaemonBackupRepository extends DaemonRepository
      * Tells the remote Daemon to begin generating a backup for the server.
      *
      * @param \Pterodactyl\Models\Backup $backup
-     * @param string|null $presignedUrl
      * @return \Psr\Http\Message\ResponseInterface
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function backup(Backup $backup, string $presignedUrl = null): ResponseInterface
+    public function backup(Backup $backup): ResponseInterface
     {
         Assert::isInstanceOf($this->server, Server::class);
 
@@ -50,7 +49,6 @@ class DaemonBackupRepository extends DaemonRepository
                         'adapter' => $this->adapter ?? config('backups.default'),
                         'uuid' => $backup->uuid,
                         'ignored_files' => $backup->ignored_files,
-                        'presigned_url' => $presignedUrl,
                     ],
                 ]
             );
