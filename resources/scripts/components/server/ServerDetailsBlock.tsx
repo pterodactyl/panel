@@ -6,8 +6,7 @@ import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import Can from '@/elements/Can';
-
+import Can from '@/components/elements/Can';
 interface Stats {
     memory: number;
     cpu: number;
