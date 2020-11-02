@@ -29,6 +29,8 @@ import InstallListener from '@/components/server/InstallListener';
 import StartupContainer from '@/components/server/startup/StartupContainer';
 import requireServerPermission from '@/hoc/requireServerPermission';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
@@ -40,6 +42,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     const isInstalling = ServerContext.useStoreState(state => state.server.data?.isInstalling);
     const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
+    const serverId = ServerContext.useStoreState(state => state.server.data?.internalId);
 
     useEffect(() => () => {
         clearServerState();
@@ -109,6 +112,11 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
                                     <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                                 </Can>
+                                {rootAdmin &&
+                                    <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
+                                        <FontAwesomeIcon icon={faExternalLinkAlt}/>
+                                    </a>
+                                }
                             </div>
                         </SubNavigation>
                     </CSSTransition>
