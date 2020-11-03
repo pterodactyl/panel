@@ -3,10 +3,11 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2020-10-19T23:26:54+00:00",
+    "exported_at": "2020-11-03T04:22:56+00:00",
     "name": "Sponge (SpongeVanilla)",
     "author": "support@pterodactyl.io",
     "description": "SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.",
+    "features": ["eula"],
     "image": "quay.io\/pterodactyl\/core:java-glibc",
     "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
     "config": {
