@@ -8,6 +8,7 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
 import PowerControls from '@/components/server/PowerControls';
+import { EulaModalFeature } from '@feature/index';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -16,6 +17,8 @@ const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/c
 
 const ServerConsole = () => {
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
+    // @ts-ignore
+    const eggFeatures: string[] = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
 
     return (
         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
@@ -41,6 +44,11 @@ const ServerConsole = () => {
                     <ChunkedConsole/>
                     <ChunkedStatGraphs/>
                 </SuspenseSpinner>
+                {eggFeatures.includes('eula') &&
+                <React.Suspense fallback={null}>
+                    <EulaModalFeature/>
+                </React.Suspense>
+                }
             </div>
         </ServerContentBlock>
     );
