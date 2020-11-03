@@ -82,7 +82,11 @@ class BuildModificationService
 
         $updateData = $this->structureService->handle($server);
 
-        $this->daemonServerRepository->setServer($server)->update($updateData['build'] ?? []);
+        if (!empty($updateData['build'])) {
+            $this->daemonServerRepository->setServer($server)->update([
+                'build' => $updateData['build'],
+            ]);
+        }
 
         $this->connection->commit();
 
