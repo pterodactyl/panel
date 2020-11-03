@@ -111,7 +111,7 @@ class Egg extends Model
         'uuid' => 'required|string|size:36',
         'name' => 'required|string|max:191',
         'description' => 'string|nullable',
-        'features' => 'json|nullable',
+        'features' => 'array|nullable',
         'author' => 'required|string|email',
         'docker_image' => 'required|string|max:191',
         'startup' => 'required|nullable|string',
