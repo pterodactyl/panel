@@ -2,10 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
 import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
+import saveFileContents from '@/api/server/files/saveFileContents';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import useFlash from '@/plugins/useFlash';
 
 const EulaModalFeature = () => {
     const [ visible, setVisible ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
+
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const status = ServerContext.useStoreState(state => state.status.value);
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 
     useEffect(() => {
@@ -24,16 +32,56 @@ const EulaModalFeature = () => {
         };
     }, [ connected, instance, status ]);
 
+    const onAcceptEULA = () => {
+        setLoading(true);
+        clearFlashes('feature:eula');
+
+        saveFileContents(uuid, 'eula.txt', 'eula=true')
+            .then(() => {
+                if (status === 'offline' && instance) {
+                    instance.send('set state', 'restart');
+                }
+
+                setLoading(false);
+                setVisible(false);
+            })
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'feature:eula', error });
+            })
+            .then(() => setLoading(false));
+    };
+
+    useEffect(() => () => {
+        clearFlashes('feature:eula');
+    }, []);
+
     return (
         !visible ?
             null
             :
-            <Modal visible onDismissed={() => setVisible(false)}>
-                <h2 css={tw`text-3xl mb-4 text-neutral-100`}>EULA Not Accepted</h2>
+            <Modal visible onDismissed={() => setVisible(false)} closeOnBackground={false} showSpinnerOverlay={loading}>
+                <FlashMessageRender key={'feature:eula'} css={tw`mb-4`}/>
+                <h2 css={tw`text-2xl mb-4 text-neutral-100`}>Accept Minecraft® EULA</h2>
                 <p css={tw`text-neutral-200`}>
-                    It looks like you have not yet accepted the Minecraft EULA. In order to start this server you
-                    must set eula=true inside the eula.txt file in the File Manager.
+                    By pressing {'"I Accept"'} below you are indicating your agreement to the&nbsp;
+                    <a
+                        target={'_blank'}
+                        css={tw`text-primary-300 underline transition-colors duration-150 hover:text-primary-400`}
+                        rel={'noreferrer noopener'}
+                        href="https://account.mojang.com/documents/minecraft_eula"
+                    >
+                        Mojang EULA
+                    </a>.
                 </p>
+                <div css={tw`mt-8 sm:flex items-center justify-end`}>
+                    <Button isSecondary onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
+                        Cancel
+                    </Button>
+                    <Button onClick={onAcceptEULA} css={tw`mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto`}>
+                        I Accept
+                    </Button>
+                </div>
             </Modal>
     );
 };
