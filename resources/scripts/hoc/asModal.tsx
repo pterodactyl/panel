@@ -43,7 +43,7 @@ function asModal<P extends object> (modalProps?: ExtendedModalProps | ((props: P
             componentDidUpdate (prevProps: Readonly<P & AsModalProps>) {
                 if (prevProps.visible && !this.props.visible) {
                     // noinspection JSPotentiallyInvalidUsageOfThis
-                    this.setState({ visible: false });
+                    this.setState({ visible: false, showSpinnerOverlay: false });
                 } else if (!prevProps.visible && this.props.visible) {
                     // noinspection JSPotentiallyInvalidUsageOfThis
                     this.setState({ render: true, visible: true });
