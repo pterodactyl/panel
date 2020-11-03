@@ -420,26 +420,18 @@ class ServersController extends Controller
      *
      * @param Server $server
      * @param \Pterodactyl\Models\Mount $mount
-     *
      * @return \Illuminate\Http\RedirectResponse
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException|\Throwable
+     *
+     * @throws \Throwable
      */
     public function addMount(Server $server, Mount $mount)
     {
-        $mountServer = new MountServer;
-        $mountServer->mount_id = $mount->id;
-        $mountServer->server_id = $server->id;
+        $mountServer = (new MountServer)->forceFill([
+            'mount_id' => $mount->id,
+            'server_id' => $server->id,
+        ]);
+
         $mountServer->saveOrFail();
-
-        $data = $this->serverConfigurationStructureService->handle($server);
-
-        try {
-            $this->daemonServerRepository
-                ->setServer($server)
-                ->update(Arr::only($data, ['mounts']));
-        } catch (RequestException $exception) {
-            throw new DaemonConnectionException($exception);
-        }
 
         $this->alert->success('Mount was added successfully.')->flash();
 
@@ -452,23 +444,10 @@ class ServersController extends Controller
      * @param Server $server
      * @param \Pterodactyl\Models\Mount $mount
      * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function deleteMount(Server $server, Mount $mount)
     {
         MountServer::where('mount_id', $mount->id)->where('server_id', $server->id)->delete();
-
-        $data = $this->serverConfigurationStructureService->handle($server);
-
-        try {
-            $this->daemonServerRepository
-                ->setServer($server)
-                ->update(Arr::only($data, ['mounts']));
-        } catch (RequestException $exception) {
-            throw new DaemonConnectionException($exception);
-        }
 
         $this->alert->success('Mount was removed successfully.')->flash();
 
