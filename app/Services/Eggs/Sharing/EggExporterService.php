@@ -43,6 +43,7 @@ class EggExporterService
             'name' => $egg->name,
             'author' => $egg->author,
             'description' => $egg->description,
+            'features' => $egg->features,
             'image' => $egg->docker_image,
             'startup' => $egg->startup,
             'config' => [

@@ -88,18 +88,4 @@ class EggUpdateServiceTest extends TestCase
             $this->assertEquals(trans('exceptions.nest.egg.must_be_child'), $exception->getMessage());
         }
     }
-
-    /**
-     * Test that an integer linking to a model can be passed in place of the Egg model.
-     */
-    public function testIntegerCanBePassedInPlaceOfModel()
-    {
-        $this->repository->shouldReceive('find')->with($this->model->id)->once()->andReturn($this->model);
-        $this->repository->shouldReceive('withoutFreshModel->update')
-            ->with($this->model->id, ['test_field' => 'field_value'])->once()->andReturnNull();
-
-        $this->service->handle($this->model->id, ['test_field' => 'field_value']);
-
-        $this->assertTrue(true);
-    }
 }

@@ -9,6 +9,7 @@ namespace Pterodactyl\Models;
  * @property string $author
  * @property string $name
  * @property string|null $description
+ * @property array|null $features
  * @property string $docker_image
  * @property string|null $config_files
  * @property string|null $config_startup
@@ -31,6 +32,7 @@ namespace Pterodactyl\Models;
  * @property string|null $inherit_config_startup
  * @property string|null $inherit_config_logs
  * @property string|null $inherit_config_stop
+ * @property array|null $inherit_features
  *
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
@@ -47,6 +49,18 @@ class Egg extends Model
     const RESOURCE_NAME = 'egg';
 
     /**
+     * Different features that can be enabled on any given egg. These are used internally
+     * to determine which types of frontend functionality should be shown to the user. Eggs
+     * will automatically inherit features from a parent egg if they are already configured
+     * to copy configuration values from said egg.
+     *
+     * To skip copying the features, an empty array value should be passed in ("[]") rather
+     * than leaving it null.
+     */
+    const FEATURE_EULA_POPUP = 'eula';
+    const FEATURE_FASTDL = 'fastdl';
+
+    /**
      * The table associated with the model.
      *
      * @var string
@@ -61,6 +75,7 @@ class Egg extends Model
     protected $fillable = [
         'name',
         'description',
+        'features',
         'docker_image',
         'config_files',
         'config_startup',
@@ -85,6 +100,7 @@ class Egg extends Model
         'config_from' => 'integer',
         'script_is_privileged' => 'boolean',
         'copy_script_from' => 'integer',
+        'features' => 'array',
     ];
 
     /**
@@ -95,6 +111,7 @@ class Egg extends Model
         'uuid' => 'required|string|size:36',
         'name' => 'required|string|max:191',
         'description' => 'string|nullable',
+        'features' => 'json|nullable',
         'author' => 'required|string|email',
         'docker_image' => 'required|string|max:191',
         'startup' => 'required|nullable|string',
@@ -109,6 +126,7 @@ class Egg extends Model
      * @var array
      */
     protected $attributes = [
+        'features' => null,
         'config_stop' => null,
         'config_startup' => null,
         'config_logs' => null,
@@ -214,6 +232,21 @@ class Egg extends Model
         }
 
         return $this->configFrom->config_stop;
+    }
+
+    /**
+     * Returns the features available to this egg from the parent configuration if there are
+     * no features defined for this egg specifically and there is a parent egg configured.
+     *
+     * @return array|null
+     */
+    public function getInheritFeaturesAttribute()
+    {
+        if (! is_null($this->features) || is_null($this->config_from)) {
+            return $this->features;
+        }
+
+        return $this->configFrom->features;
     }
 
     /**
