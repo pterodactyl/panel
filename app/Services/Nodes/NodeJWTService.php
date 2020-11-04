@@ -55,7 +55,7 @@ class NodeJWTService
 
         $builder = (new Builder)->issuedBy(config('app.url'))
             ->permittedFor($node->getConnectionAddress())
-            ->identifiedBy(hash('sha256', $identifiedBy), true)
+            ->identifiedBy(md5($identifiedBy), true)
             ->issuedAt(CarbonImmutable::now()->getTimestamp())
             ->canOnlyBeUsedAfter(CarbonImmutable::now()->subMinutes(5)->getTimestamp());
 

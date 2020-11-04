@@ -7,6 +7,11 @@ import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
 
+const reconnectErrors = [
+    'jwt: exp claim is invalid',
+    'jwt: created too far in past (denylist)',
+];
+
 export default () => {
     let updatingToken = false;
     const [ error, setError ] = useState<'connecting' | string>('');
@@ -64,7 +69,7 @@ export default () => {
             setConnectionState(false);
             console.warn('JWT validation error from wings:', error);
 
-            if (error === 'jwt: exp claim is invalid') {
+            if (reconnectErrors.find(v => error.toLowerCase().indexOf(v) >= 0)) {
                 updateToken(uuid, socket);
             } else {
                 setError('There was an error validating the credentials provided for the websocket. Please refresh the page.');
@@ -95,7 +100,7 @@ export default () => {
                                 </p>
                             </>
                             :
-                            <p css={tw`ml-2 text-sm text-red-100`}>
+                            <p css={tw`ml-2 text-sm text-white`}>
                                 {error}
                             </p>
                         }
