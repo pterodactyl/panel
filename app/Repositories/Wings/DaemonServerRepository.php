@@ -126,11 +126,10 @@ class DaemonServerRepository extends DaemonRepository
     }
 
     /**
-     * Requests the daemon to create a full archive of the server.
-     * Once the daemon is finished they will send a POST request to
-     * "/api/remote/servers/{uuid}/archive" with a boolean.
+     * Requests the daemon to create a full archive of the server. Once the daemon is finished
+     * they will send a POST request to "/api/remote/servers/{uuid}/archive" with a boolean.
      *
-     * @throws DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function requestArchive(): void
     {
@@ -140,6 +139,27 @@ class DaemonServerRepository extends DaemonRepository
             $this->getHttpClient()->post(sprintf(
                 '/api/servers/%s/archive', $this->server->uuid
             ));
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
+
+    /**
+     * Revokes an array of JWT JTI's by marking any token generated before the current time on
+     * the Wings instance as being invalid.
+     *
+     * @param array $jtis
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function revokeJTIs(array $jtis): void
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            $this->getHttpClient()
+                ->post(sprintf('/api/servers/%s/ws/deny', $this->server->uuid), [
+                    'json' => ['jtis' => $jtis],
+                ]);
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }
