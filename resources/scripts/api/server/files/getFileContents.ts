@@ -3,7 +3,7 @@ import http from '@/api/http';
 export default (server: string, file: string): Promise<string> => {
     return new Promise((resolve, reject) => {
         http.get(`/api/client/servers/${server}/files/contents`, {
-            params: { file: file.split('/').map(item => encodeURIComponent(item)).join('/') },
+            params: { file: encodeURI(decodeURI(file)) },
             transformResponse: res => res,
             responseType: 'text',
         })

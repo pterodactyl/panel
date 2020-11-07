@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
@@ -70,7 +71,7 @@ class FileController extends ClientApiController
     {
         $contents = $this->fileRepository
             ->setServer($server)
-            ->getDirectory(urlencode(urldecode($request->get('directory') ?? '/')));
+            ->getDirectory($this->encode($request->get('directory') ?? '/'));
 
         return $this->fractal->collection($contents)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -91,7 +92,7 @@ class FileController extends ClientApiController
     {
         return new Response(
             $this->fileRepository->setServer($server)->getContent(
-                urlencode(urldecode($request->get('file'))), config('pterodactyl.files.max_edit_size')
+                $this->encode($request->get('file')), config('pterodactyl.files.max_edit_size')
             ),
             Response::HTTP_OK,
             ['Content-Type' => 'text/plain']
@@ -113,7 +114,7 @@ class FileController extends ClientApiController
         $token = $this->jwtService
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
             ->setClaims([
-                'file_path' => $request->get('file'),
+                'file_path' => rawurldecode($request->get('file')),
                 'server_uuid' => $server->uuid,
             ])
             ->handle($server->node, $request->user()->id . $server->uuid);
@@ -142,7 +143,7 @@ class FileController extends ClientApiController
     public function write(WriteFileContentRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository->setServer($server)->putContent(
-            $request->get('file'),
+            $this->encode($request->get('file')),
             $request->getContent()
         );
 
@@ -260,5 +261,19 @@ class FileController extends ClientApiController
             );
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Encodes a given file name & path in a format that should work for a good majority
+     * of file names without too much confusing logic.
+     *
+     * @param string $path
+     * @return string
+     */
+    private function encode(string $path): string
+    {
+        return Collection::make(explode('/', rawurldecode($path)))->map(function ($value) {
+            return rawurlencode($value);
+        })->join('/');
     }
 }
