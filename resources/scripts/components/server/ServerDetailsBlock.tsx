@@ -6,7 +6,6 @@ import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import Can from '@/components/elements/Can';
 
 interface Stats {
     memory: number;
@@ -71,14 +70,12 @@ const ServerDetailsBlock = () => {
                 />
                 &nbsp;{!status ? 'Connecting...' : status}
             </p>
-            <Can action={'allocation.read'}>
-                <CopyOnClick text={primaryAllocation}>
-                    <p css={tw`text-xs mt-2`}>
-                        <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
-                        <code css={tw`ml-1`}>{primaryAllocation}</code>
-                    </p>
-                </CopyOnClick>
-            </Can>
+            <CopyOnClick text={primaryAllocation}>
+                <p css={tw`text-xs mt-2`}>
+                    <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
+                    <code css={tw`ml-1`}>{primaryAllocation}</code>
+                </p>
+            </CopyOnClick>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {stats.cpu.toFixed(2)}%
             </p>
