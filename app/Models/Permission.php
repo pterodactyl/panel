@@ -163,7 +163,7 @@ class Permission extends Model
         'allocation' => [
             'description' => 'Permissions that control a user\'s ability to modify the port allocations for this server.',
             'keys' => [
-                'read' => 'Allows a user to view the allocations assigned to this server.',
+                'read' => 'Allows a user to view all allocations currently assigned to this server. Users with any level of access to this server can always view the primary allocation.',
                 'create' => 'Allows a user to assign additional allocations to the server.',
                 'update' => 'Allows a user to change the primary server allocation and attach notes to each allocation.',
                 'delete' => 'Allows a user to delete an allocation from the server.',

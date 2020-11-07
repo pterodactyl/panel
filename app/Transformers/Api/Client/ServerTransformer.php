@@ -83,15 +83,23 @@ class ServerTransformer extends BaseClientTransformer
      */
     public function includeAllocations(Server $server)
     {
+        $transformer = $this->makeTransformer(AllocationTransformer::class);
+
+        // While we include this permission, we do need to actually handle it slightly different here
+        // for the purpose of keeping things functionally working. If the user doesn't have read permissions
+        // for the allocations we'll only return the primary server allocation, and any notes associated
+        // with it will be hidden.
+        //
+        // This allows us to avoid too much permission regression, without also hiding information that
+        // is generally needed for the frontend to make sense when browsing or searching results.
         if (! $this->getUser()->can(Permission::ACTION_ALLOCATION_READ, $server)) {
-            return $this->null();
+            $primary = clone $server->allocation;
+            $primary->notes = null;
+
+            return $this->collection([$primary], $transformer, Allocation::RESOURCE_NAME);
         }
 
-        return $this->collection(
-            $server->allocations,
-            $this->makeTransformer(AllocationTransformer::class),
-            Allocation::RESOURCE_NAME
-        );
+        return $this->collection($server->allocations, $transformer, Allocation::RESOURCE_NAME);
     }
 
     /**
