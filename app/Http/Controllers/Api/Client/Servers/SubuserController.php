@@ -163,7 +163,7 @@ class SubuserController extends ClientApiController
         $this->repository->delete($subuser->id);
 
         try {
-            $this->serverRepository->revokeJTIs([md5($subuser->user_id . $server->uuid)]);
+            $this->serverRepository->setServer($server)->revokeJTIs([md5($subuser->user_id . $server->uuid)]);
         } catch (DaemonConnectionException $exception) {
             // Don't block this request if we can't connect to the Wings instance.
             Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);

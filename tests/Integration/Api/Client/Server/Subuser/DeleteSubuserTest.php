@@ -2,10 +2,12 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client\Server\Subuser;
 
+use Mockery;
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Permission;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DeleteSubuserTest extends ClientApiIntegrationTestCase
@@ -23,6 +25,8 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
      */
     public function testCorrectSubuserIsDeletedFromServer()
     {
+        $this->swap(DaemonServerRepository::class, $mock = Mockery::mock(DaemonServerRepository::class));
+
         [$user, $server] = $this->generateTestAccount();
 
         /** @var \Pterodactyl\Models\User $differentUser */
@@ -37,8 +41,10 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
         Subuser::query()->forceCreate([
             'user_id' => $subuser->id,
             'server_id' => $server->id,
-            'permissions' => [ Permission::ACTION_WEBSOCKET_CONNECT ],
+            'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
+
+        $mock->expects('setServer->revokeJTIs')->with([md5($subuser->id . $server->uuid)])->andReturnUndefined();
 
         $this->actingAs($user)->deleteJson($this->link($server) . "/users/{$subuser->uuid}")->assertNoContent();
 
@@ -51,8 +57,10 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
         Subuser::query()->forceCreate([
             'user_id' => $subuser->id,
             'server_id' => $server->id,
-            'permissions' => [ Permission::ACTION_WEBSOCKET_CONNECT ],
+            'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
+
+        $mock->expects('setServer->revokeJTIs')->with([md5($subuser->id . $server->uuid)])->andReturnUndefined();
 
         $this->actingAs($user)->deleteJson($this->link($server) . "/users/{$subuser->uuid}")->assertNoContent();
     }
