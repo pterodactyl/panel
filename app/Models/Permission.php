@@ -193,18 +193,18 @@ class Permission extends Model
         'schedule' => [
             'description' => 'Permissions that control a user\'s access to the schedule management for this server.',
             'keys' => [
-                'create' => '', // task.create-schedule
-                'read' => '', // task.view-schedule, task.list-schedules
-                'update' => '', // task.edit-schedule, task.queue-schedule, task.toggle-schedule
-                'delete' => '', // task.delete-schedule
+                'create' => 'Allows a user to create new schedules for this server.', // task.create-schedule
+                'read' => 'Allows a user to view schedules and the tasks associated with them for this server.', // task.view-schedule, task.list-schedules
+                'update' => 'Allows a user to update schedules and schedule tasks for this server.', // task.edit-schedule, task.queue-schedule, task.toggle-schedule
+                'delete' => 'Allows a user to delete schedules for this server.', // task.delete-schedule
             ],
         ],
 
         'settings' => [
             'description' => 'Permissions that control a user\'s access to the settings for this server.',
             'keys' => [
-                'rename' => '',
-                'reinstall' => '',
+                'rename' => 'Allows a user to rename this server.',
+                'reinstall' => 'Allows a user to trigger a reinstall of this server.',
             ],
         ],
     ];
