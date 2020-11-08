@@ -58,11 +58,12 @@ class AccessingValidServer
      */
     public function handle(Request $request, Closure $next)
     {
+        $user = $request->user();
         $attributes = $request->route()->parameter('server');
         $isApiRequest = $request->expectsJson() || $request->is(...$this->config->get('pterodactyl.json_routes', []));
         $server = $this->repository->getByUuid($attributes instanceof Server ? $attributes->uuid : $attributes);
 
-        if ($server->suspended) {
+        if (! $user->root_admin && $server->suspended) {
             if ($isApiRequest) {
                 throw new AccessDeniedHttpException('Server is suspended and cannot be accessed.');
             }
