@@ -103,7 +103,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Can action={'backup.*'}>
                                     <NavLink to={`${match.url}/backups`}>Backups</NavLink>
                                 </Can>
-                                <Can action={'allocations.*'}>
+                                <Can action={'allocation.*'}>
                                     <NavLink to={`${match.url}/network`}>Network</NavLink>
                                 </Can>
                                 <Can action={'startup.*'}>
