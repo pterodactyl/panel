@@ -3,6 +3,40 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.1.0
+This release **requires** `Wings@1.1.0` in order to work properly due to breaking internal API changes.
+
+### Fixed
+* Fixes subuser creation/edit modal not submitting correctly when attemping to make modifications.
+* Fixes a few remaining issues with multiple egg install scripts.
+* Removes the ability for a schedule to have a null name and replaces any existing null names with a randomly generated name.
+* Fixes schedules aborting the entire run process if a single schedule encountered an exception. This resolves batches of schedules never running correctly if they occur after a broken schedule.
+* Fixes schedules not properly resetting themselves if an exception was encountered during the run.
+* Fixes numerous N+1 query run-aways when loading multiple servers via the API.
+* Fixes numerous issues with displaying directory and file names in the file manager if they included special characters that could not be decoded properly.
+* Fixes CPU pinning not being properly passed along to Wings when updated (this also fixes memory/CPU/disk not passing along correctly as well).
+* Fixes spinner not displaying properly when displayed over a modal.
+
+### Added
+* Adds ability for users to generate their own additional server allocations via the frontend if enabled.
+* Adds the ability for a user to remove un-needed allocations from their server (as long as it is not the primary allocation).
+* Adds support for tracking the last 32 sent console commands for a server. Access the history by using the arrow keys when the command field is active.
+* Adds S3 specific environment variables allowing for backups to use any S3 compatiable system, not just AWS.
+* Adds support for copying a server allocation address to the clipboard when clicked.
+* Adds information about the next schedule run time when viewing an individual schedule.
+* Adds link to view a server in the admin control panel to the frontend server view when logged in as a root admin.
+* Adds support for egg-specific frontend/backend functionality. This is a beta feature meant for internal features at this time.
+* Adds back the EULA warning popup when starting a Minecraft server without an accepted EULA.
+* Adds missing descriptions for some user permissions on the frontend UI.
+
+### Changed
+* Adds Save/Invite button to top of subuser edit/creation modal to reduce the need for scrolling.
+* Updated language for server transfers and mounts to be less confusing.
+* Wings API endpoint for fetching all servers on a node is now properly paginated to reduce system load when returning hundreds or thousands of servers at once.
+* Removes unnecessary Wings API calls when adding/editing/deleting mounts.
+* Primary allocation for a server is now always returned, even if the subuser does not have permission to view all of the server allocations.
+* Google Analytics frontend code is now only loaded when a valid key is provided.
+
 ## v1.0.3
 ### Fixed
 * Fixes bug causing subusers to not be creatable or editable via the frontend for servers.
