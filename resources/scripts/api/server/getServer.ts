@@ -13,7 +13,7 @@ export interface Allocation {
 
 export interface Server {
     id: string;
-    internalId: number;
+    internalId: number | string;
     uuid: string;
     name: string;
     node: string;

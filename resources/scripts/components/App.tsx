@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga';
 import { hot } from 'react-hot-loader/root';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, useLocation } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
 import DashboardRouter from '@/routers/DashboardRouter';
@@ -30,6 +30,16 @@ interface ExtendedWindow extends Window {
     };
 }
 
+const Pageview = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        ReactGA.pageview(pathname);
+    }, [ pathname ]);
+
+    return null;
+};
+
 const App = () => {
     const { PterodactylUser, SiteConfiguration } = (window as ExtendedWindow);
     if (PterodactylUser && !store.getState().user.data) {
@@ -50,8 +60,9 @@ const App = () => {
     }
 
     useEffect(() => {
-        ReactGA.initialize(SiteConfiguration!.analytics);
-        ReactGA.pageview(location.pathname);
+        if (SiteConfiguration?.analytics) {
+            ReactGA.initialize(SiteConfiguration!.analytics);
+        }
     }, []);
 
     return (
@@ -62,6 +73,7 @@ const App = () => {
                     <ProgressBar/>
                     <div css={tw`mx-auto w-auto`}>
                         <BrowserRouter basename={'/'} key={'root-router'}>
+                            {SiteConfiguration?.analytics && <Pageview/>}
                             <Switch>
                                 <Route path="/server/:id" component={ServerRouter}/>
                                 <Route path="/auth" component={AuthenticationRouter}/>
