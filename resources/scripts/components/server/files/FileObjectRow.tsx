@@ -24,6 +24,8 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
     const history = useHistory();
     const match = useRouteMatch();
 
+    const destination = cleanDirectoryPath(`${directory}/${file.name}`).split('/').map(v => encodeURI(v)).join('/');
+
     const onRowClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         // Don't rely on the onClick to work with the generated URL. Because of the way this
         // component re-renders you'll get redirected into a nested directory structure since
@@ -32,7 +34,7 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
         // Just trust me future me, leave this be.
         if (!file.isFile) {
             e.preventDefault();
-            history.push(`#${cleanDirectoryPath(`${directory}/${file.name}`)}`);
+            history.push(`#${destination}`);
         }
     };
 
@@ -43,7 +45,7 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
             </div>
             :
             <NavLink
-                to={`${match.url}/${file.isFile ? 'edit/' : ''}#${cleanDirectoryPath(`${directory}/${file.name}`)}`}
+                to={`${match.url}/${file.isFile ? 'edit/' : ''}#${destination}`}
                 css={tw`flex flex-1 text-neutral-300 no-underline p-3 overflow-hidden truncate`}
                 onClick={onRowClick}
             >

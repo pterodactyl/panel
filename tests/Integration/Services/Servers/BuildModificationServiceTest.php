@@ -3,15 +3,12 @@
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
-use Exception;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Exceptions\DisplayException;
-use GuzzleHttp\Exception\BadResponseException;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Servers\BuildModificationService;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationServiceTest extends IntegrationTestCase
 {
@@ -114,12 +111,14 @@ class BuildModificationServiceTest extends IntegrationTestCase
 
         $this->daemonServerRepository->expects('update')->with(Mockery::on(function ($data) {
             $this->assertEquals([
-                'memory_limit' => 256,
-                'swap' => 128,
-                'io_weight' => 600,
-                'cpu_limit' => 150,
-                'threads' => '1,2',
-                'disk_space' => 1024,
+                'build' => [
+                    'memory_limit' => 256,
+                    'swap' => 128,
+                    'io_weight' => 600,
+                    'cpu_limit' => 150,
+                    'threads' => '1,2',
+                    'disk_space' => 1024,
+                ],
             ], $data);
 
             return true;

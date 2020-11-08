@@ -305,6 +305,34 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
+     * Test that a subuser without the allocation.read permission is only able to see the primary
+     * allocation for the server.
+     */
+    public function testOnlyPrimaryAllocationIsReturnedToSubuser()
+    {
+        /** @var \Pterodactyl\Models\Server $server */
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
+        $server->allocation->notes = 'Test notes';
+        $server->allocation->save();
+
+        factory(Allocation::class)->times(2)->create([
+            'node_id' => $server->node_id,
+            'server_id' => $server->id,
+        ]);
+
+        $server->refresh();
+        $response = $this->actingAs($user)->getJson('/api/client');
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.attributes.server_owner', false);
+        $response->assertJsonPath('data.0.attributes.uuid', $server->uuid);
+        $response->assertJsonCount(1, 'data.0.attributes.relationships.allocations.data');
+        $response->assertJsonPath('data.0.attributes.relationships.allocations.data.0.attributes.id', $server->allocation->id);
+        $response->assertJsonPath('data.0.attributes.relationships.allocations.data.0.attributes.notes', null);
+    }
+
+    /**
      * @return array
      */
     public function filterTypeDataProvider()

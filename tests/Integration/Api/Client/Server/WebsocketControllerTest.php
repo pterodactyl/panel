@@ -63,7 +63,7 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
         $this->assertSame($server->node->getConnectionAddress(), $token->getClaim('aud'));
         $this->assertSame(CarbonImmutable::now()->getTimestamp(), $token->getClaim('iat'));
         $this->assertSame(CarbonImmutable::now()->subMinutes(5)->getTimestamp(), $token->getClaim('nbf'));
-        $this->assertSame(CarbonImmutable::now()->addMinutes(15)->getTimestamp(), $token->getClaim('exp'));
+        $this->assertSame(CarbonImmutable::now()->addMinutes(10)->getTimestamp(), $token->getClaim('exp'));
         $this->assertSame($user->id, $token->getClaim('user_id'));
         $this->assertSame($server->uuid, $token->getClaim('server_uuid'));
         $this->assertSame(['*'], $token->getClaim('permissions'));
