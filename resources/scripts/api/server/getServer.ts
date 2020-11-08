@@ -13,6 +13,7 @@ export interface Allocation {
 
 export interface Server {
     id: string;
+    internalId: number;
     uuid: string;
     name: string;
     node: string;
@@ -44,6 +45,7 @@ export interface Server {
 
 export const rawDataToServerObject = ({ attributes: data }: FractalResponseData): Server => ({
     id: data.identifier,
+    internalId: data.internal_id,
     uuid: data.uuid,
     name: data.name,
     node: data.node,
