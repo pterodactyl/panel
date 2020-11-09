@@ -80,12 +80,16 @@ export default () => {
         TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
     );
 
-    const handleCommandKeydown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {
             const newIndex = Math.min(historyIndex + 1, history!.length - 1);
 
             setHistoryIndex(newIndex);
             e.currentTarget.value = history![newIndex] || '';
+
+            // By default up arrow will also bring the cursor to the start of the line,
+            // so we'll preventDefault to keep it at the end.
+            e.preventDefault();
         }
 
         if (e.key === 'ArrowDown') {
@@ -185,7 +189,7 @@ export default () => {
                         type={'text'}
                         disabled={!instance || !connected}
                         css={tw`bg-transparent text-neutral-100 p-2 pl-0 w-full`}
-                        onKeyDown={e => handleCommandKeydown(e)}
+                        onKeyDown={handleCommandKeyDown}
                     />
                 </div>
             </div>
