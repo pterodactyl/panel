@@ -13,6 +13,7 @@ use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Pterodactyl\Services\Backups\DeleteBackupService;
 
 class InitiateBackupService
 {
@@ -42,23 +43,31 @@ class InitiateBackupService
     private $backupManager;
 
     /**
+     * @var \Pterodactyl\Services\Backups\DeleteBackupService
+     */
+    private $deleteBackupService;
+
+    /**
      * InitiateBackupService constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
+     * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
      * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
     public function __construct(
         BackupRepository $repository,
         ConnectionInterface $connection,
         DaemonBackupRepository $daemonBackupRepository,
+        DeleteBackupService $deleteBackupService,
         BackupManager $backupManager
     ) {
         $this->repository = $repository;
         $this->connection = $connection;
         $this->daemonBackupRepository = $daemonBackupRepository;
         $this->backupManager = $backupManager;
+        $this->deleteBackupService = $deleteBackupService;
     }
 
     /**
@@ -96,13 +105,8 @@ class InitiateBackupService
      * @throws \Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException
      * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      */
-    public function handle(Server $server, string $name = null): Backup
+    public function handle(Server $server, string $name = null, bool $override = null): Backup
     {
-        // Do not allow the user to continue if this server is already at its limit.
-        if (! $server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
-            throw new TooManyBackupsException($server->backup_limit);
-        }
-
         $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
         if ($previous->count() >= 2) {
             throw new TooManyRequestsHttpException(
@@ -110,6 +114,17 @@ class InitiateBackupService
                 'Only two backups may be generated within a 10 minute span of time.'
             );
         }
+
+        if (! $server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
+            if($override){
+                // Remove latest backup
+                $last_backup = $server->backups()->where('is_successful', true)->oldest()->first();
+                $this->deleteBackupService->handle($last_backup);
+            }else{
+                // Do not allow the user to continue if this server is already at its limit.
+                throw new TooManyBackupsException($server->backup_limit);
+            }
+        }        
 
         return $this->connection->transaction(function () use ($server, $name) {
             /** @var \Pterodactyl\Models\Backup $backup */
@@ -121,9 +136,7 @@ class InitiateBackupService
                 'disk' => $this->backupManager->getDefaultAdapter(),
             ], true, true);
 
-            $this->daemonBackupRepository->setServer($server)
-                ->setBackupAdapter($this->backupManager->getDefaultAdapter())
-                ->backup($backup);
+            $this->daemonBackupRepository->setServer($server)->setBackupAdapter($this->backupManager->getDefaultAdapter())->backup($backup);
 
             return $backup;
         });
