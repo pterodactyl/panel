@@ -13,8 +13,11 @@ interface Props {
 }
 
 const DeleteAllocationButton = ({ allocation }: Props) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [ confirm, setConfirm ] = useState(false);
+
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
+
     const { mutate } = getServerAllocations();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
@@ -22,6 +25,8 @@ const DeleteAllocationButton = ({ allocation }: Props) => {
         clearFlashes('server:network');
 
         mutate(data => data?.filter(a => a.id !== allocation), false);
+        setServerFromState(s => ({ ...s, allocations: s.allocations.filter(a => a.id !== allocation) }));
+
         deleteServerAllocation(uuid, allocation)
             .catch(error => clearAndAddHttpError({ key: 'server:network', error }));
     };

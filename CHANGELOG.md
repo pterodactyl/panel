@@ -6,6 +6,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v1.1.1
 ### Fixed
 * Fixes allocation permissions checking on the frontend checking the wrong permission therefore leading to the item never showing up.
+* Fixes allocations not updating correctly when added or deleted and switching between pages.
 
 ## v1.1.0
 This release **requires** `Wings@1.1.0` in order to work properly due to breaking internal API changes.
