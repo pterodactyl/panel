@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.1.1
+### Fixed
+* Fixes allocation permissions checking on the frontend checking the wrong permission therefore leading to the item never showing up.
+
 ## v1.1.0
 This release **requires** `Wings@1.1.0` in order to work properly due to breaking internal API changes.
 
