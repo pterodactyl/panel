@@ -53,7 +53,7 @@ const CopyOnClick: React.FC<{ text: string }> = ({ text, children }) => {
                     }
                 </Fade>
             </SwitchTransition>
-            <CopyToClipboard onCopy={onCopy} text={text} options={{ debug: true }}>
+            <CopyToClipboard onCopy={onCopy} text={text} options={{ debug: true }} css={tw`cursor-pointer`}>
                 {children}
             </CopyToClipboard>
         </>
