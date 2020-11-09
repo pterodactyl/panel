@@ -15,7 +15,7 @@ const Toast = styled.div`
     animation: ${fade} 250ms linear;
 
     & > div {
-        ${tw`rounded px-4 py-2 text-white bg-neutral-800 border border-neutral-900`};
+        ${tw`rounded px-4 py-2 text-white bg-neutral-900 border border-black opacity-75`};
     }
 `;
 
