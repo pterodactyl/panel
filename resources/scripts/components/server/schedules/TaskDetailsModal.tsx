@@ -91,7 +91,7 @@ const TaskDetailsForm = ({ isEditingTask }: { isEditingTask: boolean }) => {
                             <Label>Ignored Files</Label>
                             <FormikFieldWrapper
                                 name={'payload'}
-                                description={'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used.\nIf you dont have more backups spaces it will OVERRIDE the oldest.'}
+                                description={'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used.\nIf you have reached your backup limit, the oldest backup will be rotated.'}
                             >
                                 <FormikField as={Textarea} name={'payload'} rows={6} />
                             </FormikFieldWrapper>

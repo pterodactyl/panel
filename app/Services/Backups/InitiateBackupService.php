@@ -105,7 +105,7 @@ class InitiateBackupService
      * @throws \Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException
      * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      */
-    public function handle(Server $server, string $name = null, bool $override = null): Backup
+    public function handle(Server $server, string $name = null, bool $override = false): Backup
     {
         $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
         if ($previous->count() >= 2) {
@@ -115,12 +115,13 @@ class InitiateBackupService
             );
         }
 
+        // Check if the server has reached or exceeded it's backup limit
         if (! $server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
-            if($override){
+            if($override) {
                 // Remove latest backup
                 $last_backup = $server->backups()->where('is_successful', true)->oldest()->first();
                 $this->deleteBackupService->handle($last_backup);
-            }else{
+            } else {
                 // Do not allow the user to continue if this server is already at its limit.
                 throw new TooManyBackupsException($server->backup_limit);
             }
@@ -136,7 +137,9 @@ class InitiateBackupService
                 'disk' => $this->backupManager->getDefaultAdapter(),
             ], true, true);
 
-            $this->daemonBackupRepository->setServer($server)->setBackupAdapter($this->backupManager->getDefaultAdapter())->backup($backup);
+            $this->daemonBackupRepository->setServer($server)
+                ->setBackupAdapter($this->backupManager->getDefaultAdapter())
+                ->backup($backup);
 
             return $backup;
         });
