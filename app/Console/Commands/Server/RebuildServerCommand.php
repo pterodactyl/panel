@@ -77,7 +77,7 @@ class RebuildServerCommand extends Command
             $json = array_merge($this->configurationStructureService->handle($server), ['rebuild' => true]);
 
             try {
-                $this->daemonRepository->setServer($server)->update($json);
+                $this->daemonRepository->setServer($server)->setNode($server->node)->update($json);
             } catch (RequestException $exception) {
                 $this->output->error(trans('command/messages.server.rebuild_failed', [
                     'name' => $server->name,
