@@ -122,7 +122,7 @@ class InitiateBackupService
                 throw new TooManyBackupsException($server->backup_limit);
             }
 
-            // Remove latest backup
+            // Remove oldest backup
             $lastBackup = $server->backups()->where('is_successful', true)->orderByDesc('created_at')->first();
             $this->deleteBackupService->handle($lastBackup);
         }
