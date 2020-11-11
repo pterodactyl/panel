@@ -123,8 +123,8 @@ class InitiateBackupService
             }
 
             // Remove oldest backup
-            $lastBackup = $server->backups()->where('is_successful', true)->orderByDesc('created_at')->first();
-            $this->deleteBackupService->handle($lastBackup);
+            $oldestBackup = $server->backups()->where('is_successful', true)->orderByDesc('created_at')->first();
+            $this->deleteBackupService->handle($oldestBackup);
         }
 
         return $this->connection->transaction(function () use ($server, $name) {
