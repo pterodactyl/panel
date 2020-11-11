@@ -116,16 +116,16 @@ class InitiateBackupService
         }
 
         // Check if the server has reached or exceeded it's backup limit
-        if (! $server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
-            if($override) {
-                // Remove latest backup
-                $last_backup = $server->backups()->where('is_successful', true)->oldest()->first();
-                $this->deleteBackupService->handle($last_backup);
-            } else {
-                // Do not allow the user to continue if this server is already at its limit.
+        if (!$server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
+            // Do not allow the user to continue if this server is already at its limit and can't override.
+            if (!$override || $server->backup_limit <= 0) {
                 throw new TooManyBackupsException($server->backup_limit);
             }
-        }        
+
+            // Remove latest backup
+            $lastBackup = $server->backups()->where('is_successful', true)->orderByDesc('created_at')->first();
+            $this->deleteBackupService->handle($lastBackup);
+        }
 
         return $this->connection->transaction(function () use ($server, $name) {
             /** @var \Pterodactyl\Models\Backup $backup */
