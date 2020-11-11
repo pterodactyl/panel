@@ -51,7 +51,7 @@ export default () => {
         <ServerContentBlock title={'Subusers'}>
             <FlashMessageRender byKey={'users'} css={tw`mb-4`}/>
             {!subusers.length ?
-                <p css={tw`text-center text-sm text-neutral-400`}>
+                <p css={tw`text-center text-sm text-neutral-300`}>
                     It looks like you don&apos;t have any subusers.
                 </p>
                 :

@@ -43,7 +43,7 @@ export default ({ match, history }: RouteComponentProps) => {
                 <>
                     {
                         schedules.length === 0 ?
-                            <p css={tw`text-sm text-center text-neutral-400`}>
+                            <p css={tw`text-sm text-center text-neutral-300`}>
                                 There are no schedules configured for this server.
                             </p>
                             :
