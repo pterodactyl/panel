@@ -19,7 +19,7 @@ const Toast = styled.div`
     }
 `;
 
-const CopyOnClick: React.FC<{ text: string }> = ({ text, children }) => {
+const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
     const [ copied, setCopied ] = useState(false);
 
     useEffect(() => {
