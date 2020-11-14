@@ -19,10 +19,10 @@ RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar un
     && docker-php-ext-install bcmath gd pdo_mysql zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && cp .env.example .env \
-    && mkdir -p bootstrap/cache/ storage/framework/sessions storage/framework/views storage/framework/cache \
+    && mkdir -p bootstrap/cache/ storage/logs storage/framework/sessions storage/framework/views storage/framework/cache \
     && chmod 777 -R bootstrap storage \
     && composer install --no-dev --optimize-autoloader \
-    && rm -rf .env bootstrap/cache/*.php storage \
+    && rm -rf .env bootstrap/cache/*.php \
     && chown -R nginx:nginx .
 
 RUN rm /usr/local/etc/php-fpm.d/www.conf.default \
