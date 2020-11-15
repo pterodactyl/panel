@@ -25,12 +25,12 @@ jobs:
         uses: docker/build-push-action@v2
         if: "!contains(github.ref, 'develop')"
         env:
-          GITHUB_REF: ${{ github.ref }}
+          REF: ${{ github.ref }}
         with:
           push: true
           tags: |
             ghcr.io/pterodactyl/panel:latest
-            ghcr.io/pterodactyl/panel:${GITHUB_REF}
+            ghcr.io/pterodactyl/panel:${REF:11}
       - name: Release Development Build
         uses: docker/build-push-action@v2
         if: "contains(github.ref, 'develop')"
