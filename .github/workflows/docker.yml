@@ -7,9 +7,9 @@ on:
       - 'v*'
 jobs:
   push_to_registry:
-    name: Push Image to Github Packages
+    name: Push Image to GitHub Packages
     runs-on: ubuntu-latest
-    if: !contains(github.event.head_commit.message, '[skip docker]') && !contains(github.event.head_commit.message, '[docker skip]')
+    if: "!contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip')"
     steps:
       - uses: actions/checkout@v2
       - uses: docker/setup-qemu-action@v1
@@ -21,7 +21,7 @@ jobs:
           password: ${{ secrets.REGISTRY_TOKEN }}
       - name: Release Production Build
         uses: docker/build-push-action@v2
-        if: contains(github.ref, 'develop') != true
+        if: "!contains(github.ref, 'develop')"
         env:
           GITHUB_REF: ${{ github.ref }}
         with:
@@ -31,7 +31,7 @@ jobs:
             ghcr.io/pterodactyl/panel:${GITHUB_REF}
       - name: Release Development Build
         uses: docker/build-push-action@v2
-        if: contains(github.ref, 'develop')
+        if: "contains(github.ref, 'develop')"
         with:
           push: true
           tags: |
