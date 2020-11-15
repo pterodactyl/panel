@@ -7,10 +7,17 @@ on:
       - 'v*'
 jobs:
   push_to_registry:
-    name: Push Image to Github Packages
+    name: Push Image to GitHub Packages
     runs-on: ubuntu-latest
+    # Always run against a tag, even if the commit into the tag has [docker skip]
+    # within the commit message.
+    if: "!contains(github.ref, 'develop') || (!contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip'))"
     steps:
       - uses: actions/checkout@v2
+      - uses: crazy-max/ghaction-docker-meta@v1
+        id: docker_meta
+        with:
+          images: ghcr.io/pterodactyl/panel
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - uses: docker/login-action@v1
@@ -20,18 +27,15 @@ jobs:
           password: ${{ secrets.REGISTRY_TOKEN }}
       - name: Release Production Build
         uses: docker/build-push-action@v2
-        if: contains(github.ref, 'develop') != true
-        env:
-          GITHUB_REF: ${{ github.ref }}
+        if: "!contains(github.ref, 'develop')"
         with:
           push: true
-          tags: |
-            ghcr.io/pterodactyl/panel:latest
-            ghcr.io/pterodactyl/panel:${GITHUB_REF}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
       - name: Release Development Build
         uses: docker/build-push-action@v2
-        if: contains(github.ref, 'develop') && && !contains(github.event.head_commit.message, '[skip docker]') && !contains(github.event.head_commit.message, '[docker skip]')
+        if: "contains(github.ref, 'develop')"
         with:
-          push: true
-          tags: |
-            ghcr.io/pterodactyl/panel:develop
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
