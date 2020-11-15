@@ -14,6 +14,10 @@ jobs:
     if: "!contains(github.ref, 'develop') || (!contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip'))"
     steps:
       - uses: actions/checkout@v2
+      - uses: crazy-max/ghaction-docker-meta@v1
+        id: docker_meta
+        with:
+          images: ghcr.io/pterodactyl/panel
       - uses: docker/setup-qemu-action@v1
       - uses: docker/setup-buildx-action@v1
       - uses: docker/login-action@v1
@@ -24,17 +28,14 @@ jobs:
       - name: Release Production Build
         uses: docker/build-push-action@v2
         if: "!contains(github.ref, 'develop')"
-        env:
-          REF: ${{ github.ref }}
         with:
           push: true
-          tags: |
-            ghcr.io/pterodactyl/panel:latest
-            ghcr.io/pterodactyl/panel:${REF:11}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
       - name: Release Development Build
         uses: docker/build-push-action@v2
         if: "contains(github.ref, 'develop')"
         with:
-          push: true
-          tags: |
-            ghcr.io/pterodactyl/panel:develop
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
