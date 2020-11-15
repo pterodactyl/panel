@@ -1,22 +1,51 @@
-version: '2'
+version: '3.8'
+x-common:
+  database:
+    &db-environment
+    # Do not remove the "&db-password" from the end of the line below, it is important
+    # for Panel functionality.
+    MYSQL_PASSWORD: &db-password "CHANGE_ME"
+    MYSQL_ROOT_PASSWORD: "CHANGE_ME_TOO"
+  panel:
+    &panel-environment
+    APP_URL: "https://example.com"
+    # A list of valid timezones can be found here: http://php.net/manual/en/timezones.php
+    APP_TIMEZONE: "UTC"
+    APP_SERVICE_AUTHOR: "noreply@example.com"
+    # Uncomment the line below and set to a non-empty value if you want to use Let's Encrypt
+    # to generate an SSL certificate for the Panel.
+    # LE_EMAIL: ""
+  mail:
+    &mail-environment
+    MAIL_FROM: "noreply@example.com"
+    MAIL_DRIVER: "smtp"
+    MAIL_HOST: "mail"
+    MAIL_PORT: "1025"
+    MAIL_USERNAME: ""
+    MAIL_PASSWORD: ""
+    MAIL_ENCRYPTION: "true"
+
+#
+# ------------------------------------------------------------------------------------------
+# DANGER ZONE BELOW
+#
+# The remainder of this file likely does not need to be changed. Please only make modifications
+# below if you understand what you are doing.
+#
 services:
   database:
-    image: mariadb:10.4
+    image: library/mysql:8.0
     restart: always
+    command: --default-authentication-plugin=mysql_native_password
     volumes:
       - "/srv/pterodactyl/database:/var/lib/mysql"
     environment:
-      ## Database settings
-      ## change if you want it to be more secure.
-      - "MYSQL_ROOT_PASSWORD=apassword"
-      - "MYSQL_DATABASE=pterodb"
-      - "MYSQL_USER=ptero"
-      - "MYSQL_PASSWORD=pterodbpass"
-
+      <<: *db-environment
+      MYSQL_DATABASE: "panel"
+      MYSQL_USER: "pterodactyl"
   cache:
     image: redis:alpine
     restart: always
-
   panel:
     image: quay.io/pterodactyl/panel:latest
     restart: always
@@ -32,47 +61,16 @@ services:
       - "/srv/pterodactyl/certs/:/etc/letsencrypt/"
       - "/srv/pterodactyl/logs/:/var/log/"
     environment:
-      ## These are defaults and should be left alone
-      - "APP_ENV=production"
-      - "APP_DEBUG=false"
-      - "APP_THEME=pterodactyl"
-      - "APP_CLEAR_TASKLOG=720"
-      - "APP_DELETE_MINUTES=10"
-      - "APP_ENVIRONMENT_ONLY=false"
-      - "QUEUE_HIGH=high"
-      - "QUEUE_STANDARD=standard"
-      - "QUEUE_LOW=low"
-      ## Cache settings
-      - "CACHE_DRIVER=redis"
-      - "SESSION_DRIVER=redis"
-      - "QUEUE_DRIVER=redis"
-      - "REDIS_HOST=cache"
-      - "REDIS_PASSWORD=null"
-      - "REDIS_PORT=6379"
-      ## Domain settings
-      - "APP_URL=https://your.domain.here" ## if you are running this behind a reverse proxy with ssl app_url needs to be https still. 
-      ## Timezone settings
-      - "APP_TIMEZONE=UTC" ## http://php.net/manual/en/timezones.php
-      ## Service egg settings
-      - "APP_SERVICE_AUTHOR=noreply@your.domain.here" ## this is the email that gets put on eggs you create
-      ## Database settings
-      ## These can be left alone. Only change if you know what you are doing.
-      - "DB_HOST=database" 
-      - "DB_PORT=3306"
-      - "DB_DATABASE=pterodb"
-      - "DB_USERNAME=ptero"
-      - "DB_PASSWORD=pterodbpass"
-      ## Email settings
-      - "MAIL_FROM=noreply@your.domain.here"
-      - "MAIL_DRIVER=smtp"
-      - "MAIL_HOST=mail"
-      - "MAIL_PORT=1025"
-      - "MAIL_USERNAME=''"
-      - "MAIL_PASSWORD=''"
-      - "MAIL_ENCRYPTION=true"
-      ## certbot settings - Used to automatically generate ssl certs and 
-      # - "LE_EMAIL=" ## uncomment if you are using ssl
-
+      <<: *panel-environment
+      <<: *mail-environment
+      DB_PASSWORD: *db-password
+      APP_ENV: "production"
+      APP_ENVIRONMENT_ONLY: "false"
+      CACHE_DRIVER: "redis"
+      SESSION_DRIVER: "redis"
+      QUEUE_DRIVER: "redis"
+      REDIS_HOST: "cache"
+      DB_HOST: "database"
 networks:
   default:
     ipam:
