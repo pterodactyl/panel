@@ -30,7 +30,7 @@ jobs:
             ghcr.io/pterodactyl/panel:${GITHUB_REF}
       - name: Release Development Build
         uses: docker/build-push-action@v2
-        if: contains(github.ref, 'develop')
+        if: contains(github.ref, 'develop') && && !contains(github.event.head_commit.message, '[skip docker]') && !contains(github.event.head_commit.message, '[docker skip]')
         with:
           push: true
           tags: |
