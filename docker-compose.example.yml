@@ -47,7 +47,7 @@ services:
     image: redis:alpine
     restart: always
   panel:
-    image: quay.io/pterodactyl/panel:latest
+    image: ghcr.io/pterodactyl/panel:latest
     restart: always
     ports:
       - "80:80"
