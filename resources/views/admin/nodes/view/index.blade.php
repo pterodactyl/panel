@@ -51,7 +51,7 @@
                                 <td data-attr="info-system"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
                             </tr>
                             <tr>
-                                <td>Total CPU Cores</td>
+                                <td>Total CPU Threads</td>
                                 <td data-attr="info-cpus"><i class="fa fa-refresh fa-fw fa-spin"></i></td>
                             </tr>
                         </table>
