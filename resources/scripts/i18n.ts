@@ -1,7 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LocalStorageBackend from 'i18next-localstorage-backend';
-import XHR from 'i18next-xhr-backend';
+import HttpApi from 'i18next-http-backend';
 import Backend from 'i18next-chained-backend';
 
 i18n
@@ -15,7 +15,7 @@ i18n
         backend: {
             backends: [
                 LocalStorageBackend,
-                XHR,
+                HttpApi,
             ],
             backendOptions: [ {
                 prefix: 'pterodactyl_lng__',
