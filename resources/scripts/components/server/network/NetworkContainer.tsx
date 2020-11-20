@@ -19,6 +19,7 @@ const NetworkContainer = () => {
     const allocationLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.allocations);
     // @ts-ignore
     const allocations: Allocation[] = ServerContext.useStoreState(state => state.server.data!.allocations, isEqual);
+    const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data, error, mutate } = getServerAllocations();
@@ -38,7 +39,10 @@ const NetworkContainer = () => {
 
         setLoading(true);
         createServerAllocation(uuid)
-            .then(allocation => mutate(data?.concat(allocation), false))
+            .then(allocation => {
+                setServerFromState(s => ({ ...s, allocations: s.allocations.concat(allocation) }));
+                return mutate(data?.concat(allocation), false);
+            })
             .catch(error => clearAndAddHttpError({ key: 'server:network', error }))
             .then(() => setLoading(false));
     };

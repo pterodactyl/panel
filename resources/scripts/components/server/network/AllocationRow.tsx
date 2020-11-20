@@ -89,10 +89,10 @@ const AllocationRow = ({ allocation }: Props) => {
                     <span css={tw`bg-green-500 py-1 px-2 rounded text-green-50 text-xs`}>Primary</span>
                     :
                     <>
-                        <Can action={'allocations.delete'}>
+                        <Can action={'allocation.delete'}>
                             <DeleteAllocationButton allocation={allocation.id}/>
                         </Can>
-                        <Can action={'allocations.update'}>
+                        <Can action={'allocation.update'}>
                             <Button
                                 isSecondary
                                 size={'xsmall'}

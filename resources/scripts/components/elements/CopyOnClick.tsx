@@ -15,11 +15,11 @@ const Toast = styled.div`
     animation: ${fade} 250ms linear;
 
     & > div {
-        ${tw`rounded px-4 py-2 text-white bg-neutral-800 border border-neutral-900`};
+        ${tw`rounded px-4 py-2 text-white bg-neutral-900 border border-black opacity-75`};
     }
 `;
 
-const CopyOnClick: React.FC<{ text: string }> = ({ text, children }) => {
+const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
     const [ copied, setCopied ] = useState(false);
 
     useEffect(() => {
@@ -53,7 +53,7 @@ const CopyOnClick: React.FC<{ text: string }> = ({ text, children }) => {
                     }
                 </Fade>
             </SwitchTransition>
-            <CopyToClipboard onCopy={onCopy} text={text} options={{ debug: true }}>
+            <CopyToClipboard onCopy={onCopy} text={text} options={{ debug: true }} css={tw`cursor-pointer`}>
                 {children}
             </CopyToClipboard>
         </>

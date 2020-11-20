@@ -34,7 +34,7 @@ export default () => {
         <ServerContentBlock title={'Backups'}>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             {!backups.items.length ?
-                <p css={tw`text-center text-sm text-neutral-400`}>
+                <p css={tw`text-center text-sm text-neutral-300`}>
                     There are no backups stored for this server.
                 </p>
                 :
@@ -47,21 +47,21 @@ export default () => {
                 </div>
             }
             {backupLimit === 0 &&
-            <p css={tw`text-center text-sm text-neutral-400`}>
+            <p css={tw`text-center text-sm text-neutral-300`}>
                 Backups cannot be created for this server.
             </p>
             }
             <Can action={'backup.create'}>
-                {(backupLimit > 0 && backups.items.length > 0) &&
-                <p css={tw`text-center text-xs text-neutral-400 mt-2`}>
-                    {backups.items.length} of {backupLimit} backups have been created for this server.
-                </p>
-                }
-                {backupLimit > 0 && backupLimit !== backups.items.length &&
-                <div css={tw`mt-6 flex justify-end`}>
-                    <CreateBackupButton/>
+                <div css={tw`mt-6 sm:flex items-center justify-end`}>
+                    {(backupLimit > 0 && backups.items.length > 0) &&
+                    <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
+                        {backups.items.length} of {backupLimit} backups have been created for this server.
+                    </p>
+                    }
+                    {backupLimit > 0 && backupLimit !== backups.items.length &&
+                        <CreateBackupButton css={tw`w-full sm:w-auto`}/>
+                    }
                 </div>
-                }
             </Can>
         </ServerContentBlock>
     );

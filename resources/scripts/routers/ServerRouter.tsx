@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import ReactGA from 'react-ga';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
@@ -40,9 +39,9 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     const id = ServerContext.useStoreState(state => state.server.data?.id);
     const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
     const isInstalling = ServerContext.useStoreState(state => state.server.data?.isInstalling);
+    const serverId = ServerContext.useStoreState(state => state.server.data?.internalId);
     const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
-    const serverId = ServerContext.useStoreState(state => state.server.data?.internalId);
 
     useEffect(() => () => {
         clearServerState();
@@ -69,10 +68,6 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
             clearServerState();
         };
     }, [ match.params.id ]);
-
-    useEffect(() => {
-        ReactGA.pageview(location.pathname);
-    }, [ location.pathname ]);
 
     return (
         <React.Fragment key={'server-router'}>
@@ -113,9 +108,9 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                                 </Can>
                                 {rootAdmin &&
-                                    <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
-                                        <FontAwesomeIcon icon={faExternalLinkAlt}/>
-                                    </a>
+                                <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
+                                    <FontAwesomeIcon icon={faExternalLinkAlt}/>
+                                </a>
                                 }
                             </div>
                         </SubNavigation>

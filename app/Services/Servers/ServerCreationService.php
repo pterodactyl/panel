@@ -169,7 +169,7 @@ class ServerCreationService
             $this->storeEggVariables($server, $eggVariableData);
 
             return $server;
-        });
+        }, 5);
 
         try {
             $this->daemonServerRepository->setServer($server)->create(
