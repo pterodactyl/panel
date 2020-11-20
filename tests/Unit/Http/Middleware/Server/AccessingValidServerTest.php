@@ -46,6 +46,8 @@ class AccessingValidServerTest extends MiddlewareTestCase
      */
     public function testExceptionIsThrownIfServerIsSuspended()
     {
+        $this->generateRequestUserModel();
+
         $this->expectException(AccessDeniedHttpException::class);
         $this->expectExceptionMessage('Server is suspended and cannot be accessed.');
 
@@ -64,6 +66,8 @@ class AccessingValidServerTest extends MiddlewareTestCase
      */
     public function testExceptionIsThrownIfServerIsNotInstalled()
     {
+        $this->generateRequestUserModel();
+
         $this->expectException(ConflictHttpException::class);
         $this->expectExceptionMessage('Server is still completing the installation process.');
 
@@ -84,6 +88,8 @@ class AccessingValidServerTest extends MiddlewareTestCase
      */
     public function testCorrectErrorPagesAreRendered(Server $model, string $page, int $httpCode)
     {
+        $this->generateRequestUserModel();
+
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');
         $this->request->shouldReceive('expectsJson')->withNoArgs()->once()->andReturn(false);
         $this->config->shouldReceive('get')->with('pterodactyl.json_routes', [])->once()->andReturn([]);
@@ -101,6 +107,8 @@ class AccessingValidServerTest extends MiddlewareTestCase
      */
     public function testValidServerProcess()
     {
+        $this->generateRequestUserModel();
+
         $model = factory(Server::class)->make();
 
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');
