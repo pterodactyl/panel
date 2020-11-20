@@ -13,4 +13,15 @@ import 'tailwindcss/dist/base.min.css';
 // @see https://github.com/gaearon/react-hot-loader#hook-support
 setConfig({ reloadHooks: false });
 
-ReactDOM.render(<App/>, document.getElementById('app'));
+// Disabled this render. See below for more informations
+// ReactDOM.render(<App/>, document.getElementById('app'));
+
+// Need the StrictMode and the Suspense fallback for the i18n lazy loading
+ReactDOM.render(
+    <React.StrictMode>
+        <React.Suspense fallback='Loading...'>
+            <App />
+        </React.Suspense>
+    </React.StrictMode>,
+    document.getElementById('app'),
+);

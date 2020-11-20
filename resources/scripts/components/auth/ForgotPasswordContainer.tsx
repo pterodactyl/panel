@@ -12,6 +12,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
@@ -28,6 +29,8 @@ export default () => {
         clearFlashes();
     }, []);
 
+    const { t } = useTranslation('auth');
+
     const handleSubmission = ({ email }: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes();
 
@@ -38,7 +41,7 @@ export default () => {
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('error'), message: httpErrorToHuman(error) });
             });
 
             return;
@@ -47,11 +50,11 @@ export default () => {
         requestPasswordResetEmail(email, token)
             .then(response => {
                 resetForm();
-                addFlash({ type: 'success', title: 'Success', message: response });
+                addFlash({ type: 'success', title: t('success'), message: response });
             })
             .catch(error => {
                 console.error(error);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('error'), message: httpErrorToHuman(error) });
             })
             .then(() => {
                 setToken('');
@@ -66,19 +69,19 @@ export default () => {
             onSubmit={handleSubmission}
             initialValues={{ email: '' }}
             validationSchema={object().shape({
-                email: string().email('A valid email address must be provided to continue.')
-                    .required('A valid email address must be provided to continue.'),
+                email: string().email(t('invalid_email'))
+                    .required(t('invalid_email')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer
-                    title={'Request Password Reset'}
+                    title={t('request_password_reset_title')}
                     css={tw`w-full flex`}
                 >
                     <Field
                         light
-                        label={'Email'}
-                        description={'Enter your account email address to receive instructions on resetting your password.'}
+                        label={t('email')}
+                        description={t('email_description')}
                         name={'email'}
                         type={'email'}
                     />
@@ -89,7 +92,7 @@ export default () => {
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            Send Email
+                            {t('send_email')}
                         </Button>
                     </div>
                     {recaptchaEnabled &&
@@ -112,7 +115,7 @@ export default () => {
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                         >
-                            Return to Login
+                            {t('return_to_login')}
                         </Link>
                     </div>
                 </LoginFormContainer>

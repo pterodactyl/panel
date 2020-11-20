@@ -13,6 +13,7 @@ import Field from '@/components/elements/Field';
 import Input from '@/components/elements/Input';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     password: string;
@@ -23,6 +24,8 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
     const [ email, setEmail ] = useState('');
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+
+    const { t } = useTranslation('auth');
 
     const parsed = parse(location.search);
     if (email.length === 0 && parsed.email) {
@@ -40,7 +43,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('error'), message: httpErrorToHuman(error) });
             });
     };
 
