@@ -3,6 +3,12 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.1.2
+### Fixed
+* Fixes an exception thrown while trying to validate IP access for the client API.
+* Fixes command history scrolling not putting the cursor at the end of the line.
+* Fixes file manager rows triggering a 404 when middle-clicked to open in a new tab.
+
 ## v1.1.1
 ### Fixed
 * Fixes allocation permissions checking on the frontend checking the wrong permission therefore leading to the item never showing up.
