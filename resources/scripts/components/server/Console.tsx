@@ -3,6 +3,7 @@ import { ITerminalOptions, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
+import { WebLinksAddon } from 'xterm-addon-web-links';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import styled from 'styled-components/macro';
@@ -62,6 +63,7 @@ export default () => {
     const fitAddon = new FitAddon();
     const searchAddon = new SearchAddon();
     const searchBar = new SearchBarAddon({ searchAddon });
+    const webLinksAddon = new WebLinksAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
@@ -115,6 +117,7 @@ export default () => {
             terminal.loadAddon(fitAddon);
             terminal.loadAddon(searchAddon);
             terminal.loadAddon(searchBar);
+            terminal.loadAddon(webLinksAddon);
             fitAddon.fit();
 
             // Add support for capturing keys
