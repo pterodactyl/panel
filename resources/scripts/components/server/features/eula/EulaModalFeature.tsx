@@ -62,7 +62,7 @@ const EulaModalFeature = () => {
             :
             <Modal visible onDismissed={() => setVisible(false)} closeOnBackground={false} showSpinnerOverlay={loading}>
                 <FlashMessageRender key={'feature:eula'} css={tw`mb-4`}/>
-                <h2 css={tw`text-2xl mb-4 text-neutral-100`}>Accept Minecraft® EULA</h2>
+                <h2 css={tw`text-2xl mb-4 text-neutral-100`}>Accept Minecraft&reg; EULA</h2>
                 <p css={tw`text-neutral-200`}>
                     By pressing {'"I Accept"'} below you are indicating your agreement to the&nbsp;
                     <a
@@ -71,7 +71,7 @@ const EulaModalFeature = () => {
                         rel={'noreferrer noopener'}
                         href="https://account.mojang.com/documents/minecraft_eula"
                     >
-                        Mojang EULA
+                        Minecraft&reg; EULA
                     </a>.
                 </p>
                 <div css={tw`mt-8 sm:flex items-center justify-end`}>
