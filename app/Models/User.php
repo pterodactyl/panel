@@ -142,7 +142,7 @@ class User extends Model implements
         'username' => 'required|between:1,191|unique:users,username',
         'name_first' => 'required|string|between:1,191',
         'name_last' => 'required|string|between:1,191',
-        'password' => 'sometimes|nullable|string',
+        'password' => 'required|string',
         'root_admin' => 'boolean',
         'language' => 'string',
         'use_totp' => 'boolean',
@@ -159,6 +159,21 @@ class User extends Model implements
 
         $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
         $rules['username'][] = new Username;
+
+        return $rules;
+    }
+        
+    public static function getRulesForUpdate($id, string $primaryKey = 'id')
+    {
+        $rules = parent::getRulesForUpdate($id, $primaryKey);
+
+        foreach ($rules['password'] as $key => $rule) {
+            if ($rule === 'required') {
+                unset($rules['password'][$key]);
+            }
+        }
+
+        $rules['password'] = array_merge($rules['password'], ['sometimes', 'nullable']);
 
         return $rules;
     }
