@@ -32,7 +32,7 @@ class UpdatePasswordRequest extends ClientApiRequest
      */
     public function rules(): array
     {
-        $rules = User::getRulesForUpdate($this->user());
+        $rules = User::getRules();
 
         return ['password' => array_merge($rules['password'], ['confirmed'])];
     }
