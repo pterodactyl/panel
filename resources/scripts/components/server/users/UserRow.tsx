@@ -61,7 +61,9 @@ export default ({ subuser }: Props) => {
                 }
             </Can>
             <Can action={'user.delete'}>
+                {subuser.uuid !== uuid &&
                 <RemoveSubuserButton subuser={subuser}/>
+                }
             </Can>
         </GreyRowBox>
     );
