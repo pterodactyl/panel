@@ -48,23 +48,23 @@ export default ({ subuser }: Props) => {
                 </p>
                 <p css={tw`text-2xs text-neutral-500 uppercase`}>Permissions</p>
             </div>
-            <Can action={'user.update'}>
-                {subuser.uuid !== uuid &&
-                <button
-                    type={'button'}
-                    aria-label={'Edit subuser'}
-                    css={tw`block text-sm p-1 md:p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mx-4`}
-                    onClick={() => setVisible(true)}
-                >
-                    <FontAwesomeIcon icon={faPencilAlt}/>
-                </button>
-                }
-            </Can>
-            <Can action={'user.delete'}>
-                {subuser.uuid !== uuid &&
-                <RemoveSubuserButton subuser={subuser}/>
-                }
-            </Can>
+            {subuser.uuid !== uuid &&
+                <Can action={'user.update'}>
+                    <button
+                        type={'button'}
+                        aria-label={'Edit subuser'}
+                        css={tw`block text-sm p-1 md:p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mx-4`}
+                        onClick={() => setVisible(true)}
+                    >
+                        <FontAwesomeIcon icon={faPencilAlt}/>
+                    </button>
+                </Can>
+            }
+            {subuser.uuid !== uuid &&
+                <Can action={'user.delete'}>
+                    <RemoveSubuserButton subuser={subuser}/>
+                </Can>
+            }
         </GreyRowBox>
     );
 };
