@@ -69,7 +69,7 @@ class RunTaskJob extends Job implements ShouldQueue
                 $commandRepository->setServer($server)->send($this->task->payload);
                 break;
             case 'backup':
-                $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null);
+                $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
                 break;
             default:
                 throw new InvalidArgumentException('Cannot run a task that points to a non-existent action.');
