@@ -5,6 +5,7 @@ import {
     faCopy,
     faEllipsisH,
     faFileArchive,
+    faFileCode,
     faFileDownload,
     faLevelUpAlt,
     faPencilAlt,
@@ -30,8 +31,9 @@ import compressFiles from '@/api/server/files/compressFiles';
 import decompressFiles from '@/api/server/files/decompressFiles';
 import isEqual from 'react-fast-compare';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import ChmodFileModal from '@/components/server/files/ChmodFileModal';
 
-type ModalType = 'rename' | 'move';
+type ModalType = 'rename' | 'move' | 'chmod';
 
 const StyledRow = styled.div<{ $danger?: boolean }>`
     ${tw`p-2 flex items-center rounded`};
@@ -140,14 +142,23 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 renderToggle={onClick => (
                     <div css={tw`p-3 hover:text-white`} onClick={onClick}>
                         <FontAwesomeIcon icon={faEllipsisH}/>
-                        {!!modal &&
-                        <RenameFileModal
-                            visible
-                            appear
-                            files={[ file.name ]}
-                            useMoveTerminology={modal === 'move'}
-                            onDismissed={() => setModal(null)}
-                        />
+                        {modal ?
+                            modal === 'chmod' ?
+                                <ChmodFileModal
+                                    visible
+                                    appear
+                                    files={[ { file: file.name, mode: file.modeBits } ]}
+                                    onDismissed={() => setModal(null)}
+                                />
+                                :
+                                <RenameFileModal
+                                    visible
+                                    appear
+                                    files={[ file.name ]}
+                                    useMoveTerminology={modal === 'move'}
+                                    onDismissed={() => setModal(null)}
+                                />
+                            : null
                         }
                         <SpinnerOverlay visible={showSpinner} fixed size={'large'}/>
                     </div>
@@ -156,6 +167,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 <Can action={'file.update'}>
                     <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'}/>
                     <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'}/>
+                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'Permissions'}/>
                 </Can>
                 {file.isFile &&
                 <Can action={'file.create'}>
