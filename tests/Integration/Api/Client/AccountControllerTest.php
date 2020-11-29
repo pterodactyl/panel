@@ -141,6 +141,29 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
+     * Test that a validation error is returned to the user if no password is provided or if
+     * the password is below the minimum password length.
+     */
+    public function testErrorIsReturnedForInvalidRequestData()
+    {
+        $user = factory(User::class)->create();
+
+        $this->actingAs($user)->putJson('/api/client/account/password', [
+            'current_password' => 'password',
+        ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'required');
+
+        $this->actingAs($user)->putJson('/api/client/account/password', [
+            'current_password' => 'password',
+            'password' => 'pass',
+            'password_confirmation' => 'pass',
+        ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'min');
+    }
+
+    /**
      * Test that a validation error is returned if the password passed in the request
      * does not have a confirmation, or the confirmation is not the same as the password.
      */
