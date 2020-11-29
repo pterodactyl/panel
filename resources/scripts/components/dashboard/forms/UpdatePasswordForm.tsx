@@ -77,7 +77,7 @@ export default () => {
                                 </div>
                                 <div css={tw`mt-6`}>
                                     <Field
-                                        id={'confirm_password'}
+                                        id={'confirm_new_password'}
                                         type={'password'}
                                         name={'confirmPassword'}
                                         label={'Confirm New Password'}
