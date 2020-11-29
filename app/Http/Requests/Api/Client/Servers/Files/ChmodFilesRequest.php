@@ -24,8 +24,7 @@ class ChmodFilesRequest extends ClientApiRequest implements ClientPermissionsReq
         return [
             'root' => 'required|nullable|string',
             'files' => 'required|array',
-            'files.file' => 'string',
-            'files.mode' => 'integer',
+            'files.*' => 'string',
         ];
     }
 }
