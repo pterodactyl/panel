@@ -96,25 +96,6 @@ interface ServerRepositoryInterface extends RepositoryInterface
     public function getByUuid(string $uuid): Server;
 
     /**
-     * Return all of the servers that should have a power action performed against them.
-     *
-     * @param int[] $servers
-     * @param int[] $nodes
-     * @param bool $returnCount
-     * @return int|\Illuminate\Support\LazyCollection
-     */
-    public function getServersForPowerAction(array $servers = [], array $nodes = [], bool $returnCount = false);
-
-    /**
-     * Return the total number of servers that will be affected by the query.
-     *
-     * @param int[] $servers
-     * @param int[] $nodes
-     * @return int
-     */
-    public function getServersForPowerActionCount(array $servers = [], array $nodes = []): int;
-
-    /**
      * Check if a given UUID and UUID-Short string are unique to a server.
      *
      * @param string $uuid

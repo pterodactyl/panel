@@ -83,10 +83,10 @@ class MergePermissionsTableIntoSubusers extends Migration
                     ->map(function ($value) {
                         return self::$permissionsMap[$value] ?? null;
                     })->filter(function ($value) {
-                        return !is_null($value) && $value !== Permission::ACTION_WEBSOCKET_CONNECT;
+                        return ! is_null($value) && $value !== Permission::ACTION_WEBSOCKET_CONNECT;
                     })
                     // All subusers get this permission, so make sure it gets pushed into the array.
-                    ->merge([ Permission::ACTION_WEBSOCKET_CONNECT ])
+                    ->merge([Permission::ACTION_WEBSOCKET_CONNECT])
                     ->unique()
                     ->values()
                     ->toJson();
@@ -103,12 +103,12 @@ class MergePermissionsTableIntoSubusers extends Migration
      */
     public function down()
     {
-        $flipped = array_flip(self::$permissionsMap);
+        $flipped = array_flip(array_filter(self::$permissionsMap));
 
         foreach (DB::select('SELECT id, permissions FROM subusers') as $datum) {
             $values = [];
             foreach (json_decode($datum->permissions, true) as $permission) {
-                if (!empty($v = $flipped[$permission])) {
+                if (! empty($v = $flipped[$permission])) {
                     $values[] = $datum->id;
                     $values[] = $v;
                 }

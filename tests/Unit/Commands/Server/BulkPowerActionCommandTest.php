@@ -53,7 +53,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
         $this->repository->expects('getServersForPowerAction')->with([], [])->andReturn($servers);
 
         for ($i = 0; $i < count($servers); $i++) {
-            $this->powerRepository->expects('setNode->setServer->send')->with('kill')->andReturnNull();
+            $this->powerRepository->expects('setServer->send')->with('kill')->andReturnNull();
         }
 
         $display = $this->runCommand($this->getCommand(), ['action' => 'kill'], ['yes']);
@@ -107,7 +107,7 @@ class BulkPowerActionCommandTest extends CommandTestCase
             ->andReturn(1);
 
         $this->repository->expects('getServersForPowerAction')->with([], [])->andReturn(Collection::make([$server]));
-        $this->powerRepository->expects('setNode->setServer->send')->with('kill')->andReturnNull();
+        $this->powerRepository->expects('setServer->send')->with('kill')->andReturnNull();
 
         $display = $this->runCommand($this->getCommand(), [
             'action' => 'kill',

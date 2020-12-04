@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.1.3
+### Fixed
+* Server bulk power actions command will no longer attempt to run commands against installing or suspended servers.
+
 ## v1.1.2
 ### Fixed
 * Fixes an exception thrown while trying to validate IP access for the client API.
