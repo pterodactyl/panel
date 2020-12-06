@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use League\Flysystem\AdapterInterface;
+use Illuminate\Foundation\Application;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Memory\MemoryAdapter;
 use Illuminate\Contracts\Config\Repository;
@@ -44,7 +45,7 @@ class BackupManager
      *
      * @param \Illuminate\Foundation\Application $app
      */
-    public function __construct($app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
         $this->config = $app->make(Repository::class);

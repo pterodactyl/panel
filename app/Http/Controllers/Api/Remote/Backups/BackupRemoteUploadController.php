@@ -6,7 +6,9 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Backup;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Foundation\Application;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
+use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
@@ -15,6 +17,11 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class BackupRemoteUploadController extends Controller
 {
     const PART_SIZE = 5 * 1024 * 1024 * 1024;
+
+    /**
+     * @var \Illuminate\Contracts\Config\Repository
+     */
+    protected $config;
 
     /**
      * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
@@ -29,11 +36,13 @@ class BackupRemoteUploadController extends Controller
     /**
      * BackupRemoteUploadController constructor.
      *
+     * @param \Illuminate\Foundation\Application $app
      * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
      * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
-    public function __construct(BackupRepository $repository, BackupManager $backupManager)
+    public function __construct(Application $app, BackupRepository $repository, BackupManager $backupManager)
     {
+        $this->config = $app->make(Repository::class);
         $this->repository = $repository;
         $this->backupManager = $backupManager;
     }
@@ -69,7 +78,7 @@ class BackupRemoteUploadController extends Controller
         // Ensure we are using the S3 adapter.
         $adapter = $this->backupManager->adapter();
         if (! $adapter instanceof AwsS3Adapter) {
-            throw new BadRequestHttpException('The configured backup adapter is not an S3 compatiable adapter.');
+            throw new BadRequestHttpException('The configured backup adapter is not an S3 compatible adapter.');
         }
 
         // The path where backup will be uploaded to
@@ -77,7 +86,7 @@ class BackupRemoteUploadController extends Controller
 
         // Get the S3 client
         $client = $adapter->getClient();
-        $expires = CarbonImmutable::now()->addMinutes(30);
+        $expires = CarbonImmutable::now()->addMinutes($this->config->get('backups.presigned_url_lifespan', 60));
 
         // Params for generating the presigned urls
         $params = [
@@ -102,14 +111,9 @@ class BackupRemoteUploadController extends Controller
         }
 
         return new JsonResponse([
+            'upload_id' => $params['UploadId'],
             'parts' => $parts,
             'part_size' => self::PART_SIZE,
-            'complete_multipart_upload' => $client->createPresignedRequest(
-                $client->getCommand('CompleteMultipartUpload', $params), $expires
-            )->getUri()->__toString(),
-            'abort_multipart_upload' => $client->createPresignedRequest(
-                $client->getCommand('AbortMultipartUpload', $params), $expires->addMinutes(15)
-            )->getUri()->__toString(),
         ]);
     }
 }
