@@ -210,11 +210,8 @@ class NodeUpdateServiceTest extends TestCase
             try {
                 $closure();
             } catch (Exception $exception) {
-                $this->assertInstanceOf(DaemonConnectionException::class, $exception);
-                $this->assertSame(
-                    'There was an exception while attempting to communicate with the daemon resulting in a HTTP/E_CONN_REFUSED response code. This exception has been logged.',
-                    $exception->getMessage()
-                );
+                $this->assertInstanceOf(Exception::class, $exception);
+                $this->assertSame('Foo', $exception->getMessage());
 
                 return true;
             }
@@ -224,9 +221,7 @@ class NodeUpdateServiceTest extends TestCase
 
         $this->repository->expects('withFreshModel->update')->andReturns($updatedModel);
         $this->configurationRepository->expects('setNode->update')->andThrow(
-            new DaemonConnectionException(
-                new TransferException('', 500, new Exception)
-            )
+            new Exception('Foo')
         );
 
         $this->getService()->handle($model, ['name' => $updatedModel->name]);
