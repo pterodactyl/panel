@@ -109,13 +109,13 @@ class InitiateBackupService
      */
     public function handle(Server $server, string $name = null, bool $override = false): Backup
     {
-        /*$previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
+        $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
         if ($previous->count() >= 2) {
             throw new TooManyRequestsHttpException(
                 CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addMinutes(10)),
                 'Only two backups may be generated within a 10 minute span of time.'
             );
-        }*/
+        }
 
         // Check if the server has reached or exceeded it's backup limit
         if (!$server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
