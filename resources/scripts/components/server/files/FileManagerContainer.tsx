@@ -51,9 +51,28 @@ export default () => {
 
     return (
         <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
-            <ErrorBoundary>
-                <FileManagerBreadcrumbs/>
-            </ErrorBoundary>
+            <div css={tw`flex flex-wrap-reverse md:flex-no-wrap justify-center mb-4`}>
+                <ErrorBoundary>
+                    <FileManagerBreadcrumbs/>
+                </ErrorBoundary>
+
+                <Can action={'file.create'}>
+                    <ErrorBoundary>
+                        <div css={tw`flex flex-shrink-0 flex-wrap-reverse md:flex-no-wrap justify-end mb-4 md:mb-0 ml-0 md:ml-auto`}>
+                            <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`}/>
+                            <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`}/>
+                            <NavLink
+                                to={`/server/${id}/files/new${window.location.hash}`}
+                                css={tw`flex-1 sm:flex-none sm:mt-0`}
+                            >
+                                <Button css={tw`w-full`}>
+                                    New File
+                                </Button>
+                            </NavLink>
+                        </div>
+                    </ErrorBoundary>
+                </Can>
+            </div>
             {
                 !files ?
                     <Spinner size={'large'} centered/>
@@ -83,22 +102,6 @@ export default () => {
                                 </div>
                             </CSSTransition>
                         }
-                        <Can action={'file.create'}>
-                            <ErrorBoundary>
-                                <div css={tw`flex flex-wrap-reverse justify-end mt-4`}>
-                                    <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`}/>
-                                    <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`}/>
-                                    <NavLink
-                                        to={`/server/${id}/files/new${window.location.hash}`}
-                                        css={tw`flex-1 sm:flex-none sm:mt-0`}
-                                    >
-                                        <Button css={tw`w-full`}>
-                                            New File
-                                        </Button>
-                                    </NavLink>
-                                </div>
-                            </ErrorBoundary>
-                        </Can>
                     </>
             }
         </ServerContentBlock>
