@@ -16,6 +16,7 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
     key: `${data.attributes.is_file ? 'file' : 'dir'}_${data.attributes.name}`,
     name: data.attributes.name,
     mode: data.attributes.mode,
+    modeBits: data.attributes.mode_bits,
     size: Number(data.attributes.size),
     isFile: data.attributes.is_file,
     isSymlink: data.attributes.is_symlink,
