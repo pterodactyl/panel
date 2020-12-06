@@ -4,6 +4,7 @@ namespace Pterodactyl\Services\Nodes;
 
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
+use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -90,11 +91,17 @@ class NodeUpdateService
 
                 $this->configurationRepository->setNode($node)->update($updated);
             } catch (DaemonConnectionException $exception) {
-                if (! is_null($exception->getPrevious()) && $exception->getPrevious() instanceof ConnectException) {
-                    return [$updated, true];
-                }
+                Log::warning($exception, ['node_id' => $node->id]);
 
-                throw $exception;
+                // Never actually throw these exceptions up the stack. If we were able to change the settings
+                // but something went wrong with Wings we just want to store the update and let the user manually
+                // make changes as needed.
+                //
+                // This avoids issues with proxies such as CloudFlare which will see Wings as offline and then
+                // inject their own response pages, causing this logic to get fucked up.
+                //
+                // @see https://github.com/pterodactyl/panel/issues/2712
+                return [ $updated, true ];
             }
 
             return [$updated, false];
