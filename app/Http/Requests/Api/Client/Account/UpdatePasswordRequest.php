@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Account;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 
@@ -32,8 +31,8 @@ class UpdatePasswordRequest extends ClientApiRequest
      */
     public function rules(): array
     {
-        $rules = User::getRulesForUpdate($this->user());
-
-        return ['password' => array_merge($rules['password'], ['confirmed'])];
+        return [
+            'password' => ['required', 'string', 'confirmed', 'min:8'],
+        ];
     }
 }
