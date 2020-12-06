@@ -44,7 +44,7 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
             'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
 
-        $mock->expects('setServer->revokeJTIs')->with([md5($subuser->id . $server->uuid)])->andReturnUndefined();
+        $mock->expects('setServer->revokeUserJTI')->with($subuser->id)->andReturnUndefined();
 
         $this->actingAs($user)->deleteJson($this->link($server) . "/users/{$subuser->uuid}")->assertNoContent();
 
@@ -60,7 +60,7 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
             'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
 
-        $mock->expects('setServer->revokeJTIs')->with([md5($subuser->id . $server->uuid)])->andReturnUndefined();
+        $mock->expects('setServer->revokeUserJTI')->with($subuser->id)->andReturnUndefined();
 
         $this->actingAs($user)->deleteJson($this->link($server) . "/users/{$subuser->uuid}")->assertNoContent();
     }
