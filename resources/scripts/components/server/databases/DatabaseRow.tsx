@@ -131,7 +131,7 @@ export default ({ database, className }: Props) => {
                     </div>
                 </Can>
                 <div css={tw`mt-6`}>
-                    <Label>JBDC Connection String</Label>
+                    <Label>JDBC Connection String</Label>
                     <CopyOnClick text={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}>
                         <Input
                             type={'text'}
