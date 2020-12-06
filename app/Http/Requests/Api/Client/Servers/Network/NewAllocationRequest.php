@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Network;
 
-use Illuminate\Support\Collection;
-use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
@@ -16,5 +14,4 @@ class NewAllocationRequest extends ClientApiRequest
     {
         return Permission::ACTION_ALLOCATION_CREATE;
     }
-
 }

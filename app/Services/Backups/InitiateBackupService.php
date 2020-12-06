@@ -99,6 +99,8 @@ class InitiateBackupService
      *
      * @param \Pterodactyl\Models\Server $server
      * @param string|null $name
+     * @param bool $override
+     *
      * @return \Pterodactyl\Models\Backup
      *
      * @throws \Throwable
