@@ -269,4 +269,32 @@ class DaemonFileRepository extends DaemonRepository
             throw new DaemonConnectionException($exception);
         }
     }
+
+    /**
+     * Chmods the given files.
+     *
+     * @param string|null $root
+     * @param array $files
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function chmodFiles(?string $root, array $files): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            return $this->getHttpClient()->post(
+                sprintf('/api/servers/%s/files/chmod', $this->server->uuid),
+                [
+                    'json' => [
+                        'root' => $root ?? '/',
+                        'files' => $files,
+                    ],
+                ]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
 }

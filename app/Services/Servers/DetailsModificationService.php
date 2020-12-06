@@ -2,10 +2,12 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Traits\Services\ReturnsUpdatedModels;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DetailsModificationService
 {
@@ -17,22 +19,20 @@ class DetailsModificationService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
-    private $repository;
+    private $serverRepository;
 
     /**
      * DetailsModificationService constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $serverRepository
      */
-    public function __construct(
-        ConnectionInterface $connection,
-        ServerRepository $repository
-    ) {
+    public function __construct(ConnectionInterface $connection, DaemonServerRepository $serverRepository)
+    {
         $this->connection = $connection;
-        $this->repository = $repository;
+        $this->serverRepository = $serverRepository;
     }
 
     /**
@@ -40,24 +40,36 @@ class DetailsModificationService
      *
      * @param \Pterodactyl\Models\Server $server
      * @param array $data
-     * @return bool|\Pterodactyl\Models\Server
+     * @return \Pterodactyl\Models\Server
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
-    public function handle(Server $server, array $data)
+    public function handle(Server $server, array $data): Server
     {
-        $this->connection->beginTransaction();
+        return $this->connection->transaction(function () use ($data, $server) {
+            $owner = $server->owner_id;
 
-        $response = $this->repository->setFreshModel($this->getUpdatedModel())->update($server->id, [
-            'external_id' => array_get($data, 'external_id'),
-            'owner_id' => array_get($data, 'owner_id'),
-            'name' => array_get($data, 'name'),
-            'description' => array_get($data, 'description') ?? '',
-        ], true, true);
+            $server->forceFill([
+                'external_id' => Arr::get($data, 'external_id'),
+                'owner_id' => Arr::get($data, 'owner_id'),
+                'name' => Arr::get($data, 'name'),
+                'description' => Arr::get($data, 'description') ?? '',
+            ])->saveOrFail();
 
-        $this->connection->commit();
+            // If the owner_id value is changed we need to revoke any tokens that exist for the server
+            // on the Wings instance so that the old owner no longer has any permission to access the
+            // websockets.
+            if ($server->owner_id !== $owner) {
+                try {
+                    $this->serverRepository->setServer($server)->revokeUserJTI($owner);
+                } catch (DaemonConnectionException $exception) {
+                    // Do nothing. A failure here is not ideal, but it is likely to be caused by Wings
+                    // being offline, or in an entirely broken state. Remeber, these tokens reset every
+                    // few minutes by default, we're just trying to help it along a little quicker.
+                }
+            }
 
-        return $response;
+            return $server;
+        });
     }
 }

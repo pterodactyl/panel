@@ -135,7 +135,7 @@ class SubuserController extends ClientApiController
             ]);
 
             try {
-                $this->serverRepository->setServer($server)->revokeJTIs([md5($subuser->user_id . $server->uuid)]);
+                $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
             } catch (DaemonConnectionException $exception) {
                 // Don't block this request if we can't connect to the Wings instance. Chances are it is
                 // offline in this event and the token will be invalid anyways once Wings boots back.
@@ -163,7 +163,7 @@ class SubuserController extends ClientApiController
         $this->repository->delete($subuser->id);
 
         try {
-            $this->serverRepository->setServer($server)->revokeJTIs([md5($subuser->user_id . $server->uuid)]);
+            $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
         } catch (DaemonConnectionException $exception) {
             // Don't block this request if we can't connect to the Wings instance.
             Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);

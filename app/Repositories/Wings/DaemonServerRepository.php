@@ -3,6 +3,7 @@
 namespace Pterodactyl\Repositories\Wings;
 
 use Webmozart\Assert\Assert;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -145,13 +146,28 @@ class DaemonServerRepository extends DaemonRepository
     }
 
     /**
+     * Revokes a single user's JTI by using their ID. This is simply a helper function to
+     * make it easier to revoke tokens on the fly. This ensures that the JTI key is formatted
+     * correctly and avoids any costly mistakes in the codebase.
+     *
+     * @param int $id
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function revokeUserJTI(int $id): void
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        $this->revokeJTIs([ md5($id . $this->server->uuid) ]);
+    }
+
+    /**
      * Revokes an array of JWT JTI's by marking any token generated before the current time on
      * the Wings instance as being invalid.
      *
      * @param array $jtis
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function revokeJTIs(array $jtis): void
+    protected function revokeJTIs(array $jtis): void
     {
         Assert::isInstanceOf($this->server, Server::class);
 
