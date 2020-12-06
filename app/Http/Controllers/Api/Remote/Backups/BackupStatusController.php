@@ -60,7 +60,6 @@ class BackupStatusController extends Controller
 
         $successful = $request->input('successful') ? true : false;
 
-        // TODO: Still run s3 code even if this fails.
         $model->forceFill([
             'is_successful' => $successful,
             'checksum' => $successful ? ($request->input('checksum_type') . ':' . $request->input('checksum')) : null,
@@ -85,14 +84,13 @@ class BackupStatusController extends Controller
             // If the backup was not successful, send an AbortMultipartUpload request.
             if (! $successful) {
                 $client->execute($client->getCommand('AbortMultipartUpload', $params));
-                return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+            } else {
+                // Otherwise send a CompleteMultipartUpload request.
+                $params['MultipartUpload'] = [
+                    'Parts' => $client->execute($client->getCommand('ListParts', $params))['Parts'],
+                ];
+                $client->execute($client->getCommand('CompleteMultipartUpload', $params));
             }
-
-            // Otherwise send a CompleteMultipartUpload request.
-            $params['MultipartUpload'] = [
-                'Parts' => $client->execute($client->getCommand('ListParts', $params))['Parts'],
-            ];
-            $client->execute($client->getCommand('CompleteMultipartUpload', $params));
         }
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
