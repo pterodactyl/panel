@@ -87,7 +87,9 @@ export default () => {
         <PageContentBlock>
             <FlashMessageRender byKey={'files:view'} css={tw`mb-4`}/>
             <ErrorBoundary>
-                <FileManagerBreadcrumbs withinFileEditor isNewFile={action !== 'edit'}/>
+                <div css={tw`mb-4`}>
+                    <FileManagerBreadcrumbs withinFileEditor isNewFile={action !== 'edit'}/>
+                </div>
             </ErrorBoundary>
             {hash.replace(/^#/, '').endsWith('.pteroignore') &&
             <div css={tw`mb-4 p-4 border-l-4 bg-neutral-900 rounded border-cyan-400`}>
