@@ -24,7 +24,7 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
     const history = useHistory();
     const match = useRouteMatch();
 
-    const destination = cleanDirectoryPath(`${directory}/${file.name}`).split('/').map(v => encodeURI(v)).join('/');
+    const destination = cleanDirectoryPath(`${directory}/${file.name}`).split('/').join('/');
 
     const onRowClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
         // Don't rely on the onClick to work with the generated URL. Because of the way this
@@ -72,7 +72,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
                 }
             </div>
             <div css={tw`flex-1 truncate`}>
-                {file.name}
+                {decodeURIComponent(file.name)}
             </div>
             {file.isFile &&
             <div css={tw`w-1/6 text-right mr-4 hidden sm:block`}>

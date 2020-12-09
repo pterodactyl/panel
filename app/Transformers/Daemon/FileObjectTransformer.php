@@ -23,7 +23,7 @@ class FileObjectTransformer extends BaseDaemonTransformer
     public function transform(array $item)
     {
         return [
-            'name' => Arr::get($item, 'name'),
+            'name' => rawurlencode(Arr::get($item, 'name')),
             'mode' => Arr::get($item, 'mode'),
             'mode_bits' => Arr::get($item, 'mode_bits'),
             'size' => Arr::get($item, 'size'),

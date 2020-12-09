@@ -7,8 +7,6 @@ export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
-    console.log('firing');
-
     return useSWR<FileObject[]>(
         `${uuid}:files:${directory}`,
         () => loadDirectory(uuid, cleanDirectoryPath(directory)),

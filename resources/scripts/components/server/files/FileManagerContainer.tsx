@@ -39,7 +39,7 @@ export default () => {
     useEffect(() => {
         clearFlashes('files');
         setSelectedFiles([]);
-        setDirectory(hash.length > 0 ? decodeURI(hash) : '/');
+        setDirectory(hash.length > 0 ? hash : '/');
     }, [ hash ]);
 
     useEffect(() => {

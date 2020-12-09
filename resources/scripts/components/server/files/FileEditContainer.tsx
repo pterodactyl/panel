@@ -61,7 +61,7 @@ export default () => {
         setLoading(true);
         clearFlashes('files:view');
         fetchFileContent()
-            .then(content => saveFileContents(uuid, name || hash.replace(/^#/, ''), content))
+            .then(content => saveFileContents(uuid, name || decodeURI(hash.replace(/^#/, '')), content))
             .then(() => {
                 if (name) {
                     history.push(`/server/${id}/files/edit#/${name}`);
