@@ -3,7 +3,7 @@
     "meta": {
         "version": "PTDL_v1"
     },
-    "exported_at": "2020-11-03T04:22:56+00:00",
+    "exported_at": "2020-12-06T17:39:27-08:00",
     "name": "Forge Minecraft",
     "author": "support@pterodactyl.io",
     "description": "Minecraft Forge Server. Minecraft Forge is a modding API (Application Programming Interface), which makes it easier to create mods, and also make sure mods are compatible with each other.",
@@ -34,7 +34,7 @@
             "rules": "required|regex:\/^([\\w\\d._-]+)(\\.jar)$\/"
         },
         {
-            "name": "Forge version",
+            "name": "Minecraft Version",
             "description": "The version of minecraft you want to install for.\r\n\r\nLeaving latest will install the latest recommended version.",
             "env_variable": "MC_VERSION",
             "default_value": "latest",
@@ -58,7 +58,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:20"
+            "rules": "nullable|string|max:20"
         }
     ]
 }
