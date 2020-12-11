@@ -19,8 +19,11 @@ const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void 
             disabled={!status || status === 'offline'}
             onClick={e => {
                 e.preventDefault();
-                onPress(clicked ? 'kill' : 'stop');
-                setClicked(true);
+                let check = confirm("Do you really want to stop / kill this server?");
+                if (check) {
+                    onPress(clicked ? 'kill' : 'stop');
+                    setClicked(true);
+                }
             }}
         >
             {clicked ? 'Kill' : 'Stop'}

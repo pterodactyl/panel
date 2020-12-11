@@ -39,7 +39,8 @@ const PowerControls = () => {
                     disabled={!status}
                     onClick={e => {
                         e.preventDefault();
-                        sendPowerCommand('restart');
+                        let check = confirm("Do you really want to restart this server?")
+                        if (check) sendPowerCommand('restart');
                     }}
                 >
                     Restart
