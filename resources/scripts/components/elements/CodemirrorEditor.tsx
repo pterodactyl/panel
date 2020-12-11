@@ -6,11 +6,13 @@ import modes from '@/modes';
 
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/ayu-mirage.css');
+
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/addon/edit/closetag');
 require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/edit/matchtags');
 require('codemirror/addon/edit/trailingspace');
+
 require('codemirror/addon/fold/foldcode');
 require('codemirror/addon/fold/foldgutter.css');
 require('codemirror/addon/fold/foldgutter');
@@ -19,20 +21,17 @@ require('codemirror/addon/fold/comment-fold');
 require('codemirror/addon/fold/indent-fold');
 require('codemirror/addon/fold/markdown-fold');
 require('codemirror/addon/fold/xml-fold');
-require('codemirror/addon/hint/css-hint');
-require('codemirror/addon/hint/html-hint');
-require('codemirror/addon/hint/javascript-hint');
-require('codemirror/addon/hint/show-hint.css');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/sql-hint');
-require('codemirror/addon/hint/xml-hint');
+
 require('codemirror/addon/mode/simple');
+
 require('codemirror/addon/dialog/dialog.css');
 require('codemirror/addon/dialog/dialog');
+
 require('codemirror/addon/scroll/annotatescrollbar');
 require('codemirror/addon/scroll/scrollpastend');
 require('codemirror/addon/scroll/simplescrollbars.css');
 require('codemirror/addon/scroll/simplescrollbars');
+
 require('codemirror/addon/search/jump-to-line');
 require('codemirror/addon/search/match-highlighter');
 require('codemirror/addon/search/matchesonscrollbar.css');
@@ -79,6 +78,31 @@ require('codemirror/mode/vue/vue');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/yaml/yaml');
 
+require('codemirror/addon/hint/css-hint');
+require('codemirror/addon/hint/html-hint');
+require('codemirror/addon/hint/javascript-hint');
+require('codemirror/addon/hint/show-hint.css');
+require('codemirror/addon/hint/show-hint');
+require('codemirror/addon/hint/sql-hint');
+require('codemirror/addon/hint/xml-hint');
+
+// @ts-ignore
+window.CSSLint = require('csslint/dist/csslint');
+// @ts-ignore
+window.HTMLHint = require('htmlhint/dist/htmlhint');
+// @ts-ignore
+window.JSHINT = require('jshint/src/jshint').JSHINT;
+// @ts-ignore
+window.jsyaml = require('js-yaml/dist/js-yaml');
+
+require('codemirror/addon/lint/lint.css');
+require('codemirror/addon/lint/css-lint');
+require('codemirror/addon/lint/html-lint');
+require('codemirror/addon/lint/javascript-lint');
+// require('codemirror/addon/lint/json-lint');
+require('codemirror/addon/lint/yaml-lint');
+require('codemirror/addon/lint/lint');
+
 const EditorContainer = styled.div`
     min-height: 16rem;
     height: calc(100vh - 20rem);
@@ -94,7 +118,8 @@ const EditorContainer = styled.div`
     }
 
     .CodeMirror-linenumber {
-        padding: 1px 12px 0 12px !important;
+        width: 36px;
+        padding: 1px 12px 0 0 !important;
     }
 
     .CodeMirror-foldmarker {
@@ -102,6 +127,22 @@ const EditorContainer = styled.div`
         text-shadow: none;
         margin-left: 0.25rem;
         margin-right: 0.25rem;
+    }
+
+    .CodeMirror-gutter.CodeMirror-foldgutter {
+        width: 1rem;
+    }
+
+    .CodeMirror-gutters {
+        border-right: 1px solid #5c6773 !important;
+    }
+
+    .CodeMirror-gutter.CodeMirror-lint-markers {
+        width: 1.25rem;
+    }
+
+    .CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
+        padding: 0 0.25rem 0.25rem 0.75rem !important;
     }
 `;
 
@@ -168,12 +209,17 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
             spellcheck: true,
             autocorrect: false,
             autocapitalize: false,
-            lint: false,
-            // This property is actually used, the d.ts file for CodeMirror is incorrect.
+            lint: true,
+            gutters: [
+                'CodeMirror-linenumbers',
+                'CodeMirror-foldgutter',
+                'CodeMirror-lint-markers',
+            ],
+
+            // These properties are actually used, the d.ts file for CodeMirror is incorrect.
             // @ts-ignore
             autoCloseBrackets: true,
             matchBrackets: true,
-            gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ],
         });
 
         setEditor(e);

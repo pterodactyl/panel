@@ -87,7 +87,7 @@ export default () => {
         <PageContentBlock>
             <FlashMessageRender byKey={'files:view'} css={tw`mb-4`}/>
             <ErrorBoundary>
-                <div css={tw`mb-4`}>
+                <div style={{ height: '39px' }}>
                     <FileManagerBreadcrumbs withinFileEditor isNewFile={action !== 'edit'}/>
                 </div>
             </ErrorBoundary>
