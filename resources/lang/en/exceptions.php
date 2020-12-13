@@ -12,6 +12,7 @@ return [
         'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
         'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
+        'autoallocation_not_enabled' => 'Server auto-allocation is not enabled for this instance.',
     ],
     'nest' => [
         'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
