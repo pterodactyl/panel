@@ -10,7 +10,9 @@ namespace Pterodactyl\Models;
  * @property string $name
  * @property string|null $description
  * @property array|null $features
- * @property string $docker_image
+ * @property string $docker_image -- deprecated, use $docker_images
+ * @property string $update_url
+ * @property array $docker_images
  * @property string|null $config_files
  * @property string|null $config_startup
  * @property string|null $config_logs
@@ -76,7 +78,7 @@ class Egg extends Model
         'name',
         'description',
         'features',
-        'docker_image',
+        'docker_images',
         'config_files',
         'config_startup',
         'config_logs',
@@ -101,6 +103,7 @@ class Egg extends Model
         'script_is_privileged' => 'boolean',
         'copy_script_from' => 'integer',
         'features' => 'array',
+        'docker_images' => 'array',
     ];
 
     /**
@@ -113,13 +116,15 @@ class Egg extends Model
         'description' => 'string|nullable',
         'features' => 'array|nullable',
         'author' => 'required|string|email',
-        'docker_image' => 'required|string|max:191',
+        'docker_images' => 'required|array|min:1',
+        'docker_images.*' => 'required|string',
         'startup' => 'required|nullable|string',
         'config_from' => 'sometimes|bail|nullable|numeric|exists:eggs,id',
         'config_stop' => 'required_without:config_from|nullable|string|max:191',
         'config_startup' => 'required_without:config_from|nullable|json',
         'config_logs' => 'required_without:config_from|nullable|json',
         'config_files' => 'required_without:config_from|nullable|json',
+        'update_url' => 'sometimes|nullable|string',
     ];
 
     /**
@@ -131,6 +136,7 @@ class Egg extends Model
         'config_startup' => null,
         'config_logs' => null,
         'config_files' => null,
+        'update_url' => null,
     ];
 
     /**
