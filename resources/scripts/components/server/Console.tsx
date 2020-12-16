@@ -84,8 +84,6 @@ export default () => {
             // Sent by the source node whenever the server was archived successfully.
             case 'archive':
                 terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
-                // TODO: Get WebSocket information for the target node.
-                return;
         }
     };
 
@@ -167,7 +165,7 @@ export default () => {
 
     useEffect(() => {
         if (connected && instance) {
-            terminal.clear();
+            // terminal.clear();
 
             instance.addListener('status', handlePowerChangeEvent);
             instance.addListener('console output', handleConsoleOutput);

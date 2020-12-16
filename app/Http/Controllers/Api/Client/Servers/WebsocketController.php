@@ -58,16 +58,32 @@ class WebsocketController extends ClientApiController
             throw new HttpException(Response::HTTP_FORBIDDEN, 'You do not have permission to connect to this server\'s websocket.');
         }
 
+        $permissions = $this->permissionsService->handle($server, $user);
+
+        $node = null;
+
+        // Check if there is a transfer query param asking to connect to the target node's websocket.
+        if ($request->query('transfer', 'false') === 'true') {
+            // Check if the user has permissions to receive transfer logs.
+            if (! in_array('admin.websocket.transfer', $permissions)) {
+                throw new HttpException(Response::HTTP_FORBIDDEN, 'You do not have permission to get transfer logs');
+            }
+
+            $node = $server->transfer->newNode;
+        } else {
+            $node = $server->node;
+        }
+
         $token = $this->jwtService
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(10))
             ->setClaims([
                 'user_id' => $request->user()->id,
                 'server_uuid' => $server->uuid,
-                'permissions' => $this->permissionsService->handle($server, $user),
+                'permissions' => $permissions,
             ])
-            ->handle($server->node, $user->id . $server->uuid);
+            ->handle($node, $user->id . $server->uuid);
 
-        $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $server->node->getConnectionAddress());
+        $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $node->getConnectionAddress());
 
         return new JsonResponse([
             'data' => [

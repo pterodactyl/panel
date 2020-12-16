@@ -6,6 +6,7 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class SuspensionService
 {
@@ -54,6 +55,11 @@ class SuspensionService
         // is not suspended and we try to un-suspend the instance.
         if ($isSuspending === $server->suspended) {
             return;
+        }
+
+        // Check if the server is currently being transferred.
+        if ($server->transfer !== null) {
+            throw new ConflictHttpException('Server is currently being transferred');
         }
 
         $this->connection->transaction(function () use ($action, $server) {

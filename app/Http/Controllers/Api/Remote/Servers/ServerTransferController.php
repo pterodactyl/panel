@@ -59,11 +59,6 @@ class ServerTransferController extends Controller
     private $configurationStructureService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\SuspensionService
-     */
-    private $suspensionService;
-
-    /**
      * @var \Psr\Log\LoggerInterface
      */
     private $writer;
@@ -78,7 +73,6 @@ class ServerTransferController extends Controller
      * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Repositories\Wings\DaemonTransferRepository $daemonTransferRepository
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
      * @param \Psr\Log\LoggerInterface $writer
      */
     public function __construct(
@@ -89,7 +83,6 @@ class ServerTransferController extends Controller
         DaemonServerRepository $daemonServerRepository,
         DaemonTransferRepository $daemonTransferRepository,
         ServerConfigurationStructureService $configurationStructureService,
-        SuspensionService $suspensionService,
         LoggerInterface $writer
     ) {
         $this->connection = $connection;
@@ -99,7 +92,6 @@ class ServerTransferController extends Controller
         $this->daemonServerRepository = $daemonServerRepository;
         $this->daemonTransferRepository = $daemonTransferRepository;
         $this->configurationStructureService = $configurationStructureService;
-        $this->suspensionService = $suspensionService;
         $this->writer = $writer;
     }
 
@@ -187,9 +179,6 @@ class ServerTransferController extends Controller
         // Remove the new allocations.
         $this->allocationRepository->updateWhereIn('id', $allocationIds, ['server_id' => null]);
 
-        // Unsuspend the server.
-        //$this->suspensionService->toggle($server, 'unsuspend');
-
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
@@ -236,7 +225,6 @@ class ServerTransferController extends Controller
 
         // Unsuspend the server
         $server->load('node');
-        //$this->suspensionService->toggle($server, $this->suspensionService::ACTION_UNSUSPEND);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

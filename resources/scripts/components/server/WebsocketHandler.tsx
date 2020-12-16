@@ -15,39 +15,14 @@ const reconnectErrors = [
 export default () => {
     let updatingToken = false;
     const [ error, setError ] = useState<'connecting' | string>('');
+    const [ transfer, setTransfer ] = useState<boolean>(false);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
     const setServerStatus = ServerContext.useStoreActions(actions => actions.status.setServerStatus);
     const { setInstance, setConnectionState } = ServerContext.useStoreActions(actions => actions.socket);
 
-    const updateToken = (uuid: string, socket: Websocket) => {
-        if (updatingToken) return;
-
-        updatingToken = true;
-        getWebsocketToken(uuid)
-            .then(data => socket.setToken(data.token, true))
-            .catch(error => console.error(error))
-            .then(() => {
-                updatingToken = false;
-            });
-    };
-
-    useEffect(() => {
-        connected && setError('');
-    }, [ connected ]);
-
-    useEffect(() => {
-        return () => {
-            instance && instance.close();
-        };
-    }, [ instance ]);
-
-    useEffect(() => {
-        // If there is already an instance or there is no server, just exit out of this process
-        // since we don't need to make a new connection.
-        if (instance || !uuid) {
-            return;
-        }
+    const connect = (uuid: string, transfer = false) => {
+        setTransfer(transfer);
 
         const socket = new Websocket();
 
@@ -76,7 +51,34 @@ export default () => {
             }
         });
 
-        getWebsocketToken(uuid)
+        socket.on('transfer status', (status: string) => {
+            if (status === 'success') {
+                setTransfer(false);
+                return;
+            }
+
+            if (status === 'starting') {
+                return;
+            }
+
+            // This doesn't use the `setTransfer` hook as it doesn't want to work properly in this context,
+            // and causes all kinds of fuckery with the websocket.
+            let transfer = false;
+            if (status === 'archived') {
+                transfer = true;
+            }
+
+            // Close the current websocket connection.
+            socket.close();
+
+            setError('connecting');
+            setConnectionState(false);
+            setInstance(null);
+
+            connect(uuid, transfer);
+        });
+
+        getWebsocketToken(uuid, transfer)
             .then(data => {
                 // Connect and then set the authentication token.
                 socket.setToken(data.token).connect(data.socket);
@@ -85,6 +87,38 @@ export default () => {
                 setInstance(socket);
             })
             .catch(error => console.error(error));
+    };
+
+    const updateToken = (uuid: string, socket: Websocket) => {
+        if (updatingToken) return;
+
+        updatingToken = true;
+        getWebsocketToken(uuid, transfer)
+            .then(data => socket.setToken(data.token, true))
+            .catch(error => console.error(error))
+            .then(() => {
+                updatingToken = false;
+            });
+    };
+
+    useEffect(() => {
+        connected && setError('');
+    }, [ connected ]);
+
+    useEffect(() => {
+        return () => {
+            instance && instance.close();
+        };
+    }, [ instance ]);
+
+    useEffect(() => {
+        // If there is already an instance or there is no server, just exit out of this process
+        // since we don't need to make a new connection.
+        if (instance || !uuid) {
+            return;
+        }
+
+        connect(uuid);
     }, [ uuid ]);
 
     return (

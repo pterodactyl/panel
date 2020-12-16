@@ -1,3 +1,4 @@
+import TransferListener from '@/components/server/TransferListener';
 import React, { useEffect, useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
@@ -128,6 +129,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                         </SubNavigation>
                     </CSSTransition>
                     <InstallListener/>
+                    <TransferListener/>
                     <WebsocketHandler/>
                     {((installing || transferring) && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
                         <ScreenBlock

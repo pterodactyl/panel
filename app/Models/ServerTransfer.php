@@ -16,6 +16,8 @@ namespace Pterodactyl\Models;
  * @property \Carbon\Carbon $updated_at
  *
  * @property \Pterodactyl\Models\Server $server
+ * @property \Pterodactyl\Models\Node $oldNode
+ * @property \Pterodactyl\Models\Node $newNode
  */
 class ServerTransfer extends Model
 {
@@ -77,5 +79,25 @@ class ServerTransfer extends Model
     public function server()
     {
         return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * Gets the source node associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function oldNode()
+    {
+        return $this->hasOne(Node::class, 'id', 'old_node');
+    }
+
+    /**
+     * Gets the target node associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function newNode()
+    {
+        return $this->hasOne(Node::class, 'id', 'new_node');
     }
 }
