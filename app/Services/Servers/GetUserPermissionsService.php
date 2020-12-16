@@ -24,6 +24,7 @@ class GetUserPermissionsService
             if ($user->root_admin) {
                 $permissions[] = 'admin.websocket.errors';
                 $permissions[] = 'admin.websocket.install';
+                $permissions[] = 'admin.websocket.transfer';
             }
 
             return $permissions;

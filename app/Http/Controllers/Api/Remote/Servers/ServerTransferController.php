@@ -120,9 +120,12 @@ class ServerTransferController extends Controller
 
         // Unsuspend the server and don't continue the transfer.
         if (! $request->input('successful')) {
-            $this->suspensionService->toggle($server, 'unsuspend');
+            //$this->suspensionService->toggle($server, 'unsuspend');
+            $server->transfer->forceFill([
+                'successful' => false,
+            ])->saveOrFail();
 
-            return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+            return new JsonResponse([], Response::HTTP_NO_CONTENT);
         }
 
         $server->node_id = $server->transfer->new_node;
@@ -151,21 +154,23 @@ class ServerTransferController extends Controller
         // because setServer() tells the repository to use the server's node and not the one
         // we want to specify.
         try {
+            /** @var \Pterodactyl\Models\Node $newNode */
+            $newNode = $this->nodeRepository->find($server->transfer->new_node);
+
             $this->daemonTransferRepository
                 ->setServer($server)
-                ->setNode($this->nodeRepository->find($server->transfer->new_node))
+                ->setNode($newNode)
                 ->notify($server, $data, $server->node, $token->__toString());
         } catch (DaemonConnectionException $exception) {
             throw $exception;
         }
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
      * The daemon notifies us about a transfer failure.
      *
-     * @param \Illuminate\Http\Request $request
      * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
@@ -183,9 +188,9 @@ class ServerTransferController extends Controller
         $this->allocationRepository->updateWhereIn('id', $allocationIds, ['server_id' => null]);
 
         // Unsuspend the server.
-        $this->suspensionService->toggle($server, 'unsuspend');
+        //$this->suspensionService->toggle($server, 'unsuspend');
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -213,11 +218,11 @@ class ServerTransferController extends Controller
         // Update the server's allocation_id and node_id.
         $server->allocation_id = $transfer->new_allocation;
         $server->node_id = $transfer->new_node;
-        $server->save();
+        $server->saveOrFail();
 
         // Mark the transfer as successful.
         $transfer->successful = true;
-        $transfer->save();
+        $transfer->saveOrFail();
 
         // Commit the transaction.
         $this->connection->commit();
@@ -231,8 +236,8 @@ class ServerTransferController extends Controller
 
         // Unsuspend the server
         $server->load('node');
-        $this->suspensionService->toggle($server, $this->suspensionService::ACTION_UNSUSPEND);
+        //$this->suspensionService->toggle($server, $this->suspensionService::ACTION_UNSUSPEND);
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

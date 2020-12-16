@@ -117,7 +117,7 @@ class ServerTransferController extends Controller
             $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();
 
             // Suspend the server and request an archive to be created.
-            $this->suspensionService->toggle($server, 'suspend');
+            //$this->suspensionService->toggle($server, 'suspend');
 
             // Create a new ServerTransfer entry.
             $transfer = new ServerTransfer;

@@ -74,6 +74,21 @@ export default () => {
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
 
+    const handleTransferStatus = (status: string) => {
+        switch (status) {
+            // Sent by either the source or target node if a failure occurs.
+            case 'failure':
+                terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
+                return;
+
+            // Sent by the source node whenever the server was archived successfully.
+            case 'archive':
+                terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
+                // TODO: Get WebSocket information for the target node.
+                return;
+        }
+    };
+
     const handleDaemonErrorOutput = (line: string) => terminal.writeln(
         TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
@@ -122,20 +137,23 @@ export default () => {
 
             // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-            // Ctrl + C ( Copy )
+                // Ctrl + C (Copy)
                 if (e.ctrlKey && e.key === 'c') {
                     document.execCommand('copy');
                     return false;
                 }
 
+                // Ctrl + F (Find)
                 if (e.ctrlKey && e.key === 'f') {
                     searchBar.show();
                     return false;
                 }
 
+                // Escape
                 if (e.key === 'Escape') {
                     searchBar.hidden();
                 }
+
                 return true;
             });
         }
@@ -154,17 +172,21 @@ export default () => {
             instance.addListener('status', handlePowerChangeEvent);
             instance.addListener('console output', handleConsoleOutput);
             instance.addListener('install output', handleConsoleOutput);
+            instance.addListener('transfer logs', handleConsoleOutput);
+            instance.addListener('transfer status', handleTransferStatus);
             instance.addListener('daemon message', line => handleConsoleOutput(line, true));
             instance.addListener('daemon error', handleDaemonErrorOutput);
             instance.send('send logs');
         }
 
         return () => {
-            instance && instance.removeListener('console output', handleConsoleOutput)
+            instance && instance.removeListener('status', handlePowerChangeEvent)
+                .removeListener('console output', handleConsoleOutput)
                 .removeListener('install output', handleConsoleOutput)
+                .removeListener('transfer logs', handleConsoleOutput)
+                .removeListener('transfer status', handleTransferStatus)
                 .removeListener('daemon message', line => handleConsoleOutput(line, true))
-                .removeListener('daemon error', handleDaemonErrorOutput)
-                .removeListener('status', handlePowerChangeEvent);
+                .removeListener('daemon error', handleDaemonErrorOutput);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ connected, instance ]);

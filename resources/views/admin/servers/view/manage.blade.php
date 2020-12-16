@@ -58,6 +58,7 @@
                 </div>
             </div>
         </div>
+
         @if(! $server->suspended)
             <div class="col-sm-4">
                 <div class="box box-warning">
@@ -96,28 +97,48 @@
             </div>
         @endif
 
-        <div class="col-sm-4">
-            <div class="box box-success">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Transfer Server</h3>
-                </div>
-                <div class="box-body">
-                    <p>
-                        Transfer this server to another node connected to this panel.
-                        <strong>Warning!</strong> This feature has not been fully tested and may have bugs.
-                    </p>
-                </div>
+        @if($server->transfer === null)
+            <div class="col-sm-4">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Transfer Server</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>
+                            Transfer this server to another node connected to this panel.
+                            <strong>Warning!</strong> This feature has not been fully tested and may have bugs.
+                        </p>
+                    </div>
 
-                <div class="box-footer">
-                    @if($canTransfer)
-                        <button class="btn btn-success" data-toggle="modal" data-target="#transferServerModal">Transfer Server</button>
-                    @else
-                        <button class="btn btn-success disabled">Transfer Server</button>
-                        <p style="padding-top: 1rem;">Transferring a server requires more than one node to be configured on your panel.</p>
-                    @endif
+                    <div class="box-footer">
+                        @if($canTransfer)
+                            <button class="btn btn-success" data-toggle="modal" data-target="#transferServerModal">Transfer Server</button>
+                        @else
+                            <button class="btn btn-success disabled">Transfer Server</button>
+                            <p style="padding-top: 1rem;">Transferring a server requires more than one node to be configured on your panel.</p>
+                        @endif
+                    </div>
                 </div>
             </div>
-        </div>
+        @else
+            <div class="col-sm-4">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Transfer Server</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>
+                            This server is currently being transferred to another node.
+                            Transfer was initiated at <strong>{{ $server->transfer->created_at }}</strong>
+                        </p>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-success disabled">Transfer Server</button>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 
     <div class="modal fade" id="transferServerModal" tabindex="-1" role="dialog">

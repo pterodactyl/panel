@@ -306,7 +306,7 @@ class Server extends Model
      */
     public function transfer()
     {
-        return $this->hasOne(ServerTransfer::class)->orderByDesc('id');
+        return $this->hasOne(ServerTransfer::class)->whereNull('successful')->orderByDesc('id');
     }
 
     /**

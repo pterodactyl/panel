@@ -61,7 +61,10 @@ class SuspensionService
                 'suspended' => $action === self::ACTION_SUSPEND,
             ]);
 
-            $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
+            // Only send the suspension request to wings if the server is not currently being transferred.
+            if ($server->transfer === null) {
+                $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
+            }
         });
     }
 }

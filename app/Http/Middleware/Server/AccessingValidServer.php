@@ -80,6 +80,14 @@ class AccessingValidServer
             return $this->response->view('errors.installing', [], 409);
         }
 
+        if ($server->transfer !== null) {
+            if ($isApiRequest) {
+                throw new ConflictHttpException('Server is currently being transferred.');
+            }
+
+            return $this->response->view('errors.transferring', [], 409);
+        }
+
         // Add server to the request attributes. This will replace sessions
         // as files are updated.
         $request->attributes->set('server', $server);

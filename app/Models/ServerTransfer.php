@@ -11,7 +11,7 @@ namespace Pterodactyl\Models;
  * @property int $new_allocation
  * @property string $old_additional_allocations
  * @property string $new_additional_allocations
- * @property bool $successful
+ * @property bool|null $successful
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -66,7 +66,7 @@ class ServerTransfer extends Model
         'new_allocation' => 'required|numeric',
         'old_additional_allocations' => 'nullable',
         'new_additional_allocations' => 'nullable',
-        'successful' => 'sometimes|boolean',
+        'successful' => 'sometimes|nullable|boolean',
     ];
 
     /**

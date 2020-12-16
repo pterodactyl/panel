@@ -35,10 +35,12 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ error, setError ] = useState('');
     const [ installing, setInstalling ] = useState(false);
+    const [ transferring, setTransferring ] = useState(false);
 
     const id = ServerContext.useStoreState(state => state.server.data?.id);
     const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
     const isInstalling = ServerContext.useStoreState(state => state.server.data?.isInstalling);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data?.isTransferring);
     const serverId = ServerContext.useStoreState(state => state.server.data?.internalId);
     const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
@@ -52,12 +54,22 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     }, [ isInstalling ]);
 
     useEffect(() => {
+        setTransferring(!!isTransferring);
+    }, [ isTransferring ]);
+
+    useEffect(() => {
         setError('');
         setInstalling(false);
+        setTransferring(false);
+
         getServer(match.params.id)
             .catch(error => {
                 if (error.response?.status === 409) {
-                    setInstalling(true);
+                    if (error.response.data?.errors[0]?.detail?.includes('transfer')) {
+                        setTransferring(true);
+                    } else {
+                        setInstalling(true);
+                    }
                 } else {
                     console.error(error);
                     setError(httpErrorToHuman(error));
@@ -117,9 +129,9 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     </CSSTransition>
                     <InstallListener/>
                     <WebsocketHandler/>
-                    {(installing && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
+                    {((installing || transferring) && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
                         <ScreenBlock
-                            title={'Your server is installing.'}
+                            title={installing ? 'Your server is installing.' : 'Your server is currently being transferred.'}
                             image={'/assets/svgs/server_installing.svg'}
                             message={'Please check back in a few minutes.'}
                         />
