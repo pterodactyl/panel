@@ -12,7 +12,6 @@ use Illuminate\Http\JsonResponse;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
@@ -114,9 +113,8 @@ class ServerTransferController extends Controller
         if (! $request->input('successful')) {
             $transfer = $server->transfer;
 
-            $transfer->forceFill([
-                'successful' => false,
-            ])->saveOrFail();
+            $transfer->successful = false;
+            $transfer->saveOrFail();
 
             $allocationIds = json_decode($transfer->new_additional_allocations);
             array_push($allocationIds, $transfer->new_allocation);
@@ -189,8 +187,18 @@ class ServerTransferController extends Controller
         $allocationIds = json_decode($transfer->new_additional_allocations);
         array_push($allocationIds, $transfer->new_allocation);
 
+        // Begin a transaction.
+        $this->connection->beginTransaction();
+
+        // Mark the transfer as unsuccessful.
+        $transfer->successful = false;
+        $transfer->saveOrFail();
+
         // Remove the new allocations.
         $this->allocationRepository->updateWhereIn('id', $allocationIds, ['server_id' => null]);
+
+        // Commit the transaction.
+        $this->connection->commit();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -235,9 +243,6 @@ class ServerTransferController extends Controller
         } catch (DaemonConnectionException $exception) {
             $this->writer->warning($exception);
         }
-
-        // Unsuspend the server
-        $server->load('node');
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
