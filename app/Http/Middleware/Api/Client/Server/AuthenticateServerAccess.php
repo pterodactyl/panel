@@ -69,7 +69,7 @@ class AuthenticateServerAccess
             );
         }
 
-        // Still allow users to get information about there server if it is installing or being transferred.
+        // Still allow users to get information about their server if it is installing or being transferred.
         if (! $request->routeIs('api:client:server.view')) {
             if (! $server->isInstalled()) {
                 // Throw an exception for all server routes; however if the user is an admin and requesting the
