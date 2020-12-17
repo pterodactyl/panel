@@ -67,6 +67,7 @@ export default () => {
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring)
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [ historyIndex, setHistoryIndex ] = useState(-1);
 
@@ -165,7 +166,10 @@ export default () => {
 
     useEffect(() => {
         if (connected && instance) {
-            // terminal.clear();
+            // Do not clear the console if the server is being transferred.
+            if (!isTransferring) {
+                terminal.clear();
+            }
 
             instance.addListener('status', handlePowerChangeEvent);
             instance.addListener('console output', handleConsoleOutput);

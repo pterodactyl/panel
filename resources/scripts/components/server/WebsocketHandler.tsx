@@ -53,16 +53,12 @@ export default () => {
                 return;
             }
 
-            // Force a reconnection to the websocket which will connect us
-            // to the target node instead of the source node.
-
-            // Close the current websocket connection.
+            // This code forces a reconnection to the websocket which will connect us to the target node instead of the source node
+            // in order to be able to receive transfer logs from the target node.
             socket.close();
-
             setError('connecting');
             setConnectionState(false);
             setInstance(null);
-
             connect(uuid);
         });
 
