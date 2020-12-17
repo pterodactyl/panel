@@ -112,9 +112,17 @@ class ServerTransferController extends Controller
 
         // Unsuspend the server and don't continue the transfer.
         if (! $request->input('successful')) {
-            $server->transfer->forceFill([
+            $transfer = $server->transfer;
+
+            $transfer->forceFill([
                 'successful' => false,
             ])->saveOrFail();
+
+            $allocationIds = json_decode($transfer->new_additional_allocations);
+            array_push($allocationIds, $transfer->new_allocation);
+
+            // Release the reserved allocations.
+            $this->allocationRepository->updateWhereIn('id', $allocationIds, ['server_id' => null]);
 
             return new JsonResponse([], Response::HTTP_NO_CONTENT);
         }
