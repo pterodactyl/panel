@@ -12,6 +12,7 @@ namespace Pterodactyl\Models;
  * @property string $old_additional_allocations
  * @property string $new_additional_allocations
  * @property bool|null $successful
+ * @property bool $archived
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  *
@@ -55,6 +56,7 @@ class ServerTransfer extends Model
         'old_additional_allocations' => 'string',
         'new_additional_allocations' => 'string',
         'successful' => 'bool',
+        'archived' => 'bool',
     ];
 
     /**

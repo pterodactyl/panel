@@ -61,15 +61,18 @@ class WebsocketController extends ClientApiController
         $permissions = $this->permissionsService->handle($server, $user);
 
         $node = null;
-
-        // Check if there is a transfer query param asking to connect to the target node's websocket.
-        if ($request->query('transfer', 'false') === 'true') {
+        if ($server->transfer !== null) {
             // Check if the user has permissions to receive transfer logs.
             if (! in_array('admin.websocket.transfer', $permissions)) {
-                throw new HttpException(Response::HTTP_FORBIDDEN, 'You do not have permission to get transfer logs');
+                throw new HttpException(Response::HTTP_FORBIDDEN, 'You do not have permission to view transfer logs');
             }
 
-            $node = $server->transfer->newNode;
+            // Redirect the websocket request to the new node if the server has been archived.
+            if ($server->transfer->archived) {
+                $node = $server->transfer->newNode;
+            } else {
+                $node = $server->node;
+            }
         } else {
             $node = $server->node;
         }

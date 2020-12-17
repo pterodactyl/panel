@@ -112,7 +112,6 @@ class ServerTransferController extends Controller
 
         // Unsuspend the server and don't continue the transfer.
         if (! $request->input('successful')) {
-            //$this->suspensionService->toggle($server, 'unsuspend');
             $server->transfer->forceFill([
                 'successful' => false,
             ])->saveOrFail();
@@ -141,6 +140,12 @@ class ServerTransferController extends Controller
             ->expiresAt($now->addMinutes(15)->getTimestamp())
             ->relatedTo($server->uuid, true)
             ->getToken($signer, new Key($server->node->getDecryptedKey()));
+
+        // Update the archived field on the transfer to make clients connect to the websocket
+        // on the new node to be able to receive transfer logs.
+        $server->transfer->forceFill([
+            'archived' => true,
+        ])->saveOrFail();
 
         // On the daemon transfer repository, make sure to set the node after the server
         // because setServer() tells the repository to use the server's node and not the one

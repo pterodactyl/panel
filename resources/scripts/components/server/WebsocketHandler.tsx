@@ -15,15 +15,12 @@ const reconnectErrors = [
 export default () => {
     let updatingToken = false;
     const [ error, setError ] = useState<'connecting' | string>('');
-    const [ transfer, setTransfer ] = useState<boolean>(false);
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
     const setServerStatus = ServerContext.useStoreActions(actions => actions.status.setServerStatus);
     const { setInstance, setConnectionState } = ServerContext.useStoreActions(actions => actions.socket);
 
-    const connect = (uuid: string, transfer = false) => {
-        setTransfer(transfer);
-
+    const connect = (uuid: string) => {
         const socket = new Websocket();
 
         socket.on('auth success', () => setConnectionState(true));
@@ -52,21 +49,12 @@ export default () => {
         });
 
         socket.on('transfer status', (status: string) => {
-            if (status === 'success') {
-                setTransfer(false);
+            if (status === 'starting' || status === 'success') {
                 return;
             }
 
-            if (status === 'starting') {
-                return;
-            }
-
-            // This doesn't use the `setTransfer` hook as it doesn't want to work properly in this context,
-            // and causes all kinds of fuckery with the websocket.
-            let transfer = false;
-            if (status === 'archived') {
-                transfer = true;
-            }
+            // Force a reconnection to the websocket which will connect us
+            // to the target node instead of the source node.
 
             // Close the current websocket connection.
             socket.close();
@@ -75,10 +63,10 @@ export default () => {
             setConnectionState(false);
             setInstance(null);
 
-            connect(uuid, transfer);
+            connect(uuid);
         });
 
-        getWebsocketToken(uuid, transfer)
+        getWebsocketToken(uuid)
             .then(data => {
                 // Connect and then set the authentication token.
                 socket.setToken(data.token).connect(data.socket);
@@ -93,7 +81,7 @@ export default () => {
         if (updatingToken) return;
 
         updatingToken = true;
-        getWebsocketToken(uuid, transfer)
+        getWebsocketToken(uuid)
             .then(data => socket.setToken(data.token, true))
             .catch(error => console.error(error))
             .then(() => {

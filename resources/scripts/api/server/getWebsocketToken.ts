@@ -5,13 +5,9 @@ interface Response {
     socket: string;
 }
 
-export default (server: string, transfer: boolean): Promise<Response> => {
+export default (server: string): Promise<Response> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/client/servers/${server}/websocket`, {
-            params: {
-                transfer,
-            },
-        })
+        http.get(`/api/client/servers/${server}/websocket`)
             .then(({ data }) => resolve({
                 token: data.data.token,
                 socket: data.data.socket,
