@@ -12,6 +12,7 @@ use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
@@ -110,9 +111,14 @@ class SftpAuthenticationController extends Controller
             }
         }
 
-        // Remeber, for security purposes, only reveal the existence of the server to people that
+        // Prevent SFTP access to servers that are being transferred.
+        if (! is_null($server->transfer)) {
+            throw new ServerTransferringException();
+        }
+
+        // Remember, for security purposes, only reveal the existence of the server to people that
         // have provided valid credentials, and have permissions to know about it.
-        if ($server->installed !== 1 || $server->suspended || $server->transfer !== null) {
+        if ($server->installed !== 1 || $server->suspended) {
             throw new BadRequestHttpException(
                 'Server is not installed or is currently suspended.'
             );
@@ -132,7 +138,7 @@ class SftpAuthenticationController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return string
      */
-    protected function throttleKey(Request $request)
+    protected function throttleKey(Request $request): string
     {
         $username = explode('.', strrev($request->input('username', '')));
 

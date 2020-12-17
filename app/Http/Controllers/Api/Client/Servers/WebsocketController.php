@@ -61,7 +61,7 @@ class WebsocketController extends ClientApiController
         $permissions = $this->permissionsService->handle($server, $user);
 
         $node = null;
-        if ($server->transfer !== null) {
+        if (! is_null($server->transfer)) {
             // Check if the user has permissions to receive transfer logs.
             if (! in_array('admin.websocket.transfer', $permissions)) {
                 throw new HttpException(Response::HTTP_FORBIDDEN, 'You do not have permission to view transfer logs');

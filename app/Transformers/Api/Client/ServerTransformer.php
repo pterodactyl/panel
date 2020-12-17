@@ -72,7 +72,7 @@ class ServerTransformer extends BaseClientTransformer
             ],
             'is_suspended' => $server->suspended,
             'is_installing' => $server->installed !== 1,
-            'is_transferring' => $server->transfer !== null,
+            'is_transferring' => ! is_null($server->transfer),
         ];
     }
 

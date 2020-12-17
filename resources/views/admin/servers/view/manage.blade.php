@@ -72,7 +72,7 @@
                         <form action="{{ route('admin.servers.view.manage.suspension', $server->id) }}" method="POST">
                             {!! csrf_field() !!}
                             <input type="hidden" name="action" value="suspend" />
-                            <button type="submit" class="btn btn-warning @if($server->transfer !== null) disabled @endif">Suspend Server</button>
+                            <button type="submit" class="btn btn-warning @if(! is_null($server->transfer)) disabled @endif">Suspend Server</button>
                         </form>
                     </div>
                 </div>
@@ -97,7 +97,7 @@
             </div>
         @endif
 
-        @if($server->transfer === null)
+        @if(is_null($server->transfer))
             <div class="col-sm-4">
                 <div class="box box-success">
                     <div class="box-header with-border">

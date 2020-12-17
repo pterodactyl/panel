@@ -79,7 +79,7 @@ class AuthenticateServerAccess
                 }
             }
 
-            if ($server->transfer !== null) {
+            if (! is_null($server->transfer)) {
                 if (! $user->root_admin || ($user->root_admin && ! $request->routeIs($this->except))) {
                     throw new ConflictHttpException('Server is currently being transferred.');
                 }

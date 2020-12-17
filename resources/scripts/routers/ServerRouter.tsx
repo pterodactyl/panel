@@ -66,7 +66,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
         getServer(match.params.id)
             .catch(error => {
                 if (error.response?.status === 409) {
-                    if (error.response.data?.errors[0]?.detail?.includes('transfer')) {
+                    if (error.response.data?.errors[0]?.code === 'ServerTransferringException') {
                         setTransferring(true);
                     } else {
                         setInstalling(true);
