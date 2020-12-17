@@ -9,6 +9,7 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
 
 class AuthenticateServerAccess
 {
@@ -81,7 +82,7 @@ class AuthenticateServerAccess
 
             if (! is_null($server->transfer)) {
                 if (! $user->root_admin || ($user->root_admin && ! $request->routeIs($this->except))) {
-                    throw new ConflictHttpException('Server is currently being transferred.');
+                    throw new ServerTransferringException();
                 }
             }
         }
