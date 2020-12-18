@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import tw from 'twin.macro';
+import tw, { TwStyle } from 'twin.macro';
 import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
@@ -11,6 +11,21 @@ interface Stats {
     memory: number;
     cpu: number;
     disk: number;
+}
+
+function statusToColor (status: string|null, installing: boolean): TwStyle {
+    if (installing) {
+        status = '';
+    }
+
+    switch (status) {
+        case 'offline':
+            return tw`text-red-500`;
+        case 'running':
+            return tw`text-green-500`;
+        default:
+            return tw`text-yellow-500`;
+    }
 }
 
 const ServerDetailsBlock = () => {
@@ -49,6 +64,7 @@ const ServerDetailsBlock = () => {
     }, [ instance, connected ]);
 
     const name = ServerContext.useStoreState(state => state.server.data!.name);
+    const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
     const primaryAllocation = ServerContext.useStoreState(state => state.server.data!.allocations.filter(alloc => alloc.isDefault).map(
         allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
@@ -65,10 +81,10 @@ const ServerDetailsBlock = () => {
                     fixedWidth
                     css={[
                         tw`mr-1`,
-                        status === 'offline' ? tw`text-red-500` : (status === 'running' ? tw`text-green-500` : tw`text-yellow-500`),
+                        statusToColor(status, isInstalling),
                     ]}
                 />
-                &nbsp;{!status ? 'Connecting...' : status}
+                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : status)}
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>

@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 
 const ChecksumModal = ({ checksum, ...props }: RequiredModalProps & { checksum: string }) => (
     <Modal {...props}>
-        <h3 css={tw`mb-6`}>Verify file checksum</h3>
+        <h3 css={tw`mb-6 text-2xl`}>Verify file checksum</h3>
         <p css={tw`text-sm`}>
             The checksum of this file is:
         </p>

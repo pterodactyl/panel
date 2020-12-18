@@ -5,6 +5,7 @@ export interface FileObject {
     key: string;
     name: string;
     mode: string;
+    modeBits: string,
     size: number;
     isFile: boolean;
     isSymlink: boolean;
@@ -17,7 +18,9 @@ export interface FileObject {
 
 export default async (uuid: string, directory?: string): Promise<FileObject[]> => {
     const { data } = await http.get(`/api/client/servers/${uuid}/files/list`, {
-        params: { directory: encodeURI(directory ?? '/') },
+        // At this point the directory is still encoded so we need to decode it since axios
+        // will automatically re-encode this value before sending it along in the request.
+        params: { directory: directory ?? '/' },
     });
 
     return (data.data || []).map(rawDataToFileObject);

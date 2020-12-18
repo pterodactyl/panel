@@ -6,6 +6,24 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v1.1.3
 ### Fixed
 * Server bulk power actions command will no longer attempt to run commands against installing or suspended servers.
+* Fixes the application API throwing an error when attempting to return variables for a server.
+* Fixes an error when attempting to install Panel dependencies without specifying an `.env` file due to an unset default timezone.
+* Fixes a null value flip in the database migrations.
+* Fixes password change endpoint for users allowing a blank value to be provided (even if nothing actually happened).
+* Fixes database IP addresses not allowing a `0` in the first octet field.
+* Fixes node information being impossible to update if there was a network error during the process. Any errors encountered communicating with Wings are now reported but will not block the actual saving of the changes.
+* **[Security]** When 2FA is required on an account the client API endpoints will now properly return an error and the UI will redirect the user to setup 2FA.
+* **[Security]** When changing the owner of a server the old owner's JWT is now properly invalidated on Wings.
+* Fixes a server error when requesting database information for a server as a subuser and the account is not granted `view_password` permissions.
+
+### Added
+* Adds support for basic backup rotation on a server when creating scheduled backup tasks.
+* Makes URLs present in the console clickable.
+* Adds `chmod` support to the file manager so that users can manually make modifications to file permissions as they need.
+
+### Changed
+* UI will no longer show a delete button to users when they're editing themselves.
+* Updated logic for bulk power actions to no longer run actions against suspended or installing servers.
 
 ## v1.1.2
 ### Fixed

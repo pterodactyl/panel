@@ -38,13 +38,14 @@ class EggExporterService
             '_comment' => 'DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO',
             'meta' => [
                 'version' => 'PTDL_v1',
+                'update_url' => $egg->update_url,
             ],
             'exported_at' => Carbon::now()->toIso8601String(),
             'name' => $egg->name,
             'author' => $egg->author,
             'description' => $egg->description,
             'features' => $egg->features,
-            'image' => $egg->docker_image,
+            'images' => $egg->docker_images,
             'startup' => $egg->startup,
             'config' => [
                 'files' => $egg->inherit_config_files,

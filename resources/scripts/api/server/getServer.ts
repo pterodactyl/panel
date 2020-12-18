@@ -22,6 +22,7 @@ export interface Server {
         port: number;
     };
     invocation: string;
+    dockerImage: string;
     description: string;
     limits: {
         memory: number;
@@ -50,6 +51,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     name: data.name,
     node: data.node,
     invocation: data.invocation,
+    dockerImage: data.docker_image,
     sftpDetails: {
         ip: data.sftp_details.ip,
         port: data.sftp_details.port,

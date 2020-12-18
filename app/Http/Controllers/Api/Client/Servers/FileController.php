@@ -16,6 +16,7 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ChmodFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CompressFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DecompressFilesRequest;
@@ -71,7 +72,7 @@ class FileController extends ClientApiController
     {
         $contents = $this->fileRepository
             ->setServer($server)
-            ->getDirectory($this->encode($request->get('directory') ?? '/'));
+            ->getDirectory($request->get('directory') ?? '/');
 
         return $this->fractal->collection($contents)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -92,7 +93,7 @@ class FileController extends ClientApiController
     {
         return new Response(
             $this->fileRepository->setServer($server)->getContent(
-                $this->encode($request->get('file')), config('pterodactyl.files.max_edit_size')
+                $request->get('file'), config('pterodactyl.files.max_edit_size')
             ),
             Response::HTTP_OK,
             ['Content-Type' => 'text/plain']
@@ -257,6 +258,25 @@ class FileController extends ClientApiController
     {
         $this->fileRepository->setServer($server)
             ->deleteFiles(
+                $request->input('root'), $request->input('files')
+            );
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Updates file permissions for file(s) in the given root directory.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\ChmodFilesRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function chmod(ChmodFilesRequest $request, Server $server): JsonResponse
+    {
+        $this->fileRepository->setServer($server)
+            ->chmodFiles(
                 $request->input('root'), $request->input('files')
             );
 

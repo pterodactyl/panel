@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import ReactGA from 'react-ga';
 import { hot } from 'react-hot-loader/root';
-import { BrowserRouter, Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Router, Switch, useLocation } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
 import DashboardRouter from '@/routers/DashboardRouter';
@@ -13,6 +13,8 @@ import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
 import tw from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
+import { createBrowserHistory } from 'history';
+import { setupInterceptors } from '@/api/interceptors';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -29,6 +31,10 @@ interface ExtendedWindow extends Window {
         /* eslint-enable camelcase */
     };
 }
+
+const history = createBrowserHistory({ basename: '/' });
+
+setupInterceptors(history);
 
 const Pageview = () => {
     const { pathname } = useLocation();
@@ -72,7 +78,7 @@ const App = () => {
                 <Provider store={store}>
                     <ProgressBar/>
                     <div css={tw`mx-auto w-auto`}>
-                        <BrowserRouter basename={'/'} key={'root-router'}>
+                        <Router history={history}>
                             {SiteConfiguration?.analytics && <Pageview/>}
                             <Switch>
                                 <Route path="/server/:id" component={ServerRouter}/>
@@ -80,7 +86,7 @@ const App = () => {
                                 <Route path="/" component={DashboardRouter}/>
                                 <Route path={'*'} component={NotFound}/>
                             </Switch>
-                        </BrowserRouter>
+                        </Router>
                     </div>
                 </Provider>
             </StoreProvider>

@@ -78,7 +78,14 @@ class EggController extends Controller
      */
     public function store(EggFormRequest $request): RedirectResponse
     {
-        $egg = $this->creationService->handle($request->normalize());
+        $data = $request->normalize();
+        if (!empty($data['docker_images']) && !is_array($data['docker_images'])) {
+            $data['docker_images'] = array_map(function ($value) {
+                return trim($value);
+            }, explode("\n", $data['docker_images']));
+        }
+
+        $egg = $this->creationService->handle($data);
         $this->alert->success(trans('admin/nests.eggs.notices.egg_created'))->flash();
 
         return redirect()->route('admin.nests.egg.view', $egg->id);
@@ -108,7 +115,14 @@ class EggController extends Controller
      */
     public function update(EggFormRequest $request, Egg $egg): RedirectResponse
     {
-        $this->updateService->handle($egg, $request->normalize());
+        $data = $request->normalize();
+        if (!empty($data['docker_images']) && !is_array($data['docker_images'])) {
+            $data['docker_images'] = array_map(function ($value) {
+                return trim($value);
+            }, explode("\n", $data['docker_images']));
+        }
+
+        $this->updateService->handle($egg, $data);
         $this->alert->success(trans('admin/nests.eggs.notices.updated'))->flash();
 
         return redirect()->route('admin.nests.egg.view', $egg->id);

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\SubuserBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AllocationBelongsToServer;
@@ -17,10 +18,10 @@ Route::get('/', 'ClientController@index')->name('api:client.index');
 Route::get('/permissions', 'ClientController@permissions');
 
 Route::group(['prefix' => '/account'], function () {
-    Route::get('/', 'AccountController@index')->name('api:client.account');
-    Route::get('/two-factor', 'TwoFactorController@index');
-    Route::post('/two-factor', 'TwoFactorController@store');
-    Route::delete('/two-factor', 'TwoFactorController@delete');
+    Route::get('/', 'AccountController@index')->name('api:client.account')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::get('/two-factor', 'TwoFactorController@index')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::post('/two-factor', 'TwoFactorController@store')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::delete('/two-factor', 'TwoFactorController@delete')->withoutMiddleware(RequireTwoFactorAuthentication::class);
 
     Route::put('/email', 'AccountController@updateEmail')->name('api:client.account.update-email');
     Route::put('/password', 'AccountController@updatePassword')->name('api:client.account.update-password');
@@ -64,6 +65,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/decompress', 'Servers\FileController@decompress');
         Route::post('/delete', 'Servers\FileController@delete');
         Route::post('/create-folder', 'Servers\FileController@create');
+        Route::post('/chmod', 'Servers\FileController@chmod');
         Route::get('/upload', 'Servers\FileUploadController');
     });
 
@@ -112,5 +114,6 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     Route::group(['prefix' => '/settings'], function () {
         Route::post('/rename', 'Servers\SettingsController@rename');
         Route::post('/reinstall', 'Servers\SettingsController@reinstall');
+        Route::put('/docker-image', 'Servers\SettingsController@dockerImage');
     });
 });

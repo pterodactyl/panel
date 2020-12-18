@@ -4,7 +4,6 @@ namespace Pterodactyl\Transformers\Api\Application;
 
 use Cake\Chronos\Chronos;
 use Pterodactyl\Models\Database;
-use League\Fractal\Resource\Item;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -72,7 +71,7 @@ class ServerDatabaseTransformer extends BaseTransformer
      * @param \Pterodactyl\Models\Database $model
      * @return \League\Fractal\Resource\Item
      */
-    public function includePassword(Database $model): Item
+    public function includePassword(Database $model)
     {
         return $this->item($model, function (Database $model) {
             return [

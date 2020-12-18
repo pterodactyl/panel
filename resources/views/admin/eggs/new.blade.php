@@ -53,13 +53,13 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pDockerImage" class="control-label">Docker Image</label>
-                                <input type="text" id="pDockerImage" name="docker_image" value="{{ old('docker_image') }}" placeholder="quay.io/pterodactyl/service" class="form-control" />
-                                <p class="text-muted small">The default docker image that should be used for new servers using this Egg. This can be changed per-server.</p>
+                                <label for="pDockerImage" class="control-label">Docker Images</label>
+                                <textarea id="pDockerImages" name="docker_images" rows="4" placeholder="quay.io/pterodactyl/service" class="form-control">{{ old('docker_images') }}</textarea>
+                                <p class="text-muted small">The docker images available to servers using this egg. Enter one per line. Users will be able to select from this list of images if more than one value is provided.</p>
                             </div>
                             <div class="form-group">
                                 <label for="pStartup" class="control-label">Startup Command</label>
-                                <textarea id="pStartup" name="startup" class="form-control" rows="14">{{ old('startup') }}</textarea>
+                                <textarea id="pStartup" name="startup" class="form-control" rows="10">{{ old('startup') }}</textarea>
                                 <p class="text-muted small">The default startup command that should be used for new servers created with this Egg. You can change this per-server as needed.</p>
                             </div>
                         </div>
