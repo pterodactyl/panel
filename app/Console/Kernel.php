@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping();
 
         // Every 30 minutes, run the backup pruning command so that any abandoned backups can be deleted.
-        $pruneAge = config('backups.prune_age', 60);
+        $pruneAge = config('backups.prune_age', 360); // Defaults to 6 hours (time is in minuteS)
         if ($pruneAge > 0) {
             $schedule->command('p:maintenance:prune-backups', [
                 '--since-minutes' => $pruneAge,
