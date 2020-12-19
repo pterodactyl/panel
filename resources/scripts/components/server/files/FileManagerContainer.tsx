@@ -65,7 +65,7 @@ export default () => {
                             <FileActionCheckbox
                                 type={'checkbox'}
                                 css={tw`mx-4`}
-                                checked={selectedFilesLength === (files ? files.length : -1)}
+                                checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
                                 onChange={onSelectAllClick}
                             />
                         }
