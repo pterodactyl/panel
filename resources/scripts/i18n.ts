@@ -1,8 +1,9 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LocalStorageBackend from 'i18next-localstorage-backend';
-import { WebpackBackend } from 'i18next-webpack-backend';
+// import { WebpackBackend } from 'i18next-webpack-backend';
 import Backend from 'i18next-chained-backend';
+import * as resources from '../locales';
 
 let cacheExpirationTime = 7 * 24 * 60 * 60 * 1000; // 7 days, in milliseconds
 
@@ -15,6 +16,7 @@ i18n
     .use(Backend)
     .use(initReactI18next)
     .init({
+        resources,
         debug: process.env.NODE_ENV !== 'production',
         lng: 'de',
         fallbackLng: 'en',
@@ -26,19 +28,17 @@ i18n
         backend: {
             backends: [
                 LocalStorageBackend,
-                WebpackBackend,
+                // WebpackBackend,
             ],
             backendOptions: [ {
                 prefix: 'pterodactyl_lng__',
                 expirationTime: cacheExpirationTime,
                 store: window.localStorage,
                 defaultVersion: 'v1', // TODO: Get version from config/app.php
-            }, {
+            }, /*, {
                 context: require.context('../locales', true, /\.json$/, 'lazy'),
-            } ],
+            } */],
         },
     });
-
-// i18n.loadNamespaces(['validation']);
 
 export default i18n;

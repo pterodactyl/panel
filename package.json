@@ -48,6 +48,7 @@
         "yup": "^0.29.1"
     },
     "devDependencies": {
+        "@alienfast/i18next-loader": "^1.1.4",
         "@babel/core": "^7.12.1",
         "@babel/plugin-proposal-class-properties": "^7.12.1",
         "@babel/plugin-proposal-nullish-coalescing-operator": "^7.12.1",

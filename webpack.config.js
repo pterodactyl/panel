@@ -51,7 +51,13 @@ module.exports = {
                 test: /\.js$/,
                 enforce: 'pre',
                 loader: 'source-map-loader',
-            }
+            },
+            {
+                test: /locales/,
+                loader: '@alienfast/i18next-loader',
+                // options here
+                query: {include: ['**/*.json']}
+              }
         ],
     },
     stats: {

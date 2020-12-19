@@ -1,0 +1,2 @@
+// root pointer
+export default {};
