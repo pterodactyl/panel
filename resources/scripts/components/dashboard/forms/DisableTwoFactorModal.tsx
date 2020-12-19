@@ -9,6 +9,7 @@ import { ApplicationStore } from '@/state';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     password: string;
@@ -17,6 +18,7 @@ interface Values {
 export default ({ ...props }: RequiredModalProps) => {
     const { clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
+    const { t } = useTranslation('dashboard');
 
     const submit = ({ password }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         disableAccountTwoFactor(password)
@@ -39,7 +41,7 @@ export default ({ ...props }: RequiredModalProps) => {
                 password: '',
             }}
             validationSchema={object().shape({
-                password: string().required('You must provider your current password in order to continue.'),
+                password: string().required(t('need_current_password')),
             })}
         >
             {({ isSubmitting, isValid }) => (
@@ -50,8 +52,8 @@ export default ({ ...props }: RequiredModalProps) => {
                             id={'password'}
                             name={'password'}
                             type={'password'}
-                            label={'Current Password'}
-                            description={'In order to disable two-factor authentication you will need to provide your account password.'}
+                            label={t('current_password')}
+                            description={t('disable_2fa_text')}
                             autoFocus
                         />
                         <div css={tw`mt-6 text-right`}>
@@ -59,7 +61,7 @@ export default ({ ...props }: RequiredModalProps) => {
                                 color={'red'}
                                 disabled={!isValid}
                             >
-                                Disable Two-Factor
+                                {t('disable_2fa')}
                             </Button>
                         </div>
                     </Form>

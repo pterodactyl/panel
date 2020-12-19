@@ -1,0 +1,73 @@
+{
+    "account_api": "Account API",
+    "create_api_key": "Create API Key",
+    "api_keys": "API Keys",
+    "delete_api_key_title": "Confirm key deletion",
+    "delete_api_key_text": "Are you sure you wish to delete this API key? All requests using it will immediately be invalidated and will fail.",
+    "delete_api_key_button_text": "Yes, delete key",
+    "loading": "Loading...",
+    "no_api_keys_exist": "No API keys exist for this account.",
+    "last_used": "Last used: ",
+    "never": "Never",
+
+    "account_overview": "Account Overview",
+    "2fa_required": "2-Factor Required",
+    "2fa_required_text": "Your account must have two-factor authentication enabled in order to continue.",
+    "update_password": "Update Password",
+    "update_email": "Update Email Address",
+    "configure_2fa": "Configure Two Factor",
+
+    "new_api_key": "Your API Key",
+    "new_api_key_text": "The API key you have requested is shown below. Please store this in a safe location, it will not be shown again.",
+    "close": "Close",
+
+    "dashboard": "Dashboard",
+    "show_others_server": "Showing other's servers",
+    "show_own_server": "Showing your servers",
+    "no_others_server": "There are no other servers to display.",
+    "no_own_server": "There are no servers associated with your account.",
+
+    "unlimited": "Unlimited",
+    "installing": "Installing",
+    "of": "of",
+
+    "2fa_currently_enabled": "Two-factor authentication is currently enabled on your account.",
+    "disable": "Disable",
+    "2fa_currently_disabled": "You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.",
+    "begin_setup": "Begin Setup",
+
+    "description": "Description",
+    "description_text": "A description of this API key.",
+    "allowed_ips": "Allowed IPs",
+    "allowed_ips_text": "Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line.",
+    "create": "Create",
+
+    "need_current_password": "You must provide your current password in order to continue.",
+    "current_password": "Current Password",
+    "disable_2fa_text": "In order to disable two-factor authentication you will need to provide your account password.",
+    "disable_2fa": "Disable Two-Factor",
+
+    "need_authentication_code": "You must provide an authentication code to continue.",
+    "auth_code_digits": "Authenticator code must be 6 digits.",
+    "2fa_enabled": "Two-factor authentication enabled",
+    "2fa_enabled_text1": "Two-factor authentication has been enabled on your account. Should you loose access to this device you&apos;ll need to use on of the codes displayed below in order to access your account.",
+    "2fa_enabled_text2": "These codes will not be displayed again.",
+    "2fa_enabled_text3": "Please take note of them now by storing them in a secure repository such as a password manager.",
+    "2fa_code": "Code From Authenticator",
+    "2fa_code_text": "Enter the code from your authenticator device after scanning the QR image.",
+    "setup": "Setup",
+
+    "email_updated": "Your Email Address has been updated.",
+    "error": "Error",
+    "email": "Email Address",
+    "confirm_password": "Confirm Password",
+
+    "password_confirmation_not_match": "Password confirmation does not match the password you entered.",
+    "new_password": "New Password",
+    "new_password_description": "Your new password should be at least 8 characters in length and unique to this website.",
+    "confirm_new_password": "Confirm New Password",
+
+    "search_min_characters": "Please enter at least three characters to begin searching.",
+    "search_term": "Search term",
+    "search_description": "Enter a server name, uuid, or allocation to begin searching."
+}

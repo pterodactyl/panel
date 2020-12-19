@@ -12,12 +12,14 @@ import tw from 'twin.macro';
 import useSWR from 'swr';
 import { PaginatedResult } from '@/api/http';
 import Pagination from '@/components/elements/Pagination';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ page, setPage ] = useState(1);
     const { rootAdmin } = useStoreState(state => state.user.data!);
     const [ showOnlyAdmin, setShowOnlyAdmin ] = usePersistedState('show_all_servers', false);
+    const { t } = useTranslation('dashboard');
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
         [ '/api/client/servers', showOnlyAdmin, page ],
@@ -30,11 +32,11 @@ export default () => {
     }, [ error ]);
 
     return (
-        <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
+        <PageContentBlock title={t('dashboard')} showFlashKey={'dashboard'}>
             {rootAdmin &&
             <div css={tw`mb-2 flex justify-end items-center`}>
                 <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
-                    {showOnlyAdmin ? 'Showing other\'s servers' : 'Showing your servers'}
+                    {showOnlyAdmin ? t('show_others_server') : t('show_own_server')}
                 </p>
                 <Switch
                     name={'show_all_servers'}
@@ -58,11 +60,7 @@ export default () => {
                             ))
                             :
                             <p css={tw`text-center text-sm text-neutral-400`}>
-                                {showOnlyAdmin ?
-                                    'There are no other servers to display.'
-                                    :
-                                    'There are no servers associated with your account.'
-                                }
+                                {showOnlyAdmin ? t('no_others_server') : t('no_own_server')}
                             </p>
                     )}
                 </Pagination>

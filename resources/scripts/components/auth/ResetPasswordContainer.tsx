@@ -55,36 +55,36 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                 passwordConfirmation: '',
             }}
             validationSchema={object().shape({
-                password: string().required('A new password is required.')
-                    .min(8, 'Your new password should be at least 8 characters in length.'),
+                password: string().required(t('new_password_required'))
+                    .min(8, t('')),
                 passwordConfirmation: string()
-                    .required('Your new password does not match.')
+                    .required(t('new_password_not_match'))
                     // @ts-ignore
-                    .oneOf([ ref('password'), null ], 'Your new password does not match.'),
+                    .oneOf([ ref('password'), null ], t('new_password_not_match')),
             })}
         >
             {({ isSubmitting }) => (
                 <LoginFormContainer
-                    title={'Reset Password'}
+                    title={t('reset_password')}
                     css={tw`w-full flex`}
                 >
                     <div>
-                        <label>Email</label>
+                        <label>{t('email')}</label>
                         <Input value={email} isLight disabled/>
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={'New Password'}
+                            label={t('new_password')}
                             name={'password'}
                             type={'password'}
-                            description={'Passwords must be at least 8 characters in length.'}
+                            description={t('new_password_min_lenght')}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={'Confirm New Password'}
+                            label={t('confirm_new_password')}
                             name={'passwordConfirmation'}
                             type={'password'}
                         />
@@ -96,7 +96,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            Reset Password
+                            {t('reset_password')}
                         </Button>
                     </div>
                     <div css={tw`mt-6 text-center`}>
@@ -104,7 +104,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            Return to Login
+                            {t('return_to_login')}
                         </Link>
                     </div>
                 </LoginFormContainer>

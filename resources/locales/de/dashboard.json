@@ -1,0 +1,73 @@
+{
+    "account_api": "Konto API",
+    "create_api_key": "Erstelle API Schlüssel",
+    "api_keys": "API Schlüssel",
+    "delete_api_key_title": "Bestätige die löschung des Schlüssels",
+    "delete_api_key_text": "Bist du sicher das dieser API Schlüssel gelöscht werden soll? Alle Anfragen die diesen Schlüssel verwenden werden sofort ungültig gemacht und schlagen fehl.",
+    "delete_api_key_button_text": "Schlüssel löschen",
+    "loading": "Laden...",
+    "no_api_keys_exist": "Für dieses Konto existieren keine API Schlüssel.",
+    "last_used": "Zuletzt genutzt: ",
+    "never": "Nie",
+
+    "account_overview": "Konto Übersicht",
+    "2fa_required": "2-Faktor-Authentifizierung benötigt",
+    "2fa_required_text": "Dein Konto muss eine 2-Faktor-Authentifizierung besitzen um fortzufahren.",
+    "update_password": "Passwort aktualisieren",
+    "update_email": "E-Mail aktualisieren",
+    "configure_2fa": "2-Faktor-Authentifizierung konfigurieren",
+
+    "new_api_key": "Dein API Schlüssel",
+    "new_api_key_text": "Dein angeforderter API Schlüssel wird unten angezeigt. Bitte speichere diesen an einem sicheren Ort, er wird nicht erneut angezeigt.",
+    "close": "Schließen",
+
+    "dashboard": "Dashboard",
+    "show_others_server": "Zeige andere Server",
+    "show_own_server": "Zeige eigene Server",
+    "no_others_server": "Es gibt keine anderen Server, die angezeigt werden können.",
+    "no_own_server": "Es sind keine Server mit deinem Konto verbunden.",
+
+    "unlimited": "Unlimitiert",
+    "installing": "Installieren",
+    "of": "von",
+
+    "2fa_currently_enabled": "2-Faktor-Authentifizierung ist in deinem Konto aktiviert.",
+    "disable": "Deaktivieren",
+    "2fa_currently_disabled": "2-Faktor-Authentifizierung ist in deinem Konto nicht aktiviert. Drücke auf den Knopf, um mit der Einrichtugn zu beginnen.",
+    "begin_setup": "Einrichtung beginnen",
+
+    "description": "Beschreibung",
+    "description_text": "Eine Beschreibung des API Schlüssels.",
+    "allowed_ips": "Erlaubte IP-Adressen",
+    "allowed_ips_text": "Leer lassen, um jeder IP-Adresse die nutzung des API Schlüssels zu erlauben, ansonsten jede IP-Adresse in eine Zeile schreiben.",
+    "create": "Erstellen",
+
+    "need_current_password": "Du musst dein aktuelles Passwort angeben, um fortfahren zu können.",
+    "current_password": "Aktuelles Passwort",
+    "disable_2fa_text": "Um die Zwei-Faktor-Authentifizierung zu deaktivieren, musst du dein Kontopasswort angeben.",
+    "disable_2fa": "Deaktiviere Zwei-Faktor-Authentifizierung",
+
+    "need_authentication_code": "Du musst einen Authentifizierungscode angeben, um fortzufahren.",
+    "auth_code_digits": "Der Authentifizierungscode muss 6-stellig sein.",
+    "2fa_enabled": "Zwei-Faktor-Authentifizierung aktiviert",
+    "2fa_enabled_text1": "Die Zwei-Faktor-Authentifizierung wurde für dein Konto aktiviert. Solltest du den Zugang zu diesem Gerät verlieren, musst du einen der unten angezeigten Codes verwenden, um auf dein Konto zuzugreifen.",
+    "2fa_enabled_text2": "Diese Codes werden nicht mehr angezeigt.",
+    "2fa_enabled_text3": "Bitte nimm sie jetzt zur Kenntnis, indem du sie in einem sicheren Aufbewahrungsort wie z.B. einem Passwortmanager speicherst.",
+    "2fa_code": "Code von Authenticator",
+    "2fa_code_text": "Gib den Code von deinem Authenticator-Gerät ein, nachdem du das QR-Bild gescannt hast.",
+    "setup": "Setup",
+
+    "email_updated": "Deine E-Mail Adresse wurde aktualisiert.",
+    "error": "Fehler",
+    "email": "E-Mail Adresse",
+    "confirm_password": "Bestätige Passwort",
+
+    "password_confirmation_not_match": "Die Passwortbestätigung stimmt nicht mit dem von dir eingegebenen Passwort überein.",
+    "new_password": "Neues Passwort",
+    "new_password_description": "Dein neues Passwort sollte mindestens 8 Zeichen lang sein und nur für diese Webseite gelten.",
+    "confirm_new_password": "Bestätige neues Passwort",
+
+    "search_min_characters": "Bitte gib mindestens drei Zeichen ein, um die Suche zu beginnen.",
+    "search_term": "Suchbegriff",
+    "search_description": "Gib einen Servernamen, eine uuid oder eine Zuordnung ein, um die Suche zu starten."
+}

@@ -5,10 +5,12 @@ import SetupTwoFactorModal from '@/components/dashboard/forms/SetupTwoFactorModa
 import DisableTwoFactorModal from '@/components/dashboard/forms/DisableTwoFactorModal';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
     const user = useStoreState((state: ApplicationStore) => state.user.data!);
     const [ visible, setVisible ] = useState(false);
+    const { t } = useTranslation('dashboard');
 
     return user.useTotp ?
         <div>
@@ -20,7 +22,7 @@ export default () => {
             />
             }
             <p css={tw`text-sm`}>
-                Two-factor authentication is currently enabled on your account.
+                {t('2fa_currently_enabled')}
             </p>
             <div css={tw`mt-6`}>
                 <Button
@@ -28,7 +30,7 @@ export default () => {
                     isSecondary
                     onClick={() => setVisible(true)}
                 >
-                    Disable
+                    {t('disable')}
                 </Button>
             </div>
         </div>
@@ -42,8 +44,7 @@ export default () => {
             />
             }
             <p css={tw`text-sm`}>
-                You do not currently have two-factor authentication enabled on your account. Click
-                the button below to begin configuring it.
+                {t('2fa_currently_disabled')}
             </p>
             <div css={tw`mt-6`}>
                 <Button
@@ -51,7 +52,7 @@ export default () => {
                     isSecondary
                     onClick={() => setVisible(true)}
                 >
-                    Begin Setup
+                    {t('begin_setup')}
                 </Button>
             </div>
         </div>
