@@ -1,19 +1,19 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LocalStorageBackend from 'i18next-localstorage-backend';
+// import LocalStorageBackend from 'i18next-localstorage-backend';
 // import { WebpackBackend } from 'i18next-webpack-backend';
-import Backend from 'i18next-chained-backend';
+// import Backend from 'i18next-chained-backend';
 import * as resources from '../locales';
 
-let cacheExpirationTime = 7 * 24 * 60 * 60 * 1000; // 7 days, in milliseconds
+/* let cacheExpirationTime = 7 * 24 * 60 * 60 * 1000; // 7 days, in milliseconds
 
 // Set ExpirationTime to 0, so you can see changes directly
 if (process.env.NODE_ENV !== 'production') {
     cacheExpirationTime = 0;
-}
+} */
 
 i18n
-    .use(Backend)
+    // .use(Backend)
     .use(initReactI18next)
     .init({
         resources,
@@ -25,7 +25,7 @@ i18n
             // not needed for react as it escapes by default
             escapeValue: false,
         },
-        backend: {
+        /* backend: {
             backends: [
                 LocalStorageBackend,
                 // WebpackBackend,
@@ -37,8 +37,8 @@ i18n
                 defaultVersion: 'v1', // TODO: Get version from config/app.php
             }, /*, {
                 context: require.context('../locales', true, /\.json$/, 'lazy'),
-            } */],
-        },
+            } ],
+        }, */
     });
 
 export default i18n;
