@@ -1,6 +1,4 @@
 {
-    "screens": {
-        "resource_not_found": "The requested resource was not found.",
-        "something_went_wrong": "Something went wrong"
-    }
+    "resource_not_found": "The requested resource was not found.",
+    "something_went_wrong": "Something went wrong"
 }

@@ -1,8 +1,6 @@
 {
-    "elements": {
-        "cancel": "Cancel",
+    "cancel": "Cancel",
 
-        "copied": "Copied",
-        "to_clipboard": "to clipboard."
-    }
-}
+    "copied": "Copied",
+    "to_clipboard": "to clipboard."
+ }

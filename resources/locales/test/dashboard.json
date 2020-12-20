@@ -1,0 +1,73 @@
+{
+    "account_api": "PTERO TESTAccount API",
+    "create_api_key": "PTERO TESTCreate API Key",
+    "api_keys": "PTERO TESTAPI Keys",
+    "delete_api_key_title": "PTERO TESTConfirm key deletion",
+    "delete_api_key_text": "PTERO TESTAre you sure you wish to delete this API key? All requests using it will immediately be invalidated and will fail.",
+    "delete_api_key_button_text": "PTERO TESTYes, delete key",
+    "loading": "PTERO TESTLoading...",
+    "no_api_keys_exist": "PTERO TESTNo API keys exist for this account.",
+    "last_used": "PTERO TESTLast used: ",
+    "never": "PTERO TESTNever",
+
+    "account_overview": "PTERO TESTAccount Overview",
+    "2fa_required": "PTERO TEST2-Factor Required",
+    "2fa_required_text": "PTERO TESTYour account must have two-factor authentication enabled in order to continue.",
+    "update_password": "PTERO TESTUpdate Password",
+    "update_email": "PTERO TESTUpdate Email Address",
+    "configure_2fa": "PTERO TESTConfigure Two Factor",
+
+    "new_api_key": "PTERO TESTYour API Key",
+    "new_api_key_text": "PTERO TESTThe API key you have requested is shown below. Please store this in a safe location, it will not be shown again.",
+    "close": "PTERO TESTClose",
+
+    "dashboard": "PTERO TESTDashboard",
+    "show_others_server": "PTERO TESTShowing other's servers",
+    "show_own_server": "PTERO TESTShowing your servers",
+    "no_others_server": "PTERO TESTThere are no other servers to display.",
+    "no_own_server": "PTERO TESTThere are no servers associated with your account.",
+
+    "unlimited": "PTERO TESTUnlimited",
+    "installing": "PTERO TESTInstalling",
+    "of": "PTERO TESTof",
+
+    "2fa_currently_enabled": "PTERO TESTTwo-factor authentication is currently enabled on your account.",
+    "disable": "PTERO TESTDisable",
+    "2fa_currently_disabled": "PTERO TESTYou do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.",
+    "begin_setup": "PTERO TESTBegin Setup",
+
+    "description": "PTERO TESTDescription",
+    "description_text": "PTERO TESTA description of this API key.",
+    "allowed_ips": "PTERO TESTAllowed IPs",
+    "allowed_ips_text": "PTERO TESTLeave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line.",
+    "create": "PTERO TESTCreate",
+
+    "need_current_password": "PTERO TESTYou must provide your current password in order to continue.",
+    "current_password": "PTERO TESTCurrent Password",
+    "disable_2fa_text": "PTERO TESTIn order to disable two-factor authentication you will need to provide your account password.",
+    "disable_2fa": "PTERO TESTDisable Two-Factor",
+
+    "need_authentication_code": "PTERO TESTYou must provide an authentication code to continue.",
+    "auth_code_digits": "PTERO TESTAuthenticator code must be 6 digits.",
+    "2fa_enabled": "PTERO TESTTwo-factor authentication enabled",
+    "2fa_enabled_text1": "PTERO TESTTwo-factor authentication has been enabled on your account. Should you loose access to this device you&apos;ll need to use on of the codes displayed below in order to access your account.",
+    "2fa_enabled_text2": "PTERO TESTThese codes will not be displayed again.",
+    "2fa_enabled_text3": "PTERO TESTPlease take note of them now by storing them in a secure repository such as a password manager.",
+    "2fa_code": "PTERO TESTCode From Authenticator",
+    "2fa_code_text": "PTERO TESTEnter the code from your authenticator device after scanning the QR image.",
+    "setup": "PTERO TESTSetup",
+
+    "email_updated": "PTERO TESTYour Email Address has been updated.",
+    "error": "PTERO TESTError",
+    "email": "PTERO TESTEmail Address",
+    "confirm_password": "PTERO TESTConfirm Password",
+
+    "password_confirmation_not_match": "PTERO TESTPassword confirmation does not match the password you entered.",
+    "new_password": "PTERO TESTNew Password",
+    "new_password_description": "PTERO TESTYour new password should be at least 8 characters in length and unique to this website.",
+    "confirm_new_password": "PTERO TESTConfirm New Password",
+
+    "search_min_characters": "PTERO TESTPlease enter at least three characters to begin searching.",
+    "search_term": "PTERO TESTSearch term",
+    "search_description": "PTERO TESTEnter a server name, uuid, or allocation to begin searching."
+}

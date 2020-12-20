@@ -1,8 +1,6 @@
 {
-    "elements": {
-        "cancel": "Abbrechen",
+    "cancel": "Abbrechen",
 
-        "copied": "",
-        "to_clipboard": "in die Zwischenablage kopiert."
-    }
+    "copied": "",
+    "to_clipboard": "in die Zwischenablage kopiert."
 }
