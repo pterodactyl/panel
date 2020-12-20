@@ -1,5 +1,6 @@
 import React from 'react';
 import ScreenBlock from '@/components/screens/ScreenBlock';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     title?: string;
@@ -7,11 +8,15 @@ interface Props {
     onBack?: () => void;
 }
 
-export default ({ title, message, onBack }: Props) => (
-    <ScreenBlock
-        title={title || '404'}
-        image={'/assets/svgs/not_found.svg'}
-        message={message || 'The requested resource was not found.'}
-        onBack={onBack}
-    />
-);
+export default ({ title, message, onBack }: Props) => {
+    const { t } = useTranslation('screens');
+
+    return (
+        <ScreenBlock
+            title={title || '404'}
+            image={'/assets/svgs/not_found.svg'}
+            message={message || t('resource_not_found')}
+            onBack={onBack}
+        />
+    );
+};
