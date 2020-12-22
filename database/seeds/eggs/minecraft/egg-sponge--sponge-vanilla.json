@@ -28,7 +28,7 @@
             "name": "Sponge Version",
             "description": "The version of SpongeVanilla to download and use.",
             "env_variable": "SPONGE_VERSION",
-            "default_value": "1.11.2-6.1.0-BETA-21",
+            "default_value": "1.12.2-7.3.0",
             "user_viewable": true,
             "user_editable": false,
             "rules": "required|regex:\/^([a-zA-Z0-9.\\-_]+)$\/"
