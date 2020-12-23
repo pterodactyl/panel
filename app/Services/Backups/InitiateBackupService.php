@@ -117,9 +117,9 @@ class InitiateBackupService
         }
 
         // Check if the server has reached or exceeded it's backup limit
-        if (!$server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
+        if (! $server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
             // Do not allow the user to continue if this server is already at its limit and can't override.
-            if (!$override || $server->backup_limit <= 0) {
+            if (! $override || $server->backup_limit <= 0) {
                 throw new TooManyBackupsException($server->backup_limit);
             }
 
