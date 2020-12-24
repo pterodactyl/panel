@@ -45,7 +45,11 @@ class EggTransformer extends BaseTransformer
             'nest' => $model->nest_id,
             'author' => $model->author,
             'description' => $model->description,
-            'docker_image' => $model->docker_image,
+            // "docker_image" is deprecated, but left here to avoid breaking too many things at once
+            // in external software. We'll remove it down the road once things have gotten the chance
+            // to upgrade to using "docker_images".
+            'docker_image' => count($model->docker_images) > 0 ? $model->docker_images[0] : '',
+            'docker_images' => $model->docker_images,
             'config' => [
                 'files' => json_decode($model->config_files, true),
                 'startup' => json_decode($model->config_startup, true),

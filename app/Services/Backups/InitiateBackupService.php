@@ -13,7 +13,6 @@ use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
-use Pterodactyl\Services\Backups\DeleteBackupService;
 
 class InitiateBackupService
 {
@@ -118,14 +117,17 @@ class InitiateBackupService
         }
 
         // Check if the server has reached or exceeded it's backup limit
-        if (!$server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
+        if (! $server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
             // Do not allow the user to continue if this server is already at its limit and can't override.
-            if (!$override || $server->backup_limit <= 0) {
+            if (! $override || $server->backup_limit <= 0) {
                 throw new TooManyBackupsException($server->backup_limit);
             }
 
-            // Remove oldest backup
-            $oldestBackup = $server->backups()->where('is_successful', true)->orderByDesc('created_at')->first();
+            // Get the oldest backup the server has.
+            /** @var \Pterodactyl\Models\Backup $oldestBackup */
+            $oldestBackup = $server->backups()->where('is_successful', true)->orderBy('created_at')->first();
+
+            // Delete the oldest backup.
             $this->deleteBackupService->handle($oldestBackup);
         }
 

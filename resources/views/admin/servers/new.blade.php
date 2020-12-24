@@ -265,8 +265,9 @@
                 <div class="box-body row">
                     <div class="form-group col-xs-12">
                         <label for="pDefaultContainer">Docker Image</label>
-                        <input id="pDefaultContainer" name="image" value="{{ old('image') }}" class="form-control" />
-                        <p class="small text-muted no-margin">This is the default Docker image that will be used to run this server.</p>
+                        <select id="pDefaultContainer" name="image" class="form-control"></select>
+                        <input id="pDefaultContainerCustom" name="custom_image" value="{{ old('custom_image') }}" class="form-control" placeholder="Or enter a custom image..." style="margin-top:1rem"/>
+                        <p class="small text-muted no-margin">This is the default Docker image that will be used to run this server. Select an image from the dropdown above, or enter a custom image in the text field above.</p>
                     </div>
                 </div>
             </div>
@@ -323,11 +324,14 @@
                     @endforeach
                 @endif
             @endif
+            @if(old('image'))
+                $('#pDefaultContainer').val('{{ old('image') }}');
+            @endif
         }
         // END Persist 'Service Variables'
     </script>
 
-    {!! Theme::js('js/admin/new-server.js?v=20201003') !!}
+    {!! Theme::js('js/admin/new-server.js?v=20201212') !!}
 
     <script type="application/javascript">
         $(document).ready(function() {

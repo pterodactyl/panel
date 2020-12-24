@@ -108,7 +108,8 @@ class MergePermissionsTableIntoSubusers extends Migration
         foreach (DB::select('SELECT id, permissions FROM subusers') as $datum) {
             $values = [];
             foreach (json_decode($datum->permissions, true) as $permission) {
-                if (! empty($v = $flipped[$permission])) {
+                $v = $flipped[$permission] ?? null;
+                if (! empty($v)) {
                     $values[] = $datum->id;
                     $values[] = $v;
                 }

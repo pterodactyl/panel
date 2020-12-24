@@ -13,6 +13,7 @@ use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 use Pterodactyl\Transformers\Daemon\FileObjectTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest;
@@ -72,7 +73,7 @@ class FileController extends ClientApiController
     {
         $contents = $this->fileRepository
             ->setServer($server)
-            ->getDirectory($this->encode($request->get('directory') ?? '/'));
+            ->getDirectory($request->get('directory') ?? '/');
 
         return $this->fractal->collection($contents)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -93,7 +94,7 @@ class FileController extends ClientApiController
     {
         return new Response(
             $this->fileRepository->setServer($server)->getContent(
-                $this->encode($request->get('file')), config('pterodactyl.files.max_edit_size')
+                $request->get('file'), config('pterodactyl.files.max_edit_size')
             ),
             Response::HTTP_OK,
             ['Content-Type' => 'text/plain']
@@ -143,10 +144,7 @@ class FileController extends ClientApiController
      */
     public function write(WriteFileContentRequest $request, Server $server): JsonResponse
     {
-        $this->fileRepository->setServer($server)->putContent(
-            $this->encode($request->get('file')),
-            $request->getContent()
-        );
+        $this->fileRepository->setServer($server)->putContent($request->get('file'), $request->getContent());
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -284,16 +282,18 @@ class FileController extends ClientApiController
     }
 
     /**
-     * Encodes a given file name & path in a format that should work for a good majority
-     * of file names without too much confusing logic.
+     * Requests that a file be downloaded from a remote location by Wings.
      *
-     * @param string $path
-     * @return string
+     * @param $request
+     * @param \Pterodactyl\Models\Server $server
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    private function encode(string $path): string
+    public function pull(PullFileRequest $request, Server $server): JsonResponse
     {
-        return Collection::make(explode('/', rawurldecode($path)))->map(function ($value) {
-            return rawurlencode($value);
-        })->join('/');
+        $this->fileRepository->setServer($server)->pull($request->input('url'), $request->input('directory'));
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

@@ -66,6 +66,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/delete', 'Servers\FileController@delete');
         Route::post('/create-folder', 'Servers\FileController@create');
         Route::post('/chmod', 'Servers\FileController@chmod');
+        Route::post('/pull', 'Servers\FileController@pull');
         Route::get('/upload', 'Servers\FileUploadController');
     });
 
@@ -114,5 +115,6 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     Route::group(['prefix' => '/settings'], function () {
         Route::post('/rename', 'Servers\SettingsController@rename');
         Route::post('/reinstall', 'Servers\SettingsController@reinstall');
+        Route::put('/docker-image', 'Servers\SettingsController@dockerImage');
     });
 });

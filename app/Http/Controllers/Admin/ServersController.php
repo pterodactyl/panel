@@ -334,14 +334,19 @@ class ServersController extends Controller
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function saveStartup(Request $request, Server $server)
     {
+        $data = $request->except('_token');
+        if (!empty($data['custom_docker_image'])) {
+            $data['docker_image'] = $data['custom_docker_image'];
+            unset($data['custom_docker_image']);
+        }
+
         try {
             $this->startupModificationService
                 ->setUserLevel(User::USER_LEVEL_ADMIN)
-                ->handle($server, $request->except('_token'));
+                ->handle($server, $data);
         } catch (DataValidationException $exception) {
             throw new ValidationException($exception->validator);
         }

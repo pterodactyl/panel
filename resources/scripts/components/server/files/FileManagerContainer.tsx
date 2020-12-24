@@ -18,6 +18,7 @@ import UploadButton from '@/components/server/files/UploadButton';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { useStoreActions } from '@/state/hooks';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -31,17 +32,23 @@ export default () => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const clearFlashes = useStoreActions(actions => actions.flashes.clearFlashes);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
+
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
+    const selectedFilesLength = ServerContext.useStoreState(state => state.files.selectedFiles.length);
 
     useEffect(() => {
         clearFlashes('files');
         setSelectedFiles([]);
-        setDirectory(hash.length > 0 ? decodeURI(hash) : '/');
+        setDirectory(hash.length > 0 ? hash : '/');
     }, [ hash ]);
 
     useEffect(() => {
         mutate();
     }, [ directory ]);
+
+    const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedFiles(e.currentTarget.checked ? (files?.map(file => file.name) || []) : []);
+    };
 
     if (error) {
         return (
@@ -53,9 +60,17 @@ export default () => {
         <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
             <div css={tw`flex flex-wrap-reverse md:flex-no-wrap justify-center mb-4`}>
                 <ErrorBoundary>
-                    <FileManagerBreadcrumbs/>
+                    <FileManagerBreadcrumbs
+                        renderLeft={
+                            <FileActionCheckbox
+                                type={'checkbox'}
+                                css={tw`mx-4`}
+                                checked={selectedFilesLength === (files ? files.length : -1)}
+                                onChange={onSelectAllClick}
+                            />
+                        }
+                    />
                 </ErrorBoundary>
-
                 <Can action={'file.create'}>
                     <ErrorBoundary>
                         <div css={tw`flex flex-shrink-0 flex-wrap-reverse md:flex-no-wrap justify-end mb-4 md:mb-0 ml-0 md:ml-auto`}>

@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Requests\Admin;
 
@@ -23,6 +16,7 @@ class ServerFormRequest extends AdminFormRequest
     {
         $rules = Server::getRules();
         $rules['description'][] = 'nullable';
+        $rules['custom_image'] = 'sometimes|nullable|string';
 
         return $rules;
     }

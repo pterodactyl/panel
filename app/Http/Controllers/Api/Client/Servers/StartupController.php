@@ -62,6 +62,7 @@ class StartupController extends ClientApiController
             ->transformWith($this->getTransformer(EggVariableTransformer::class))
             ->addMeta([
                 'startup_command' => $startup,
+                'docker_images' => $server->egg->docker_images,
                 'raw_startup_command' => $server->startup,
             ])
             ->toArray();

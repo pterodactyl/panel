@@ -63,6 +63,7 @@ class ServerTransformer extends BaseClientTransformer
                 'cpu' => $server->cpu,
             ],
             'invocation' => $service->handle($server, ! $this->getUser()->can(Permission::ACTION_STARTUP_READ, $server)),
+            'docker_image' => $server->image,
             'egg_features' => $server->egg->inherit_features,
             'feature_limits' => [
                 'databases' => $server->database_limit,

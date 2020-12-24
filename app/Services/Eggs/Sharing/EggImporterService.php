@@ -102,7 +102,10 @@ class EggImporterService
             'name' => object_get($parsed, 'name'),
             'description' => object_get($parsed, 'description'),
             'features' => object_get($parsed, 'features'),
-            'docker_image' => object_get($parsed, 'image'),
+            // Maintain backwards compatability for eggs that are still using the old single image
+            // string format. New eggs can provide an array of Docker images that can be used.
+            'docker_images' => object_get($parsed, 'images') ?? [object_get($parsed, 'image')],
+            'update_url' => object_get($parsed, 'meta.update_url'),
             'config_files' => object_get($parsed, 'config.files'),
             'config_startup' => object_get($parsed, 'config.startup'),
             'config_logs' => object_get($parsed, 'config.logs'),
