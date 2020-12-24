@@ -127,7 +127,7 @@ export default ({ database, className }: Props) => {
                 <Can action={'database.view_password'}>
                     <div css={tw`mt-6`}>
                         <Label>Password</Label>
-                        <CopyOnClick text={database.password?.valueOf}><Input type={'text'} readOnly value={database.password}/></CopyOnClick>
+                        <CopyOnClick text={database.password}><Input type={'text'} readOnly value={database.password}/></CopyOnClick>
                     </div>
                 </Can>
                 <div css={tw`mt-6`}>
