@@ -9,8 +9,8 @@ namespace Pterodactyl\Models;
  * @property int $new_node
  * @property int $old_allocation
  * @property int $new_allocation
- * @property string $old_additional_allocations
- * @property string $new_additional_allocations
+ * @property array|null $old_additional_allocations
+ * @property array|null $new_additional_allocations
  * @property bool|null $successful
  * @property bool $archived
  * @property \Carbon\Carbon $created_at
@@ -53,8 +53,8 @@ class ServerTransfer extends Model
         'new_node' => 'int',
         'old_allocation' => 'int',
         'new_allocation' => 'int',
-        'old_additional_allocations' => 'string',
-        'new_additional_allocations' => 'string',
+        'old_additional_allocations' => 'array',
+        'new_additional_allocations' => 'array',
         'successful' => 'bool',
         'archived' => 'bool',
     ];
@@ -68,8 +68,10 @@ class ServerTransfer extends Model
         'new_node' => 'required|numeric',
         'old_allocation' => 'required|numeric',
         'new_allocation' => 'required|numeric',
-        'old_additional_allocations' => 'nullable',
-        'new_additional_allocations' => 'nullable',
+        'old_additional_allocations' => 'nullable|array',
+        'old_additional_allocations.*' => 'numeric',
+        'new_additional_allocations' => 'nullable|array',
+        'new_additional_allocations.*' => 'numeric',
         'successful' => 'sometimes|nullable|boolean',
     ];
 
