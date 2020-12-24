@@ -66,6 +66,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/delete', 'Servers\FileController@delete');
         Route::post('/create-folder', 'Servers\FileController@create');
         Route::post('/chmod', 'Servers\FileController@chmod');
+        Route::post('/pull', 'Servers\FileController@pull');
         Route::get('/upload', 'Servers\FileUploadController');
     });
 

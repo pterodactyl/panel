@@ -37,7 +37,7 @@ class DaemonFileRepository extends DaemonRepository
             throw new DaemonConnectionException($exception);
         }
 
-        $length = (int) $response->getHeader('Content-Length')[0] ?? 0;
+        $length = (int)$response->getHeader('Content-Length')[0] ?? 0;
 
         if ($notLargerThan && $length > $notLargerThan) {
             throw new FileSizeTooLargeException;
@@ -291,6 +291,31 @@ class DaemonFileRepository extends DaemonRepository
                         'root' => $root ?? '/',
                         'files' => $files,
                     ],
+                ]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
+
+    /**
+     * Pulls a file from the given URL and saves it to the disk.
+     *
+     * @param string $url
+     * @param string|null $directory
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function pull(string $url, ?string $directory): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            return $this->getHttpClient()->post(
+                sprintf('/api/servers/%s/files/pull', $this->server->uuid),
+                [
+                    'json' => ['url' => $url, 'directory' => $directory ?? '/'],
                 ]
             );
         } catch (TransferException $exception) {
