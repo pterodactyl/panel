@@ -26,14 +26,14 @@ const IconDescription = styled.p<{ $alarm: boolean }>`
 
 const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
     ${tw`grid grid-cols-12 gap-4 relative`};
-    
+
     & .status-bar {
         ${tw`w-2 bg-red-500 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
         height: calc(100% - 0.5rem);
-        
+
         ${({ $status }) => (!$status || $status === 'offline') ? tw`bg-red-500` : ($status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`)};
     }
-    
+
     &:hover .status-bar {
         ${tw`opacity-75`};
     }
@@ -74,8 +74,8 @@ export default ({ server, className }: { server: Server; className?: string }) =
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
-    const disklimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : 'Unlimited';
-    const memorylimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : 'Unlimited';
+    const diskLimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : 'Unlimited';
+    const memoryLimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : 'Unlimited';
 
     return (
         <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
@@ -118,7 +118,14 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                 </span>
                             </div>
                             :
-                            <Spinner size={'small'}/>
+                            server.isTransferring ?
+                                <div css={tw`flex-1 text-center`}>
+                                    <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
+                                        Transferring
+                                    </span>
+                                </div>
+                                :
+                                <Spinner size={'small'}/>
                     :
                     <React.Fragment>
                         <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>
@@ -134,7 +141,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memorylimit}</p>
+                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memoryLimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
@@ -143,7 +150,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {disklimit}</p>
+                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {diskLimit}</p>
                         </div>
                     </React.Fragment>
                 }

@@ -3,12 +3,11 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Nodes\NodeJWTService;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -55,7 +54,22 @@ class WebsocketController extends ClientApiController
     {
         $user = $request->user();
         if ($user->cannot(Permission::ACTION_WEBSOCKET_CONNECT, $server)) {
-            throw new HttpException(Response::HTTP_FORBIDDEN, 'You do not have permission to connect to this server\'s websocket.');
+            throw new HttpForbiddenException('You do not have permission to connect to this server\'s websocket.');
+        }
+
+        $permissions = $this->permissionsService->handle($server, $user);
+
+        $node = $server->node;
+        if (! is_null($server->transfer)) {
+            // Check if the user has permissions to receive transfer logs.
+            if (! in_array('admin.websocket.transfer', $permissions)) {
+                throw new HttpForbiddenException('You do not have permission to view server transfer logs.');
+            }
+
+            // Redirect the websocket request to the new node if the server has been archived.
+            if ($server->transfer->archived) {
+                $node = $server->transfer->newNode;
+            }
         }
 
         $token = $this->jwtService
@@ -63,11 +77,11 @@ class WebsocketController extends ClientApiController
             ->setClaims([
                 'user_id' => $request->user()->id,
                 'server_uuid' => $server->uuid,
-                'permissions' => $this->permissionsService->handle($server, $user),
+                'permissions' => $permissions,
             ])
-            ->handle($server->node, $user->id . $server->uuid);
+            ->handle($node, $user->id . $server->uuid);
 
-        $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $server->node->getConnectionAddress());
+        $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $node->getConnectionAddress());
 
         return new JsonResponse([
             'data' => [

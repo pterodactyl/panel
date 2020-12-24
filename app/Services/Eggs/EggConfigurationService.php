@@ -102,7 +102,7 @@ class EggConfigurationService
     {
         // Get the legacy configuration structure for the server so that we
         // can property map the egg placeholders to values.
-        $structure = $this->configurationStructureService->handle($server, true);
+        $structure = $this->configurationStructureService->handle($server, [], true);
 
         $response = [];
         // Normalize the output of the configuration for the new Wings Daemon to more

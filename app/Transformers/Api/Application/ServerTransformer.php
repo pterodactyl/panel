@@ -28,6 +28,7 @@ class ServerTransformer extends BaseTransformer
         'location',
         'node',
         'databases',
+        'transfer',
     ];
 
     /**
@@ -55,8 +56,6 @@ class ServerTransformer extends BaseTransformer
      *
      * @param \Pterodactyl\Models\Server $server
      * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function transform(Server $server): array
     {
