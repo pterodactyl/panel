@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
+use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
@@ -48,7 +49,7 @@ class DaemonBackupRepository extends DaemonRepository
                     'json' => [
                         'adapter' => $this->adapter ?? config('backups.default'),
                         'uuid' => $backup->uuid,
-                        'ignored_files' => $backup->ignored_files,
+                        'ignore' => implode('\n', $backup->ignored_files),
                     ],
                 ]
             );

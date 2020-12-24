@@ -52,7 +52,7 @@ class BackupRemoteUploadController extends Controller
     public function __invoke(Request $request, string $backup)
     {
         // Get the size query parameter.
-        $size = (int)$request->query('size');
+        $size = (int) $request->query('size');
         if (empty($size)) {
             throw new BadRequestHttpException('A non-empty "size" query parameter must be provided.');
         }
