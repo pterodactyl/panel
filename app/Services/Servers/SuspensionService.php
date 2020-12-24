@@ -60,7 +60,7 @@ class SuspensionService
 
         // Check if the server is currently being transferred.
         if (! is_null($server->transfer)) {
-            throw new ServerTransferringException();
+            throw new ServerTransferringException;
         }
 
         $this->connection->transaction(function () use ($action, $server) {

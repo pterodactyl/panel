@@ -83,7 +83,7 @@ class AccessingValidServer
 
         if (! is_null($server->transfer)) {
             if ($isApiRequest) {
-                throw new ServerTransferringException();
+                throw new ServerTransferringException;
             }
 
             return $this->response->view('errors.transferring', [], 409);

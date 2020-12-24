@@ -113,7 +113,7 @@ class SftpAuthenticationController extends Controller
 
         // Prevent SFTP access to servers that are being transferred.
         if (! is_null($server->transfer)) {
-            throw new ServerTransferringException();
+            throw new ServerTransferringException;
         }
 
         // Remember, for security purposes, only reveal the existence of the server to people that

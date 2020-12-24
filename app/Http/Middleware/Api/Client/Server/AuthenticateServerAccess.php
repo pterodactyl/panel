@@ -82,7 +82,7 @@ class AuthenticateServerAccess
 
             if (! is_null($server->transfer)) {
                 if (! $user->root_admin || ($user->root_admin && ! $request->routeIs($this->except))) {
-                    throw new ServerTransferringException();
+                    throw new ServerTransferringException;
                 }
             }
         }
