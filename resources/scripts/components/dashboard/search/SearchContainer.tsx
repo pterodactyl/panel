@@ -9,7 +9,7 @@ export default () => {
 
     useEventListener('keydown', (e: KeyboardEvent) => {
         if ([ 'input', 'textarea' ].indexOf(((e.target as HTMLElement).tagName || 'input').toLowerCase()) < 0) {
-            if (!visible && e.key.toLowerCase() === 'k') {
+            if (!visible && e.metaKey && e.key.toLowerCase() === '/') {
                 setVisible(true);
             }
         }
