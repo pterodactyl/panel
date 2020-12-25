@@ -331,7 +331,7 @@
         // END Persist 'Service Variables'
     </script>
 
-    {!! Theme::js('js/admin/new-server.js?v=20201212') !!}
+    {!! Theme::js('js/admin/new-server.js?v=20201225') !!}
 
     <script type="application/javascript">
         $(document).ready(function() {
