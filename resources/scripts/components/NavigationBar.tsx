@@ -5,10 +5,8 @@ import { faCogs, faLayerGroup, faSignOutAlt, faUserCircle } from '@fortawesome/f
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
-import tw from 'twin.macro';
+import tw, { theme } from 'twin.macro';
 import styled from 'styled-components/macro';
-// @ts-ignore
-import * as config from '@/../../tailwind.config.js';
 
 const Navigation = styled.div`
     ${tw`w-full bg-neutral-900 shadow-md overflow-x-auto`};
@@ -37,7 +35,7 @@ const RightNavigation = styled.div`
         }
         
         &:active, &:hover, &.active {
-            box-shadow: inset 0 -2px ${config.theme.colors.cyan['700']};
+            box-shadow: inset 0 -2px ${theme`colors.cyan.700`.toString()};
         }
     }
 `;
