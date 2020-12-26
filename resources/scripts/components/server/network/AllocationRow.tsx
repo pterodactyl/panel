@@ -58,7 +58,7 @@ const AllocationRow = ({ allocation }: Props) => {
     };
 
     return (
-        <GreyRowBox $hoverable={false} css={tw`flex-wrap md:flex-no-wrap mt-2`}>
+        <GreyRowBox $hoverable={false} css={tw`flex-wrap md:flex-nowrap mt-2`}>
             <div css={tw`flex items-center w-full md:w-auto`}>
                 <div css={tw`pl-4 pr-6 text-neutral-400`}>
                     <FontAwesomeIcon icon={faNetworkWired}/>

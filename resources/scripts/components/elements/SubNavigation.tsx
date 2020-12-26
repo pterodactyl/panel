@@ -11,7 +11,7 @@ const SubNavigation = styled.div`
         max-width: 1200px;
 
         & > a, & > div {
-            ${tw`inline-block py-3 px-4 text-neutral-300 no-underline whitespace-no-wrap transition-all duration-150`};
+            ${tw`inline-block py-3 px-4 text-neutral-300 no-underline whitespace-nowrap transition-all duration-150`};
 
             &:not(:first-of-type) {
                 ${tw`ml-2`};

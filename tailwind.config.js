@@ -1,44 +1,14 @@
 module.exports = {
     theme: {
         fontFamily: {
-            sans: [
-                'Rubik',
-                '-apple-system',
-                'BlinkMacSystemFont',
-                '"Helvetica Neue"',
-                '"Roboto"',
-                'system-ui',
-                'sans-serif',
-            ],
-            header: [
-                '"IBM Plex Sans"',
-                '"Roboto"',
-                'system-ui',
-                'sans-serif',
-            ],
-            serif: [
-                'Constantia',
-                '"Lucida Bright"',
-                'Lucidabright',
-                '"Lucida Serif"',
-                'Lucida',
-                'serif',
-            ],
-            mono: [
-                '"IBM Plex Mono"',
-                '"Source Code Pro"',
-                'SourceCodePro',
-                'Menlo',
-                'Monaco',
-                'Consolas',
-                'monospace',
-            ],
+            sans: [ 'Rubik', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', '"Roboto"', 'system-ui', 'sans-serif' ],
+            header: [ '"IBM Plex Sans"', '"Roboto"', 'system-ui', 'sans-serif' ],
+            mono: [ '"IBM Plex Mono"', '"Source Code Pro"', 'SourceCodePro', 'Menlo', 'Monaco', 'Consolas', 'monospace' ],
         },
         colors: {
             transparent: 'transparent',
             black: 'hsl(210, 27%, 10%)',
             white: '#ffffff',
-            'basically-white': '#fafafb',
             primary: {
                 50: 'hsl(202, 100%, 95%)', // lightest
                 100: 'hsl(204, 100%, 86%)', // lighter
@@ -119,11 +89,8 @@ module.exports = {
             transitionDuration: {
                 250: '250ms',
             },
-            minWidth: {
-                '48': '12rem',
-            },
             borderColor: theme => ({
-                default: theme('colors.neutral.400', 'cuurrentColor'),
+                default: theme('colors.neutral.400', 'currentColor'),
             }),
         },
     },
