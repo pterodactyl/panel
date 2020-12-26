@@ -76,8 +76,8 @@ export default ({ server, className }: { server: Server; className?: string }) =
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
-    const diskLimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : t('unlimited';
-    const memoryLimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : t('unlimited';
+    const diskLimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : t('unlimited');
+    const memoryLimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : t('unlimited');
 
     return (
         <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
@@ -143,7 +143,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>t('of') {memoryLimit}</p>
+                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>{t('of')} {memoryLimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>

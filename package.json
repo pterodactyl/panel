@@ -8,6 +8,7 @@
         "axios": "^0.19.2",
         "chart.js": "^2.8.0",
         "codemirror": "^5.57.0",
+        "cross-os": "^1.3.0",
         "date-fns": "^2.14.0",
         "debounce": "^1.2.0",
         "deepmerge": "^4.2.2",
@@ -112,12 +113,19 @@
         "yarn-deduplicate": "^1.1.1"
     },
     "scripts": {
-        "clean": "cd public/assets && find . \\( -name \"*.js\" -o -name \"*.map\" \\) -type f -delete",
+        "clean": "cross-os clean-command",
         "lint": "eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
         "watch": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "yarn run clean && cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production",
         "serve": "yarn run clean && cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
+    },
+    "cross-os": {
+        "clean-command": {
+            "darwin": "cd public/assets && find . \\( -name \"*.js\" -o -name \"*.map\" \\) -type f -delete",
+            "win32": "cd public/assets && del *.js && del *.map",
+            "linux": "cd public/assets && find . \\( -name \"*.js\" -o -name \"*.map\" \\) -type f -delete" 
+        }
     },
     "browserslist": [
         "> 0.5%",

@@ -53,7 +53,7 @@ export default () => {
         <PageContentBlock title={t('account_api')}>
             <FlashMessageRender byKey={'account'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={t('create_api_key'()} css={tw`flex-none w-full md:w-1/2`}>
+                <ContentBox title={t('create_api_key')} css={tw`flex-none w-full md:w-1/2`}>
                     <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
                 <ContentBox title={t('api_keys')} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
