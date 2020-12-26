@@ -28,9 +28,6 @@ module.exports = {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
-                options: {
-                    cacheDirectory: !isProduction,
-                },
             },
             {
                 test: /\.css$/,
@@ -92,7 +89,7 @@ module.exports = {
         minimize: isProduction,
         minimizer: [
             new TerserPlugin({
-                cache: true,
+                cache: isProduction,
                 parallel: true,
                 extractComments: false,
                 terserOptions: {

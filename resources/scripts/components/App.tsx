@@ -11,7 +11,7 @@ import { Provider } from 'react-redux';
 import { SiteSettings } from '@/state/settings';
 import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
-import tw from 'twin.macro';
+import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 import { createBrowserHistory } from 'history';
 import { setupInterceptors } from '@/api/interceptors';
@@ -74,6 +74,7 @@ const App = () => {
     return (
         <>
             <GlobalStylesheet/>
+            <TailwindGlobalStyles/>
             <StoreProvider store={store}>
                 <Provider store={store}>
                     <ProgressBar/>
