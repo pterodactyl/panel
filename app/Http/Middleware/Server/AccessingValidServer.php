@@ -9,6 +9,7 @@ use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AccessingValidServer
@@ -78,6 +79,14 @@ class AccessingValidServer
             }
 
             return $this->response->view('errors.installing', [], 409);
+        }
+
+        if (! is_null($server->transfer)) {
+            if ($isApiRequest) {
+                throw new ServerTransferringException;
+            }
+
+            return $this->response->view('errors.transferring', [], 409);
         }
 
         // Add server to the request attributes. This will replace sessions

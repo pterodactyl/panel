@@ -40,6 +40,7 @@ export interface Server {
     };
     isSuspended: boolean;
     isInstalling: boolean;
+    isTransferring: boolean;
     variables: ServerEggVariable[];
     allocations: Allocation[];
 }
@@ -62,6 +63,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     featureLimits: { ...data.feature_limits },
     isSuspended: data.is_suspended,
     isInstalling: data.is_installing,
+    isTransferring: data.is_transferring,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(rawDataToServerEggVariable),
     allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(rawDataToServerAllocation),
 });

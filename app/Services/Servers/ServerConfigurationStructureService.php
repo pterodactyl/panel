@@ -29,14 +29,25 @@ class ServerConfigurationStructureService
      * daemon, if you modify the structure eggs will break unexpectedly.
      *
      * @param \Pterodactyl\Models\Server $server
+     * @param array $override
      * @param bool $legacy deprecated
      * @return array
      */
-    public function handle(Server $server, bool $legacy = false): array
+    public function handle(Server $server, array $override = [], bool $legacy = false): array
     {
-        return $legacy ?
-            $this->returnLegacyFormat($server)
-            : $this->returnCurrentFormat($server);
+        $clone = $server;
+        // If any overrides have been set on this call make sure to update them on the
+        // cloned instance so that the configuration generated uses them.
+        if (!empty($override)) {
+            $clone = $server->fresh();
+            foreach ($override as $key => $value) {
+                $clone->setAttribute($key, $value);
+            }
+        }
+
+        return $legacy
+            ? $this->returnLegacyFormat($clone)
+            : $this->returnCurrentFormat($clone);
     }
 
     /**
@@ -105,12 +116,12 @@ class ServerConfigurationStructureService
                 })->toArray(),
                 'env' => $this->environment->handle($server),
                 'oom_disabled' => $server->oom_disabled,
-                'memory' => (int) $server->memory,
-                'swap' => (int) $server->swap,
-                'io' => (int) $server->io,
-                'cpu' => (int) $server->cpu,
+                'memory' => (int)$server->memory,
+                'swap' => (int)$server->swap,
+                'io' => (int)$server->io,
+                'cpu' => (int)$server->cpu,
                 'threads' => $server->threads,
-                'disk' => (int) $server->disk,
+                'disk' => (int)$server->disk,
                 'image' => $server->image,
             ],
             'service' => [
@@ -118,7 +129,7 @@ class ServerConfigurationStructureService
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,
-            'suspended' => (int) $server->suspended,
+            'suspended' => (int)$server->suspended,
         ];
     }
 }

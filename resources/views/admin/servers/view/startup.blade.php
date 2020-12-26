@@ -120,6 +120,7 @@
 
             $('#setDefaultImage').html(_.get(objectChain, 'docker_images.0', 'undefined'));
             const images = _.get(objectChain, 'docker_images', [])
+            $('#pDockerImage').html('');
             for (let i = 0; i < images.length; i++) {
                 let opt = document.createElement('option');
                 opt.value = images[i];

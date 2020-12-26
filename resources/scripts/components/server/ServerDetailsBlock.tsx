@@ -65,13 +65,14 @@ const ServerDetailsBlock = () => {
 
     const name = ServerContext.useStoreState(state => state.server.data!.name);
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
     const primaryAllocation = ServerContext.useStoreState(state => state.server.data!.allocations.filter(alloc => alloc.isDefault).map(
         allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
     )).toString();
 
-    const disklimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
-    const memorylimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
+    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
+    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
@@ -81,10 +82,10 @@ const ServerDetailsBlock = () => {
                     fixedWidth
                     css={[
                         tw`mr-1`,
-                        statusToColor(status, isInstalling),
+                        statusToColor(status, isInstalling || isTransferring),
                     ]}
                 />
-                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : status)}
+                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>
@@ -97,11 +98,11 @@ const ServerDetailsBlock = () => {
             </p>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faMemory} fixedWidth css={tw`mr-1`}/> {bytesToHuman(stats.memory)}
-                <span css={tw`text-neutral-500`}> / {memorylimit}</span>
+                <span css={tw`text-neutral-500`}> / {memoryLimit}</span>
             </p>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.disk)}
-                <span css={tw`text-neutral-500`}> / {disklimit}</span>
+                <span css={tw`text-neutral-500`}> / {diskLimit}</span>
             </p>
         </TitledGreyBox>
     );

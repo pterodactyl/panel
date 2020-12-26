@@ -6,6 +6,8 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
 
 class SuspensionService
 {
@@ -56,12 +58,20 @@ class SuspensionService
             return;
         }
 
+        // Check if the server is currently being transferred.
+        if (! is_null($server->transfer)) {
+            throw new ServerTransferringException;
+        }
+
         $this->connection->transaction(function () use ($action, $server) {
             $server->update([
                 'suspended' => $action === self::ACTION_SUSPEND,
             ]);
 
-            $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
+            // Only send the suspension request to wings if the server is not currently being transferred.
+            if (is_null($server->transfer)) {
+                $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
+            }
         });
     }
 }

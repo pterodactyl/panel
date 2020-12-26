@@ -11,12 +11,19 @@ import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import { LinkButton } from '@/components/elements/Button';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import isEqual from 'react-fast-compare';
+import CopyOnClick from '@/components/elements/CopyOnClick';
 
 export default () => {
     const username = useStoreState(state => state.user.data!.username);
     const id = ServerContext.useStoreState(state => state.server.data!.id);
-    const sftpIp = ServerContext.useStoreState(state => state.server.data!.sftpDetails.ip);
-    const sftpPort = ServerContext.useStoreState(state => state.server.data!.sftpDetails.port);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const node = ServerContext.useStoreState(state => state.server.data!.node);
+    const sftp = ServerContext.useStoreState(
+        state => state.server.data!.sftpDetails,
+        // @ts-ignore
+        isEqual,
+    );
 
     return (
         <ServerContentBlock title={'Settings'}>
@@ -29,7 +36,7 @@ export default () => {
                                 <Label>Server Address</Label>
                                 <Input
                                     type={'text'}
-                                    value={`sftp://${sftpIp}:${sftpPort}`}
+                                    value={`sftp://${sftp.ip}:${sftp.port}`}
                                     readOnly
                                 />
                             </div>
@@ -52,7 +59,7 @@ export default () => {
                                 <div css={tw`ml-4`}>
                                     <LinkButton
                                         isSecondary
-                                        href={`sftp://${username}.${id}@${sftpIp}:${sftpPort}`}
+                                        href={`sftp://${username}.${id}@${sftp.ip}:${sftp.port}`}
                                     >
                                         Launch SFTP
                                     </LinkButton>
@@ -60,6 +67,18 @@ export default () => {
                             </div>
                         </TitledGreyBox>
                     </Can>
+                    <TitledGreyBox title={'Debug Information'} css={tw`mb-6 md:mb-10`}>
+                        <div css={tw`flex items-center justify-between text-sm`}>
+                            <p>Node</p>
+                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node}</code>
+                        </div>
+                        <CopyOnClick text={uuid}>
+                            <div css={tw`flex items-center justify-between mt-2 text-sm`}>
+                                <p>Server ID</p>
+                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{uuid}</code>
+                            </div>
+                        </CopyOnClick>
+                    </TitledGreyBox>
                 </div>
                 <div css={tw`w-full mt-6 md:flex-1 md:mt-0`}>
                     <Can action={'settings.rename'}>

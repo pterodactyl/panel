@@ -40,7 +40,7 @@ export default ({ backup, className }: Props) => {
     });
 
     return (
-        <GreyRowBox css={tw`flex-wrap md:flex-no-wrap items-center`} className={className}>
+        <GreyRowBox css={tw`flex-wrap md:flex-nowrap items-center`} className={className}>
             <div css={tw`flex items-center truncate w-full md:flex-1`}>
                 <div css={tw`mr-4`}>
                     {backup.completedAt ?
@@ -60,7 +60,7 @@ export default ({ backup, className }: Props) => {
                             {backup.name}
                         </p>
                         {(backup.completedAt && backup.isSuccessful) &&
-                        <span css={tw`ml-3 text-neutral-300 text-xs font-thin hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
+                        <span css={tw`ml-3 text-neutral-300 text-xs font-extralight hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
                         }
                     </div>
                     <p css={tw`mt-1 md:mt-0 text-xs text-neutral-400 font-mono truncate`}>

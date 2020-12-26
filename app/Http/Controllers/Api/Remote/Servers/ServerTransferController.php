@@ -3,21 +3,19 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Cake\Chronos\Chronos;
-use Lcobucci\JWT\Builder;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
-use Lcobucci\JWT\Signer\Key;
-use Psr\Log\LoggerInterface;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Pterodactyl\Models\Allocation;
+use Illuminate\Support\Facades\Log;
+use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\SuspensionService;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Services\Nodes\NodeJWTService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
@@ -32,16 +30,6 @@ class ServerTransferController extends Controller
      * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
      */
     private $repository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
-     */
-    private $allocationRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $nodeRepository;
 
     /**
      * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
@@ -59,48 +47,34 @@ class ServerTransferController extends Controller
     private $configurationStructureService;
 
     /**
-     * @var \Pterodactyl\Services\Servers\SuspensionService
+     * @var \Pterodactyl\Services\Nodes\NodeJWTService
      */
-    private $suspensionService;
-
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $writer;
+    private $jwtService;
 
     /**
      * ServerTransferController constructor.
      *
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
      * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      * @param \Pterodactyl\Repositories\Wings\DaemonTransferRepository $daemonTransferRepository
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
-     * @param \Psr\Log\LoggerInterface $writer
+     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
      */
     public function __construct(
         ConnectionInterface $connection,
         ServerRepository $repository,
-        AllocationRepositoryInterface $allocationRepository,
-        NodeRepository $nodeRepository,
         DaemonServerRepository $daemonServerRepository,
         DaemonTransferRepository $daemonTransferRepository,
         ServerConfigurationStructureService $configurationStructureService,
-        SuspensionService $suspensionService,
-        LoggerInterface $writer
+        NodeJWTService $jwtService
     ) {
         $this->connection = $connection;
         $this->repository = $repository;
-        $this->allocationRepository = $allocationRepository;
-        $this->nodeRepository = $nodeRepository;
         $this->daemonServerRepository = $daemonServerRepository;
         $this->daemonTransferRepository = $daemonTransferRepository;
         $this->configurationStructureService = $configurationStructureService;
-        $this->suspensionService = $suspensionService;
-        $this->writer = $writer;
+        $this->jwtService = $jwtService;
     }
 
     /**
@@ -110,7 +84,6 @@ class ServerTransferController extends Controller
      * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Throwable
      */
@@ -120,52 +93,50 @@ class ServerTransferController extends Controller
 
         // Unsuspend the server and don't continue the transfer.
         if (! $request->input('successful')) {
-            $this->suspensionService->toggle($server, 'unsuspend');
-
-            return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+            return $this->processFailedTransfer($server->transfer);
         }
 
-        $server->node_id = $server->transfer->new_node;
-
-        $data = $this->configurationStructureService->handle($server);
-        $data['suspended'] = false;
-        $data['service']['skip_scripts'] = true;
+        // We want to generate a new configuration using the new node_id value from the
+        // transfer, and not the old node value.
+        $data = $this->configurationStructureService->handle($server, [
+            'node_id' => $server->transfer->new_node,
+        ]);
 
         $allocations = $server->getAllocationMappings();
-        $data['allocations']['default']['ip'] = array_key_first($allocations);
-        $data['allocations']['default']['port'] = $allocations[$data['allocations']['default']['ip']][0];
+        $primary = array_key_first($allocations);
+        Arr::set($data, 'allocations.default.ip', $primary);
+        Arr::set($data, 'allocations.default.port', $allocations[$primary][0]);
+        Arr::set($data, 'service.skip_scripts', true);
+        Arr::set($data, 'suspended', false);
 
-        $now = Chronos::now();
-        $signer = new Sha256;
+        $this->connection->transaction(function () use ($data, $server) {
+            // This token is used by the new node the server is being transfered to. It allows
+            // that node to communicate with the old node during the process to initiate the
+            // actual file transfer.
+            $token = $this->jwtService
+                ->setExpiresAt(Chronos::now()->addMinutes(15))
+                ->setSubject($server->uuid)
+                ->handle($server->node, $server->uuid, 'sha256');
 
-        $token = (new Builder)->issuedBy(config('app.url'))
-            ->permittedFor($server->node->getConnectionAddress())
-            ->identifiedBy(hash('sha256', $server->uuid), true)
-            ->issuedAt($now->getTimestamp())
-            ->canOnlyBeUsedAfter($now->getTimestamp())
-            ->expiresAt($now->addMinutes(15)->getTimestamp())
-            ->relatedTo($server->uuid, true)
-            ->getToken($signer, new Key($server->node->getDecryptedKey()));
+            // Update the archived field on the transfer to make clients connect to the websocket
+            // on the new node to be able to receive transfer logs.
+            $server->transfer->forceFill(['archived' => true])->saveOrFail();
 
-        // On the daemon transfer repository, make sure to set the node after the server
-        // because setServer() tells the repository to use the server's node and not the one
-        // we want to specify.
-        try {
+            // On the daemon transfer repository, make sure to set the node after the server
+            // because setServer() tells the repository to use the server's node and not the one
+            // we want to specify.
             $this->daemonTransferRepository
                 ->setServer($server)
-                ->setNode($this->nodeRepository->find($server->transfer->new_node))
+                ->setNode($server->transfer->newNode)
                 ->notify($server, $data, $server->node, $token->__toString());
-        } catch (DaemonConnectionException $exception) {
-            throw $exception;
-        }
+        });
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
      * The daemon notifies us about a transfer failure.
      *
-     * @param \Illuminate\Http\Request $request
      * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
@@ -174,18 +145,8 @@ class ServerTransferController extends Controller
     public function failure(string $uuid)
     {
         $server = $this->repository->getByUuid($uuid);
-        $transfer = $server->transfer;
 
-        $allocationIds = json_decode($transfer->new_additional_allocations);
-        array_push($allocationIds, $transfer->new_allocation);
-
-        // Remove the new allocations.
-        $this->allocationRepository->updateWhereIn('id', $allocationIds, ['server_id' => null]);
-
-        // Unsuspend the server.
-        $this->suspensionService->toggle($server, 'unsuspend');
-
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        return $this->processFailedTransfer($server->transfer);
     }
 
     /**
@@ -201,38 +162,63 @@ class ServerTransferController extends Controller
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
 
-        $allocationIds = json_decode($transfer->old_additional_allocations);
-        array_push($allocationIds, $transfer->old_allocation);
+        /** @var \Pterodactyl\Models\Server $server */
+        $server = $this->connection->transaction(function () use ($server, $transfer) {
+            $allocations = [$transfer->old_allocation];
+            if (! empty($transfer->old_additional_allocations)) {
+                array_push($allocations, $transfer->old_additional_allocations);
+            }
 
-        // Begin a transaction.
-        $this->connection->beginTransaction();
+            // Remove the old allocations for the server and re-assign the server to the new
+            // primary allocation and node.
+            Allocation::query()->whereIn('id', $allocations)->update(['server_id' => null]);
+            $server->update([
+                'allocation_id' => $transfer->new_allocation,
+                'node_id' => $transfer->new_node,
+            ]);
 
-        // Remove the old allocations.
-        $this->allocationRepository->updateWhereIn('id', $allocationIds, ['server_id' => null]);
+            $server = $server->fresh();
+            $server->transfer->update(['successful' => true]);
 
-        // Update the server's allocation_id and node_id.
-        $server->allocation_id = $transfer->new_allocation;
-        $server->node_id = $transfer->new_node;
-        $server->save();
+            return $server;
+        });
 
-        // Mark the transfer as successful.
-        $transfer->successful = true;
-        $transfer->save();
-
-        // Commit the transaction.
-        $this->connection->commit();
-
-        // Delete the server from the old node
+        // Delete the server from the old node making sure to point it to the old node so
+        // that we do not delete it from the new node the server was transfered to.
         try {
-            $this->daemonServerRepository->setServer($server)->delete();
+            $this->daemonServerRepository
+                ->setServer($server)
+                ->setNode($transfer->oldNode)
+                ->delete();
         } catch (DaemonConnectionException $exception) {
-            $this->writer->warning($exception);
+            Log::warning($exception, ['transfer_id' => $server->transfer->id]);
         }
 
-        // Unsuspend the server
-        $server->load('node');
-        $this->suspensionService->toggle($server, $this->suspensionService::ACTION_UNSUSPEND);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+    /**
+     * Release all of the reserved allocations for this transfer and mark it as failed in
+     * the database.
+     *
+     * @param \Pterodactyl\Models\ServerTransfer $transfer
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     */
+    protected function processFailedTransfer(ServerTransfer $transfer)
+    {
+        $this->connection->transaction(function () use (&$transfer) {
+            $transfer->forceFill(['successful' => false])->saveOrFail();
+
+            $allocations = [$transfer->new_allocation];
+            if (! empty($transfer->new_additional_allocations)) {
+                array_push($allocations, $transfer->new_additional_allocations);
+            }
+
+            Allocation::query()->whereIn('id', $allocations)->update(['server_id' => null]);
+        });
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

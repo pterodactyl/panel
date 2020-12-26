@@ -47,12 +47,13 @@ class BackupRemoteUploadController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
+     * @throws \Throwable
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function __invoke(Request $request, string $backup)
     {
         // Get the size query parameter.
-        $size = (int)$request->query('size');
+        $size = (int) $request->query('size');
         if (empty($size)) {
             throw new BadRequestHttpException('A non-empty "size" query parameter must be provided.');
         }
@@ -101,8 +102,12 @@ class BackupRemoteUploadController extends Controller
             )->getUri()->__toString();
         }
 
-        return new JsonResponse([
+        // Set the upload_id on the backup in the database.
+        $backup->forceFill([
             'upload_id' => $params['UploadId'],
+        ])->saveOrFail();
+
+        return new JsonResponse([
             'parts' => $parts,
             'part_size' => self::PART_SIZE,
         ]);
