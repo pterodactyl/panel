@@ -47,6 +47,7 @@ class BackupRemoteUploadController extends Controller
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
+     * @throws \Throwable
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function __invoke(Request $request, string $backup)
@@ -101,8 +102,12 @@ class BackupRemoteUploadController extends Controller
             )->getUri()->__toString();
         }
 
-        return new JsonResponse([
+        // Set the upload_id on the backup in the database.
+        $backup->forceFill([
             'upload_id' => $params['UploadId'],
+        ])->saveOrFail();
+
+        return new JsonResponse([
             'parts' => $parts,
             'part_size' => self::PART_SIZE,
         ]);

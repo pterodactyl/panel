@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $disk
  * @property string|null $checksum
  * @property int $bytes
+ * @property string|null $upload_id
  * @property \Carbon\CarbonImmutable|null $completed_at
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
@@ -46,8 +47,8 @@ class Backup extends Model
     protected $casts = [
         'id' => 'int',
         'is_successful' => 'bool',
-        'bytes' => 'int',
         'ignored_files' => 'array',
+        'bytes' => 'int',
     ];
 
     /**
@@ -64,6 +65,7 @@ class Backup extends Model
         'is_successful' => true,
         'checksum' => null,
         'bytes' => 0,
+        'upload_id' => null,
     ];
 
     /**
@@ -78,6 +80,7 @@ class Backup extends Model
         'disk' => 'required|string',
         'checksum' => 'nullable|string',
         'bytes' => 'numeric',
+        'upload_id' => 'nullable|uuid',
     ];
 
     /**

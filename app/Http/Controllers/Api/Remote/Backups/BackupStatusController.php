@@ -78,7 +78,7 @@ class BackupStatusController extends Controller
             $params = [
                 'Bucket' => $adapter->getBucket(),
                 'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
-                'UploadId' => $request->input('upload_id'),
+                'UploadId' => $backup->upload_id,
             ];
 
             // If the backup was not successful, send an AbortMultipartUpload request.
