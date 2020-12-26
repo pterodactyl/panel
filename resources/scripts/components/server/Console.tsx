@@ -56,6 +56,13 @@ const TerminalDiv = styled.div`
     }
 `;
 
+const CommandInput = styled.input`
+    ${tw`text-sm transition-colors duration-150 px-2 bg-transparent border-0 border-b-2 border-transparent text-neutral-100 p-2 pl-0 w-full focus:ring-0`}
+    &:focus {
+        ${tw`border-cyan-700`};
+    }
+`;
+
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
@@ -209,13 +216,15 @@ export default () => {
                 <TerminalDiv id={'terminal'} ref={ref}/>
             </div>
             {canSendCommands &&
-            <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex`}>
+            <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
                 <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
                 <div css={tw`w-full`}>
-                    <input
+                    <CommandInput
                         type={'text'}
+                        placeholder={'Type a command...'}
+                        aria-label={'Console command input.'}
+                        aria-description={'Type a command and press enter to send to server.'}
                         disabled={!instance || !connected}
-                        css={tw`bg-transparent text-neutral-100 p-2 pl-0 w-full`}
                         onKeyDown={handleCommandKeyDown}
                     />
                 </div>
