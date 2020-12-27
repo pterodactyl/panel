@@ -184,7 +184,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     </Can>
                 }
                 {file.isFile &&
+                <Can action={'file.download'}>
                     <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
+                </Can>
                 }
                 <Can action={'file.delete'}>
                     <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger/>
