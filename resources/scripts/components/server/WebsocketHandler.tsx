@@ -6,6 +6,7 @@ import ContentContainer from '@/components/elements/ContentContainer';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
+import { useTranslation } from 'react-i18next';
 
 const reconnectErrors = [
     'jwt: exp claim is invalid',
@@ -19,6 +20,7 @@ export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
     const setServerStatus = ServerContext.useStoreActions(actions => actions.status.setServerStatus);
     const { setInstance, setConnectionState } = ServerContext.useStoreActions(actions => actions.socket);
+    const { t } = useTranslation('server');
 
     const connect = (uuid: string) => {
         const socket = new Websocket();
@@ -44,7 +46,7 @@ export default () => {
             if (reconnectErrors.find(v => error.toLowerCase().indexOf(v) >= 0)) {
                 updateToken(uuid, socket);
             } else {
-                setError('There was an error validating the credentials provided for the websocket. Please refresh the page.');
+                setError(t('websocket_invalid_credentials'));
             }
         });
 
@@ -114,7 +116,7 @@ export default () => {
                             <>
                                 <Spinner size={'small'}/>
                                 <p css={tw`ml-2 text-sm text-red-100`}>
-                                    We&apos;re having some trouble connecting to your server, please wait...
+                                    {t('trouble_connect_to_server')}
                                 </p>
                             </>
                             :

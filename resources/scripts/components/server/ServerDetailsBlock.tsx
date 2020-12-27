@@ -6,6 +6,7 @@ import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import { useTranslation } from 'react-i18next';
 
 interface Stats {
     memory: number;
@@ -34,6 +35,7 @@ const ServerDetailsBlock = () => {
     const status = ServerContext.useStoreState(state => state.status.value);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
     const instance = ServerContext.useStoreState(state => state.socket.instance);
+    const { t } = useTranslation('server');
 
     const statsListener = (data: string) => {
         let stats: any = {};
@@ -71,8 +73,8 @@ const ServerDetailsBlock = () => {
         allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
     )).toString();
 
-    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
-    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
+    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : t('unlimited');
+    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : t('unlimited');
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
@@ -85,7 +87,7 @@ const ServerDetailsBlock = () => {
                         statusToColor(status, isInstalling || isTransferring),
                     ]}
                 />
-                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
+                &nbsp;{!status ? t('connecting') : (isInstalling ? t('installing') : (isTransferring) ? t('transferring') : status)}
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>

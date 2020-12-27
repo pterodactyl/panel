@@ -13,6 +13,7 @@ import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
+import { useTranslation } from 'react-i18next';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -77,6 +78,7 @@ export default () => {
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [ historyIndex, setHistoryIndex ] = useState(-1);
+    const { t } = useTranslation('server');
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -86,12 +88,12 @@ export default () => {
         switch (status) {
             // Sent by either the source or target node if a failure occurs.
             case 'failure':
-                terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
+                terminal.writeln(TERMINAL_PRELUDE + t('transfer_failed') + '\u001b[0m');
                 return;
 
             // Sent by the source node whenever the server was archived successfully.
             case 'archive':
-                terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
+                terminal.writeln(TERMINAL_PRELUDE + t('archive_successfully') + '\u001b[0m');
         }
     };
 
@@ -100,7 +102,7 @@ export default () => {
     );
 
     const handlePowerChangeEvent = (state: string) => terminal.writeln(
-        TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
+        TERMINAL_PRELUDE + t('server_marked', { state }) + '...\u001b[0m',
     );
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -221,9 +223,9 @@ export default () => {
                 <div css={tw`w-full`}>
                     <CommandInput
                         type={'text'}
-                        placeholder={'Type a command...'}
-                        aria-label={'Console command input.'}
-                        aria-description={'Type a command and press enter to send to server.'}
+                        placeholder={t('type_a_command')}
+                        aria-label={t('console_command_input')}
+                        aria-description={t('console_description')}
                         disabled={!instance || !connected}
                         onKeyDown={handleCommandKeyDown}
                     />

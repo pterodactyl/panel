@@ -5,10 +5,12 @@ import Button from '@/components/elements/Button';
 import StopOrKillButton from '@/components/server/StopOrKillButton';
 import { PowerAction } from '@/components/server/ServerConsole';
 import { ServerContext } from '@/state/server';
+import { useTranslation } from 'react-i18next';
 
 const PowerControls = () => {
     const status = ServerContext.useStoreState(state => state.status.value);
     const instance = ServerContext.useStoreState(state => state.socket.instance);
+    const { t } = useTranslation('server');
 
     const sendPowerCommand = (command: PowerAction) => {
         instance && instance.send('set state', command);
@@ -28,7 +30,7 @@ const PowerControls = () => {
                         sendPowerCommand('start');
                     }}
                 >
-                    Start
+                    {t('start')}
                 </Button>
             </Can>
             <Can action={'control.restart'}>
@@ -42,7 +44,7 @@ const PowerControls = () => {
                         sendPowerCommand('restart');
                     }}
                 >
-                    Restart
+                    {t('restart')}
                 </Button>
             </Can>
             <Can action={'control.stop'}>

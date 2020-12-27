@@ -9,6 +9,7 @@ import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
 import PowerControls from '@/components/server/PowerControls';
 import { EulaModalFeature } from '@feature/index';
+import { useTranslation } from 'react-i18next';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -20,6 +21,7 @@ const ServerConsole = () => {
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     // @ts-ignore
     const eggFeatures: string[] = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
+    const { t } = useTranslation('server');
 
     return (
         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
@@ -29,8 +31,7 @@ const ServerConsole = () => {
                     <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                         <ContentContainer>
                             <p css={tw`text-sm text-yellow-900`}>
-                                This server is currently running its installation process and most actions are
-                                unavailable.
+                                {t('currently_running_installation_process')}
                             </p>
                         </ContentContainer>
                     </div>
@@ -39,8 +40,7 @@ const ServerConsole = () => {
                         <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                             <ContentContainer>
                                 <p css={tw`text-sm text-yellow-900`}>
-                                    This server is currently being transferred to another node and all actions
-                                    are unavailable.
+                                    {t('currently_running_transfer_process')}
                                 </p>
                             </ContentContainer>
                         </div>
