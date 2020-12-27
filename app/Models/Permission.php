@@ -49,6 +49,7 @@ class Permission extends Model
     const ACTION_ALLOCATION_DELETE = 'allocation.delete';
 
     const ACTION_FILE_READ = 'file.read';
+    const ACTION_FILE_DOWNLOAD = 'file.download';
     const ACTION_FILE_READ_CONTENT = 'file.read-content';
     const ACTION_FILE_CREATE = 'file.create';
     const ACTION_FILE_UPDATE = 'file.update';
@@ -141,6 +142,7 @@ class Permission extends Model
             'keys' => [
                 'create' => 'Allows a user to create additional files and folders via the Panel or direct upload.',
                 'read' => 'Allows a user to view the contents of a directory, but not view the contents of or download files.',
+                'download' => 'Allows a user to download files.',
                 'read-content' => 'Allows a user to view the contents of a given file. This will also allow the user to download files.',
                 'update' => 'Allows a user to update the contents of an existing file or directory.',
                 'delete' => 'Allows a user to delete files or directories.',
