@@ -14,7 +14,7 @@ class AddUploadIdColumnToBackupsTable extends Migration
     public function up()
     {
         Schema::table('backups', function (Blueprint $table) {
-            $table->char('upload_id', 36)->nullable()->after('bytes');
+            $table->text('upload_id')->nullable()->after('uuid');
         });
     }
 

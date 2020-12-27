@@ -10,6 +10,7 @@ use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BackupRemoteUploadController extends Controller
@@ -64,7 +65,7 @@ class BackupRemoteUploadController extends Controller
         // Prevent backups that have already been completed from trying to
         // be uploaded again.
         if (! is_null($backup->completed_at)) {
-            return new JsonResponse([], JsonResponse::HTTP_CONFLICT);
+            throw new ConflictHttpException('This backup is already in a completed state.');
         }
 
         // Ensure we are using the S3 adapter.
@@ -103,9 +104,7 @@ class BackupRemoteUploadController extends Controller
         }
 
         // Set the upload_id on the backup in the database.
-        $backup->forceFill([
-            'upload_id' => $params['UploadId'],
-        ])->saveOrFail();
+        $backup->update(['upload_id' => $params['UploadId']]);
 
         return new JsonResponse([
             'parts' => $parts,

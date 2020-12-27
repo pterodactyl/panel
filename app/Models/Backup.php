@@ -69,6 +69,11 @@ class Backup extends Model
     ];
 
     /**
+     * @var string[]
+     */
+    protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
+
+    /**
      * @var array
      */
     public static $validationRules = [
@@ -80,7 +85,7 @@ class Backup extends Model
         'disk' => 'required|string',
         'checksum' => 'nullable|string',
         'bytes' => 'numeric',
-        'upload_id' => 'nullable|uuid',
+        'upload_id' => 'nullable|string',
     ];
 
     /**
