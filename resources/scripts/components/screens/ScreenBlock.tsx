@@ -31,7 +31,7 @@ const spin = keyframes`
 `;
 
 const ActionButton = styled(Button)`
-    ${tw`rounded-full w-8 h-8 flex items-center justify-center`};
+    ${tw`rounded-full w-8 h-8 flex items-center justify-center p-0`};
 
     &.hover\\:spin:hover {
         animation: ${spin} 2s linear infinite;
