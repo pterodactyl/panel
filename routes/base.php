@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 
 Route::get('/', 'IndexController@index')->name('index')->fallback();

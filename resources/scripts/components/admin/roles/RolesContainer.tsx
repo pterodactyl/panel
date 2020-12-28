@@ -5,12 +5,15 @@ import { httpErrorToHuman } from '@/api/http';
 import NewRoleButton from '@/components/admin/roles/NewRoleButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import getRoles from '@/api/admin/roles/getRoles';
 
 export default () => {
+    const match = useRouteMatch();
+
     const { addError, clearFlashes } = useFlash();
     const [ loading, setLoading ] = useState(true);
 
@@ -82,7 +85,11 @@ export default () => {
                                             roles.map(role => (
                                                 <tr key={role.id} css={tw`h-12 cursor-pointer`}>
                                                     <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap pl-8`}>{role.id}</td>
-                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap`}>{role.name}</td>
+                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap`}>
+                                                        <NavLink to={`${match.url}/${role.id}`}>
+                                                            {role.name}
+                                                        </NavLink>
+                                                    </td>
                                                     <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap pr-8`}>{role.description}</td>
                                                 </tr>
                                             ))
