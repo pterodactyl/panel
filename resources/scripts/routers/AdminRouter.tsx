@@ -30,7 +30,7 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
 
         & > span {
             height: 18px;
-            ${tw`font-header font-medium text-xs text-neutral-300 whitespace-no-wrap uppercase ml-4 mb-1 select-none`};
+            ${tw`font-header font-medium text-xs text-neutral-300 whitespace-nowrap uppercase ml-4 mb-1 select-none`};
             ${props => props.collapsed && tw`opacity-0`};
 
             &:not(:first-of-type) {
@@ -47,7 +47,7 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
             }
 
             & > span {
-                ${props => props.collapsed ? tw`hidden` : tw`font-header font-medium text-lg whitespace-no-wrap leading-none ml-3`};
+                ${props => props.collapsed ? tw`hidden` : tw`font-header font-medium text-lg whitespace-nowrap leading-none ml-3`};
             }
 
             &:hover {
@@ -83,7 +83,7 @@ export default ({ location, match }: RouteComponentProps) => {
             <Sidebar collapsed={collapsed}>
                 <div className={'header'} onClick={ () => { setCollapsed(!collapsed); } }>
                     { !collapsed ?
-                        <h1 css={tw`text-2xl text-neutral-50 whitespace-no-wrap`}>{name}</h1>
+                        <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap`}>{name}</h1>
                         :
                         <img src={'/favicons/android-icon-48x48.png'} alt={'Pterodactyl Icon'} />
                     }
@@ -152,8 +152,8 @@ export default ({ location, match }: RouteComponentProps) => {
                     <img src={'https://www.gravatar.com/avatar/78a6a270ec41715a8ae96c02b8961f9e?s=64'} alt="Profile Picture" css={tw`h-10 w-10 rounded-full select-none`} />
 
                     <div css={tw`flex flex-col ml-4`}>
-                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-no-wrap leading-tight select-none`}>Matthew Penner</span>
-                        <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-no-wrap leading-tight select-none`}>Super Administrator</span>
+                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}>Matthew Penner</span>
+                        <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}>Super Administrator</span>
                     </div>
 
                     <NavLink to={'/auth/logout'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-neutral-50 ml-auto transition-all duration-100`}>

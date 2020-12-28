@@ -1,13 +1,12 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace Pterodactyl\Http\Controllers\Api\Application;
 
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\RoleFormRequest;
 use Pterodactyl\Repositories\Eloquent\AdminRolesRepository;
 
-class RolesController extends Controller
+class RoleController extends ApplicationApiController
 {
     /**
      * @var \Pterodactyl\Repositories\Eloquent\AdminRolesRepository
@@ -21,6 +20,8 @@ class RolesController extends Controller
      */
     public function __construct(AdminRolesRepository $repository)
     {
+        parent::__construct();
+
         $this->repository = $repository;
     }
 

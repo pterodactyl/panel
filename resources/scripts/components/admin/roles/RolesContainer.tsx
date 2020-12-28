@@ -61,15 +61,15 @@ export default () => {
                                     <thead>
                                         <tr>
                                             <th css={tw`py-4 px-4 text-left pl-8`}>
-                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-no-wrap mr-2`}>ID</span>
+                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-nowrap mr-2`}>ID</span>
                                             </th>
 
                                             <th css={tw`py-4 px-4 text-left`}>
-                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-no-wrap mr-2`}>Name</span>
+                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-nowrap mr-2`}>Name</span>
                                             </th>
 
                                             <th css={tw`py-4 px-4 text-left pr-8`}>
-                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-no-wrap mr-2`}>Description</span>
+                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-nowrap mr-2`}>Description</span>
                                             </th>
                                         </tr>
                                     </thead>
@@ -78,9 +78,9 @@ export default () => {
                                         {
                                             roles.map(role => (
                                                 <tr key={role.id} css={tw`h-12 cursor-pointer`}>
-                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-no-wrap pl-8`}>{role.id}</td>
-                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-no-wrap`}>{role.name}</td>
-                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-no-wrap pr-8`}>{role.description}</td>
+                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap pl-8`}>{role.id}</td>
+                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap`}>{role.name}</td>
+                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap pr-8`}>{role.description}</td>
                                                 </tr>
                                             ))
                                         }

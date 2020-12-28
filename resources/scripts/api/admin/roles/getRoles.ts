@@ -8,7 +8,7 @@ export interface Role {
 
 export default (): Promise<Role[]> => {
     return new Promise((resolve, reject) => {
-        http.get('/admin/roles')
+        http.get('/api/application/roles')
             .then(({ data }) => resolve(data || []))
             .catch(reject);
     });

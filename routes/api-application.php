@@ -120,3 +120,20 @@ Route::group(['prefix' => '/nests'], function () {
         Route::get('/{egg}', 'Nests\EggController@view')->name('api.application.nests.eggs.view');
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| Role Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/roles
+|
+*/
+
+Route::group(['prefix' => '/roles'], function () {
+    Route::get('/', 'RoleController@index')->name('api.application.roles');
+
+    Route::post('/', 'RoleController@create');
+
+    Route::delete('/{role}', 'RoleController@delete');
+});

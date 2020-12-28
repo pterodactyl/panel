@@ -1,19 +1,19 @@
-// import React, { useEffect } from 'react';
-// import ReactGA from 'react-ga';
-import React, { Suspense, lazy } from 'react';
+import React, { lazy, useEffect, Suspense } from 'react';
+import ReactGA from 'react-ga';
 import { hot } from 'react-hot-loader/root';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { Route, Router, Switch, useLocation } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
 import DashboardRouter from '@/routers/DashboardRouter';
 import ServerRouter from '@/routers/ServerRouter';
 import AuthenticationRouter from '@/routers/AuthenticationRouter';
-import { Provider } from 'react-redux';
 import { SiteSettings } from '@/state/settings';
 import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
-import tw from 'twin.macro';
+import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
+import { createBrowserHistory } from 'history';
+import { setupInterceptors } from '@/api/interceptors';
 
 const ChunkedAdminRouter = lazy(() => import(/* webpackChunkName: "admin" */'@/routers/AdminRouter'));
 
@@ -32,6 +32,20 @@ interface ExtendedWindow extends Window {
         /* eslint-enable camelcase */
     };
 }
+
+const history = createBrowserHistory({ basename: '/' });
+
+setupInterceptors(history);
+
+const Pageview = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        ReactGA.pageview(pathname);
+    }, [ pathname ]);
+
+    return null;
+};
 
 const App = () => {
     const { PterodactylUser, SiteConfiguration } = (window as ExtendedWindow);
@@ -53,31 +67,32 @@ const App = () => {
     }
 
     useEffect(() => {
-        ReactGA.initialize(SiteConfiguration!.analytics);
-        ReactGA.pageview(location.pathname);
+        if (SiteConfiguration?.analytics) {
+            ReactGA.initialize(SiteConfiguration!.analytics);
+        }
     }, []);
 
     return (
         <>
             <GlobalStylesheet/>
+            <TailwindGlobalStyles/>
             <StoreProvider store={store}>
-                <Provider store={store}>
-                    <ProgressBar/>
+                <ProgressBar/>
 
-                    <div css={tw`mx-auto w-auto`}>
-                        <BrowserRouter basename={'/'} key={'root-router'}>
-                            <Suspense fallback={<div>Loading...</div>}>
-                                <Switch>
-                                    <Route path="/server/:id" component={ServerRouter}/>
-                                    <Route path="/auth" component={AuthenticationRouter}/>
-                                    <Route path="/admin" component={ChunkedAdminRouter}/>
-                                    <Route path="/" component={DashboardRouter}/>
-                                    <Route path={'*'} component={NotFound}/>
-                                </Switch>
-                            </Suspense>
-                        </BrowserRouter>
-                    </div>
-                </Provider>
+                <div css={tw`mx-auto w-auto`}>
+                    <Router history={history}>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            {SiteConfiguration?.analytics && <Pageview/>}
+                            <Switch>
+                                <Route path="/server/:id" component={ServerRouter}/>
+                                <Route path="/auth" component={AuthenticationRouter}/>
+                                <Route path="/admin" component={ChunkedAdminRouter}/>
+                                <Route path="/" component={DashboardRouter}/>
+                                <Route path={'*'} component={NotFound}/>
+                            </Switch>
+                        </Suspense>
+                    </Router>
+                </div>
             </StoreProvider>
         </>
     );
