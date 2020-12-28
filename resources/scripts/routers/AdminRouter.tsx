@@ -146,7 +146,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                     </NavLink>
                 </div>
 
-                <NavLink to={'/auth/logout'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-neutral-50 mt-auto mb-3 transition-all duration-100`}>
+                <NavLink to={'/auth/logout'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-red-400 hover:bg-neutral-800 rounded mt-auto mb-3 transition-all duration-100`}>
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" css={tw`h-6 w-6`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                 </NavLink>
 
@@ -158,7 +158,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}>Super Administrator</span>
                     </div>
 
-                    <NavLink to={'/auth/logout'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-neutral-50 ml-auto transition-all duration-100`}>
+                    <NavLink to={'/auth/logout'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-red-400 hover:bg-neutral-800 rounded ml-auto transition-all duration-100`}>
                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" css={tw`h-6 w-6`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </NavLink>
                 </div>
