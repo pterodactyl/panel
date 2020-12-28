@@ -1,6 +1,6 @@
-import RolesContainer from '@/components/admin/roles/RolesContainer';
 import React, { useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import RolesContainer from '@/components/admin/roles/RolesContainer';
 import NotFound from '@/components/screens/NotFound';
 import SettingsContainer from '@/components/admin/settings/SettingsContainer';
 import OverviewContainer from '@/components/admin/overview/OverviewContainer';
@@ -16,6 +16,7 @@ import ServersContainer from '@/components/admin/servers/ServersContainer';
 import UsersContainer from '@/components/admin/users/UsersContainer';
 import NestsContainer from '@/components/admin/nests/NestsContainer';
 import MountsContainer from '@/components/admin/mounts/MountsContainer';
+import { AdminContext } from '@/state/admin';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
     ${tw`h-screen flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
@@ -74,7 +75,7 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
     }
 `;
 
-export default ({ location, match }: RouteComponentProps) => {
+const AdminRouter = ({ location, match }: RouteComponentProps) => {
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const [ collapsed, setCollapsed ] = useState<boolean>();
 
@@ -188,3 +189,9 @@ export default ({ location, match }: RouteComponentProps) => {
         </div>
     );
 };
+
+export default (props: RouteComponentProps<any>) => (
+    <AdminContext.Provider>
+        <AdminRouter {...props}/>
+    </AdminContext.Provider>
+);

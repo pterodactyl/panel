@@ -1,9 +1,10 @@
 import http from '@/api/http';
 
 export interface Role {
-    id: number,
-    name: string,
-    description: string|null,
+    id: number;
+    name: string;
+    description: string | null;
+    sortId: number;
 }
 
 export default (): Promise<Role[]> => {

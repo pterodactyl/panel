@@ -1,26 +1,31 @@
+import React, { useEffect, useState } from 'react';
+import { useDeepMemoize } from '@/plugins/useDeepMemoize';
+import { AdminContext } from '@/state/admin';
 import { httpErrorToHuman } from '@/api/http';
+import NewRoleButton from '@/components/admin/roles/NewRoleButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
-import React, { useEffect, useState } from 'react';
-import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
-import getRoles, { Role } from '@/api/admin/roles/getRoles';
+import getRoles from '@/api/admin/roles/getRoles';
 
 export default () => {
-    const { clearFlashes, addError } = useFlash();
-    const [ loading, setLoading ] = useState<boolean>(true);
-    const [ roles, setRoles ] = useState<Role[]>([]);
+    const { addError, clearFlashes } = useFlash();
+    const [ loading, setLoading ] = useState(true);
+
+    const roles = useDeepMemoize(AdminContext.useStoreState(state => state.roles.data));
+    const setRoles = AdminContext.useStoreActions(state => state.roles.setRoles);
 
     useEffect(() => {
+        setLoading(!roles.length);
         clearFlashes('roles');
 
         getRoles()
             .then(roles => setRoles(roles))
             .catch(error => {
-                addError({ message: httpErrorToHuman(error), key: 'roles' });
                 console.error(error);
+                addError({ message: httpErrorToHuman(error), key: 'roles' });
             })
             .then(() => setLoading(false));
     }, []);
@@ -33,9 +38,7 @@ export default () => {
                     <p css={tw`text-base text-neutral-400`}>Soon&trade;</p>
                 </div>
 
-                <Button type={'button'} size={'large'} css={tw`h-10 ml-auto px-4 py-0`}>
-                    New Role
-                </Button>
+                <NewRoleButton />
             </div>
 
             <FlashMessageRender byKey={'roles'} css={tw`mb-4`}/>

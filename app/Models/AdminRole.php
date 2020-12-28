@@ -40,4 +40,9 @@ class AdminRole extends Model
         'name' => 'required|string|max:64',
         'description' => 'nullable|string|max:255',
     ];
+
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }
