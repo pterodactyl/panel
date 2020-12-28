@@ -12,7 +12,7 @@ import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
 import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
-import { createBrowserHistory } from 'history';
+import { history } from '@/components/history';
 import { setupInterceptors } from '@/api/interceptors';
 
 interface ExtendedWindow extends Window {
@@ -30,8 +30,6 @@ interface ExtendedWindow extends Window {
         /* eslint-enable camelcase */
     };
 }
-
-const history = createBrowserHistory({ basename: '/' });
 
 setupInterceptors(history);
 
