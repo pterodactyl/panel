@@ -49,7 +49,7 @@ class DaemonBackupRepository extends DaemonRepository
                     'json' => [
                         'adapter' => $this->adapter ?? config('backups.default'),
                         'uuid' => $backup->uuid,
-                        'ignore' => implode('\n', $backup->ignored_files),
+                        'ignore' => implode("\n", $backup->ignored_files),
                     ],
                 ]
             );

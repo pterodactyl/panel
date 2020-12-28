@@ -141,7 +141,7 @@ class InitiateBackupService
                 'server_id' => $server->id,
                 'uuid' => Uuid::uuid4()->toString(),
                 'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-                'ignored_files' => is_array($this->ignoredFiles) ? array_values($this->ignoredFiles) : [],
+                'ignored_files' => array_values($this->ignoredFiles ?? []),
                 'disk' => $this->backupManager->getDefaultAdapter(),
             ], true, true);
 
