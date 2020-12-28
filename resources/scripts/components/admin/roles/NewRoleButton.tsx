@@ -1,7 +1,7 @@
+import React, { useState } from 'react';
 import createRole from '@/api/admin/roles/createRole';
 import { httpErrorToHuman } from '@/api/http';
 import { AdminContext } from '@/state/admin';
-import React, { useState } from 'react';
 import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
 import Modal from '@/components/elements/Modal';
@@ -80,7 +80,7 @@ export default () => {
                                         id={'description'}
                                         name={'description'}
                                         label={'Description'}
-                                        description={'A descriptive of this role.'}
+                                        description={'A description for this role.'}
                                     />
                                 </div>
 
