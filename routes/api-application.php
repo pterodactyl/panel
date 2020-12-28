@@ -131,9 +131,10 @@ Route::group(['prefix' => '/nests'], function () {
 */
 
 Route::group(['prefix' => '/roles'], function () {
-    Route::get('/', 'RoleController@index')->name('api.application.roles');
+    Route::get('/', 'Roles\RoleController@index');
+    Route::get('/{role}', 'Roles\RoleController@view');
 
-    Route::post('/', 'RoleController@create');
+    Route::post('/', 'Roles\oleController@store');
 
-    Route::delete('/{role}', 'RoleController@delete');
+    Route::delete('/{role}', 'Roles\RoleController@delete');
 });

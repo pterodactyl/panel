@@ -1,3 +1,4 @@
+import { Role } from '@/api/admin/roles/getRoles';
 import { Allocation } from '@/api/server/getServer';
 import { FractalResponseData } from '@/api/http';
 import { FileObject } from '@/api/server/files/loadDirectory';
@@ -73,4 +74,10 @@ export const rawDataToServerEggVariable = ({ attributes }: FractalResponseData):
     serverValue: attributes.server_value,
     isEditable: attributes.is_editable,
     rules: attributes.rules.split('|'),
+});
+
+export const rawDataToAdminRole = ({ attributes }: FractalResponseData): Role => ({
+    id: attributes.id,
+    name: attributes.name,
+    description: attributes.description,
 });

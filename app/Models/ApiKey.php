@@ -64,6 +64,7 @@ class ApiKey extends Model
         'r_' . AdminAcl::RESOURCE_NESTS => 'int',
         'r_' . AdminAcl::RESOURCE_NODES => 'int',
         'r_' . AdminAcl::RESOURCE_SERVERS => 'int',
+        'r_' . AdminAcl::RESOURCE_ROLES => 'int',
     ];
 
     /**
@@ -110,6 +111,7 @@ class ApiKey extends Model
         'r_' . AdminAcl::RESOURCE_NESTS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_NODES => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_SERVERS => 'integer|min:0|max:3',
+        'r_' . AdminAcl::RESOURCE_ROLES => 'integer|min:0|max:3',
     ];
 
     /**

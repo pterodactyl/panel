@@ -50,6 +50,10 @@ abstract class ApplicationApiRequest extends FormRequest
             throw new PterodactylException('An ACL resource must be defined on API requests.');
         }
 
+        if (! is_null($this->user())) {
+            return $this->user()->root_admin;
+        }
+
         return AdminAcl::check($this->key(), $this->resource, $this->permission);
     }
 

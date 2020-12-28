@@ -6,7 +6,7 @@ export default (name: string, description?: string): Promise<Role> => {
         http.post('/api/application/roles', {
             name, description,
         })
-            .then(({ data }) => resolve(data))
+            .then(({ data }) => resolve(data.attributes))
             .catch(reject);
     });
 };
