@@ -64,7 +64,7 @@ const LoginCheckpointContainer = () => {
                     }}
                     css={tw`cursor-pointer text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                 >
-                    {!isMissingDevice ? t('lost_device') : t('have_device')}
+                    {!isMissingDevice ? t('2fa_lost_device') : t('2fa_have_device')}
                 </span>
             </div>
             <div css={tw`mt-6 text-center`}>

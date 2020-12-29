@@ -78,13 +78,13 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             label={t('new_password')}
                             name={'password'}
                             type={'password'}
-                            description={t('new_password_min_lenght')}
+                            description={t('new_password_min_length')}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={t('confirm_new_password')}
+                            label={t('new_password_confirm')}
                             name={'passwordConfirmation'}
                             type={'password'}
                         />

@@ -75,7 +75,7 @@ export default () => {
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer
-                    title={t('request_password_reset_title')}
+                    title={t('request_password_reset')}
                     css={tw`w-full flex`}
                 >
                     <Field
