@@ -25,7 +25,6 @@ const StartupContainer = () => {
         variables: server.data!.variables,
         invocation: server.data!.invocation,
         dockerImage: server.data!.dockerImage,
-        // @ts-ignore
     }), isEqual);
 
     const { data, error, isValidating, mutate } = getServerStartup(uuid, {

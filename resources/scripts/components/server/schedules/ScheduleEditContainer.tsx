@@ -53,8 +53,7 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
     const [ isLoading, setIsLoading ] = useState(true);
     const [ showEditModal, setShowEditModal ] = useState(false);
 
-    // @ts-ignore
-    const schedule: Schedule | undefined = ServerContext.useStoreState(st => st.schedules.data.find(s => s.id === state.schedule?.id), isEqual);
+    const schedule = ServerContext.useStoreState(st => st.schedules.data.find(s => s.id === state.schedule?.id), isEqual);
     const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 
     useEffect(() => {

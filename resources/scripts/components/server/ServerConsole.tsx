@@ -19,9 +19,8 @@ const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/c
 const ServerConsole = () => {
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    // @ts-ignore
-    const eggFeatures: string[] = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
     const { t } = useTranslation('server');
+    const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
 
     return (
         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>

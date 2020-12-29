@@ -7,13 +7,12 @@ import { store } from '@/state';
 import DashboardRouter from '@/routers/DashboardRouter';
 import ServerRouter from '@/routers/ServerRouter';
 import AuthenticationRouter from '@/routers/AuthenticationRouter';
-import { Provider } from 'react-redux';
 import { SiteSettings } from '@/state/settings';
 import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
 import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
-import { createBrowserHistory } from 'history';
+import { history } from '@/components/history';
 import { setupInterceptors } from '@/api/interceptors';
 
 interface ExtendedWindow extends Window {
@@ -31,8 +30,6 @@ interface ExtendedWindow extends Window {
         /* eslint-enable camelcase */
     };
 }
-
-const history = createBrowserHistory({ basename: '/' });
 
 setupInterceptors(history);
 
@@ -76,20 +73,18 @@ const App = () => {
             <GlobalStylesheet/>
             <TailwindGlobalStyles/>
             <StoreProvider store={store}>
-                <Provider store={store}>
-                    <ProgressBar/>
-                    <div css={tw`mx-auto w-auto`}>
-                        <Router history={history}>
-                            {SiteConfiguration?.analytics && <Pageview/>}
-                            <Switch>
-                                <Route path="/server/:id" component={ServerRouter}/>
-                                <Route path="/auth" component={AuthenticationRouter}/>
-                                <Route path="/" component={DashboardRouter}/>
-                                <Route path={'*'} component={NotFound}/>
-                            </Switch>
-                        </Router>
-                    </div>
-                </Provider>
+                <ProgressBar/>
+                <div css={tw`mx-auto w-auto`}>
+                    <Router history={history}>
+                        {SiteConfiguration?.analytics && <Pageview/>}
+                        <Switch>
+                            <Route path="/server/:id" component={ServerRouter}/>
+                            <Route path="/auth" component={AuthenticationRouter}/>
+                            <Route path="/" component={DashboardRouter}/>
+                            <Route path={'*'} component={NotFound}/>
+                        </Switch>
+                    </Router>
+                </div>
             </StoreProvider>
         </>
     );

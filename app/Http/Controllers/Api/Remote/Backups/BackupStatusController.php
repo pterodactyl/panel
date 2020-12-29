@@ -7,6 +7,7 @@ use Pterodactyl\Models\Backup;
 use Illuminate\Http\JsonResponse;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -41,16 +42,14 @@ class BackupStatusController extends Controller
      *
      * @param \Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest $request
      * @param string $backup
-     *
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Exception
      */
     public function __invoke(ReportBackupCompleteRequest $request, string $backup)
     {
         /** @var \Pterodactyl\Models\Backup $model */
-        $model = $this->repository->findFirstWhere([[ 'uuid', '=', $backup ]]);
+        $model = Backup::query()->where('uuid', $backup)->firstOrFail();
 
         if (! is_null($model->completed_at)) {
             throw new BadRequestHttpException(
@@ -60,39 +59,66 @@ class BackupStatusController extends Controller
 
         $successful = $request->input('successful') ? true : false;
 
-        $model->forceFill([
+        $model->fill([
             'is_successful' => $successful,
             'checksum' => $successful ? ($request->input('checksum_type') . ':' . $request->input('checksum')) : null,
             'bytes' => $successful ? $request->input('size') : 0,
             'completed_at' => CarbonImmutable::now(),
         ])->save();
 
-        // Check if we are using the s3 backup adapter.
+        // Check if we are using the s3 backup adapter. If so, make sure we mark the backup as
+        // being completed in S3 correctly.
         $adapter = $this->backupManager->adapter();
         if ($adapter instanceof AwsS3Adapter) {
-            /** @var \Pterodactyl\Models\Backup $backup */
-            $backup = Backup::query()->where('uuid', $backup)->firstOrFail();
-
-            $client = $adapter->getClient();
-
-            $params = [
-                'Bucket' => $adapter->getBucket(),
-                'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
-                'UploadId' => $backup->upload_id,
-            ];
-
-            // If the backup was not successful, send an AbortMultipartUpload request.
-            if (! $successful) {
-                $client->execute($client->getCommand('AbortMultipartUpload', $params));
-            } else {
-                // Otherwise send a CompleteMultipartUpload request.
-                $params['MultipartUpload'] = [
-                    'Parts' => $client->execute($client->getCommand('ListParts', $params))['Parts'],
-                ];
-                $client->execute($client->getCommand('CompleteMultipartUpload', $params));
-            }
+            $this->completeMultipartUpload($model, $adapter, $successful);
         }
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Marks a multipart upload in a given S3-compatiable instance as failed or successful for
+     * the given backup.
+     *
+     * @param \Pterodactyl\Models\Backup $backup
+     * @param \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter
+     * @param bool $successful
+     *
+     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    protected function completeMultipartUpload(Backup $backup, AwsS3Adapter $adapter, bool $successful)
+    {
+        // This should never really happen, but if it does don't let us fall victim to Amazon's
+        // wildly fun error messaging. Just stop the process right here.
+        if (empty($backup->upload_id)) {
+            // A failed backup doesn't need to error here, this can happen if the backup encouters
+            // an error before we even start the upload. AWS gives you tooling to clear these failed
+            // multipart uploads as needed too.
+            if (! $successful) {
+                return;
+            }
+            throw new DisplayException('Cannot complete backup request: no upload_id present on model.');
+        }
+
+        $params = [
+            'Bucket' => $adapter->getBucket(),
+            'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
+            'UploadId' => $backup->upload_id,
+        ];
+
+        $client = $adapter->getClient();
+        if (! $successful) {
+            $client->execute($client->getCommand('AbortMultipartUpload', $params));
+
+            return;
+        }
+
+        // Otherwise send a CompleteMultipartUpload request.
+        $params['MultipartUpload'] = [
+            'Parts' => $client->execute($client->getCommand('ListParts', $params))['Parts'],
+        ];
+
+        $client->execute($client->getCommand('CompleteMultipartUpload', $params));
     }
 }

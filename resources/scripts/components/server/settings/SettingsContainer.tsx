@@ -19,11 +19,7 @@ export default () => {
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const node = ServerContext.useStoreState(state => state.server.data!.node);
-    const sftp = ServerContext.useStoreState(
-        state => state.server.data!.sftpDetails,
-        // @ts-ignore
-        isEqual,
-    );
+    const sftp = ServerContext.useStoreState(state => state.server.data!.sftpDetails, isEqual);
 
     return (
         <ServerContentBlock title={'Settings'}>
