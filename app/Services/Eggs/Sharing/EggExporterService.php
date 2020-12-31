@@ -26,7 +26,7 @@ class EggExporterService
     // Currently symfony/yaml doesn't support crlf newlines in scalar blocks so we just strip them
     private function crlfToLf($string)
     {
-        if (! is_string($string)) {
+        if (!is_string($string)) {
             return "";
         }
 
@@ -49,8 +49,8 @@ class EggExporterService
             'meta' => [
                 'version' => 'PTDL_v2',
                 'update_url' => $egg->update_url,
+                'exported_at' => Carbon::now()->toIso8601String(),
             ],
-            'exported_at' => Carbon::now()->toIso8601String(),
             'name' => $egg->name,
             'author' => $egg->author,
             'description' => $this->crlfToLf($egg->description),
