@@ -1,11 +1,15 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
   version: PTDL_v2
-exported_at: '2019-12-25T19:55:01-05:00'
+  update_url: null
+  exported_at: '2020-12-31T09:43:53-08:00'
 name: 'Vanilla Minecraft'
 author: support@pterodactyl.io
 description: 'Minecraft is a game about placing blocks and going on adventures. Explore randomly generated worlds and build amazing things from the simplest of homes to the grandest of castles. Play in Creative Mode with unlimited resources or mine deep in Survival Mode, crafting weapons and armor to fend off dangerous mobs. Do all this alone or with friends.'
-image: 'quay.io/pterodactyl/core:java'
+features:
+  - eula
+images:
+  - 'quay.io/pterodactyl/core:java'
 startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
 config:
   files:
@@ -26,11 +30,12 @@ config:
 scripts:
   installation:
     script: |
-      #!/bin/ash
+      #!/bin/bash
       # Vanilla MC Installation Script
       #
       # Server Files: /mnt/server
-      apk add curl --no-cache --update jq
+      apt update
+      apt install -y jq curl
       
       mkdir -p /mnt/server
       cd /mnt/server
@@ -51,22 +56,22 @@ scripts:
       curl -o ${SERVER_JARFILE} $DOWNLOAD_URL
       
       echo -e "Install Complete"
-    container: 'alpine:3.10'
-    entrypoint: ash
+    container: 'debian:buster-slim'
+    entrypoint: bash
 variables:
   -
     name: 'Server Jar File'
     description: 'The name of the server jarfile to run the server with.'
     env_variable: SERVER_JARFILE
     default_value: server.jar
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'required|regex:/^([\w\d._-]+)(\.jar)$/'
   -
     name: 'Server Version'
     description: 'The version of Minecraft Vanilla to install. Use "latest" to install the latest version.'
     env_variable: VANILLA_VERSION
     default_value: latest
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'required|string|between:3,15'

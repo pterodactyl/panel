@@ -1,11 +1,15 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
   version: PTDL_v2
-exported_at: '2020-05-24T12:15:13-04:00'
+  update_url: null
+  exported_at: '2020-12-31T09:43:38-08:00'
 name: 'Forge Minecraft'
 author: support@pterodactyl.io
 description: 'Minecraft Forge Server. Minecraft Forge is a modding API (Application Programming Interface), which makes it easier to create mods, and also make sure mods are compatible with each other.'
-image: 'quay.io/pterodactyl/core:java'
+features:
+  - eula
+images:
+  - 'quay.io/pterodactyl/core:java'
 startup: 'java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}'
 config:
   files:
@@ -97,6 +101,7 @@ scripts:
       
       #Downloading jars
       echo -e "Downloading forge version ${FORGE_VERSION}"
+      echo -e "Download link is ${DOWNLOAD_LINK}"
       if [ ! -z "${DOWNLOAD_LINK}" ]; then 
           if curl --output /dev/null --silent --head --fail ${DOWNLOAD_LINK}-installer.jar; then
               echo -e "installer jar download link is valid."
@@ -104,7 +109,7 @@ scripts:
               echo -e "link is invalid closing out"
               exit 2
           fi
-      
+      else
           echo -e "no download link closing out"
           exit 3
       fi
@@ -134,19 +139,19 @@ variables:
     description: 'The name of the Jarfile to use when running Forge Mod.'
     env_variable: SERVER_JARFILE
     default_value: server.jar
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'required|regex:/^([\w\d._-]+)(\.jar)$/'
   -
-    name: 'Forge version'
+    name: 'Minecraft Version'
     description: |
       The version of minecraft you want to install for.
       
       Leaving latest will install the latest recommended version.
     env_variable: MC_VERSION
     default_value: latest
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'required|string|max:9'
   -
     name: 'Build Type'
@@ -156,8 +161,8 @@ variables:
       Valid types are "recommended" and "latest".
     env_variable: BUILD_TYPE
     default_value: recommended
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'required|string|max:20'
   -
     name: 'Forge Version'
@@ -169,6 +174,6 @@ variables:
       Overrides MC_VERSION and BUILD_TYPE. If it fails to download the server files it will fail to install.
     env_variable: FORGE_VERSION
     default_value: ''
-    user_viewable: 1
-    user_editable: 1
-    rules: 'required|string|max:20'
+    user_viewable: true
+    user_editable: true
+    rules: 'nullable|string|max:20'

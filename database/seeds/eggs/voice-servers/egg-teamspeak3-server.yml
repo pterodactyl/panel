@@ -1,11 +1,14 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
   version: PTDL_v2
-exported_at: '2019-07-05T11:59:29-04:00'
+  update_url: null
+  exported_at: '2020-12-31T09:45:25-08:00'
 name: 'Teamspeak3 Server'
 author: support@pterodactyl.io
 description: 'VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.'
-image: 'quay.io/parkervcp/pterodactyl-images:base_debian'
+features: null
+images:
+  - 'quay.io/parkervcp/pterodactyl-images:base_debian'
 startup: './ts3server default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}} filetransfer_ip=0.0.0.0 filetransfer_port={{FILE_TRANSFER}} license_accepted=1'
 config:
   files: {  }
@@ -19,37 +22,39 @@ config:
 scripts:
   installation:
     script: |
-      #!/bin/ash
+      #!/bin/bash
       # TS3 Installation Script
       #
       # Server Files: /mnt/server
-      apk add --no-cache tar curl jq
+      apt update
+      apt install -y tar curl jq bzip2
       
       if [ -z ${TS_VERSION} ] || [ ${TS_VERSION} == latest ]; then
-          TS_VERSION=$(wget https://teamspeak.com/versions/server.json -qO - | jq -r '.linux.x86_64.version')
+          TS_VERSION=$(curl -sSL https://teamspeak.com/versions/server.json | jq -r '.linux.x86_64.version')
       fi
       
       cd /mnt/server
       
+      echo -e "getting files from http://files.teamspeak-services.com/releases/server/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2" 
+      curl -L http://files.teamspeak-services.com/releases/server/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar -xvj --strip-components=1
       
-      echo -e "getting files from http://files.teamspeak-services.com/releases/server/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2"
-      curl http://files.teamspeak-services.com/releases/server/${TS_VERSION}/teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2 | tar xj --strip-components=1
-    container: 'alpine:3.9'
-    entrypoint: ash
+      rm teamspeak3-server_linux_amd64-${TS_VERSION}.tar.bz2
+    container: 'debian:buster-slim'
+    entrypoint: bash
 variables:
   -
     name: 'Server Version'
     description: 'The version of Teamspeak 3 to use when running the server.'
     env_variable: TS_VERSION
     default_value: latest
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'required|string|max:6'
   -
     name: 'File Transfer Port'
     description: 'The Teamspeak file transfer port'
     env_variable: FILE_TRANSFER
     default_value: '30033'
-    user_viewable: 1
-    user_editable: 0
+    user_viewable: true
+    user_editable: false
     rules: 'required|integer|between:1,65535'

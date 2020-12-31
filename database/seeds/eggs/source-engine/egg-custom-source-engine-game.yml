@@ -1,11 +1,14 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
   version: PTDL_v2
-exported_at: '2019-12-08T10:54:26-05:00'
+  update_url: null
+  exported_at: '2020-12-31T09:44:50-08:00'
 name: 'Custom Source Engine Game'
 author: support@pterodactyl.io
 description: 'This option allows modifying the startup arguments and other details to run a custom SRCDS based game on the panel.'
-image: 'quay.io/pterodactyl/core:source'
+features: null
+images:
+  - 'quay.io/pterodactyl/core:source'
 startup: './srcds_run -game {{SRCDS_GAME}} -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart'
 config:
   files: {  }
@@ -23,15 +26,30 @@ scripts:
       # steamcmd Base Installation Script
       #
       # Server Files: /mnt/server
-      # Image to install with is 'ubuntu:18.04'
+      # Image to install with is 'debian:buster-slim'
+      
+      ##
+      #
+      # Variables
+      # STEAM_USER, STEAM_PASS, STEAM_AUTH - Steam user setup. If a user has 2fa enabled it will most likely fail due to timeout. Leave blank for anon install.
+      # WINDOWS_INSTALL - if it's a windows server you want to install set to 1
+      # SRCDS_APPID - steam app id ffound here - https://developer.valvesoftware.com/wiki/Dedicated_Servers_List
+      # EXTRA_FLAGS - when a server has extra glas for things like beta installs or updates.
+      #
+      ##
+      
       apt -y update
       apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
       
       ## just in case someone removed the defaults.
       if [ "${STEAM_USER}" == "" ]; then
+          echo -e "steam user is not set.\n"
+          echo -e "Using anonymous user.\n"
           STEAM_USER=anonymous
           STEAM_PASS=""
           STEAM_AUTH=""
+      else
+          echo -e "user set to ${STEAM_USER}"
       fi
       
       ## download and install steamcmd
@@ -47,7 +65,7 @@ scripts:
       export HOME=/mnt/server
       
       ## install game using steamcmd
-      ./steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} +force_install_dir /mnt/server +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} +quit ## other flags may be needed depending on install. looking at you cs 1.6
+      ./steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} $( [[ "${WINDOWS_INSTALL}" == "1" ]] && printf %s '+@sSteamCmdForcePlatformType windows' ) +force_install_dir /mnt/server +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} validate +quit ## other flags may be needed depending on install. looking at you cs 1.6
       
       ## set up 32 bit libraries
       mkdir -p /mnt/server/.steam/sdk32
@@ -56,7 +74,7 @@ scripts:
       ## set up 64 bit libraries
       mkdir -p /mnt/server/.steam/sdk64
       cp -v linux64/steamclient.so ../.steam/sdk64/steamclient.so
-    container: 'ubuntu:18.04'
+    container: 'debian:buster-slim'
     entrypoint: bash
 variables:
   -
@@ -64,22 +82,22 @@ variables:
     description: 'The ID corresponding to the game to download and run using SRCDS.'
     env_variable: SRCDS_APPID
     default_value: ''
-    user_viewable: 1
-    user_editable: 0
+    user_viewable: true
+    user_editable: false
     rules: 'required|numeric|digits_between:1,6'
   -
     name: 'Game Name'
     description: 'The name corresponding to the game to download and run using SRCDS.'
     env_variable: SRCDS_GAME
     default_value: ''
-    user_viewable: 1
-    user_editable: 0
+    user_viewable: true
+    user_editable: false
     rules: 'required|alpha_dash|between:1,100'
   -
     name: Map
     description: 'The default map for the server.'
     env_variable: SRCDS_MAP
     default_value: ''
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: required|string|alpha_dash

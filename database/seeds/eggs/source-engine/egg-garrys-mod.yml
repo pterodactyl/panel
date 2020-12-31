@@ -1,11 +1,14 @@
 # DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO
 meta:
   version: PTDL_v2
-exported_at: '2019-12-08T10:56:42-05:00'
+  update_url: null
+  exported_at: '2020-12-31T09:44:56-08:00'
 name: 'Garrys Mod'
 author: support@pterodactyl.io
 description: 'Garrys Mod, is a sandbox physics game created by Garry Newman, and developed by his company, Facepunch Studios.'
-image: 'quay.io/pterodactyl/core:source'
+features: null
+images:
+  - 'quay.io/pterodactyl/core:source'
 startup: './srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}} +maxplayers {{MAX_PLAYERS}}  -tickrate {{TICKRATE}}'
 config:
   files: {  }
@@ -23,15 +26,19 @@ scripts:
       # steamcmd Base Installation Script
       #
       # Server Files: /mnt/server
-      # Image to install with is 'ubuntu:18.04'
+      # Image to install with is 'debian:buster-slim'
       apt -y update
       apt -y --no-install-recommends install curl lib32gcc1 ca-certificates
       
       ## just in case someone removed the defaults.
       if [ "${STEAM_USER}" == "" ]; then
+          echo -e "steam user is not set.\n"
+          echo -e "Using anonymous user.\n"
           STEAM_USER=anonymous
           STEAM_PASS=""
           STEAM_AUTH=""
+      else
+          echo -e "user set to ${STEAM_USER}"
       fi
       
       ## download and install steamcmd
@@ -47,7 +54,7 @@ scripts:
       export HOME=/mnt/server
       
       ## install game using steamcmd
-      ./steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} +force_install_dir /mnt/server +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} +quit ## other flags may be needed depending on install. looking at you cs 1.6
+      ./steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} $( [[ "${WINDOWS_INSTALL}" == "1" ]] && printf %s '+@sSteamCmdForcePlatformType windows' ) +force_install_dir /mnt/server +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} validate +quit ## other flags may be needed depending on install. looking at you cs 1.6
       
       ## set up 32 bit libraries
       mkdir -p /mnt/server/.steam/sdk32
@@ -114,7 +121,7 @@ scripts:
       
       // Add custom lines under here
       ' > server.cfg
-    container: 'ubuntu:18.04'
+    container: 'debian:buster-slim'
     entrypoint: bash
 variables:
   -
@@ -122,54 +129,54 @@ variables:
     description: 'The default map for the server.'
     env_variable: SRCDS_MAP
     default_value: gm_flatgrass
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: required|string|alpha_dash
   -
     name: 'Steam Account Token'
     description: 'The Steam Account Token required for the server to be displayed publicly.'
     env_variable: STEAM_ACC
     default_value: ''
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'nullable|string|alpha_num|size:32'
   -
     name: 'Source AppID'
     description: 'Required for game to update on server restart. Do not modify this.'
     env_variable: SRCDS_APPID
     default_value: '4020'
-    user_viewable: 0
-    user_editable: 0
+    user_viewable: false
+    user_editable: false
     rules: 'required|string|max:20'
   -
     name: 'Workshop ID'
     description: 'The ID of your workshop collection (the numbers at the end of the URL)'
     env_variable: WORKSHOP_ID
     default_value: ''
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: nullable|integer
   -
     name: Gamemode
     description: 'The gamemode of your server.'
     env_variable: GAMEMODE
     default_value: sandbox
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: required|string
   -
     name: 'Max Players'
     description: 'The maximum amount of players allowed on your game server.'
     env_variable: MAX_PLAYERS
     default_value: '32'
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'required|integer|max:128'
   -
     name: Tickrate
     description: 'The tickrate defines how fast the server will update each entities location.'
     env_variable: TICKRATE
     default_value: '22'
-    user_viewable: 1
-    user_editable: 1
+    user_viewable: true
+    user_editable: true
     rules: 'required|integer|max:100'
