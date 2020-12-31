@@ -134,7 +134,7 @@ Route::group(['prefix' => '/roles'], function () {
     Route::get('/', 'Roles\RoleController@index');
     Route::get('/{role}', 'Roles\RoleController@view');
 
-    Route::post('/', 'Roles\oleController@store');
+    Route::post('/', 'Roles\RoleController@store');
 
     Route::delete('/{role}', 'Roles\RoleController@delete');
 });
