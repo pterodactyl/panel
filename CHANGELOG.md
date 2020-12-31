@@ -3,6 +3,29 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.2.0
+### Fixed
+* Fixes newest backup being deleted when creating a new one using the schedule tasks, rather than the oldest backup.
+* Fixes multiple encoding issues when handling file names in the manager.
+* Fixes database password not properly being copied to the clipboard when clicked.
+* Fixes failed transfers unintentionally locking a server into a failed state and not properly releasing allocations that were reserved.
+* Fixes error box on server pages having an oval refresh button rather than a perfect circle.
+* Fixes a bunch of errors and usage issues relating to backups especially when uploading to S3-based systems.
+* Fixes HMR breaking navigation in development modes on the frontend.
+
+### Changed
+* Updated Paper egg to default to Java 11 as the base docker image.
+* Removes the file mode display from the File Manager row listing.
+* Updated input UI elements to have thicker borders and more consistent highlighting when active.
+* Changed searchbar toggle from `"k"` to `Cmd/Ctrl + "/"` to avoid accidental toggles and be more consistent with other sites.
+* Upgrades TailwindCSS to `v2`.
+
+### Added
+* Adds support for eggs to define multiple Docker images that can be selected by users (e.g. Java 8 & 11 images for a single egg).
+* Adds support for configuring the default interval for failed backups to be pruned from the system to avoid long running backups being incorrectly cleared.
+* Adds server transfer output logging to the server console allowing admins to see how a transfer is progressing directly in the UI.
+* Adds client API endpoint to download a file from a remote souce. This functionality is not currently expressed in the UI.
+
 ## v1.1.3
 ### Fixed
 * Server bulk power actions command will no longer attempt to run commands against installing or suspended servers.
