@@ -23,9 +23,9 @@ const RowCheckbox = ({ id }: { id: number}) => {
             checked={isChecked}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 if (e.currentTarget.checked) {
-                    appendSelectedNest(name);
+                    appendSelectedNest(id);
                 } else {
-                    removeSelectedNest(name);
+                    removeSelectedNest(id);
                 }
             }}
         />

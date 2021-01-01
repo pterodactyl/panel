@@ -39,15 +39,11 @@ const nests: AdminNestStore = {
     }),
 
     appendSelectedNest: action((state, payload) => {
-        if (state.selectedNests.find(id => id === payload)) {
-            state.selectedNests = state.selectedNests.map(id => id === payload ? payload : id);
-        } else {
-            state.selectedNests = [ ...state.selectedNests, payload ];
-        }
+        state.selectedNests = state.selectedNests.filter(id => id !== payload).concat(payload);
     }),
 
     removeSelectedNest: action((state, payload) => {
-        state.selectedNests = [ ...state.selectedNests.filter(id => id !== payload) ];
+        state.selectedNests = state.selectedNests.filter(id => id !== payload);
     }),
 };
 
