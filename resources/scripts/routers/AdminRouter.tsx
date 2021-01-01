@@ -20,7 +20,7 @@ import NestsContainer from '@/components/admin/nests/NestsContainer';
 import MountsContainer from '@/components/admin/mounts/MountsContainer';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
-    ${tw`h-screen flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
+    ${tw`fixed h-screen flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
     ${props => props.collapsed ? 'width: 70px' : 'width: 287px'};
 
     & > div.header {
@@ -164,8 +164,8 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                 </div>
             </Sidebar>
 
-            <div css={tw`h-full w-full flex flex-col items-center`}>
-                <div css={tw`min-h-screen w-full flex flex-col overflow-x-hidden`} style={{ maxWidth: '86rem' }}>
+            <div css={tw`w-full flex flex-col items-center transition-all duration-250 ease-linear`} style={{ paddingLeft: collapsed ? '70px' : '287px' }}>
+                <div css={tw`min-h-screen w-full flex flex-col px-16 py-12`} style={{ maxWidth: '86rem' }}>
                     {/* <TransitionRouter> */}
                     <Switch location={location}>
                         <Route path={`${match.path}`} component={OverviewContainer} exact/>
