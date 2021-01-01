@@ -15,13 +15,11 @@ const StyledSwitchTransition = styled(SwitchTransition)`
 `;
 
 const TransitionRouter: React.FC = ({ children }) => {
-    const uuid = useRef(v4()).current;
-
     return (
         <Route
             render={({ location }) => (
                 <StyledSwitchTransition>
-                    <Fade timeout={150} key={location.key || uuid} in appear unmountOnExit>
+                    <Fade timeout={150} key={location.pathname + location.search} in appear unmountOnExit>
                         <section>
                             {children}
                         </section>
