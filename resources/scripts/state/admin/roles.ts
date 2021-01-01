@@ -16,8 +16,8 @@ const roles: AdminRoleStore = {
     }),
 
     appendRole: action((state, payload) => {
-        if (state.data.find(database => database.id === payload.id)) {
-            state.data = state.data.map(database => database.id === payload.id ? payload : database);
+        if (state.data.find(role => role.id === payload.id)) {
+            state.data = state.data.map(role => role.id === payload.id ? payload : role);
         } else {
             state.data = [ ...state.data, payload ];
         }

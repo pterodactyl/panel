@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import createRole from '@/api/admin/roles/createRole';
+import createNest from '@/api/admin/nests/createNest';
 import { httpErrorToHuman } from '@/api/http';
 import { AdminContext } from '@/state/admin';
 import Button from '@/components/elements/Button';
@@ -18,29 +18,29 @@ interface Values {
 
 const schema = object().shape({
     name: string()
-        .required('A role name must be provided.')
-        .max(32, 'Role name must not exceed 32 characters.'),
+        .required('A nest name must be provided.')
+        .max(32, 'Nest name must not exceed 32 characters.'),
     description: string()
-        .max(255, 'Role description must not exceed 255 characters.'),
+        .max(255, 'Nest description must not exceed 255 characters.'),
 });
 
 export default () => {
     const [ visible, setVisible ] = useState(false);
     const { addError, clearFlashes } = useFlash();
 
-    const appendRole = AdminContext.useStoreActions(actions => actions.roles.appendRole);
+    const appendNest = AdminContext.useStoreActions(actions => actions.nests.appendNest);
 
     const submit = ({ name, description }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('role:create');
+        clearFlashes('nest:create');
         setSubmitting(true);
 
-        createRole(name, description)
-            .then(role => {
-                appendRole(role);
+        createNest(name, description)
+            .then(nest => {
+                appendNest(nest);
                 setVisible(false);
             })
             .catch(error => {
-                addError({ key: 'role:create', message: httpErrorToHuman(error) });
+                addError({ key: 'nest:create', message: httpErrorToHuman(error) });
                 setSubmitting(false);
             });
     };
@@ -63,15 +63,15 @@ export default () => {
                                 setVisible(false);
                             }}
                         >
-                            <FlashMessageRender byKey={'role:create'} css={tw`mb-6`}/>
-                            <h2 css={tw`text-neutral-100 text-2xl mb-6`}>New Role</h2>
+                            <FlashMessageRender byKey={'nest:create'} css={tw`mb-6`}/>
+                            <h2 css={tw`text-neutral-100 text-2xl mb-6`}>New Nest</h2>
                             <Form css={tw`m-0`}>
                                 <Field
                                     type={'string'}
                                     id={'name'}
                                     name={'name'}
                                     label={'Name'}
-                                    description={'A short name used to identify this role.'}
+                                    description={'A short name used to identify this nest.'}
                                 />
 
                                 <div css={tw`mt-6`}>
@@ -80,7 +80,7 @@ export default () => {
                                         id={'description'}
                                         name={'description'}
                                         label={'Description'}
-                                        description={'A description for this role.'}
+                                        description={'A description for this nest.'}
                                     />
                                 </div>
 
@@ -94,7 +94,7 @@ export default () => {
                                         Cancel
                                     </Button>
                                     <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
-                                        Create Role
+                                        Create Nest
                                     </Button>
                                 </div>
                             </Form>
@@ -104,7 +104,7 @@ export default () => {
             </Formik>
 
             <Button type={'button'} size={'large'} css={tw`h-10 ml-auto px-4 py-0`} onClick={() => setVisible(true)}>
-                New Role
+                New Nest
             </Button>
         </>
     );

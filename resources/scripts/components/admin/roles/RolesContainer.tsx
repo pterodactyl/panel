@@ -41,7 +41,7 @@ export default () => {
                     <p css={tw`text-base text-neutral-400`}>Soon&trade;</p>
                 </div>
 
-                <NewRoleButton />
+                <NewRoleButton/>
             </div>
 
             <FlashMessageRender byKey={'roles'} css={tw`mb-4`}/>
