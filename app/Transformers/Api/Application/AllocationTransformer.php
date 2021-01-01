@@ -29,18 +29,19 @@ class AllocationTransformer extends BaseTransformer
     /**
      * Return a generic transformed allocation array.
      *
-     * @param \Pterodactyl\Models\Allocation $allocation
+     * @param \Pterodactyl\Models\Allocation $model
+     *
      * @return array
      */
-    public function transform(Allocation $allocation)
+    public function transform(Allocation $model)
     {
         return [
-            'id' => $allocation->id,
-            'ip' => $allocation->ip,
-            'alias' => $allocation->ip_alias,
-            'port' => $allocation->port,
-            'notes' => $allocation->notes,
-            'assigned' => ! is_null($allocation->server_id),
+            'id' => $model->id,
+            'ip' => $model->ip,
+            'alias' => $model->ip_alias,
+            'port' => $model->port,
+            'notes' => $model->notes,
+            'assigned' => ! is_null($model->server_id),
         ];
     }
 
@@ -48,8 +49,10 @@ class AllocationTransformer extends BaseTransformer
      * Load the node relationship onto a given transformation.
      *
      * @param \Pterodactyl\Models\Allocation $allocation
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeNode(Allocation $allocation)
     {
@@ -66,8 +69,10 @@ class AllocationTransformer extends BaseTransformer
      * Load the server relationship onto a given transformation.
      *
      * @param \Pterodactyl\Models\Allocation $allocation
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeServer(Allocation $allocation)
     {

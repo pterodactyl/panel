@@ -44,6 +44,7 @@ abstract class BaseTransformer extends TransformerAbstract
      * Set the HTTP request class being used for this request.
      *
      * @param \Pterodactyl\Models\ApiKey $key
+     *
      * @return $this
      */
     public function setKey(ApiKey $key)
@@ -69,6 +70,7 @@ abstract class BaseTransformer extends TransformerAbstract
      * models on a transformation request.
      *
      * @param string $resource
+     *
      * @return bool
      */
     protected function authorize(string $resource): bool
@@ -82,8 +84,10 @@ abstract class BaseTransformer extends TransformerAbstract
      *
      * @param string $abstract
      * @param array $parameters
+     *
      * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
      *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     protected function makeTransformer(string $abstract, array $parameters = [])
@@ -103,6 +107,7 @@ abstract class BaseTransformer extends TransformerAbstract
      * Return an ISO-8601 formatted timestamp to use in the API response.
      *
      * @param string $timestamp
+     *
      * @return string
      */
     protected function formatTimestamp(string $timestamp): string

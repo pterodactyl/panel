@@ -19,15 +19,15 @@ class AdminRoleTransformer extends BaseTransformer
     /**
      * Return a transformed User model that can be consumed by external services.
      *
-     * @param \Pterodactyl\Models\AdminRole $role
+     * @param \Pterodactyl\Models\AdminRole $model
      * @return array
      */
-    public function transform(AdminRole $role): array
+    public function transform(AdminRole $model): array
     {
         return [
-            'id' => $role->id,
-            'name' => $role->name,
-            'description' => $role->description,
+            'id' => $model->id,
+            'name' => $model->name,
+            'description' => $model->description,
         ];
     }
 }

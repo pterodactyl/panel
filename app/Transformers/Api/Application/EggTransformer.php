@@ -34,6 +34,7 @@ class EggTransformer extends BaseTransformer
      * the application api.
      *
      * @param \Pterodactyl\Models\Egg $model
+     *
      * @return array
      */
     public function transform(Egg $model)
@@ -74,8 +75,10 @@ class EggTransformer extends BaseTransformer
      * Include the Nest relationship for the given Egg in the transformation.
      *
      * @param \Pterodactyl\Models\Egg $model
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeNest(Egg $model)
     {
@@ -92,8 +95,10 @@ class EggTransformer extends BaseTransformer
      * Include the Servers relationship for the given Egg in the transformation.
      *
      * @param \Pterodactyl\Models\Egg $model
+     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeServers(Egg $model)
     {
@@ -111,6 +116,7 @@ class EggTransformer extends BaseTransformer
      * extending another.
      *
      * @param \Pterodactyl\Models\Egg $model
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeConfig(Egg $model)
@@ -136,6 +142,7 @@ class EggTransformer extends BaseTransformer
      * Egg is extending another.
      *
      * @param \Pterodactyl\Models\Egg $model
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeScript(Egg $model)
@@ -160,8 +167,10 @@ class EggTransformer extends BaseTransformer
      * Include the variables that are defined for this Egg.
      *
      * @param \Pterodactyl\Models\Egg $model
+     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeVariables(Egg $model)
     {

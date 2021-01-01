@@ -54,45 +54,46 @@ class ServerTransformer extends BaseTransformer
     /**
      * Return a generic transformed server array.
      *
-     * @param \Pterodactyl\Models\Server $server
+     * @param \Pterodactyl\Models\Server $model
+     *
      * @return array
      */
-    public function transform(Server $server): array
+    public function transform(Server $model): array
     {
         return [
-            'id' => $server->getKey(),
-            'external_id' => $server->external_id,
-            'uuid' => $server->uuid,
-            'identifier' => $server->uuidShort,
-            'name' => $server->name,
-            'description' => $server->description,
-            'suspended' => (bool) $server->suspended,
+            'id' => $model->getKey(),
+            'external_id' => $model->external_id,
+            'uuid' => $model->uuid,
+            'identifier' => $model->uuidShort,
+            'name' => $model->name,
+            'description' => $model->description,
+            'suspended' => (bool) $model->suspended,
             'limits' => [
-                'memory' => $server->memory,
-                'swap' => $server->swap,
-                'disk' => $server->disk,
-                'io' => $server->io,
-                'cpu' => $server->cpu,
-                'threads' => $server->threads,
+                'memory' => $model->memory,
+                'swap' => $model->swap,
+                'disk' => $model->disk,
+                'io' => $model->io,
+                'cpu' => $model->cpu,
+                'threads' => $model->threads,
             ],
             'feature_limits' => [
-                'databases' => $server->database_limit,
-                'allocations' => $server->allocation_limit,
-                'backups' => $server->backup_limit,
+                'databases' => $model->database_limit,
+                'allocations' => $model->allocation_limit,
+                'backups' => $model->backup_limit,
             ],
-            'user' => $server->owner_id,
-            'node' => $server->node_id,
-            'allocation' => $server->allocation_id,
-            'nest' => $server->nest_id,
-            'egg' => $server->egg_id,
+            'user' => $model->owner_id,
+            'node' => $model->node_id,
+            'allocation' => $model->allocation_id,
+            'nest' => $model->nest_id,
+            'egg' => $model->egg_id,
             'container' => [
-                'startup_command' => $server->startup,
-                'image' => $server->image,
-                'installed' => (int) $server->installed === 1,
-                'environment' => $this->environmentService->handle($server),
+                'startup_command' => $model->startup,
+                'image' => $model->image,
+                'installed' => (int) $model->installed === 1,
+                'environment' => $this->environmentService->handle($model),
             ],
-            $server->getUpdatedAtColumn() => $this->formatTimestamp($server->updated_at),
-            $server->getCreatedAtColumn() => $this->formatTimestamp($server->created_at),
+            $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),
+            $model->getCreatedAtColumn() => $this->formatTimestamp($model->created_at),
         ];
     }
 
@@ -100,9 +101,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array of allocations for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeAllocations(Server $server)
     {
@@ -119,9 +122,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array of data about subusers for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeSubusers(Server $server)
     {
@@ -138,9 +143,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array of data about subusers for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeUser(Server $server)
     {
@@ -157,9 +164,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array with nest information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeNest(Server $server)
     {
@@ -176,9 +185,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array with egg information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeEgg(Server $server)
     {
@@ -195,9 +206,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array of data about subusers for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeVariables(Server $server)
     {
@@ -214,9 +227,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array with location information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeLocation(Server $server)
     {
@@ -233,9 +248,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array with node information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeNode(Server $server)
     {
@@ -252,9 +269,11 @@ class ServerTransformer extends BaseTransformer
      * Return a generic array with database information for this server.
      *
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeDatabases(Server $server)
     {

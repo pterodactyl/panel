@@ -1,4 +1,3 @@
-import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import React, { useEffect, useState } from 'react';
 import getNests from '@/api/admin/nests/getNests';
 import { httpErrorToHuman } from '@/api/http';
@@ -11,6 +10,27 @@ import { AdminContext } from '@/state/admin';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import AdminCheckbox, { TableCheckbox } from '@/components/admin/AdminCheckbox';
+
+const RowCheckbox = ({ id }: { id: number}) => {
+    const isChecked = AdminContext.useStoreState(state => state.nests.selectedNests.indexOf(id) >= 0);
+    const appendSelectedNest = AdminContext.useStoreActions(actions => actions.nests.appendSelectedNest);
+    const removeSelectedNest = AdminContext.useStoreActions(actions => actions.nests.removeSelectedNest);
+
+    return (
+        <AdminCheckbox
+            name={id.toString()}
+            checked={isChecked}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (e.currentTarget.checked) {
+                    appendSelectedNest(name);
+                } else {
+                    removeSelectedNest(name);
+                }
+            }}
+        />
+    );
+};
 
 export default () => {
     const match = useRouteMatch();
@@ -20,6 +40,9 @@ export default () => {
 
     const nests = useDeepMemoize(AdminContext.useStoreState(state => state.nests.data));
     const setNests = AdminContext.useStoreActions(state => state.nests.setNests);
+
+    const setSelectedNests = AdminContext.useStoreActions(actions => actions.nests.setSelectedNests);
+    const selectedNestsLength = AdminContext.useStoreState(state => state.nests.selectedNests.length);
 
     useEffect(() => {
         setLoading(!nests.length);
@@ -34,6 +57,10 @@ export default () => {
             .then(() => setLoading(false));
     }, []);
 
+    const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedNests(e.currentTarget.checked ? (nests?.map(nest => nest.id) || []) : []);
+    };
+
     return (
         <AdminContentBlock>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
@@ -47,8 +74,8 @@ export default () => {
 
             <FlashMessageRender byKey={'nests'} css={tw`mb-4`}/>
 
-            <div css={tw`w-full flex flex-col`}>
-                <div css={tw`w-full flex flex-col bg-neutral-700 rounded-lg shadow-md`}>
+            <div css={tw`flex flex-col w-full`}>
+                <div css={tw`rounded-lg shadow-md bg-neutral-700`}>
                     { loading ?
                         <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
                             <Spinner size={'base'}/>
@@ -66,7 +93,12 @@ export default () => {
                             <>
                                 <div css={tw`flex flex-row items-center h-12 px-6`}>
                                     <div css={tw`flex flex-row items-center`}>
-                                        <AdminCheckbox name={'selectAll'}/>
+                                        <TableCheckbox
+                                            type={'checkbox'}
+                                            name={'selectAll'}
+                                            checked={selectedNestsLength === (nests?.length === 0 ? -1 : nests?.length)}
+                                            onChange={onSelectAllClick}
+                                        />
 
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={tw`w-4 h-4 ml-1 text-neutral-200`}>
                                             <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
@@ -138,16 +170,16 @@ export default () => {
                                                 nests.map(nest => (
                                                     <tr key={nest.id} css={tw`h-12 hover:bg-neutral-600`}>
                                                         <td css={tw`pl-6`}>
-                                                            <AdminCheckbox name={nest.id.toString()}/>
+                                                            <RowCheckbox id={nest.id}/>
                                                         </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap pl-8`}>{nest.id}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.id}</td>
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
                                                             <NavLink to={`${match.url}/${nest.id}`}>
                                                                 {nest.name}
                                                             </NavLink>
                                                         </td>
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap pr-8`}>{nest.description}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.description}</td>
                                                     </tr>
                                                 ))
                                             }
@@ -168,35 +200,35 @@ export default () => {
                                                 </svg>
                                             </a>
 
-                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-medium leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-500 text-neutral-50 focus:z-10 focus:outline-none focus:border-primary-300`}>
+                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-500 text-neutral-50 focus:z-10 focus:outline-none focus:border-primary-300`}>
                                                 1
                                             </a>
 
-                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-medium leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
+                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
                                                 2
                                             </a>
 
-                                            <a href="javascript:void(0)" css={tw`relative items-center hidden px-3 py-1 -ml-px text-sm font-medium leading-5 transition duration-150 ease-in-out border md:inline-flex border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
+                                            <a href="javascript:void(0)" css={tw`relative items-center hidden px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border md:inline-flex border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
                                                 3
                                             </a>
 
-                                            <span css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-medium leading-5 border border-neutral-500 bg-neutral-600 text-neutral-200 cursor-default`}>
+                                            <span css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 border border-neutral-500 bg-neutral-600 text-neutral-200 cursor-default`}>
                                                 ...
                                             </span>
 
-                                            <a href="javascript:void(0)" css={tw`relative items-center hidden px-3 py-1 -ml-px text-sm font-medium leading-5 transition duration-150 ease-in-out border md:inline-flex border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
+                                            <a href="javascript:void(0)" css={tw`relative items-center hidden px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border md:inline-flex border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
                                                 7
                                             </a>
 
-                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-medium leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300  active:bg-neutral-100 active:text-neutral-700`}>
+                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300  active:bg-neutral-100 active:text-neutral-700`}>
                                                 8
                                             </a>
 
-                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-medium leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
+                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
                                                 9
                                             </a>
 
-                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-1 py-1 text-sm font-medium leading-5 transition duration-150 ease-in-out border rounded-r-md border-neutral-500 bg-neutral-600 text-neutral-400 hover:text-neutral-200 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-500`} aria-label="Previous">
+                                            <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-1 py-1 -ml-px text-sm font-medium leading-5 transition duration-150 ease-in-out border rounded-r-md border-neutral-500 bg-neutral-600 text-neutral-400 hover:text-neutral-200 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-500`} aria-label="Next">
                                                 <svg css={tw`w-5 h-5`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                                     <path clipRule="evenodd" fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
                                                 </svg>

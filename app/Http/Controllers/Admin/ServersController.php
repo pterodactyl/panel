@@ -395,7 +395,7 @@ class ServersController extends Controller
 
         $this->databasePasswordService->handle($database);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -417,7 +417,7 @@ class ServersController extends Controller
 
         $this->databaseManagementService->delete($database);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**

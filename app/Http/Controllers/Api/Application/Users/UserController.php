@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Users;
 
 use Pterodactyl\Models\User;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Users\UserUpdateService;
@@ -52,7 +51,8 @@ class UserController extends ApplicationApiController
         UserCreationService $creationService,
         UserDeletionService $deletionService,
         UserUpdateService $updateService
-    ) {
+    )
+    {
         parent::__construct();
 
         $this->creationService = $creationService;
@@ -67,7 +67,9 @@ class UserController extends ApplicationApiController
      * the request.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest $request
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetUsersRequest $request): array
     {
@@ -87,7 +89,9 @@ class UserController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest $request
      * @param \Pterodactyl\Models\User $user
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetUsersRequest $request, User $user): array
     {
@@ -106,10 +110,12 @@ class UserController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest $request
      * @param \Pterodactyl\Models\User $user
+     *
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function update(UpdateUserRequest $request, User $user): array
     {
@@ -127,6 +133,7 @@ class UserController extends ApplicationApiController
      * header on successful creation.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest $request
+     *
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
@@ -152,6 +159,7 @@ class UserController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest $request
      * @param \Pterodactyl\Models\User $user
+     *
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

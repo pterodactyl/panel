@@ -112,7 +112,7 @@ class MailController extends Controller
 
         $this->kernel->call('queue:restart');
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -130,6 +130,6 @@ class MailController extends Controller
             return response($exception->getMessage(), 500);
         }
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

@@ -113,6 +113,6 @@ class ApiController extends Controller
     {
         $this->repository->deleteApplicationKey($request->user(), $identifier);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

@@ -20,6 +20,6 @@ class NodeConfigurationController extends ApplicationApiController
      */
     public function __invoke(GetNodeRequest $request, Node $node)
     {
-        return JsonResponse::create($node->getConfiguration());
+        return new JsonResponse($node->getConfiguration());
     }
 }

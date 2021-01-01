@@ -3,6 +3,7 @@ import { Role } from '@/api/admin/roles/getRoles';
 
 export interface AdminRoleStore {
     data: Role[];
+
     setRoles: Action<AdminRoleStore, Role[]>;
     appendRole: Action<AdminRoleStore, Role>;
     removeRole: Action<AdminRoleStore, number>;

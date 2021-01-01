@@ -37,8 +37,9 @@ class RoleController extends ApplicationApiController
      * @param \Pterodactyl\Http\Requests\Api\Application\Roles\GetRolesRequest $request
      *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function index(GetRolesRequest $request)
+    public function index(GetRolesRequest $request): array
     {
         return $this->fractal->collection(AdminRole::all())
             ->transformWith($this->getTransformer(AdminRoleTransformer::class))
@@ -52,6 +53,7 @@ class RoleController extends ApplicationApiController
      * @param \Pterodactyl\Models\AdminRole $role
      *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetRolesRequest $request, AdminRole $role): array
     {
@@ -66,8 +68,9 @@ class RoleController extends ApplicationApiController
      * @param \Pterodactyl\Http\Requests\Api\Application\Roles\StoreRoleRequest $request
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function store(StoreRoleRequest $request)
+    public function store(StoreRoleRequest $request): JsonResponse
     {
         $role = AdminRole::query()->create($request->validated());
 
@@ -83,8 +86,9 @@ class RoleController extends ApplicationApiController
      * @param \Pterodactyl\Models\AdminRole $role
      *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function update(UpdateRoleRequest $request, AdminRole $role)
+    public function update(UpdateRoleRequest $request, AdminRole $role): array
     {
         $role->update($request->validated());
 
@@ -101,7 +105,7 @@ class RoleController extends ApplicationApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeleteRoleRequest $request, AdminRole $role)
+    public function delete(DeleteRoleRequest $request, AdminRole $role): JsonResponse
     {
         $this->repository->delete($role->id);
 

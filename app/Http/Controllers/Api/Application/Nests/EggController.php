@@ -33,12 +33,15 @@ class EggController extends ApplicationApiController
      * Return all eggs that exist for a given nest.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nests\Eggs\GetEggsRequest $request
+     * @param \Pterodactyl\Models\Nest $nest
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function index(GetEggsRequest $request): array
+    public function index(GetEggsRequest $request, Nest $nest): array
     {
         $eggs = $this->repository->findWhere([
-            ['nest_id', '=', $request->getModel(Nest::class)->id],
+            ['nest_id', '=', $nest->id],
         ]);
 
         return $this->fractal->collection($eggs)
@@ -50,11 +53,14 @@ class EggController extends ApplicationApiController
      * Return a single egg that exists on the specified nest.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nests\Eggs\GetEggRequest $request
+     * @param \Pterodactyl\Models\Egg $egg
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function view(GetEggRequest $request): array
+    public function view(GetEggRequest $request, Egg $egg): array
     {
-        return $this->fractal->item($request->getModel(Egg::class))
+        return $this->fractal->item($egg)
             ->transformWith($this->getTransformer(EggTransformer::class))
             ->toArray();
     }

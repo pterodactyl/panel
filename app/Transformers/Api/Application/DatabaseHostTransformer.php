@@ -30,6 +30,7 @@ class DatabaseHostTransformer extends BaseTransformer
      * Transform database host into a representation for the application API.
      *
      * @param \Pterodactyl\Models\DatabaseHost $model
+     *
      * @return array
      */
     public function transform(DatabaseHost $model)
@@ -54,6 +55,7 @@ class DatabaseHostTransformer extends BaseTransformer
      * Include the databases associated with this host.
      *
      * @param \Pterodactyl\Models\DatabaseHost $model
+     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */

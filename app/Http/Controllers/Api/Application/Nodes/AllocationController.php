@@ -46,7 +46,9 @@ class AllocationController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest $request
      * @param \Pterodactyl\Models\Node $node
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetAllocationsRequest $request, Node $node): array
     {

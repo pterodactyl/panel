@@ -12,7 +12,9 @@ class ExternalServerController extends ApplicationApiController
      * Retrieve a specific server from the database using its external ID.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetExternalServerRequest $request
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetExternalServerRequest $request): array
     {

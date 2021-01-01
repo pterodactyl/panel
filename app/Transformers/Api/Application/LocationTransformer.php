@@ -27,17 +27,17 @@ class LocationTransformer extends BaseTransformer
     /**
      * Return a generic transformed location array.
      *
-     * @param \Pterodactyl\Models\Location $location
+     * @param \Pterodactyl\Models\Location $model
      * @return array
      */
-    public function transform(Location $location): array
+    public function transform(Location $model): array
     {
         return [
-            'id' => $location->id,
-            'short' => $location->short,
-            'long' => $location->long,
-            $location->getUpdatedAtColumn() => $this->formatTimestamp($location->updated_at),
-            $location->getCreatedAtColumn() => $this->formatTimestamp($location->created_at),
+            'id' => $model->id,
+            'short' => $model->short,
+            'long' => $model->long,
+            $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),
+            $model->getCreatedAtColumn() => $this->formatTimestamp($model->created_at),
         ];
     }
 

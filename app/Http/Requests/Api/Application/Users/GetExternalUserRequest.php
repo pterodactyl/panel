@@ -29,6 +29,7 @@ class GetExternalUserRequest extends ApplicationApiRequest
      * Determine if the requested external user exists.
      *
      * @return bool
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function resourceExists(): bool
     {

@@ -201,7 +201,7 @@ class NodesController extends Controller
     {
         $this->allocationDeletionService->handle($allocation);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -222,7 +222,7 @@ class NodesController extends Controller
             $this->allocationRemoveSingle($node, $allocation);
         }
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -261,7 +261,7 @@ class NodesController extends Controller
             'ip_alias' => (empty($request->input('alias'))) ? null : $request->input('alias'),
         ]);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**

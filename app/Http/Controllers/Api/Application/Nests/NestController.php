@@ -31,7 +31,9 @@ class NestController extends ApplicationApiController
      * Return all Nests that exist on the Panel.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest $request
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetNestsRequest $request): array
     {
@@ -46,11 +48,14 @@ class NestController extends ApplicationApiController
      * Return information about a single Nest model.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest $request
+     * @param \Pterodactyl\Models\Nest $nest
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function view(GetNestsRequest $request): array
+    public function view(GetNestsRequest $request, Nest $nest): array
     {
-        return $this->fractal->item($request->getModel(Nest::class))
+        return $this->fractal->item($nest)
             ->transformWith($this->getTransformer(NestTransformer::class))
             ->toArray();
     }

@@ -205,7 +205,7 @@ class MountController extends Controller
     {
         $mount->eggs()->detach($egg_id);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -219,6 +219,6 @@ class MountController extends Controller
     {
         $mount->nodes()->detach($node_id);
 
-        return response('', 204);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

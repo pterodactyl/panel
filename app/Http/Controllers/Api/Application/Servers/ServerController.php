@@ -22,12 +22,10 @@ class ServerController extends ApplicationApiController
      * @var \Pterodactyl\Services\Servers\ServerCreationService
      */
     private $creationService;
-
     /**
      * @var \Pterodactyl\Services\Servers\ServerDeletionService
      */
     private $deletionService;
-
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
@@ -44,7 +42,8 @@ class ServerController extends ApplicationApiController
         ServerCreationService $creationService,
         ServerDeletionService $deletionService,
         ServerRepositoryInterface $repository
-    ) {
+    )
+    {
         parent::__construct();
 
         $this->creationService = $creationService;
@@ -56,7 +55,9 @@ class ServerController extends ApplicationApiController
      * Return all of the servers that currently exist on the Panel.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest $request
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetServersRequest $request): array
     {
@@ -74,12 +75,12 @@ class ServerController extends ApplicationApiController
      * Create a new server on the system.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\StoreServerRequest $request
+     *
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
@@ -97,22 +98,28 @@ class ServerController extends ApplicationApiController
      * Show a single server transformed for the application API.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function view(GetServerRequest $request): array
+    public function view(GetServerRequest $request, Server $server): array
     {
-        return $this->fractal->item($request->getModel(Server::class))
+        return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }
 
     /**
+     * Deletes a server.
+     *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
      * @param \Pterodactyl\Models\Server $server
      * @param string $force
+     *
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Throwable
      */
     public function delete(ServerWriteRequest $request, Server $server, string $force = ''): Response
     {

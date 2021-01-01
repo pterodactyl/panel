@@ -65,7 +65,9 @@ class NodeController extends ApplicationApiController
      * Return all of the nodes currently available on the Panel.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodesRequest $request
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetNodesRequest $request): array
     {
@@ -84,7 +86,9 @@ class NodeController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest $request
      * @param \Pterodactyl\Models\Node $node
+     *
      * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetNodeRequest $request, Node $node): array
     {
@@ -98,9 +102,10 @@ class NodeController extends ApplicationApiController
      * status response on success.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\StoreNodeRequest $request
+     *
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException*@throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreNodeRequest $request): JsonResponse
     {
@@ -121,6 +126,7 @@ class NodeController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\UpdateNodeRequest $request
      * @param \Pterodactyl\Models\Node $node
+     *
      * @return array
      *
      * @throws \Throwable
@@ -142,6 +148,7 @@ class NodeController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest $request
      * @param \Pterodactyl\Models\Node $node
+     *
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException

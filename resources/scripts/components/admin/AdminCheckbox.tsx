@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 
-const Checkbox = styled(Input)`
+export const TableCheckbox = styled(Input)`
     && {
         ${tw`border-neutral-500 bg-transparent`};
 
@@ -13,12 +13,14 @@ const Checkbox = styled(Input)`
     }
 `;
 
-export default ({ name }: { name: string }) => {
+export default ({ name, checked, onChange }: { name: string, checked: boolean, onChange(e: React.ChangeEvent<HTMLInputElement>): void }) => {
     return (
-        <Checkbox
+        <TableCheckbox
+            type={'checkbox'}
             name={'selectedItems'}
             value={name}
-            type={'checkbox'}
+            checked={checked}
+            onChange={onChange}
         />
     );
 };

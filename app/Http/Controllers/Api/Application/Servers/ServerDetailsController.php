@@ -42,16 +42,17 @@ class ServerDetailsController extends ApplicationApiController
      * Update the details for a specific server.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerDetailsRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     *
      * @return array
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Throwable
      */
-    public function details(UpdateServerDetailsRequest $request): array
+    public function details(UpdateServerDetailsRequest $request, Server $server): array
     {
         $server = $this->detailsModificationService->returnUpdatedModel()->handle(
-            $request->getModel(Server::class), $request->validated()
+            $server, $request->validated()
         );
 
         return $this->fractal->item($server)
@@ -64,11 +65,11 @@ class ServerDetailsController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerBuildConfigurationRequest $request
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return array
      *
+     * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function build(UpdateServerBuildConfigurationRequest $request, Server $server): array
     {

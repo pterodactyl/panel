@@ -42,6 +42,7 @@ class ServerManagementController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \Illuminate\Http\Response
      *
      * @throws \Throwable
@@ -58,6 +59,7 @@ class ServerManagementController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \Illuminate\Http\Response
      *
      * @throws \Throwable
@@ -74,11 +76,10 @@ class ServerManagementController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
      * @param \Pterodactyl\Models\Server $server
+     *
      * @return \Illuminate\Http\Response
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function reinstall(ServerWriteRequest $request, Server $server): Response
     {
