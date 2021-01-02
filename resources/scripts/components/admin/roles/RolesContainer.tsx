@@ -8,8 +8,29 @@ import useFlash from '@/plugins/useFlash';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import Spinner from '@/components/elements/Spinner';
 import getRoles from '@/api/admin/roles/getRoles';
+import AdminCheckbox from '@/components/admin/AdminCheckbox';
+import AdminTable, { TableBody, TableHead, TableHeader, TableRow } from '@/components/admin/AdminTable';
+
+const RowCheckbox = ({ id }: { id: number}) => {
+    const isChecked = AdminContext.useStoreState(state => state.roles.selectedRoles.indexOf(id) >= 0);
+    const appendSelectedRole = AdminContext.useStoreActions(actions => actions.roles.appendSelectedRole);
+    const removeSelectedRole = AdminContext.useStoreActions(actions => actions.roles.removeSelectedRole);
+
+    return (
+        <AdminCheckbox
+            name={id.toString()}
+            checked={isChecked}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (e.currentTarget.checked) {
+                    appendSelectedRole(id);
+                } else {
+                    removeSelectedRole(id);
+                }
+            }}
+        />
+    );
+};
 
 export default () => {
     const match = useRouteMatch();
@@ -19,6 +40,9 @@ export default () => {
 
     const roles = useDeepMemoize(AdminContext.useStoreState(state => state.roles.data));
     const setRoles = AdminContext.useStoreActions(state => state.roles.setRoles);
+
+    const setSelectedRoles = AdminContext.useStoreActions(actions => actions.roles.setSelectedRoles);
+    const selectedRolesLength = AdminContext.useStoreState(state => state.roles.selectedRoles.length);
 
     useEffect(() => {
         setLoading(!roles.length);
@@ -33,6 +57,10 @@ export default () => {
             .then(() => setLoading(false));
     }, []);
 
+    const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSelectedRoles(e.currentTarget.checked ? (roles.map(role => role.id) || []) : []);
+    };
+
     return (
         <AdminContentBlock>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
@@ -46,64 +74,38 @@ export default () => {
 
             <FlashMessageRender byKey={'roles'} css={tw`mb-4`}/>
 
-            <div css={tw`w-full flex flex-col`}>
-                <div css={tw`w-full flex flex-col bg-neutral-700 rounded-lg shadow-md`}>
-                    { loading ?
-                        <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
-                            <Spinner size={'base'}/>
-                        </div>
-                        :
-                        roles.length < 1 ?
-                            <div css={tw`w-full flex flex-col items-center justify-center pb-6 py-2 sm:py-8 md:py-10 px-8`}>
-                                <div css={tw`h-64 flex`}>
-                                    <img src={'/assets/svgs/not_found.svg'} alt={'No Items'} css={tw`h-full select-none`}/>
-                                </div>
+            <AdminTable
+                loading={loading}
+                hasItems={roles.length > 0}
+                checked={selectedRolesLength === (roles.length === 0 ? -1 : roles.length)}
+                onSelectAllClick={onSelectAllClick}
+            >
+                <TableHead>
+                    <TableHeader name={'ID'}/>
+                    <TableHeader name={'Name'}/>
+                    <TableHeader name={'Description'}/>
+                </TableHead>
 
-                                <p css={tw`text-lg text-neutral-300 text-center font-normal sm:mt-8`}>No items could be found, it&apos;s almost like they are hiding.</p>
-                            </div>
-                            :
-                            <div css={tw`overflow-x-auto`}>
-                                <table css={tw`w-full table-auto`}>
-                                    <thead>
-                                        <tr>
-                                            <th css={tw`py-4 px-4 text-left pl-8`}>
-                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-nowrap mr-2`}>ID</span>
-                                            </th>
+                <TableBody>
+                    {
+                        roles.map(role => (
+                            <TableRow key={role.id}>
+                                <td css={tw`pl-6`}>
+                                    <RowCheckbox id={role.id}/>
+                                </td>
 
-                                            <th css={tw`py-4 px-4 text-left`}>
-                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-nowrap mr-2`}>Name</span>
-                                            </th>
-
-                                            <th css={tw`py-4 px-4 text-left pr-8`}>
-                                                <span css={tw`font-medium text-base text-neutral-300 text-left whitespace-nowrap mr-2`}>Description</span>
-                                            </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody css={tw`bg-neutral-600`}>
-                                        {
-                                            roles.map(role => (
-                                                <tr key={role.id} css={tw`h-12 cursor-pointer`}>
-                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap pl-8`}>{role.id}</td>
-                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap`}>
-                                                        <NavLink to={`${match.url}/${role.id}`}>
-                                                            {role.name}
-                                                        </NavLink>
-                                                    </td>
-                                                    <td css={tw`py-3 px-4 text-neutral-200 text-left whitespace-nowrap pr-8`}>{role.description}</td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-
-                                <div css={tw`h-12 w-full flex flex-row items-center justify-between px-6`}>
-
-                                </div>
-                            </div>
+                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.id}</td>
+                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                    <NavLink to={`${match.url}/${role.id}`}>
+                                        {role.name}
+                                    </NavLink>
+                                </td>
+                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.description}</td>
+                            </TableRow>
+                        ))
                     }
-                </div>
-            </div>
+                </TableBody>
+            </AdminTable>
         </AdminContentBlock>
     );
 };

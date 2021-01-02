@@ -10,12 +10,7 @@ import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, {
-    TableBody,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/admin/AdminTable';
+import AdminTable, { TableBody, TableHead, TableHeader, TableRow } from '@/components/admin/AdminTable';
 
 const RowCheckbox = ({ id }: { id: number}) => {
     const isChecked = AdminContext.useStoreState(state => state.nests.selectedNests.indexOf(id) >= 0);
@@ -89,8 +84,6 @@ export default () => {
                     <TableHeader name={'ID'}/>
                     <TableHeader name={'Name'}/>
                     <TableHeader name={'Description'}/>
-
-                    {/* <th css={tw`px-6 py-2`}/> */}
                 </TableHead>
 
                 <TableBody>
