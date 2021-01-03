@@ -114,6 +114,12 @@ Route::group(['prefix' => '/nests'], function () {
     Route::get('/', 'Nests\NestController@index')->name('api.application.nests');
     Route::get('/{nest}', 'Nests\NestController@view')->name('api.application.nests.view');
 
+    Route::post('/', 'Nests\NestController@store');
+
+    Route::patch('/{nest}', 'Nests\NestController@update');
+
+    Route::delete('/{nest}', 'Nests\NestController@delete');
+
     // Egg Management Endpoint
     Route::group(['prefix' => '/{nest}/eggs'], function () {
         Route::get('/', 'Nests\EggController@index')->name('api.application.nests.eggs');
@@ -135,6 +141,8 @@ Route::group(['prefix' => '/roles'], function () {
     Route::get('/{role}', 'Roles\RoleController@view');
 
     Route::post('/', 'Roles\RoleController@store');
+
+    Route::patch('/{role}', 'Roles\RoleController@update');
 
     Route::delete('/{role}', 'Roles\RoleController@delete');
 });
