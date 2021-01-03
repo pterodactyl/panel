@@ -37,7 +37,7 @@ class NestController extends ApplicationApiController
      */
     public function index(GetNestsRequest $request): array
     {
-        $nests = $this->repository->paginated(1);
+        $nests = $this->repository->paginated(10);
 
         return $this->fractal->collection($nests)
             ->transformWith($this->getTransformer(NestTransformer::class))

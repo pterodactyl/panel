@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import createNest from '@/api/admin/nests/createNest';
-import { httpErrorToHuman } from '@/api/http';
-import { AdminContext } from '@/state/admin';
+import getNests from '@/api/admin/nests/getNests';
 import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
 import Modal from '@/components/elements/Modal';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { Form, Formik, FormikHelpers } from 'formik';
-import tw from 'twin.macro';
 import { object, string } from 'yup';
+import tw from 'twin.macro';
 
 interface Values {
     name: string,
@@ -26,9 +25,8 @@ const schema = object().shape({
 
 export default () => {
     const [ visible, setVisible ] = useState(false);
-    const { addError, clearFlashes } = useFlash();
-
-    const appendNest = AdminContext.useStoreActions(actions => actions.nests.appendNest);
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { mutate } = getNests();
 
     const submit = ({ name, description }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('nest:create');
@@ -36,11 +34,11 @@ export default () => {
 
         createNest(name, description)
             .then(nest => {
-                appendNest(nest);
+                mutate(data => ({ ...data, items: data.items.concat(nest) }), false);
                 setVisible(false);
             })
             .catch(error => {
-                addError({ key: 'nest:create', message: httpErrorToHuman(error) });
+                clearAndAddHttpError({ key: 'nest:create', error });
                 setSubmitting(false);
             });
     };

@@ -1,13 +1,7 @@
 import { action, Action } from 'easy-peasy';
-import { Nest } from '@/api/admin/nests/getNests';
 
 export interface AdminNestStore {
-    data: Nest[];
     selectedNests: number[];
-
-    setNests: Action<AdminNestStore, Nest[]>;
-    appendNest: Action<AdminNestStore, Nest>;
-    removeNest: Action<AdminNestStore, number>;
 
     setSelectedNests: Action<AdminNestStore, number[]>;
     appendSelectedNest: Action<AdminNestStore, number>;
@@ -15,24 +9,7 @@ export interface AdminNestStore {
 }
 
 const nests: AdminNestStore = {
-    data: [],
     selectedNests: [],
-
-    setNests: action((state, payload) => {
-        state.data = payload;
-    }),
-
-    appendNest: action((state, payload) => {
-        if (state.data.find(nest => nest.id === payload.id)) {
-            state.data = state.data.map(nest => nest.id === payload.id ? payload : nest);
-        } else {
-            state.data = [ ...state.data, payload ];
-        }
-    }),
-
-    removeNest: action((state, payload) => {
-        state.data = [ ...state.data.filter(nest => nest.id !== payload) ];
-    }),
 
     setSelectedNests: action((state, payload) => {
         state.selectedNests = payload;

@@ -28,7 +28,8 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     /**
      * Return a nest or all nests with their associated eggs and variables.
      *
-     * @param int $id
+     * @param int|null $id
+     *
      * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Nest
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

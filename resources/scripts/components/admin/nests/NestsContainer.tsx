@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import getNests, { Context as NestsContext } from '@/api/swr/getNests';
+import getNests, { Context as NestsContext } from '@/api/admin/nests/getNests';
 import NewNestButton from '@/components/admin/nests/NewNestButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
@@ -39,11 +39,11 @@ const NestsContainer = () => {
 
     useEffect(() => {
         if (!error) {
-            clearFlashes('backups');
+            clearFlashes('nests');
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'backups' });
+        clearAndAddHttpError({ error, key: 'nests' });
     }, [ error ]);
 
     const length = nests?.items?.length || 0;

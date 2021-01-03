@@ -1,4 +1,4 @@
-/* import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import { AdminContext } from '@/state/admin';
 import { httpErrorToHuman } from '@/api/http';
@@ -10,7 +10,7 @@ import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import getRoles from '@/api/admin/roles/getRoles';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, { TableBody, TableHead, TableHeader, TableRow } from '@/components/admin/AdminTable';
+import AdminTable, { ContentWrapper, Loading, NoItems, TableBody, TableHead, TableHeader, TableRow } from '@/components/admin/AdminTable';
 
 const RowCheckbox = ({ id }: { id: number}) => {
     const isChecked = AdminContext.useStoreState(state => state.roles.selectedRoles.indexOf(id) >= 0);
@@ -74,47 +74,49 @@ export default () => {
 
             <FlashMessageRender byKey={'roles'} css={tw`mb-4`}/>
 
-            <AdminTable
-                loading={loading}
-                hasItems={roles.length > 0}
-                checked={selectedRolesLength === (roles.length === 0 ? -1 : roles.length)}
-                onSelectAllClick={onSelectAllClick}
-            >
-                <TableHead>
-                    <TableHeader name={'ID'}/>
-                    <TableHeader name={'Name'}/>
-                    <TableHeader name={'Description'}/>
-                </TableHead>
+            <AdminTable>
+                { loading ?
+                    <Loading/>
+                    :
+                    roles.length < 1 ?
+                        <NoItems/>
+                        :
+                        <ContentWrapper
+                            checked={selectedRolesLength === (roles.length === 0 ? -1 : roles.length)}
+                            onSelectAllClick={onSelectAllClick}
+                        >
+                            <div css={tw`overflow-x-auto`}>
+                                <table css={tw`w-full table-auto`}>
+                                    <TableHead>
+                                        <TableHeader name={'ID'}/>
+                                        <TableHeader name={'Name'}/>
+                                        <TableHeader name={'Description'}/>
+                                    </TableHead>
 
-                <TableBody>
-                    {
-                        roles.map(role => (
-                            <TableRow key={role.id}>
-                                <td css={tw`pl-6`}>
-                                    <RowCheckbox id={role.id}/>
-                                </td>
+                                    <TableBody>
+                                        {
+                                            roles.map(role => (
+                                                <TableRow key={role.id}>
+                                                    <td css={tw`pl-6`}>
+                                                        <RowCheckbox id={role.id}/>
+                                                    </td>
 
-                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.id}</td>
-                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                    <NavLink to={`${match.url}/${role.id}`}>
-                                        {role.name}
-                                    </NavLink>
-                                </td>
-                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.description}</td>
-                            </TableRow>
-                        ))
-                    }
-                </TableBody>
+                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.id}</td>
+                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                        <NavLink to={`${match.url}/${role.id}`}>
+                                                            {role.name}
+                                                        </NavLink>
+                                                    </td>
+                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.description}</td>
+                                                </TableRow>
+                                            ))
+                                        }
+                                    </TableBody>
+                                </table>
+                            </div>
+                        </ContentWrapper>
+                }
             </AdminTable>
         </AdminContentBlock>
-    );
-}; */
-
-import React from 'react';
-
-export default () => {
-    return (
-        <>
-        </>
     );
 };
