@@ -60,30 +60,22 @@ interface Props<T> {
 const PaginationButton = styled.button<{ active?: boolean }>`
     ${tw`relative items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 focus:z-10 focus:outline-none focus:border-primary-300 inline-flex`};
 
-    ${props => props.active ? tw`bg-neutral-500 text-neutral-50` : tw`bg-neutral-600 text-neutral-200 hover:text-neutral-300`};
+    ${props => props.active ? tw`bg-neutral-500 text-neutral-50` : tw`bg-neutral-600 text-neutral-200 hover:text-neutral-50`};
 `;
 
 const PaginationArrow = styled.button`
-    ${tw`relative inline-flex items-center px-1 py-1 text-sm font-medium leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-400 hover:text-neutral-200 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-500`};
+    ${tw`relative inline-flex items-center px-1 py-1 text-sm font-medium leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-400 hover:text-neutral-50 focus:z-10 focus:outline-none focus:border-primary-300`};
+
+    &:disabled {
+        ${tw`bg-neutral-700`}
+    }
+
+    &:hover:disabled {
+        ${tw`text-neutral-400 cursor-default`};
+    }
 `;
 
 export function Pagination<T> ({ data: { pagination }, onPageSelect, children }: Props<T>) {
-    const isFirstPage = pagination.currentPage === 1;
-    const isLastPage = pagination.currentPage >= pagination.totalPages;
-
-    /* const pages = [];
-
-    const start = Math.max(pagination.currentPage - 2, 1);
-    const end = Math.min(pagination.totalPages, pagination.currentPage + 5);
-
-    for (let i = start; i <= start + 3; i++) {
-        pages.push(i);
-    }
-
-    for (let i = end; i >= end - 3; i--) {
-        pages.push(i);
-    } */
-
     const setPage = (page: number) => {
         if (page < 1 || page > pagination.totalPages) {
             return;
@@ -91,6 +83,30 @@ export function Pagination<T> ({ data: { pagination }, onPageSelect, children }:
 
         onPageSelect(page);
     };
+
+    const isFirstPage = pagination.currentPage === 1;
+    const isLastPage = pagination.currentPage >= pagination.totalPages;
+
+    const pages = [];
+
+    if (pagination.totalPages < 7) {
+        for (let i = 1; i <= pagination.totalPages; i++) {
+            pages.push(i);
+        }
+    } else {
+        // Don't ask me how this works, all I know is that this code will always have 7 items in the pagination,
+        // and keeps the current page centered if it is not too close to the start or end.
+        let start = Math.max(pagination.currentPage - 3, 1);
+        const end = Math.min(pagination.totalPages, pagination.currentPage + ((pagination.currentPage < 4) ? 7 - pagination.currentPage : 3));
+
+        while (start !== 1 && end - start !== 6) {
+            start--;
+        }
+
+        for (let i = start; i <= end; i++) {
+            pages.push(i);
+        }
+    }
 
     return (
         <>
@@ -106,41 +122,19 @@ export function Pagination<T> ({ data: { pagination }, onPageSelect, children }:
                     :
                     <div css={tw`flex flex-row ml-auto`}>
                         <nav css={tw`relative z-0 inline-flex shadow-sm`}>
-                            <PaginationArrow type="button" onClick={() => setPage(pagination.currentPage - 1)} css={tw`rounded-l-md`} aria-label="Previous">
+                            <PaginationArrow type="button" css={tw`rounded-l-md`} aria-label="Previous" disabled={pagination.currentPage === 1} onClick={() => setPage(pagination.currentPage - 1)}>
                                 <svg css={tw`w-5 h-5`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path clipRule="evenodd" fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
                                 </svg>
                             </PaginationArrow>
 
-                            <PaginationButton type="button" onClick={() => setPage(1)} active={pagination.currentPage === 1}>
-                                1
-                            </PaginationButton>
+                            {pages.map(page => (
+                                <PaginationButton key={page} type="button" onClick={() => setPage(page)} active={pagination.currentPage === page}>
+                                    {page}
+                                </PaginationButton>
+                            ))}
 
-                            <PaginationButton type="button" onClick={() => setPage(2)} active={pagination.currentPage === 2}>
-                                2
-                            </PaginationButton>
-
-                            <PaginationButton type="button" onClick={() => setPage(3)} active={pagination.currentPage === 3}>
-                                3
-                            </PaginationButton>
-
-                            {/* <span css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 border border-neutral-500 bg-neutral-600 text-neutral-200 cursor-default`}>
-                                ...
-                            </span>
-
-                            <PaginationButton type="button" onClick={() => setPage(7)} css={tw`bg-neutral-600 text-neutral-200 hover:text-neutral-300`}>
-                                7
-                            </PaginationButton>
-
-                            <PaginationButton type="button" onClick={() => setPage(8)} css={tw`bg-neutral-600 text-neutral-200 hover:text-neutral-300`}>
-                                8
-                            </PaginationButton>
-
-                            <PaginationButton type="button" onClick={() => setPage(9)} css={tw`bg-neutral-600 text-neutral-200 hover:text-neutral-300`}>
-                                9
-                            </PaginationButton> */}
-
-                            <PaginationArrow type="button" onClick={() => setPage(pagination.currentPage + 1)} css={tw`-ml-px rounded-r-md`} aria-label="Next">
+                            <PaginationArrow type="button" css={tw`-ml-px rounded-r-md`} aria-label="Next" disabled={pagination.currentPage === pagination.totalPages} onClick={() => setPage(pagination.currentPage + 1)}>
                                 <svg css={tw`w-5 h-5`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path clipRule="evenodd" fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
                                 </svg>
