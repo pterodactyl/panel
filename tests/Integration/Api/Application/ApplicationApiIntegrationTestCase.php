@@ -64,7 +64,8 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      * Creates a new default API key and refreshes the headers using it.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param array                    $permissions
+     * @param array $permissions
+     *
      * @return \Pterodactyl\Models\ApiKey
      */
     protected function createNewDefaultApiKey(User $user, array $permissions = []): ApiKey
@@ -101,7 +102,8 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      * Create a new application API key for a given user model.
      *
      * @param \Pterodactyl\Models\User $user
-     * @param array                    $permissions
+     * @param array $permissions
+     *
      * @return \Pterodactyl\Models\ApiKey
      */
     protected function createApiKey(User $user, array $permissions = []): ApiKey
@@ -125,7 +127,9 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      * Return a transformer that can be used for testing purposes.
      *
      * @param string $abstract
+     *
      * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected function getTransformer(string $abstract): BaseTransformer
     {

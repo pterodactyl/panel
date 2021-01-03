@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+/* import React, { useEffect, useState } from 'react';
 import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import { AdminContext } from '@/state/admin';
 import { httpErrorToHuman } from '@/api/http';
@@ -107,5 +107,14 @@ export default () => {
                 </TableBody>
             </AdminTable>
         </AdminContentBlock>
+    );
+}; */
+
+import React from 'react';
+
+export default () => {
+    return (
+        <>
+        </>
     );
 };

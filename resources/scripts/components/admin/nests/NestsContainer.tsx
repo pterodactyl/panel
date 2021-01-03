@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import getNests from '@/api/admin/nests/getNests';
-import { httpErrorToHuman } from '@/api/http';
+import React, { useContext, useEffect, useState } from 'react';
+import getNests, { Context as NestsContext } from '@/api/swr/getNests';
 import NewNestButton from '@/components/admin/nests/NewNestButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import useFlash from '@/plugins/useFlash';
 import { AdminContext } from '@/state/admin';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, { TableBody, TableHead, TableHeader, TableRow } from '@/components/admin/AdminTable';
+import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper } from '@/components/admin/AdminTable';
 
 const RowCheckbox = ({ id }: { id: number}) => {
     const isChecked = AdminContext.useStoreState(state => state.nests.selectedNests.indexOf(id) >= 0);
@@ -32,34 +30,34 @@ const RowCheckbox = ({ id }: { id: number}) => {
     );
 };
 
-export default () => {
+const NestsContainer = () => {
     const match = useRouteMatch();
 
-    const { addError, clearFlashes } = useFlash();
-    const [ loading, setLoading ] = useState(true);
+    const { page, setPage } = useContext(NestsContext);
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { data: nests, error, isValidating } = getNests();
 
-    const nests = useDeepMemoize(AdminContext.useStoreState(state => state.nests.data));
-    const setNests = AdminContext.useStoreActions(state => state.nests.setNests);
+    useEffect(() => {
+        if (!error) {
+            clearFlashes('backups');
+            return;
+        }
+
+        clearAndAddHttpError({ error, key: 'backups' });
+    }, [ error ]);
+
+    const length = nests?.items?.length || 0;
 
     const setSelectedNests = AdminContext.useStoreActions(actions => actions.nests.setSelectedNests);
     const selectedNestsLength = AdminContext.useStoreState(state => state.nests.selectedNests.length);
 
-    useEffect(() => {
-        setLoading(!nests.length);
-        clearFlashes('nests');
-
-        getNests()
-            .then(nests => setNests(nests))
-            .catch(error => {
-                console.error(error);
-                addError({ message: httpErrorToHuman(error), key: 'nests' });
-            })
-            .then(() => setLoading(false));
-    }, []);
-
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedNests(e.currentTarget.checked ? (nests.map(nest => nest.id) || []) : []);
+        setSelectedNests(e.currentTarget.checked ? (nests?.items?.map(nest => nest.id) || []) : []);
     };
+
+    useEffect(() => {
+        setSelectedNests([]);
+    }, [ page ]);
 
     return (
         <AdminContentBlock>
@@ -74,38 +72,61 @@ export default () => {
 
             <FlashMessageRender byKey={'nests'} css={tw`mb-4`}/>
 
-            <AdminTable
-                loading={loading}
-                hasItems={nests.length > 0}
-                checked={selectedNestsLength === (nests.length === 0 ? -1 : nests.length)}
-                onSelectAllClick={onSelectAllClick}
-            >
-                <TableHead>
-                    <TableHeader name={'ID'}/>
-                    <TableHeader name={'Name'}/>
-                    <TableHeader name={'Description'}/>
-                </TableHead>
+            <AdminTable>
+                { nests === undefined || (error && isValidating) ?
+                    <Loading/>
+                    :
+                    length < 1 ?
+                        <NoItems/>
+                        :
+                        <ContentWrapper
+                            checked={selectedNestsLength === (length === 0 ? -1 : length)}
+                            onSelectAllClick={onSelectAllClick}
+                        >
+                            <Pagination data={nests} onPageSelect={setPage}>
+                                <div css={tw`overflow-x-auto`}>
+                                    <table css={tw`w-full table-auto`}>
+                                        <TableHead>
+                                            <TableHeader name={'ID'}/>
+                                            <TableHeader name={'Name'}/>
+                                            <TableHeader name={'Description'}/>
+                                        </TableHead>
 
-                <TableBody>
-                    {
-                        nests.map(nest => (
-                            <TableRow key={nest.id}>
-                                <td css={tw`pl-6`}>
-                                    <RowCheckbox id={nest.id}/>
-                                </td>
+                                        <TableBody>
+                                            {
+                                                nests.items.map(nest => (
+                                                    <TableRow key={nest.id}>
+                                                        <td css={tw`pl-6`}>
+                                                            <RowCheckbox id={nest.id}/>
+                                                        </td>
 
-                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.id}</td>
-                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                    <NavLink to={`${match.url}/${nest.id}`}>
-                                        {nest.name}
-                                    </NavLink>
-                                </td>
-                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.description}</td>
-                            </TableRow>
-                        ))
-                    }
-                </TableBody>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.id}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <NavLink to={`${match.url}/${nest.id}`}>
+                                                                {nest.name}
+                                                            </NavLink>
+                                                        </td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.description}</td>
+                                                    </TableRow>
+                                                ))
+                                            }
+                                        </TableBody>
+                                    </table>
+                                </div>
+                            </Pagination>
+                        </ContentWrapper>
+                }
             </AdminTable>
         </AdminContentBlock>
+    );
+};
+
+export default () => {
+    const [ page, setPage ] = useState<number>(1);
+
+    return (
+        <NestsContext.Provider value={{ page, setPage }}>
+            <NestsContainer/>
+        </NestsContext.Provider>
     );
 };

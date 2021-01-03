@@ -1,7 +1,9 @@
 import React from 'react';
 import { TableCheckbox } from '@/components/admin/AdminCheckbox';
 import Spinner from '@/components/elements/Spinner';
+import styled from 'styled-components/macro';
 import tw from 'twin.macro';
+import { PaginatedResult } from '@/api/http';
 
 export const TableHead = ({ children }: { children: React.ReactNode }) => {
     return (
@@ -47,116 +49,175 @@ export const TableRow = ({ children }: { children: React.ReactNode }) => {
         </tr>
     );
 };
-interface Params {
-    loading: boolean;
-    hasItems: boolean;
-    checked: boolean;
-    onSelectAllClick(e: React.ChangeEvent<HTMLInputElement>): void;
+
+interface Props<T> {
+    data: PaginatedResult<T>;
+    onPageSelect: (page: number) => void;
 
     children: React.ReactNode;
 }
 
-export default ({ loading, hasItems, checked, onSelectAllClick, children }: Params) => {
+const PaginationButton = styled.button<{ active?: boolean }>`
+    ${tw`relative items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 focus:z-10 focus:outline-none focus:border-primary-300 inline-flex`};
+
+    ${props => props.active ? tw`bg-neutral-500 text-neutral-50` : tw`bg-neutral-600 text-neutral-200 hover:text-neutral-300`};
+`;
+
+const PaginationArrow = styled.button`
+    ${tw`relative inline-flex items-center px-1 py-1 text-sm font-medium leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-400 hover:text-neutral-200 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-500`};
+`;
+
+export function Pagination<T> ({ data: { pagination }, onPageSelect, children }: Props<T>) {
+    const isFirstPage = pagination.currentPage === 1;
+    const isLastPage = pagination.currentPage >= pagination.totalPages;
+
+    /* const pages = [];
+
+    const start = Math.max(pagination.currentPage - 2, 1);
+    const end = Math.min(pagination.totalPages, pagination.currentPage + 5);
+
+    for (let i = start; i <= start + 3; i++) {
+        pages.push(i);
+    }
+
+    for (let i = end; i >= end - 3; i--) {
+        pages.push(i);
+    } */
+
+    const setPage = (page: number) => {
+        if (page < 1 || page > pagination.totalPages) {
+            return;
+        }
+
+        onPageSelect(page);
+    };
+
+    return (
+        <>
+            {children}
+
+            <div css={tw`h-12 flex flex-row items-center w-full px-6 py-3 border-t border-neutral-500`}>
+                <p css={tw`text-sm leading-5 text-neutral-400`}>
+                    Showing <span css={tw`text-neutral-300`}>{((pagination.currentPage - 1) * pagination.perPage) + 1}</span> to <span css={tw`text-neutral-300`}>{((pagination.currentPage - 1) * pagination.perPage) + pagination.count}</span> of <span css={tw`text-neutral-300`}>{pagination.total}</span> results
+                </p>
+
+                { isFirstPage && isLastPage ?
+                    null
+                    :
+                    <div css={tw`flex flex-row ml-auto`}>
+                        <nav css={tw`relative z-0 inline-flex shadow-sm`}>
+                            <PaginationArrow type="button" onClick={() => setPage(pagination.currentPage - 1)} css={tw`rounded-l-md`} aria-label="Previous">
+                                <svg css={tw`w-5 h-5`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path clipRule="evenodd" fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
+                                </svg>
+                            </PaginationArrow>
+
+                            <PaginationButton type="button" onClick={() => setPage(1)} active={pagination.currentPage === 1}>
+                                1
+                            </PaginationButton>
+
+                            <PaginationButton type="button" onClick={() => setPage(2)} active={pagination.currentPage === 2}>
+                                2
+                            </PaginationButton>
+
+                            <PaginationButton type="button" onClick={() => setPage(3)} active={pagination.currentPage === 3}>
+                                3
+                            </PaginationButton>
+
+                            {/* <span css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 border border-neutral-500 bg-neutral-600 text-neutral-200 cursor-default`}>
+                                ...
+                            </span>
+
+                            <PaginationButton type="button" onClick={() => setPage(7)} css={tw`bg-neutral-600 text-neutral-200 hover:text-neutral-300`}>
+                                7
+                            </PaginationButton>
+
+                            <PaginationButton type="button" onClick={() => setPage(8)} css={tw`bg-neutral-600 text-neutral-200 hover:text-neutral-300`}>
+                                8
+                            </PaginationButton>
+
+                            <PaginationButton type="button" onClick={() => setPage(9)} css={tw`bg-neutral-600 text-neutral-200 hover:text-neutral-300`}>
+                                9
+                            </PaginationButton> */}
+
+                            <PaginationArrow type="button" onClick={() => setPage(pagination.currentPage + 1)} css={tw`-ml-px rounded-r-md`} aria-label="Next">
+                                <svg css={tw`w-5 h-5`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path clipRule="evenodd" fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
+                                </svg>
+                            </PaginationArrow>
+                        </nav>
+                    </div>
+                }
+            </div>
+        </>
+    );
+}
+
+export const Loading = () => {
+    return (
+        <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
+            <Spinner size={'base'}/>
+        </div>
+    );
+};
+
+export const NoItems = () => {
+    return (
+        <div css={tw`w-full flex flex-col items-center justify-center pb-6 py-2 sm:py-8 md:py-10 px-8`}>
+            <div css={tw`h-64 flex`}>
+                <img src={'/assets/svgs/not_found.svg'} alt={'No Items'} css={tw`h-full select-none`}/>
+            </div>
+
+            <p css={tw`text-lg text-neutral-300 text-center font-normal sm:mt-8`}>No items could be found, it&apos;s almost like they are hiding.</p>
+        </div>
+    );
+};
+
+interface Params {
+    checked: boolean;
+    onSelectAllClick: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+    children: React.ReactNode;
+}
+
+export const ContentWrapper = ({ checked, onSelectAllClick, children }: Params) => {
+    return (
+        <>
+            <div css={tw`flex flex-row items-center h-12 px-6`}>
+                <div css={tw`flex flex-row items-center`}>
+                    <TableCheckbox
+                        type={'checkbox'}
+                        name={'selectAll'}
+                        checked={checked}
+                        onChange={onSelectAllClick}
+                    />
+
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={tw`w-4 h-4 ml-1 text-neutral-200`}>
+                        <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                    </svg>
+                </div>
+
+                <div css={tw`flex flex-row items-center px-2 py-1 ml-auto rounded cursor-pointer bg-neutral-600`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" css={tw`w-6 h-6 text-neutral-300`}>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                    </svg>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={tw`w-4 h-4 ml-1 text-neutral-200`}>
+                        <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                    </svg>
+                </div>
+            </div>
+
+            {children}
+        </>
+    );
+};
+
+export default ({ children }: { children: React.ReactNode }) => {
     return (
         <div css={tw`flex flex-col w-full`}>
             <div css={tw`rounded-lg shadow-md bg-neutral-700`}>
-                { loading ?
-                    <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
-                        <Spinner size={'base'}/>
-                    </div>
-                    :
-                    !hasItems ?
-                        <div css={tw`w-full flex flex-col items-center justify-center pb-6 py-2 sm:py-8 md:py-10 px-8`}>
-                            <div css={tw`h-64 flex`}>
-                                <img src={'/assets/svgs/not_found.svg'} alt={'No Items'} css={tw`h-full select-none`}/>
-                            </div>
-
-                            <p css={tw`text-lg text-neutral-300 text-center font-normal sm:mt-8`}>No items could be found, it&apos;s almost like they are hiding.</p>
-                        </div>
-                        :
-                        <>
-                            <div css={tw`flex flex-row items-center h-12 px-6`}>
-                                <div css={tw`flex flex-row items-center`}>
-                                    <TableCheckbox
-                                        type={'checkbox'}
-                                        name={'selectAll'}
-                                        checked={checked}
-                                        onChange={onSelectAllClick}
-                                    />
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={tw`w-4 h-4 ml-1 text-neutral-200`}>
-                                        <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
-                                    </svg>
-                                </div>
-
-                                <div css={tw`flex flex-row items-center px-2 py-1 ml-auto rounded cursor-pointer bg-neutral-600`}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" css={tw`w-6 h-6 text-neutral-300`}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                                    </svg>
-
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={tw`w-4 h-4 ml-1 text-neutral-200`}>
-                                        <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <div css={tw`overflow-x-auto`}>
-                                <table css={tw`w-full table-auto`}>
-                                    {children}
-                                </table>
-                            </div>
-
-                            <div css={tw`flex flex-row items-center w-full px-6 py-3 border-t border-neutral-500`}>
-                                <p css={tw`text-sm leading-5 text-neutral-400`}>
-                                    Showing <span css={tw`text-neutral-300`}>1</span> to <span css={tw`text-neutral-300`}>10</span> of <span css={tw`text-neutral-300`}>97</span> results
-                                </p>
-
-                                <div css={tw`flex flex-row ml-auto`}>
-                                    <nav css={tw`relative z-0 inline-flex shadow-sm`}>
-                                        <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-1 py-1 text-sm font-medium leading-5 transition duration-150 ease-in-out border rounded-l-md border-neutral-500 bg-neutral-600 text-neutral-400 hover:text-neutral-200 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-500`} aria-label="Previous">
-                                            <svg css={tw`w-5 h-5`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                <path clipRule="evenodd" fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"/>
-                                            </svg>
-                                        </a>
-
-                                        <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-500 text-neutral-50 focus:z-10 focus:outline-none focus:border-primary-300`}>
-                                            1
-                                        </a>
-
-                                        <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
-                                            2
-                                        </a>
-
-                                        <a href="javascript:void(0)" css={tw`relative items-center hidden px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border md:inline-flex border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
-                                            3
-                                        </a>
-
-                                        <span css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 border border-neutral-500 bg-neutral-600 text-neutral-200 cursor-default`}>
-                                            ...
-                                        </span>
-
-                                        <a href="javascript:void(0)" css={tw`relative items-center hidden px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border md:inline-flex border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
-                                            7
-                                        </a>
-
-                                        <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300  active:bg-neutral-100 active:text-neutral-700`}>
-                                            8
-                                        </a>
-
-                                        <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-3 py-1 -ml-px text-sm font-normal leading-5 transition duration-150 ease-in-out border border-neutral-500 bg-neutral-600 text-neutral-200 hover:text-neutral-300 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-700`}>
-                                            9
-                                        </a>
-
-                                        <a href="javascript:void(0)" css={tw`relative inline-flex items-center px-1 py-1 -ml-px text-sm font-medium leading-5 transition duration-150 ease-in-out border rounded-r-md border-neutral-500 bg-neutral-600 text-neutral-400 hover:text-neutral-200 focus:z-10 focus:outline-none focus:border-primary-300 active:bg-neutral-100 active:text-neutral-500`} aria-label="Next">
-                                            <svg css={tw`w-5 h-5`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                <path clipRule="evenodd" fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"/>
-                                            </svg>
-                                        </a>
-                                    </nav>
-                                </div>
-                            </div>
-                        </>
-                }
+                {children}
             </div>
         </div>
     );
