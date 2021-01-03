@@ -11,7 +11,6 @@ import Can from '@/components/elements/Can';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import isEqual from 'react-fast-compare';
-import { Allocation } from '@/api/server/getServer';
 
 const NetworkContainer = () => {
     const [ loading, setLoading ] = useState(false);
