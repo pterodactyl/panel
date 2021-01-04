@@ -27,24 +27,25 @@ class UserTransformer extends BaseTransformer
     /**
      * Return a transformed User model that can be consumed by external services.
      *
-     * @param \Pterodactyl\Models\User $user
+     * @param \Pterodactyl\Models\User $model
      * @return array
      */
-    public function transform(User $user): array
+    public function transform(User $model): array
     {
         return [
-            'id' => $user->id,
-            'external_id' => $user->external_id,
-            'uuid' => $user->uuid,
-            'username' => $user->username,
-            'email' => $user->email,
-            'first_name' => $user->name_first,
-            'last_name' => $user->name_last,
-            'language' => $user->language,
-            'root_admin' => (bool) $user->root_admin,
-            '2fa' => (bool) $user->use_totp,
-            'created_at' => $this->formatTimestamp($user->created_at),
-            'updated_at' => $this->formatTimestamp($user->updated_at),
+            'id' => $model->id,
+            'external_id' => $model->external_id,
+            'uuid' => $model->uuid,
+            'username' => $model->username,
+            'email' => $model->email,
+            'first_name' => $model->name_first,
+            'last_name' => $model->name_last,
+            'language' => $model->language,
+            'root_admin' => (bool) $model->root_admin,
+            '2fa' => (bool) $model->use_totp,
+            'role_name' => $model->root_admin ? 'Super Administrator' : 'None',
+            'created_at' => $this->formatTimestamp($model->created_at),
+            'updated_at' => $this->formatTimestamp($model->updated_at),
         ];
     }
 
@@ -52,8 +53,10 @@ class UserTransformer extends BaseTransformer
      * Return the servers associated with this user.
      *
      * @param \Pterodactyl\Models\User $user
+     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(User $user)

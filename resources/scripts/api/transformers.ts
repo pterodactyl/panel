@@ -130,6 +130,7 @@ export const rawDataToUser = ({ attributes }: FractalResponseData): User => ({
     language: attributes.language,
     rootAdmin: attributes.root_admin,
     tfa: attributes['2fa'],
+    roleName: attributes.role_name,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
 });

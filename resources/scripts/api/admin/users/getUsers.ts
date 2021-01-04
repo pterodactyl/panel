@@ -14,6 +14,7 @@ export interface User {
     language: string;
     rootAdmin: boolean;
     tfa: boolean;
+    roleName: string;
     createdAt: Date;
     updatedAt: Date;
 }
