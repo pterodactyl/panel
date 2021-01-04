@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
-import { RouteComponentProps } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ScheduleRow from '@/components/server/schedules/ScheduleRow';
 import { httpErrorToHuman } from '@/api/http';
@@ -14,7 +14,10 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import Button from '@/components/elements/Button';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
-export default ({ match, history }: RouteComponentProps) => {
+export default () => {
+    const match = useRouteMatch();
+    const history = useHistory();
+
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, addError } = useFlash();
     const [ loading, setLoading ] = useState(true);

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import getServerSchedule from '@/api/server/schedules/getServerSchedule';
 import Spinner from '@/components/elements/Spinner';
@@ -45,7 +45,11 @@ const ActivePill = ({ active }: { active: boolean }) => (
     </span>
 );
 
-export default ({ match, history, location: { state } }: RouteComponentProps<Params, Record<string, unknown>, State>) => {
+export default () => {
+    const params = useParams() as Params;
+    const history = useHistory();
+    const state: State = useLocation().state;
+
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
@@ -57,20 +61,20 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
     const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 
     useEffect(() => {
-        if (schedule?.id === Number(match.params.id)) {
+        if (schedule?.id === Number(params.id)) {
             setIsLoading(false);
             return;
         }
 
         clearFlashes('schedules');
-        getServerSchedule(uuid, Number(match.params.id))
+        getServerSchedule(uuid, Number(params.id))
             .then(schedule => appendSchedule(schedule))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ error, key: 'schedules' });
             })
             .then(() => setIsLoading(false));
-    }, [ match ]);
+    }, [ params ]);
 
     const toggleEditModal = useCallback(() => {
         setShowEditModal(s => !s);
