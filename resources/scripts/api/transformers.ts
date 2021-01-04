@@ -1,6 +1,7 @@
 import { Egg } from '@/api/admin/nests/eggs/getEggs';
 import { Nest } from '@/api/admin/nests/getNests';
 import { Role } from '@/api/admin/roles/getRoles';
+import { User } from '@/api/admin/users/getUsers';
 import { Allocation } from '@/api/server/getServer';
 import { FractalResponseData } from '@/api/http';
 import { FileObject } from '@/api/server/files/loadDirectory';
@@ -114,6 +115,21 @@ export const rawDataToEgg = ({ attributes }: FractalResponseData): Egg => ({
     scriptEntry: attributes.script_entry,
     scriptIsPrivileged: attributes.script_is_privileged,
     scriptInstall: attributes.script_install,
+    createdAt: new Date(attributes.created_at),
+    updatedAt: new Date(attributes.updated_at),
+});
+
+export const rawDataToUser = ({ attributes }: FractalResponseData): User => ({
+    id: attributes.id,
+    externalId: attributes.external_id,
+    uuid: attributes.uuid,
+    username: attributes.username,
+    email: attributes.email,
+    firstName: attributes.first_name,
+    lastName: attributes.last_name,
+    language: attributes.language,
+    rootAdmin: attributes.root_admin,
+    tfa: attributes['2fa'],
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
 });

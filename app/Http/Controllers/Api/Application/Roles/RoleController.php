@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\AdminRole;
 use Pterodactyl\Repositories\Eloquent\AdminRolesRepository;
 use Pterodactyl\Transformers\Api\Application\AdminRoleTransformer;
+use Pterodactyl\Http\Requests\Api\Application\Roles\GetRoleRequest;
 use Pterodactyl\Http\Requests\Api\Application\Roles\GetRolesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Roles\StoreRoleRequest;
 use Pterodactyl\Http\Requests\Api\Application\Roles\DeleteRoleRequest;
@@ -49,13 +50,13 @@ class RoleController extends ApplicationApiController
     /**
      * Returns a single role.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Roles\GetRolesRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Roles\GetRoleRequest $request
      * @param \Pterodactyl\Models\AdminRole $role
      *
      * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function view(GetRolesRequest $request, AdminRole $role): array
+    public function view(GetRoleRequest $request, AdminRole $role): array
     {
         return $this->fractal->item($role)
             ->transformWith($this->getTransformer(AdminRoleTransformer::class))

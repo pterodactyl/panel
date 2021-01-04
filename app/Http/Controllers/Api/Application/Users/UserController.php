@@ -10,6 +10,8 @@ use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\UserTransformer;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Http\Requests\Api\Application\Users\GetUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
@@ -19,6 +21,11 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 class UserController extends ApplicationApiController
 {
     /**
+     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
+     */
+    private $repository;
+
+    /**
      * @var \Pterodactyl\Services\Users\UserCreationService
      */
     private $creationService;
@@ -27,11 +34,6 @@ class UserController extends ApplicationApiController
      * @var \Pterodactyl\Services\Users\UserDeletionService
      */
     private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
 
     /**
      * @var \Pterodactyl\Services\Users\UserUpdateService
@@ -51,13 +53,12 @@ class UserController extends ApplicationApiController
         UserCreationService $creationService,
         UserDeletionService $deletionService,
         UserUpdateService $updateService
-    )
-    {
+    ) {
         parent::__construct();
 
+        $this->repository = $repository;
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
-        $this->repository = $repository;
         $this->updateService = $updateService;
     }
 
@@ -73,10 +74,17 @@ class UserController extends ApplicationApiController
      */
     public function index(GetUsersRequest $request): array
     {
+        $perPage = $request->query('per_page', 10);
+        if ($perPage < 1) {
+            $perPage = 10;
+        } else if ($perPage > 100) {
+            throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
+        }
+
         $users = QueryBuilder::for(User::query())
             ->allowedFilters(['email', 'uuid', 'username', 'external_id'])
             ->allowedSorts(['id', 'uuid'])
-            ->paginate(100);
+            ->paginate($perPage);
 
         return $this->fractal->collection($users)
             ->transformWith($this->getTransformer(UserTransformer::class))
@@ -87,13 +95,13 @@ class UserController extends ApplicationApiController
      * Handle a request to view a single user. Includes any relations that
      * were defined in the request.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUserRequest $request
      * @param \Pterodactyl\Models\User $user
      *
      * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function view(GetUsersRequest $request, User $user): array
+    public function view(GetUserRequest $request, User $user): array
     {
         return $this->fractal->item($user)
             ->transformWith($this->getTransformer(UserTransformer::class))
@@ -122,10 +130,9 @@ class UserController extends ApplicationApiController
         $this->updateService->setUserLevel(User::USER_LEVEL_ADMIN);
         $user = $this->updateService->handle($user, $request->validated());
 
-        $response = $this->fractal->item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class));
-
-        return $response->toArray();
+        return $this->fractal->item($user)
+            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->toArray();
     }
 
     /**

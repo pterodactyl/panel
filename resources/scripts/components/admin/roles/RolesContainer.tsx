@@ -103,7 +103,7 @@ export default () => {
 
                                                     <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.id}</td>
                                                     <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                        <NavLink to={`${match.url}/${role.id}`}>
+                                                        <NavLink to={`${match.url}/${role.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                             {role.name}
                                                         </NavLink>
                                                     </td>

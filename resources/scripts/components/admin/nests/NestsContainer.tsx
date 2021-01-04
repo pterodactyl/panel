@@ -102,7 +102,7 @@ const NestsContainer = () => {
 
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.id}</td>
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <NavLink to={`${match.url}/${nest.id}`}>
+                                                            <NavLink to={`${match.url}/${nest.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                                 {nest.name}
                                                             </NavLink>
                                                         </td>

@@ -17,6 +17,7 @@ Route::group(['prefix' => '/users'], function () {
     Route::get('/external/{external_id}', 'Users\ExternalUserController@index')->name('api.application.users.external');
 
     Route::post('/', 'Users\UserController@store');
+
     Route::patch('/{user}', 'Users\UserController@update');
 
     Route::delete('/{user}', 'Users\UserController@delete');
@@ -36,6 +37,7 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::get('/{node}/configuration', 'Nodes\NodeConfigurationController');
 
     Route::post('/', 'Nodes\NodeController@store');
+
     Route::patch('/{node}', 'Nodes\NodeController@update');
 
     Route::delete('/{node}', 'Nodes\NodeController@delete');
@@ -60,6 +62,7 @@ Route::group(['prefix' => '/locations'], function () {
     Route::get('/{location}', 'Locations\LocationController@view')->name('api.application.locations.view');
 
     Route::post('/', 'Locations\LocationController@store');
+
     Route::patch('/{location}', 'Locations\LocationController@update');
 
     Route::delete('/{location}', 'Locations\LocationController@delete');
