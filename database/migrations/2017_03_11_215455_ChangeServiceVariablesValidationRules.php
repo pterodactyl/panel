@@ -39,8 +39,7 @@ class ChangeServiceVariablesValidationRules extends Migration
 
         DB::transaction(function () {
             foreach (DB::table('service_variables')->get() as $variable) {
-                $variable->regex = str_replace(['required|regex:', 'regex:'], '', $variable->regex);
-                $variable->save();
+                $variable->update(['regex' => str_replace(['required|regex:', 'regex:'], '', $variable->regex)]);
             }
         });
     }
