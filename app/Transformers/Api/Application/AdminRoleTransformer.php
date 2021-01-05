@@ -17,7 +17,7 @@ class AdminRoleTransformer extends BaseTransformer
     }
 
     /**
-     * Return a transformed User model that can be consumed by external services.
+     * Return a transformed AdminRole model that can be consumed by external services.
      *
      * @param \Pterodactyl\Models\AdminRole $model
      * @return array

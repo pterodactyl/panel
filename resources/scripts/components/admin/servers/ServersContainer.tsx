@@ -68,9 +68,11 @@ const UsersContainer = () => {
                     <p css={tw`text-base text-neutral-400`}>All servers available on the system.</p>
                 </div>
 
-                <Button type={'button'} size={'large'} css={tw`h-10 ml-auto px-4 py-0`}>
-                    New Server
-                </Button>
+                <NavLink to={`${match.url}/new`} css={tw`ml-auto`}>
+                    <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0`}>
+                        New Server
+                    </Button>
+                </NavLink>
             </div>
 
             <FlashMessageRender byKey={'servers'} css={tw`mb-4`}/>

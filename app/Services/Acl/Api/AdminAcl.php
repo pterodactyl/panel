@@ -35,6 +35,7 @@ class AdminAcl
     const RESOURCE_DATABASE_HOSTS = 'database_hosts';
     const RESOURCE_SERVER_DATABASES = 'server_databases';
     const RESOURCE_ROLES = 'roles';
+    const RESOURCE_MOUNTS = 'mounts';
 
     /**
      * Determine if an API key has permission to perform a specific read/write operation.

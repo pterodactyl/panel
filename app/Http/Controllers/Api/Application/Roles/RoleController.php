@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Roles;
 
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\AdminRole;
-use Pterodactyl\Repositories\Eloquent\AdminRolesRepository;
 use Pterodactyl\Transformers\Api\Application\AdminRoleTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Roles\GetRoleRequest;
 use Pterodactyl\Http\Requests\Api\Application\Roles\GetRolesRequest;
@@ -16,20 +15,11 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 class RoleController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\AdminRolesRepository
+     * RoleController constructor.
      */
-    private $repository;
-
-    /**
-     * RolesController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\AdminRolesRepository $repository
-     */
-    public function __construct(AdminRolesRepository $repository)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->repository = $repository;
     }
 
     /**
@@ -105,10 +95,11 @@ class RoleController extends ApplicationApiController
      * @param \Pterodactyl\Models\AdminRole $role
      *
      * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
     public function delete(DeleteRoleRequest $request, AdminRole $role): JsonResponse
     {
-        $this->repository->delete($role->id);
+        $role->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

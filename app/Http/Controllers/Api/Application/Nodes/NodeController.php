@@ -11,6 +11,7 @@ use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\StoreNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest;
@@ -71,10 +72,17 @@ class NodeController extends ApplicationApiController
      */
     public function index(GetNodesRequest $request): array
     {
+        $perPage = $request->query('per_page', 10);
+        if ($perPage < 1) {
+            $perPage = 10;
+        } else if ($perPage > 100) {
+            throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
+        }
+
         $nodes = QueryBuilder::for(Node::query())
             ->allowedFilters(['uuid', 'name', 'fqdn', 'daemon_token_id'])
             ->allowedSorts(['id', 'uuid', 'memory', 'disk'])
-            ->paginate(100);
+            ->paginate($perPage);
 
         return $this->fractal->collection($nodes)
             ->transformWith($this->getTransformer(NodeTransformer::class))

@@ -10,6 +10,7 @@ use Pterodactyl\Services\Nests\NestDeletionService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\NestTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\StoreNestRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\UpdateNestRequest;
@@ -71,7 +72,14 @@ class NestController extends ApplicationApiController
      */
     public function index(GetNestsRequest $request): array
     {
-        $nests = $this->repository->paginated(10);
+        $perPage = $request->query('per_page', 10);
+        if ($perPage < 1) {
+            $perPage = 10;
+        } else if ($perPage > 100) {
+            throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
+        }
+
+        $nests = $this->repository->paginated($perPage);
 
         return $this->fractal->collection($nests)
             ->transformWith($this->getTransformer(NestTransformer::class))

@@ -13,6 +13,7 @@ import DatabasesContainer from '@/components/admin/databases/DatabasesContainer'
 import NodesContainer from '@/components/admin/nodes/NodesContainer';
 import LocationsContainer from '@/components/admin/locations/LocationsContainer';
 import ServersContainer from '@/components/admin/servers/ServersContainer';
+import NewServerContainer from '@/components/admin/servers/NewServerContainer';
 import UsersContainer from '@/components/admin/users/UsersContainer';
 import RolesContainer from '@/components/admin/roles/RolesContainer';
 import RoleEditContainer from '@/components/admin/roles/RoleEditContainer';
@@ -175,7 +176,10 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
                         <Route path={`${match.path}/locations`} component={LocationsContainer} exact/>
                         <Route path={`${match.path}/nodes`} component={NodesContainer} exact/>
+
                         <Route path={`${match.path}/servers`} component={ServersContainer} exact/>
+                        <Route path={`${match.path}/servers/new`} component={NewServerContainer} exact/>
+
                         <Route path={`${match.path}/users`} component={UsersContainer} exact/>
 
                         <Route path={`${match.path}/roles`} component={RolesContainer} exact/>

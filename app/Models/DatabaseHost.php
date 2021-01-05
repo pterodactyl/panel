@@ -2,6 +2,19 @@
 
 namespace Pterodactyl\Models;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $host
+ * @property int $port
+ * @property string $username
+ * @property int $node_id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ *
+ * @property \Pterodactyl\Models\Node|null $node
+ * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
+ */
 class DatabaseHost extends Model
 {
     /**

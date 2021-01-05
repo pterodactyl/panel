@@ -4,23 +4,84 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| User Controller Routes
+| Database Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /api/application/users
+| Endpoint: /api/application/databases
 |
 */
+Route::group(['prefix' => '/databases'], function () {
+    Route::get('/', 'Databases\DatabaseController@index');
+    Route::get('/{database}', 'Databases\DatabaseController@view');
 
-Route::group(['prefix' => '/users'], function () {
-    Route::get('/', 'Users\UserController@index')->name('api.application.users');
-    Route::get('/{user}', 'Users\UserController@view')->name('api.application.users.view');
-    Route::get('/external/{external_id}', 'Users\ExternalUserController@index')->name('api.application.users.external');
+    Route::post('/', 'Databases\DatabaseController@store');
 
-    Route::post('/', 'Users\UserController@store');
+    Route::patch('/{database}', 'Databases\DatabaseController@update');
 
-    Route::patch('/{user}', 'Users\UserController@update');
+    Route::delete('/{database}', 'Databases\DatabaseController@delete');
+});
 
-    Route::delete('/{user}', 'Users\UserController@delete');
+/*
+|--------------------------------------------------------------------------
+| Location Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/locations
+|
+*/
+Route::group(['prefix' => '/locations'], function () {
+    Route::get('/', 'Locations\LocationController@index')->name('api.applications.locations');
+    Route::get('/{location}', 'Locations\LocationController@view')->name('api.application.locations.view');
+
+    Route::post('/', 'Locations\LocationController@store');
+
+    Route::patch('/{location}', 'Locations\LocationController@update');
+
+    Route::delete('/{location}', 'Locations\LocationController@delete');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Mount Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/mounts
+|
+*/
+Route::group(['prefix' => '/mounts'], function () {
+    Route::get('/', 'Mounts\MountController@index');
+    Route::get('/{mount}', 'Mounts\MountController@view');
+
+    Route::post('/', 'Mounts\MountController@store');
+
+    Route::patch('/{mount}', 'Mounts\MountController@update');
+
+    Route::delete('/{mount}', 'Mounts\MountController@delete');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Nest Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/nests
+|
+*/
+Route::group(['prefix' => '/nests'], function () {
+    Route::get('/', 'Nests\NestController@index')->name('api.application.nests');
+    Route::get('/{nest}', 'Nests\NestController@view')->name('api.application.nests.view');
+
+    Route::post('/', 'Nests\NestController@store');
+
+    Route::patch('/{nest}', 'Nests\NestController@update');
+
+    Route::delete('/{nest}', 'Nests\NestController@delete');
+
+    // Egg Management Endpoint
+    Route::group(['prefix' => '/{nest}/eggs'], function () {
+        Route::get('/', 'Nests\EggController@index')->name('api.application.nests.eggs');
+        Route::get('/{egg}', 'Nests\EggController@view')->name('api.application.nests.eggs.view');
+    });
 });
 
 /*
@@ -49,24 +110,27 @@ Route::group(['prefix' => '/nodes'], function () {
     });
 });
 
+
 /*
 |--------------------------------------------------------------------------
-| Location Controller Routes
+| Role Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /api/application/locations
+| Endpoint: /api/application/roles
 |
 */
-Route::group(['prefix' => '/locations'], function () {
-    Route::get('/', 'Locations\LocationController@index')->name('api.applications.locations');
-    Route::get('/{location}', 'Locations\LocationController@view')->name('api.application.locations.view');
 
-    Route::post('/', 'Locations\LocationController@store');
+Route::group(['prefix' => '/roles'], function () {
+    Route::get('/', 'Roles\RoleController@index');
+    Route::get('/{role}', 'Roles\RoleController@view');
 
-    Route::patch('/{location}', 'Locations\LocationController@update');
+    Route::post('/', 'Roles\RoleController@store');
 
-    Route::delete('/{location}', 'Locations\LocationController@delete');
+    Route::patch('/{role}', 'Roles\RoleController@update');
+
+    Route::delete('/{role}', 'Roles\RoleController@delete');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -107,45 +171,21 @@ Route::group(['prefix' => '/servers'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| Nest Controller Routes
+| User Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /api/application/nests
-|
-*/
-Route::group(['prefix' => '/nests'], function () {
-    Route::get('/', 'Nests\NestController@index')->name('api.application.nests');
-    Route::get('/{nest}', 'Nests\NestController@view')->name('api.application.nests.view');
-
-    Route::post('/', 'Nests\NestController@store');
-
-    Route::patch('/{nest}', 'Nests\NestController@update');
-
-    Route::delete('/{nest}', 'Nests\NestController@delete');
-
-    // Egg Management Endpoint
-    Route::group(['prefix' => '/{nest}/eggs'], function () {
-        Route::get('/', 'Nests\EggController@index')->name('api.application.nests.eggs');
-        Route::get('/{egg}', 'Nests\EggController@view')->name('api.application.nests.eggs.view');
-    });
-});
-
-/*
-|--------------------------------------------------------------------------
-| Role Controller Routes
-|--------------------------------------------------------------------------
-|
-| Endpoint: /api/application/roles
+| Endpoint: /api/application/users
 |
 */
 
-Route::group(['prefix' => '/roles'], function () {
-    Route::get('/', 'Roles\RoleController@index');
-    Route::get('/{role}', 'Roles\RoleController@view');
+Route::group(['prefix' => '/users'], function () {
+    Route::get('/', 'Users\UserController@index')->name('api.application.users');
+    Route::get('/{user}', 'Users\UserController@view')->name('api.application.users.view');
+    Route::get('/external/{external_id}', 'Users\ExternalUserController@index')->name('api.application.users.external');
 
-    Route::post('/', 'Roles\RoleController@store');
+    Route::post('/', 'Users\UserController@store');
 
-    Route::patch('/{role}', 'Roles\RoleController@update');
+    Route::patch('/{user}', 'Users\UserController@update');
 
-    Route::delete('/{role}', 'Roles\RoleController@delete');
+    Route::delete('/{user}', 'Users\UserController@delete');
 });

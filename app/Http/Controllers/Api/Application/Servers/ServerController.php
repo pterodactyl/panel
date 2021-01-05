@@ -10,6 +10,7 @@ use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
@@ -22,10 +23,12 @@ class ServerController extends ApplicationApiController
      * @var \Pterodactyl\Services\Servers\ServerCreationService
      */
     private $creationService;
+
     /**
      * @var \Pterodactyl\Services\Servers\ServerDeletionService
      */
     private $deletionService;
+
     /**
      * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
      */
@@ -42,8 +45,7 @@ class ServerController extends ApplicationApiController
         ServerCreationService $creationService,
         ServerDeletionService $deletionService,
         ServerRepositoryInterface $repository
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->creationService = $creationService;
@@ -61,10 +63,17 @@ class ServerController extends ApplicationApiController
      */
     public function index(GetServersRequest $request): array
     {
+        $perPage = $request->query('per_page', 10);
+        if ($perPage < 1) {
+            $perPage = 10;
+        } else if ($perPage > 100) {
+            throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
+        }
+
         $servers = QueryBuilder::for(Server::query())
             ->allowedFilters(['uuid', 'name', 'image', 'external_id'])
             ->allowedSorts(['id', 'uuid'])
-            ->paginate(100);
+            ->paginate($perPage);
 
         return $this->fractal->collection($servers)
             ->transformWith($this->getTransformer(ServerTransformer::class))
