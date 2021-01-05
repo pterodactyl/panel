@@ -67,7 +67,17 @@ class ServerTransformer extends BaseTransformer
             'identifier' => $model->uuidShort,
             'name' => $model->name,
             'description' => $model->description,
-            'suspended' => (bool) $model->suspended,
+
+            'is_suspended' => $model->suspended,
+            'is_installing' => $model->installed !== 1,
+            'is_transferring' => ! is_null($model->transfer),
+
+            'user' => $model->owner_id,
+            'node' => $model->node_id,
+            'allocation' => $model->allocation_id,
+            'nest' => $model->nest_id,
+            'egg' => $model->egg_id,
+
             'limits' => [
                 'memory' => $model->memory,
                 'swap' => $model->swap,
@@ -76,22 +86,20 @@ class ServerTransformer extends BaseTransformer
                 'cpu' => $model->cpu,
                 'threads' => $model->threads,
             ],
+
             'feature_limits' => [
                 'databases' => $model->database_limit,
                 'allocations' => $model->allocation_limit,
                 'backups' => $model->backup_limit,
             ],
-            'user' => $model->owner_id,
-            'node' => $model->node_id,
-            'allocation' => $model->allocation_id,
-            'nest' => $model->nest_id,
-            'egg' => $model->egg_id,
+
             'container' => [
                 'startup_command' => $model->startup,
                 'image' => $model->image,
                 'installed' => (int) $model->installed === 1,
                 'environment' => $this->environmentService->handle($model),
             ],
+
             $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),
             $model->getCreatedAtColumn() => $this->formatTimestamp($model->created_at),
         ];

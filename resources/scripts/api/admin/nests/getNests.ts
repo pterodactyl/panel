@@ -1,5 +1,4 @@
-import http, { getPaginationSet, PaginatedResult } from '@/api/http';
-import { rawDataToNest } from '@/api/transformers';
+import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
 
@@ -12,6 +11,16 @@ export interface Nest {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export const rawDataToNest = ({ attributes }: FractalResponseData): Nest => ({
+    id: attributes.id,
+    uuid: attributes.uuid,
+    author: attributes.author,
+    name: attributes.name,
+    description: attributes.description,
+    createdAt: new Date(attributes.created_at),
+    updatedAt: new Date(attributes.updated_at),
+});
 
 interface ctx {
     page: number;

@@ -1,5 +1,4 @@
-import http, { getPaginationSet, PaginatedResult } from '@/api/http';
-import { rawDataToUser } from '@/api/transformers';
+import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
 
@@ -18,6 +17,22 @@ export interface User {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export const rawDataToUser = ({ attributes }: FractalResponseData): User => ({
+    id: attributes.id,
+    externalId: attributes.external_id,
+    uuid: attributes.uuid,
+    username: attributes.username,
+    email: attributes.email,
+    firstName: attributes.first_name,
+    lastName: attributes.last_name,
+    language: attributes.language,
+    rootAdmin: attributes.root_admin,
+    tfa: attributes['2fa'],
+    roleName: attributes.role_name,
+    createdAt: new Date(attributes.created_at),
+    updatedAt: new Date(attributes.updated_at),
+});
 
 interface ctx {
     page: number;

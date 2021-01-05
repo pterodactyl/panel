@@ -23,6 +23,11 @@ abstract class BaseTransformer extends TransformerAbstract
     private $key;
 
     /**
+     * @var bool
+     */
+    private $rootAdmin;
+
+    /**
      * Return the resource name for the JSONAPI output.
      *
      * @return string
@@ -65,6 +70,30 @@ abstract class BaseTransformer extends TransformerAbstract
     }
 
     /**
+     * ?
+     *
+     * @param bool $rootAdmin
+     *
+     * @return $this
+     */
+    public function setRootAdmin(bool $rootAdmin)
+    {
+        $this->rootAdmin = $rootAdmin;
+
+        return $this;
+    }
+
+    /**
+     * ?
+     *
+     * @return bool
+     */
+    public function isRootAdmin(): bool
+    {
+        return $this->rootAdmin;
+    }
+
+    /**
      * Determine if the API key loaded onto the transformer has permission
      * to access a different resource. This is used when including other
      * models on a transformation request.
@@ -75,6 +104,10 @@ abstract class BaseTransformer extends TransformerAbstract
      */
     protected function authorize(string $resource): bool
     {
+        if ($this->isRootAdmin()) {
+            return true;
+        }
+
         return AdminAcl::check($this->getKey(), $resource, AdminAcl::READ);
     }
 

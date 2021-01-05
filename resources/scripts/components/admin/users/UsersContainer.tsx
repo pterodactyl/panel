@@ -1,6 +1,6 @@
+import React, { useContext, useEffect, useState } from 'react';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import React, { useContext, useEffect, useState } from 'react';
 import getUsers, { Context as UsersContext } from '@/api/admin/users/getUsers';
 import AdminTable, { ContentWrapper, Loading, NoItems, Pagination, TableBody, TableHead, TableHeader } from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
@@ -11,7 +11,7 @@ import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 
-const RowCheckbox = ({ id }: { id: number}) => {
+const RowCheckbox = ({ id }: { id: number }) => {
     const isChecked = AdminContext.useStoreState(state => state.users.selectedUsers.indexOf(id) >= 0);
     const appendSelectedUser = AdminContext.useStoreActions(actions => actions.users.appendSelectedUser);
     const removeSelectedUser = AdminContext.useStoreActions(actions => actions.users.removeSelectedUser);

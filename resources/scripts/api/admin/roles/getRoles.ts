@@ -1,5 +1,4 @@
-import http from '@/api/http';
-import { rawDataToAdminRole } from '@/api/transformers';
+import http, { FractalResponseData } from '@/api/http';
 
 export interface Role {
     id: number;
@@ -7,10 +6,16 @@ export interface Role {
     description: string | null;
 }
 
+export const rawDataToRole = ({ attributes }: FractalResponseData): Role => ({
+    id: attributes.id,
+    name: attributes.name,
+    description: attributes.description,
+});
+
 export default (): Promise<Role[]> => {
     return new Promise((resolve, reject) => {
         http.get('/api/application/roles')
-            .then(({ data }) => resolve((data.data || []).map(rawDataToAdminRole)))
+            .then(({ data }) => resolve((data.data || []).map(rawDataToRole)))
             .catch(reject);
     });
 };
