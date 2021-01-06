@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -114,7 +114,7 @@ class ServerTransferController extends Controller
             // that node to communicate with the old node during the process to initiate the
             // actual file transfer.
             $token = $this->jwtService
-                ->setExpiresAt(Chronos::now()->addMinutes(15))
+                ->setExpiresAt(CarbonImmutable::now()->addMinutes(15)->toDateTimeImmutable())
                 ->setSubject($server->uuid)
                 ->handle($server->node, $server->uuid, 'sha256');
 
