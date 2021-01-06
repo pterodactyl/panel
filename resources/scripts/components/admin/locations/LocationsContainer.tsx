@@ -1,3 +1,4 @@
+import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useContext, useEffect, useState } from 'react';
 import getLocations, { Context as LocationsContext } from '@/api/admin/locations/getLocations';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -102,12 +103,18 @@ const LocationsContainer = () => {
                                                             <RowCheckbox id={location.id}/>
                                                         </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{location.id}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={location.id.toString()}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{location.id}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
                                                             <NavLink to={`${match.url}/${location.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                                 {location.short}
                                                             </NavLink>
                                                         </td>
+
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{location.long}</td>
                                                     </TableRow>
                                                 ))
