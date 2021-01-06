@@ -10,11 +10,14 @@ import OverviewContainer from '@/components/admin/overview/OverviewContainer';
 import SettingsContainer from '@/components/admin/settings/SettingsContainer';
 import ApiKeysContainer from '@/components/admin/api/ApiKeysContainer';
 import DatabasesContainer from '@/components/admin/databases/DatabasesContainer';
+import NewDatabaseContainer from '@/components/admin/databases/NewDatabaseContainer';
 import NodesContainer from '@/components/admin/nodes/NodesContainer';
+import NewNodeContainer from '@/components/admin/nodes/NewNodeContainer';
 import LocationsContainer from '@/components/admin/locations/LocationsContainer';
 import ServersContainer from '@/components/admin/servers/ServersContainer';
 import NewServerContainer from '@/components/admin/servers/NewServerContainer';
 import UsersContainer from '@/components/admin/users/UsersContainer';
+import NewUserContainer from '@/components/admin/users/NewUserContainer';
 import RolesContainer from '@/components/admin/roles/RolesContainer';
 import RoleEditContainer from '@/components/admin/roles/RoleEditContainer';
 import NestsContainer from '@/components/admin/nests/NestsContainer';
@@ -174,13 +177,18 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route path={`${match.path}/api`} component={ApiKeysContainer} exact/>
 
                         <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
+                        <Route path={`${match.path}/databases/new`} component={NewDatabaseContainer} exact/>
+
                         <Route path={`${match.path}/locations`} component={LocationsContainer} exact/>
+
                         <Route path={`${match.path}/nodes`} component={NodesContainer} exact/>
+                        <Route path={`${match.path}/nodes/new`} component={NewNodeContainer} exact/>
 
                         <Route path={`${match.path}/servers`} component={ServersContainer} exact/>
                         <Route path={`${match.path}/servers/new`} component={NewServerContainer} exact/>
 
                         <Route path={`${match.path}/users`} component={UsersContainer} exact/>
+                        <Route path={`${match.path}/users/new`} component={NewUserContainer} exact/>
 
                         <Route path={`${match.path}/roles`} component={RolesContainer} exact/>
                         <Route

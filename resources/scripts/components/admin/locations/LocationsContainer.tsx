@@ -1,4 +1,3 @@
-import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useContext, useEffect, useState } from 'react';
 import getLocations, { Context as LocationsContext } from '@/api/admin/locations/getLocations';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -9,7 +8,8 @@ import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper } from '@/components/admin/AdminTable';
-import Button from '@/components/elements/Button';
+import NewLocationButton from '@/components/admin/locations/NewLocationButton';
+import CopyOnClick from '@/components/elements/CopyOnClick';
 
 const RowCheckbox = ({ id }: { id: number}) => {
     const isChecked = AdminContext.useStoreState(state => state.locations.selectedLocations.indexOf(id) >= 0);
@@ -68,9 +68,7 @@ const LocationsContainer = () => {
                     <p css={tw`text-base text-neutral-400`}>All locations that nodes can be assigned to for easier categorization.</p>
                 </div>
 
-                <Button type={'button'} size={'large'} css={tw`h-10 ml-auto px-4 py-0`}>
-                    New Location
-                </Button>
+                <NewLocationButton/>
             </div>
 
             <FlashMessageRender byKey={'locations'} css={tw`mb-4`}/>

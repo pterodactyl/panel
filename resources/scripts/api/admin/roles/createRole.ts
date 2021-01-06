@@ -1,5 +1,5 @@
-import { Role } from '@/api/admin/roles/getRoles';
 import http from '@/api/http';
+import { Role } from '@/api/admin/roles/getRoles';
 
 export default (name: string, description?: string): Promise<Role> => {
     return new Promise((resolve, reject) => {

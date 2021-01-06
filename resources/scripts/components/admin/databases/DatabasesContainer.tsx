@@ -64,13 +64,15 @@ const DatabasesContainer = () => {
         <AdminContentBlock>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col`}>
-                    <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Databases</h2>
+                    <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Database Hosts</h2>
                     <p css={tw`text-base text-neutral-400`}>Database hosts that servers can have databases created on.</p>
                 </div>
 
-                <Button type={'button'} size={'large'} css={tw`h-10 ml-auto px-4 py-0`}>
-                    New Database
-                </Button>
+                <NavLink to={`${match.url}/new`} css={tw`ml-auto`}>
+                    <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0`}>
+                        New Database Host
+                    </Button>
+                </NavLink>
             </div>
 
             <FlashMessageRender byKey={'databases'} css={tw`mb-4`}/>
