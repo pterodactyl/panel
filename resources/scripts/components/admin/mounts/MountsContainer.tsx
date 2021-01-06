@@ -1,3 +1,4 @@
+import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useContext, useEffect, useState } from 'react';
 import getMounts, { Context as MountsContext } from '@/api/admin/mounts/getMounts';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -91,6 +92,10 @@ const MountsContainer = () => {
                                         <TableHead>
                                             <TableHeader name={'ID'}/>
                                             <TableHeader name={'Name'}/>
+                                            <TableHeader name={'Source Path'}/>
+                                            <TableHeader name={'Target Path'}/>
+                                            <th css={tw`px-6 py-2`}/>
+                                            <th css={tw`px-6 py-2`}/>
                                         </TableHead>
 
                                         <TableBody>
@@ -101,11 +106,52 @@ const MountsContainer = () => {
                                                             <RowCheckbox id={mount.id}/>
                                                         </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{mount.id}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={mount.id.toString()}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.id}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
                                                             <NavLink to={`${match.url}/${mount.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                                 {mount.name}
                                                             </NavLink>
+                                                        </td>
+
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={mount.source.toString()}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.source}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={mount.target.toString()}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.target}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
+                                                        <td css={tw`px-6 whitespace-nowrap`}>
+                                                            { mount.readOnly ?
+                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
+                                                                    Read Only
+                                                                </span>
+                                                                :
+                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
+                                                                    Writable
+                                                                </span>
+                                                            }
+                                                        </td>
+
+                                                        <td css={tw`px-6 whitespace-nowrap`}>
+                                                            { mount.userMountable ?
+                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
+                                                                    Mountable
+                                                                </span>
+                                                                :
+                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
+                                                                    Admin Only
+                                                                </span>
+                                                            }
                                                         </td>
                                                     </TableRow>
                                                 ))
