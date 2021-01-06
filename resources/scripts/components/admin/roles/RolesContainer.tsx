@@ -1,3 +1,4 @@
+import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useEffect, useState } from 'react';
 import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import { AdminContext } from '@/state/admin';
@@ -101,12 +102,18 @@ export default () => {
                                                         <RowCheckbox id={role.id}/>
                                                     </td>
 
-                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.id}</td>
+                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                        <CopyOnClick text={role.id.toString()}>
+                                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{role.id}</code>
+                                                        </CopyOnClick>
+                                                    </td>
+
                                                     <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
                                                         <NavLink to={`${match.url}/${role.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                             {role.name}
                                                         </NavLink>
                                                     </td>
+
                                                     <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{role.description}</td>
                                                 </TableRow>
                                             ))
