@@ -47,7 +47,7 @@
         "barryvdh/laravel-debugbar": "^3.5",
         "barryvdh/laravel-ide-helper": "^2.8",
         "codedungeon/phpunit-result-printer": "^0.28.0",
-        "friendsofphp/php-cs-fixer": "2.16.1",
+        "friendsofphp/php-cs-fixer": "^2.17.3",
         "fzaninotto/faker": "^1.9",
         "laravel/dusk": "^6.11",
         "mockery/mockery": "^1.4",
