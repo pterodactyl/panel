@@ -36,7 +36,7 @@ const UsersContainer = () => {
 
     const { page, setPage } = useContext(ServersContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data: servers, error, isValidating } = getServers();
+    const { data: servers, error, isValidating } = getServers([ 'node', 'user' ]);
 
     useEffect(() => {
         if (!error) {
@@ -122,7 +122,6 @@ const UsersContainer = () => {
                                                         {/* TODO: Have permission check for displaying user information. */}
                                                         <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
                                                             <NavLink to={`/admin/users/${server.relations.user?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-
                                                                 <div css={tw`text-sm text-neutral-200`}>
                                                                     {server.relations.user?.firstName} {server.relations.user?.lastName}
                                                                 </div>
