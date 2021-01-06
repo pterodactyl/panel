@@ -1,3 +1,4 @@
+import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useContext, useEffect, useState } from 'react';
 import getNests, { Context as NestsContext } from '@/api/admin/nests/getNests';
 import NewNestButton from '@/components/admin/nests/NewNestButton';
@@ -100,12 +101,18 @@ const NestsContainer = () => {
                                                             <RowCheckbox id={nest.id}/>
                                                         </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.id}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={nest.id.toString()}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{nest.id}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
                                                             <NavLink to={`${match.url}/${nest.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                                 {nest.name}
                                                             </NavLink>
                                                         </td>
+
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.description}</td>
                                                     </TableRow>
                                                 ))
