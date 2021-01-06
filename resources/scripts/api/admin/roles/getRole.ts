@@ -1,11 +1,9 @@
 import http from '@/api/http';
 import { Role, rawDataToRole } from '@/api/admin/roles/getRoles';
 
-export default (name: string, description?: string): Promise<Role> => {
+export default (id: number): Promise<Role> => {
     return new Promise((resolve, reject) => {
-        http.post('/api/application/roles', {
-            name, description,
-        })
+        http.get(`/api/application/roles/${id}`)
             .then(({ data }) => resolve(rawDataToRole(data)))
             .catch(reject);
     });

@@ -23,7 +23,7 @@ export interface Server {
     };
 }
 
-const rawDataToServerObject = ({ attributes }: FractalResponseData): Server => ({
+export const rawDataToServer = ({ attributes }: FractalResponseData): Server => ({
     id: attributes.id,
     externalId: attributes.external_id,
     uuid: attributes.uuid,
@@ -56,7 +56,7 @@ export default (include: string[] = []) => {
         const { data } = await http.get('/api/application/servers', { params: { include: include.join(','), page } });
 
         return ({
-            items: (data.data || []).map(rawDataToServerObject),
+            items: (data.data || []).map(rawDataToServer),
             pagination: getPaginationSet(data.meta.pagination),
         });
     });

@@ -48,9 +48,9 @@ export const rawDataToEgg = ({ attributes }: FractalResponseData): Egg => ({
     updatedAt: new Date(attributes.updated_at),
 });
 
-export default (id: number): Promise<Egg[]> => {
+export default (nestId: number): Promise<Egg[]> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/application/nests/${id}`)
+        http.get(`/api/application/nests/${nestId}`)
             .then(({ data }) => resolve((data.data || []).map(rawDataToEgg)))
             .catch(reject);
     });

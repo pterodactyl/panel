@@ -1,11 +1,9 @@
 import http from '@/api/http';
 import { Nest, rawDataToNest } from '@/api/admin/nests/getNests';
 
-export default (name: string, description?: string): Promise<Nest> => {
+export default (id: number): Promise<Nest> => {
     return new Promise((resolve, reject) => {
-        http.post('/api/application/nests', {
-            name, description,
-        })
+        http.get(`/api/application/nests/${id}`)
             .then(({ data }) => resolve(rawDataToNest(data)))
             .catch(reject);
     });
