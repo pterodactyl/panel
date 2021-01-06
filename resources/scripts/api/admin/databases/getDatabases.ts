@@ -11,6 +11,8 @@ export interface Database {
     maxDatabases: number;
     createdAt: Date;
     updatedAt: Date;
+
+    getAddress (): string;
 }
 
 export const rawDataToDatabase = ({ attributes }: FractalResponseData): Database => ({
@@ -22,6 +24,8 @@ export const rawDataToDatabase = ({ attributes }: FractalResponseData): Database
     maxDatabases: attributes.max_databases,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
+
+    getAddress: () => `${attributes.host}:${attributes.port}`,
 });
 
 interface ctx {

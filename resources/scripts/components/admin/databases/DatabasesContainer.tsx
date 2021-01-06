@@ -1,3 +1,4 @@
+import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useContext, useEffect, useState } from 'react';
 import getDatabases, { Context as DatabasesContext } from '@/api/admin/databases/getDatabases';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -92,6 +93,7 @@ const DatabasesContainer = () => {
                                             <TableHeader name={'ID'}/>
                                             <TableHeader name={'Name'}/>
                                             <TableHeader name={'Address'}/>
+                                            <TableHeader name={'Username'}/>
                                         </TableHead>
 
                                         <TableBody>
@@ -102,13 +104,25 @@ const DatabasesContainer = () => {
                                                             <RowCheckbox id={database.id}/>
                                                         </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{database.id}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={database.id.toString()}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{database.id}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
                                                             <NavLink to={`${match.url}/${database.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                                 {database.name}
                                                             </NavLink>
                                                         </td>
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{database.host}:{database.port}</td>
+
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={database.getAddress()}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{database.getAddress()}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{database.username}</td>
                                                     </TableRow>
                                                 ))
                                             }
