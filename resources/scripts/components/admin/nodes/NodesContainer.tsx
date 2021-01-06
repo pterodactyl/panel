@@ -9,6 +9,8 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper } from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
+import CopyOnClick from '@/components/elements/CopyOnClick';
+import { bytesToHuman, megabytesToBytes } from '@/helpers';
 
 const RowCheckbox = ({ id }: { id: number}) => {
     const isChecked = AdminContext.useStoreState(state => state.nodes.selectedNodes.indexOf(id) >= 0);
@@ -35,7 +37,7 @@ const NodesContainer = () => {
 
     const { page, setPage } = useContext(NodesContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data: nodes, error, isValidating } = getNodes();
+    const { data: nodes, error, isValidating } = getNodes([ 'location' ]);
 
     useEffect(() => {
         if (!error) {
@@ -91,6 +93,11 @@ const NodesContainer = () => {
                                         <TableHead>
                                             <TableHeader name={'ID'}/>
                                             <TableHeader name={'Name'}/>
+                                            <TableHeader name={'Location'}/>
+                                            <TableHeader name={'FQDN'}/>
+                                            <TableHeader name={'Total Memory'}/>
+                                            <TableHeader name={'Total Disk'}/>
+                                            <th css={tw`px-6 py-2`}/>
                                         </TableHead>
 
                                         <TableBody>
@@ -101,11 +108,50 @@ const NodesContainer = () => {
                                                             <RowCheckbox id={node.id}/>
                                                         </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{node.id}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={node.id.toString()}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node.id}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
                                                             <NavLink to={`${match.url}/${node.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                                 {node.name}
                                                             </NavLink>
+                                                        </td>
+
+                                                        {/* TODO: Have permission check for displaying location information. */}
+                                                        <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
+                                                            <NavLink to={`/admin/locations/${node.relations.location?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                                <div css={tw`text-sm text-neutral-200`}>
+                                                                    {node.relations.location?.short}
+                                                                </div>
+
+                                                                <div css={tw`text-sm text-neutral-400`}>
+                                                                    {node.relations.location?.long}
+                                                                </div>
+                                                            </NavLink>
+                                                        </td>
+
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                            <CopyOnClick text={node.fqdn}>
+                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node.fqdn}</code>
+                                                            </CopyOnClick>
+                                                        </td>
+
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{bytesToHuman(megabytesToBytes(node.memory))}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{bytesToHuman(megabytesToBytes(node.disk))}</td>
+
+                                                        <td css={tw`px-6 whitespace-nowrap`}>
+                                                            { node.scheme === 'https' ?
+                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
+                                                                    Secure
+                                                                </span>
+                                                                :
+                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-red-200 text-red-800`}>
+                                                                    Non-Secure
+                                                                </span>
+                                                            }
                                                         </td>
                                                     </TableRow>
                                                 ))

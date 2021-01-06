@@ -1,6 +1,7 @@
 import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
+import { Location, rawDataToLocation } from '@/api/admin/locations/getLocations';
 
 export interface Node {
     id: number;
@@ -23,6 +24,10 @@ export interface Node {
     daemonBase: string;
     createdAt: Date;
     updatedAt: Date;
+
+    relations: {
+        location: Location | undefined;
+    };
 }
 
 export const rawDataToNode = ({ attributes }: FractalResponseData): Node => ({
@@ -46,6 +51,10 @@ export const rawDataToNode = ({ attributes }: FractalResponseData): Node => ({
     daemonBase: attributes.daemon_base,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
+
+    relations: {
+        location: attributes.relationships?.location !== undefined ? rawDataToLocation(attributes.relationships.location as FractalResponseData) : undefined,
+    },
 });
 
 interface ctx {
@@ -55,11 +64,11 @@ interface ctx {
 
 export const Context = createContext<ctx>({ page: 1, setPage: () => 1 });
 
-export default () => {
+export default (include: string[] = []) => {
     const { page } = useContext(Context);
 
     return useSWR<PaginatedResult<Node>>([ 'nodes', page ], async () => {
-        const { data } = await http.get('/api/application/nodes', { params: { page } });
+        const { data } = await http.get('/api/application/nodes', { params: { include: include.join(','), page } });
 
         return ({
             items: (data.data || []).map(rawDataToNode),
