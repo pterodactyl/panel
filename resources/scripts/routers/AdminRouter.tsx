@@ -11,17 +11,24 @@ import SettingsContainer from '@/components/admin/settings/SettingsContainer';
 import ApiKeysContainer from '@/components/admin/api/ApiKeysContainer';
 import DatabasesContainer from '@/components/admin/databases/DatabasesContainer';
 import NewDatabaseContainer from '@/components/admin/databases/NewDatabaseContainer';
+import DatabaseEditContainer from '@/components/admin/databases/DatabaseEditContainer';
 import NodesContainer from '@/components/admin/nodes/NodesContainer';
 import NewNodeContainer from '@/components/admin/nodes/NewNodeContainer';
+import NodeEditContainer from '@/components/admin/nodes/NodeEditContainer';
 import LocationsContainer from '@/components/admin/locations/LocationsContainer';
+import LocationEditContainer from '@/components/admin/locations/LocationEditContainer';
 import ServersContainer from '@/components/admin/servers/ServersContainer';
 import NewServerContainer from '@/components/admin/servers/NewServerContainer';
+import ServerEditContainer from '@/components/admin/servers/ServerEditContainer';
 import UsersContainer from '@/components/admin/users/UsersContainer';
 import NewUserContainer from '@/components/admin/users/NewUserContainer';
+import UserEditContainer from '@/components/admin/users/UserEditContainer';
 import RolesContainer from '@/components/admin/roles/RolesContainer';
 import RoleEditContainer from '@/components/admin/roles/RoleEditContainer';
 import NestsContainer from '@/components/admin/nests/NestsContainer';
+import NestEditContainer from '@/components/admin/nests/NestEditContainer';
 import MountsContainer from '@/components/admin/mounts/MountsContainer';
+import MountEditContainer from '@/components/admin/mounts/MountEditContainer';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
     ${tw`fixed h-screen flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
@@ -178,17 +185,42 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
 
                         <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
                         <Route path={`${match.path}/databases/new`} component={NewDatabaseContainer} exact/>
+                        <Route
+                            path={`${match.path}/databases/:id`}
+                            component={DatabaseEditContainer}
+                            exact
+                        />
 
                         <Route path={`${match.path}/locations`} component={LocationsContainer} exact/>
+                        <Route
+                            path={`${match.path}/locations/:id`}
+                            component={LocationEditContainer}
+                            exact
+                        />
 
                         <Route path={`${match.path}/nodes`} component={NodesContainer} exact/>
                         <Route path={`${match.path}/nodes/new`} component={NewNodeContainer} exact/>
+                        <Route
+                            path={`${match.path}/nodes/:id`}
+                            component={NodeEditContainer}
+                            exact
+                        />
 
                         <Route path={`${match.path}/servers`} component={ServersContainer} exact/>
                         <Route path={`${match.path}/servers/new`} component={NewServerContainer} exact/>
+                        <Route
+                            path={`${match.path}/servers/:id`}
+                            component={ServerEditContainer}
+                            exact
+                        />
 
                         <Route path={`${match.path}/users`} component={UsersContainer} exact/>
                         <Route path={`${match.path}/users/new`} component={NewUserContainer} exact/>
+                        <Route
+                            path={`${match.path}/users/:id`}
+                            component={UserEditContainer}
+                            exact
+                        />
 
                         <Route path={`${match.path}/roles`} component={RolesContainer} exact/>
                         <Route
@@ -198,7 +230,18 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         />
 
                         <Route path={`${match.path}/nests`} component={NestsContainer} exact/>
+                        <Route
+                            path={`${match.path}/nests/:id`}
+                            component={NestEditContainer}
+                            exact
+                        />
+
                         <Route path={`${match.path}/mounts`} component={MountsContainer} exact/>
+                        <Route
+                            path={`${match.path}/mounts/:id`}
+                            component={MountEditContainer}
+                            exact
+                        />
 
                         <Route path={'*'} component={NotFound}/>
                     </Switch>
