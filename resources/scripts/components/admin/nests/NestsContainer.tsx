@@ -61,7 +61,7 @@ const NestsContainer = () => {
     }, [ page ]);
 
     return (
-        <AdminContentBlock>
+        <AdminContentBlock title={'Nests'}>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col`}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Nests</h2>

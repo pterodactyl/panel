@@ -32,7 +32,7 @@ export default () => {
     }, []);
 
     return (
-        <AdminContentBlock>
+        <AdminContentBlock title={'Overview'}>
             <div css={tw`flex flex-col mb-8`}>
                 <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Overview</h2>
                 <p css={tw`text-base text-neutral-400`}>A quick glance at your system.</p>
