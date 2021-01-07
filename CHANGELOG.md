@@ -3,6 +3,14 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.2.1
+### Fixed
+* Fixes URL-encoding of filenames when working in the filemanager to fix issues when moving, renaming, or deleting files.
+* Fixes URL-encoding of email addresses when requesting a password reset.
+
+### Added
+* Adds the ability for users to select a base Java Docker image for most Minecraft specific eggs shipped as defaults.
+
 ## v1.2.0
 ### Fixed
 * Fixes newest backup being deleted when creating a new one using the schedule tasks, rather than the oldest backup.
