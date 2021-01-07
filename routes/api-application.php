@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/version', 'VersionController');
+
 /*
 |--------------------------------------------------------------------------
 | Database Controller Routes
