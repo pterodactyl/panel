@@ -20,6 +20,11 @@ class DeploymentObject
     private $ports = [];
 
     /**
+     * @var array
+     */
+    private $additionalPorts = [];
+
+    /**
      * @return bool
      */
     public function isDedicated(): bool
@@ -72,6 +77,25 @@ class DeploymentObject
     public function setPorts(array $ports)
     {
         $this->ports = $ports;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdditionalPorts(): array
+    {
+        return $this->additionalPorts;
+    }
+
+    /**
+     * @param array $ports
+     * @return $this
+     */
+    public function setAdditionalPorts(array $additionalPorts)
+    {
+        $this->additionalPorts = $additionalPorts;
 
         return $this;
     }

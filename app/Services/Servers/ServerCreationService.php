@@ -133,6 +133,10 @@ class ServerCreationService
         // that the server should use, and assign the node from that allocation.
         if ($deployment instanceof DeploymentObject) {
             $allocation = $this->configureDeployment($data, $deployment);
+            $data['allocation_additional'] = array_merge(
+                $this->getAdditionalAllocations($allocation, $deployment->getAdditionalPorts()),
+                isset($data['allocation_additional']) && is_array($data['allocation_additional']) ? $data['allocation_additional'] : []
+            );
             $data['allocation_id'] = $allocation->id;
             $data['node_id'] = $allocation->node_id;
         }
@@ -206,6 +210,31 @@ class ServerCreationService
             ->setNodes($nodes->pluck('id')->toArray())
             ->setPorts($deployment->getPorts())
             ->handle();
+    }
+
+    /**
+     * Gets an array of the IDs of allocations to add as additional allocations.
+     *
+     * @param \Pterodactyl\Models\Allocation $primaryAllocation
+     * @param array $portRanges
+     *
+     * @return array
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     */
+    private function getAdditionalAllocations(Allocation $primaryAllocation, array $portRanges): array
+    {
+        $nodeId = $primaryAllocation->node_id;
+
+        return array_map(function ($portRange) use ($nodeId) {
+            return $this->allocationSelectionService
+                ->setDedicated(false)
+                ->setNodes([$nodeId])
+                ->setPorts([$portRange])
+                ->handle()
+                ->id;
+        }, $portRanges);
     }
 
     /**

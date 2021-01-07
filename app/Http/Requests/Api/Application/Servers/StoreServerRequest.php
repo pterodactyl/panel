@@ -68,6 +68,8 @@ class StoreServerRequest extends ApplicationApiRequest
             'deploy.dedicated_ip' => 'required_with:deploy,boolean',
             'deploy.port_range' => 'array',
             'deploy.port_range.*' => 'string',
+            'deploy.additional_ports_ranges' => 'array',
+            'deploy.additional_ports_ranges.*' => 'string',
 
             'start_on_completion' => 'sometimes|boolean',
         ];
@@ -156,6 +158,7 @@ class StoreServerRequest extends ApplicationApiRequest
         $object->setDedicated($this->input('deploy.dedicated_ip', false));
         $object->setLocations($this->input('deploy.locations', []));
         $object->setPorts($this->input('deploy.port_range', []));
+        $object->setAdditionalPorts($this->input('deploy.additional_ports_ranges', []));
 
         return $object;
     }
