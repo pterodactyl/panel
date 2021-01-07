@@ -168,9 +168,13 @@ class User extends Model implements
      *
      * @return array
      */
-    public function toVueObject(): array
+    public function toReactObject(): array
     {
-        return (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
+        $object = (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
+        $object['avatar_url'] = $this->avatarURL();
+        $object['role_name'] = $this->roleName();
+
+        return $object;
     }
 
     /**
@@ -201,6 +205,26 @@ class User extends Model implements
     public function getNameAttribute()
     {
         return trim($this->name_first . ' ' . $this->name_last);
+    }
+
+    /**
+     * Get's the avatar url for the user.
+     *
+     * @return string
+     */
+    public function avatarURL(): string
+    {
+        return 'https://www.gravatar.com/avatar/' . md5($this->email) . '.jpg';
+    }
+
+    /**
+     * Get's the name of the role assigned to a user.
+     *
+     * @return string|null
+     */
+    public function roleName():? string
+    {
+        return $this->root_admin ? 'Super Administrator' : null;
     }
 
     /**

@@ -20,12 +20,12 @@ abstract class BaseTransformer extends TransformerAbstract
     /**
      * @var \Pterodactyl\Models\ApiKey
      */
-    private $key;
+    private ApiKey $key;
 
     /**
      * @var bool
      */
-    private $rootAdmin;
+    private bool $rootAdmin;
 
     /**
      * Return the resource name for the JSONAPI output.

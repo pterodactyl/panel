@@ -5,9 +5,13 @@ export interface UserData {
     uuid: string;
     username: string;
     email: string;
+    firstName: string;
+    lastName: string;
     language: string;
     rootAdmin: boolean;
     useTotp: boolean;
+    avatarURL: string;
+    roleName: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -21,6 +25,7 @@ export interface UserStore {
 
 const user: UserStore = {
     data: undefined,
+
     setUserData: action((state, payload) => {
         state.data = payload;
     }),

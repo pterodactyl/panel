@@ -25,9 +25,11 @@ class VersionController extends ApplicationApiController
     }
 
     /**
-     * ?
+     * Returns version information.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke()
+    public function __invoke(): JsonResponse
     {
         return new JsonResponse($this->softwareVersionService->getVersionData());
     }

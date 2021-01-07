@@ -43,11 +43,10 @@ class UserTransformer extends BaseTransformer
             'language' => $model->language,
             'root_admin' => (bool) $model->root_admin,
             '2fa' => (bool) $model->use_totp,
-            'avatar_url' => 'https://www.gravatar.com/avatar/' . md5($model->email) . '.jpg?s=40',
-            'role_name' => $model->root_admin ? 'Super Administrator' : null,
+            'avatar_url' => $model->avatarURL(),
+            'role_name' => $model->roleName(),
             'created_at' => $this->formatTimestamp($model->created_at),
             'updated_at' => $this->formatTimestamp($model->updated_at),
-            'avatar'
         ];
     }
 

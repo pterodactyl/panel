@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
-import { useStoreState } from 'easy-peasy';
+import { State, useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
 import styled from 'styled-components/macro';
 import { ApplicationStore } from '@/state';
@@ -88,7 +88,9 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
 `;
 
 const AdminRouter = ({ location, match }: RouteComponentProps) => {
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
+    const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
+    const applicationName = useStoreState((state: ApplicationStore) => state.settings.data!.name);
+
     const [ collapsed, setCollapsed ] = useState<boolean>();
 
     return (
@@ -96,7 +98,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
             <Sidebar collapsed={collapsed}>
                 <div className={'header'} onClick={ () => { setCollapsed(!collapsed); } }>
                     { !collapsed ?
-                        <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap`}>{name}</h1>
+                        <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap`}>{applicationName}</h1>
                         :
                         <img src={'/favicons/android-icon-48x48.png'} alt={'Pterodactyl Icon'} />
                     }
@@ -162,11 +164,11 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                 </NavLink>
 
                 <div className={'user'}>
-                    <img src={'https://www.gravatar.com/avatar/78a6a270ec41715a8ae96c02b8961f9e?s=64'} alt="Profile Picture" css={tw`h-10 w-10 rounded-full select-none`} />
+                    <img src={user !== undefined ? user.avatarURL + '?s=64' : ''} alt="Profile Picture" css={tw`h-10 w-10 rounded-full select-none`} />
 
                     <div css={tw`flex flex-col ml-4`}>
-                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}>Matthew Penner</span>
-                        <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}>Super Administrator</span>
+                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}>{user?.firstName} {user?.lastName}</span>
+                        <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}>{user?.roleName}</span>
                     </div>
 
                     <NavLink to={'/auth/logout'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-red-400 hover:bg-neutral-800 rounded ml-auto transition-all duration-100`}>

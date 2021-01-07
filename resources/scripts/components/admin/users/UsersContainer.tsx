@@ -117,7 +117,7 @@ const UsersContainer = () => {
                                                             <NavLink to={`${match.url}/${user.id}`}>
                                                                 <div css={tw`flex items-center`}>
                                                                     <div css={tw`flex-shrink-0 h-10 w-10`}>
-                                                                        <img css={tw`h-10 w-10 rounded-full`} alt="" src={user.avatarURL}/>
+                                                                        <img css={tw`h-10 w-10 rounded-full`} alt="" src={user.avatarURL + '?s=40'}/>
                                                                     </div>
 
                                                                     <div css={tw`ml-4`}>
