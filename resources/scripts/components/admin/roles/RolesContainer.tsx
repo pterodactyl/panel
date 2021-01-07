@@ -1,8 +1,6 @@
-import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useEffect, useState } from 'react';
 import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import { AdminContext } from '@/state/admin';
-import { httpErrorToHuman } from '@/api/http';
 import NewRoleButton from '@/components/admin/roles/NewRoleButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
@@ -12,6 +10,7 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import getRoles from '@/api/admin/roles/getRoles';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import AdminTable, { ContentWrapper, Loading, NoItems, TableBody, TableHead, TableHeader, TableRow } from '@/components/admin/AdminTable';
+import CopyOnClick from '@/components/elements/CopyOnClick';
 
 const RowCheckbox = ({ id }: { id: number}) => {
     const isChecked = AdminContext.useStoreState(state => state.roles.selectedRoles.indexOf(id) >= 0);
@@ -36,7 +35,7 @@ const RowCheckbox = ({ id }: { id: number}) => {
 export default () => {
     const match = useRouteMatch();
 
-    const { addError, clearFlashes } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ loading, setLoading ] = useState(true);
 
     const roles = useDeepMemoize(AdminContext.useStoreState(state => state.roles.data));
@@ -53,7 +52,7 @@ export default () => {
             .then(roles => setRoles(roles))
             .catch(error => {
                 console.error(error);
-                addError({ message: httpErrorToHuman(error), key: 'roles' });
+                clearAndAddHttpError(error);
             })
             .then(() => setLoading(false));
     }, []);
