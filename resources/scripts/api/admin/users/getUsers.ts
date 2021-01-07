@@ -13,7 +13,8 @@ export interface User {
     language: string;
     rootAdmin: boolean;
     tfa: boolean;
-    roleName: string;
+    avatarURL: string;
+    roleName: string | null;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -29,6 +30,7 @@ export const rawDataToUser = ({ attributes }: FractalResponseData): User => ({
     language: attributes.language,
     rootAdmin: attributes.root_admin,
     tfa: attributes['2fa'],
+    avatarURL: attributes.avatar_url,
     roleName: attributes.role_name,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),

@@ -117,7 +117,7 @@ const UsersContainer = () => {
                                                             <NavLink to={`${match.url}/${user.id}`}>
                                                                 <div css={tw`flex items-center`}>
                                                                     <div css={tw`flex-shrink-0 h-10 w-10`}>
-                                                                        <img css={tw`h-10 w-10 rounded-full`} alt="" src="https://www.gravatar.com/avatar/92623b66155f7e475250b549226a5023"/>
+                                                                        <img css={tw`h-10 w-10 rounded-full`} alt="" src={user.avatarURL}/>
                                                                     </div>
 
                                                                     <div css={tw`ml-4`}>
@@ -141,7 +141,7 @@ const UsersContainer = () => {
                                                             </span>
                                                         </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{user.roleName}</td>
+                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{user.roleName || 'None'}</td>
                                                     </tr>
                                                 ))
                                             }
