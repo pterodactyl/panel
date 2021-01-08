@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Requests\Api\Application\Roles;
 
 use Pterodactyl\Models\AdminRole;
 
-class GetRoleRequest extends GetMountsRequest
+class GetRoleRequest extends GetRolesRequest
 {
     /**
      * Determine if the requested role exists on the Panel.
