@@ -50,13 +50,13 @@ const EditInformationContainer = () => {
     }
 
     const submit = ({ name, description, source, target, readOnly, userMountable }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('nest');
+        clearFlashes('mount');
 
         updateMount(mount.id, name, description, source, target, readOnly, userMountable)
             .then(() => setMount({ ...mount, name, description, source, target, readOnly, userMountable }))
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ key: 'nest', error });
+                clearAndAddHttpError({ key: 'mount', error });
             })
             .then(() => setSubmitting(false));
     };
@@ -84,7 +84,7 @@ const EditInformationContainer = () => {
             {
                 ({ isSubmitting, isValid }) => (
                     <React.Fragment>
-                        <AdminBox title={'Edit Nest'} css={tw`relative`}>
+                        <AdminBox title={'Edit Mount'} css={tw`relative`}>
                             <SpinnerOverlay visible={isSubmitting}/>
 
                             <Form css={tw`mb-0`}>
