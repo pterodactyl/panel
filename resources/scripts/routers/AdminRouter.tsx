@@ -27,6 +27,7 @@ import RolesContainer from '@/components/admin/roles/RolesContainer';
 import RoleEditContainer from '@/components/admin/roles/RoleEditContainer';
 import NestsContainer from '@/components/admin/nests/NestsContainer';
 import NestEditContainer from '@/components/admin/nests/NestEditContainer';
+import EggEditContainer from '@/components/admin/nests/eggs/EggEditContainer';
 import MountsContainer from '@/components/admin/mounts/MountsContainer';
 import MountEditContainer from '@/components/admin/mounts/MountEditContainer';
 
@@ -235,6 +236,11 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route
                             path={`${match.path}/nests/:nestId`}
                             component={NestEditContainer}
+                            exact
+                        />
+                        <Route
+                            path={`${match.path}/nests/:nestId/eggs/:id`}
+                            component={EggEditContainer}
                             exact
                         />
 

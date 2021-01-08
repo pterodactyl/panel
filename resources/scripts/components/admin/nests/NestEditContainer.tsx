@@ -230,7 +230,7 @@ const NestEditContainer = () => {
 
     if (loading || nest === undefined) {
         return (
-            <AdminContentBlock title={'Nests'}>
+            <AdminContentBlock>
                 <FlashMessageRender byKey={'nest'} css={tw`mb-4`}/>
 
                 <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
