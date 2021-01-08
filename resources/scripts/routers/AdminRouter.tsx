@@ -233,7 +233,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
 
                         <Route path={`${match.path}/nests`} component={NestsContainer} exact/>
                         <Route
-                            path={`${match.path}/nests/:id`}
+                            path={`${match.path}/nests/:nestId`}
                             component={NestEditContainer}
                             exact
                         />

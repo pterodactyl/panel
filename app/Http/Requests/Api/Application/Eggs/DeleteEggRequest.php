@@ -1,13 +1,12 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Api\Application\Nests\Eggs;
+namespace Pterodactyl\Http\Requests\Api\Application\Eggs;
 
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
-class GetEggRequest extends ApplicationApiRequest
+class DeleteEggRequest extends ApplicationApiRequest
 {
     /**
      * @var string
@@ -17,15 +16,17 @@ class GetEggRequest extends ApplicationApiRequest
     /**
      * @var int
      */
-    protected $permission = AdminAcl::READ;
+    protected $permission = AdminAcl::WRITE;
 
     /**
-     * Determine if the requested egg exists for the selected nest.
+     * Determine if the requested egg exists on the Panel.
      *
      * @return bool
      */
     public function resourceExists(): bool
     {
-        return $this->getModel(Nest::class)->id === $this->getModel(Egg::class)->nest_id;
+        $egg = $this->route()->parameter('egg');
+
+        return $egg instanceof Egg && $egg->exists;
     }
 }

@@ -1,5 +1,5 @@
 import http from '@/api/http';
-import { Egg, rawDataToEgg } from '@/api/admin/nests/eggs/getEggs';
+import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 
 export default (nestId: number, name: string): Promise<Egg> => {
     return new Promise((resolve, reject) => {

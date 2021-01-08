@@ -25,6 +25,24 @@ Route::group(['prefix' => '/databases'], function () {
 
 /*
 |--------------------------------------------------------------------------
+| Egg Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/eggs
+|
+*/
+Route::group(['prefix' => '/eggs'], function () {
+    Route::get('/{egg}', 'Eggs\EggController@view');
+
+    Route::post('/', 'Eggs\EggController@store');
+
+    Route::patch('/{egg}', 'Eggs\EggController@update');
+
+    Route::delete('/{egg}', 'Eggs\EggController@delete');
+});
+
+/*
+|--------------------------------------------------------------------------
 | Location Controller Routes
 |--------------------------------------------------------------------------
 |
@@ -72,18 +90,13 @@ Route::group(['prefix' => '/mounts'], function () {
 Route::group(['prefix' => '/nests'], function () {
     Route::get('/', 'Nests\NestController@index')->name('api.application.nests');
     Route::get('/{nest}', 'Nests\NestController@view')->name('api.application.nests.view');
+    Route::get('/{nest}/eggs', 'Eggs\EggController@index');
 
     Route::post('/', 'Nests\NestController@store');
 
     Route::patch('/{nest}', 'Nests\NestController@update');
 
     Route::delete('/{nest}', 'Nests\NestController@delete');
-
-    // Egg Management Endpoint
-    Route::group(['prefix' => '/{nest}/eggs'], function () {
-        Route::get('/', 'Nests\EggController@index')->name('api.application.nests.eggs');
-        Route::get('/{egg}', 'Nests\EggController@view')->name('api.application.nests.eggs.view');
-    });
 });
 
 /*

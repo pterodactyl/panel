@@ -19,7 +19,7 @@ class DeleteNestRequest extends ApplicationApiRequest
     protected $permission = AdminAcl::WRITE;
 
     /**
-     * Determine if the requested role exists on the Panel.
+     * Determine if the requested nest exists on the Panel.
      *
      * @return bool
      */

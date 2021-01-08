@@ -7,7 +7,7 @@ use Pterodactyl\Models\Nest;
 class GetNestRequest extends GetNestsRequest
 {
     /**
-     * Determine if the requested role exists on the Panel.
+     * Determine if the requested nest exists on the Panel.
      *
      * @return bool
      */

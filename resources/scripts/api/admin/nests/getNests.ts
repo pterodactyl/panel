@@ -1,6 +1,7 @@
-import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
+import http, { FractalResponseData, FractalResponseList, getPaginationSet, PaginatedResult } from '@/api/http';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
+import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 
 export interface Nest {
     id: number;
@@ -10,6 +11,10 @@ export interface Nest {
     description: string | null;
     createdAt: Date;
     updatedAt: Date;
+
+    relations: {
+        eggs: Egg[] | undefined;
+    },
 }
 
 export const rawDataToNest = ({ attributes }: FractalResponseData): Nest => ({
@@ -20,6 +25,10 @@ export const rawDataToNest = ({ attributes }: FractalResponseData): Nest => ({
     description: attributes.description,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
+
+    relations: {
+        eggs: ((attributes.relationships?.eggs as FractalResponseList | undefined)?.data || []).map(rawDataToEgg),
+    },
 });
 
 interface ctx {
