@@ -56,7 +56,7 @@ export const Context = createContextStore<ctx>({
 
 interface Values {
     name: string;
-    description: string | null;
+    description: string;
 }
 
 const EditInformationContainer = () => {
@@ -73,7 +73,7 @@ const EditInformationContainer = () => {
     const submit = ({ name, description }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('nest');
 
-        updateNest(nest.id, name, description || undefined)
+        updateNest(nest.id, name, description)
             .then(() => setNest({ ...nest, name, description }))
             .catch(error => {
                 console.error(error);
@@ -87,7 +87,7 @@ const EditInformationContainer = () => {
             onSubmit={submit}
             initialValues={{
                 name: nest.name,
-                description: nest.description,
+                description: nest.description || '',
             }}
             validationSchema={object().shape({
                 name: string().required().min(1),
@@ -251,7 +251,14 @@ const NestEditContainer = () => {
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col`}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{nest.name}</h2>
-                    <p css={tw`text-base text-neutral-400`}>{nest.description}</p>
+                    {
+                        (nest.description || '').length < 1 ?
+                            <p css={tw`text-base text-neutral-400`}>
+                                <span css={tw`italic`}>No description</span>
+                            </p>
+                            :
+                            <p css={tw`text-base text-neutral-400`}>{nest.description}</p>
+                    }
                 </div>
             </div>
 

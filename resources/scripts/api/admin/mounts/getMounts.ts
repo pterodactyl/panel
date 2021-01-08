@@ -6,7 +6,7 @@ export interface Mount {
     id: number;
     uuid: string;
     name: string;
-    description: string;
+    description?: string;
     source: string;
     target: string;
     readOnly: boolean;

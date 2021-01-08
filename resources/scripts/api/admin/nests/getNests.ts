@@ -8,7 +8,7 @@ export interface Nest {
     uuid: string;
     author: string;
     name: string;
-    description: string | null;
+    description?: string;
     createdAt: Date;
     updatedAt: Date;
 

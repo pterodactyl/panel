@@ -8,6 +8,13 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ApplicationStore } from '@/state';
+import { boolean, object, string } from 'yup';
+import updateMount from '@/api/admin/mounts/updateMount';
+import AdminBox from '@/components/admin/AdminBox';
+import Button from '@/components/elements/Button';
+import Field from '@/components/elements/Field';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { Form, Formik, FormikHelpers } from 'formik';
 
 interface ctx {
     mount: Mount | undefined;
@@ -21,6 +28,115 @@ export const Context = createContextStore<ctx>({
         state.mount = payload;
     }),
 });
+
+interface Values {
+    name: string;
+    description: string;
+    source: string;
+    target: string;
+    readOnly: boolean;
+    userMountable: boolean;
+}
+
+const EditInformationContainer = () => {
+    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const mount = Context.useStoreState(state => state.mount);
+    const setMount = Context.useStoreActions(actions => actions.setMount);
+
+    if (mount === undefined) {
+        return (
+            <></>
+        );
+    }
+
+    const submit = ({ name, description, source, target, readOnly, userMountable }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('nest');
+
+        updateMount(mount.id, name, description, source, target, readOnly, userMountable)
+            .then(() => setMount({ ...mount, name, description, source, target, readOnly, userMountable }))
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'nest', error });
+            })
+            .then(() => setSubmitting(false));
+    };
+
+    return (
+        <Formik
+            onSubmit={submit}
+            initialValues={{
+                name: mount.name,
+                description: mount.description || '',
+                source: mount.source,
+                target: mount.target,
+                readOnly: mount.readOnly,
+                userMountable: mount.userMountable,
+            }}
+            validationSchema={object().shape({
+                name: string().required().min(1),
+                description: string().max(255, ''),
+                source: string().max(255, ''),
+                target: string().max(255, ''),
+                readOnly: boolean(),
+                userMountable: boolean(),
+            })}
+        >
+            {
+                ({ isSubmitting, isValid }) => (
+                    <React.Fragment>
+                        <AdminBox title={'Edit Nest'} css={tw`relative`}>
+                            <SpinnerOverlay visible={isSubmitting}/>
+
+                            <Form css={tw`mb-0`}>
+                                <div>
+                                    <Field
+                                        id={'name'}
+                                        name={'name'}
+                                        label={'Name'}
+                                        type={'text'}
+                                    />
+                                </div>
+
+                                <div css={tw`mt-6`}>
+                                    <Field
+                                        id={'description'}
+                                        name={'description'}
+                                        label={'Description'}
+                                        type={'text'}
+                                    />
+                                </div>
+
+                                <div css={tw`mt-6`}>
+                                    <Field
+                                        id={'source'}
+                                        name={'source'}
+                                        label={'Source'}
+                                        type={'text'}
+                                    />
+                                </div>
+
+                                <div css={tw`mt-6`}>
+                                    <Field
+                                        id={'target'}
+                                        name={'target'}
+                                        label={'Target'}
+                                        type={'text'}
+                                    />
+                                </div>
+
+                                <div css={tw`mt-6 text-right`}>
+                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                        Save
+                                    </Button>
+                                </div>
+                            </Form>
+                        </AdminBox>
+                    </React.Fragment>
+                )
+            }
+        </Formik>
+    );
+};
 
 const MountEditContainer = () => {
     const match = useRouteMatch<{ id?: string }>();
@@ -60,11 +176,20 @@ const MountEditContainer = () => {
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col`}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{mount.name}</h2>
-                    <p css={tw`text-base text-neutral-400`}>{mount.description}</p>
+                    {
+                        (mount.description || '').length < 1 ?
+                            <p css={tw`text-base text-neutral-400`}>
+                                <span css={tw`italic`}>No description</span>
+                            </p>
+                            :
+                            <p css={tw`text-base text-neutral-400`}>{mount.description}</p>
+                    }
                 </div>
             </div>
 
             <FlashMessageRender byKey={'mount'} css={tw`mb-4`}/>
+
+            <EditInformationContainer/>
         </AdminContentBlock>
     );
 };

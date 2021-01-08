@@ -60,7 +60,7 @@ const NodeEditContainer = () => {
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col`}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{node.name}</h2>
-                    <p css={tw`text-base text-neutral-400`}>{node.description}</p>
+                    <p css={tw`text-base text-neutral-400`}>{node.uuid}</p>
                 </div>
             </div>
 

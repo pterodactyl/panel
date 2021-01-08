@@ -60,7 +60,14 @@ const ServerEditContainer = () => {
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col`}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{server.name}</h2>
-                    <p css={tw`text-base text-neutral-400`}>{server.description}</p>
+                    {
+                        (server.description || '').length < 1 ?
+                            <p css={tw`text-base text-neutral-400`}>
+                                <span css={tw`italic`}>No description</span>
+                            </p>
+                            :
+                            <p css={tw`text-base text-neutral-400`}>{server.description}</p>
+                    }
                 </div>
             </div>
 

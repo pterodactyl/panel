@@ -59,7 +59,14 @@ const EggEditContainer = () => {
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col`}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{egg.name}</h2>
-                    <p css={tw`text-base text-neutral-400`}>{egg.description}</p>
+                    {
+                        (egg.description || '').length < 1 ?
+                            <p css={tw`text-base text-neutral-400`}>
+                                <span css={tw`italic`}>No description</span>
+                            </p>
+                            :
+                            <p css={tw`text-base text-neutral-400`}>{egg.description}</p>
+                    }
                 </div>
             </div>
 

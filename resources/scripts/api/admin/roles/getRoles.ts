@@ -3,7 +3,7 @@ import http, { FractalResponseData } from '@/api/http';
 export interface Role {
     id: number;
     name: string;
-    description: string | null;
+    description?: string;
 }
 
 export const rawDataToRole = ({ attributes }: FractalResponseData): Role => ({
