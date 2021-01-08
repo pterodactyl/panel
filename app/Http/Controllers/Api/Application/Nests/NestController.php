@@ -12,9 +12,9 @@ use Pterodactyl\Transformers\Api\Application\NestTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestRequest;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest;
-use Pterodactyl\Http\Requests\Api\Application\Nests\StoreEggRequest;
+use Pterodactyl\Http\Requests\Api\Application\Nests\StoreNestRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\UpdateNestRequest;
-use Pterodactyl\Http\Requests\Api\Application\Nests\DeleteEggRequest;
+use Pterodactyl\Http\Requests\Api\Application\Nests\DeleteNestRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class NestController extends ApplicationApiController
@@ -75,7 +75,7 @@ class NestController extends ApplicationApiController
         $perPage = $request->query('per_page', 10);
         if ($perPage < 1) {
             $perPage = 10;
-        } else if ($perPage > 100) {
+        } elseif ($perPage > 100) {
             throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
         }
 
@@ -105,13 +105,13 @@ class NestController extends ApplicationApiController
     /**
      * Creates a new nest.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\StoreEggRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\StoreNestRequest $request
      *
      * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(StoreEggRequest $request): array
+    public function store(StoreNestRequest $request): array
     {
         $nest = $this->nestCreationService->handle($request->validated());
 
@@ -143,13 +143,13 @@ class NestController extends ApplicationApiController
     /**
      * Deletes an existing nest.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\DeleteEggRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\DeleteNestRequest $request
      * @param \Pterodactyl\Models\Nest $nest
      *
      * @return \Illuminate\Http\JsonResponse
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function delete(DeleteEggRequest $request, Nest $nest): JsonResponse
+    public function delete(DeleteNestRequest $request, Nest $nest): JsonResponse
     {
         $this->nestDeletionService->handle($nest->id);
 

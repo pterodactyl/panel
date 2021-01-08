@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Requests\Api\Application\Nests;
 
 use Pterodactyl\Models\Nest;
 
-class UpdateNestRequest extends StoreEggRequest
+class UpdateNestRequest extends StoreNestRequest
 {
     /**
      * ?
