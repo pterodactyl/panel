@@ -44,7 +44,7 @@ const NestsContainer = () => {
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'nests' });
+        clearAndAddHttpError({ key: 'nests', error });
     }, [ error ]);
 
     const length = nests?.items?.length || 0;

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import createRole from '@/api/admin/roles/createRole';
-import { httpErrorToHuman } from '@/api/http';
 import { AdminContext } from '@/state/admin';
 import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
@@ -26,7 +25,7 @@ const schema = object().shape({
 
 export default () => {
     const [ visible, setVisible ] = useState(false);
-    const { addError, clearFlashes } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const appendRole = AdminContext.useStoreActions(actions => actions.roles.appendRole);
 
@@ -40,7 +39,7 @@ export default () => {
                 setVisible(false);
             })
             .catch(error => {
-                addError({ key: 'role:create', message: httpErrorToHuman(error) });
+                clearAndAddHttpError({ key: 'role:create', error });
                 setSubmitting(false);
             });
     };

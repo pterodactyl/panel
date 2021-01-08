@@ -45,7 +45,7 @@ const NodesContainer = () => {
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'nodes' });
+        clearAndAddHttpError({ key: 'nodes', error });
     }, [ error ]);
 
     const length = nodes?.items?.length || 0;

@@ -26,7 +26,7 @@ export default () => {
             .then(versionData => setVersionData(versionData))
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError(error);
+                clearAndAddHttpError({ key: 'overview', error });
             })
             .then(() => setLoading(false));
     }, []);

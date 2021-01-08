@@ -44,7 +44,7 @@ const MountsContainer = () => {
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'mounts' });
+        clearAndAddHttpError({ key: 'mounts', error });
     }, [ error ]);
 
     const length = mounts?.items?.length || 0;

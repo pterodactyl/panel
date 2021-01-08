@@ -52,7 +52,7 @@ export default () => {
             .then(roles => setRoles(roles))
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError(error);
+                clearAndAddHttpError({ key: 'roles', error });
             })
             .then(() => setLoading(false));
     }, []);

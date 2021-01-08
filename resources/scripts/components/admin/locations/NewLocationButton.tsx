@@ -38,7 +38,7 @@ export default () => {
                 setVisible(false);
             })
             .catch(error => {
-                clearAndAddHttpError(error);
+                clearAndAddHttpError({ key: 'location:create', error });
                 setSubmitting(false);
             });
     };

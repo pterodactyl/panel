@@ -44,7 +44,7 @@ const DatabasesContainer = () => {
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'databases' });
+        clearAndAddHttpError({ key: 'databases', error });
     }, [ error ]);
 
     const length = databases?.items?.length || 0;

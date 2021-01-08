@@ -44,7 +44,7 @@ const UsersContainer = () => {
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'servers' });
+        clearAndAddHttpError({ key: 'servers', error });
     }, [ error ]);
 
     const length = servers?.items?.length || 0;

@@ -44,7 +44,7 @@ const LocationsContainer = () => {
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'locations' });
+        clearAndAddHttpError({ key: 'locations', error });
     }, [ error ]);
 
     const length = locations?.items?.length || 0;
