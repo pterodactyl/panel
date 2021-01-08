@@ -1,3 +1,6 @@
+import CopyOnClick from '@/components/elements/CopyOnClick';
+import Input from '@/components/elements/Input';
+import Label from '@/components/elements/Label';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
@@ -28,7 +31,7 @@ interface Values {
     description: string | null;
 }
 
-const NestEditBox = () => {
+const EditInformationContainer = () => {
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const { nest, setNest } = useContext(Context);
 
@@ -65,7 +68,7 @@ const NestEditBox = () => {
             {
                 ({ isSubmitting, isValid }) => (
                     <React.Fragment>
-                        <AdminBox title={'Edit Nest'} css={tw`relative`}>
+                        <AdminBox title={'Edit Nest'} css={tw`flex-1 self-start w-full relative mr-4`}>
                             <SpinnerOverlay visible={isSubmitting}/>
 
                             <Form css={tw`mb-0`}>
@@ -98,6 +101,57 @@ const NestEditBox = () => {
                 )
             }
         </Formik>
+    );
+};
+
+const ViewDetailsContainer = () => {
+    const { nest } = useContext(Context);
+
+    if (nest === undefined) {
+        return (
+            <></>
+        );
+    }
+
+    return (
+        <AdminBox title={'Nest Details'} css={tw`flex-1 w-full relative ml-4`}>
+            <div>
+                <div>
+                    <div>
+                        <Label>ID</Label>
+                        <CopyOnClick text={nest.id.toString()}>
+                            <Input
+                                type={'text'}
+                                value={nest.id}
+                                readOnly
+                            />
+                        </CopyOnClick>
+                    </div>
+
+                    <div css={tw`mt-6`}>
+                        <Label>UUID</Label>
+                        <CopyOnClick text={nest.uuid}>
+                            <Input
+                                type={'text'}
+                                value={nest.uuid}
+                                readOnly
+                            />
+                        </CopyOnClick>
+                    </div>
+
+                    <div css={tw`mt-6 mb-2`}>
+                        <Label>Author</Label>
+                        <CopyOnClick text={nest.author}>
+                            <Input
+                                type={'text'}
+                                value={nest.author}
+                                readOnly
+                            />
+                        </CopyOnClick>
+                    </div>
+                </div>
+            </div>
+        </AdminBox>
     );
 };
 
@@ -144,7 +198,10 @@ const NestEditContainer = () => {
 
             <FlashMessageRender byKey={'nest'} css={tw`mb-4`}/>
 
-            <NestEditBox/>
+            <div css={tw`flex flex-row`}>
+                <EditInformationContainer/>
+                <ViewDetailsContainer/>
+            </div>
         </AdminContentBlock>
     );
 };
