@@ -97,7 +97,7 @@ const EditInformationContainer = () => {
             {
                 ({ isSubmitting, isValid }) => (
                     <React.Fragment>
-                        <AdminBox title={'Edit Nest'} css={tw`flex-1 self-start w-full relative mr-4`}>
+                        <AdminBox title={'Edit Nest'} css={tw`flex-1 self-start w-full relative mb-8 lg:mb-0 mr-0 lg:mr-4`}>
                             <SpinnerOverlay visible={isSubmitting}/>
 
                             <Form css={tw`mb-0`}>
@@ -143,7 +143,7 @@ const ViewDetailsContainer = () => {
     }
 
     return (
-        <AdminBox title={'Nest Details'} css={tw`flex-1 w-full relative ml-4`}>
+        <AdminBox title={'Nest Details'} css={tw`flex-1 w-full relative ml-0 lg:ml-4`}>
             <div>
                 <div>
                     <div>
@@ -257,7 +257,7 @@ const NestEditContainer = () => {
 
             <FlashMessageRender byKey={'nest'} css={tw`mb-4`}/>
 
-            <div css={tw`flex flex-row mb-8`}>
+            <div css={tw`flex flex-col lg:flex-row mb-8`}>
                 <EditInformationContainer/>
                 <ViewDetailsContainer/>
             </div>

@@ -3,7 +3,7 @@ import http, { FractalResponseData } from '@/api/http';
 export interface Egg {
     id: number;
     uuid: string;
-    nest_id: number;
+    nestId: number;
     author: string;
     name: string;
     description: string | null;
@@ -27,7 +27,7 @@ export interface Egg {
 export const rawDataToEgg = ({ attributes }: FractalResponseData): Egg => ({
     id: attributes.id,
     uuid: attributes.uuid,
-    nest_id: attributes.nest_id,
+    nestId: attributes.nest_id,
     author: attributes.author,
     name: attributes.name,
     description: attributes.description,
