@@ -12,7 +12,7 @@ import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import AdminTable, { ContentWrapper, Loading, NoItems, TableBody, TableHead, TableHeader, TableRow } from '@/components/admin/AdminTable';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 
-const RowCheckbox = ({ id }: { id: number}) => {
+const RowCheckbox = ({ id }: { id: number }) => {
     const isChecked = AdminContext.useStoreState(state => state.roles.selectedRoles.indexOf(id) >= 0);
     const appendSelectedRole = AdminContext.useStoreActions(actions => actions.roles.appendSelectedRole);
     const removeSelectedRole = AdminContext.useStoreActions(actions => actions.roles.removeSelectedRole);
