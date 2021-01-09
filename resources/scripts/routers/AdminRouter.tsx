@@ -1,3 +1,4 @@
+import { breakpoint } from '@/theme';
 import React, { useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { State, useStoreState } from 'easy-peasy';
@@ -32,7 +33,7 @@ import MountsContainer from '@/components/admin/mounts/MountsContainer';
 import MountEditContainer from '@/components/admin/mounts/MountEditContainer';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
-    ${tw`fixed h-screen flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
+    ${tw`fixed h-screen hidden md:flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
     ${props => props.collapsed ? 'width: 70px' : 'width: 287px'};
 
     & > div.header {
@@ -88,6 +89,14 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
     }
 `;
 
+const Container = styled.div<{ collapsed?: boolean }>`
+    ${tw`w-full flex flex-col items-center transition-all duration-250 ease-linear`};
+    ${props => props.collapsed ?
+        breakpoint('md')`padding-left: 70px`
+        :
+        breakpoint('md')`padding-left: 287px`};
+`;
+
 const AdminRouter = ({ location, match }: RouteComponentProps) => {
     const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
     const applicationName = useStoreState((state: ApplicationStore) => state.settings.data!.name);
@@ -95,7 +104,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
     const [ collapsed, setCollapsed ] = useState<boolean>();
 
     return (
-        <div css={tw`h-screen w-screen overflow-x-hidden flex flex-row`}>
+        <div css={tw`h-screen w-screen overflow-x-hidden flex flex-col md:flex-row`}>
             <Sidebar collapsed={collapsed}>
                 <div className={'header'} onClick={ () => { setCollapsed(!collapsed); } }>
                     { !collapsed ?
@@ -178,8 +187,20 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                 </div>
             </Sidebar>
 
-            <div css={tw`w-full flex flex-col items-center transition-all duration-250 ease-linear`} style={{ paddingLeft: collapsed ? '70px' : '287px' }}>
-                <div css={tw`min-h-screen w-full flex flex-col px-16 py-12`} style={{ maxWidth: '86rem' }}>
+            <div css={tw`h-16 w-screen flex md:hidden flex-row flex-shrink-0 items-center bg-neutral-900 px-6`}>
+                <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap`}>{applicationName}</h1>
+
+                <div css={tw`flex md:hidden flex-shrink-0 ml-auto`}>
+                    <button css={tw`inline-flex items-center justify-center p-2 rounded-md text-neutral-400 hover:text-neutral-50 hover:bg-neutral-700 focus:outline-none focus:bg-neutral-700 focus:text-neutral-50`}>
+                        <svg css={tw`h-6 w-6`} stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <Container collapsed={collapsed}>
+                <div css={tw`md:min-h-screen w-full flex flex-col px-6 md:px-16 py-12`} style={{ maxWidth: '86rem' }}>
                     {/* <TransitionRouter> */}
                     <Switch location={location}>
                         <Route path={`${match.path}`} component={OverviewContainer} exact/>
@@ -255,7 +276,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                     </Switch>
                     {/* </TransitionRouter> */}
                 </div>
-            </div>
+            </Container>
         </div>
     );
 };
