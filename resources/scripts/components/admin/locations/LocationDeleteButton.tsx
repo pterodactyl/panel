@@ -4,14 +4,14 @@ import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import deleteDatabase from '@/api/admin/databases/deleteDatabase';
+import deleteLocation from '@/api/admin/locations/deleteLocation';
 
 interface Props {
-    databaseId: number;
+    locationId: number;
     onDeleted: () => void;
 }
 
-export default ({ databaseId, onDeleted }: Props) => {
+export default ({ locationId, onDeleted }: Props) => {
     const [ visible, setVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
 
@@ -19,16 +19,16 @@ export default ({ databaseId, onDeleted }: Props) => {
 
     const onDelete = () => {
         setLoading(true);
-        clearFlashes('database');
+        clearFlashes('location');
 
-        deleteDatabase(databaseId)
+        deleteLocation(locationId)
             .then(() => {
                 setLoading(false);
                 onDeleted();
             })
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ key: 'database', error });
+                clearAndAddHttpError({ key: 'location', error });
 
                 setLoading(false);
                 setVisible(false);
@@ -39,14 +39,13 @@ export default ({ databaseId, onDeleted }: Props) => {
         <>
             <ConfirmationModal
                 visible={visible}
-                title={'Delete database host?'}
-                buttonText={'Yes, delete database host'}
+                title={'Delete location?'}
+                buttonText={'Yes, delete location'}
                 onConfirmed={onDelete}
                 showSpinnerOverlay={loading}
                 onModalDismissed={() => setVisible(false)}
             >
-                Are you sure you want to delete this database host?  This action will delete all knowledge of
-                databases created on this host but not the databases themselves.
+                Are you sure you want to delete this location?  You may only delete a location if no nodes are assigned to it.
             </ConfirmationModal>
 
             <Button type={'button'} size={'xsmall'} color={'red'} onClick={() => setVisible(true)}>

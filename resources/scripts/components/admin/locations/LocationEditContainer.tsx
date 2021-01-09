@@ -1,6 +1,8 @@
+import DatabaseDeleteButton from '@/components/admin/databases/DatabaseDeleteButton';
+import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
 import { Location } from '@/api/admin/locations/getLocations';
 import getLocation from '@/api/admin/locations/getLocation';
@@ -35,7 +37,10 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
+    const history = useHistory();
+
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+
     const location = Context.useStoreState(state => state.location);
     const setLocation = Context.useStoreActions(actions => actions.setLocation);
 
@@ -94,10 +99,19 @@ const EditInformationContainer = () => {
                                     />
                                 </div>
 
-                                <div css={tw`mt-6 text-right`}>
-                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
-                                        Save
-                                    </Button>
+                                <div css={tw`w-full flex flex-row items-center mt-6`}>
+                                    <div css={tw`flex`}>
+                                        <LocationDeleteButton
+                                            locationId={location.id}
+                                            onDeleted={() => history.push('/admin/locations')}
+                                        />
+                                    </div>
+
+                                    <div css={tw`flex ml-auto`}>
+                                        <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                            Save
+                                        </Button>
+                                    </div>
                                 </div>
                             </Form>
                         </AdminBox>
