@@ -14,13 +14,13 @@ Route::get('/version', 'VersionController');
 */
 Route::group(['prefix' => '/databases'], function () {
     Route::get('/', 'Databases\DatabaseController@index');
-    Route::get('/{database}', 'Databases\DatabaseController@view');
+    Route::get('/{databaseHost}', 'Databases\DatabaseController@view');
 
     Route::post('/', 'Databases\DatabaseController@store');
 
-    Route::patch('/{database}', 'Databases\DatabaseController@update');
+    Route::patch('/{databaseHost}', 'Databases\DatabaseController@update');
 
-    Route::delete('/{database}', 'Databases\DatabaseController@delete');
+    Route::delete('/{databaseHost}', 'Databases\DatabaseController@delete');
 });
 
 /*

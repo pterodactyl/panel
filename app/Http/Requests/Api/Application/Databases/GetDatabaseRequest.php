@@ -13,8 +13,8 @@ class GetDatabaseRequest extends GetDatabasesRequest
      */
     public function resourceExists(): bool
     {
-        $database = $this->route()->parameter('database');
+        $databaseHost = $this->route()->parameter('databaseHost');
 
-        return $database instanceof DatabaseHost && $database->exists;
+        return $databaseHost instanceof DatabaseHost && $databaseHost->exists;
     }
 }

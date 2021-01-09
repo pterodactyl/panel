@@ -15,6 +15,6 @@ class UpdateDatabaseRequest extends StoreDatabaseRequest
      */
     public function rules(array $rules = null): array
     {
-        return $rules ?? DatabaseHost::getRulesForUpdate($this->route()->parameter('database')->id);
+        return $rules ?? DatabaseHost::getRulesForUpdate($this->route()->parameter('databaseHost')->id);
     }
 }
