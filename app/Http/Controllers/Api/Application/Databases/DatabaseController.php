@@ -5,6 +5,8 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Databases;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\DatabaseHost;
 use Spatie\QueryBuilder\QueryBuilder;
+use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
+use Pterodactyl\Services\Databases\Hosts\HostCreationService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Transformers\Api\Application\DatabaseHostTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
@@ -17,11 +19,27 @@ use Pterodactyl\Http\Requests\Api\Application\Databases\DeleteDatabaseRequest;
 class DatabaseController extends ApplicationApiController
 {
     /**
-     * DatabaseController constructor.
+     * @var \Pterodactyl\Services\Databases\Hosts\HostCreationService
      */
-    public function __construct()
+    private $creationService;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\Hosts\HostUpdateService
+     */
+    private $updateService;
+
+    /**
+     * DatabaseController constructor.
+     *
+     * @param \Pterodactyl\Services\Databases\Hosts\HostCreationService $creationService
+     * @param \Pterodactyl\Services\Databases\Hosts\HostUpdateService $updateService
+     */
+    public function __construct(HostCreationService $creationService, HostUpdateService $updateService)
     {
         parent::__construct();
+
+        $this->creationService = $creationService;
+        $this->updateService = $updateService;
     }
 
     /**
@@ -73,11 +91,11 @@ class DatabaseController extends ApplicationApiController
      * @param \Pterodactyl\Http\Requests\Api\Application\Databases\StoreDatabaseRequest $request
      *
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Throwable
      */
     public function store(StoreDatabaseRequest $request): JsonResponse
     {
-        $databaseHost = DatabaseHost::query()->create($request->validated());
+        $databaseHost = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($databaseHost)
             ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
@@ -91,11 +109,11 @@ class DatabaseController extends ApplicationApiController
      * @param \Pterodactyl\Models\DatabaseHost $databaseHost
      *
      * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Throwable
      */
     public function update(UpdateDatabaseRequest $request, DatabaseHost $databaseHost): array
     {
-        $databaseHost->update($request->validated());
+        $databaseHost = $this->updateService->handle($databaseHost->id, $request->validated());
 
         return $this->fractal->item($databaseHost)
             ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
