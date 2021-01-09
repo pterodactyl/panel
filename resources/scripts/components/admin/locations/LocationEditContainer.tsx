@@ -8,6 +8,13 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ApplicationStore } from '@/state';
+import { object, string } from 'yup';
+import AdminBox from '@/components/admin/AdminBox';
+import Button from '@/components/elements/Button';
+import Field from '@/components/elements/Field';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { Form, Formik, FormikHelpers } from 'formik';
+import updateLocation from '@/api/admin/locations/updateLocation';
 
 interface ctx {
     location: Location | undefined;
@@ -21,6 +28,85 @@ export const Context = createContextStore<ctx>({
         state.location = payload;
     }),
 });
+
+interface Values {
+    short: string;
+    long: string;
+}
+
+const EditInformationContainer = () => {
+    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const location = Context.useStoreState(state => state.location);
+    const setLocation = Context.useStoreActions(actions => actions.setLocation);
+
+    if (location === undefined) {
+        return (
+            <></>
+        );
+    }
+
+    const submit = ({ short, long }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('location');
+
+        updateLocation(location.id, short, long)
+            .then(() => setLocation({ ...location, short, long }))
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'location', error });
+            })
+            .then(() => setSubmitting(false));
+    };
+
+    return (
+        <Formik
+            onSubmit={submit}
+            initialValues={{
+                short: location.short,
+                long: location.long || '',
+            }}
+            validationSchema={object().shape({
+                short: string().required().min(1),
+                long: string().max(255, ''),
+            })}
+        >
+            {
+                ({ isSubmitting, isValid }) => (
+                    <React.Fragment>
+                        <AdminBox title={'Edit Location'} css={tw`relative`}>
+                            <SpinnerOverlay visible={isSubmitting}/>
+
+                            <Form css={tw`mb-0`}>
+                                <div>
+                                    <Field
+                                        id={'short'}
+                                        name={'short'}
+                                        label={'Short Name'}
+                                        type={'text'}
+                                    />
+                                </div>
+
+                                <div css={tw`mt-6`}>
+                                    <Field
+                                        id={'long'}
+                                        name={'long'}
+                                        label={'Long Name'}
+                                        type={'text'}
+                                    />
+                                </div>
+
+                                <div css={tw`mt-6 text-right`}>
+                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                        Save
+                                    </Button>
+                                </div>
+                            </Form>
+                        </AdminBox>
+                    </React.Fragment>
+                )
+            }
+        </Formik>
+    );
+};
 
 const LocationEditContainer = () => {
     const match = useRouteMatch<{ id?: string }>();
@@ -60,11 +146,20 @@ const LocationEditContainer = () => {
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col`}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{location.short}</h2>
-                    <p css={tw`text-base text-neutral-400`}>{location.long}</p>
+                    {
+                        (location.long || '').length < 1 ?
+                            <p css={tw`text-base text-neutral-400`}>
+                                <span css={tw`italic`}>No long name</span>
+                            </p>
+                            :
+                            <p css={tw`text-base text-neutral-400`}>{location.long}</p>
+                    }
                 </div>
             </div>
 
             <FlashMessageRender byKey={'location'} css={tw`mb-4`}/>
+
+            <EditInformationContainer/>
         </AdminContentBlock>
     );
 };
