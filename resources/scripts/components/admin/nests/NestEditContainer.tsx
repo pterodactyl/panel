@@ -1,5 +1,7 @@
+import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
+import NestDeleteButton from '@/components/admin/nests/NestDeleteButton';
 import React, { useEffect, useState } from 'react';
-import { NavLink, useRouteMatch } from 'react-router-dom';
+import { NavLink, useHistory, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
@@ -60,7 +62,10 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
+    const history = useHistory();
+
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+
     const nest = Context.useStoreState(state => state.nest);
     const setNest = Context.useStoreActions(actions => actions.setNest);
 
@@ -119,10 +124,19 @@ const EditInformationContainer = () => {
                                     />
                                 </div>
 
-                                <div css={tw`mt-6 text-right`}>
-                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
-                                        Save
-                                    </Button>
+                                <div css={tw`w-full flex flex-row items-center mt-6`}>
+                                    <div css={tw`flex`}>
+                                        <NestDeleteButton
+                                            nestId={nest.id}
+                                            onDeleted={() => history.push('/admin/nests')}
+                                        />
+                                    </div>
+
+                                    <div css={tw`flex ml-auto`}>
+                                        <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                            Save
+                                        </Button>
+                                    </div>
                                 </div>
                             </Form>
                         </AdminBox>
