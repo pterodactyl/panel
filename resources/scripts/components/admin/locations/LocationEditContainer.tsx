@@ -1,5 +1,3 @@
-import DatabaseDeleteButton from '@/components/admin/databases/DatabaseDeleteButton';
-import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import { useHistory, useRouteMatch } from 'react-router-dom';
@@ -17,6 +15,7 @@ import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
 import updateLocation from '@/api/admin/locations/updateLocation';
+import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
 
 interface ctx {
     location: Location | undefined;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
 import { Mount } from '@/api/admin/mounts/getMounts';
 import getMount from '@/api/admin/mounts/getMount';
@@ -15,6 +15,7 @@ import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
+import MountDeleteButton from '@/components/admin/mounts/MountDeleteButton';
 
 interface ctx {
     mount: Mount | undefined;
@@ -39,7 +40,10 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
+    const history = useHistory();
+
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+
     const mount = Context.useStoreState(state => state.mount);
     const setMount = Context.useStoreActions(actions => actions.setMount);
 
@@ -124,10 +128,19 @@ const EditInformationContainer = () => {
                                     />
                                 </div>
 
-                                <div css={tw`mt-6 text-right`}>
-                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
-                                        Save
-                                    </Button>
+                                <div css={tw`w-full flex flex-row items-center mt-6`}>
+                                    <div css={tw`flex`}>
+                                        <MountDeleteButton
+                                            mountId={mount.id}
+                                            onDeleted={() => history.push('/admin/mounts')}
+                                        />
+                                    </div>
+
+                                    <div css={tw`flex ml-auto`}>
+                                        <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                            Save
+                                        </Button>
+                                    </div>
                                 </div>
                             </Form>
                         </AdminBox>

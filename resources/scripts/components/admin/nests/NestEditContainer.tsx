@@ -1,5 +1,3 @@
-import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
-import NestDeleteButton from '@/components/admin/nests/NestDeleteButton';
 import React, { useEffect, useState } from 'react';
 import { NavLink, useHistory, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
@@ -22,6 +20,7 @@ import AdminTable, { ContentWrapper, NoItems, TableBody, TableHead, TableHeader,
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
+import NestDeleteButton from '@/components/admin/nests/NestDeleteButton';
 
 interface ctx {
     nest: Nest | undefined;
