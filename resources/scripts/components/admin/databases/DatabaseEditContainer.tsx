@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import { useRouteMatch } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
 import { Database } from '@/api/admin/databases/getDatabases';
 import getDatabase from '@/api/admin/databases/getDatabase';
@@ -15,6 +15,7 @@ import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
 import updateDatabase from '@/api/admin/databases/updateDatabase';
+import DatabaseDeleteButton from '@/components/admin/databases/DatabaseDeleteButton';
 
 interface ctx {
     database: Database | undefined;
@@ -38,7 +39,10 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
+    const history = useHistory();
+
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+
     const database = Context.useStoreState(state => state.database);
     const setDatabase = Context.useStoreActions(actions => actions.setDatabase);
 
@@ -134,10 +138,19 @@ const EditInformationContainer = () => {
                                     </div>
                                 </div>
 
-                                <div css={tw`mt-6 text-right`}>
-                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
-                                        Save
-                                    </Button>
+                                <div css={tw`w-full flex flex-row items-center mt-6`}>
+                                    <div css={tw`flex`}>
+                                        <DatabaseDeleteButton
+                                            databaseId={database.id}
+                                            onDeleted={() => history.push('/admin/databases')}
+                                        />
+                                    </div>
+
+                                    <div css={tw`flex ml-auto`}>
+                                        <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                            Save
+                                        </Button>
+                                    </div>
                                 </div>
                             </Form>
                         </AdminBox>
