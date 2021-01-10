@@ -199,6 +199,7 @@ class Node extends Model
      * Helper function to return the decrypted key for a node.
      *
      * @return string
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getDecryptedKey(): string
     {

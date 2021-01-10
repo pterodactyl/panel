@@ -22,9 +22,10 @@ trait CreatesTestModels
      * The returned server model will have all of the relationships loaded onto it.
      *
      * @param array $attributes
-     * @return \Pterodactyl\Models\Server
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|\Pterodactyl\Models\Server
      */
-    public function createServerModel(array $attributes = []): Server
+    public function createServerModel(array $attributes = [])
     {
         /** @var \Illuminate\Database\Eloquent\Factory $factory */
         $factory = $this->app->make(EloquentFactory::class);
@@ -69,6 +70,7 @@ trait CreatesTestModels
 
         unset($attributes['user_id'], $attributes['location_id']);
 
+        /** @var \Pterodactyl\Models\Server $server */
         $server = $factory->of(Server::class)->create($attributes);
 
         Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);
