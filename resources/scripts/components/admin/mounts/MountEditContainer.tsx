@@ -110,22 +110,24 @@ const EditInformationContainer = () => {
                                     />
                                 </div>
 
-                                <div css={tw`mt-6`}>
-                                    <Field
-                                        id={'source'}
-                                        name={'source'}
-                                        label={'Source'}
-                                        type={'text'}
-                                    />
-                                </div>
+                                <div css={tw`md:w-full md:flex md:flex-row mt-6`}>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mt-6 md:mt-0`}>
+                                        <Field
+                                            id={'source'}
+                                            name={'source'}
+                                            label={'Source'}
+                                            type={'text'}
+                                        />
+                                    </div>
 
-                                <div css={tw`mt-6`}>
-                                    <Field
-                                        id={'target'}
-                                        name={'target'}
-                                        label={'Target'}
-                                        type={'text'}
-                                    />
+                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
+                                        <Field
+                                            id={'target'}
+                                            name={'target'}
+                                            label={'Target'}
+                                            type={'text'}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>

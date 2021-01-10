@@ -98,8 +98,8 @@ const EditInformationContainer = () => {
                                     />
                                 </div>
 
-                                <div css={tw`w-full flex flex-row mt-6`}>
-                                    <div css={tw`w-full flex flex-col mr-4`}>
+                                <div css={tw`md:w-full md:flex md:flex-row mt-6`}>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mt-6 md:mt-0`}>
                                         <Field
                                             id={'host'}
                                             name={'host'}
@@ -108,7 +108,7 @@ const EditInformationContainer = () => {
                                         />
                                     </div>
 
-                                    <div css={tw`w-full flex flex-col ml-4`}>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
                                         <Field
                                             id={'port'}
                                             name={'port'}
@@ -118,8 +118,8 @@ const EditInformationContainer = () => {
                                     </div>
                                 </div>
 
-                                <div css={tw`w-full flex flex-row mt-6`}>
-                                    <div css={tw`w-full flex flex-col mr-4`}>
+                                <div css={tw`md:w-full md:flex md:flex-row mt-6`}>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mt-6 md:mt-0`}>
                                         <Field
                                             id={'username'}
                                             name={'username'}
@@ -128,7 +128,7 @@ const EditInformationContainer = () => {
                                         />
                                     </div>
 
-                                    <div css={tw`w-full flex flex-col ml-4`}>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
                                         <Field
                                             id={'password'}
                                             name={'password'}
