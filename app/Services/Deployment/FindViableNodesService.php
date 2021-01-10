@@ -77,10 +77,15 @@ class FindViableNodesService
      * are tossed out, as are any nodes marked as non-public, meaning automatic
      * deployments should not be done against them.
      *
-     * @return \Pterodactyl\Models\Node[]|\Illuminate\Support\Collection
+     * @param int|null $page If provided the results will be paginated by returning
+     *                       up to 50 nodes at a time starting at the provided page.
+     *                       If "null" is provided as the value no pagination will
+     *                       be used.
+     * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
+     *
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      */
-    public function handle()
+    public function handle(int $page = null)
     {
         Assert::integer($this->disk, 'Disk space must be an int, got %s');
         Assert::integer($this->memory, 'Memory usage must be an int, got %s');
@@ -97,9 +102,13 @@ class FindViableNodesService
 
         $results = $query->groupBy('nodes.id')
             ->havingRaw('(IFNULL(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100)))', [$this->memory])
-            ->havingRaw('(IFNULL(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100)))', [$this->disk])
-            ->get()
-            ->toBase();
+            ->havingRaw('(IFNULL(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100)))', [$this->disk]);
+
+        if (! is_null($page)) {
+            $results = $results->paginate(50, ['*'], 'page', $page);
+        } else {
+            $results = $results->get()->toBase();
+        }
 
         if ($results->isEmpty()) {
             throw new NoViableNodeException(trans('exceptions.deployment.no_viable_nodes'));

@@ -197,6 +197,7 @@ class ServerCreationService
      */
     private function configureDeployment(array $data, DeploymentObject $deployment): Allocation
     {
+        /** @var \Illuminate\Support\Collection $nodes */
         $nodes = $this->findViableNodesService->setLocations($deployment->getLocations())
             ->setDisk(Arr::get($data, 'disk'))
             ->setMemory(Arr::get($data, 'memory'))
