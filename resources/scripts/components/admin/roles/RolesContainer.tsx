@@ -64,12 +64,14 @@ export default () => {
     return (
         <AdminContentBlock title={'Roles'}>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
-                <div css={tw`flex flex-col`}>
+                <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Roles</h2>
-                    <p css={tw`text-base text-neutral-400`}>Soon&trade;</p>
+                    <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>Soon&trade;</p>
                 </div>
 
-                <NewRoleButton/>
+                <div css={tw`flex ml-auto pl-4`}>
+                    <NewRoleButton/>
+                </div>
             </div>
 
             <FlashMessageRender byKey={'roles'} css={tw`mb-4`}/>

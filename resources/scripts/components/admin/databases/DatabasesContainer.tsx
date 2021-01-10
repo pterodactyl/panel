@@ -63,16 +63,18 @@ const DatabasesContainer = () => {
     return (
         <AdminContentBlock title={'Databases'}>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
-                <div css={tw`flex flex-col`}>
+                <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Database Hosts</h2>
-                    <p css={tw`text-base text-neutral-400`}>Database hosts that servers can have databases created on.</p>
+                    <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>Database hosts that servers can have databases created on.</p>
                 </div>
 
-                <NavLink to={`${match.url}/new`} css={tw`ml-auto`}>
-                    <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0`}>
-                        New Database Host
-                    </Button>
-                </NavLink>
+                <div css={tw`flex ml-auto pl-4`}>
+                    <NavLink to={`${match.url}/new`}>
+                        <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
+                            New Database Host
+                        </Button>
+                    </NavLink>
+                </div>
             </div>
 
             <FlashMessageRender byKey={'databases'} css={tw`mb-4`}/>

@@ -63,16 +63,18 @@ const UsersContainer = () => {
     return (
         <AdminContentBlock title={'Servers'}>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
-                <div css={tw`flex flex-col`}>
+                <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>Servers</h2>
-                    <p css={tw`text-base text-neutral-400`}>All servers available on the system.</p>
+                    <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>All servers available on the system.</p>
                 </div>
 
-                <NavLink to={`${match.url}/new`} css={tw`ml-auto`}>
-                    <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0`}>
-                        New Server
-                    </Button>
-                </NavLink>
+                <div css={tw`flex ml-auto pl-4`}>
+                    <NavLink to={`${match.url}/new`}>
+                        <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
+                            New Server
+                        </Button>
+                    </NavLink>
+                </div>
             </div>
 
             <FlashMessageRender byKey={'servers'} css={tw`mb-4`}/>

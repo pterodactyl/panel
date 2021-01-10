@@ -102,7 +102,7 @@ export default () => {
                 }
             </Formik>
 
-            <Button type={'button'} size={'large'} css={tw`h-10 ml-auto px-4 py-0`} onClick={() => setVisible(true)}>
+            <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`} onClick={() => setVisible(true)}>
                 New Role
             </Button>
         </>

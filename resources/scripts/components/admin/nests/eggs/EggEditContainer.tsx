@@ -57,7 +57,7 @@ const EggEditContainer = () => {
     return (
         <AdminContentBlock title={'Egg - ' + egg.name}>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
-                <div css={tw`flex flex-col`}>
+                <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{egg.name}</h2>
                     {
                         (egg.description || '').length < 1 ?
@@ -65,7 +65,7 @@ const EggEditContainer = () => {
                                 <span css={tw`italic`}>No description</span>
                             </p>
                             :
-                            <p css={tw`text-base text-neutral-400`}>{egg.description}</p>
+                            <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>{egg.description}</p>
                     }
                 </div>
             </div>
