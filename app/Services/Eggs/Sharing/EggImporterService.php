@@ -105,6 +105,7 @@ class EggImporterService
             // Maintain backwards compatability for eggs that are still using the old single image
             // string format. New eggs can provide an array of Docker images that can be used.
             'docker_images' => object_get($parsed, 'images') ?? [object_get($parsed, 'image')],
+            'file_denylist' => implode(PHP_EOL, object_get($parsed, 'file_denylist') ?? []),
             'update_url' => object_get($parsed, 'meta.update_url'),
             'config_files' => object_get($parsed, 'config.files'),
             'config_startup' => object_get($parsed, 'config.startup'),
@@ -118,7 +119,7 @@ class EggImporterService
         ], true, true);
 
         collect($parsed->variables)->each(function ($variable) use ($egg) {
-            $this->eggVariableRepository->create(array_merge((array) $variable, [
+            $this->eggVariableRepository->create(array_merge((array)$variable, [
                 'egg_id' => $egg->id,
             ]));
         });

@@ -46,6 +46,7 @@ class EggExporterService
             'description' => $egg->description,
             'features' => $egg->features,
             'images' => $egg->docker_images,
+            'file_denylist' => $egg->inherit_file_denylist,
             'startup' => $egg->startup,
             'config' => [
                 'files' => $egg->inherit_config_files,

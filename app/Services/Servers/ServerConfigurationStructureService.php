@@ -91,6 +91,14 @@ class ServerConfigurationStructureService
                     'read_only' => $mount->read_only,
                 ];
             }),
+            'egg' => [
+                'id' => $server->egg->uuid,
+                'file_denylist' => [
+                    'config.yml',
+                    '**/*.json'
+                ]
+                // 'file_denylist' => explode(PHP_EOL, $server->egg->inherit_file_denylist),
+            ]
         ];
     }
 
