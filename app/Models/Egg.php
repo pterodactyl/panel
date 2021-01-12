@@ -13,6 +13,7 @@ namespace Pterodactyl\Models;
  * @property string $docker_image -- deprecated, use $docker_images
  * @property string $update_url
  * @property array $docker_images
+ * @property string $file_denylist
  * @property string|null $config_files
  * @property string|null $config_startup
  * @property string|null $config_logs
@@ -34,6 +35,7 @@ namespace Pterodactyl\Models;
  * @property string|null $inherit_config_startup
  * @property string|null $inherit_config_logs
  * @property string|null $inherit_config_stop
+ * @property string $inherit_file_denylist
  * @property array|null $inherit_features
  *
  * @property \Pterodactyl\Models\Nest $nest
@@ -79,6 +81,7 @@ class Egg extends Model
         'description',
         'features',
         'docker_images',
+        'file_denylist',
         'config_files',
         'config_startup',
         'config_logs',
@@ -253,6 +256,21 @@ class Egg extends Model
         }
 
         return $this->configFrom->features;
+    }
+
+    /**
+     * Returns the features available to this egg from the parent configuration if there are
+     * no features defined for this egg specifically and there is a parent egg configured.
+     *
+     * @return string
+     */
+    public function getInheritFileDenylistAttribute()
+    {
+        if (is_null($this->config_from)) {
+            return $this->file_denylist;
+        }
+
+        return $this->configFrom->file_denylist;
     }
 
     /**
