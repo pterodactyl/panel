@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::group(['middleware' => 'guest'], function () {
-    // These routes are defined so that we can continue to reference them programatically.
-    // They all route to the same controller function which passes off to Vuejs.
+    // These routes are defined so that we can continue to reference them programmatically.
+    // They all route to the same controller function which passes off to React.
     Route::get('/login', 'LoginController@index')->name('auth.login');
     Route::get('/password', 'LoginController@index')->name('auth.forgot-password');
     Route::get('/password/reset/{token}', 'LoginController@index')->name('auth.reset');
@@ -30,7 +30,7 @@ Route::group(['middleware' => 'guest'], function () {
     // is created).
     Route::post('/password/reset', 'ResetPasswordController')->name('auth.reset-password');
 
-    // Catch any other combinations of routes and pass them off to the Vuejs component.
+    // Catch any other combinations of routes and pass them off to the React component.
     Route::fallback('LoginController@index');
 });
 

@@ -2,12 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
+/*
+|--------------------------------------------------------------------------
+| Server Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /server
+|
+*/
 Route::get('/')->name('server.index');
 Route::get('/console')->name('server.console');

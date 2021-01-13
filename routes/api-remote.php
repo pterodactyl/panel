@@ -2,7 +2,14 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Routes for the Wings daemon.
+/*
+|--------------------------------------------------------------------------
+| Wings Remote API Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/remote
+|
+*/
 Route::post('/sftp/auth', 'SftpAuthenticationController');
 
 Route::get('/servers', 'Servers\ServerDetailsController@list');
