@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
@@ -30,27 +29,19 @@ class ServerController extends ApplicationApiController
     private $deletionService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * ServerController constructor.
      *
      * @param \Pterodactyl\Services\Servers\ServerCreationService $creationService
      * @param \Pterodactyl\Services\Servers\ServerDeletionService $deletionService
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         ServerCreationService $creationService,
-        ServerDeletionService $deletionService,
-        ServerRepositoryInterface $repository
+        ServerDeletionService $deletionService
     ) {
         parent::__construct();
 
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
-        $this->repository = $repository;
     }
 
     /**

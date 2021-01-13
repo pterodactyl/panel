@@ -5,6 +5,7 @@ namespace Pterodactyl\Models;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
+use Illuminate\Validation\Validator;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 use Pterodactyl\Exceptions\Model\DataValidationException;
@@ -79,9 +80,9 @@ abstract class Model extends IlluminateModel
     /**
      * Returns the validator instance used by this model.
      *
-     * @return \Illuminate\Validation\Validator|\Illuminate\Contracts\Validation\Validator
+     * @return \Illuminate\Validation\Validator
      */
-    public function getValidator()
+    public function getValidator(): Validator
     {
         $rules = $this->getKey() ? static::getRulesForUpdate($this) : static::getRules();
 
