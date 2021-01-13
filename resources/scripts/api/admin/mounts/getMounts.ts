@@ -1,6 +1,9 @@
-import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
+import http, { FractalResponseData, FractalResponseList, getPaginationSet, PaginatedResult } from '@/api/http';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
+import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
+import { Node, rawDataToNode } from '@/api/admin/nodes/getNodes';
+import { Server, rawDataToServer } from '@/api/admin/servers/getServers';
 
 export interface Mount {
     id: number;
@@ -13,6 +16,12 @@ export interface Mount {
     userMountable: boolean;
     createdAt: Date;
     updatedAt: Date;
+
+    relations: {
+        eggs: Egg[] | undefined;
+        nodes: Node[] | undefined;
+        servers: Server[] | undefined;
+    };
 }
 
 export const rawDataToMount = ({ attributes }: FractalResponseData): Mount => ({
@@ -26,6 +35,12 @@ export const rawDataToMount = ({ attributes }: FractalResponseData): Mount => ({
     userMountable: attributes.user_mountable,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
+
+    relations: {
+        eggs: ((attributes.relationships?.eggs as FractalResponseList | undefined)?.data || []).map(rawDataToEgg),
+        nodes: ((attributes.relationships?.nodes as FractalResponseList | undefined)?.data || []).map(rawDataToNode),
+        servers: ((attributes.relationships?.servers as FractalResponseList | undefined)?.data || []).map(rawDataToServer),
+    },
 });
 
 interface ctx {
@@ -35,11 +50,11 @@ interface ctx {
 
 export const Context = createContext<ctx>({ page: 1, setPage: () => 1 });
 
-export default () => {
+export default (include: string[] = []) => {
     const { page } = useContext(Context);
 
     return useSWR<PaginatedResult<Mount>>([ 'mounts', page ], async () => {
-        const { data } = await http.get('/api/application/mounts', { params: { page } });
+        const { data } = await http.get('/api/application/mounts', { params: { include: include.join(','), page } });
 
         return ({
             items: (data.data || []).map(rawDataToMount),

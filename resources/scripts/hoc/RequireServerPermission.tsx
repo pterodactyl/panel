@@ -1,6 +1,7 @@
 import React from 'react';
 import Can from '@/components/elements/Can';
 import ScreenBlock from '@/components/screens/ScreenBlock';
+
 export interface RequireServerPermissionProps {
     permissions: string | string[]
 }
