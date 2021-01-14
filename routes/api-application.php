@@ -74,9 +74,14 @@ Route::group(['prefix' => '/mounts'], function () {
 
     Route::post('/', 'Mounts\MountController@store');
 
+    Route::put('/{mount}/eggs', 'Mounts\MountController@addEggs');
+    Route::put('/{mount}/nodes', 'Mounts\MountController@addNodes');
+
     Route::patch('/{mount}', 'Mounts\MountController@update');
 
     Route::delete('/{mount}', 'Mounts\MountController@delete');
+    Route::delete('/{mount}/eggs', 'Mounts\MountController@deleteEggs');
+    Route::delete('/{mount}/nodes', 'Mounts\MountController@deleteNodes');
 });
 
 /*
