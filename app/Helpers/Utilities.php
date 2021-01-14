@@ -51,20 +51,4 @@ class Utilities
             sprintf('%s %s %s * %s', $minute, $hour, $dayOfMonth, $dayOfWeek)
         )->getNextRunDate());
     }
-
-    /**
-     * @param string $name
-     * @param mixed $default
-     * @return string
-     */
-    public static function checked(string $name, $default)
-    {
-        $errors = session('errors');
-
-        if (isset($errors) && $errors instanceof ViewErrorBag && $errors->any()) {
-            return old($name) ? 'checked' : '';
-        }
-
-        return ($default) ? 'checked' : '';
-    }
 }
