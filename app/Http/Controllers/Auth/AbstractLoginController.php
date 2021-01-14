@@ -102,11 +102,11 @@ abstract class AbstractLoginController extends Controller
 
         $this->auth->guard()->login($user, true);
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'data' => [
                 'complete' => true,
                 'intended' => $this->redirectPath(),
-                'user' => $user->toVueObject(),
+                'user' => $user->toReactObject(),
             ],
         ]);
     }
