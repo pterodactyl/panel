@@ -14,8 +14,9 @@ import AdminBox from '@/components/admin/AdminBox';
 import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Field as FormikField, Form, Formik, FormikHelpers } from 'formik';
 import MountDeleteButton from '@/components/admin/mounts/MountDeleteButton';
+import Label from '@/components/elements/Label';
 
 interface ctx {
     mount: Mount | undefined;
@@ -35,8 +36,8 @@ interface Values {
     description: string;
     source: string;
     target: string;
-    readOnly: boolean;
-    userMountable: boolean;
+    readOnly: string;
+    userMountable: string;
 }
 
 const EditInformationContainer = () => {
@@ -56,8 +57,8 @@ const EditInformationContainer = () => {
     const submit = ({ name, description, source, target, readOnly, userMountable }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('mount');
 
-        updateMount(mount.id, name, description, source, target, readOnly, userMountable)
-            .then(() => setMount({ ...mount, name, description, source, target, readOnly, userMountable }))
+        updateMount(mount.id, name, description, source, target, readOnly === '1', userMountable === '1')
+            .then(() => setMount({ ...mount, name, description, source, target, readOnly: readOnly === '1', userMountable: userMountable === '1' }))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'mount', error });
@@ -73,8 +74,8 @@ const EditInformationContainer = () => {
                 description: mount.description || '',
                 source: mount.source,
                 target: mount.target,
-                readOnly: mount.readOnly,
-                userMountable: mount.userMountable,
+                readOnly: mount.readOnly ? '1' : '0',
+                userMountable: mount.userMountable ? '1' : '0',
             }}
             validationSchema={object().shape({
                 name: string().required().min(1),
@@ -127,6 +128,57 @@ const EditInformationContainer = () => {
                                             label={'Target'}
                                             type={'text'}
                                         />
+                                    </div>
+                                </div>
+
+                                <div css={tw`md:w-full md:flex md:flex-row mt-6`}>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mt-6 md:mt-0`}>
+                                        <Label htmlFor={'readOnly'}>Permissions</Label>
+
+                                        <div>
+                                            <label css={tw`inline-flex items-center mr-2`}>
+                                                <FormikField
+                                                    name={'readOnly'}
+                                                    type={'radio'}
+                                                    value={'0'}
+                                                />
+                                                <span css={tw`ml-2`}>Writable</span>
+                                            </label>
+
+                                            <label css={tw`inline-flex items-center ml-2`}>
+                                                <FormikField
+                                                    name={'readOnly'}
+                                                    type={'radio'}
+                                                    value={'1'}
+                                                />
+                                                <span css={tw`ml-2`}>Read Only</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
+                                        <Label htmlFor={'userMountable'}>User Mountable</Label>
+
+                                        <div>
+                                            <label css={tw`inline-flex items-center mr-2`}>
+                                                <FormikField
+                                                    name={'userMountable'}
+                                                    type={'radio'}
+                                                    value={'0'}
+                                                />
+                                                <span css={tw`ml-2`}>Admin Only</span>
+                                            </label>
+
+                                            <label css={tw`inline-flex items-center ml-2`}>
+                                                <FormikField
+                                                    name={'userMountable'}
+                                                    type={'radio'}
+                                                    value={'1'}
+
+                                                />
+                                                <span css={tw`ml-2`}>Users</span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
 
