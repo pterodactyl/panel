@@ -2,7 +2,10 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Mount;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class MountTransformer extends BaseTransformer
@@ -64,7 +67,7 @@ class MountTransformer extends BaseTransformer
         return $this->collection(
             $mount->getRelation('eggs'),
             $this->makeTransformer(EggTransformer::class),
-            'egg',
+            Egg::RESOURCE_NAME
         );
     }
 
@@ -88,7 +91,7 @@ class MountTransformer extends BaseTransformer
         return $this->collection(
             $mount->getRelation('nodes'),
             $this->makeTransformer(NodeTransformer::class),
-            'node',
+            Node::RESOURCE_NAME
         );
     }
 
@@ -112,7 +115,7 @@ class MountTransformer extends BaseTransformer
         return $this->collection(
             $mount->getRelation('servers'),
             $this->makeTransformer(ServerTransformer::class),
-            'server',
+            Server::RESOURCE_NAME
         );
     }
 }

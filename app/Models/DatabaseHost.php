@@ -8,12 +8,11 @@ namespace Pterodactyl\Models;
  * @property string $host
  * @property int $port
  * @property string $username
- * @property int $node_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  *
- * @property \Pterodactyl\Models\Node|null $node
  * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
+ * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
  */
 class DatabaseHost extends Model
 {
@@ -43,7 +42,7 @@ class DatabaseHost extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'max_databases', 'node_id',
+        'name', 'host', 'port', 'username', 'password', 'max_databases',
     ];
 
     /**
@@ -54,7 +53,6 @@ class DatabaseHost extends Model
     protected $casts = [
         'id' => 'integer',
         'max_databases' => 'integer',
-        'node_id' => 'integer',
     ];
 
     /**
@@ -68,26 +66,25 @@ class DatabaseHost extends Model
         'port' => 'required|numeric|between:1,65535',
         'username' => 'required|string|max:32',
         'password' => 'nullable|string',
-        'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
     ];
 
     /**
-     * Gets the node associated with a database host.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function node()
-    {
-        return $this->belongsTo(Node::class);
-    }
-
-    /**
-     * Gets the databases associated with this host.
+     * Gets the databases associated with a database host.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function databases()
     {
         return $this->hasMany(Database::class);
+    }
+
+    /**
+     * Gets the nodes associated with a database host.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function nodes()
+    {
+        return $this->belongsToMany(Node::class);
     }
 }

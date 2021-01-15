@@ -3,6 +3,7 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Cake\Chronos\Chronos;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
@@ -12,9 +13,7 @@ class DatabaseHostTransformer extends BaseTransformer
     /**
      * @var array
      */
-    protected $availableIncludes = [
-        'databases',
-    ];
+    protected $availableIncludes = ['databases', 'nodes'];
 
     /**
      * Return the resource name for the JSONAPI output.
@@ -68,6 +67,36 @@ class DatabaseHostTransformer extends BaseTransformer
 
         $model->loadMissing('databases');
 
-        return $this->collection($model->getRelation('databases'), $this->makeTransformer(ServerDatabaseTransformer::class), Database::RESOURCE_NAME);
+        return $this->collection(
+            $model->getRelation('databases'),
+            $this->makeTransformer(ServerDatabaseTransformer::class),
+            Database::RESOURCE_NAME
+        );
+    }
+
+
+
+    /**
+     * Return the nodes associated with this mount.
+     *
+     * @param \Pterodactyl\Models\Mount $mount
+     *
+     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function includeNodes(DatabaseHost $model)
+    {
+        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
+            return $this->null();
+        }
+
+        $model->loadMissing('nodes');
+
+        return $this->collection(
+            $model->getRelation('nodes'),
+            $this->makeTransformer(NodeTransformer::class),
+            Node::RESOURCE_NAME
+        );
     }
 }

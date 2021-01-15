@@ -12,6 +12,7 @@ use Pterodactyl\Transformers\Api\Application\DatabaseHostTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Databases\GetDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Application\Databases\GetDatabasesRequest;
+use Pterodactyl\Http\Requests\Api\Application\Databases\DatabaseNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Databases\StoreDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Application\Databases\UpdateDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Application\Databases\DeleteDatabaseRequest;
@@ -134,5 +135,49 @@ class DatabaseController extends ApplicationApiController
         $databaseHost->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * ?
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\DatabaseNodesRequest $request
+     * @param \Pterodactyl\Models\Mount $mount
+     *
+     * @return array
+     */
+    public function addNodes(DatabaseNodesRequest $request, DatabaseHost $databaseHost): array
+    {
+        $data = $request->validated();
+
+        $nodes = $data['nodes'] ?? [];
+        if (count($nodes) > 0) {
+            $databaseHost->nodes()->syncWithoutDetaching($nodes);
+        }
+
+        return $this->fractal->item($databaseHost)
+            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->toArray();
+    }
+
+    /**
+     * ?
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\DatabaseNodesRequest $request
+     * @param \Pterodactyl\Models\Mount $mount
+     *
+     * @return array
+     */
+    public function deleteNodes(DatabaseNodesRequest $request, DatabaseHost $databaseHost): array
+    {
+        $data = $request->validated();
+
+        $nodes = $data['nodes'] ?? [];
+        if (count($nodes) > 0) {
+            $databaseHost->nodes()->detach($nodes);
+        }
+
+        return $this->fractal->item($databaseHost)
+            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->toArray();
     }
 }

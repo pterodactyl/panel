@@ -9,11 +9,11 @@ use Pterodactyl\Transformers\Api\Application\MountTransformer;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\GetMountRequest;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\GetMountsRequest;
+use Pterodactyl\Http\Requests\Api\Application\Mounts\MountEggsRequest;
+use Pterodactyl\Http\Requests\Api\Application\Mounts\MountNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\StoreMountRequest;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\UpdateMountRequest;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\DeleteMountRequest;
-use Pterodactyl\Http\Requests\Api\Application\Mounts\MountAddEggsRequest;
-use Pterodactyl\Http\Requests\Api\Application\Mounts\MountAddNodesRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class MountController extends ApplicationApiController
@@ -123,12 +123,12 @@ class MountController extends ApplicationApiController
     /**
      * ?
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountAddEggsRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountEggsRequest $request
      * @param \Pterodactyl\Models\Mount $mount
      *
      * @return array
      */
-    public function addEggs(MountAddEggsRequest $request, Mount $mount): array
+    public function addEggs(MountEggsRequest $request, Mount $mount): array
     {
         $data = $request->validated();
 
@@ -145,12 +145,12 @@ class MountController extends ApplicationApiController
     /**
      * ?
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountAddNodesRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountNodesRequest $request
      * @param \Pterodactyl\Models\Mount $mount
      *
      * @return array
      */
-    public function addNodes(MountAddNodesRequest $request, Mount $mount): array
+    public function addNodes(MountNodesRequest $request, Mount $mount): array
     {
         $data = $request->validated();
 
@@ -167,12 +167,12 @@ class MountController extends ApplicationApiController
     /**
      * ?
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountAddEggsRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountEggsRequest $request
      * @param \Pterodactyl\Models\Mount $mount
      *
      * @return array
      */
-    public function deleteEggs(MountAddEggsRequest $request, Mount $mount): array
+    public function deleteEggs(MountEggsRequest $request, Mount $mount): array
     {
         $data = $request->validated();
 
@@ -189,12 +189,12 @@ class MountController extends ApplicationApiController
     /**
      * ?
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountAddNodesRequest $request
+     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountNodesRequest $request
      * @param \Pterodactyl\Models\Mount $mount
      *
      * @return array
      */
-    public function deleteNodes(MountAddNodesRequest $request, Mount $mount): array
+    public function deleteNodes(MountNodesRequest $request, Mount $mount): array
     {
         $data = $request->validated();
 
