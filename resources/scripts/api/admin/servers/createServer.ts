@@ -34,7 +34,7 @@ interface CreateServerRequest {
     };
 }
 
-export default (r: CreateServerRequest): Promise<Server> => {
+export default (r: CreateServerRequest, include: string[] = []): Promise<Server> => {
     return new Promise((resolve, reject) => {
         http.post('/api/application/servers', {
             name: r.name,
@@ -67,7 +67,7 @@ export default (r: CreateServerRequest): Promise<Server> => {
                 backups: r.featureLimits.backups,
                 databases: r.featureLimits.databases,
             },
-        })
+        }, { params: { include: include.join(',') } })
             .then(({ data }) => resolve(rawDataToServer(data)))
             .catch(reject);
     });

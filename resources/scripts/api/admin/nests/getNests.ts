@@ -38,11 +38,11 @@ interface ctx {
 
 export const Context = createContext<ctx>({ page: 1, setPage: () => 1 });
 
-export default () => {
+export default (include: string[] = []) => {
     const { page } = useContext(Context);
 
     return useSWR<PaginatedResult<Nest>>([ 'nests', page ], async () => {
-        const { data } = await http.get('/api/application/nests', { params: { page } });
+        const { data } = await http.get('/api/application/nests', { params: { include: include.join(','), page } });
 
         return ({
             items: (data.data || []).map(rawDataToNest),

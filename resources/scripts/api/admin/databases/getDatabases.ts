@@ -35,11 +35,11 @@ interface ctx {
 
 export const Context = createContext<ctx>({ page: 1, setPage: () => 1 });
 
-export default () => {
+export default (include: string[] = []) => {
     const { page } = useContext(Context);
 
     return useSWR<PaginatedResult<Database>>([ 'databases', page ], async () => {
-        const { data } = await http.get('/api/application/databases', { params: { page } });
+        const { data } = await http.get('/api/application/databases', { params: { include: include.join(','), page } });
 
         return ({
             items: (data.data || []).map(rawDataToDatabase),

@@ -25,11 +25,11 @@ interface ctx {
 
 export const Context = createContext<ctx>({ page: 1, setPage: () => 1 });
 
-export default () => {
+export default (include: string[] = []) => {
     const { page } = useContext(Context);
 
     return useSWR<PaginatedResult<Location>>([ 'locations', page ], async () => {
-        const { data } = await http.get('/api/application/locations', { params: { page } });
+        const { data } = await http.get('/api/application/locations', { params: { include: include.join(','), page } });
 
         return ({
             items: (data.data || []).map(rawDataToLocation),

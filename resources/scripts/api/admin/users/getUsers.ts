@@ -43,11 +43,11 @@ interface ctx {
 
 export const Context = createContext<ctx>({ page: 1, setPage: () => 1 });
 
-export default () => {
+export default (include: string[] = []) => {
     const { page } = useContext(Context);
 
     return useSWR<PaginatedResult<User>>([ 'users', page ], async () => {
-        const { data } = await http.get('/api/application/users', { params: { page } });
+        const { data } = await http.get('/api/application/users', { params: { include: include.join(','), page } });
 
         return ({
             items: (data.data || []).map(rawDataToUser),

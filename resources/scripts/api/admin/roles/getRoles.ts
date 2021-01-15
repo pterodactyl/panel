@@ -12,9 +12,9 @@ export const rawDataToRole = ({ attributes }: FractalResponseData): Role => ({
     description: attributes.description,
 });
 
-export default (): Promise<Role[]> => {
+export default (include: string[] = []): Promise<Role[]> => {
     return new Promise((resolve, reject) => {
-        http.get('/api/application/roles')
+        http.get('/api/application/roles', { params: { include: include.join(',') } })
             .then(({ data }) => resolve((data.data || []).map(rawDataToRole)))
             .catch(reject);
     });
