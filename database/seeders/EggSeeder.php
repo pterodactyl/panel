@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;

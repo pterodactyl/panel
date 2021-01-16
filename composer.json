@@ -55,14 +55,13 @@
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {
-        "classmap": [
-            "database"
-        ],
         "files": [
             "app/helpers.php"
         ],
         "psr-4": {
-            "Pterodactyl\\": "app/"
+            "Pterodactyl\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {

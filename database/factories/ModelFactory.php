@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Factories;
+
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Cake\Chronos\Chronos;
@@ -7,6 +9,7 @@ use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Faker\Generator as Faker;
 use Pterodactyl\Models\ApiKey;
+use Illuminate\Support\Facades\Crypt;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 /*
@@ -188,8 +191,8 @@ $factory->define(Pterodactyl\Models\ApiKey::class, function (Faker $faker) {
 
     return [
         'key_type' => ApiKey::TYPE_APPLICATION,
-        'identifier' => str_random(Pterodactyl\Models\ApiKey::IDENTIFIER_LENGTH),
-        'token' => $token ?: $token = encrypt(str_random(Pterodactyl\Models\ApiKey::KEY_LENGTH)),
+        'identifier' => str_random(\Pterodactyl\Models\ApiKey::IDENTIFIER_LENGTH),
+        'token' => $token ?: $token = encrypt(str_random(\Pterodactyl\Models\ApiKey::KEY_LENGTH)),
         'allowed_ips' => null,
         'memo' => 'Test Function Key',
         'created_at' => Carbon::now()->toDateTimeString(),
