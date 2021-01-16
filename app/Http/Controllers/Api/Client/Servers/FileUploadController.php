@@ -58,7 +58,7 @@ class FileUploadController extends ClientApiController
     protected function getUploadUrl(Server $server, User $user)
     {
         $token = $this->jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15)->toDateTimeImmutable())
             ->setClaims([
                 'server_uuid' => $server->uuid,
             ])
@@ -67,7 +67,7 @@ class FileUploadController extends ClientApiController
         return sprintf(
             '%s/upload/file?token=%s',
             $server->node->getConnectionAddress(),
-            $token->__toString()
+            $token->toString()
         );
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Services\Nodes;
 
-use DateTimeInterface;
+use DateTimeImmutable;
 use Lcobucci\JWT\Builder;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
@@ -18,7 +18,7 @@ class NodeJWTService
     private $claims = [];
 
     /**
-     * @var int|null
+     * @var \DateTimeImmutable|null
      */
     private $expiresAt;
 
@@ -41,12 +41,12 @@ class NodeJWTService
     }
 
     /**
-     * @param \DateTimeInterface $date
+     * @param \DateTimeImmutable $date
      * @return $this
      */
-    public function setExpiresAt(DateTimeInterface $date)
+    public function setExpiresAt(DateTimeImmutable $date)
     {
-        $this->expiresAt = $date->getTimestamp();
+        $this->expiresAt = $date;
 
         return $this;
     }
@@ -74,18 +74,22 @@ class NodeJWTService
     {
         $signer = new Sha256;
 
+        $identifier = hash($algo, $identifiedBy);
+
         $builder = (new Builder)->issuedBy(config('app.url'))
             ->permittedFor($node->getConnectionAddress())
-            ->identifiedBy(hash($algo, $identifiedBy), true)
-            ->issuedAt(CarbonImmutable::now()->getTimestamp())
-            ->canOnlyBeUsedAfter(CarbonImmutable::now()->subMinutes(5)->getTimestamp());
+            ->identifiedBy($identifier)
+            ->withHeader('jti', $identifier)
+            ->issuedAt(CarbonImmutable::now()->toDateTimeImmutable())
+            ->canOnlyBeUsedAfter(CarbonImmutable::now()->subMinutes(5)->toDateTimeImmutable());
 
         if ($this->expiresAt) {
             $builder = $builder->expiresAt($this->expiresAt);
         }
 
-        if (!empty($this->subject)) {
-            $builder = $builder->relatedTo($this->subject, true);
+        if (! empty($this->subject)) {
+            $builder = $builder->relatedTo($this->subject)
+                ->withHeader('sub', $this->subject);
         }
 
         foreach ($this->claims as $key => $value) {

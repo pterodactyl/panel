@@ -73,7 +73,7 @@ class WebsocketController extends ClientApiController
         }
 
         $token = $this->jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(10))
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(10)->toDateTimeImmutable())
             ->setClaims([
                 'user_id' => $request->user()->id,
                 'server_uuid' => $server->uuid,
@@ -85,7 +85,7 @@ class WebsocketController extends ClientApiController
 
         return new JsonResponse([
             'data' => [
-                'token' => $token->__toString(),
+                'token' => $token->toString(),
                 'socket' => $socket . sprintf('/api/servers/%s/ws', $server->uuid),
             ],
         ]);

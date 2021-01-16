@@ -6,7 +6,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
@@ -114,7 +113,7 @@ class FileController extends ClientApiController
     public function download(GetFileContentsRequest $request, Server $server)
     {
         $token = $this->jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15)->toDateTimeImmutable())
             ->setClaims([
                 'file_path' => rawurldecode($request->get('file')),
                 'server_uuid' => $server->uuid,
@@ -127,7 +126,7 @@ class FileController extends ClientApiController
                 'url' => sprintf(
                     '%s/download/file?token=%s',
                     $server->node->getConnectionAddress(),
-                    $token->__toString()
+                    $token->toString()
                 ),
             ],
         ];

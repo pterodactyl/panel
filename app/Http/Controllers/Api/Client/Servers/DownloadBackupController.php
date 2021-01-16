@@ -128,7 +128,7 @@ class DownloadBackupController extends ClientApiController
     protected function getLocalBackupUrl(Backup $backup, Server $server, User $user)
     {
         $token = $this->jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15)->toDateTimeImmutable())
             ->setClaims([
                 'backup_uuid' => $backup->uuid,
                 'server_uuid' => $server->uuid,
@@ -138,7 +138,7 @@ class DownloadBackupController extends ClientApiController
         return sprintf(
             '%s/download/backup?token=%s',
             $server->node->getConnectionAddress(),
-            $token->__toString()
+            $token->toString()
         );
     }
 }
