@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,7 +25,7 @@ class EggVariableFactory extends Factory
         return [
             'name' => $this->faker->firstName,
             'description' => $this->faker->sentence(),
-            'env_variable' => strtoupper(str_replace(' ', '_', $this->faker->words(2, true))),
+            'env_variable' => Str::upper(Str::replaceArray(' ', [ '_' ], $this->faker->words(2, true))),
             'default_value' => $this->faker->colorName,
             'user_viewable' => 0,
             'user_editable' => 0,

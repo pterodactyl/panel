@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,7 +25,7 @@ class ServerFactory extends Factory
     {
         return [
             'uuid' => $this->faker->unique()->uuid,
-            'uuidShort' => str_random(8),
+            'uuidShort' => Str::random(8),
             'name' => $this->faker->firstName,
             'description' => implode(' ', $this->faker->sentences()),
             'skip_scripts' => 0,
