@@ -2,8 +2,12 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 class DatabaseHost extends Model
 {
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

@@ -113,10 +113,10 @@ class ServerDeletionServiceTest extends IntegrationTestCase
     public function testExceptionWhileDeletingStopsProcess()
     {
         $server = $this->createServerModel();
-        $host = factory(DatabaseHost::class)->create();
+        $host = DatabaseHost::factory()->create();
 
         /** @var \Pterodactyl\Models\Database $db */
-        $db = factory(Database::class)->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
+        $db = Database::factory()->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
 
         $server->refresh();
 
@@ -138,10 +138,10 @@ class ServerDeletionServiceTest extends IntegrationTestCase
     public function testExceptionWhileDeletingDatabasesDoesNotAbortIfForceDeleted()
     {
         $server = $this->createServerModel();
-        $host = factory(DatabaseHost::class)->create();
+        $host = DatabaseHost::factory()->create();
 
         /** @var \Pterodactyl\Models\Database $db */
-        $db = factory(Database::class)->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
+        $db = Database::factory()->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
 
         $server->refresh();
 

@@ -30,13 +30,13 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
 
         /** @var \Pterodactyl\Models\User $differentUser */
-        $differentUser = factory(User::class)->create();
+        $differentUser = User::factory()->create();
 
         // Generate a UUID that lines up with a user in the database if it were to be cast to an int.
         $uuid = $differentUser->id . str_repeat('a', strlen((string)$differentUser->id)) . substr(Uuid::uuid4()->toString(), 8);
 
         /** @var \Pterodactyl\Models\User $subuser */
-        $subuser = factory(User::class)->create(['uuid' => $uuid]);
+        $subuser = User::factory()->create(['uuid' => $uuid]);
 
         Subuser::query()->forceCreate([
             'user_id' => $subuser->id,
@@ -52,7 +52,7 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
         // anything in the database.
         $uuid = '18180000' . substr(Uuid::uuid4()->toString(), 8);
         /** @var \Pterodactyl\Models\User $subuser */
-        $subuser = factory(User::class)->create(['uuid' => $uuid]);
+        $subuser = User::factory()->create(['uuid' => $uuid]);
 
         Subuser::query()->forceCreate([
             'user_id' => $subuser->id,

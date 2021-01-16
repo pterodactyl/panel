@@ -13,7 +13,7 @@ class AdminAuthenticateTest extends MiddlewareTestCase
      */
     public function testAdminsAreAuthenticated()
     {
-        $user = factory(User::class)->make(['root_admin' => 1]);
+        $user = User::factory()->make(['root_admin' => 1]);
 
         $this->request->shouldReceive('user')->withNoArgs()->twice()->andReturn($user);
 
@@ -39,7 +39,7 @@ class AdminAuthenticateTest extends MiddlewareTestCase
     {
         $this->expectException(AccessDeniedHttpException::class);
 
-        $user = factory(User::class)->make(['root_admin' => 0]);
+        $user = User::factory()->make(['root_admin' => 0]);
 
         $this->request->shouldReceive('user')->withNoArgs()->twice()->andReturn($user);
 

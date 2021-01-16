@@ -23,8 +23,8 @@ class UserControllerTest extends IntegrationTestCase
     {
         $unique = Str::random(16);
         $users = [
-            factory(User::class)->create(['username' => $unique . '_1']),
-            factory(User::class)->create(['username' => $unique . '_2']),
+            User::factory()->create(['username' => $unique . '_1']),
+            User::factory()->create(['username' => $unique . '_2']),
         ];
 
         $servers = [

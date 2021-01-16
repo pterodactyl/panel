@@ -5,6 +5,7 @@ namespace Pterodactyl\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -54,6 +55,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 class Server extends Model
 {
     use BelongsToThrough;
+    use HasFactory;
     use Notifiable;
 
     /**

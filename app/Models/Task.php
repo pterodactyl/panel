@@ -5,6 +5,7 @@ namespace Pterodactyl\Models;
 use Illuminate\Container\Container;
 use Znck\Eloquent\Traits\BelongsToThrough;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -25,6 +26,7 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
 class Task extends Model
 {
     use BelongsToThrough;
+    use HasFactory;
 
     /**
      * The resource name for this model when it is transformed into an

@@ -147,7 +147,7 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
         $this->actingAs($user)->putJson($this->link($server) . "/startup/variable")->assertForbidden();
 
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
         $this->actingAs($user2)->putJson($this->link($server) . "/startup/variable")->assertNotFound();
     }
 

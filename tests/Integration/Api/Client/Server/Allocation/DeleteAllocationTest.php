@@ -22,7 +22,7 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permission);
 
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = factory(Allocation::class)->create([
+        $allocation = Allocation::factory()->create([
             'server_id' => $server->id,
             'node_id' => $server->node_id,
             'notes' => 'hodor',
@@ -42,7 +42,7 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_ALLOCATION_CREATE]);
 
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = factory(Allocation::class)->create([
+        $allocation = Allocation::factory()->create([
             'server_id' => $server->id,
             'node_id' => $server->node_id,
             'notes' => 'hodor',

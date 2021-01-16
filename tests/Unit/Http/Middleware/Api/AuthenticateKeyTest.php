@@ -79,7 +79,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testValidToken()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'decrypted');
         $this->repository->shouldReceive('findFirstWhere')->with([
@@ -102,7 +102,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testValidTokenWithUserKey()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'decrypted');
         $this->repository->shouldReceive('findFirstWhere')->with([
@@ -126,7 +126,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testAccessWithoutToken()
     {
-        $user = factory(User::class)->make(['id' => 123]);
+        $user = User::factory()->make(['id' => 123]);
 
         $this->request->shouldReceive('user')->andReturn($user);
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturnNull();
@@ -147,7 +147,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     {
         $this->expectException(AccessDeniedHttpException::class);
 
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'asdf');
         $this->repository->shouldReceive('findFirstWhere')->with([

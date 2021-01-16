@@ -40,7 +40,7 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testKeyIsCreated()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
@@ -68,7 +68,7 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testIdentifierAndTokenAreOnlySetByFunction()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
@@ -95,7 +95,7 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testPermissionsAreRetrievedForApplicationKeys()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
@@ -125,7 +125,7 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testPermissionsAreNotRetrievedForNonApplicationKeys($keyType)
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {

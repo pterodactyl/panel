@@ -48,15 +48,15 @@ class ServerCreationServiceTest extends IntegrationTestCase
     public function testServerIsCreatedWithDeploymentObject()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         /** @var \Pterodactyl\Models\Node $node */
-        $node = factory(Node::class)->create([
-            'location_id' => factory(Location::class)->create()->id,
+        $node = Node::factory()->create([
+            'location_id' => Location::factory()->create()->id,
         ]);
 
         /** @var \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations */
-        $allocations = factory(Allocation::class)->times(5)->create([
+        $allocations = Allocation::factory()->times(5)->create([
             'node_id' => $node->id,
         ]);
 
@@ -156,15 +156,15 @@ class ServerCreationServiceTest extends IntegrationTestCase
     public function testErrorEncounteredByWingsCausesServerToBeDeleted()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         /** @var \Pterodactyl\Models\Node $node */
-        $node = factory(Node::class)->create([
-            'location_id' => factory(Location::class)->create()->id,
+        $node = Node::factory()->create([
+            'location_id' => Location::factory()->create()->id,
         ]);
 
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = factory(Allocation::class)->create([
+        $allocation = Allocation::factory()->create([
             'node_id' => $node->id,
         ]);
 

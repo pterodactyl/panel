@@ -84,7 +84,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
     protected function generateTestAccount(array $permissions = []): array
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         if (empty($permissions)) {
             return [$user, $this->createServerModel(['user_id' => $user->id])];

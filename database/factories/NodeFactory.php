@@ -23,7 +23,7 @@ class NodeFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => Uuid::uuid4()->toString(),
+            'uuid' => $this->faker->unique()->uuid,
             'public' => true,
             'name' => $this->faker->firstName,
             'fqdn' => $this->faker->ipv4,

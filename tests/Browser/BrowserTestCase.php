@@ -115,7 +115,7 @@ abstract class BrowserTestCase extends TestCase
      */
     protected function user(array $attributes = []): User
     {
-        return factory(User::class)->create(array_merge([
+        return User::factory()->create(array_merge([
             'password' => Hash::make(static::$userPassword),
         ], $attributes));
     }

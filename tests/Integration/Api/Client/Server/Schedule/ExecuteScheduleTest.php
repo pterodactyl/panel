@@ -25,7 +25,7 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         Bus::fake();
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create([
+        $schedule = Schedule::factory()->create([
             'server_id' => $server->id,
         ]);
 
@@ -35,7 +35,7 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('errors.0.detail', 'Cannot process schedule for task execution: no tasks are registered.');
 
         /** @var \Pterodactyl\Models\Task $task */
-        $task = factory(Task::class)->create([
+        $task = Task::factory()->create([
             'schedule_id' => $schedule->id,
             'sequence_id' => 1,
             'time_offset' => 2,
@@ -60,7 +60,7 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create([
+        $schedule = Schedule::factory()->create([
             'server_id' => $server->id,
             'is_active' => false,
         ]);
@@ -80,7 +80,7 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_CREATE]);
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertForbidden();
     }

@@ -36,7 +36,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $server2 = $this->createServerModel();
 
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocations = factory(Allocation::class)->times(4)->create(['node_id' => $server->node_id, 'notes' => 'Random notes']);
+        $allocations = Allocation::factory()->times(4)->create(['node_id' => $server->node_id, 'notes' => 'Random notes']);
 
         $initialAllocationId = $server->allocation_id;
         $allocations[0]->update(['server_id' => $server->id, 'notes' => 'Test notes']);
@@ -83,7 +83,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocations = factory(Allocation::class)->times(4)->create(['node_id' => $server->node_id]);
+        $allocations = Allocation::factory()->times(4)->create(['node_id' => $server->node_id]);
 
         $allocations[0]->update(['server_id' => $server->id]);
 
@@ -156,7 +156,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
 
@@ -179,7 +179,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id]);
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
 
@@ -198,8 +198,8 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
-        $allocation2 = factory(Allocation::class)->create(['node_id' => $server->node_id]);
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
 
@@ -220,7 +220,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id]);
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andThrows(new DisplayException('Test'));
 

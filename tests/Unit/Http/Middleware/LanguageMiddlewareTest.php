@@ -40,7 +40,7 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
      */
     public function testLanguageIsSetWithAuthenticatedUser()
     {
-        $user = factory(User::class)->make(['language' => 'de']);
+        $user = User::factory()->make(['language' => 'de']);
 
         $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);
         $this->appMock->shouldReceive('setLocale')->with('de')->once()->andReturnNull();

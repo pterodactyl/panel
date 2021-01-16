@@ -92,7 +92,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
         $this->expectException(AccessDeniedHttpException::class);
 
         /** @var \Pterodactyl\Models\Node $model */
-        $model = factory(Node::class)->make();
+        $model = Node::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');
         $this->request->expects('bearerToken')->withNoArgs()->andReturn($model->daemon_token_id . '.random_string_123');
@@ -125,7 +125,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     public function testSuccessfulMiddlewareProcess()
     {
         /** @var \Pterodactyl\Models\Node $model */
-        $model = factory(Node::class)->make();
+        $model = Node::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');
         $this->request->expects('bearerToken')->withNoArgs()->andReturn($model->daemon_token_id . '.' . decrypt($model->daemon_token));

@@ -23,7 +23,7 @@ class AdminAclTest extends TestCase
      */
     public function testCheck()
     {
-        $model = factory(ApiKey::class)->make(['r_servers' => AdminAcl::READ | AdminAcl::WRITE]);
+        $model = ApiKey::factory()->make(['r_servers' => AdminAcl::READ | AdminAcl::WRITE]);
 
         $this->assertTrue(AdminAcl::check($model, AdminAcl::RESOURCE_SERVERS, AdminAcl::WRITE));
     }

@@ -92,7 +92,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function createApiUser(): User
     {
-        return factory(User::class)->create([
+        return User::factory()->create([
             'root_admin' => true,
         ]);
     }
@@ -106,7 +106,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function createApiKey(User $user, array $permissions = []): ApiKey
     {
-        return factory(ApiKey::class)->create(array_merge([
+        return ApiKey::factory()->create(array_merge([
             'user_id' => $user->id,
             'key_type' => ApiKey::TYPE_APPLICATION,
             'r_servers' => AdminAcl::READ | AdminAcl::WRITE,

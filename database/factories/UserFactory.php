@@ -26,7 +26,7 @@ class UserFactory extends Factory
 
         return [
             'external_id' => $this->faker->unique()->isbn10,
-            'uuid' => $this->faker->uuid,
+            'uuid' => $this->faker->unique()->uuid,
             'username' => $this->faker->userName,
             'email' => $this->faker->safeEmail,
             'name_first' => $this->faker->firstName,

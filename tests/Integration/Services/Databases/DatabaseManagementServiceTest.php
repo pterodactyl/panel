@@ -63,9 +63,9 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
     public function testDatabaseCannotBeCreatedIfServerHasReachedLimit()
     {
         $server = $this->createServerModel(['database_limit' => 2]);
-        $host = factory(DatabaseHost::class)->create(['node_id' => $server->node_id]);
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
 
-        factory(Database::class)->times(2)->create(['server_id' => $server->id, 'database_host_id' => $host->id]);
+        Database::factory()->times(2)->create(['server_id' => $server->id, 'database_host_id' => $host->id]);
 
         $this->expectException(TooManyDatabasesException::class);
 
@@ -96,9 +96,9 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
 
-        $host = factory(DatabaseHost::class)->create(['node_id' => $server->node_id]);
-        $host2 = factory(DatabaseHost::class)->create(['node_id' => $server->node_id]);
-        factory(Database::class)->create([
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $host2 = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        Database::factory()->create([
             'database' => $name,
             'database_host_id' => $host->id,
             'server_id' => $server->id,
@@ -125,7 +125,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
 
-        $host = factory(DatabaseHost::class)->create(['node_id' => $server->node_id]);
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
 
         $this->repository->expects('createDatabase')->with($name);
 
@@ -183,7 +183,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
 
-        $host = factory(DatabaseHost::class)->create(['node_id' => $server->node_id]);
+        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
 
         $this->repository->expects('createDatabase')->with($name)->andThrows(new BadMethodCallException);
         $this->repository->expects('dropDatabase')->with($name);

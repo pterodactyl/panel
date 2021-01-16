@@ -113,7 +113,7 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
 
         /** @var \Pterodactyl\Models\User $existing */
-        $existing = factory(User::class)->create(['email' => $this->faker->email]);
+        $existing = User::factory()->create(['email' => $this->faker->email]);
 
         $response = $this->actingAs($user)->postJson($this->link($server) . "/users", [
             'email' => $existing->email,
