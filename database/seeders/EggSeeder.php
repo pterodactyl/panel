@@ -111,7 +111,7 @@ class EggSeeder extends Seeder
      */
     private function parseEggFiles(Nest $nest)
     {
-        $files = $this->filesystem->allFiles(database_path('seeds/eggs/' . kebab_case($nest->name)));
+        $files = $this->filesystem->allFiles(database_path('seeders/eggs/' . kebab_case($nest->name)));
 
         $this->command->alert('Updating Eggs for Nest: ' . $nest->name);
         Collection::make($files)->each(function ($file) use ($nest) {
