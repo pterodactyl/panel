@@ -10,7 +10,6 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Allocation;
-use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 
 trait CreatesTestModels
 {
@@ -22,35 +21,41 @@ trait CreatesTestModels
      * The returned server model will have all of the relationships loaded onto it.
      *
      * @param array $attributes
-     * @return \Pterodactyl\Models\Server
+     *
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static|static[]
      */
-    public function createServerModel(array $attributes = []): Server
+    public function createServerModel(array $attributes = [])
     {
         if (isset($attributes['user_id'])) {
             $attributes['owner_id'] = $attributes['user_id'];
         }
 
         if (! isset($attributes['owner_id'])) {
+            /** @var \Pterodactyl\Models\User $user */
             $user = User::factory()->create();
             $attributes['owner_id'] = $user->id;
         }
 
         if (! isset($attributes['node_id'])) {
             if (! isset($attributes['location_id'])) {
+                /** @var \Pterodactyl\Models\Location $location */
                 $location = Location::factory()->create();
                 $attributes['location_id'] = $location->id;
             }
 
+            /** @var \Pterodactyl\Models\Node $node */
             $node = Node::factory()->create(['location_id' => $attributes['location_id']]);
             $attributes['node_id'] = $node->id;
         }
 
         if (! isset($attributes['allocation_id'])) {
+            /** @var \Pterodactyl\Models\Allocation $allocation */
             $allocation = Allocation::factory()->create(['node_id' => $attributes['node_id']]);
             $attributes['allocation_id'] = $allocation->id;
         }
 
         if (! isset($attributes['nest_id'])) {
+            /** @var \Pterodactyl\Models\Nest $nest */
             $nest = Nest::with('eggs')->first();
             $attributes['nest_id'] = $nest->id;
 
@@ -60,12 +65,14 @@ trait CreatesTestModels
         }
 
         if (! isset($attributes['egg_id'])) {
+            /** @var \Pterodactyl\Models\Egg $egg */
             $egg = Egg::where('nest_id', $attributes['nest_id'])->first();
             $attributes['egg_id'] = $egg->id;
         }
 
         unset($attributes['user_id'], $attributes['location_id']);
 
+        /** @var \Pterodactyl\Models\Server $server */
         $server = Server::factory()->create($attributes);
 
         Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);

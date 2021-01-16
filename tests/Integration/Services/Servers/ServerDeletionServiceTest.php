@@ -65,7 +65,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         $this->expectException(DaemonConnectionException::class);
 
         $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andThrows(
-            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), null))
+            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response(404)))
         );
 
         $this->getService()->handle($server);
