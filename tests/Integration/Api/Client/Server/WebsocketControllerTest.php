@@ -5,6 +5,7 @@ namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 use Carbon\Carbon;
 use Lcobucci\JWT\Parser;
 use Carbon\CarbonImmutable;
+use Lcobucci\JWT\Signer\Key;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Permission;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
@@ -54,7 +55,7 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
         $token = (new Parser)->parse($response->json('data.token'));
 
         $this->assertTrue(
-            $token->verify(new Sha256, $server->node->getDecryptedKey()),
+            $token->verify(new Sha256, new Key($server->node->getDecryptedKey())),
             'Failed to validate that the JWT data returned was signed using the Node\'s secret key.'
         );
 
@@ -88,7 +89,7 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
         $token = (new Parser)->parse($response->json('data.token'));
 
         $this->assertTrue(
-            $token->verify(new Sha256, $server->node->getDecryptedKey()),
+            $token->verify(new Sha256, new Key($server->node->getDecryptedKey())),
             'Failed to validate that the JWT data returned was signed using the Node\'s secret key.'
         );
 

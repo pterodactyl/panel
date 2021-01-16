@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -26,7 +27,7 @@ class UserFactory extends Factory
 
         return [
             'external_id' => $this->faker->unique()->isbn10,
-            'uuid' => $this->faker->unique()->uuid,
+            'uuid' => Uuid::uuid4()->toString(),
             'username' => $this->faker->userName,
             'email' => $this->faker->safeEmail,
             'name_first' => $this->faker->firstName,

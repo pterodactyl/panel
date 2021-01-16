@@ -167,7 +167,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
 
         $this->assertInstanceOf(Database::class, $response);
         $this->assertSame($response->server_id, $server->id);
-        $this->assertRegExp('/^(u[\d]+_)(\w){10}$/', $username);
+        $this->assertMatchesRegularExpression('/^(u[\d]+_)(\w){10}$/', $username);
         $this->assertSame($username, $secondUsername);
         $this->assertSame(24, strlen($password));
 
