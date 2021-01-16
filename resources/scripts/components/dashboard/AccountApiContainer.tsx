@@ -61,7 +61,7 @@ export default () => {
                     <ConfirmationModal
                         visible={!!deleteIdentifier}
                         title={t('delete_api_key_title')}
-                        buttonText={t('delete_api_key_button_text')}
+                        buttonText={t('delete_api_key_button')}
                         onConfirmed={() => {
                             doDeletion(deleteIdentifier);
                             setDeleteIdentifier('');
