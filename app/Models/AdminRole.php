@@ -7,6 +7,7 @@ namespace Pterodactyl\Models;
  * @property string $name
  * @property string|null $description
  * @property int $sort_id
+ * @property array $permissions
  */
 class AdminRole extends Model
 {
@@ -34,6 +35,16 @@ class AdminRole extends Model
     ];
 
     /**
+     * Cast values to correct type.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'sort_id' => 'int',
+        'permissions' => 'array',
+    ];
+
+    /**
      * @var array
      */
     public static $validationRules = [
@@ -45,4 +56,14 @@ class AdminRole extends Model
      * @var bool
      */
     public $timestamps = false;
+
+    /**
+     * Gets the permissions associated with a admin role.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function permissions()
+    {
+        return $this->hasMany(Permission::class);
+    }
 }

@@ -228,6 +228,16 @@ class User extends Model implements
     }
 
     /**
+     * Gets the admin role associated with a user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function adminRole()
+    {
+        return $this->hasOne(AdminRole::class, 'id', 'admin_role_id');
+    }
+
+    /**
      * Returns all servers that a user owns.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
