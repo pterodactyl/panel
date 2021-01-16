@@ -18,6 +18,7 @@ class CreateAdminRolesTable extends Migration
             $table->string('name', 64);
             $table->string('description', 255)->nullable();
             $table->integer('sort_id');
+            $table->json('permissions')->nullable();
         });
     }
 
