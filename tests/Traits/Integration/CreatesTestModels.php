@@ -26,30 +26,27 @@ trait CreatesTestModels
      */
     public function createServerModel(array $attributes = []): Server
     {
-        /** @var \Illuminate\Database\Eloquent\Factory $factory */
-        $factory = $this->app->make(EloquentFactory::class);
-
         if (isset($attributes['user_id'])) {
             $attributes['owner_id'] = $attributes['user_id'];
         }
 
         if (! isset($attributes['owner_id'])) {
-            $user = $factory->of(User::class)->create();
+            $user = User::factory()->create();
             $attributes['owner_id'] = $user->id;
         }
 
         if (! isset($attributes['node_id'])) {
             if (! isset($attributes['location_id'])) {
-                $location = $factory->of(Location::class)->create();
+                $location = Location::factory()->create();
                 $attributes['location_id'] = $location->id;
             }
 
-            $node = $factory->of(Node::class)->create(['location_id' => $attributes['location_id']]);
+            $node = Node::factory()->create(['location_id' => $attributes['location_id']]);
             $attributes['node_id'] = $node->id;
         }
 
         if (! isset($attributes['allocation_id'])) {
-            $allocation = $factory->of(Allocation::class)->create(['node_id' => $attributes['node_id']]);
+            $allocation = Allocation::factory()->create(['node_id' => $attributes['node_id']]);
             $attributes['allocation_id'] = $allocation->id;
         }
 
@@ -69,7 +66,7 @@ trait CreatesTestModels
 
         unset($attributes['user_id'], $attributes['location_id']);
 
-        $server = $factory->of(Server::class)->create($attributes);
+        $server = Server::factory()->create($attributes);
 
         Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);
 
