@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -24,7 +23,7 @@ class ServerFactory extends Factory
     public function definition()
     {
         return [
-            'uuid' => Uuid::uuid4()->toString(),
+            'uuid' => $this->faker->unique()->uuid,
             'uuidShort' => str_random(8),
             'name' => $this->faker->firstName,
             'description' => implode(' ', $this->faker->sentences()),

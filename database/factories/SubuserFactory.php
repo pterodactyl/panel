@@ -2,18 +2,17 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
-use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Subuser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class LocationFactory extends Factory
+class SubuserFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Location::class;
+    protected $model = Subuser::class;
 
     /**
      * Define the model's default state.
@@ -22,9 +21,6 @@ class LocationFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            'short' => Str::random(8),
-            'long' => Str::random(32),
-        ];
+        return [];
     }
 }

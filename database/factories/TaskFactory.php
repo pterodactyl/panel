@@ -2,18 +2,17 @@
 
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
-use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Task;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class LocationFactory extends Factory
+class TaskFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Location::class;
+    protected $model = Task::class;
 
     /**
      * Define the model's default state.
@@ -23,8 +22,11 @@ class LocationFactory extends Factory
     public function definition(): array
     {
         return [
-            'short' => Str::random(8),
-            'long' => Str::random(32),
+            'sequence_id' => $this->faker->randomNumber(1),
+            'action' => 'command',
+            'payload' => 'test command',
+            'time_offset' => 120,
+            'is_queued' => false,
         ];
     }
 }
