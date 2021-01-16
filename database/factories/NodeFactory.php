@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Facades\Crypt;
@@ -24,7 +25,7 @@ class NodeFactory extends Factory
     public function definition(): array
     {
         return [
-            'uuid' => $this->faker->unique()->uuid,
+            'uuid' => Uuid::uuid4()->toString(),
             'public' => true,
             'name' => $this->faker->firstName,
             'fqdn' => $this->faker->ipv4,

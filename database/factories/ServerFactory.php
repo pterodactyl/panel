@@ -26,7 +26,7 @@ class ServerFactory extends Factory
     {
         return [
             'uuid' => Uuid::uuid4()->toString(),
-            'uuidShort' => Str::random(8),
+            'uuidShort' => Str::lower(Str::random(8)),
             'name' => $this->faker->firstName,
             'description' => implode(' ', $this->faker->sentences()),
             'skip_scripts' => 0,
@@ -36,10 +36,12 @@ class ServerFactory extends Factory
             'disk' => 512,
             'io' => 500,
             'cpu' => 0,
+            'threads' => null,
             'oom_disabled' => 0,
             'installed' => 1,
-            'database_limit' => null,
             'allocation_limit' => null,
+            'database_limit' => null,
+            'backup_limit' => null,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
