@@ -49,6 +49,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      *
      * @param mixed $model
      * @param string|null $append
+     *
      * @return string
      */
     protected function link($model, $append = null): string
@@ -79,6 +80,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * is assumed that the user is actually a subuser of the server.
      *
      * @param string[] $permissions
+     *
      * @return array
      */
     protected function generateTestAccount(array $permissions = []): array
@@ -90,6 +92,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
             return [$user, $this->createServerModel(['user_id' => $user->id])];
         }
 
+        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->createServerModel();
 
         Subuser::query()->create([

@@ -22,7 +22,7 @@ trait CreatesTestModels
      *
      * @param array $attributes
      *
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|static|static[]
+     * @return \Pterodactyl\Models\Server
      */
     public function createServerModel(array $attributes = [])
     {
@@ -77,9 +77,9 @@ trait CreatesTestModels
 
         Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);
 
-        return Server::with([
+        return $server->fresh([
             'location', 'user', 'node', 'allocation', 'nest', 'egg',
-        ])->findOrFail($server->id);
+        ]);
     }
 
     /**
