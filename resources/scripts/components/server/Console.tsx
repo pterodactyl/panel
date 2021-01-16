@@ -225,7 +225,6 @@ export default () => {
                         type={'text'}
                         placeholder={t('type_a_command')}
                         aria-label={t('console_command_input')}
-                        aria-description={t('console_description')}
                         disabled={!instance || !connected}
                         onKeyDown={handleCommandKeyDown}
                     />

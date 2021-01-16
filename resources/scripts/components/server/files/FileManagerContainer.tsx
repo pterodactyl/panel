@@ -19,6 +19,7 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { useStoreActions } from '@/state/hooks';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
+import { hashToPath } from '@/helpers';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -39,7 +40,7 @@ export default () => {
     useEffect(() => {
         clearFlashes('files');
         setSelectedFiles([]);
-        setDirectory(hash.length > 0 ? hash : '/');
+        setDirectory(hashToPath(hash));
     }, [ hash ]);
 
     useEffect(() => {
