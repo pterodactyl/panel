@@ -1,7 +1,5 @@
 <?php
 
-namespace Database\Factories;
-
 use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 use Cake\Chronos\Chronos;
