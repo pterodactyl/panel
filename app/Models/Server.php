@@ -50,6 +50,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\ServerTransfer $transfer
  * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
  * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
+ * @property \Pterodactyl\Models\AuditLog[] $audits
  */
 class Server extends Model
 {
@@ -325,5 +326,30 @@ class Server extends Model
     public function mounts()
     {
         return $this->hasManyThrough(Mount::class, MountServer::class, 'server_id', 'id', 'id', 'mount_id');
+    }
+
+    /**
+     * Saves an audit entry to the database for the server.
+     *
+     * @param string $action
+     * @param array $metadata
+     * @return \Pterodactyl\Models\AuditLog
+     */
+    public function audit(string $action, array $metadata): AuditLog
+    {
+        $model = AuditLog::factory($action, $metadata)->fill([
+            'server_id' => $this->id,
+        ]);
+        $model->save();
+
+        return $model;
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function audits()
+    {
+        return $this->hasMany(AuditLog::class);
     }
 }
