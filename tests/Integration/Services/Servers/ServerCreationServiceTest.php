@@ -50,9 +50,12 @@ class ServerCreationServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
+        /** @var \Pterodactyl\Models\Location $location */
+        $location = Location::factory()->create();
+
         /** @var \Pterodactyl\Models\Node $node */
         $node = Node::factory()->create([
-            'location_id' => Location::factory()->create()->id,
+            'location_id' => $location->id,
         ]);
 
         /** @var \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations */

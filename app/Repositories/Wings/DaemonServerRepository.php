@@ -3,7 +3,6 @@
 namespace Pterodactyl\Repositories\Wings;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;

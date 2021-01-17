@@ -155,7 +155,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testNoExceptionIsThrownIfOnlyRemovingAllocation()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
+        /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
@@ -178,7 +178,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testAllocationInBothAddAndRemoveIsAdded()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
+        /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
@@ -197,8 +197,9 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testUsingSameAllocationIdMultipleTimesDoesNotError()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
+        /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        /** @var \Pterodactyl\Models\Allocation $allocation2 */
         $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
@@ -219,7 +220,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testThatUpdatesAreRolledBackIfExceptionIsEncountered()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
+        /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andThrows(new DisplayException('Test'));

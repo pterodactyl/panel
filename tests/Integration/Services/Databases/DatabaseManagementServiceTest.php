@@ -3,7 +3,6 @@
 namespace Pterodactyl\Tests\Integration\Services\Databases;
 
 use Mockery;
-use Exception;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Pterodactyl\Models\Database;
