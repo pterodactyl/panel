@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Closure;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
@@ -335,7 +336,7 @@ class Server extends Model
      * @param array $metadata
      * @return \Pterodactyl\Models\AuditLog
      */
-    public function audit(string $action, array $metadata): AuditLog
+    public function newAuditEvent(string $action, array $metadata): AuditLog
     {
         $model = AuditLog::factory($action, $metadata)->fill([
             'server_id' => $this->id,
@@ -343,6 +344,32 @@ class Server extends Model
         $model->save();
 
         return $model;
+    }
+
+    /**
+     * Stores a new audit event for a server by using a transaction. If the transaction
+     * fails for any reason everything executed within will be rolled back. The callback
+     * passed in will receive the AuditLog model before it is saved and the second argument
+     * will be the current server instance. The callback should modify the audit entry as
+     * needed before finishing, any changes will be persisted.
+     *
+     * The response from the callback is returned to the caller.
+     *
+     * @param string $action
+     * @param \Closure $callback
+     * @return mixed
+     * @throws \Throwable
+     */
+    public function audit(string $action, Closure $callback)
+    {
+        $model = $this->newAuditEvent($action, []);
+
+        return $this->getConnection()->transaction(function () use ($callback, &$model) {
+            $response = $callback($model, $this);
+            $model->save();
+
+            return $response;
+        });
     }
 
     /**

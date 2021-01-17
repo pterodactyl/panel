@@ -28,6 +28,18 @@ class AuditLog extends Model
     const ACTION_USER_AUTH_FAILED = 'user:auth.failed';
     const ACTION_USER_AUTH_PASSWORD_CHANGED = 'user:auth.password-changed';
 
+    const ACTION_SERVER_FILESYSTEM_DOWNLOAD = 'server:filesystem.download';
+    const ACTION_SERVER_FILESYSTEM_WRITE = 'server:filesystem.write';
+    const ACTION_SERVER_FILESYSTEM_DELETE = 'server:filesystem.delete';
+    const ACTION_SERVER_FILESYSTEM_RENAME = 'server:filesystem.rename';
+    const ACTION_SERVER_FILESYSTEM_COMPRESS = 'server:filesystem.compress';
+    const ACTION_SERVER_FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
+    const ACTION_SERVER_FILESYSTEM_PULL = 'server:filesystem.pull';
+
+    const ACTION_SERVER_BACKUP_STARTED = 'server:backup.started';
+    const ACTION_SERVER_BACKUP_FAILED = 'server:backup.failed';
+    const ACTION_SERVER_BACKUP_COMPELTED = 'server:backup.completed';
+    const ACTION_SERVER_BACKUP_DELETED = 'server:backup.deleted';
     const ACTION_SERVER_BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
     const ACTION_SERVER_BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
     const ACTION_SERVER_BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
@@ -38,7 +50,7 @@ class AuditLog extends Model
     public static $validationRules = [
         'uuid' => 'required|uuid',
         'action' => 'required|string',
-        'device' => 'required|array',
+        'device' => 'array',
         'device.ip_address' => 'ip',
         'device.user_agent' => 'string',
         'metadata' => 'array',
@@ -100,14 +112,14 @@ class AuditLog extends Model
     {
         /** @var \Illuminate\Http\Request $request */
         $request = Container::getInstance()->make('request');
-        if (! $isSystem || ! $request instanceof Request) {
+        if ($isSystem || ! $request instanceof Request) {
             $request = null;
         }
 
         return (new self())->fill([
             'uuid' => Uuid::uuid4()->toString(),
             'is_system' => $isSystem,
-            'user_id' => $request->user() ? $request->user()->id : null,
+            'user_id' => ($request && $request->user()) ? $request->user()->id : null,
             'server_id' => null,
             'action' => $action,
             'device' => $request ? [

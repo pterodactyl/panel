@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 class CreateAuditLogsTable extends Migration
 {
@@ -15,7 +15,14 @@ class CreateAuditLogsTable extends Migration
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->char('uuid', 36);
+            $table->boolean('is_system')->default(false);
+            $table->bigInteger('user_id')->nullable();
+            $table->bigInteger('server_id')->nullable();
+            $table->string('action');
+            $table->json('device');
+            $table->json('metadata');
+            $table->timestamp('created_at', 0);
         });
     }
 

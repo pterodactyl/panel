@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Backups\DeleteBackupService;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
@@ -61,6 +62,7 @@ class BackupController extends ClientApiController
     public function index(GetBackupsRequest $request, Server $server)
     {
         $limit = min($request->query('per_page') ?? 20, 50);
+
         return $this->fractal->collection($server->backups()->paginate($limit))
             ->transformWith($this->getTransformer(BackupTransformer::class))
             ->toArray();
@@ -77,11 +79,18 @@ class BackupController extends ClientApiController
      */
     public function store(StoreBackupRequest $request, Server $server)
     {
-        $backup = $this->initiateBackupService
-            ->setIgnoredFiles(
-                explode(PHP_EOL, $request->input('ignored') ?? '')
-            )
-            ->handle($server, $request->input('name'));
+        /** @var \Pterodactyl\Models\Backup $backup */
+        $backup = $server->audit(AuditLog::ACTION_SERVER_BACKUP_STARTED, function (AuditLog $model, Server $server) use ($request) {
+            $backup = $this->initiateBackupService
+                ->setIgnoredFiles(
+                    explode(PHP_EOL, $request->input('ignored') ?? '')
+                )
+                ->handle($server, $request->input('name'));
+
+            $model->metadata = ['backup_uuid' => $backup->uuid];
+
+            return $backup;
+        });
 
         return $this->fractal->item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))
@@ -116,8 +125,10 @@ class BackupController extends ClientApiController
      */
     public function delete(DeleteBackupRequest $request, Server $server, Backup $backup)
     {
-        $this->deleteBackupService->handle($backup);
+        $server->audit(AuditLog::ACTION_SERVER_BACKUP_DELETED, function () use ($backup) {
+            $this->deleteBackupService->handle($backup);
+        });
 
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }
