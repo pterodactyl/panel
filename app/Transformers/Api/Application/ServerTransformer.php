@@ -66,7 +66,7 @@ class ServerTransformer extends BaseTransformer
             'identifier' => $server->uuidShort,
             'name' => $server->name,
             'description' => $server->description,
-            'suspended' => (bool) $server->suspended,
+            'suspended' => $server->isSuspended(),
             'limits' => [
                 'memory' => $server->memory,
                 'swap' => $server->swap,
@@ -88,7 +88,7 @@ class ServerTransformer extends BaseTransformer
             'container' => [
                 'startup_command' => $server->startup,
                 'image' => $server->image,
-                'installed' => (int) $server->installed === 1,
+                'installed' => $server->isInstalled() ? 1 : 0,
                 'environment' => $this->environmentService->handle($server),
             ],
             $server->getUpdatedAtColumn() => $this->formatTimestamp($server->updated_at),

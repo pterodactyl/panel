@@ -63,7 +63,7 @@ class AccessingValidServer
         $isApiRequest = $request->expectsJson() || $request->is(...$this->config->get('pterodactyl.json_routes', []));
         $server = $this->repository->getByUuid($attributes instanceof Server ? $attributes->uuid : $attributes);
 
-        if ($server->suspended) {
+        if ($server->isSuspended()) {
             if ($isApiRequest) {
                 throw new AccessDeniedHttpException('Server is suspended and cannot be accessed.');
             }
@@ -73,7 +73,7 @@ class AccessingValidServer
 
         // Servers can have install statuses other than 1 or 0, so don't check
         // for a bool-type operator here.
-        if ($server->installed !== 1) {
+        if (! $server->isInstalled()) {
             if ($isApiRequest) {
                 throw new ConflictHttpException('Server is still completing the installation process.');
             }

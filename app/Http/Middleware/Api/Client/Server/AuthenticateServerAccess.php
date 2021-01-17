@@ -64,7 +64,7 @@ class AuthenticateServerAccess
             }
         }
 
-        if ($server->suspended && ! $request->routeIs('api:client:server.resources')) {
+        if ($server->isSuspended() && ! $request->routeIs('api:client:server.resources')) {
             throw new BadRequestHttpException(
                 'This server is currently suspended and the functionality requested is unavailable.'
             );

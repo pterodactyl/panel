@@ -15,8 +15,8 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $node_id
  * @property string $name
  * @property string $description
+ * @property string|null $status
  * @property bool $skip_scripts
- * @property bool $suspended
  * @property int $owner_id
  * @property int $memory
  * @property int $swap
@@ -30,7 +30,6 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $egg_id
  * @property string $startup
  * @property string $image
- * @property int $installed
  * @property int $allocation_limit
  * @property int $database_limit
  * @property int $backup_limit
@@ -64,9 +63,9 @@ class Server extends Model
      */
     const RESOURCE_NAME = 'server';
 
-    const STATUS_INSTALLING = 0;
-    const STATUS_INSTALLED = 1;
-    const STATUS_INSTALL_FAILED = 2;
+    const STATUS_INSTALLING = 'installing';
+    const STATUS_INSTALL_FAILED = 'install_failed';
+    const STATUS_SUSPENDED = 'suspended';
 
     /**
      * The table associated with the model.
@@ -82,6 +81,7 @@ class Server extends Model
      * @var array
      */
     protected $attributes = [
+        'status' => self::STATUS_INSTALLING,
         'oom_disabled' => true,
     ];
 
@@ -104,7 +104,7 @@ class Server extends Model
      *
      * @var array
      */
-    protected $guarded = ['id', 'installed', self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
+    protected $guarded = ['id', self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
      * @var array
@@ -115,6 +115,7 @@ class Server extends Model
         'name' => 'required|string|min:1|max:191',
         'node_id' => 'required|exists:nodes,id',
         'description' => 'string',
+        'status' => 'nullable|string',
         'memory' => 'required|numeric|min:0',
         'swap' => 'required|numeric|min:-1',
         'io' => 'required|numeric|between:10,1000',
@@ -142,7 +143,6 @@ class Server extends Model
     protected $casts = [
         'node_id' => 'integer',
         'skip_scripts' => 'boolean',
-        'suspended' => 'boolean',
         'owner_id' => 'integer',
         'memory' => 'integer',
         'swap' => 'integer',
@@ -153,7 +153,6 @@ class Server extends Model
         'allocation_id' => 'integer',
         'nest_id' => 'integer',
         'egg_id' => 'integer',
-        'installed' => 'integer',
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
         'backup_limit' => 'integer',
@@ -176,7 +175,12 @@ class Server extends Model
      */
     public function isInstalled(): bool
     {
-        return $this->installed === 1;
+        return $this->status !== self::STATUS_INSTALLING && $this->status !== self::STATUS_INSTALL_FAILED;
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->status === self::STATUS_SUSPENDED;
     }
 
     /**

@@ -49,7 +49,7 @@ class AccessingValidServerTest extends MiddlewareTestCase
         $this->expectException(AccessDeniedHttpException::class);
         $this->expectExceptionMessage('Server is suspended and cannot be accessed.');
 
-        $model = factory(Server::class)->make(['suspended' => 1]);
+        $model = factory(Server::class)->make(['status' => Server::STATUS_SUSPENDED]);
 
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');
         $this->request->shouldReceive('expectsJson')->withNoArgs()->once()->andReturn(true);
@@ -126,9 +126,9 @@ class AccessingValidServerTest extends MiddlewareTestCase
         $this->refreshApplication();
 
         return [
-            [factory(Server::class)->make(['suspended' => 1]), 'errors.suspended', 403],
-            [factory(Server::class)->make(['installed' => 0]), 'errors.installing', 409],
-            [factory(Server::class)->make(['installed' => 2]), 'errors.installing', 409],
+            [factory(Server::class)->make(['status' => Server::STATUS_SUSPENDED]), 'errors.suspended', 403],
+            [factory(Server::class)->make(['status' => Server::STATUS_INSTALLING]), 'errors.installing', 409],
+            [factory(Server::class)->make(['status' => Server::STATUS_INSTALL_FAILED]), 'errors.installing', 409],
         ];
     }
 

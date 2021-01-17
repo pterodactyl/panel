@@ -29,7 +29,7 @@ class ServerInstalled
             );
         }
 
-        if ($server->installed !== 1) {
+        if (! $server->isInstalled()) {
             throw new HttpException(
                 Response::HTTP_FORBIDDEN, 'Access to this resource is not allowed due to the current installation state.'
             );

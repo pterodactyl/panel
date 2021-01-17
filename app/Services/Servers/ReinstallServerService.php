@@ -44,7 +44,7 @@ class ReinstallServerService
     public function handle(Server $server)
     {
         return $this->connection->transaction(function () use ($server) {
-            $server->forceFill(['installed' => Server::STATUS_INSTALLING])->save();
+            $server->fill(['status' => Server::STATUS_INSTALLING])->save();
 
             $this->daemonServerRepository->setServer($server)->reinstall();
 

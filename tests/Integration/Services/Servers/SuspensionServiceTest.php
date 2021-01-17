@@ -4,6 +4,7 @@ namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
 use InvalidArgumentException;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\SuspensionService;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
@@ -26,7 +27,7 @@ class SuspensionServiceTest extends IntegrationTestCase
 
     public function testServerIsSuspendedAndUnsuspended()
     {
-        $server = $this->createServerModel(['suspended' => false]);
+        $server = $this->createServerModel();
 
         $this->repository->expects('setServer')->twice()->andReturnSelf();
         $this->repository->expects('suspend')->with(false)->andReturnUndefined();
@@ -34,30 +35,30 @@ class SuspensionServiceTest extends IntegrationTestCase
         $this->getService()->toggle($server, SuspensionService::ACTION_SUSPEND);
 
         $server->refresh();
-        $this->assertTrue($server->suspended);
+        $this->assertTrue($server->isSuspended());
 
         $this->repository->expects('suspend')->with(true)->andReturnUndefined();
 
         $this->getService()->toggle($server, SuspensionService::ACTION_UNSUSPEND);
 
         $server->refresh();
-        $this->assertFalse($server->suspended);
+        $this->assertFalse($server->isSuspended());
     }
 
     public function testNoActionIsTakenIfSuspensionStatusIsUnchanged()
     {
-        $server = $this->createServerModel(['suspended' => false]);
+        $server = $this->createServerModel();
 
         $this->getService()->toggle($server, SuspensionService::ACTION_UNSUSPEND);
 
         $server->refresh();
-        $this->assertFalse($server->suspended);
+        $this->assertFalse($server->isSuspended());
 
-        $server->update(['suspended' => true]);
+        $server->update(['status' => Server::STATUS_SUSPENDED]);
         $this->getService()->toggle($server, SuspensionService::ACTION_SUSPEND);
 
         $server->refresh();
-        $this->assertTrue($server->suspended);
+        $this->assertTrue($server->isSuspended());
     }
 
     public function testExceptionIsThrownIfInvalidActionsArePassed()
