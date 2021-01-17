@@ -13,6 +13,7 @@ use Illuminate\Container\Container;
  * @property int|null $user_id
  * @property int|null $server_id
  * @property string $action
+ * @property string|null $subaction
  * @property array $device
  * @property array $metadata
  * @property \Carbon\CarbonImmutable $created_at
@@ -49,7 +50,8 @@ class AuditLog extends Model
      */
     public static $validationRules = [
         'uuid' => 'required|uuid',
-        'action' => 'required|string',
+        'action' => 'required|string|max:191',
+        'subaction' => 'nullable|string|max:191',
         'device' => 'array',
         'device.ip_address' => 'ip',
         'device.user_agent' => 'string',

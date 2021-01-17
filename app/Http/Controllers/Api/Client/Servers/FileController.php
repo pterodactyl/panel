@@ -146,10 +146,8 @@ class FileController extends ClientApiController
     public function write(WriteFileContentRequest $request, Server $server): JsonResponse
     {
         $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
-            $audit->metadata = [
-                'file' => $request->get('file'),
-                'sub_action' => 'write_content',
-            ];
+            $audit->subaction = 'write_content';
+            $audit->metadata = ['file' => $request->get('file')];
 
             $this->fileRepository
                 ->setServer($server)
@@ -171,10 +169,8 @@ class FileController extends ClientApiController
     public function create(CreateFolderRequest $request, Server $server): JsonResponse
     {
         $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
-            $audit->metadata = [
-                'file' => $request->input('root', '/') . $request->input('name'),
-                'sub_action' => 'create_folder',
-            ];
+            $audit->subaction = 'create_folder';
+            $audit->metadata = ['file' => $request->input('root', '/') . $request->input('name')];
 
             $this->fileRepository
                 ->setServer($server)
@@ -218,10 +214,9 @@ class FileController extends ClientApiController
     public function copy(CopyFileRequest $request, Server $server): JsonResponse
     {
         $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
-            $audit->metadata = [
-                'file' => $request->input('location'),
-                'sub_action' => 'copy_file',
-            ];
+            $audit->subaction = 'copy_file';
+            $audit->metadata = ['file' => $request->input('location')];
+
             $this->fileRepository
                 ->setServer($server)
                 ->copyFile($request->input('location'));

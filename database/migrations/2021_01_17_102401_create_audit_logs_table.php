@@ -17,12 +17,16 @@ class CreateAuditLogsTable extends Migration
             $table->id();
             $table->char('uuid', 36);
             $table->boolean('is_system')->default(false);
-            $table->bigInteger('user_id')->nullable();
-            $table->bigInteger('server_id')->nullable();
+            $table->unsignedInteger('user_id')->nullable();
+            $table->unsignedInteger('server_id')->nullable();
             $table->string('action');
+            $table->string('subaction')->nullable();
             $table->json('device');
             $table->json('metadata');
             $table->timestamp('created_at', 0);
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('server_id')->references('id')->on('servers')->onDelete('cascade');
         });
     }
 
