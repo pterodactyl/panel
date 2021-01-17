@@ -80,7 +80,7 @@ class BackupController extends ClientApiController
     public function store(StoreBackupRequest $request, Server $server)
     {
         /** @var \Pterodactyl\Models\Backup $backup */
-        $backup = $server->audit(AuditLog::ACTION_SERVER_BACKUP_STARTED, function (AuditLog $model, Server $server) use ($request) {
+        $backup = $server->audit(AuditLog::SERVER__BACKUP_STARTED, function (AuditLog $model, Server $server) use ($request) {
             $backup = $this->initiateBackupService
                 ->setIgnoredFiles(
                     explode(PHP_EOL, $request->input('ignored') ?? '')
@@ -125,7 +125,9 @@ class BackupController extends ClientApiController
      */
     public function delete(DeleteBackupRequest $request, Server $server, Backup $backup)
     {
-        $server->audit(AuditLog::ACTION_SERVER_BACKUP_DELETED, function () use ($backup) {
+        $server->audit(AuditLog::SERVER__BACKUP_DELETED, function (AuditLog $audit) use ($backup) {
+            $audit->metadata = ['backup_uuid' => $backup->uuid];
+
             $this->deleteBackupService->handle($backup);
         });
 

@@ -59,8 +59,8 @@ class BackupStatusController extends Controller
         }
 
         $action = $request->input('successful')
-            ? AuditLog::ACTION_SERVER_BACKUP_COMPELTED
-            : AuditLog::ACTION_SERVER_BACKUP_FAILED;
+            ? AuditLog::SERVER__BACKUP_COMPELTED
+            : AuditLog::SERVER__BACKUP_FAILED;
 
         $model->server->audit($action, function (AuditLog $audit) use ($model, $request) {
             $audit->metadata = ['backup_uuid' => $model->uuid];

@@ -110,7 +110,7 @@ class FileController extends ClientApiController
      */
     public function download(GetFileContentsRequest $request, Server $server)
     {
-        $token = $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_DOWNLOAD, function (AuditLog $audit, Server $server) use ($request) {
+        $token = $server->audit(AuditLog::SERVER__FILESYSTEM_DOWNLOAD, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['file' => $request->get('file')];
 
             return $this->jwtService
@@ -145,7 +145,7 @@ class FileController extends ClientApiController
      */
     public function write(WriteFileContentRequest $request, Server $server): JsonResponse
     {
-        $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
+        $server->audit(AuditLog::SERVER__FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
             $audit->subaction = 'write_content';
             $audit->metadata = ['file' => $request->get('file')];
 
@@ -168,7 +168,7 @@ class FileController extends ClientApiController
      */
     public function create(CreateFolderRequest $request, Server $server): JsonResponse
     {
-        $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
+        $server->audit(AuditLog::SERVER__FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
             $audit->subaction = 'create_folder';
             $audit->metadata = ['file' => $request->input('root', '/') . $request->input('name')];
 
@@ -191,7 +191,7 @@ class FileController extends ClientApiController
      */
     public function rename(RenameFileRequest $request, Server $server): JsonResponse
     {
-        $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_RENAME, function (AuditLog $audit, Server $server) use ($request) {
+        $server->audit(AuditLog::SERVER__FILESYSTEM_RENAME, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
 
             $this->fileRepository
@@ -213,7 +213,7 @@ class FileController extends ClientApiController
      */
     public function copy(CopyFileRequest $request, Server $server): JsonResponse
     {
-        $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
+        $server->audit(AuditLog::SERVER__FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
             $audit->subaction = 'copy_file';
             $audit->metadata = ['file' => $request->input('location')];
 
@@ -234,7 +234,7 @@ class FileController extends ClientApiController
      */
     public function compress(CompressFilesRequest $request, Server $server): array
     {
-        $file = $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_COMPRESS, function (AuditLog $audit, Server $server) use ($request) {
+        $file = $server->audit(AuditLog::SERVER__FILESYSTEM_COMPRESS, function (AuditLog $audit, Server $server) use ($request) {
             // Allow up to five minutes for this request to process before timing out.
             set_time_limit(300);
 
@@ -260,7 +260,7 @@ class FileController extends ClientApiController
      */
     public function decompress(DecompressFilesRequest $request, Server $server): JsonResponse
     {
-        $file = $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_DECOMPRESS, function (AuditLog $audit, Server $server) use ($request) {
+        $file = $server->audit(AuditLog::SERVER__FILESYSTEM_DECOMPRESS, function (AuditLog $audit, Server $server) use ($request) {
             // Allow up to five minutes for this request to process before timing out.
             set_time_limit(300);
 
@@ -284,7 +284,7 @@ class FileController extends ClientApiController
      */
     public function delete(DeleteFileRequest $request, Server $server): JsonResponse
     {
-        $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_DELETE, function (AuditLog $audit, Server $server) use ($request) {
+        $server->audit(AuditLog::SERVER__FILESYSTEM_DELETE, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
 
             $this->fileRepository->setServer($server)
@@ -326,7 +326,7 @@ class FileController extends ClientApiController
      */
     public function pull(PullFileRequest $request, Server $server): JsonResponse
     {
-        $server->audit(AuditLog::ACTION_SERVER_FILESYSTEM_PULL, function (AuditLog $audit, Server $server) use ($request) {
+        $server->audit(AuditLog::SERVER__FILESYSTEM_PULL, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['directory' => $request->input('directory'), 'url' => $request->input('url')];
 
             $this->fileRepository->setServer($server)->pull($request->input('url'), $request->input('directory'));

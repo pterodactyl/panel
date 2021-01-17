@@ -25,25 +25,20 @@ class AuditLog extends Model
 {
     const UPDATED_AT = null;
 
-    const ACTION_USER_AUTH_LOGIN = 'user:auth.login';
-    const ACTION_USER_AUTH_FAILED = 'user:auth.failed';
-    const ACTION_USER_AUTH_PASSWORD_CHANGED = 'user:auth.password-changed';
-
-    const ACTION_SERVER_FILESYSTEM_DOWNLOAD = 'server:filesystem.download';
-    const ACTION_SERVER_FILESYSTEM_WRITE = 'server:filesystem.write';
-    const ACTION_SERVER_FILESYSTEM_DELETE = 'server:filesystem.delete';
-    const ACTION_SERVER_FILESYSTEM_RENAME = 'server:filesystem.rename';
-    const ACTION_SERVER_FILESYSTEM_COMPRESS = 'server:filesystem.compress';
-    const ACTION_SERVER_FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
-    const ACTION_SERVER_FILESYSTEM_PULL = 'server:filesystem.pull';
-
-    const ACTION_SERVER_BACKUP_STARTED = 'server:backup.started';
-    const ACTION_SERVER_BACKUP_FAILED = 'server:backup.failed';
-    const ACTION_SERVER_BACKUP_COMPELTED = 'server:backup.completed';
-    const ACTION_SERVER_BACKUP_DELETED = 'server:backup.deleted';
-    const ACTION_SERVER_BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
-    const ACTION_SERVER_BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
-    const ACTION_SERVER_BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
+    const SERVER__FILESYSTEM_DOWNLOAD = 'server:filesystem.download';
+    const SERVER__FILESYSTEM_WRITE = 'server:filesystem.write';
+    const SERVER__FILESYSTEM_DELETE = 'server:filesystem.delete';
+    const SERVER__FILESYSTEM_RENAME = 'server:filesystem.rename';
+    const SERVER__FILESYSTEM_COMPRESS = 'server:filesystem.compress';
+    const SERVER__FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
+    const SERVER__FILESYSTEM_PULL = 'server:filesystem.pull';
+    const SERVER__BACKUP_STARTED = 'server:backup.started';
+    const SERVER__BACKUP_FAILED = 'server:backup.failed';
+    const SERVER__BACKUP_COMPELTED = 'server:backup.completed';
+    const SERVER__BACKUP_DELETED = 'server:backup.deleted';
+    const SERVER__BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
+    const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
+    const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
 
     /**
      * @var string[]
