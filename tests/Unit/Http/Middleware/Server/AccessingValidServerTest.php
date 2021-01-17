@@ -67,7 +67,7 @@ class AccessingValidServerTest extends MiddlewareTestCase
         $this->expectException(ConflictHttpException::class);
         $this->expectExceptionMessage('Server is still completing the installation process.');
 
-        $model = factory(Server::class)->make(['installed' => 0]);
+        $model = factory(Server::class)->make(['status' => Server::STATUS_INSTALLING]);
 
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');
         $this->request->shouldReceive('expectsJson')->withNoArgs()->once()->andReturn(true);
