@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
 
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Backup;
+use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Http\Controllers\Controller;
@@ -44,7 +45,7 @@ class BackupStatusController extends Controller
      * @param string $backup
      * @return \Illuminate\Http\JsonResponse
      *
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function __invoke(ReportBackupCompleteRequest $request, string $backup)
     {
@@ -57,21 +58,28 @@ class BackupStatusController extends Controller
             );
         }
 
-        $successful = $request->input('successful') ? true : false;
+        $action = $request->input('successful')
+            ? AuditLog::ACTION_SERVER_BACKUP_COMPELTED
+            : AuditLog::ACTION_SERVER_BACKUP_FAILED;
 
-        $model->fill([
-            'is_successful' => $successful,
-            'checksum' => $successful ? ($request->input('checksum_type') . ':' . $request->input('checksum')) : null,
-            'bytes' => $successful ? $request->input('size') : 0,
-            'completed_at' => CarbonImmutable::now(),
-        ])->save();
+        $model->server->audit($action, function (AuditLog $audit) use ($model, $request) {
+            $audit->metadata = ['backup_uuid' => $model->uuid];
 
-        // Check if we are using the s3 backup adapter. If so, make sure we mark the backup as
-        // being completed in S3 correctly.
-        $adapter = $this->backupManager->adapter();
-        if ($adapter instanceof AwsS3Adapter) {
-            $this->completeMultipartUpload($model, $adapter, $successful);
-        }
+            $successful = $request->input('successful') ? true : false;
+            $model->fill([
+                'is_successful' => $successful,
+                'checksum' => $successful ? ($request->input('checksum_type') . ':' . $request->input('checksum')) : null,
+                'bytes' => $successful ? $request->input('size') : 0,
+                'completed_at' => CarbonImmutable::now(),
+            ])->save();
+
+            // Check if we are using the s3 backup adapter. If so, make sure we mark the backup as
+            // being completed in S3 correctly.
+            $adapter = $this->backupManager->adapter();
+            if ($adapter instanceof AwsS3Adapter) {
+                $this->completeMultipartUpload($model, $adapter, $successful);
+            }
+        });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
