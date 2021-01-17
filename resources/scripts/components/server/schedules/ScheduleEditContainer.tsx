@@ -88,11 +88,11 @@ export default () => {
                 :
                 <>
                     <ScheduleCronRow cron={schedule.cron} css={tw`sm:hidden bg-neutral-700 rounded mb-4 p-3`}/>
-                    <div css={tw`hidden sm:grid grid-cols-5 md:grid-cols-7 gap-4 mb-6`}>
+                    <div css={tw`hidden sm:grid grid-cols-6 md:grid-cols-7 gap-4 mb-6`}>
                         <CronBox title={'Minute'} value={schedule.cron.minute}/>
                         <CronBox title={'Hour'} value={schedule.cron.hour}/>
                         <CronBox title={'Day (Month)'} value={schedule.cron.dayOfMonth}/>
-                        <CronBox title={'Month'} value={'*'}/>
+                        <CronBox title={'Month'} value={schedule.cron.month}/>
                         <CronBox title={'Day (Week)'} value={schedule.cron.dayOfWeek}/>
                     </div>
                     <div css={tw`rounded shadow`}>

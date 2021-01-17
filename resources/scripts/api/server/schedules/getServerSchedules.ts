@@ -5,6 +5,7 @@ export interface Schedule {
     name: string;
     cron: {
         dayOfWeek: string;
+        month: string;
         dayOfMonth: string;
         hour: string;
         minute: string;
@@ -46,6 +47,7 @@ export const rawDataToServerSchedule = (data: any): Schedule => ({
     name: data.name,
     cron: {
         dayOfWeek: data.cron.day_of_week,
+        month: data.cron.month,
         dayOfMonth: data.cron.day_of_month,
         hour: data.cron.hour,
         minute: data.cron.minute,
