@@ -70,7 +70,10 @@ class ServerTransformer extends BaseClientTransformer
                 'allocations' => $server->allocation_limit,
                 'backups' => $server->backup_limit,
             ],
+            'status' => $server->status,
+            // This field is deprecated, please use "status".
             'is_suspended' => $server->isSuspended(),
+            // This field is deprecated, please use "status".
             'is_installing' => ! $server->isInstalled(),
             'is_transferring' => ! is_null($server->transfer),
         ];
