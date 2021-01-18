@@ -66,6 +66,7 @@ class Server extends Model
     const STATUS_INSTALLING = 'installing';
     const STATUS_INSTALL_FAILED = 'install_failed';
     const STATUS_SUSPENDED = 'suspended';
+    const STATUS_RESTORING_BACKUP = 'restoring_backup';
 
     /**
      * The table associated with the model.

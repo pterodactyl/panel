@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
-use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
@@ -50,6 +49,36 @@ class DaemonBackupRepository extends DaemonRepository
                         'adapter' => $this->adapter ?? config('backups.default'),
                         'uuid' => $backup->uuid,
                         'ignore' => implode("\n", $backup->ignored_files),
+                    ],
+                ]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
+
+    /**
+     * Sends a request to Wings to begin restoring a backup for a server.
+     *
+     * @param \Pterodactyl\Models\Backup $backup
+     * @param string|null $url
+     * @param bool $truncate
+     * @return \Psr\Http\Message\ResponseInterface
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function restore(Backup $backup, string $url = null, bool $truncate = false): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            return $this->getHttpClient()->post(
+                sprintf('/api/servers/%s/backup/%s/restore', $this->server->uuid, $backup->uuid),
+                [
+                    'json' => [
+                        'adapter' => $backup->disk,
+                        'truncate_directory' => $truncate,
+                        'download_url' => $url ?? '',
                     ],
                 ]
             );
