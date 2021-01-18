@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { faCloudDownloadAlt, faEllipsisH, faLock, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faCloudDownloadAlt, faEllipsisH, faLock, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
@@ -13,6 +13,7 @@ import tw from 'twin.macro';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
+import Input from '@/components/elements/Input';
 
 interface Props {
     backup: ServerBackup;
@@ -23,6 +24,7 @@ export default ({ backup }: Props) => {
     const [ loading, setLoading ] = useState(false);
     const [ visible, setVisible ] = useState(false);
     const [ deleteVisible, setDeleteVisible ] = useState(false);
+    const [ restoreVisible, setRestoreVisible ] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { mutate } = getServerBackups();
 
@@ -70,6 +72,33 @@ export default ({ backup }: Props) => {
             />
             }
             <ConfirmationModal
+                visible={restoreVisible}
+                title={'Restore this backup?'}
+                buttonText={'Restore backup'}
+                onConfirmed={() => null}
+                onModalDismissed={() => setRestoreVisible(false)}
+            >
+                <p css={tw`text-neutral-300`}>
+                    This server will be stopped in order to restore the backup. Once the backup has started you will
+                    not be able to control the server power state, access the file manager, or create additional backups
+                    until it has completed.
+                </p>
+                <p css={tw`text-neutral-300 mt-4`}>
+                    Are you sure you want to continue?
+                </p>
+                <p css={tw`mt-4 -mb-2 bg-neutral-900 p-3 rounded`}>
+                    <label htmlFor={'restore_truncate'} css={tw`text-base text-neutral-200 flex items-center cursor-pointer`}>
+                        <Input
+                            type={'checkbox'}
+                            css={tw`text-red-500! w-5! h-5! mr-2`}
+                            id={'restore_truncate'}
+                            value={'true'}
+                        />
+                        Remove all files and folders before restoring this backup.
+                    </label>
+                </p>
+            </ConfirmationModal>
+            <ConfirmationModal
                 visible={deleteVisible}
                 title={'Delete this backup?'}
                 buttonText={'Yes, delete backup'}
@@ -96,6 +125,12 @@ export default ({ backup }: Props) => {
                             <DropdownButtonRow onClick={() => doDownload()}>
                                 <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`}/>
                                 <span css={tw`ml-2`}>Download</span>
+                            </DropdownButtonRow>
+                        </Can>
+                        <Can action={'backup.restore'}>
+                            <DropdownButtonRow onClick={() => setRestoreVisible(true)}>
+                                <FontAwesomeIcon fixedWidth icon={faBoxOpen} css={tw`text-xs`}/>
+                                <span css={tw`ml-2`}>Restore</span>
                             </DropdownButtonRow>
                         </Can>
                         <DropdownButtonRow onClick={() => setVisible(true)}>
