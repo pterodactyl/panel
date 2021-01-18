@@ -64,7 +64,7 @@ class ServerInstallController extends Controller
 
         $status = $request->input('successful') === '1' ? null : Server::STATUS_INSTALL_FAILED;
         if ($server->status === Server::STATUS_SUSPENDED) {
-            $status = Server::STATUS_SUSPENDED
+            $status = Server::STATUS_SUSPENDED;
         }
 
         $this->repository->update($server->id, ['status' => $status], true, true);
