@@ -213,6 +213,10 @@ class BackupController extends ClientApiController
             throw new BadRequestHttpException('This server is not currently in a state that allows for a backup to be restored.');
         }
 
+        if (!$backup->is_successful && !$backup->completed_at) {
+            throw new BadRequestHttpException('This backup cannot be restored at this time: not completed or failed.');
+        }
+
         $server->audit(AuditLog::SERVER__BACKUP_RESTORE_STARTED, function (AuditLog $audit, Server $server) use ($backup, $request) {
             $audit->metadata = ['backup_uuid' => $backup->uuid];
 
@@ -226,7 +230,7 @@ class BackupController extends ClientApiController
             // actions against it via the Panel API.
             $server->update(['status' => Server::STATUS_RESTORING_BACKUP]);
 
-            $this->repository->restore($backup, $url ?? null, $request->input('truncate') === 'true');
+            $this->repository->setServer($server)->restore($backup, $url ?? null, $request->input('truncate') === 'true');
         });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
