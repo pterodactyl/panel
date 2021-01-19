@@ -334,20 +334,18 @@ class Server extends Model
     }
 
     /**
-     * Saves an audit entry to the database for the server.
+     * Returns a fresh AuditLog model for the server. This model is not saved to the
+     * database when created, so it is up to the caller to correctly store it as needed.
      *
      * @param string $action
      * @param array $metadata
      * @return \Pterodactyl\Models\AuditLog
      */
-    public function newAuditEvent(string $action, array $metadata): AuditLog
+    public function newAuditEvent(string $action, array $metadata = []): AuditLog
     {
-        $model = AuditLog::factory($action, $metadata)->fill([
+        return AuditLog::factory($action, $metadata)->fill([
             'server_id' => $this->id,
         ]);
-        $model->save();
-
-        return $model;
     }
 
     /**
@@ -366,9 +364,8 @@ class Server extends Model
      */
     public function audit(string $action, Closure $callback)
     {
-        $model = $this->newAuditEvent($action, []);
-
-        return $this->getConnection()->transaction(function () use ($callback, &$model) {
+        return $this->getConnection()->transaction(function () use ($action, $callback) {
+            $model = $this->newAuditEvent($action);
             $response = $callback($model, $this);
             $model->save();
 
