@@ -3,7 +3,9 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Http\Request;
 use Pterodactyl\Models\Backup;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
@@ -47,7 +49,7 @@ class BackupStatusController extends Controller
      *
      * @throws \Throwable
      */
-    public function __invoke(ReportBackupCompleteRequest $request, string $backup)
+    public function index(ReportBackupCompleteRequest $request, string $backup)
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
@@ -63,6 +65,7 @@ class BackupStatusController extends Controller
             : AuditLog::SERVER__BACKUP_FAILED;
 
         $model->server->audit($action, function (AuditLog $audit) use ($model, $request) {
+            $audit->is_system = true;
             $audit->metadata = ['backup_uuid' => $model->uuid];
 
             $successful = $request->input('successful') ? true : false;
@@ -79,6 +82,39 @@ class BackupStatusController extends Controller
             if ($adapter instanceof AwsS3Adapter) {
                 $this->completeMultipartUpload($model, $adapter, $successful);
             }
+        });
+
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Handles toggling the restoration status of a server. The server status field should be
+     * set back to null, even if the restoration failed. This is not an unsolvable state for
+     * the server, and the user can keep trying to restore, or just use the reinstall button.
+     *
+     * The only thing the successful field does is update the entry value for the audit logs
+     * table tracking for this restoration.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $backup
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Throwable
+     */
+    public function restore(Request $request, string $backup)
+    {
+        /** @var \Pterodactyl\Models\Backup $model */
+        $model = Backup::query()->where('uuid', $backup)->firstOrFail();
+        $action = $request->get('successful')
+            ? AuditLog::SERVER__BACKUP_RESTORE_COMPLETED
+            : AuditLog::SERVER__BACKUP_RESTORE_FAILED;
+
+        // Just create a new audit entry for this event and update the server state
+        // so that power actions, file management, and backups can resume as normal.
+        $model->server->audit($action, function (AuditLog $audit, Server $server) use ($backup, $request) {
+            $audit->is_system = true;
+            $audit->metadata = ['backup_uuid' => $backup];
+            $server->update(['status' => null]);
         });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
