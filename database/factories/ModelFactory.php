@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Faker\Generator as Faker;
 use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Models\Backup;
+use Pterodactyl\Models\Permission;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 /*
@@ -134,7 +136,9 @@ $factory->state(Pterodactyl\Models\EggVariable::class, 'editable', function () {
 });
 
 $factory->define(Pterodactyl\Models\Subuser::class, function (Faker $faker) {
-    return [];
+    return [
+        'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
+    ];
 });
 
 $factory->define(Pterodactyl\Models\Allocation::class, function (Faker $faker) {
@@ -161,7 +165,7 @@ $factory->define(Pterodactyl\Models\Database::class, function (Faker $faker) {
         'database' => str_random(10),
         'username' => str_random(10),
         'remote' => '%',
-        'password' => $password ?: bcrypt('test123'),
+        'password' => $password ?: encrypt('test123'),
         'created_at' => Carbon::now()->toDateTimeString(),
         'updated_at' => Carbon::now()->toDateTimeString(),
     ];
@@ -194,5 +198,14 @@ $factory->define(Pterodactyl\Models\ApiKey::class, function (Faker $faker) {
         'memo' => 'Test Function Key',
         'created_at' => Carbon::now()->toDateTimeString(),
         'updated_at' => Carbon::now()->toDateTimeString(),
+    ];
+});
+
+$factory->define(Pterodactyl\Models\Backup::class, function (Faker $faker) {
+    return [
+        'uuid' => Uuid::uuid4()->toString(),
+        'is_successful' => true,
+        'name' => $faker->sentence,
+        'disk' => Backup::ADAPTER_WINGS,
     ];
 });

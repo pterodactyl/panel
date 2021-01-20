@@ -3,6 +3,8 @@
 namespace Pterodactyl\Tests\Integration;
 
 use Illuminate\Testing\Assert as PHPUnit;
+use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Testing\TestResponse as IlluminateTestResponse;
 
 class TestResponse extends IlluminateTestResponse
@@ -23,7 +25,7 @@ class TestResponse extends IlluminateTestResponse
         // to fail so that debugging isn't such a nightmare.
         if ($actual !== $status && $status !== 500) {
             $this->dump();
-            if (! is_null($this->exception)) {
+            if (! is_null($this->exception) && ! $this->exception instanceof DisplayException && ! $this->exception instanceof ValidationException) {
                 dump($this->exception);
             }
         }
