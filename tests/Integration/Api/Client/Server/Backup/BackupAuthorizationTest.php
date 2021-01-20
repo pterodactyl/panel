@@ -27,11 +27,11 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
 
         // Set the API $user as a subuser of server 2, but with no permissions
         // to do anything with the backups for that server.
-        factory(Subuser::class)->create(['server_id' => $server2->id, 'user_id' => $user->id]);
+        Subuser::factory()->create(['server_id' => $server2->id, 'user_id' => $user->id]);
 
-        $backup1 = factory(Backup::class)->create(['server_id' => $server1->id, 'completed_at' => CarbonImmutable::now()]);
-        $backup2 = factory(Backup::class)->create(['server_id' => $server2->id, 'completed_at' => CarbonImmutable::now()]);
-        $backup3 = factory(Backup::class)->create(['server_id' => $server3->id, 'completed_at' => CarbonImmutable::now()]);
+        $backup1 = Backup::factory()->create(['server_id' => $server1->id, 'completed_at' => CarbonImmutable::now()]);
+        $backup2 = Backup::factory()->create(['server_id' => $server2->id, 'completed_at' => CarbonImmutable::now()]);
+        $backup3 = Backup::factory()->create(['server_id' => $server3->id, 'completed_at' => CarbonImmutable::now()]);
 
         $this->instance(DeleteBackupService::class, $mock = Mockery::mock(DeleteBackupService::class));
 

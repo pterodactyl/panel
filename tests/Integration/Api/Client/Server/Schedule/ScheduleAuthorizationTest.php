@@ -32,11 +32,11 @@ class ScheduleAuthorizationTest extends ClientApiIntegrationTestCase
 
         // Set the API $user as a subuser of server 2, but with no permissions
         // to do anything with the schedules for that server.
-        factory(Subuser::class)->create(['server_id' => $server2->id, 'user_id' => $user->id]);
+        Subuser::factory()->create(['server_id' => $server2->id, 'user_id' => $user->id]);
 
-        $schedule1 = factory(Schedule::class)->create(['server_id' => $server1->id]);
-        $schedule2 = factory(Schedule::class)->create(['server_id' => $server2->id]);
-        $schedule3 = factory(Schedule::class)->create(['server_id' => $server3->id]);
+        $schedule1 = Schedule::factory()->create(['server_id' => $server1->id]);
+        $schedule2 = Schedule::factory()->create(['server_id' => $server2->id]);
+        $schedule3 = Schedule::factory()->create(['server_id' => $server3->id]);
 
         // This is the only valid call for this test, accessing the schedule for the same
         // server that the API user is the owner of.

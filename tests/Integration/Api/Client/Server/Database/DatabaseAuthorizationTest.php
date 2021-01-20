@@ -27,15 +27,15 @@ class DatabaseAuthorizationTest extends ClientApiIntegrationTestCase
         // And as no access to $server3.
         $server3 = $this->createServerModel();
 
-        $host = factory(DatabaseHost::class)->create([]);
+        $host = DatabaseHost::factory()->create([]);
 
         // Set the API $user as a subuser of server 2, but with no permissions
         // to do anything with the databases for that server.
-        factory(Subuser::class)->create(['server_id' => $server2->id, 'user_id' => $user->id]);
+        Subuser::factory()->create(['server_id' => $server2->id, 'user_id' => $user->id]);
 
-        $database1 = factory(Database::class)->create(['server_id' => $server1->id, 'database_host_id' => $host->id]);
-        $database2 = factory(Database::class)->create(['server_id' => $server2->id, 'database_host_id' => $host->id]);
-        $database3 = factory(Database::class)->create(['server_id' => $server3->id, 'database_host_id' => $host->id]);
+        $database1 = Database::factory()->create(['server_id' => $server1->id, 'database_host_id' => $host->id]);
+        $database2 = Database::factory()->create(['server_id' => $server2->id, 'database_host_id' => $host->id]);
+        $database3 = Database::factory()->create(['server_id' => $server3->id, 'database_host_id' => $host->id]);
 
         $this->instance(DatabasePasswordService::class, $mock = Mockery::mock(DatabasePasswordService::class));
         $this->instance(DatabaseManagementService::class, $mock2 = Mockery::mock(DatabaseManagementService::class));
