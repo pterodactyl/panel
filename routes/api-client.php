@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\SubuserBelongsToServer;
+use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AllocationBelongsToServer;
 
@@ -39,7 +40,7 @@ Route::group(['prefix' => '/account'], function () {
 | Endpoint: /api/client/servers/{server}
 |
 */
-Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class]], function () {
+Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class, ResourceBelongsToServer::class]], function () {
     Route::get('/', 'Servers\ServerController@index')->name('api:client:server.view');
     Route::get('/websocket', 'Servers\WebsocketController')->name('api:client:server.ws');
     Route::get('/resources', 'Servers\ResourceUtilizationController')->name('api:client:server.resources');
@@ -83,7 +84,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::delete('/{schedule}/tasks/{task}', 'Servers\ScheduleTaskController@delete');
     });
 
-    Route::group(['prefix' => '/network', 'middleware' => [AllocationBelongsToServer::class]], function () {
+    Route::group(['prefix' => '/network'], function () {
         Route::get('/allocations', 'Servers\NetworkAllocationController@index');
         Route::post('/allocations', 'Servers\NetworkAllocationController@store');
         Route::post('/allocations/{allocation}', 'Servers\NetworkAllocationController@update');
@@ -91,7 +92,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::delete('/allocations/{allocation}', 'Servers\NetworkAllocationController@delete');
     });
 
-    Route::group(['prefix' => '/users', 'middleware' => [SubuserBelongsToServer::class]], function () {
+    Route::group(['prefix' => '/users'], function () {
         Route::get('/', 'Servers\SubuserController@index');
         Route::post('/', 'Servers\SubuserController@store');
         Route::get('/{user}', 'Servers\SubuserController@view');
