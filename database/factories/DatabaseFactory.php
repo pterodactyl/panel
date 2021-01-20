@@ -29,7 +29,7 @@ class DatabaseFactory extends Factory
             'database' => Str::random(10),
             'username' => Str::random(10),
             'remote' => '%',
-            'password' => $password ?: bcrypt('test123'),
+            'password' => $password ?: encrypt('test123'),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

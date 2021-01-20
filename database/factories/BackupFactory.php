@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
+use Ramsey\Uuid\Uuid;
+use Pterodactyl\Models\Backup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SubuserFactory extends Factory
+class BackupFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Subuser::class;
+    protected $model = Backup::class;
 
     /**
      * Define the model's default state.
@@ -23,9 +23,10 @@ class SubuserFactory extends Factory
     public function definition(): array
     {
         return [
-            'permissions' => [
-                Permission::ACTION_WEBSOCKET_CONNECT
-            ],
+            'uuid' => Uuid::uuid4()->toString(),
+            'is_successful' => true,
+            'name' => $this->faker->sentence,
+            'disk' => Backup::ADAPTER_WINGS,
         ];
     }
 }

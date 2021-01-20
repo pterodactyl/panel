@@ -10,11 +10,15 @@ use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\Database;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Tests\Integration\TestResponse;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
@@ -25,6 +29,9 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function tearDown(): void
     {
+        Database::query()->forceDelete();
+        DatabaseHost::query()->forceDelete();
+        Backup::query()->forceDelete();
         Server::query()->forceDelete();
         Node::query()->forceDelete();
         Location::query()->forceDelete();
@@ -42,6 +49,19 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 
         Carbon::setTestNow(Carbon::now());
         CarbonImmutable::setTestNow(Carbon::now());
+    }
+
+    /**
+     * Override the default createTestResponse from Illuminate so that we can
+     * just dump 500-level errors to the screen in the tests without having
+     * to keep re-assigning variables.
+     *
+     * @param \Illuminate\Http\Response $response
+     * @return \Illuminate\Testing\TestResponse
+     */
+    protected function createTestResponse($response)
+    {
+        return TestResponse::fromBaseResponse($response);
     }
 
     /**
