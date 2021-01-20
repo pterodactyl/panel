@@ -15,6 +15,7 @@ use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Tests\Integration\TestResponse;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
@@ -42,6 +43,19 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 
         Carbon::setTestNow(Carbon::now());
         CarbonImmutable::setTestNow(Carbon::now());
+    }
+
+    /**
+     * Override the default createTestResponse from Illuminate so that we can
+     * just dump 500-level errors to the screen in the tests without having
+     * to keep re-assigning variables.
+     *
+     * @param \Illuminate\Http\Response $response
+     * @return \Illuminate\Testing\TestResponse
+     */
+    protected function createTestResponse($response)
+    {
+        return TestResponse::fromBaseResponse($response);
     }
 
     /**
