@@ -25,7 +25,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string|null $name_first
  * @property string|null $name_last
  * @property string $password
- * @property string|null $remeber_token
+ * @property string|null $remember_token
  * @property string $language
  * @property bool $root_admin
  * @property bool $use_totp
@@ -36,6 +36,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Carbon\Carbon $updated_at
  *
  * @property string $name
+ * @property \Pterodactyl\Models\AdminRole $adminRole
  * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
@@ -172,7 +173,7 @@ class User extends Model implements
     {
         $object = (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
         $object['avatar_url'] = $this->avatarURL();
-        $object['role_name'] = $this->roleName();
+        $object['role_name'] = $this->adminRoleName();
 
         return $object;
     }
@@ -222,9 +223,14 @@ class User extends Model implements
      *
      * @return string|null
      */
-    public function roleName():? string
+    public function adminRoleName():? string
     {
-        return $this->root_admin ? 'Super Administrator' : null;
+        $role = $this->adminRole;
+        if (is_null($role)) {
+            return $this->root_admin ? 'None' : null;
+        }
+
+        return $role->name;
     }
 
     /**

@@ -44,7 +44,7 @@ class UserTransformer extends BaseTransformer
             'root_admin' => (bool) $model->root_admin,
             '2fa' => (bool) $model->use_totp,
             'avatar_url' => $model->avatarURL(),
-            'role_name' => $model->roleName(),
+            'role_name' => $model->adminRoleName(),
             'created_at' => $this->formatTimestamp($model->created_at),
             'updated_at' => $this->formatTimestamp($model->updated_at),
         ];

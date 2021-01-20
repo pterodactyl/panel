@@ -1,6 +1,9 @@
 /vendor
 *.DS_Store*
-.env
+!.env.ci
+!.env.dusk
+!.env.example
+.env*
 .vagrant/*
 .vscode/*
 storage/framework/*

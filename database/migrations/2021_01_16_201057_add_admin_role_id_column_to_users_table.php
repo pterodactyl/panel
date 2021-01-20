@@ -29,7 +29,6 @@ class AddAdminRoleIdColumnToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['admin_role_id']);
-            $table->dropIndex('admin_role_id');
             $table->dropColumn('admin_role_id');
         });
     }
