@@ -20,7 +20,7 @@ class SubuserAuthorizationTest extends ClientApiIntegrationTestCase
     {
         // Generic subuser, the specific resource we're trying to access.
         /** @var \Pterodactyl\Models\User $internal */
-        $internal = factory(User::class)->create();
+        $internal = User::factory()->create();
 
         // The API $user is the owner of $server1.
         [$user, $server1] = $this->generateTestAccount();
@@ -31,11 +31,11 @@ class SubuserAuthorizationTest extends ClientApiIntegrationTestCase
 
         // Set the API $user as a subuser of server 2, but with no permissions
         // to do anything with the subusers for that server.
-        factory(Subuser::class)->create(['server_id' => $server2->id, 'user_id' => $user->id]);
+        Subuser::factory()->create(['server_id' => $server2->id, 'user_id' => $user->id]);
 
-        factory(Subuser::class)->create(['server_id' => $server1->id, 'user_id' => $internal->id]);
-        factory(Subuser::class)->create(['server_id' => $server2->id, 'user_id' => $internal->id]);
-        factory(Subuser::class)->create(['server_id' => $server3->id, 'user_id' => $internal->id]);
+        Subuser::factory()->create(['server_id' => $server1->id, 'user_id' => $internal->id]);
+        Subuser::factory()->create(['server_id' => $server2->id, 'user_id' => $internal->id]);
+        Subuser::factory()->create(['server_id' => $server3->id, 'user_id' => $internal->id]);
 
         $this->instance(DaemonServerRepository::class, $mock = Mockery::mock(DaemonServerRepository::class));
         if ($method === 'DELETE') {

@@ -3,7 +3,6 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server\Allocation;
 
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
@@ -25,11 +24,11 @@ class AllocationAuthorizationTest extends ClientApiIntegrationTestCase
 
         // Set the API $user as a subuser of server 2, but with no permissions
         // to do anything with the allocations for that server.
-        factory(Subuser::class)->create(['server_id' => $server2->id, 'user_id' => $user->id]);
+        Subuser::factory()->create(['server_id' => $server2->id, 'user_id' => $user->id]);
 
-        $allocation1 = factory(Allocation::class)->create(['server_id' => $server1->id, 'node_id' => $server1->node_id]);
-        $allocation2 = factory(Allocation::class)->create(['server_id' => $server2->id, 'node_id' => $server2->node_id]);
-        $allocation3 = factory(Allocation::class)->create(['server_id' => $server3->id, 'node_id' => $server3->node_id]);
+        $allocation1 = Allocation::factory()->create(['server_id' => $server1->id, 'node_id' => $server1->node_id]);
+        $allocation2 = Allocation::factory()->create(['server_id' => $server2->id, 'node_id' => $server2->node_id]);
+        $allocation3 = Allocation::factory()->create(['server_id' => $server3->id, 'node_id' => $server3->node_id]);
 
         // This is the only valid call for this test, accessing the allocation for the same
         // server that the API user is the owner of.
