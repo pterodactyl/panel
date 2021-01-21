@@ -19,6 +19,7 @@
         "appstract/laravel-blade-directives": "^1.11",
         "aws/aws-sdk-php": "^3.171",
         "cakephp/chronos": "^1.3",
+        "codedungeon/phpunit-result-printer": "^0.30.1",
         "doctrine/dbal": "^2.12",
         "fideloper/proxy": "^4.4",
         "guzzlehttp/guzzle": "^7.2",
@@ -46,7 +47,6 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
         "barryvdh/laravel-ide-helper": "^2.9",
-        "codedungeon/phpunit-result-printer": "^0.28",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.13",
         "friendsofphp/php-cs-fixer": "^2.17",
