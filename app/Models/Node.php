@@ -6,7 +6,6 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -39,7 +38,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class Node extends Model
 {
-    use HasFactory;
     use Notifiable;
 
     /**

@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 /**
  * @property int $id
  * @property int $egg_id
@@ -27,8 +25,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class EggVariable extends Model
 {
-    use HasFactory;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

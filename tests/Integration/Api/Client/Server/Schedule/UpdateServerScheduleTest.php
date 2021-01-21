@@ -35,7 +35,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permissions);
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
         $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*', '*');
 
         $response = $this->actingAs($user)

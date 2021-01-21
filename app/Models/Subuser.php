@@ -3,7 +3,6 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -18,7 +17,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class Subuser extends Model
 {
-    use HasFactory;
     use Notifiable;
 
     /**

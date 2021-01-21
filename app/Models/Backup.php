@@ -3,7 +3,6 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -25,7 +24,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class Backup extends Model
 {
-    use HasFactory;
     use SoftDeletes;
 
     const RESOURCE_NAME = 'backup';

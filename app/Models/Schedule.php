@@ -6,7 +6,6 @@ use Cron\CronExpression;
 use Carbon\CarbonImmutable;
 use Illuminate\Container\Container;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -31,8 +30,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class Schedule extends Model
 {
-    use HasFactory;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
