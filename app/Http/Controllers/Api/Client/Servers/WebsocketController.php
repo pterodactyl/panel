@@ -73,7 +73,7 @@ class WebsocketController extends ClientApiController
         }
 
         $token = $this->jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(10)->toDateTimeImmutable())
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(10))
             ->setClaims([
                 'user_id' => $request->user()->id,
                 'server_uuid' => $server->uuid,

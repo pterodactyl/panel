@@ -113,7 +113,7 @@ class FileController extends ClientApiController
     public function download(GetFileContentsRequest $request, Server $server)
     {
         $token = $this->jwtService
-            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15)->toDateTimeImmutable())
+            ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
             ->setClaims([
                 'file_path' => rawurldecode($request->get('file')),
                 'server_uuid' => $server->uuid,

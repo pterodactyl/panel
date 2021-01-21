@@ -80,16 +80,15 @@ class NodeJWTService
             ->permittedFor($node->getConnectionAddress())
             ->identifiedBy($identifier)
             ->withHeader('jti', $identifier)
-            ->issuedAt(CarbonImmutable::now()->toDateTimeImmutable())
-            ->canOnlyBeUsedAfter(CarbonImmutable::now()->subMinutes(5)->toDateTimeImmutable());
+            ->issuedAt(CarbonImmutable::now())
+            ->canOnlyBeUsedAfter(CarbonImmutable::now()->subMinutes(5));
 
         if ($this->expiresAt) {
             $builder = $builder->expiresAt($this->expiresAt);
         }
 
         if (! empty($this->subject)) {
-            $builder = $builder->relatedTo($this->subject)
-                ->withHeader('sub', $this->subject);
+            $builder = $builder->relatedTo($this->subject)->withHeader('sub', $this->subject);
         }
 
         foreach ($this->claims as $key => $value) {

@@ -114,7 +114,7 @@ class ServerTransferController extends Controller
             // that node to communicate with the old node during the process to initiate the
             // actual file transfer.
             $token = $this->jwtService
-                ->setExpiresAt(CarbonImmutable::now()->addMinutes(15)->toDateTimeImmutable())
+                ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
                 ->setSubject($server->uuid)
                 ->handle($server->node, $server->uuid, 'sha256');
 
