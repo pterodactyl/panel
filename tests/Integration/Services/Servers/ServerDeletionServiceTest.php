@@ -6,6 +6,7 @@ use Mockery;
 use Exception;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use GuzzleHttp\Exception\BadResponseException;
@@ -60,17 +61,17 @@ class ServerDeletionServiceTest extends IntegrationTestCase
      */
     public function testRegularDeleteFailsIfWingsReturnsError()
     {
-        /*$server = $this->createServerModel();
+        $server = $this->createServerModel();
 
         $this->expectException(DaemonConnectionException::class);
 
         $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andThrows(
-            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response(404)))
+            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response))
         );
 
         $this->getService()->handle($server);
 
-        $this->assertDatabaseHas('servers', ['id' => $server->id]);*/
+        $this->assertDatabaseHas('servers', ['id' => $server->id]);
     }
 
     /**
