@@ -40,6 +40,7 @@ class ScheduleTransformer extends BaseClientTransformer
             'cron' => [
                 'day_of_week' => $model->cron_day_of_week,
                 'day_of_month' => $model->cron_day_of_month,
+                'month' => $model->cron_month,
                 'hour' => $model->cron_hour,
                 'minute' => $model->cron_minute,
             ],

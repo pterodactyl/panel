@@ -3,6 +3,9 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.2.2
+* **[security]** Fixes authentication bypass allowing a user to take control of specific server actions such as executing schedules, rotating database passwords, and viewing or deleting a backup.
+
 ## v1.2.1
 ### Fixed
 * Fixes URL-encoding of filenames when working in the filemanager to fix issues when moving, renaming, or deleting files.
