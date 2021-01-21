@@ -22,6 +22,10 @@ jobs:
       fail-fast: false
       matrix:
         php: [7.3, 7.4]
+        experimental: [false]
+        include:
+          - php: 8.0
+            experimental: true
     name: PHP ${{ matrix.php }}
     steps:
       - name: checkout
