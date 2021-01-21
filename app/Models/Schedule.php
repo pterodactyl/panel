@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $server_id
  * @property string $name
  * @property string $cron_day_of_week
+ * @property string $cron_month
  * @property string $cron_day_of_month
  * @property string $cron_hour
  * @property string $cron_minute
@@ -61,6 +62,7 @@ class Schedule extends Model
         'server_id',
         'name',
         'cron_day_of_week',
+        'cron_month',
         'cron_day_of_month',
         'cron_hour',
         'cron_minute',
@@ -96,6 +98,7 @@ class Schedule extends Model
     protected $attributes = [
         'name' => null,
         'cron_day_of_week' => '*',
+        'cron_month' => '*',
         'cron_day_of_month' => '*',
         'cron_hour' => '*',
         'cron_minute' => '*',
@@ -110,6 +113,7 @@ class Schedule extends Model
         'server_id' => 'required|exists:servers,id',
         'name' => 'required|string|max:191',
         'cron_day_of_week' => 'required|string',
+        'cron_month' => 'required|string',
         'cron_day_of_month' => 'required|string',
         'cron_hour' => 'required|string',
         'cron_minute' => 'required|string',
@@ -126,7 +130,7 @@ class Schedule extends Model
      */
     public function getNextRunDate()
     {
-        $formatted = sprintf('%s %s %s * %s', $this->cron_minute, $this->cron_hour, $this->cron_day_of_month, $this->cron_day_of_week);
+        $formatted = sprintf('%s %s %s %s %s', $this->cron_minute, $this->cron_hour, $this->cron_day_of_month, $this->cron_month, $this->cron_day_of_week);
 
         return CarbonImmutable::createFromTimestamp(
             CronExpression::factory($formatted)->getNextRunDate()->getTimestamp()

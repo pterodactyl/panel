@@ -84,6 +84,7 @@ class ScheduleController extends ClientApiController
             'server_id' => $server->id,
             'name' => $request->input('name'),
             'cron_day_of_week' => $request->input('day_of_week'),
+            'cron_month' => $request->input('month'),
             'cron_day_of_month' => $request->input('day_of_month'),
             'cron_hour' => $request->input('hour'),
             'cron_minute' => $request->input('minute'),
@@ -136,6 +137,7 @@ class ScheduleController extends ClientApiController
         $data = [
             'name' => $request->input('name'),
             'cron_day_of_week' => $request->input('day_of_week'),
+            'cron_month' => $request->input('month'),
             'cron_day_of_month' => $request->input('day_of_month'),
             'cron_hour' => $request->input('hour'),
             'cron_minute' => $request->input('minute'),
@@ -211,6 +213,7 @@ class ScheduleController extends ClientApiController
                 $request->input('minute'),
                 $request->input('hour'),
                 $request->input('day_of_month'),
+                $request->input('month'),
                 $request->input('day_of_week')
             );
         } catch (Exception $exception) {
