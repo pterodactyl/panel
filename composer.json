@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
+        "php": "^7.4 | ^8.0",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
@@ -28,7 +28,7 @@
         "laravel/helpers": "^1.4",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.0",
-        "lcobucci/jwt": "^3.4",
+        "lcobucci/jwt": "^4.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "league/flysystem-memory": "^1.0",
         "matriphe/iso-639": "^1.2",

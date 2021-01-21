@@ -3,12 +3,13 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 
 use Carbon\Carbon;
-use Lcobucci\JWT\Parser;
 use Carbon\CarbonImmutable;
-use Lcobucci\JWT\Signer\Key;
 use Illuminate\Http\Response;
+use Lcobucci\JWT\Configuration;
 use Pterodactyl\Models\Permission;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Lcobucci\JWT\Validation\Constraint\SignedWith;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class WebsocketControllerTest extends ClientApiIntegrationTestCase
@@ -52,22 +53,25 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
         $this->assertStringStartsWith('wss://', $connection, 'Failed asserting that websocket connection address has expected "wss://" prefix.');
         $this->assertStringEndsWith("/api/servers/{$server->uuid}/ws", $connection, 'Failed asserting that websocket connection address uses expected Wings endpoint.');
 
-        $token = (new Parser)->parse($response->json('data.token'));
+        $config = Configuration::forSymmetricSigner(new Sha256, $key = InMemory::plainText($server->node->getDecryptedKey()));
+        $config->setValidationConstraints(new SignedWith(new Sha256, $key));
+        /** @var \Lcobucci\JWT\Token\Plain $token */
+        $token = $config->parser()->parse($response->json('data.token'));
 
         $this->assertTrue(
-            $token->verify(new Sha256, new Key($server->node->getDecryptedKey())),
+            $config->validator()->validate($token, ...$config->validationConstraints()),
             'Failed to validate that the JWT data returned was signed using the Node\'s secret key.'
         );
 
         // Check that the claims are generated correctly.
-        $this->assertSame(config('app.url'), $token->getClaim('iss'));
-        $this->assertSame($server->node->getConnectionAddress(), $token->getClaim('aud'));
-        $this->assertSame(CarbonImmutable::now()->getTimestamp(), $token->getClaim('iat'));
-        $this->assertSame(CarbonImmutable::now()->subMinutes(5)->getTimestamp(), $token->getClaim('nbf'));
-        $this->assertSame(CarbonImmutable::now()->addMinutes(10)->getTimestamp(), $token->getClaim('exp'));
-        $this->assertSame($user->id, $token->getClaim('user_id'));
-        $this->assertSame($server->uuid, $token->getClaim('server_uuid'));
-        $this->assertSame(['*'], $token->getClaim('permissions'));
+        $this->assertTrue($token->hasBeenIssuedBy(config('app.url')));
+        $this->assertTrue($token->isPermittedFor($server->node->getConnectionAddress()));
+        $this->assertEquals(CarbonImmutable::now()->toDateTimeImmutable(), $token->claims()->get('iat'));
+        $this->assertEquals(CarbonImmutable::now()->subMinutes(5)->toDateTimeImmutable(), $token->claims()->get('nbf'));
+        $this->assertEquals(CarbonImmutable::now()->addMinutes(10)->toDateTimeImmutable(), $token->claims()->get('exp'));
+        $this->assertSame($user->id, $token->claims()->get('user_id'));
+        $this->assertSame($server->uuid, $token->claims()->get('server_uuid'));
+        $this->assertSame(['*'], $token->claims()->get('permissions'));
     }
 
     /**
@@ -86,14 +90,18 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
         $response->assertOk();
         $response->assertJsonStructure(['data' => ['token', 'socket']]);
 
-        $token = (new Parser)->parse($response->json('data.token'));
+        $config = Configuration::forSymmetricSigner(new Sha256, $key = InMemory::plainText($server->node->getDecryptedKey()));
+        $config->setValidationConstraints(new SignedWith(new Sha256, $key));
+        /** @var \Lcobucci\JWT\Token\Plain $token */
+        $token = $config->parser()->parse($response->json('data.token'));
 
         $this->assertTrue(
-            $token->verify(new Sha256, new Key($server->node->getDecryptedKey())),
+            $config->validator()->validate($token, ...$config->validationConstraints()),
             'Failed to validate that the JWT data returned was signed using the Node\'s secret key.'
         );
 
+
         // Check that the claims are generated correctly.
-        $this->assertSame($permissions, $token->getClaim('permissions'));
+        $this->assertSame($permissions, $token->claims()->get('permissions'));
     }
 }
