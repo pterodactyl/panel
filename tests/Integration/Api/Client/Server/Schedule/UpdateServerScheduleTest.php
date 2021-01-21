@@ -19,6 +19,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
         'minute' => '5',
         'hour' => '*',
         'day_of_week' => '*',
+        'month' => '*',
         'day_of_month' => '*',
         'is_active' => false,
     ];
@@ -35,7 +36,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
         $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
-        $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*');
+        $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*', '*');
 
         $response = $this->actingAs($user)
             ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}", $this->updateData);

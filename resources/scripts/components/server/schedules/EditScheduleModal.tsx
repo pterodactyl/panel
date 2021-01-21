@@ -19,6 +19,7 @@ type Props = {
 interface Values {
     name: string;
     dayOfWeek: string;
+    month: string;
     dayOfMonth: string;
     hour: string;
     minute: string;
@@ -38,7 +39,7 @@ const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdate
                     label={'Schedule name'}
                     description={'A human readable identifer for this schedule.'}
                 />
-                <div css={tw`grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6`}>
+                <div css={tw`grid grid-cols-2 sm:grid-cols-5 gap-4 mt-6`}>
                     <div>
                         <Field name={'minute'} label={'Minute'}/>
                     </div>
@@ -47,6 +48,9 @@ const EditScheduleModal = ({ schedule, ...props }: Omit<Props, 'onScheduleUpdate
                     </div>
                     <div>
                         <Field name={'dayOfMonth'} label={'Day of month'}/>
+                    </div>
+                    <div>
+                        <Field name={'month'} label={'Month'}/>
                     </div>
                     <div>
                         <Field name={'dayOfWeek'} label={'Day of week'}/>
@@ -94,6 +98,7 @@ export default ({ schedule, visible, ...props }: Props) => {
                 minute: values.minute,
                 hour: values.hour,
                 dayOfWeek: values.dayOfWeek,
+                month: values.month,
                 dayOfMonth: values.dayOfMonth,
             },
             isActive: values.enabled,
@@ -116,10 +121,11 @@ export default ({ schedule, visible, ...props }: Props) => {
             onSubmit={submit}
             initialValues={{
                 name: schedule?.name || '',
-                dayOfWeek: schedule?.cron.dayOfWeek || '*',
-                dayOfMonth: schedule?.cron.dayOfMonth || '*',
-                hour: schedule?.cron.hour || '*',
                 minute: schedule?.cron.minute || '*/5',
+                hour: schedule?.cron.hour || '*',
+                dayOfMonth: schedule?.cron.dayOfMonth || '*',
+                month: schedule?.cron.month || '*',
+                dayOfWeek: schedule?.cron.dayOfWeek || '*',
                 enabled: schedule ? schedule.isActive : true,
             } as Values}
             validationSchema={null}
