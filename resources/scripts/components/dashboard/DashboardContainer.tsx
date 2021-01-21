@@ -20,8 +20,8 @@ export default () => {
     const [ showOnlyAdmin, setShowOnlyAdmin ] = usePersistedState('show_all_servers', false);
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
-        [ '/api/client/servers', showOnlyAdmin, page ],
-        () => getServers({ page, type: showOnlyAdmin ? 'admin' : undefined }),
+        [ '/api/client/servers', rootAdmin && showOnlyAdmin, page ],
+        () => getServers({ page, type: rootAdmin && showOnlyAdmin ? 'admin' : undefined }),
     );
 
     useEffect(() => {
