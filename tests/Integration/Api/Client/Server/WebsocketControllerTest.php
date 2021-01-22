@@ -63,12 +63,20 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
             'Failed to validate that the JWT data returned was signed using the Node\'s secret key.'
         );
 
+        // The way we generate times for the JWT will truncate the microseconds from the
+        // time, but CarbonImmutable::now() will include them, thus causing test failures.
+        //
+        // This little chunk of logic just strips those out by generating a new CarbonImmutable
+        // instance from the current timestamp, which is how the JWT works. We also need to
+        // switch to UTC here for consistency.
+        $expect = CarbonImmutable::createFromTimestamp(CarbonImmutable::now()->getTimestamp())->timezone('UTC');
+
         // Check that the claims are generated correctly.
         $this->assertTrue($token->hasBeenIssuedBy(config('app.url')));
         $this->assertTrue($token->isPermittedFor($server->node->getConnectionAddress()));
-        $this->assertEquals(CarbonImmutable::now()->toDateTimeImmutable(), $token->claims()->get('iat'));
-        $this->assertEquals(CarbonImmutable::now()->subMinutes(5)->toDateTimeImmutable(), $token->claims()->get('nbf'));
-        $this->assertEquals(CarbonImmutable::now()->addMinutes(10)->toDateTimeImmutable(), $token->claims()->get('exp'));
+        $this->assertEquals($expect, $token->claims()->get('iat'));
+        $this->assertEquals($expect->subMinutes(5), $token->claims()->get('nbf'));
+        $this->assertEquals($expect->addMinutes(10), $token->claims()->get('exp'));
         $this->assertSame($user->id, $token->claims()->get('user_id'));
         $this->assertSame($server->uuid, $token->claims()->get('server_uuid'));
         $this->assertSame(['*'], $token->claims()->get('permissions'));
