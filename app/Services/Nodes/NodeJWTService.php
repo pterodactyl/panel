@@ -9,6 +9,7 @@ use Pterodactyl\Models\Node;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
+use Pterodactyl\Extensions\Lcobucci\JWT\Encoding\TimestampDates;
 
 class NodeJWTService
 {
@@ -75,7 +76,7 @@ class NodeJWTService
         $identifier = hash($algo, $identifiedBy);
         $config = Configuration::forSymmetricSigner(new Sha256, InMemory::plainText($node->getDecryptedKey()));
 
-        $builder = $config->builder()
+        $builder = $config->builder(new TimestampDates)
             ->issuedBy(config('app.url'))
             ->permittedFor($node->getConnectionAddress())
             ->identifiedBy($identifier)
