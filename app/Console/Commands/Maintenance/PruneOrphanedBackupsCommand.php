@@ -12,7 +12,7 @@ class PruneOrphanedBackupsCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'p:maintenance:prune-backups {--since-minutes=30}';
+    protected $signature = 'p:maintenance:prune-backups {--prune-age=}';
 
     /**
      * @var string
@@ -21,9 +21,9 @@ class PruneOrphanedBackupsCommand extends Command
 
     public function handle(BackupRepository $repository)
     {
-        $since = $this->option('since-minutes');
-        if (!is_digit($since)) {
-            throw new InvalidArgumentException('The --since-minutes option must be a valid numeric digit.');
+        $since = $this->option('prune-age') ?? config('backups.prune_age', 360);
+        if (!$since || !is_digit($since)) {
+            throw new InvalidArgumentException('The "--prune-age" argument must be a value greater than 0.');
         }
 
         $query = $repository->getBuilder()

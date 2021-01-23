@@ -1,11 +1,6 @@
 <?php
 
 return [
-    'key' => [
-        'warning' => 'It appears you have already configured an application encryption key. Continuing with this process with overwrite that key and cause data corruption for any existing encrypted data. DO NOT CONTINUE UNLESS YOU KNOW WHAT YOU ARE DOING.',
-        'confirm' => 'I understand the consequences of performing this command and accept all responsibility for the loss of encrypted data.',
-        'final_confirm' => 'Are you sure you wish to continue? Changing the application encryption key WILL CAUSE DATA LOSS.',
-    ],
     'location' => [
         'no_location_found' => 'Could not locate a record matching the provided short code.',
         'ask_short' => 'Location Short Code',
