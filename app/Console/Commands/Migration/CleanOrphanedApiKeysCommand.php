@@ -25,8 +25,6 @@ class CleanOrphanedApiKeysCommand extends Command
 
     /**
      * CleanOrphanedApiKeysCommand constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
      */
     public function __construct(ApiKeyRepositoryInterface $repository)
     {
@@ -44,10 +42,11 @@ class CleanOrphanedApiKeysCommand extends Command
     {
         $count = $this->repository->findCountWhere([['key_type', '=', ApiKey::TYPE_NONE]]);
         $continue = $this->confirm(
-            'This action will remove ' . $count . ' keys from the database. Are you sure you wish to continue?', false
+            'This action will remove ' . $count . ' keys from the database. Are you sure you wish to continue?',
+            false
         );
 
-        if (! $continue) {
+        if (!$continue) {
             return null;
         }
 

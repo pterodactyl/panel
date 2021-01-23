@@ -6,6 +6,7 @@ use Mockery;
 use Exception;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use GuzzleHttp\Exception\BadResponseException;
@@ -65,7 +66,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         $this->expectException(DaemonConnectionException::class);
 
         $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andThrows(
-            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test')))
+            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response()))
         );
 
         $this->getService()->handle($server);
@@ -113,17 +114,17 @@ class ServerDeletionServiceTest extends IntegrationTestCase
     public function testExceptionWhileDeletingStopsProcess()
     {
         $server = $this->createServerModel();
-        $host = factory(DatabaseHost::class)->create();
+        $host = DatabaseHost::factory()->create();
 
         /** @var \Pterodactyl\Models\Database $db */
-        $db = factory(Database::class)->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
+        $db = Database::factory()->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
 
         $server->refresh();
 
         $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andReturnUndefined();
         $this->databaseManagementService->expects('delete')->with(Mockery::on(function ($value) use ($db) {
             return $value instanceof Database && $value->id === $db->id;
-        }))->andThrows(new Exception);
+        }))->andThrows(new Exception());
 
         $this->expectException(Exception::class);
         $this->getService()->handle($server);
@@ -138,17 +139,17 @@ class ServerDeletionServiceTest extends IntegrationTestCase
     public function testExceptionWhileDeletingDatabasesDoesNotAbortIfForceDeleted()
     {
         $server = $this->createServerModel();
-        $host = factory(DatabaseHost::class)->create();
+        $host = DatabaseHost::factory()->create();
 
         /** @var \Pterodactyl\Models\Database $db */
-        $db = factory(Database::class)->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
+        $db = Database::factory()->create(['database_host_id' => $host->id, 'server_id' => $server->id]);
 
         $server->refresh();
 
         $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andReturnUndefined();
         $this->databaseManagementService->expects('delete')->with(Mockery::on(function ($value) use ($db) {
             return $value instanceof Database && $value->id === $db->id;
-        }))->andThrows(new Exception);
+        }))->andThrows(new Exception());
 
         $this->getService()->withForce(true)->handle($server);
 

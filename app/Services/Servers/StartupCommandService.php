@@ -8,10 +8,6 @@ class StartupCommandService
 {
     /**
      * Generates a startup command for a given server instance.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param bool $hideAllValues
-     * @return string
      */
     public function handle(Server $server, bool $hideAllValues = false): string
     {

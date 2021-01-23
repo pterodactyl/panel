@@ -10,7 +10,7 @@ class ServerVariable extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'server_variable';
+    public const RESOURCE_NAME = 'server_variable';
 
     /**
      * The table associated with the model.

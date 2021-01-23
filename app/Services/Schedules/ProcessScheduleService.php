@@ -23,9 +23,6 @@ class ProcessScheduleService
 
     /**
      * ProcessScheduleService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Illuminate\Contracts\Bus\Dispatcher $dispatcher
      */
     public function __construct(ConnectionInterface $connection, Dispatcher $dispatcher)
     {
@@ -36,9 +33,6 @@ class ProcessScheduleService
     /**
      * Process a schedule and push the first task onto the queue worker.
      *
-     * @param \Pterodactyl\Models\Schedule $schedule
-     * @param bool $now
-     *
      * @throws \Throwable
      */
     public function handle(Schedule $schedule, bool $now = false)
@@ -47,9 +41,7 @@ class ProcessScheduleService
         $task = $schedule->tasks()->orderBy('sequence_id', 'asc')->first();
 
         if (is_null($task)) {
-            throw new DisplayException(
-                'Cannot process schedule for task execution: no tasks are registered.'
-            );
+            throw new DisplayException('Cannot process schedule for task execution: no tasks are registered.');
         }
 
         $this->connection->transaction(function () use ($schedule, $task) {
@@ -63,7 +55,7 @@ class ProcessScheduleService
 
         $job = new RunTaskJob($task);
 
-        if (! $now) {
+        if (!$now) {
             $this->dispatcher->dispatch($job->delay($task->time_offset));
         } else {
             // When using dispatchNow the RunTaskJob::failed() function is not called automatically

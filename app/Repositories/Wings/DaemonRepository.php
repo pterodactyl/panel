@@ -27,8 +27,6 @@ abstract class DaemonRepository
 
     /**
      * BaseWingsRepository constructor.
-     *
-     * @param \Illuminate\Contracts\Foundation\Application $application
      */
     public function __construct(Application $application)
     {
@@ -38,7 +36,6 @@ abstract class DaemonRepository
     /**
      * Set the server model this request is stemming from.
      *
-     * @param \Pterodactyl\Models\Server $server
      * @return $this
      */
     public function setServer(Server $server)
@@ -53,7 +50,6 @@ abstract class DaemonRepository
     /**
      * Set the node model this request is stemming from.
      *
-     * @param \Pterodactyl\Models\Node $node
      * @return $this
      */
     public function setNode(Node $node)
@@ -65,9 +61,6 @@ abstract class DaemonRepository
 
     /**
      * Return an instance of the Guzzle HTTP Client to be used for requests.
-     *
-     * @param array $headers
-     * @return \GuzzleHttp\Client
      */
     public function getHttpClient(array $headers = []): Client
     {

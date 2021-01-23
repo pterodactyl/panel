@@ -9,9 +9,6 @@ use Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException;
 
 trait ValidatesValidationRules
 {
-    /**
-     * @return \Illuminate\Contracts\Validation\Factory
-     */
     abstract protected function getValidator(): Factory;
 
     /**
@@ -29,9 +26,7 @@ trait ValidatesValidationRules
         } catch (BadMethodCallException $exception) {
             $matches = [];
             if (preg_match('/Method \[(.+)\] does not exist\./', $exception->getMessage(), $matches)) {
-                throw new BadValidationRuleException(trans('exceptions.nest.variables.bad_validation_rule', [
-                    'rule' => Str::snake(str_replace('validate', '', array_get($matches, 1, 'unknownRule'))),
-                ]), $exception);
+                throw new BadValidationRuleException(trans('exceptions.nest.variables.bad_validation_rule', ['rule' => Str::snake(str_replace('validate', '', array_get($matches, 1, 'unknownRule')))]), $exception);
             }
 
             throw $exception;

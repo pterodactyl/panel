@@ -19,9 +19,6 @@ class DaemonConnectionException extends DisplayException
 
     /**
      * Throw a displayable exception caused by a daemon connection error.
-     *
-     * @param \GuzzleHttp\Exception\GuzzleException $previous
-     * @param bool $useStatusCode
      */
     public function __construct(GuzzleException $previous, bool $useStatusCode = true)
     {
@@ -38,11 +35,11 @@ class DaemonConnectionException extends DisplayException
 
         // Attempt to pull the actual error message off the response and return that if it is not
         // a 500 level error.
-        if ($this->statusCode < 500 && ! is_null($response)) {
+        if ($this->statusCode < 500 && !is_null($response)) {
             $body = $response->getBody();
             if (is_string($body) || (is_object($body) && method_exists($body, '__toString'))) {
                 $body = json_decode(is_string($body) ? $body : $body->__toString(), true);
-                $message = "[Wings Error]: " . Arr::get($body, 'error', $message);
+                $message = '[Wings Error]: ' . Arr::get($body, 'error', $message);
             }
         }
 

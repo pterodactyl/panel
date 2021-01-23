@@ -20,9 +20,6 @@ class TransferService
 
     /**
      * TransferService constructor.
-     *
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         DaemonServerRepository $daemonServerRepository,

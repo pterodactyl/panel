@@ -6,8 +6,8 @@ use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Backup;
 use Illuminate\Http\JsonResponse;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -27,9 +27,6 @@ class BackupStatusController extends Controller
 
     /**
      * BackupStatusController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
-     * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
     public function __construct(BackupRepository $repository, BackupManager $backupManager)
     {
@@ -40,8 +37,6 @@ class BackupStatusController extends Controller
     /**
      * Handles updating the state of a backup.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest $request
-     * @param string $backup
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
@@ -51,10 +46,8 @@ class BackupStatusController extends Controller
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
 
-        if (! is_null($model->completed_at)) {
-            throw new BadRequestHttpException(
-                'Cannot update the status of a backup that is already marked as completed.'
-            );
+        if (!is_null($model->completed_at)) {
+            throw new BadRequestHttpException('Cannot update the status of a backup that is already marked as completed.');
         }
 
         $successful = $request->input('successful') ? true : false;
@@ -80,10 +73,6 @@ class BackupStatusController extends Controller
      * Marks a multipart upload in a given S3-compatiable instance as failed or successful for
      * the given backup.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @param \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter
-     * @param bool $successful
-     *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
@@ -95,7 +84,7 @@ class BackupStatusController extends Controller
             // A failed backup doesn't need to error here, this can happen if the backup encouters
             // an error before we even start the upload. AWS gives you tooling to clear these failed
             // multipart uploads as needed too.
-            if (! $successful) {
+            if (!$successful) {
                 return;
             }
             throw new DisplayException('Cannot complete backup request: no upload_id present on model.');
@@ -108,7 +97,7 @@ class BackupStatusController extends Controller
         ];
 
         $client = $adapter->getClient();
-        if (! $successful) {
+        if (!$successful) {
             $client->execute($client->getCommand('AbortMultipartUpload', $params));
 
             return;

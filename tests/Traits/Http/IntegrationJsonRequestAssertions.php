@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits\Http;
+namespace Pterodactyl\Tests\Traits\Http;
 
 use Illuminate\Http\Response;
 use Illuminate\Testing\TestResponse;
@@ -9,8 +9,6 @@ trait IntegrationJsonRequestAssertions
 {
     /**
      * Make assertions about a 404 response on the API.
-     *
-     * @param \Illuminate\Testing\TestResponse $response
      */
     public function assertNotFoundJson(TestResponse $response)
     {
@@ -30,8 +28,6 @@ trait IntegrationJsonRequestAssertions
 
     /**
      * Make assertions about a 403 error returned by the API.
-     *
-     * @param \Illuminate\Testing\TestResponse $response
      */
     public function assertAccessDeniedJson(TestResponse $response)
     {

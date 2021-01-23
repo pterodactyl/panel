@@ -51,13 +51,6 @@ class NodeViewController extends Controller
 
     /**
      * NodeViewController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\AllocationRepository $allocationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $repository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $serverRepository
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $versionService
-     * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(
         AllocationRepository $allocationRepository,
@@ -78,8 +71,6 @@ class NodeViewController extends Controller
     /**
      * Returns index view for a specific node on the system.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request, Node $node)
@@ -96,8 +87,6 @@ class NodeViewController extends Controller
     /**
      * Returns the settings page for a specific node.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\Contracts\View\View
      */
     public function settings(Request $request, Node $node)
@@ -111,8 +100,6 @@ class NodeViewController extends Controller
     /**
      * Return the node configuration page for a specific node.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\Contracts\View\View
      */
     public function configuration(Request $request, Node $node)
@@ -123,8 +110,6 @@ class NodeViewController extends Controller
     /**
      * Return the node allocation management page.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\Contracts\View\View
      */
     public function allocations(Request $request, Node $node)
@@ -145,8 +130,6 @@ class NodeViewController extends Controller
     /**
      * Return a listing of servers that exist for this specific node.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\Contracts\View\View
      */
     public function servers(Request $request, Node $node)

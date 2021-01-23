@@ -49,11 +49,7 @@ class InitiateBackupService
     /**
      * InitiateBackupService constructor.
      *
-     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
      * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
-     * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
     public function __construct(
         BackupRepository $repository,
@@ -73,6 +69,7 @@ class InitiateBackupService
      * Sets the files to be ignored by this backup.
      *
      * @param string[]|null $ignored
+     *
      * @return $this
      */
     public function setIgnoredFiles(?array $ignored)
@@ -96,12 +93,6 @@ class InitiateBackupService
     /**
      * Initiates the backup process for a server on the daemon.
      *
-     * @param \Pterodactyl\Models\Server $server
-     * @param string|null $name
-     * @param bool $override
-     *
-     * @return \Pterodactyl\Models\Backup
-     *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException
      * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
@@ -113,17 +104,14 @@ class InitiateBackupService
         if ($period > 0) {
             $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, $period);
             if ($previous->count() >= $limit) {
-                throw new TooManyRequestsHttpException(
-                    CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addSeconds($period)),
-                    sprintf('Only %d backups may be generated within a %d second span of time.', $limit, $period)
-                );
+                throw new TooManyRequestsHttpException(CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addSeconds($period)), sprintf('Only %d backups may be generated within a %d second span of time.', $limit, $period));
             }
         }
 
         // Check if the server has reached or exceeded it's backup limit
-        if (! $server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
+        if (!$server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
             // Do not allow the user to continue if this server is already at its limit and can't override.
-            if (! $override || $server->backup_limit <= 0) {
+            if (!$override || $server->backup_limit <= 0) {
                 throw new TooManyBackupsException($server->backup_limit);
             }
 

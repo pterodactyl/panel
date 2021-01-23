@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Task;
 use InvalidArgumentException;
 use Pterodactyl\Models\Schedule;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +18,9 @@ use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
 
 class RunTaskJob extends Job implements ShouldQueue
 {
-    use DispatchesJobs, InteractsWithQueue, SerializesModels;
+    use DispatchesJobs;
+    use InteractsWithQueue;
+    use SerializesModels;
 
     /**
      * @var \Pterodactyl\Models\Task
@@ -28,8 +29,6 @@ class RunTaskJob extends Job implements ShouldQueue
 
     /**
      * RunTaskJob constructor.
-     *
-     * @param \Pterodactyl\Models\Task $task
      */
     public function __construct(Task $task)
     {
@@ -40,10 +39,6 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * Run the job and send actions to the daemon running the server.
      *
-     * @param \Pterodactyl\Repositories\Wings\DaemonCommandRepository $commandRepository
-     * @param \Pterodactyl\Services\Backups\InitiateBackupService $backupService
-     * @param \Pterodactyl\Repositories\Wings\DaemonPowerRepository $powerRepository
-     *
      * @throws \Throwable
      */
     public function handle(
@@ -52,7 +47,7 @@ class RunTaskJob extends Job implements ShouldQueue
         DaemonPowerRepository $powerRepository
     ) {
         // Do not process a task that is not set to active.
-        if (! $this->task->schedule->is_active) {
+        if (!$this->task->schedule->is_active) {
             $this->markTaskNotQueued();
             $this->markScheduleComplete();
 
@@ -81,8 +76,6 @@ class RunTaskJob extends Job implements ShouldQueue
 
     /**
      * Handle a failure while sending the action to the daemon or otherwise processing the job.
-     *
-     * @param \Exception|null $exception
      */
     public function failed(Exception $exception = null)
     {

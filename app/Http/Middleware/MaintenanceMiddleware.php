@@ -14,8 +14,6 @@ class MaintenanceMiddleware
 
     /**
      * MaintenanceMiddleware constructor.
-     *
-     * @param \Illuminate\Contracts\Routing\ResponseFactory $response
      */
     public function __construct(ResponseFactory $response)
     {
@@ -26,7 +24,7 @@ class MaintenanceMiddleware
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)

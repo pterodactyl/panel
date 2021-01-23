@@ -9,8 +9,6 @@ class SendPowerRequest extends ClientApiRequest
 {
     /**
      * Determine if the user has permission to send a power command to a server.
-     *
-     * @return string
      */
     public function permission(): string
     {
@@ -29,8 +27,6 @@ class SendPowerRequest extends ClientApiRequest
 
     /**
      * Rules to validate this request against.
-     *
-     * @return array
      */
     public function rules(): array
     {

@@ -48,12 +48,6 @@ class NestController extends Controller
 
     /**
      * NestController constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Pterodactyl\Services\Nests\NestCreationService $nestCreationService
-     * @param \Pterodactyl\Services\Nests\NestDeletionService $nestDeletionService
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Nests\NestUpdateService $nestUpdateService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -72,8 +66,6 @@ class NestController extends Controller
     /**
      * Render nest listing page.
      *
-     * @return \Illuminate\View\View
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index(): View
@@ -85,8 +77,6 @@ class NestController extends Controller
 
     /**
      * Render nest creation page.
-     *
-     * @return \Illuminate\View\View
      */
     public function create(): View
     {
@@ -95,9 +85,6 @@ class NestController extends Controller
 
     /**
      * Handle the storage of a new nest.
-     *
-     * @param \Pterodactyl\Http\Requests\Admin\Nest\StoreNestFormRequest $request
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
@@ -112,9 +99,6 @@ class NestController extends Controller
     /**
      * Return details about a nest including all of the eggs and servers per egg.
      *
-     * @param int $nest
-     * @return \Illuminate\View\View
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $nest): View
@@ -127,10 +111,6 @@ class NestController extends Controller
     /**
      * Handle request to update a nest.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Nest\StoreNestFormRequest $request
-     * @param int $nest
-     *
-     * @return \Illuminate\Http\RedirectResponse
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -144,9 +124,6 @@ class NestController extends Controller
 
     /**
      * Handle request to delete a nest.
-     *
-     * @param int $nest
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */

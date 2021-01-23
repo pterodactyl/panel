@@ -18,8 +18,7 @@ class Username implements Rule
      * Allowed characters: a-z0-9_-.
      *
      * @param string $attribute
-     * @param mixed $value
-     * @return bool
+     * @param mixed  $value
      */
     public function passes($attribute, $value): bool
     {
@@ -28,8 +27,6 @@ class Username implements Rule
 
     /**
      * Return a validation message for use when this rule fails.
-     *
-     * @return string
      */
     public function message(): string
     {

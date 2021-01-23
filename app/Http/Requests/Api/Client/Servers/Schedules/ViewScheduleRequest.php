@@ -13,12 +13,10 @@ class ViewScheduleRequest extends ClientApiRequest
 {
     /**
      * Determine if this resource can be viewed.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
-        if (! parent::authorize()) {
+        if (!parent::authorize()) {
             return false;
         }
 
@@ -31,18 +29,13 @@ class ViewScheduleRequest extends ClientApiRequest
             $task = $this->route()->parameter('task');
 
             if ($schedule->server_id !== $server->id || ($task instanceof Task && $task->schedule_id !== $schedule->id)) {
-                throw new NotFoundHttpException(
-                    'The requested resource does not exist on the system.'
-                );
+                throw new NotFoundHttpException('The requested resource does not exist on the system.');
             }
         }
 
         return true;
     }
 
-    /**
-     * @return string
-     */
     public function permission(): string
     {
         return Permission::ACTION_SCHEDULE_READ;

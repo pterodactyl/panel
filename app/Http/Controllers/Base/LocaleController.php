@@ -16,8 +16,6 @@ class LocaleController extends Controller
 
     /**
      * LocaleController constructor.
-     *
-     * @param \Illuminate\Translation\Translator $translator
      */
     public function __construct(Translator $translator)
     {
@@ -27,9 +25,6 @@ class LocaleController extends Controller
     /**
      * Returns translation data given a specific locale and namespace.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string $locale
-     * @param string $namespace
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(Request $request, string $locale, string $namespace)

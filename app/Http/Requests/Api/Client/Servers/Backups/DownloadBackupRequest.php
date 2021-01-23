@@ -20,8 +20,6 @@ class DownloadBackupRequest extends ClientApiRequest
     /**
      * Ensure that this backup belongs to the server that is also present in the
      * request.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

@@ -34,10 +34,6 @@ class UserDeletionService
 
     /**
      * DeletionService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Illuminate\Contracts\Translation\Translator $translator
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
@@ -53,6 +49,7 @@ class UserDeletionService
      * Delete a user from the panel only if they have no servers attached to their account.
      *
      * @param int|\Pterodactyl\Models\User $user
+     *
      * @return bool|null
      *
      * @throws \Pterodactyl\Exceptions\DisplayException

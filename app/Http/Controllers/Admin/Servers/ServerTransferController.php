@@ -53,14 +53,6 @@ class ServerTransferController extends Controller
 
     /**
      * ServerTransferController constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $allocationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
-     * @param \Pterodactyl\Services\Servers\TransferService $transferService
-     * @param \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository $daemonConfigurationRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -83,13 +75,12 @@ class ServerTransferController extends Controller
     /**
      * Starts a transfer of a server to a new node.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
      */
-    public function transfer(Request $request, Server $server) {
+    public function transfer(Request $request, Server $server)
+    {
         $validatedData = $request->validate([
             'node_id' => 'required|exists:nodes,id',
             'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
@@ -107,7 +98,7 @@ class ServerTransferController extends Controller
             $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();
 
             // Create a new ServerTransfer entry.
-            $transfer = new ServerTransfer;
+            $transfer = new ServerTransfer();
 
             $transfer->server_id = $server->id;
             $transfer->old_node = $server->node_id;
@@ -135,11 +126,6 @@ class ServerTransferController extends Controller
 
     /**
      * Assigns the specified allocations to the specified server.
-     *
-     * @param Server $server
-     * @param int $node_id
-     * @param int $allocation_id
-     * @param array $additional_allocations
      */
     private function assignAllocationsToServer(Server $server, int $node_id, int $allocation_id, array $additional_allocations)
     {
@@ -150,14 +136,14 @@ class ServerTransferController extends Controller
 
         $updateIds = [];
         foreach ($allocations as $allocation) {
-            if (! in_array($allocation, $unassigned)) {
+            if (!in_array($allocation, $unassigned)) {
                 continue;
             }
 
             $updateIds[] = $allocation;
         }
 
-        if (! empty($updateIds)) {
+        if (!empty($updateIds)) {
             $this->allocationRepository->updateWhereIn('id', $updateIds, ['server_id' => $server->id]);
         }
     }

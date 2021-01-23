@@ -19,8 +19,8 @@ class DeleteScheduleTaskTest extends ClientApiIntegrationTestCase
         $server2 = $this->createServerModel();
         [$user] = $this->generateTestAccount();
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server2->id]);
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id]);
 
         $this->actingAs($user)->deleteJson($this->link($task))->assertNotFound();
     }
@@ -33,9 +33,9 @@ class DeleteScheduleTaskTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
-        $schedule2 = factory(Schedule::class)->create(['server_id' => $server->id]);
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        $schedule2 = Schedule::factory()->create(['server_id' => $server->id]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id]);
 
         $this->actingAs($user)->deleteJson("/api/client/servers/{$server->uuid}/schedules/{$schedule2->id}/tasks/{$task->id}")->assertNotFound();
     }
@@ -47,12 +47,12 @@ class DeleteScheduleTaskTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_CREATE]);
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id]);
 
         $this->actingAs($user)->deleteJson($this->link($task))->assertForbidden();
 
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
 
         $this->actingAs($user2)->deleteJson($this->link($task))->assertNotFound();
     }
@@ -65,12 +65,12 @@ class DeleteScheduleTaskTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
         $tasks = [
-            factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]),
-            factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 2]),
-            factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 3]),
-            factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 4]),
+            Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]),
+            Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2]),
+            Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 3]),
+            Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 4]),
         ];
 
         $response = $this->actingAs($user)->deleteJson($this->link($tasks[1]));

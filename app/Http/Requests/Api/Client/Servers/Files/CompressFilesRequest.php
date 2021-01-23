@@ -9,17 +9,12 @@ class CompressFilesRequest extends ClientApiRequest
 {
     /**
      * Checks that the authenticated user is allowed to create archives for this server.
-     *
-     * @return string
      */
     public function permission(): string
     {
         return Permission::ACTION_FILE_ARCHIVE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [

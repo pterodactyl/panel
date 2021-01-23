@@ -17,7 +17,6 @@ class TaskTransformer extends BaseClientTransformer
     /**
      * Transforms a schedule's task into a client viewable format.
      *
-     * @param \Pterodactyl\Models\Task $model
      * @return array
      */
     public function transform(Task $model)

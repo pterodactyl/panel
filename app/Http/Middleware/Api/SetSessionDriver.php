@@ -15,8 +15,6 @@ class SetSessionDriver
 
     /**
      * SetSessionDriver constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct(ConfigRepository $config)
     {
@@ -26,8 +24,6 @@ class SetSessionDriver
     /**
      * Set the session for API calls to only last for the one request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)

@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository;
 
 class LoginCheckpointController extends AbstractLoginController
@@ -44,14 +43,6 @@ class LoginCheckpointController extends AbstractLoginController
 
     /**
      * LoginCheckpointController constructor.
-     *
-     * @param \Illuminate\Auth\AuthManager $auth
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \PragmaRX\Google2FA\Google2FA $google2FA
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Illuminate\Contracts\Cache\Repository $cache
-     * @param \Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository $recoveryTokenRepository
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         AuthManager $auth,
@@ -76,7 +67,6 @@ class LoginCheckpointController extends AbstractLoginController
      * token. Once a user has reached this stage it is assumed that they have already
      * provided a valid username and password.
      *
-     * @param \Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest $request
      * @return \Illuminate\Http\JsonResponse|void
      *
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
@@ -99,12 +89,14 @@ class LoginCheckpointController extends AbstractLoginController
             $this->incrementLoginAttempts($request);
 
             return $this->sendFailedLoginResponse(
-                $request, null, 'The authentication token provided has expired, please refresh the page and try again.'
+                $request,
+                null,
+                'The authentication token provided has expired, please refresh the page and try again.'
             );
         }
 
         // Recovery tokens go through a slightly different pathway for usage.
-        if (! is_null($recoveryToken = $request->input('recovery_token'))) {
+        if (!is_null($recoveryToken = $request->input('recovery_token'))) {
             if ($this->isValidRecoveryToken($user, $recoveryToken)) {
                 return $this->sendLoginResponse($user, $request);
             }
@@ -120,15 +112,13 @@ class LoginCheckpointController extends AbstractLoginController
 
         $this->incrementLoginAttempts($request);
 
-        return $this->sendFailedLoginResponse($request, $user, ! empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
+        return $this->sendFailedLoginResponse($request, $user, !empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
     }
 
     /**
      * Determines if a given recovery token is valid for the user account. If we find a matching token
      * it will be deleted from the database.
      *
-     * @param \Pterodactyl\Models\User $user
-     * @param string $value
      * @return bool
      *
      * @throws \Exception

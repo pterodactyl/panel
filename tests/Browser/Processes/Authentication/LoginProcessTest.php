@@ -27,7 +27,7 @@ class LoginProcessTest extends BrowserTestCase
     public function testLoginUsingEmail()
     {
         $this->browse(function (PterodactylBrowser $browser) {
-            $browser->visit(new LoginPage)
+            $browser->visit(new LoginPage())
                 ->waitFor('@username')
                 ->type('@username', $this->user->email)
                 ->type('@password', self::$userPassword)
@@ -44,7 +44,7 @@ class LoginProcessTest extends BrowserTestCase
     public function testLoginUsingUsername()
     {
         $this->browse(function (PterodactylBrowser $browser) {
-            $browser->visit(new LoginPage)
+            $browser->visit(new LoginPage())
                 ->waitFor('@username')
                 ->type('@username', $this->user->username)
                 ->type('@password', self::$userPassword)

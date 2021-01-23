@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Pterodactyl\Models\Nest;
 use Illuminate\Database\Seeder;
 use Illuminate\Http\UploadedFile;
@@ -40,12 +42,6 @@ class EggSeeder extends Seeder
 
     /**
      * EggSeeder constructor.
-     *
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService       $importerService
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface    $repository
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService $updateImporterService
-     * @param \Illuminate\Filesystem\Filesystem                           $filesystem
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface   $nestRepository
      */
     public function __construct(
         EggImporterService $importerService,
@@ -73,8 +69,6 @@ class EggSeeder extends Seeder
 
     /**
      * Return a list of eggs to import.
-     *
-     * @return \Illuminate\Support\Collection
      */
     protected function getEggsToImport(): Collection
     {
@@ -89,9 +83,6 @@ class EggSeeder extends Seeder
     /**
      * Find the nest that these eggs should be attached to.
      *
-     * @param string $nestName
-     * @return \Pterodactyl\Models\Nest
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     private function findMatchingNest(string $nestName): Nest
@@ -104,12 +95,10 @@ class EggSeeder extends Seeder
 
     /**
      * Loop through the list of egg files and import them.
-     *
-     * @param \Pterodactyl\Models\Nest $nest
      */
     private function parseEggFiles(Nest $nest)
     {
-        $files = $this->filesystem->allFiles(database_path('seeds/eggs/' . kebab_case($nest->name)));
+        $files = $this->filesystem->allFiles(database_path('seeders/eggs/' . kebab_case($nest->name)));
 
         $this->command->alert('Updating Eggs for Nest: ' . $nest->name);
         Collection::make($files)->each(function ($file) use ($nest) {

@@ -25,8 +25,6 @@ class Saved
 
     /**
      * Create a new event instance.
-     *
-     * @param \Pterodactyl\Models\Server $server
      */
     public function __construct(Server $server)
     {

@@ -10,6 +10,7 @@ class StoreApplicationApiKeyRequest extends AdminFormRequest
 {
     /**
      * @return array
+     *
      * @throws \ReflectionException
      * @throws \ReflectionException
      */

@@ -23,9 +23,6 @@ class UserUpdateService
 
     /**
      * UpdateService constructor.
-     *
-     * @param \Illuminate\Contracts\Hashing\Hasher $hasher
-     * @param \Pterodactyl\Repositories\Eloquent\UserRepository $repository
      */
     public function __construct(Hasher $hasher, UserRepository $repository)
     {
@@ -36,8 +33,6 @@ class UserUpdateService
     /**
      * Update the user model instance.
      *
-     * @param \Pterodactyl\Models\User $user
-     * @param array $data
      * @return \Pterodactyl\Models\User
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -45,7 +40,7 @@ class UserUpdateService
      */
     public function handle(User $user, array $data)
     {
-        if (! empty(array_get($data, 'password'))) {
+        if (!empty(array_get($data, 'password'))) {
             $data['password'] = $this->hasher->make($data['password']);
         } else {
             unset($data['password']);

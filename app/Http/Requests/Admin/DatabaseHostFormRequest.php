@@ -25,7 +25,7 @@ class DatabaseHostFormRequest extends AdminFormRequest
      */
     protected function getValidatorInstance()
     {
-        if (! $this->filled('node_id')) {
+        if (!$this->filled('node_id')) {
             $this->merge(['node_id' => null]);
         }
 

@@ -40,11 +40,6 @@ class DatabaseController extends ClientApiController
 
     /**
      * DatabaseController constructor.
-     *
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $managementService
-     * @param \Pterodactyl\Services\Databases\DatabasePasswordService $passwordService
-     * @param \Pterodactyl\Repositories\Eloquent\DatabaseRepository $repository
-     * @param \Pterodactyl\Services\Databases\DeployServerDatabaseService $deployDatabaseService
      */
     public function __construct(
         DatabaseManagementService $managementService,
@@ -62,10 +57,6 @@ class DatabaseController extends ClientApiController
 
     /**
      * Return all of the databases that belong to the given server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      */
     public function index(GetDatabasesRequest $request, Server $server): array
     {
@@ -76,10 +67,6 @@ class DatabaseController extends ClientApiController
 
     /**
      * Create a new database for the given server and return it.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
@@ -99,9 +86,6 @@ class DatabaseController extends ClientApiController
      * Rotates the password for the given server model and returns a fresh instance to
      * the caller.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Database $database
      * @return array
      *
      * @throws \Throwable
@@ -119,11 +103,6 @@ class DatabaseController extends ClientApiController
 
     /**
      * Removes a database from the server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Database $database
-     * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

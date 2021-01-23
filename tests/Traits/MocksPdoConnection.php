@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits;
+namespace Pterodactyl\Tests\Traits;
 
 use PDO;
 use Mockery;
@@ -41,7 +41,7 @@ trait MocksPdoConnection
      */
     protected function tearDownPdoMock()
     {
-        if (! self::$initialResolver) {
+        if (!self::$initialResolver) {
             return;
         }
 

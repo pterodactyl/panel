@@ -25,9 +25,6 @@ class DetailsModificationService
 
     /**
      * DetailsModificationService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $serverRepository
      */
     public function __construct(ConnectionInterface $connection, DaemonServerRepository $serverRepository)
     {
@@ -37,10 +34,6 @@ class DetailsModificationService
 
     /**
      * Update the details for a single server instance.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $data
-     * @return \Pterodactyl\Models\Server
      *
      * @throws \Throwable
      */
