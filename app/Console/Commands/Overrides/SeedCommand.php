@@ -13,12 +13,14 @@ class SeedCommand extends BaseSeedCommand
      * Block someone from running this seed command if they have not completed
      * the migration process.
      */
-    public function handle(): int
+    public function handle()
     {
         if (!$this->hasCompletedMigrations()) {
-            return $this->showMigrationWarning();
+            $this->showMigrationWarning();
+
+            return;
         }
 
-        return parent::handle();
+        parent::handle();
     }
 }

@@ -33,7 +33,7 @@ trait RequiresDatabaseMigrations
      * them to properly run the migrations rather than ignoring all of the other previous
      * errors...
      */
-    protected function showMigrationWarning(): int
+    protected function showMigrationWarning()
     {
         $this->getOutput()->writeln('<options=bold>
 | @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
@@ -51,7 +51,5 @@ database state by running the command above.
 ');
 
         $this->getOutput()->error('You must correct the error above before continuing.');
-
-        return 1;
     }
 }

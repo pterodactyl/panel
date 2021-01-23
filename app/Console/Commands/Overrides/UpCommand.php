@@ -13,12 +13,14 @@ class UpCommand extends BaseUpCommand
      * Block someone from running this up command if they have not completed
      * the migration process.
      */
-    public function handle(): int
+    public function handle()
     {
         if (!$this->hasCompletedMigrations()) {
-            return $this->showMigrationWarning();
+            $this->showMigrationWarning();
+
+            return;
         }
 
-        return parent::handle();
+        parent::handle();
     }
 }
