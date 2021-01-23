@@ -64,6 +64,8 @@ class Handler extends ExceptionHandler
      * will capture specific exception types that we do not want to include
      * the detailed stack traces for since they could reveal credentials to
      * whoever can read the logs.
+     *
+     * @noinspection PhpUnusedLocalVariableInspection
      */
     public function register()
     {
@@ -71,11 +73,11 @@ class Handler extends ExceptionHandler
             $this->dontReport = [];
         }
 
-        $this->reportable(function (PDOException &$ex) {
+        $this->reportable(function (PDOException $ex) {
             $ex = $this->generateCleanedExceptionStack($ex);
         });
 
-        $this->reportable(function (Swift_TransportException &$ex) {
+        $this->reportable(function (Swift_TransportException $ex) {
             $ex = $this->generateCleanedExceptionStack($ex);
         });
     }
