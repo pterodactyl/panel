@@ -17,8 +17,6 @@ class PowerController extends ClientApiController
 
     /**
      * PowerController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Wings\DaemonPowerRepository $repository
      */
     public function __construct(DaemonPowerRepository $repository)
     {
@@ -29,10 +27,6 @@ class PowerController extends ClientApiController
 
     /**
      * Send a power action to a server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\SendPowerRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */

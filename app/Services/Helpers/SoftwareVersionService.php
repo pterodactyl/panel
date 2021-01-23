@@ -11,7 +11,7 @@ use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
 
 class SoftwareVersionService
 {
-    const VERSION_CACHE_KEY = 'pterodactyl:versioning_data';
+    public const VERSION_CACHE_KEY = 'pterodactyl:versioning_data';
 
     /**
      * @var array
@@ -30,9 +30,6 @@ class SoftwareVersionService
 
     /**
      * SoftwareVersionService constructor.
-     *
-     * @param \Illuminate\Contracts\Cache\Repository $cache
-     * @param \GuzzleHttp\Client $client
      */
     public function __construct(
         CacheRepository $cache,
@@ -102,6 +99,7 @@ class SoftwareVersionService
      * Determine if a passed daemon version string is the latest.
      *
      * @param string $version
+     *
      * @return bool
      */
     public function isLatestDaemon($version)
@@ -128,7 +126,7 @@ class SoftwareVersionService
                     return json_decode($response->getBody(), true);
                 }
 
-                throw new CdnVersionFetchingException;
+                throw new CdnVersionFetchingException();
             } catch (Exception $exception) {
                 return [];
             }

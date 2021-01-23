@@ -1,14 +1,18 @@
 {
     "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
     "meta": {
-        "version": "PTDL_v1"
+        "version": "PTDL_v1",
+        "update_url": null
     },
-    "exported_at": "2020-10-25T22:24:15+00:00",
+    "exported_at": "2021-01-12T15:44:41+01:00",
     "name": "Teamspeak3 Server",
     "author": "support@pterodactyl.io",
     "description": "VoIP software designed with security in mind, featuring crystal clear voice quality, endless customization options, and scalabilty up to thousands of simultaneous users.",
-    "image": "quay.io\/parkervcp\/pterodactyl-images:base_debian",
-    "startup": ".\/ts3server default_voice_port={{SERVER_PORT}} query_port={{SERVER_PORT}} filetransfer_ip=0.0.0.0 filetransfer_port={{FILE_TRANSFER}} license_accepted=1",
+    "features": null,
+    "images": [
+        "quay.io\/parkervcp\/pterodactyl-images:base_debian"
+    ],
+    "startup": ".\/ts3server default_voice_port={{SERVER_PORT}} query_port={{QUERY_PORT}} filetransfer_ip=0.0.0.0 filetransfer_port={{FILE_TRANSFER}} license_accepted=1",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"listening on 0.0.0.0:\",\r\n    \"userInteraction\": []\r\n}",
@@ -37,6 +41,15 @@
             "description": "The Teamspeak file transfer port",
             "env_variable": "FILE_TRANSFER",
             "default_value": "30033",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|integer|between:1,65535"
+        },
+        {
+            "name": "Query Port",
+            "description": "The Teamspeak Query Port",
+            "env_variable": "QUERY_PORT",
+            "default_value": "10011",
             "user_viewable": true,
             "user_editable": false,
             "rules": "required|integer|between:1,65535"

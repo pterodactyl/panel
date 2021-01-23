@@ -17,7 +17,6 @@ class FileObjectTransformer extends BaseDaemonTransformer
     /**
      * Transform a file object response from the daemon into a standardized response.
      *
-     * @param array $item
      * @return array
      */
     public function transform(array $item)
@@ -35,9 +34,6 @@ class FileObjectTransformer extends BaseDaemonTransformer
         ];
     }
 
-    /**
-     * @return string
-     */
     public function getResourceName(): string
     {
         return 'file_object';

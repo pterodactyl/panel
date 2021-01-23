@@ -8,8 +8,6 @@ class AllocationTransformer extends BaseClientTransformer
 {
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -19,7 +17,6 @@ class AllocationTransformer extends BaseClientTransformer
     /**
      * Return basic information about the currently logged in user.
      *
-     * @param \Pterodactyl\Models\Allocation $model
      * @return array
      */
     public function transform(Allocation $model)

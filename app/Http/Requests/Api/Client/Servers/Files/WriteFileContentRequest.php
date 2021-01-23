@@ -12,8 +12,6 @@ class WriteFileContentRequest extends ClientApiRequest implements ClientPermissi
      * Returns the permissions string indicating which permission should be used to
      * validate that the authenticated user has permission to perform this action aganist
      * the given resource (server).
-     *
-     * @return string
      */
     public function permission(): string
     {
@@ -24,8 +22,6 @@ class WriteFileContentRequest extends ClientApiRequest implements ClientPermissi
      * There is no rule here for the file contents since we just use the body content
      * on the request to set the file contents. If nothing is passed that is fine since
      * it just means we want to set the file to be empty.
-     *
-     * @return array
      */
     public function rules(): array
     {

@@ -6,9 +6,6 @@ use Illuminate\Support\Arr;
 
 class StatsTransformer extends BaseClientTransformer
 {
-    /**
-     * @return string
-     */
     public function getResourceName(): string
     {
         return 'stats';
@@ -18,7 +15,6 @@ class StatsTransformer extends BaseClientTransformer
      * Transform stats from the daemon into a result set that can be used in
      * the client API.
      *
-     * @param array $data
      * @return array
      */
     public function transform(array $data)

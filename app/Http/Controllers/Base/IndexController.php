@@ -14,8 +14,6 @@ class IndexController extends Controller
 
     /**
      * IndexController constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(ServerRepositoryInterface $repository)
     {

@@ -10,6 +10,7 @@ class SetupTableForKeyEncryption extends Migration
      * Run the migrations.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */
@@ -29,6 +30,7 @@ class SetupTableForKeyEncryption extends Migration
      * Reverse the migrations.
      *
      * @return void
+     *
      * @throws \Exception
      * @throws \Throwable
      */

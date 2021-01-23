@@ -21,9 +21,6 @@ class NestCreationService
 
     /**
      * NestCreationService constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(ConfigRepository $config, NestRepositoryInterface $repository)
     {
@@ -34,9 +31,6 @@ class NestCreationService
     /**
      * Create a new nest on the system.
      *
-     * @param array $data
-     * @param string|null $author
-     * @return \Pterodactyl\Models\Nest
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function handle(array $data, string $author = null): Nest

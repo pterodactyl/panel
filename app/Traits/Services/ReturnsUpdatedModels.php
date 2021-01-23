@@ -22,8 +22,6 @@ trait ReturnsUpdatedModels
      * for API calls, but is unnecessary for UI based updates where the page is
      * being reloaded and a fresh model will be pulled anyways.
      *
-     * @param bool $toggle
-     *
      * @return $this
      */
     public function returnUpdatedModel(bool $toggle = true)

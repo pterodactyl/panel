@@ -7,15 +7,10 @@ use Pterodactyl\Models\Server;
 
 class ServerConfigurationStructureService
 {
-    /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
-     */
-    private $environment;
+    private EnvironmentService $environment;
 
     /**
      * ServerConfigurationStructureService constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\EnvironmentService $environment
      */
     public function __construct(EnvironmentService $environment)
     {
@@ -27,11 +22,6 @@ class ServerConfigurationStructureService
      *
      * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Wings
      * daemon, if you modify the structure eggs will break unexpectedly.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $override
-     * @param bool $legacy deprecated
-     * @return array
      */
     public function handle(Server $server, array $override = [], bool $legacy = false): array
     {
@@ -52,11 +42,8 @@ class ServerConfigurationStructureService
 
     /**
      * Returns the new data format used for the Wings daemon.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      */
-    protected function returnCurrentFormat(Server $server)
+    protected function returnCurrentFormat(Server $server): array
     {
         return [
             'uuid' => $server->uuid,
@@ -91,6 +78,10 @@ class ServerConfigurationStructureService
                     'read_only' => $mount->read_only,
                 ];
             }),
+            'egg' => [
+                'id' => $server->egg->uuid,
+                'file_denylist' => explode(PHP_EOL, $server->egg->inherit_file_denylist),
+            ],
         ];
     }
 
@@ -98,11 +89,9 @@ class ServerConfigurationStructureService
      * Returns the legacy server data format to continue support for old egg configurations
      * that have not yet been updated.
      *
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      * @deprecated
      */
-    protected function returnLegacyFormat(Server $server)
+    protected function returnLegacyFormat(Server $server): array
     {
         return [
             'uuid' => $server->uuid,
@@ -116,12 +105,12 @@ class ServerConfigurationStructureService
                 })->toArray(),
                 'env' => $this->environment->handle($server),
                 'oom_disabled' => $server->oom_disabled,
-                'memory' => (int)$server->memory,
-                'swap' => (int)$server->swap,
-                'io' => (int)$server->io,
-                'cpu' => (int)$server->cpu,
+                'memory' => (int) $server->memory,
+                'swap' => (int) $server->swap,
+                'io' => (int) $server->io,
+                'cpu' => (int) $server->cpu,
                 'threads' => $server->threads,
-                'disk' => (int)$server->disk,
+                'disk' => (int) $server->disk,
                 'image' => $server->image,
             ],
             'service' => [
@@ -129,7 +118,7 @@ class ServerConfigurationStructureService
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,
-            'suspended' => (int)$server->suspended,
+            'suspended' => (int) $server->suspended,
         ];
     }
 }

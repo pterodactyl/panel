@@ -16,9 +16,9 @@ use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DynamicDatabaseConnection
 {
-    const DB_CHARSET = 'utf8';
-    const DB_COLLATION = 'utf8_unicode_ci';
-    const DB_DRIVER = 'mysql';
+    public const DB_CHARSET = 'utf8';
+    public const DB_COLLATION = 'utf8_unicode_ci';
+    public const DB_DRIVER = 'mysql';
 
     /**
      * @var \Illuminate\Config\Repository
@@ -37,10 +37,6 @@ class DynamicDatabaseConnection
 
     /**
      * DynamicDatabaseConnection constructor.
-     *
-     * @param \Illuminate\Config\Repository $config
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         ConfigRepository $config,
@@ -55,15 +51,15 @@ class DynamicDatabaseConnection
     /**
      * Adds a dynamic database connection entry to the runtime config.
      *
-     * @param string $connection
+     * @param string                               $connection
      * @param \Pterodactyl\Models\DatabaseHost|int $host
-     * @param string $database
+     * @param string                               $database
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function set($connection, $host, $database = 'mysql')
     {
-        if (! $host instanceof DatabaseHost) {
+        if (!$host instanceof DatabaseHost) {
             $host = $this->repository->find($host);
         }
 

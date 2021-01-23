@@ -32,6 +32,7 @@ Route::group(['prefix' => '/users'], function () {
 */
 Route::group(['prefix' => '/nodes'], function () {
     Route::get('/', 'Nodes\NodeController@index')->name('api.application.nodes');
+    Route::get('/deployable', 'Nodes\NodeDeploymentController');
     Route::get('/{node}', 'Nodes\NodeController@view')->name('api.application.nodes.view');
     Route::get('/{node}/configuration', 'Nodes\NodeConfigurationController');
 

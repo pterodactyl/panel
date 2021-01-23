@@ -32,7 +32,7 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     public function testServerAllocationsAreNotReturnedWithoutPermission()
     {
         [$user, $server] = $this->generateTestAccount();
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
 
         $server->owner_id = $user2->id;
         $server->save();
@@ -49,7 +49,6 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     /**
      * Tests that notes on an allocation can be set correctly.
      *
-     * @param array $permissions
      * @dataProvider updatePermissionsDataProvider
      */
     public function testAllocationNotesCanBeUpdated(array $permissions)
@@ -85,7 +84,7 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     public function testAllocationNotesCannotBeUpdatedByInvalidUsers()
     {
         [$user, $server] = $this->generateTestAccount();
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
 
         $server->owner_id = $user2->id;
         $server->save();
@@ -98,14 +97,13 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * @param array $permissions
      * @dataProvider updatePermissionsDataProvider
      */
     public function testPrimaryAllocationCanBeModified(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
         $allocation = $server->allocation;
-        $allocation2 = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
 
         $server->allocation_id = $allocation->id;
         $server->save();
@@ -121,7 +119,7 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     public function testPrimaryAllocationCannotBeModifiedByInvalidUser()
     {
         [$user, $server] = $this->generateTestAccount();
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
 
         $server->owner_id = $user2->id;
         $server->save();

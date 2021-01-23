@@ -22,8 +22,6 @@ class DeleteAllocationRequest extends ApplicationApiRequest
     /**
      * Determine if the requested allocation exists and belongs to the node that
      * is being passed in the URL.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

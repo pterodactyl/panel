@@ -22,6 +22,7 @@ class EggFormRequest extends AdminFormRequest
             'name' => 'required|string|max:191',
             'description' => 'nullable|string',
             'docker_images' => 'required|string',
+            'file_denylist' => 'string',
             'startup' => 'required|string',
             'config_from' => 'sometimes|bail|nullable|numeric',
             'config_stop' => 'required_without:config_from|nullable|string|max:191',

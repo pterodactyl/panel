@@ -27,8 +27,6 @@ class GetExternalServerRequest extends ApplicationApiRequest
 
     /**
      * Determine if the requested external user exists.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {
@@ -47,8 +45,6 @@ class GetExternalServerRequest extends ApplicationApiRequest
 
     /**
      * Return the server model for the requested external server.
-     *
-     * @return \Pterodactyl\Models\Server
      */
     public function getServerModel(): Server
     {

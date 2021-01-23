@@ -26,8 +26,6 @@ class ScheduleTaskController extends ClientApiController
 
     /**
      * ScheduleTaskController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\TaskRepository $repository
      */
     public function __construct(TaskRepository $repository)
     {
@@ -39,9 +37,6 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Create a new task for a given schedule and store it in the database.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Schedule $schedule
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -51,9 +46,7 @@ class ScheduleTaskController extends ClientApiController
     {
         $limit = config('pterodactyl.client_features.schedules.per_schedule_task_limit', 10);
         if ($schedule->tasks()->count() >= $limit) {
-            throw new ServiceLimitExceededException(
-                "Schedules may not have more than {$limit} tasks associated with them. Creating this task would put this schedule over the limit."
-            );
+            throw new ServiceLimitExceededException("Schedules may not have more than {$limit} tasks associated with them. Creating this task would put this schedule over the limit.");
         }
 
         /** @var \Pterodactyl\Models\Task|null $lastTask */
@@ -76,10 +69,6 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Updates a given task for a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Schedule $schedule
-     * @param \Pterodactyl\Models\Task $task
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -88,7 +77,7 @@ class ScheduleTaskController extends ClientApiController
     public function update(StoreTaskRequest $request, Server $server, Schedule $schedule, Task $task)
     {
         if ($schedule->id !== $task->schedule_id || $server->id !== $schedule->server_id) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         $this->repository->update($task->id, [
@@ -106,10 +95,6 @@ class ScheduleTaskController extends ClientApiController
      * Delete a given task for a schedule. If there are subsequent tasks stored in the database
      * for this schedule their sequence IDs are decremented properly.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\ClientApiRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Schedule $schedule
-     * @param \Pterodactyl\Models\Task $task
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
@@ -117,10 +102,10 @@ class ScheduleTaskController extends ClientApiController
     public function delete(ClientApiRequest $request, Server $server, Schedule $schedule, Task $task)
     {
         if ($task->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
-        if (! $request->user()->can(Permission::ACTION_SCHEDULE_UPDATE, $server)) {
+        if (!$request->user()->can(Permission::ACTION_SCHEDULE_UPDATE, $server)) {
             throw new HttpForbiddenException('You do not have permission to perform this action.');
         }
 

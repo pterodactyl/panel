@@ -25,6 +25,7 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
             'minute' => '0',
             'hour' => '*/2',
             'day_of_week' => '2',
+            'month' => '1',
             'day_of_month' => '*',
         ]);
 
@@ -39,6 +40,7 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
         $this->assertSame('0', $schedule->cron_minute);
         $this->assertSame('*/2', $schedule->cron_hour);
         $this->assertSame('2', $schedule->cron_day_of_week);
+        $this->assertSame('1', $schedule->cron_month);
         $this->assertSame('*', $schedule->cron_day_of_month);
         $this->assertSame('Test Schedule', $schedule->name);
 
@@ -69,6 +71,7 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
                 'minute' => '*',
                 'hour' => '*',
                 'day_of_month' => '*',
+                'month' => '*',
                 'day_of_week' => '*',
             ])
             ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
@@ -87,9 +90,6 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
             ->assertForbidden();
     }
 
-    /**
-     * @return array
-     */
     public function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SCHEDULE_CREATE]]];

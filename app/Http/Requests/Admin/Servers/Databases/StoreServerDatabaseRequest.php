@@ -10,8 +10,6 @@ class StoreServerDatabaseRequest extends AdminFormRequest
 {
     /**
      * Validation rules for database creation.
-     *
-     * @return array
      */
     public function rules(): array
     {

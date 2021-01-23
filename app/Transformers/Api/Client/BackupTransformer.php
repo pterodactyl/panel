@@ -6,16 +6,12 @@ use Pterodactyl\Models\Backup;
 
 class BackupTransformer extends BaseClientTransformer
 {
-    /**
-     * @return string
-     */
     public function getResourceName(): string
     {
         return Backup::RESOURCE_NAME;
     }
 
     /**
-     * @param \Pterodactyl\Models\Backup $backup
      * @return array
      */
     public function transform(Backup $backup)

@@ -21,8 +21,6 @@ class GetEggRequest extends ApplicationApiRequest
 
     /**
      * Determine if the requested egg exists for the selected nest.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

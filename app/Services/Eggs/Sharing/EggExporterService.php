@@ -14,8 +14,6 @@ class EggExporterService
 
     /**
      * EggExporterService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(EggRepositoryInterface $repository)
     {
@@ -24,9 +22,6 @@ class EggExporterService
 
     /**
      * Return a JSON representation of an egg and its variables.
-     *
-     * @param int $egg
-     * @return string
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -46,6 +41,7 @@ class EggExporterService
             'description' => $egg->description,
             'features' => $egg->features,
             'images' => $egg->docker_images,
+            'file_denylist' => $egg->inherit_file_denylist,
             'startup' => $egg->startup,
             'config' => [
                 'files' => $egg->inherit_config_files,

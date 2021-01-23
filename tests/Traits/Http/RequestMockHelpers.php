@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits\Http;
+namespace Pterodactyl\Tests\Traits\Http;
 
 use Mockery as m;
 use Illuminate\Http\Request;
@@ -22,8 +22,6 @@ trait RequestMockHelpers
 
     /**
      * Set the class to mock for requests.
-     *
-     * @param string $class
      */
     public function setRequestMockClass(string $class)
     {
@@ -34,8 +32,6 @@ trait RequestMockHelpers
 
     /**
      * Configure the user model that the request mock should return with.
-     *
-     * @param \Pterodactyl\Models\User|null $user
      */
     public function setRequestUserModel(User $user = null)
     {
@@ -44,13 +40,10 @@ trait RequestMockHelpers
 
     /**
      * Generates a new request user model and also returns the generated model.
-     *
-     * @param array $args
-     * @return \Pterodactyl\Models\User
      */
     public function generateRequestUserModel(array $args = []): User
     {
-        $user = factory(User::class)->make($args);
+        $user = User::factory()->make($args);
         $this->setRequestUserModel($user);
 
         return $user;
@@ -59,8 +52,7 @@ trait RequestMockHelpers
     /**
      * Set a request attribute on the mock object.
      *
-     * @param string $attribute
-     * @param mixed  $value
+     * @param mixed $value
      */
     public function setRequestAttribute(string $attribute, $value)
     {
@@ -69,8 +61,6 @@ trait RequestMockHelpers
 
     /**
      * Set the request route name.
-     *
-     * @param string $name
      */
     public function setRequestRouteName(string $name)
     {
@@ -83,7 +73,7 @@ trait RequestMockHelpers
     protected function buildRequestMock()
     {
         $this->request = m::mock($this->requestMockClass);
-        if (! $this->request instanceof Request) {
+        if (!$this->request instanceof Request) {
             throw new InvalidArgumentException('Request mock class must be an instance of ' . Request::class . ' when mocked.');
         }
 
@@ -94,13 +84,11 @@ trait RequestMockHelpers
      * Sets the mocked request user. If a user model is not provided, a factory model
      * will be created and returned.
      *
-     * @param \Pterodactyl\Models\User|null $user
-     * @return \Pterodactyl\Models\User
      * @deprecated
      */
     protected function setRequestUser(User $user = null): User
     {
-        $user = $user instanceof User ? $user : factory(User::class)->make();
+        $user = $user instanceof User ? $user : User::factory()->make();
         $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);
 
         return $user;

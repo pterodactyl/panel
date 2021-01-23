@@ -11,6 +11,7 @@ export default (uuid: string, schedule: Data): Promise<Schedule> => {
             minute: schedule.cron.minute,
             hour: schedule.cron.hour,
             day_of_month: schedule.cron.dayOfMonth,
+            month: schedule.cron.month,
             day_of_week: schedule.cron.dayOfWeek,
         })
             .then(({ data }) => resolve(rawDataToServerSchedule(data.attributes)))

@@ -25,8 +25,6 @@ class Deleting
 
     /**
      * Create a new event instance.
-     *
-     * @param \Pterodactyl\Models\Subuser $subuser
      */
     public function __construct(Subuser $subuser)
     {

@@ -56,14 +56,6 @@ class DatabaseController extends Controller
 
     /**
      * DatabaseController constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
-     * @param \Pterodactyl\Services\Databases\Hosts\HostCreationService $creationService
-     * @param \Pterodactyl\Services\Databases\Hosts\HostDeletionService $deletionService
-     * @param \Pterodactyl\Services\Databases\Hosts\HostUpdateService $updateService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $locationRepository
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -85,8 +77,6 @@ class DatabaseController extends Controller
 
     /**
      * Display database host index.
-     *
-     * @return \Illuminate\View\View
      */
     public function index(): View
     {
@@ -98,9 +88,6 @@ class DatabaseController extends Controller
 
     /**
      * Display database host to user.
-     *
-     * @param int $host
-     * @return \Illuminate\View\View
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -115,9 +102,6 @@ class DatabaseController extends Controller
 
     /**
      * Handle request to create a new database host.
-     *
-     * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
      */
@@ -144,10 +128,6 @@ class DatabaseController extends Controller
 
     /**
      * Handle updating database host.
-     *
-     * @param \Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest $request
-     * @param \Pterodactyl\Models\DatabaseHost $host
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Throwable
      */
@@ -177,9 +157,6 @@ class DatabaseController extends Controller
 
     /**
      * Handle request to delete a database host.
-     *
-     * @param int $host
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */

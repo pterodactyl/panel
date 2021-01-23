@@ -8,9 +8,6 @@ use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class PullFileRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
-    /**
-     * @return string
-     */
     public function permission(): string
     {
         return Permission::ACTION_FILE_CREATE;

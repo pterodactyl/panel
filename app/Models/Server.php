@@ -7,49 +7,48 @@ use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
- * @property int $id
- * @property string|null $external_id
- * @property string $uuid
- * @property string $uuidShort
- * @property int $node_id
- * @property string $name
- * @property string $description
- * @property bool $skip_scripts
- * @property bool $suspended
- * @property int $owner_id
- * @property int $memory
- * @property int $swap
- * @property int $disk
- * @property int $io
- * @property int $cpu
- * @property string $threads
- * @property bool $oom_disabled
- * @property int $allocation_id
- * @property int $nest_id
- * @property int $egg_id
- * @property string $startup
- * @property string $image
- * @property int $installed
- * @property int $allocation_limit
- * @property int $database_limit
- * @property int $backup_limit
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @property \Pterodactyl\Models\User $user
- * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subusers
- * @property \Pterodactyl\Models\Allocation $allocation
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
- * @property \Pterodactyl\Models\Node $node
- * @property \Pterodactyl\Models\Nest $nest
- * @property \Pterodactyl\Models\Egg $egg
+ * @property int                                                                        $id
+ * @property string|null                                                                $external_id
+ * @property string                                                                     $uuid
+ * @property string                                                                     $uuidShort
+ * @property int                                                                        $node_id
+ * @property string                                                                     $name
+ * @property string                                                                     $description
+ * @property bool                                                                       $skip_scripts
+ * @property bool                                                                       $suspended
+ * @property int                                                                        $owner_id
+ * @property int                                                                        $memory
+ * @property int                                                                        $swap
+ * @property int                                                                        $disk
+ * @property int                                                                        $io
+ * @property int                                                                        $cpu
+ * @property string                                                                     $threads
+ * @property bool                                                                       $oom_disabled
+ * @property int                                                                        $allocation_id
+ * @property int                                                                        $nest_id
+ * @property int                                                                        $egg_id
+ * @property string                                                                     $startup
+ * @property string                                                                     $image
+ * @property int                                                                        $installed
+ * @property int                                                                        $allocation_limit
+ * @property int                                                                        $database_limit
+ * @property int                                                                        $backup_limit
+ * @property \Carbon\Carbon                                                             $created_at
+ * @property \Carbon\Carbon                                                             $updated_at
+ * @property \Pterodactyl\Models\User                                                   $user
+ * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection     $subusers
+ * @property \Pterodactyl\Models\Allocation                                             $allocation
+ * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection  $allocations
+ * @property \Pterodactyl\Models\Node                                                   $node
+ * @property \Pterodactyl\Models\Nest                                                   $nest
+ * @property \Pterodactyl\Models\Egg                                                    $egg
  * @property \Pterodactyl\Models\EggVariable[]|\Illuminate\Database\Eloquent\Collection $variables
- * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection $schedule
- * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
- * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\ServerTransfer $transfer
- * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
- * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
+ * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection    $schedule
+ * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection    $databases
+ * @property \Pterodactyl\Models\Location                                               $location
+ * @property \Pterodactyl\Models\ServerTransfer                                         $transfer
+ * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection      $backups
+ * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection       $mounts
  */
 class Server extends Model
 {
@@ -60,11 +59,11 @@ class Server extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'server';
+    public const RESOURCE_NAME = 'server';
 
-    const STATUS_INSTALLING = 0;
-    const STATUS_INSTALLED = 1;
-    const STATUS_INSTALL_FAILED = 2;
+    public const STATUS_INSTALLING = 0;
+    public const STATUS_INSTALLED = 1;
+    public const STATUS_INSTALL_FAILED = 2;
 
     /**
      * The table associated with the model.
@@ -159,8 +158,6 @@ class Server extends Model
 
     /**
      * Returns the format for server allocations when communicating with the Daemon.
-     *
-     * @return array
      */
     public function getAllocationMappings(): array
     {
@@ -169,9 +166,6 @@ class Server extends Model
         })->toArray();
     }
 
-    /**
-     * @return bool
-     */
     public function isInstalled(): bool
     {
         return $this->installed === 1;

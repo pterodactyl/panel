@@ -8,8 +8,6 @@ class EggTransformer extends BaseClientTransformer
 {
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -17,7 +15,6 @@ class EggTransformer extends BaseClientTransformer
     }
 
     /**
-     * @param \Pterodactyl\Models\Egg $egg
      * @return array
      */
     public function transform(Egg $egg)

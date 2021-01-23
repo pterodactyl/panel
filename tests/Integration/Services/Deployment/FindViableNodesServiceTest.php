@@ -6,8 +6,8 @@ use Exception;
 use Pterodactyl\Models\Node;
 use InvalidArgumentException;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Models\Location;
 use Illuminate\Support\Collection;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
@@ -71,24 +71,24 @@ class FindViableNodesServiceTest extends IntegrationTestCase
     public function testExpectedNodeIsReturnedForLocation()
     {
         /** @var \Pterodactyl\Models\Location[] $locations */
-        $locations = factory(Location::class)->times(2)->create();
+        $locations = Location::factory()->times(2)->create();
 
         /** @var \Pterodactyl\Models\Node[] $nodes */
         $nodes = [
             // This node should never be returned once we've completed the initial test which
             // runs without a location filter.
-            factory(Node::class)->create([
+            Node::factory()->create([
                 'location_id' => $locations[0]->id,
                 'memory' => 2048,
                 'disk' => 1024 * 100,
             ]),
-            factory(Node::class)->create([
+            Node::factory()->create([
                 'location_id' => $locations[1]->id,
                 'memory' => 1024,
                 'disk' => 10240,
                 'disk_overallocate' => 10,
             ]),
-            factory(Node::class)->create([
+            Node::factory()->create([
                 'location_id' => $locations[1]->id,
                 'memory' => 1024 * 4,
                 'memory_overallocate' => 50,
@@ -112,7 +112,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
 
         // Helper, I am lazy.
         $base = function () use ($locations) {
-            return $this->getService()->setLocations([ $locations[1]->id ])->setDisk(512);
+            return $this->getService()->setLocations([$locations[1]->id])->setDisk(512);
         };
 
         // Expect that we can create this server on either node since the disk and memory

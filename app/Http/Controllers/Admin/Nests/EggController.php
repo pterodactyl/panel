@@ -55,8 +55,6 @@ class EggController extends Controller
     /**
      * Handle a request to display the Egg creation page.
      *
-     * @return \Illuminate\View\View
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function create(): View
@@ -69,9 +67,6 @@ class EggController extends Controller
 
     /**
      * Handle request to store a new Egg.
-     *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggFormRequest $request
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
@@ -93,9 +88,6 @@ class EggController extends Controller
 
     /**
      * Handle request to view a single Egg.
-     *
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Illuminate\View\View
      */
     public function view(Egg $egg): View
     {
@@ -104,10 +96,6 @@ class EggController extends Controller
 
     /**
      * Handle request to update an Egg.
-     *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggFormRequest $request
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -130,9 +118,6 @@ class EggController extends Controller
 
     /**
      * Handle request to destroy an egg.
-     *
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\Egg\HasChildrenException
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException

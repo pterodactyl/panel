@@ -29,9 +29,6 @@ class AccountCreated extends Notification implements ShouldQueue
 
     /**
      * Create a new notification instance.
-     *
-     * @param \Pterodactyl\Models\User $user
-     * @param string|null $token
      */
     public function __construct(User $user, string $token = null)
     {
@@ -43,6 +40,7 @@ class AccountCreated extends Notification implements ShouldQueue
      * Get the notification's delivery channels.
      *
      * @param mixed $notifiable
+     *
      * @return array
      */
     public function via($notifiable)
@@ -54,17 +52,18 @@ class AccountCreated extends Notification implements ShouldQueue
      * Get the mail representation of the notification.
      *
      * @param mixed $notifiable
+     *
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail($notifiable)
     {
-        $message = (new MailMessage)
+        $message = (new MailMessage())
             ->greeting('Hello ' . $this->user->name . '!')
             ->line('You are receiving this email because an account has been created for you on ' . config('app.name') . '.')
             ->line('Username: ' . $this->user->username)
             ->line('Email: ' . $this->user->email);
 
-        if (! is_null($this->token)) {
+        if (!is_null($this->token)) {
             return $message->action('Setup Your Account', url('/auth/password/reset/' . $this->token . '?email=' . urlencode($this->user->email)));
         }
 

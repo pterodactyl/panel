@@ -21,8 +21,6 @@ class LocationUpdateService
 
     /**
      * LocationUpdateService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
      */
     public function __construct(LocationRepositoryInterface $repository)
     {
@@ -33,7 +31,7 @@ class LocationUpdateService
      * Update an existing location.
      *
      * @param int|\Pterodactyl\Models\Location $location
-     * @param array $data
+     *
      * @return \Pterodactyl\Models\Location
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

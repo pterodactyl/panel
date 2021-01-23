@@ -9,8 +9,6 @@ class RotatePasswordRequest extends ClientApiRequest
 {
     /**
      * Check that the user has permission to rotate the password.
-     *
-     * @return string
      */
     public function permission(): string
     {

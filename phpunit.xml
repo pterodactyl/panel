@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="bootstrap/tests.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         printerClass="Codedungeon\PHPUnitPrettyResultPrinter\Printer"
-         processIsolation="false"
-         stopOnFailure="false">
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        backupGlobals="false"
+        backupStaticAttributes="false"
+        bootstrap="bootstrap/tests.php"
+        colors="true"
+        convertErrorsToExceptions="true"
+        convertNoticesToExceptions="true"
+        convertWarningsToExceptions="true"
+        printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
+        processIsolation="false"
+        stopOnFailure="false"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+>
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./app</directory>
+        </include>
+    </coverage>
     <testsuites>
         <testsuite name="Browser">
             <directory suffix="Test.php">./tests/Browser/Processes</directory>
@@ -20,11 +29,6 @@
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./app</directory>
-        </whitelist>
-    </filter>
     <php>
         <env name="APP_ENV" value="testing"/>
         <env name="BCRYPT_ROUNDS" value="4"/>

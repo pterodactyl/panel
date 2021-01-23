@@ -46,7 +46,7 @@ class StatisticsController extends Controller
 
     public function index()
     {
-        throw new NotFoundHttpException;
+        throw new NotFoundHttpException();
         $servers = $this->serverRepository->all();
         $nodes = $this->nodeRepository->all();
         $usersCount = $this->userRepository->count();

@@ -22,7 +22,6 @@ trait JavascriptInjection
     /**
      * Set the request object to use when injecting JS.
      *
-     * @param \Illuminate\Http\Request $request
      * @return $this
      */
     public function setRequest(Request $request)
@@ -36,6 +35,7 @@ trait JavascriptInjection
      * Injects the exact array passed in, nothing more.
      *
      * @param array $args
+     *
      * @return array
      */
     public function plainInject($args = [])

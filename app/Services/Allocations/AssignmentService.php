@@ -13,12 +13,12 @@ use Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException;
 
 class AssignmentService
 {
-    const CIDR_MAX_BITS = 27;
-    const CIDR_MIN_BITS = 32;
-    const PORT_FLOOR = 1024;
-    const PORT_CEIL = 65535;
-    const PORT_RANGE_LIMIT = 1000;
-    const PORT_RANGE_REGEX = '/^(\d{4,5})-(\d{4,5})$/';
+    public const CIDR_MAX_BITS = 27;
+    public const CIDR_MIN_BITS = 32;
+    public const PORT_FLOOR = 1024;
+    public const PORT_CEIL = 65535;
+    public const PORT_RANGE_LIMIT = 1000;
+    public const PORT_RANGE_REGEX = '/^(\d{4,5})-(\d{4,5})$/';
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -32,9 +32,6 @@ class AssignmentService
 
     /**
      * AssignmentService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
-     * @param \Illuminate\Database\ConnectionInterface $connection
      */
     public function __construct(AllocationRepositoryInterface $repository, ConnectionInterface $connection)
     {
@@ -45,9 +42,6 @@ class AssignmentService
     /**
      * Insert allocations into the database and link them to a specific node.
      *
-     * @param \Pterodactyl\Models\Node $node
-     * @param array $data
-     *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
@@ -57,15 +51,15 @@ class AssignmentService
     {
         $explode = explode('/', $data['allocation_ip']);
         if (count($explode) !== 1) {
-            if (! ctype_digit($explode[1]) || ($explode[1] > self::CIDR_MIN_BITS || $explode[1] < self::CIDR_MAX_BITS)) {
-                throw new CidrOutOfRangeException;
+            if (!ctype_digit($explode[1]) || ($explode[1] > self::CIDR_MIN_BITS || $explode[1] < self::CIDR_MAX_BITS)) {
+                throw new CidrOutOfRangeException();
             }
         }
 
         $this->connection->beginTransaction();
         foreach (Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
             foreach ($data['allocation_ports'] as $port) {
-                if (! is_digit($port) && ! preg_match(self::PORT_RANGE_REGEX, $port)) {
+                if (!is_digit($port) && !preg_match(self::PORT_RANGE_REGEX, $port)) {
                     throw new InvalidPortMappingException($port);
                 }
 
@@ -74,11 +68,11 @@ class AssignmentService
                     $block = range($matches[1], $matches[2]);
 
                     if (count($block) > self::PORT_RANGE_LIMIT) {
-                        throw new TooManyPortsInRangeException;
+                        throw new TooManyPortsInRangeException();
                     }
 
                     if ((int) $matches[1] <= self::PORT_FLOOR || (int) $matches[2] > self::PORT_CEIL) {
-                        throw new PortOutOfRangeException;
+                        throw new PortOutOfRangeException();
                     }
 
                     foreach ($block as $unit) {
@@ -92,7 +86,7 @@ class AssignmentService
                     }
                 } else {
                     if ((int) $port <= self::PORT_FLOOR || (int) $port > self::PORT_CEIL) {
-                        throw new PortOutOfRangeException;
+                        throw new PortOutOfRangeException();
                     }
 
                     $insertData[] = [

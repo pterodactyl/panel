@@ -23,9 +23,6 @@ class NodeController extends Controller
 
     /**
      * NodeController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $repository
-     * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(NodeRepository $repository, Factory $view)
     {
@@ -36,7 +33,6 @@ class NodeController extends Controller
     /**
      * Returns a listing of nodes on the system.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request)

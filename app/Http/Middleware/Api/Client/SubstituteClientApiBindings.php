@@ -19,7 +19,7 @@ class SubstituteClientApiBindings extends ApiSubstituteBindings
      * a 404 error if a model is not found.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -43,7 +43,7 @@ class SubstituteClientApiBindings extends ApiSubstituteBindings
             }
         });
 
-        $this->router->bind('database', function ($value) use ($request) {
+        $this->router->bind('database', function ($value) {
             $id = Container::getInstance()->make(HashidsInterface::class)->decodeFirst($value);
 
             return Database::query()->where('id', $id)->firstOrFail();

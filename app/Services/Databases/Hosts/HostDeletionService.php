@@ -20,9 +20,6 @@ class HostDeletionService
 
     /**
      * HostDeletionService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $databaseRepository
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
      */
     public function __construct(
         DatabaseRepositoryInterface $databaseRepository,
@@ -35,9 +32,6 @@ class HostDeletionService
     /**
      * Delete a specified host from the Panel if no databases are
      * attached to it.
-     *
-     * @param int $host
-     * @return int
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */

@@ -20,7 +20,7 @@ class Hashids extends VendorHashids implements HashidsInterface
     public function decodeFirst($encoded, $default = null)
     {
         $result = $this->decode($encoded);
-        if (! is_array($result)) {
+        if (!is_array($result)) {
             return $default;
         }
 

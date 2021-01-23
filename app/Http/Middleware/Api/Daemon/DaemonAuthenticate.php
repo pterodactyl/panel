@@ -34,9 +34,6 @@ class DaemonAuthenticate
 
     /**
      * DaemonAuthenticate constructor.
-     *
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $repository
      */
     public function __construct(Encrypter $encrypter, NodeRepository $repository)
     {
@@ -47,8 +44,6 @@ class DaemonAuthenticate
     /**
      * Check if a request from the daemon can be properly attributed back to a single node instance.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @return mixed
      *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
@@ -60,17 +55,13 @@ class DaemonAuthenticate
         }
 
         if (is_null($bearer = $request->bearerToken())) {
-            throw new HttpException(
-                401, 'Access this this endpoint must include an Authorization header.', null, ['WWW-Authenticate' => 'Bearer']
-            );
+            throw new HttpException(401, 'Access this this endpoint must include an Authorization header.', null, ['WWW-Authenticate' => 'Bearer']);
         }
 
         $parts = explode('.', $bearer);
         // Ensure that all of the correct parts are provided in the header.
         if (count($parts) !== 2 || empty($parts[0]) || empty($parts[1])) {
-            throw new BadRequestHttpException(
-                'The Authorization header provided was not in a valid format.'
-            );
+            throw new BadRequestHttpException('The Authorization header provided was not in a valid format.');
         }
 
         try {
@@ -88,8 +79,6 @@ class DaemonAuthenticate
             // Do nothing, we don't want to expose a node not existing at all.
         }
 
-        throw new AccessDeniedHttpException(
-            'You are not authorized to access this resource.'
-        );
+        throw new AccessDeniedHttpException('You are not authorized to access this resource.');
     }
 }
