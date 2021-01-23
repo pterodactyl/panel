@@ -112,7 +112,7 @@ class NetworkAllocationController extends ClientApiController
 
     /**
      * Set the notes for the allocation for a server.
-     *s
+     *s.
      *
      * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest $request
      * @param \Pterodactyl\Models\Server $server

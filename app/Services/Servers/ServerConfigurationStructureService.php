@@ -38,7 +38,7 @@ class ServerConfigurationStructureService
         $clone = $server;
         // If any overrides have been set on this call make sure to update them on the
         // cloned instance so that the configuration generated uses them.
-        if (!empty($override)) {
+        if (! empty($override)) {
             $clone = $server->fresh();
             foreach ($override as $key => $value) {
                 $clone->setAttribute($key, $value);
@@ -95,10 +95,10 @@ class ServerConfigurationStructureService
                 'id' => $server->egg->uuid,
                 'file_denylist' => [
                     'config.yml',
-                    '**/*.json'
-                ]
+                    '**/*.json',
+                ],
                 // 'file_denylist' => explode(PHP_EOL, $server->egg->inherit_file_denylist),
-            ]
+            ],
         ];
     }
 
@@ -124,12 +124,12 @@ class ServerConfigurationStructureService
                 })->toArray(),
                 'env' => $this->environment->handle($server),
                 'oom_disabled' => $server->oom_disabled,
-                'memory' => (int)$server->memory,
-                'swap' => (int)$server->swap,
-                'io' => (int)$server->io,
-                'cpu' => (int)$server->cpu,
+                'memory' => (int) $server->memory,
+                'swap' => (int) $server->swap,
+                'io' => (int) $server->io,
+                'cpu' => (int) $server->cpu,
                 'threads' => $server->threads,
-                'disk' => (int)$server->disk,
+                'disk' => (int) $server->disk,
                 'image' => $server->image,
             ],
             'service' => [
@@ -137,7 +137,7 @@ class ServerConfigurationStructureService
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,
-            'suspended' => (int)$server->suspended,
+            'suspended' => (int) $server->suspended,
         ];
     }
 }

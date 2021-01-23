@@ -119,7 +119,7 @@ class EggImporterService
         ], true, true);
 
         collect($parsed->variables)->each(function ($variable) use ($egg) {
-            $this->eggVariableRepository->create(array_merge((array)$variable, [
+            $this->eggVariableRepository->create(array_merge((array) $variable, [
                 'egg_id' => $egg->id,
             ]));
         });

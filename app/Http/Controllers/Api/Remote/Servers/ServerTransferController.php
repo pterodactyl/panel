@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -110,11 +110,11 @@ class ServerTransferController extends Controller
         Arr::set($data, 'suspended', false);
 
         $this->connection->transaction(function () use ($data, $server) {
-            // This token is used by the new node the server is being transfered to. It allows
+            // This token is used by the new node the server is being transferred to. It allows
             // that node to communicate with the old node during the process to initiate the
             // actual file transfer.
             $token = $this->jwtService
-                ->setExpiresAt(Chronos::now()->addMinutes(15))
+                ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
                 ->setSubject($server->uuid)
                 ->handle($server->node, $server->uuid, 'sha256');
 
@@ -128,7 +128,7 @@ class ServerTransferController extends Controller
             $this->daemonTransferRepository
                 ->setServer($server)
                 ->setNode($server->transfer->newNode)
-                ->notify($server, $data, $server->node, $token->__toString());
+                ->notify($server, $data, $server->node, $token->toString());
         });
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);

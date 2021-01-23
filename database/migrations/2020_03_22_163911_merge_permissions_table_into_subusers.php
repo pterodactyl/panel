@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Models\Permission;
 use Illuminate\Support\Facades\Schema;
 use Pterodactyl\Models\Permission as P;

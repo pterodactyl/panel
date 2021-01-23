@@ -5,10 +5,10 @@ namespace Pterodactyl\Tests\Browser;
 use Laravel\Dusk\TestCase;
 use BadMethodCallException;
 use Pterodactyl\Models\User;
-use Tests\CreatesApplication;
 use Pterodactyl\Console\Kernel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
+use Pterodactyl\Tests\CreatesApplication;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -115,7 +115,7 @@ abstract class BrowserTestCase extends TestCase
      */
     protected function user(array $attributes = []): User
     {
-        return factory(User::class)->create(array_merge([
+        return User::factory()->create(array_merge([
             'password' => Hash::make(static::$userPassword),
         ], $attributes));
     }

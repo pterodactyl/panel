@@ -1,5 +1,6 @@
 <?php
 
+use NunoMaduro\Collision\Provider;
 use Illuminate\Contracts\Console\Kernel;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -14,6 +15,10 @@ $kernel = $app->make(Kernel::class);
  * Bootstrap the kernel and prepare application for testing.
  */
 $kernel->bootstrap();
+
+// Register the collision service provider so that errors during the test
+// setup process are output nicely.
+(new Provider)->register();
 
 $output = new ConsoleOutput;
 

@@ -8,7 +8,6 @@ use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Task;
 use InvalidArgumentException;
 use Pterodactyl\Models\Schedule;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

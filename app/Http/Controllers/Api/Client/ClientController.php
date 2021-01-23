@@ -67,7 +67,7 @@ class ClientController extends ClientApiController
                     ? $builder
                     : $builder->whereNotIn('servers.id', $user->accessibleServers()->pluck('id')->all());
             }
-        } else if ($type === 'owner') {
+        } elseif ($type === 'owner') {
             $builder = $builder->where('servers.owner_id', $user->id);
         } else {
             $builder = $builder->whereIn('servers.id', $user->accessibleServers()->pluck('id')->all());

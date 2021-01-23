@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Console\Commands\Schedule;
 
-use Throwable;
 use Exception;
+use Throwable;
 use Illuminate\Console\Command;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Log;

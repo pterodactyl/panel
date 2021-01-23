@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Services\Acl\Api;
+namespace Pterodactyl\Tests\Unit\Services\Acl\Api;
 
-use Tests\TestCase;
 use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Tests\TestCase;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class AdminAclTest extends TestCase
@@ -23,7 +23,7 @@ class AdminAclTest extends TestCase
      */
     public function testCheck()
     {
-        $model = factory(ApiKey::class)->make(['r_servers' => AdminAcl::READ | AdminAcl::WRITE]);
+        $model = ApiKey::factory()->make(['r_servers' => AdminAcl::READ | AdminAcl::WRITE]);
 
         $this->assertTrue(AdminAcl::check($model, AdminAcl::RESOURCE_SERVERS, AdminAcl::WRITE));
     }

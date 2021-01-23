@@ -43,7 +43,7 @@ class SubstituteClientApiBindings extends ApiSubstituteBindings
             }
         });
 
-        $this->router->bind('database', function ($value) use ($request) {
+        $this->router->bind('database', function ($value) {
             $id = Container::getInstance()->make(HashidsInterface::class)->decodeFirst($value);
 
             return Database::query()->where('id', $id)->firstOrFail();

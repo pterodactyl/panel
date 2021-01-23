@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Tests\Traits;
+namespace Pterodactyl\Tests\Traits;
 
 use Mockery as m;
 use Ramsey\Uuid\Uuid;

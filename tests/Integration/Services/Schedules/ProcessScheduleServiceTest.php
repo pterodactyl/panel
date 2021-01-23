@@ -23,7 +23,7 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
     public function testScheduleWithNoTasksReturnsException()
     {
         $server = $this->createServerModel();
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->expectException(DisplayException::class);
         $this->expectExceptionMessage('Cannot process schedule for task execution: no tasks are registered.');
@@ -39,13 +39,13 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create([
+        $schedule = Schedule::factory()->create([
             'server_id' => $server->id,
             'cron_minute' => 'hodor', // this will break the getNextRunDate() function.
         ]);
 
         /** @var \Pterodactyl\Models\Task $task */
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
 
         $this->expectException(InvalidArgumentException::class);
 
@@ -68,10 +68,10 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         /** @var \Pterodactyl\Models\Task $task */
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id, 'time_offset' => 10, 'sequence_id' => 1]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'time_offset' => 10, 'sequence_id' => 1]);
 
         $this->getService()->handle($schedule, $now);
 
@@ -100,16 +100,16 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
 
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         /** @var \Pterodactyl\Models\Task $task */
-        $task2 = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 4]);
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 2]);
-        $task3 = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 3]);
+        $task2 = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 4]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 2]);
+        $task3 = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 3]);
 
         $this->getService()->handle($schedule);
 
-        Bus::assertDispatched(RunTaskJob::class, function (RunTaskJob  $job) use ($task) {
+        Bus::assertDispatched(RunTaskJob::class, function (RunTaskJob $job) use ($task) {
             return $task->id === $job->task->id;
         });
 
@@ -131,9 +131,9 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
 
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id, 'last_run_at' => null]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id, 'last_run_at' => null]);
         /** @var \Pterodactyl\Models\Task $task */
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
 
         $dispatcher->expects('dispatchNow')->andThrows(new Exception('Test thrown exception'));
 

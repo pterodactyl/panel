@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
@@ -88,7 +87,7 @@ class SettingsController extends ClientApiController
      */
     public function dockerImage(SetDockerImageRequest $request, Server $server)
     {
-        if (!in_array($server->image, $server->egg->docker_images)) {
+        if (! in_array($server->image, $server->egg->docker_images)) {
             throw new BadRequestHttpException(
                 'This server\'s Docker image has been manually set by an administrator and cannot be updated.'
             );

@@ -202,7 +202,7 @@ class Node extends Model
      */
     public function getDecryptedKey(): string
     {
-        return (string)Container::getInstance()->make(Encrypter::class)->decrypt(
+        return (string) Container::getInstance()->make(Encrypter::class)->decrypt(
             $this->daemon_token
         );
     }

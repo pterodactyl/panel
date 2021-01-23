@@ -85,7 +85,7 @@ class ServerDetailsController extends Controller
             ->where('node_id', $node->id)
             // If you don't cast this to a string you'll end up with a stringified per_page returned in
             // the metadata, and then Wings will panic crash as a result.
-            ->paginate((int)$request->input('per_page', 50));
+            ->paginate((int) $request->input('per_page', 50));
 
         return new ServerConfigurationCollection($servers);
     }

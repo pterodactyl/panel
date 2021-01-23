@@ -3,10 +3,9 @@
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Exception;
-use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Nest;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerVariable;
 use Illuminate\Validation\ValidationException;

@@ -6,12 +6,12 @@ use Pterodactyl\Models\User;
 use PHPUnit\Framework\Assert;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\Traits\Http\IntegrationJsonRequestAssertions;
+use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 {
@@ -92,7 +92,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function createApiUser(): User
     {
-        return factory(User::class)->create([
+        return User::factory()->create([
             'root_admin' => true,
         ]);
     }
@@ -106,7 +106,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function createApiKey(User $user, array $permissions = []): ApiKey
     {
-        return factory(ApiKey::class)->create(array_merge([
+        return ApiKey::factory()->create(array_merge([
             'user_id' => $user->id,
             'key_type' => ApiKey::TYPE_APPLICATION,
             'r_servers' => AdminAcl::READ | AdminAcl::WRITE,

@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Http\Controllers\Admin\UserController;
+use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
 class UserControllerTest extends IntegrationTestCase
 {
@@ -23,8 +23,8 @@ class UserControllerTest extends IntegrationTestCase
     {
         $unique = Str::random(16);
         $users = [
-            factory(User::class)->create(['username' => $unique . '_1']),
-            factory(User::class)->create(['username' => $unique . '_2']),
+            User::factory()->create(['username' => $unique . '_1']),
+            User::factory()->create(['username' => $unique . '_2']),
         ];
 
         $servers = [
@@ -51,9 +51,9 @@ class UserControllerTest extends IntegrationTestCase
         $response = $data['users']->items();
         $this->assertCount(2, $response);
         $this->assertInstanceOf(User::class, $response[0]);
-        $this->assertSame(3, (int)$response[0]->servers_count);
-        $this->assertSame(0, (int)$response[0]->subuser_of_count);
-        $this->assertSame(1, (int)$response[1]->servers_count);
-        $this->assertSame(2, (int)$response[1]->subuser_of_count);
+        $this->assertSame(3, (int) $response[0]->servers_count);
+        $this->assertSame(0, (int) $response[0]->subuser_of_count);
+        $this->assertSame(1, (int) $response[1]->servers_count);
+        $this->assertSame(2, (int) $response[1]->subuser_of_count);
     }
 }

@@ -4,7 +4,6 @@ namespace Pterodactyl\Services\Servers;
 
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 
 class ReinstallServerService

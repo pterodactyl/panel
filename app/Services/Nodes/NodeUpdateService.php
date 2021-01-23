@@ -5,11 +5,9 @@ namespace Pterodactyl\Services\Nodes;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Facades\Log;
-use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
@@ -101,7 +99,7 @@ class NodeUpdateService
                 // inject their own response pages, causing this logic to get fucked up.
                 //
                 // @see https://github.com/pterodactyl/panel/issues/2712
-                return [ $updated, true ];
+                return [$updated, true];
             }
 
             return [$updated, false];

@@ -108,7 +108,7 @@ class EggConfigurationService
         // Normalize the output of the configuration for the new Wings Daemon to more
         // easily ingest, as well as make things more flexible down the road.
         foreach ($configs as $file => $data) {
-            $append = array_merge((array)$data, ['file' => $file, 'replace' => []]);
+            $append = array_merge((array) $data, ['file' => $file, 'replace' => []]);
 
             foreach ($this->iterate($data->find, $structure) as $find => $replace) {
                 if (is_object($replace)) {

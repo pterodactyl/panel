@@ -3,7 +3,6 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class SubuserTransformer extends BaseTransformer

@@ -16,7 +16,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetLocations()
     {
-        $locations = factory(Location::class)->times(2)->create();
+        $locations = Location::factory()->times(2)->create();
 
         $response = $this->getJson('/api/application/locations');
         $response->assertStatus(Response::HTTP_OK);
@@ -70,7 +70,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetSingleLocation()
     {
-        $location = factory(Location::class)->create();
+        $location = Location::factory()->create();
 
         $response = $this->getJson('/api/application/locations/' . $location->id);
         $response->assertStatus(Response::HTTP_OK);
@@ -93,7 +93,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testRelationshipsCanBeLoaded()
     {
-        $location = factory(Location::class)->create();
+        $location = Location::factory()->create();
         $server = $this->createServerModel(['user_id' => $this->getApiUser()->id, 'location_id' => $location->id]);
 
         $response = $this->getJson('/api/application/locations/' . $location->id . '?include=servers,nodes');
@@ -143,8 +143,8 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
     {
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_nodes' => 0]);
 
-        $location = factory(Location::class)->create();
-        factory(Node::class)->create(['location_id' => $location->id]);
+        $location = Location::factory()->create();
+        Node::factory()->create(['location_id' => $location->id]);
 
         $response = $this->getJson('/api/application/locations/' . $location->id . '?include=nodes');
         $response->assertStatus(Response::HTTP_OK);
@@ -187,7 +187,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testErrorReturnedIfNoPermission()
     {
-        $location = factory(Location::class)->create();
+        $location = Location::factory()->create();
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
 
         $response = $this->getJson('/api/application/locations/' . $location->id);

@@ -1,17 +1,17 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api;
+namespace Pterodactyl\Tests\Unit\Http\Middleware\Api;
 
 use Mockery as m;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\AuthenticateKey;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -38,7 +38,6 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     public function setUp(): void
     {
         parent::setUp();
-        Chronos::setTestNow(Chronos::now());
 
         $this->auth = m::mock(AuthManager::class);
         $this->encrypter = m::mock(Encrypter::class);
@@ -79,7 +78,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testValidToken()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'decrypted');
         $this->repository->shouldReceive('findFirstWhere')->with([
@@ -90,7 +89,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
         $this->auth->shouldReceive('guard->loginUsingId')->with($model->user_id)->once()->andReturnNull();
 
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
-            'last_used_at' => Chronos::now(),
+            'last_used_at' => CarbonImmutable::now(),
         ])->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions(), ApiKey::TYPE_APPLICATION);
@@ -102,7 +101,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testValidTokenWithUserKey()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'decrypted');
         $this->repository->shouldReceive('findFirstWhere')->with([
@@ -113,7 +112,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
         $this->auth->shouldReceive('guard->loginUsingId')->with($model->user_id)->once()->andReturnNull();
 
         $this->repository->shouldReceive('withoutFreshModel->update')->with($model->id, [
-            'last_used_at' => Chronos::now(),
+            'last_used_at' => CarbonImmutable::now(),
         ])->once()->andReturnNull();
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions(), ApiKey::TYPE_ACCOUNT);
@@ -126,7 +125,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
      */
     public function testAccessWithoutToken()
     {
-        $user = factory(User::class)->make(['id' => 123]);
+        $user = User::factory()->make(['id' => 123]);
 
         $this->request->shouldReceive('user')->andReturn($user);
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturnNull();
@@ -147,7 +146,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
     {
         $this->expectException(AccessDeniedHttpException::class);
 
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn($model->identifier . 'asdf');
         $this->repository->shouldReceive('findFirstWhere')->with([

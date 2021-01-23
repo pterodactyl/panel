@@ -32,7 +32,7 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        $created = factory(Allocation::class)->create([
+        $created = Allocation::factory()->create([
             'node_id' => $server->node_id,
             'ip' => $server->allocation->ip,
         ]);
@@ -74,7 +74,7 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
         config()->set('pterodactyl.client_features.allocations.range_start', 5000);
         config()->set('pterodactyl.client_features.allocations.range_end', 5001);
 
-        factory(Allocation::class)->create([
+        Allocation::factory()->create([
             'server_id' => $server2->id,
             'node_id' => $server->node_id,
             'ip' => $server->allocation->ip,
@@ -93,7 +93,7 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
         config()->set('pterodactyl.client_features.allocations.range_end', 5005);
 
         for ($i = 5000; $i <= 5005; $i++) {
-            factory(Allocation::class)->create([
+            Allocation::factory()->create([
                 'ip' => $server->allocation->ip,
                 'port' => $i,
                 'node_id' => $server->node_id,
@@ -115,7 +115,7 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        factory(Allocation::class)->times(5)->create(['node_id' => $server->node_id]);
+        Allocation::factory()->times(5)->create(['node_id' => $server->node_id]);
 
         $this->expectException(NoAutoAllocationSpaceAvailableException::class);
         $this->expectExceptionMessage('Cannot assign additional allocation: no more space available on node.');

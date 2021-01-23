@@ -2,10 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
-use Pterodactyl\Http\Middleware\Api\Client\Server\SubuserBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
-use Pterodactyl\Http\Middleware\Api\Client\Server\AllocationBelongsToServer;
 
 /*
 |--------------------------------------------------------------------------

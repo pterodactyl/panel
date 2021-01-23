@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits\Http;
+namespace Pterodactyl\Tests\Traits\Http;
 
 use Mockery as m;
 use Illuminate\Http\Request;
@@ -50,7 +50,7 @@ trait RequestMockHelpers
      */
     public function generateRequestUserModel(array $args = []): User
     {
-        $user = factory(User::class)->make($args);
+        $user = User::factory()->make($args);
         $this->setRequestUserModel($user);
 
         return $user;
@@ -100,7 +100,7 @@ trait RequestMockHelpers
      */
     protected function setRequestUser(User $user = null): User
     {
-        $user = $user instanceof User ? $user : factory(User::class)->make();
+        $user = $user instanceof User ? $user : User::factory()->make();
         $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);
 
         return $user;

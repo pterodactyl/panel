@@ -35,7 +35,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permissions);
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
         $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*', '*');
 
         $response = $this->actingAs($user)
@@ -60,7 +60,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
         [, $server2] = $this->generateTestAccount(['user_id' => $user->id]);
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server2->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
 
         $this->actingAs($user)
             ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
@@ -75,7 +75,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_CREATE]);
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)
             ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
@@ -93,7 +93,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create([
+        $schedule = Schedule::factory()->create([
             'server_id' => $server->id,
             'is_active' => true,
             'is_processing' => true,

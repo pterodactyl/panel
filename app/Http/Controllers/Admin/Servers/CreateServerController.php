@@ -118,7 +118,7 @@ class CreateServerController extends Controller
     public function store(ServerFormRequest $request)
     {
         $data = $request->except(['_token']);
-        if (!empty($data['custom_image'])) {
+        if (! empty($data['custom_image'])) {
             $data['image'] = $data['custom_image'];
             unset($data['custom_image']);
         }

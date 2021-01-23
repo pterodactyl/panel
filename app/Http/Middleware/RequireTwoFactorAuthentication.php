@@ -59,14 +59,14 @@ class RequireTwoFactorAuthentication
             return $next($request);
         }
 
-        $level = (int)config('pterodactyl.auth.2fa_required');
+        $level = (int) config('pterodactyl.auth.2fa_required');
         // If this setting is not configured, or the user is already using 2FA then we can just
         // send them right through, nothing else needs to be checked.
         //
         // If the level is set as admin and the user is not an admin, pass them through as well.
         if ($level === self::LEVEL_NONE || $user->use_totp) {
             return $next($request);
-        } else if ($level === self::LEVEL_ADMIN && ! $user->root_admin) {
+        } elseif ($level === self::LEVEL_ADMIN && ! $user->root_admin) {
             return $next($request);
         }
 

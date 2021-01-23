@@ -42,12 +42,12 @@ class MultiFieldServerFilter implements Filter
                     $parts = explode(':', $value);
 
                     $builder->when(
-                        !Str::startsWith($value, ':'),
+                        ! Str::startsWith($value, ':'),
                         // When the string does not start with a ":" it means we're looking for an IP or IP:Port
                         // combo, so use a query to handle that.
                         function (Builder $builder) use ($parts) {
                             $builder->orWhere('allocations.ip', $parts[0]);
-                            if (!is_null($parts[1] ?? null)) {
+                            if (! is_null($parts[1] ?? null)) {
                                 $builder->where('allocations.port', 'LIKE', "{$parts[1]}%");
                             }
                         },

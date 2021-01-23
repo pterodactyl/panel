@@ -4,8 +4,6 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
-use Illuminate\Support\LazyCollection;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface

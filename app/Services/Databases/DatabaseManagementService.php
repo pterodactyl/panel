@@ -8,7 +8,6 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Helpers\Utilities;
 use Illuminate\Database\ConnectionInterface;
-use Symfony\Component\VarDumper\Cloner\Data;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;

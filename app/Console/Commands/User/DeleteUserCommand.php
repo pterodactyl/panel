@@ -9,11 +9,10 @@
 
 namespace Pterodactyl\Console\Commands\User;
 
-use Webmozart\Assert\Assert;
 use Pterodactyl\Models\User;
+use Webmozart\Assert\Assert;
 use Illuminate\Console\Command;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class DeleteUserCommand extends Command
 {
@@ -42,7 +41,8 @@ class DeleteUserCommand extends Command
      *
      * @param \Pterodactyl\Services\Users\UserDeletionService $deletionService
      */
-    public function __construct(UserDeletionService $deletionService) {
+    public function __construct(UserDeletionService $deletionService)
+    {
         parent::__construct();
 
         $this->deletionService = $deletionService;
@@ -96,7 +96,5 @@ class DeleteUserCommand extends Command
             $this->deletionService->handle($deleteUser);
             $this->info(trans('command/messages.user.deleted'));
         }
-
-        return;
     }
 }

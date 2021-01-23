@@ -67,7 +67,7 @@ class FileUploadController extends ClientApiController
         return sprintf(
             '%s/upload/file?token=%s',
             $server->node->getConnectionAddress(),
-            $token->__toString()
+            $token->toString()
         );
     }
 }

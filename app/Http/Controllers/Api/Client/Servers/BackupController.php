@@ -61,6 +61,7 @@ class BackupController extends ClientApiController
     public function index(GetBackupsRequest $request, Server $server)
     {
         $limit = min($request->query('per_page') ?? 20, 50);
+
         return $this->fractal->collection($server->backups()->paginate($limit))
             ->transformWith($this->getTransformer(BackupTransformer::class))
             ->toArray();

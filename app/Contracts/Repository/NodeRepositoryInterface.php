@@ -4,9 +4,6 @@ namespace Pterodactyl\Contracts\Repository;
 
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
-use Illuminate\Support\LazyCollection;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 interface NodeRepositoryInterface extends RepositoryInterface
 {

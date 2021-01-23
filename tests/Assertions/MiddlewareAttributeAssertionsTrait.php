@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Assertions;
+namespace Pterodactyl\Tests\Assertions;
 
 use PHPUnit\Framework\Assert;
 

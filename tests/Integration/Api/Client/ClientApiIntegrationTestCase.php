@@ -2,19 +2,17 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
-use Carbon\Carbon;
 use ReflectionClass;
-use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Backup;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Schedule;
-use Pterodactyl\Models\Database;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\DatabaseHost;
@@ -41,17 +39,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
     }
 
     /**
-     * Setup tests and ensure all of the times are always the same.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Carbon::setTestNow(Carbon::now());
-        CarbonImmutable::setTestNow(Carbon::now());
-    }
-
-    /**
      * Override the default createTestResponse from Illuminate so that we can
      * just dump 500-level errors to the screen in the tests without having
      * to keep re-assigning variables.
@@ -69,6 +56,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      *
      * @param mixed $model
      * @param string|null $append
+     *
      * @return string
      */
     protected function link($model, $append = null): string
@@ -99,17 +87,19 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * is assumed that the user is actually a subuser of the server.
      *
      * @param string[] $permissions
+     *
      * @return array
      */
     protected function generateTestAccount(array $permissions = []): array
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         if (empty($permissions)) {
             return [$user, $this->createServerModel(['user_id' => $user->id])];
         }
 
+        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->createServerModel();
 
         Subuser::query()->create([

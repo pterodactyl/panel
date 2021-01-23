@@ -22,7 +22,7 @@ class MigrateToNewServiceSystem extends Migration
             }
 
             $options = DB::table('service_options')->where('service_id', $service->id)->get();
-            $options->each(function ($item) use ($options) {
+            $options->each(function ($item) {
                 if ($item->tag === 'srcds' && $item->name === 'Insurgency') {
                     $item->tag = 'insurgency';
                 } elseif ($item->tag === 'srcds' && $item->name === 'Team Fortress 2') {

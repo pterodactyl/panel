@@ -87,7 +87,7 @@ class Mount extends Model
     public $timestamps = false;
 
     /**
-     * Blacklisted source paths
+     * Blacklisted source paths.
      *
      * @var string[]
      */
@@ -98,7 +98,7 @@ class Mount extends Model
     ];
 
     /**
-     * Blacklisted target paths
+     * Blacklisted target paths.
      *
      * @var string[]
      */

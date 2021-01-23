@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
@@ -101,7 +101,7 @@ class LoginController extends AbstractLoginController
 
         if ($user->use_totp) {
             $token = Str::random(64);
-            $this->cache->put($token, $user->id, Chronos::now()->addMinutes(5));
+            $this->cache->put($token, $user->id, CarbonImmutable::now()->addMinutes(5));
 
             return new JsonResponse([
                 'data' => [

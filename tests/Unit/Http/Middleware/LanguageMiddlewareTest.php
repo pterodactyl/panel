@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware;
+namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
 use Pterodactyl\Models\User;
@@ -40,7 +40,7 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
      */
     public function testLanguageIsSetWithAuthenticatedUser()
     {
-        $user = factory(User::class)->make(['language' => 'de']);
+        $user = User::factory()->make(['language' => 'de']);
 
         $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);
         $this->appMock->shouldReceive('setLocale')->with('de')->once()->andReturnNull();

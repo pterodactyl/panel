@@ -18,6 +18,10 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
  */
 class ApiKey extends Model
 {
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
     const RESOURCE_NAME = 'api_key';
 
     /**

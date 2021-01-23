@@ -138,7 +138,7 @@ class DownloadBackupController extends ClientApiController
         return sprintf(
             '%s/download/backup?token=%s',
             $server->node->getConnectionAddress(),
-            $token->__toString()
+            $token->toString()
         );
     }
 }

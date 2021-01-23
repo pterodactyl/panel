@@ -6,11 +6,14 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Validation\Factory;
-use Illuminate\Database\Eloquent\Model as IlluminateModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Pterodactyl\Exceptions\Model\DataValidationException;
+use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 abstract class Model extends IlluminateModel
 {
+    use HasFactory;
+
     /**
      * Set to true to return immutable Carbon date instances from the model.
      *

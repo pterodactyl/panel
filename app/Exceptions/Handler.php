@@ -5,10 +5,14 @@ namespace Pterodactyl\Exceptions;
 use Exception;
 use Throwable;
 use PDOException;
-use Psr\Log\LoggerInterface;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Swift_TransportException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
+use Illuminate\Foundation\Application;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
@@ -44,17 +48,6 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * A list of exceptions that should be logged with cleaned stack
-     * traces to avoid exposing credentials or other sensitive information.
-     *
-     * @var array
-     */
-    protected $cleanStacks = [
-        PDOException::class,
-        Swift_TransportException::class,
-    ];
-
-    /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
      * @var array
@@ -67,56 +60,40 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Report or log an exception. Skips Laravel's internal reporter since we
-     * don't need or want the user information in our logs by default.
+     * Registers the exception handling callbacks for the application. This
+     * will capture specific exception types that we do not want to include
+     * the detailed stack traces for since they could reveal credentials to
+     * whoever can read the logs.
      *
-     * If you want to implement logging in a different format to integrate with
-     * services such as AWS Cloudwatch or other monitoring you can replace the
-     * contents of this function with a call to the parent reporter.
-     *
-     * @param \Throwable $exception
-     * @return mixed
-     *
-     * @throws \Throwable
+     * @noinspection PhpUnusedLocalVariableInspection
      */
-    public function report(Throwable $exception)
+    public function register()
     {
-        if (! config('app.exceptions.report_all', false) && $this->shouldntReport($exception)) {
-            return null;
+        if (config('app.exceptions.report_all', false)) {
+            $this->dontReport = [];
         }
 
-        if (method_exists($exception, 'report')) {
-            return $exception->report();
-        }
+        $this->reportable(function (PDOException $ex) {
+            $ex = $this->generateCleanedExceptionStack($ex);
+        });
 
-        try {
-            $logger = $this->container->make(LoggerInterface::class);
-        } catch (Exception $ex) {
-            throw $exception;
-        }
-
-        foreach ($this->cleanStacks as $class) {
-            if ($exception instanceof $class) {
-                $exception = $this->generateCleanedExceptionStack($exception);
-                break;
-            }
-        }
-
-        return $logger->error($exception);
+        $this->reportable(function (Swift_TransportException $ex) {
+            $ex = $this->generateCleanedExceptionStack($ex);
+        });
     }
 
-    private function generateCleanedExceptionStack(Throwable $exception)
+    private function generateCleanedExceptionStack(Throwable $exception): string
     {
         $cleanedStack = '';
         foreach ($exception->getTrace() as $index => $item) {
             $cleanedStack .= sprintf(
                 "#%d %s(%d): %s%s%s\n",
                 $index,
-                array_get($item, 'file'),
-                array_get($item, 'line'),
-                array_get($item, 'class'),
-                array_get($item, 'type'),
-                array_get($item, 'function')
+                Arr::get($item, 'file'),
+                Arr::get($item, 'line'),
+                Arr::get($item, 'class'),
+                Arr::get($item, 'type'),
+                Arr::get($item, 'function')
             );
         }
 
@@ -142,7 +119,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        $connections = Container::getInstance()->make(Connection::class);
+        $connections = $this->container->make(Connection::class);
 
         // If we are currently wrapped up inside a transaction, we will roll all the way
         // back to the beginning. This needs to happen, otherwise session data does not
@@ -170,21 +147,21 @@ class Handler extends ExceptionHandler
      */
     public function invalidJson($request, ValidationException $exception)
     {
-        $codes = collect($exception->validator->failed())->mapWithKeys(function ($reasons, $field) {
+        $codes = Collection::make($exception->validator->failed())->mapWithKeys(function ($reasons, $field) {
             $cleaned = [];
             foreach ($reasons as $reason => $attrs) {
-                $cleaned[] = snake_case($reason);
+                $cleaned[] = Str::snake($reason);
             }
 
             return [str_replace('.', '_', $field) => $cleaned];
         })->toArray();
 
-        $errors = collect($exception->errors())->map(function ($errors, $field) use ($codes, $exception) {
+        $errors = Collection::make($exception->errors())->map(function ($errors, $field) use ($codes, $exception) {
             $response = [];
             foreach ($errors as $key => $error) {
                 $meta = [
                     'source_field' => $field,
-                    'rule' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', array_get(
+                    'rule' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', Arr::get(
                         $codes, str_replace('.', '_', $field) . '.' . $key
                     )),
                 ];
@@ -235,7 +212,7 @@ class Handler extends ExceptionHandler
                 'detail' => $exception->getMessage(),
                 'source' => [
                     'line' => $exception->getLine(),
-                    'file' => str_replace(base_path(), '', $exception->getFile()),
+                    'file' => str_replace(Application::getInstance()->basePath(), '', $exception->getFile()),
                 ],
                 'meta' => [
                     'trace' => explode("\n", $exception->getTraceAsString()),
@@ -262,15 +239,15 @@ class Handler extends ExceptionHandler
      *
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Auth\AuthenticationException $exception
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(self::convertToArray($exception), 401);
+            return new JsonResponse(self::convertToArray($exception), JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        return redirect()->guest(route('auth.login'));
+        return $this->container->make('redirect')->guest('/auth/login');
     }
 
     /**
