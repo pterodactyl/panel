@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\factories2;
+namespace Database\Factories;
 
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Location;

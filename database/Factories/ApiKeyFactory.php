@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\factories2;
+namespace Database\Factories;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;

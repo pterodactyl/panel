@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\factories2;
+namespace Database\Factories;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Backup;
