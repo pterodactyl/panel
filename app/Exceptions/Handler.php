@@ -5,10 +5,14 @@ namespace Pterodactyl\Exceptions;
 use Exception;
 use Throwable;
 use PDOException;
-use Psr\Log\LoggerInterface;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Swift_TransportException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
+use Illuminate\Foundation\Application;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
@@ -83,11 +87,11 @@ class Handler extends ExceptionHandler
             $cleanedStack .= sprintf(
                 "#%d %s(%d): %s%s%s\n",
                 $index,
-                array_get($item, 'file'),
-                array_get($item, 'line'),
-                array_get($item, 'class'),
-                array_get($item, 'type'),
-                array_get($item, 'function')
+                Arr::get($item, 'file'),
+                Arr::get($item, 'line'),
+                Arr::get($item, 'class'),
+                Arr::get($item, 'type'),
+                Arr::get($item, 'function')
             );
         }
 
@@ -113,7 +117,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        $connections = Container::getInstance()->make(Connection::class);
+        $connections = $this->container->make(Connection::class);
 
         // If we are currently wrapped up inside a transaction, we will roll all the way
         // back to the beginning. This needs to happen, otherwise session data does not
@@ -141,21 +145,21 @@ class Handler extends ExceptionHandler
      */
     public function invalidJson($request, ValidationException $exception)
     {
-        $codes = collect($exception->validator->failed())->mapWithKeys(function ($reasons, $field) {
+        $codes = Collection::make($exception->validator->failed())->mapWithKeys(function ($reasons, $field) {
             $cleaned = [];
             foreach ($reasons as $reason => $attrs) {
-                $cleaned[] = snake_case($reason);
+                $cleaned[] = Str::snake($reason);
             }
 
             return [str_replace('.', '_', $field) => $cleaned];
         })->toArray();
 
-        $errors = collect($exception->errors())->map(function ($errors, $field) use ($codes, $exception) {
+        $errors = Collection::make($exception->errors())->map(function ($errors, $field) use ($codes, $exception) {
             $response = [];
             foreach ($errors as $key => $error) {
                 $meta = [
                     'source_field' => $field,
-                    'rule' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', array_get(
+                    'rule' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', Arr::get(
                         $codes, str_replace('.', '_', $field) . '.' . $key
                     )),
                 ];
@@ -206,7 +210,7 @@ class Handler extends ExceptionHandler
                 'detail' => $exception->getMessage(),
                 'source' => [
                     'line' => $exception->getLine(),
-                    'file' => str_replace(base_path(), '', $exception->getFile()),
+                    'file' => str_replace(Application::getInstance()->basePath(), '', $exception->getFile()),
                 ],
                 'meta' => [
                     'trace' => explode("\n", $exception->getTraceAsString()),
@@ -238,10 +242,10 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(self::convertToArray($exception), 401);
+            return new JsonResponse(self::convertToArray($exception), JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        return redirect()->guest(route('auth.login'));
+        return $this->container->make('redirect')->guest('/auth/login');
     }
 
     /**
