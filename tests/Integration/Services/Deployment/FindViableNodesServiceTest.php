@@ -6,8 +6,8 @@ use Exception;
 use Pterodactyl\Models\Node;
 use InvalidArgumentException;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Models\Location;
 use Illuminate\Support\Collection;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
@@ -112,7 +112,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
 
         // Helper, I am lazy.
         $base = function () use ($locations) {
-            return $this->getService()->setLocations([ $locations[1]->id ])->setDisk(512);
+            return $this->getService()->setLocations([$locations[1]->id])->setDisk(512);
         };
 
         // Expect that we can create this server on either node since the disk and memory

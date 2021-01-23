@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Services\Deployment;
 
-use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Node;
+use Webmozart\Assert\Assert;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
 
 class FindViableNodesService

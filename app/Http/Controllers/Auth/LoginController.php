@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Illuminate\Support\Str;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;

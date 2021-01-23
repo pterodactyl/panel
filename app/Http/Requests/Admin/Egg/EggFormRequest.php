@@ -44,7 +44,7 @@ class EggFormRequest extends AdminFormRequest
     public function withValidator($validator)
     {
         $validator->sometimes('config_from', 'exists:eggs,id', function () {
-            return (int)$this->input('config_from') !== 0;
+            return (int) $this->input('config_from') !== 0;
         });
     }
 }

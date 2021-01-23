@@ -109,7 +109,7 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
 
         $this->getService()->handle($schedule);
 
-        Bus::assertDispatched(RunTaskJob::class, function (RunTaskJob  $job) use ($task) {
+        Bus::assertDispatched(RunTaskJob::class, function (RunTaskJob $job) use ($task) {
             return $task->id === $job->task->id;
         });
 

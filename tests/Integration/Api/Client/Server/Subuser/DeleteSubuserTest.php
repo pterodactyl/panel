@@ -33,7 +33,7 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
         $differentUser = User::factory()->create();
 
         // Generate a UUID that lines up with a user in the database if it were to be cast to an int.
-        $uuid = $differentUser->id . str_repeat('a', strlen((string)$differentUser->id)) . substr(Uuid::uuid4()->toString(), 8);
+        $uuid = $differentUser->id . str_repeat('a', strlen((string) $differentUser->id)) . substr(Uuid::uuid4()->toString(), 8);
 
         /** @var \Pterodactyl\Models\User $subuser */
         $subuser = User::factory()->create(['uuid' => $uuid]);

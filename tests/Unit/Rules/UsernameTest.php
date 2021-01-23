@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Tests\Unit\Rules;
 
-use Pterodactyl\Tests\TestCase;
 use Pterodactyl\Rules\Username;
+use Pterodactyl\Tests\TestCase;
 
 class UsernameTest extends TestCase
 {

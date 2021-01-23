@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-use Illuminate\Support\Collection;
-
 interface AllocationRepositoryInterface extends RepositoryInterface
 {
     /**

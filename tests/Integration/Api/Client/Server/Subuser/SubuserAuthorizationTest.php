@@ -43,12 +43,12 @@ class SubuserAuthorizationTest extends ClientApiIntegrationTestCase
         }
 
         // This route is acceptable since they're accessing a subuser on their own server.
-        $this->actingAs($user)->json($method, $this->link($server1, "/users/" . $internal->uuid))->assertStatus($method === 'POST' ? 422 : ($method === 'DELETE' ? 204 : 200));
+        $this->actingAs($user)->json($method, $this->link($server1, '/users/' . $internal->uuid))->assertStatus($method === 'POST' ? 422 : ($method === 'DELETE' ? 204 : 200));
 
         // This route can be revealed since the subuser belongs to the correct server, but
         // errors out with a 403 since $user does not have the right permissions for this.
-        $this->actingAs($user)->json($method, $this->link($server2, "/users/" . $internal->uuid))->assertForbidden();
-        $this->actingAs($user)->json($method, $this->link($server3, "/users/" . $internal->uuid))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server2, '/users/' . $internal->uuid))->assertForbidden();
+        $this->actingAs($user)->json($method, $this->link($server3, '/users/' . $internal->uuid))->assertNotFound();
     }
 
     /**
@@ -56,6 +56,6 @@ class SubuserAuthorizationTest extends ClientApiIntegrationTestCase
      */
     public function methodDataProvider(): array
     {
-        return [["GET"], ["POST"], ["DELETE"]];
+        return [['GET'], ['POST'], ['DELETE']];
     }
 }

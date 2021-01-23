@@ -3,9 +3,9 @@
 namespace Pterodactyl\Tests\Unit\Services\Api;
 
 use Mockery as m;
-use Pterodactyl\Tests\TestCase;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Tests\TestCase;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;

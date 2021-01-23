@@ -42,7 +42,7 @@ class DaemonConnectionException extends DisplayException
             $body = $response->getBody();
             if (is_string($body) || (is_object($body) && method_exists($body, '__toString'))) {
                 $body = json_decode(is_string($body) ? $body : $body->__toString(), true);
-                $message = "[Wings Error]: " . Arr::get($body, 'error', $message);
+                $message = '[Wings Error]: ' . Arr::get($body, 'error', $message);
             }
         }
 

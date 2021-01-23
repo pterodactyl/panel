@@ -89,7 +89,8 @@ class ServerTransferController extends Controller
      *
      * @throws \Throwable
      */
-    public function transfer(Request $request, Server $server) {
+    public function transfer(Request $request, Server $server)
+    {
         $validatedData = $request->validate([
             'node_id' => 'required|exists:nodes,id',
             'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',

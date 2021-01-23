@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Tests\Integration;
 
-use Pterodactyl\Tests\TestCase;
 use Carbon\CarbonImmutable;
+use Pterodactyl\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;

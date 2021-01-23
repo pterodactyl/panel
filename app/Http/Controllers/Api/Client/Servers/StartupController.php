@@ -86,11 +86,11 @@ class StartupController extends ClientApiController
 
         if (is_null($variable) || ! $variable->user_viewable) {
             throw new BadRequestHttpException(
-                "The environment variable you are trying to edit does not exist."
+                'The environment variable you are trying to edit does not exist.'
             );
-        } else if (! $variable->user_editable) {
+        } elseif (! $variable->user_editable) {
             throw new BadRequestHttpException(
-                "The environment variable you are trying to edit is read-only."
+                'The environment variable you are trying to edit is read-only.'
             );
         }
 

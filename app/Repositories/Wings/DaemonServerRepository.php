@@ -156,7 +156,7 @@ class DaemonServerRepository extends DaemonRepository
     {
         Assert::isInstanceOf($this->server, Server::class);
 
-        $this->revokeJTIs([ md5($id . $this->server->uuid) ]);
+        $this->revokeJTIs([md5($id . $this->server->uuid)]);
     }
 
     /**

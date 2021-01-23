@@ -8,7 +8,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
 
 class DatabaseRepository extends EloquentRepository implements DatabaseRepositoryInterface
 {

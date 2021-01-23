@@ -51,7 +51,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
-        } else if (is_null($server) && ! is_null($node)) {
+        } elseif (is_null($server) && ! is_null($node)) {
             $instance = $instance->where('node_id', '=', $node);
         }
 
@@ -71,7 +71,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
         if (! is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
-        } else if (is_null($server) && ! is_null($node)) {
+        } elseif (is_null($server) && ! is_null($node)) {
             $instance = $instance->where('node_id', '=', $node);
         }
 

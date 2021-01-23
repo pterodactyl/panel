@@ -9,14 +9,12 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
-use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\MountServer;
 use Prologue\Alerts\AlertsMessageBag;
-use GuzzleHttp\Exception\RequestException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
@@ -37,7 +35,6 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
@@ -338,7 +335,7 @@ class ServersController extends Controller
     public function saveStartup(Request $request, Server $server)
     {
         $data = $request->except('_token');
-        if (!empty($data['custom_docker_image'])) {
+        if (! empty($data['custom_docker_image'])) {
             $data['docker_image'] = $data['custom_docker_image'];
             unset($data['custom_docker_image']);
         }

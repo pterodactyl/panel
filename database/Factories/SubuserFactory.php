@@ -24,7 +24,7 @@ class SubuserFactory extends Factory
     {
         return [
             'permissions' => [
-                Permission::ACTION_WEBSOCKET_CONNECT
+                Permission::ACTION_WEBSOCKET_CONNECT,
             ],
         ];
     }

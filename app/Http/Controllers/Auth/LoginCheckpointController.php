@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository;
 
 class LoginCheckpointController extends AbstractLoginController

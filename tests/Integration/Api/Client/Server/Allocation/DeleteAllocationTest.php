@@ -3,8 +3,8 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server\Allocation;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DeleteAllocationTest extends ClientApiIntegrationTestCase

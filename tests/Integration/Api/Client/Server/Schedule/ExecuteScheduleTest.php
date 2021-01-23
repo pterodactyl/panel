@@ -65,7 +65,7 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
             'is_active' => false,
         ]);
 
-        $response = $this->actingAs($user)->postJson($this->link($schedule, "/execute"));
+        $response = $this->actingAs($user)->postJson($this->link($schedule, '/execute'));
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertJsonPath('errors.0.code', 'BadRequestHttpException');

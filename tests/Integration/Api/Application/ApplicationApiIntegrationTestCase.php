@@ -6,12 +6,12 @@ use Pterodactyl\Models\User;
 use PHPUnit\Framework\Assert;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
+use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 {

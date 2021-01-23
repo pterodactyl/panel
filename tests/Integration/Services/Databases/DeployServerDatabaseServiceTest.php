@@ -7,7 +7,6 @@ use Pterodactyl\Models\Node;
 use InvalidArgumentException;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
-use Symfony\Component\VarDumper\Cloner\Data;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Services\Databases\DeployServerDatabaseService;
@@ -53,7 +52,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageMatches('/^Expected a non-empty value\. Got: /',);
+        $this->expectExceptionMessageMatches('/^Expected a non-empty value\. Got: /', );
         $this->getService()->handle($server, $data);
     }
 

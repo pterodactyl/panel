@@ -4,8 +4,8 @@ namespace Pterodactyl\Tests\Unit\Http\Middleware\Api;
 
 use Mockery as m;
 use Illuminate\Contracts\Config\Repository;
-use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\SetSessionDriver;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 
 class SetSessionDriverTest extends MiddlewareTestCase
 {

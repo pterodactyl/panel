@@ -32,20 +32,20 @@ class AllocationAuthorizationTest extends ClientApiIntegrationTestCase
 
         // This is the only valid call for this test, accessing the allocation for the same
         // server that the API user is the owner of.
-        $response = $this->actingAs($user)->json($method, $this->link($server1, "/network/allocations/" . $allocation1->id . $endpoint));
+        $response = $this->actingAs($user)->json($method, $this->link($server1, '/network/allocations/' . $allocation1->id . $endpoint));
         $this->assertTrue($response->status() <= 204 || $response->status() === 400 || $response->status() === 422);
 
         // This request fails because the allocation is valid for that server but the user
         // making the request is not authorized to perform that action.
-        $this->actingAs($user)->json($method, $this->link($server2, "/network/allocations/" . $allocation2->id . $endpoint))->assertForbidden();
+        $this->actingAs($user)->json($method, $this->link($server2, '/network/allocations/' . $allocation2->id . $endpoint))->assertForbidden();
 
         // Both of these should report a 404 error due to the allocations being linked to
         // servers that are not the same as the server in the request, or are assigned
         // to a server for which the user making the request has no access to.
-        $this->actingAs($user)->json($method, $this->link($server1, "/network/allocations/" . $allocation2->id . $endpoint))->assertNotFound();
-        $this->actingAs($user)->json($method, $this->link($server1, "/network/allocations/" . $allocation3->id . $endpoint))->assertNotFound();
-        $this->actingAs($user)->json($method, $this->link($server2, "/network/allocations/" . $allocation3->id . $endpoint))->assertNotFound();
-        $this->actingAs($user)->json($method, $this->link($server3, "/network/allocations/" . $allocation3->id . $endpoint))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server1, '/network/allocations/' . $allocation2->id . $endpoint))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server1, '/network/allocations/' . $allocation3->id . $endpoint))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server2, '/network/allocations/' . $allocation3->id . $endpoint))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server3, '/network/allocations/' . $allocation3->id . $endpoint))->assertNotFound();
     }
 
     /**
@@ -54,9 +54,9 @@ class AllocationAuthorizationTest extends ClientApiIntegrationTestCase
     public function methodDataProvider(): array
     {
         return [
-            ["POST", ""],
-            ["DELETE", ""],
-            ["POST", "/primary"],
+            ['POST', ''],
+            ['DELETE', ''],
+            ['POST', '/primary'],
         ];
     }
 }

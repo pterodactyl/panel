@@ -39,7 +39,7 @@ trait RequiresDatabaseMigrations
      */
     protected function showMigrationWarning(): int
     {
-        $this->getOutput()->writeln("<options=bold>
+        $this->getOutput()->writeln('<options=bold>
 | @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |
 |                                                                              |
 |               Your database has not been properly migrated!                  |
@@ -52,9 +52,9 @@ You must run the following command to finish migrating your database:
 
 You will not be able to use Pterodactyl Panel as expected without fixing your
 database state by running the command above.
-");
+');
 
-        $this->getOutput()->error("You must correct the error above before continuing.");
+        $this->getOutput()->error('You must correct the error above before continuing.');
 
         return 1;
     }

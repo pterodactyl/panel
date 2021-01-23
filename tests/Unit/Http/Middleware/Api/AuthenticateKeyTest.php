@@ -8,10 +8,10 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\AuthenticateKey;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

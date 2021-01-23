@@ -8,8 +8,8 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthenticateServerAccess
 {

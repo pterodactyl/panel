@@ -41,20 +41,20 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
 
         // This is the only valid call for this test, accessing the backup for the same
         // server that the API user is the owner of.
-        $this->actingAs($user)->json($method, $this->link($server1, "/backups/" . $backup1->uuid . $endpoint))
+        $this->actingAs($user)->json($method, $this->link($server1, '/backups/' . $backup1->uuid . $endpoint))
             ->assertStatus($method === 'DELETE' ? 204 : 200);
 
         // This request fails because the backup is valid for that server but the user
         // making the request is not authorized to perform that action.
-        $this->actingAs($user)->json($method, $this->link($server2, "/backups/" . $backup2->uuid . $endpoint))->assertForbidden();
+        $this->actingAs($user)->json($method, $this->link($server2, '/backups/' . $backup2->uuid . $endpoint))->assertForbidden();
 
         // Both of these should report a 404 error due to the backup being linked to
         // servers that are not the same as the server in the request, or are assigned
         // to a server for which the user making the request has no access to.
-        $this->actingAs($user)->json($method, $this->link($server1, "/backups/" . $backup2->uuid . $endpoint))->assertNotFound();
-        $this->actingAs($user)->json($method, $this->link($server1, "/backups/" . $backup3->uuid . $endpoint))->assertNotFound();
-        $this->actingAs($user)->json($method, $this->link($server2, "/backups/" . $backup3->uuid . $endpoint))->assertNotFound();
-        $this->actingAs($user)->json($method, $this->link($server3, "/backups/" . $backup3->uuid . $endpoint))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server1, '/backups/' . $backup2->uuid . $endpoint))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server1, '/backups/' . $backup3->uuid . $endpoint))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server2, '/backups/' . $backup3->uuid . $endpoint))->assertNotFound();
+        $this->actingAs($user)->json($method, $this->link($server3, '/backups/' . $backup3->uuid . $endpoint))->assertNotFound();
     }
 
     /**
@@ -63,9 +63,9 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
     public function methodDataProvider(): array
     {
         return [
-            ["GET", ""],
-            ["GET", "/download"],
-            ["DELETE", ""],
+            ['GET', ''],
+            ['GET', '/download'],
+            ['DELETE', ''],
         ];
     }
 }

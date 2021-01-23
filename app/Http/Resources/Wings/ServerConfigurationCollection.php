@@ -24,7 +24,7 @@ class ServerConfigurationCollection extends ResourceCollection
         $egg = Container::getInstance()->make(EggConfigurationService::class);
         $configuration = Container::getInstance()->make(ServerConfigurationStructureService::class);
 
-        return $this->collection->map(function (Server  $server) use ($configuration, $egg) {
+        return $this->collection->map(function (Server $server) use ($configuration, $egg) {
             return [
                 'uuid' => $server->uuid,
                 'settings' => $configuration->handle($server),

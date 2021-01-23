@@ -58,8 +58,8 @@
         ],
         "psr-4": {
             "Pterodactyl\\": "app/",
-            "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Factories\\": "database/Factories/",
+            "Database\\Seeders\\": "database/Seeders/"
         }
     },
     "autoload-dev": {

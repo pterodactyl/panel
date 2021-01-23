@@ -13,7 +13,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\Attributes\SearchableInterface;
 
 abstract class EloquentRepository extends Repository implements RepositoryInterface
 {

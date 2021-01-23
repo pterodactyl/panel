@@ -105,7 +105,6 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
             'Failed to validate that the JWT data returned was signed using the Node\'s secret key.'
         );
 
-
         // Check that the claims are generated correctly.
         $this->assertSame($permissions, $token->claims()->get('permissions'));
     }

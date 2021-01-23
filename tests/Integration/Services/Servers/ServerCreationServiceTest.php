@@ -4,16 +4,16 @@ namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
 use Pterodactyl\Models\Egg;
+use GuzzleHttp\Psr7\Request;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Validation\ValidationException;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Services\Servers\ServerCreationService;

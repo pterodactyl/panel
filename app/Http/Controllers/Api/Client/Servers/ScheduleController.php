@@ -10,7 +10,6 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Helpers\Utilities;
-use Pterodactyl\Jobs\Schedule\RunTaskJob;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
@@ -173,7 +172,7 @@ class ScheduleController extends ClientApiController
      */
     public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule)
     {
-        if (!$schedule->is_active) {
+        if (! $schedule->is_active) {
             throw new BadRequestHttpException(
                 'Cannot trigger schedule exection for a schedule that is not currently active.'
             );

@@ -3,8 +3,8 @@
 namespace Pterodactyl\Tests\Unit\Http\Middleware\Api;
 
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateIPAccessTest extends MiddlewareTestCase

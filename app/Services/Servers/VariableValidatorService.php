@@ -68,7 +68,7 @@ class VariableValidatorService
         }
 
         return Collection::make($variables)->map(function ($item) use ($fields) {
-            return (object)[
+            return (object) [
                 'id' => $item->id,
                 'key' => $item->env_variable,
                 'value' => $fields[$item->env_variable] ?? null,

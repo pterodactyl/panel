@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
-use Illuminate\Support\Arr;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;

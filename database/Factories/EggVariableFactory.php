@@ -25,7 +25,7 @@ class EggVariableFactory extends Factory
         return [
             'name' => $this->faker->firstName,
             'description' => $this->faker->sentence(),
-            'env_variable' => Str::upper(Str::replaceArray(' ', [ '_' ], $this->faker->words(2, true))),
+            'env_variable' => Str::upper(Str::replaceArray(' ', ['_'], $this->faker->words(2, true))),
             'default_value' => $this->faker->colorName,
             'user_viewable' => 0,
             'user_editable' => 0,
