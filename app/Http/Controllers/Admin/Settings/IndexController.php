@@ -44,8 +44,7 @@ class IndexController extends Controller
         Kernel $kernel,
         SettingsRepositoryInterface $settings,
         SoftwareVersionService $versionService
-    )
-    {
+    ) {
         $this->alert = $alert;
         $this->kernel = $kernel;
         $this->settings = $settings;

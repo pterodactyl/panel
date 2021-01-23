@@ -3,9 +3,9 @@
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-$finder = (new Finder)->in(__DIR__)->exclude(['vendor', 'node_modules', 'storage']);
+$finder = (new Finder())->in(__DIR__)->exclude(['vendor', 'node_modules', 'storage', 'bootstrap/cache']);
 
-return (new Config)
+return (new Config())
     ->setRiskyAllowed(true)
     ->setFinder($finder)
     ->setRules([
@@ -23,8 +23,6 @@ return (new Config)
         'ordered_imports' => [
             'sortAlgorithm' => 'length',
         ],
-        'psr0' => ['dir' => 'app'],
-        'psr4' => true,
         'random_api_migration' => true,
         'ternary_to_null_coalescing' => true,
         'yoda_style' => [
