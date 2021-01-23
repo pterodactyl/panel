@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits\Integration;
+namespace Pterodactyl\Tests\Traits\Integration;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit\Services\Acl\Api;
+namespace Pterodactyl\Tests\Unit\Services\Acl\Api;
 
-use Tests\TestCase;
+use Pterodactyl\Tests\TestCase;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 

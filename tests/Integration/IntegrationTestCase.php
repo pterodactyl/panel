@@ -2,10 +2,10 @@
 
 namespace Pterodactyl\Tests\Integration;
 
-use Tests\TestCase;
-use Cake\Chronos\Chronos;
+use Pterodactyl\Tests\TestCase;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
-use Tests\Traits\Integration\CreatesTestModels;
+use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class IntegrationTestCase extends TestCase
@@ -42,7 +42,7 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function formatTimestamp(string $timestamp): string
     {
-        return Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $timestamp)
+        return CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $timestamp)
             ->setTimezone(BaseTransformer::RESPONSE_TIMEZONE)
             ->toIso8601String();
     }

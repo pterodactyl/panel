@@ -1,12 +1,12 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Server;
+namespace Pterodactyl\Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
 use Pterodactyl\Models\Server;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Server\AccessingValidServer;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;

@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Tests\Assertions;
+namespace Pterodactyl\Tests\Assertions;
 
 use Illuminate\View\View;
 use Illuminate\Http\Response;

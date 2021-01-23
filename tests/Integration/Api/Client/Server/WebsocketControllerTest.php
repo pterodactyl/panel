@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Lcobucci\JWT\Configuration;
@@ -34,8 +33,6 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
      */
     public function testJwtAndWebsocketUrlAreReturnedForServerOwner()
     {
-        CarbonImmutable::setTestNow(Carbon::now());
-
         /** @var \Pterodactyl\Models\User $user */
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();

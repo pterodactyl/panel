@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api;
+namespace Pterodactyl\Tests\Unit\Http\Middleware\Api;
 
 use Pterodactyl\Models\ApiKey;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 

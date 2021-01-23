@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Unit\Rules;
+namespace Pterodactyl\Tests\Unit\Rules;
 
-use Tests\TestCase;
+use Pterodactyl\Tests\TestCase;
 use Pterodactyl\Rules\Username;
 
 class UsernameTest extends TestCase

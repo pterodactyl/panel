@@ -1,9 +1,9 @@
 <?php
 
-namespace Tests\Unit\Services\Api;
+namespace Pterodactyl\Tests\Unit\Services\Api;
 
 use Mockery as m;
-use Tests\TestCase;
+use Pterodactyl\Tests\TestCase;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Contracts\Encryption\Encrypter;

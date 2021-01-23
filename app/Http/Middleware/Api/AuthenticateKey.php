@@ -3,7 +3,7 @@
 namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\ApiKey;
@@ -110,7 +110,7 @@ class AuthenticateKey
             throw new AccessDeniedHttpException;
         }
 
-        $this->repository->withoutFreshModel()->update($model->id, ['last_used_at' => Chronos::now()]);
+        $this->repository->withoutFreshModel()->update($model->id, ['last_used_at' => CarbonImmutable::now()]);
 
         return $model;
     }

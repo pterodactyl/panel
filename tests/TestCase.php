@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests;
+namespace Pterodactyl\Tests;
 
-use Cake\Chronos\Chronos;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -15,6 +16,9 @@ abstract class TestCase extends BaseTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        Carbon::setTestNow(Carbon::now());
+        CarbonImmutable::setTestNow(Carbon::now());
 
         // Why, you ask? If we don't force this to false it is possible for certain exceptions
         // to show their error message properly in the integration test output, but not actually
@@ -35,7 +39,8 @@ abstract class TestCase extends BaseTestCase
     {
         parent::tearDown();
 
-        Chronos::setTestNow();
+        Carbon::setTestNow();
+        CarbonImmutable::setTestNow();
     }
 
     /**

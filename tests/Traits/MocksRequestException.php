@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits;
+namespace Pterodactyl\Tests\Traits;
 
 use Mockery;
 use Mockery\MockInterface;

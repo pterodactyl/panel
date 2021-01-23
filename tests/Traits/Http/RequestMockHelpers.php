@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits\Http;
+namespace Pterodactyl\Tests\Traits\Http;
 
 use Mockery as m;
 use Illuminate\Http\Request;

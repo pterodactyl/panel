@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api\Daemon;
+namespace Pterodactyl\Tests\Unit\Http\Middleware\Api\Daemon;
 
 use Mockery as m;
 use Pterodactyl\Models\Node;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;

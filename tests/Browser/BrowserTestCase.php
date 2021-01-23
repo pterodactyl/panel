@@ -5,7 +5,7 @@ namespace Pterodactyl\Tests\Browser;
 use Laravel\Dusk\TestCase;
 use BadMethodCallException;
 use Pterodactyl\Models\User;
-use Tests\CreatesApplication;
+use Pterodactyl\Tests\CreatesApplication;
 use Pterodactyl\Console\Kernel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;

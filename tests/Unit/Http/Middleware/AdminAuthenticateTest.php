@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware;
+namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Pterodactyl\Models\User;
 use Pterodactyl\Http\Middleware\AdminAuthenticate;
