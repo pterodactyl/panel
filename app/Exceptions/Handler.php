@@ -44,17 +44,6 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * A list of exceptions that should be logged with cleaned stack
-     * traces to avoid exposing credentials or other sensitive information.
-     *
-     * @var array
-     */
-    protected $cleanStacks = [
-        PDOException::class,
-        Swift_TransportException::class,
-    ];
-
-    /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
      * @var array
@@ -67,45 +56,27 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Report or log an exception. Skips Laravel's internal reporter since we
-     * don't need or want the user information in our logs by default.
-     *
-     * If you want to implement logging in a different format to integrate with
-     * services such as AWS Cloudwatch or other monitoring you can replace the
-     * contents of this function with a call to the parent reporter.
-     *
-     * @param \Throwable $exception
-     * @return mixed
-     *
-     * @throws \Throwable
+     * Registers the exception handling callbacks for the application. This
+     * will capture specific exception types that we do not want to include
+     * the detailed stack traces for since they could reveal credentials to
+     * whoever can read the logs.
      */
-    public function report(Throwable $exception)
+    public function register()
     {
-        if (! config('app.exceptions.report_all', false) && $this->shouldntReport($exception)) {
-            return null;
+        if (config('app.exceptions.report_all', false)) {
+            $this->dontReport = [];
         }
 
-        if (method_exists($exception, 'report')) {
-            return $exception->report();
-        }
+        $this->reportable(function (PDOException &$ex) {
+            $ex = $this->generateCleanedExceptionStack($ex);
+        });
 
-        try {
-            $logger = $this->container->make(LoggerInterface::class);
-        } catch (Exception $ex) {
-            throw $exception;
-        }
-
-        foreach ($this->cleanStacks as $class) {
-            if ($exception instanceof $class) {
-                $exception = $this->generateCleanedExceptionStack($exception);
-                break;
-            }
-        }
-
-        return $logger->error($exception);
+        $this->reportable(function (Swift_TransportException &$ex) {
+            $ex = $this->generateCleanedExceptionStack($ex);
+        });
     }
 
-    private function generateCleanedExceptionStack(Throwable $exception)
+    private function generateCleanedExceptionStack(Throwable $exception): string
     {
         $cleanedStack = '';
         foreach ($exception->getTrace() as $index => $item) {
@@ -262,7 +233,7 @@ class Handler extends ExceptionHandler
      *
      * @param \Illuminate\Http\Request $request
      * @param \Illuminate\Auth\AuthenticationException $exception
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     protected function unauthenticated($request, AuthenticationException $exception)
     {
