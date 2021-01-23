@@ -8,24 +8,22 @@ use Illuminate\Container\Container;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
- * @property int $id
- * @property int $server_id
- * @property string $name
- * @property string $cron_day_of_week
- * @property string $cron_month
- * @property string $cron_day_of_month
- * @property string $cron_hour
- * @property string $cron_minute
- * @property bool $is_active
- * @property bool $is_processing
- * @property \Carbon\Carbon|null $last_run_at
- * @property \Carbon\Carbon|null $next_run_at
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @property string $hashid
- *
- * @property \Pterodactyl\Models\Server $server
+ * @property int                                                       $id
+ * @property int                                                       $server_id
+ * @property string                                                    $name
+ * @property string                                                    $cron_day_of_week
+ * @property string                                                    $cron_month
+ * @property string                                                    $cron_day_of_month
+ * @property string                                                    $cron_hour
+ * @property string                                                    $cron_minute
+ * @property bool                                                      $is_active
+ * @property bool                                                      $is_processing
+ * @property \Carbon\Carbon|null                                       $last_run_at
+ * @property \Carbon\Carbon|null                                       $next_run_at
+ * @property \Carbon\Carbon                                            $created_at
+ * @property \Carbon\Carbon                                            $updated_at
+ * @property string                                                    $hashid
+ * @property \Pterodactyl\Models\Server                                $server
  * @property \Pterodactyl\Models\Task[]|\Illuminate\Support\Collection $tasks
  */
 class Schedule extends Model
@@ -34,7 +32,7 @@ class Schedule extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'server_schedule';
+    public const RESOURCE_NAME = 'server_schedule';
 
     /**
      * The table associated with the model.

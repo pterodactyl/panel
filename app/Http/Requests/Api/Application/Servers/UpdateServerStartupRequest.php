@@ -20,8 +20,6 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
 
     /**
      * Validation rules to run the input against.
-     *
-     * @return array
      */
     public function rules(): array
     {

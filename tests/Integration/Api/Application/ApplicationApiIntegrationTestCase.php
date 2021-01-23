@@ -15,7 +15,9 @@ use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 {
-    use CreatesTestModels, DatabaseTransactions, IntegrationJsonRequestAssertions;
+    use CreatesTestModels;
+    use DatabaseTransactions;
+    use IntegrationJsonRequestAssertions;
 
     /**
      * @var \Pterodactyl\Models\ApiKey
@@ -44,17 +46,11 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
         $this->withMiddleware('api..key:' . ApiKey::TYPE_APPLICATION);
     }
 
-    /**
-     * @return \Pterodactyl\Models\User
-     */
     public function getApiUser(): User
     {
         return $this->user;
     }
 
-    /**
-     * @return \Pterodactyl\Models\ApiKey
-     */
     public function getApiKey(): ApiKey
     {
         return $this->key;
@@ -62,10 +58,6 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 
     /**
      * Creates a new default API key and refreshes the headers using it.
-     *
-     * @param \Pterodactyl\Models\User $user
-     * @param array                    $permissions
-     * @return \Pterodactyl\Models\ApiKey
      */
     protected function createNewDefaultApiKey(User $user, array $permissions = []): ApiKey
     {
@@ -77,8 +69,6 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 
     /**
      * Refresh the authorization header for a request to use a different API key.
-     *
-     * @param \Pterodactyl\Models\ApiKey $key
      */
     protected function refreshHeaders(ApiKey $key)
     {
@@ -87,8 +77,6 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 
     /**
      * Create an administrative user.
-     *
-     * @return \Pterodactyl\Models\User
      */
     protected function createApiUser(): User
     {
@@ -99,10 +87,6 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 
     /**
      * Create a new application API key for a given user model.
-     *
-     * @param \Pterodactyl\Models\User $user
-     * @param array                    $permissions
-     * @return \Pterodactyl\Models\ApiKey
      */
     protected function createApiKey(User $user, array $permissions = []): ApiKey
     {
@@ -123,9 +107,6 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 
     /**
      * Return a transformer that can be used for testing purposes.
-     *
-     * @param string $abstract
-     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
      */
     protected function getTransformer(string $abstract): BaseTransformer
     {

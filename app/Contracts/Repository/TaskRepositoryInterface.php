@@ -9,9 +9,6 @@ interface TaskRepositoryInterface extends RepositoryInterface
     /**
      * Get a task and the server relationship for that task.
      *
-     * @param int $id
-     * @return \Pterodactyl\Models\Task
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getTaskForJobProcess(int $id): Task;
@@ -19,8 +16,6 @@ interface TaskRepositoryInterface extends RepositoryInterface
     /**
      * Returns the next task in a schedule.
      *
-     * @param int $schedule
-     * @param int $index
      * @return \Pterodactyl\Models\Task|null
      */
     public function getNextTask(int $schedule, int $index);

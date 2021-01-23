@@ -15,7 +15,6 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
     /**
      * Test that a schedule can be executed and is updated in the database correctly.
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
     public function testScheduleIsExecutedRightAway(array $permissions)
@@ -85,9 +84,6 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertForbidden();
     }
 
-    /**
-     * @return array
-     */
     public function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE]]];

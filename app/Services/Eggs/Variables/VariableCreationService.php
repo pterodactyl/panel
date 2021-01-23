@@ -24,9 +24,6 @@ class VariableCreationService
 
     /**
      * VariableCreationService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Validation\Factory $validator
      */
     public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
     {
@@ -37,8 +34,6 @@ class VariableCreationService
     /**
      * Return the validation factory instance to be used by rule validation
      * checking in the trait.
-     *
-     * @return \Illuminate\Contracts\Validation\Factory
      */
     protected function getValidator(): Factory
     {
@@ -48,10 +43,6 @@ class VariableCreationService
     /**
      * Create a new variable for a given Egg.
      *
-     * @param int $egg
-     * @param array $data
-     * @return \Pterodactyl\Models\EggVariable
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
@@ -59,13 +50,10 @@ class VariableCreationService
     public function handle(int $egg, array $data): EggVariable
     {
         if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
-            throw new ReservedVariableNameException(sprintf(
-                'Cannot use the protected name %s for this environment variable.',
-                array_get($data, 'env_variable')
-            ));
+            throw new ReservedVariableNameException(sprintf('Cannot use the protected name %s for this environment variable.', array_get($data, 'env_variable')));
         }
 
-        if (! empty($data['rules'] ?? '')) {
+        if (!empty($data['rules'] ?? '')) {
             $this->validateRules($data['rules']);
         }
 

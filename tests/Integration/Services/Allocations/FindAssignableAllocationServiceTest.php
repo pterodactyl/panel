@@ -92,7 +92,7 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
         config()->set('pterodactyl.client_features.allocations.range_start', 5000);
         config()->set('pterodactyl.client_features.allocations.range_end', 5005);
 
-        for ($i = 5000; $i <= 5005; $i++) {
+        for ($i = 5000; $i <= 5005; ++$i) {
             Allocation::factory()->create([
                 'ip' => $server->allocation->ip,
                 'port' => $i,

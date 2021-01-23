@@ -14,8 +14,6 @@ class AssetComposer
 
     /**
      * AssetComposer constructor.
-     *
-     * @param \Pterodactyl\Services\Helpers\AssetHashService $assetHashService
      */
     public function __construct(AssetHashService $assetHashService)
     {
@@ -24,8 +22,6 @@ class AssetComposer
 
     /**
      * Provide access to the asset service in the views.
-     *
-     * @param \Illuminate\View\View $view
      */
     public function compose(View $view)
     {

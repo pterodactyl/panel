@@ -28,17 +28,14 @@ class ServerConfigurationStructureService
      * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Wings
      * daemon, if you modify the structure eggs will break unexpectedly.
      *
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $override
      * @param bool $legacy deprecated
-     * @return array
      */
     public function handle(Server $server, array $override = [], bool $legacy = false): array
     {
         $clone = $server;
         // If any overrides have been set on this call make sure to update them on the
         // cloned instance so that the configuration generated uses them.
-        if (! empty($override)) {
+        if (!empty($override)) {
             $clone = $server->fresh();
             foreach ($override as $key => $value) {
                 $clone->setAttribute($key, $value);
@@ -53,7 +50,6 @@ class ServerConfigurationStructureService
     /**
      * Returns the new data format used for the Wings daemon.
      *
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
     protected function returnCurrentFormat(Server $server)
@@ -106,8 +102,8 @@ class ServerConfigurationStructureService
      * Returns the legacy server data format to continue support for old egg configurations
      * that have not yet been updated.
      *
-     * @param \Pterodactyl\Models\Server $server
      * @return array
+     *
      * @deprecated
      */
     protected function returnLegacyFormat(Server $server)

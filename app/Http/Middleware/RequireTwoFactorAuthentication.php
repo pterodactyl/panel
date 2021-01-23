@@ -10,9 +10,9 @@ use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
 
 class RequireTwoFactorAuthentication
 {
-    const LEVEL_NONE = 0;
-    const LEVEL_ADMIN = 1;
-    const LEVEL_ALL = 2;
+    public const LEVEL_NONE = 0;
+    public const LEVEL_ADMIN = 1;
+    public const LEVEL_ALL = 2;
 
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -28,8 +28,6 @@ class RequireTwoFactorAuthentication
 
     /**
      * RequireTwoFactorAuthentication constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
      */
     public function __construct(AlertsMessageBag $alert)
     {
@@ -42,8 +40,6 @@ class RequireTwoFactorAuthentication
      * order to perform actions. If so, we check the level at which it is required (all users
      * or just admins) and then check if the user has enabled it for their account.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException
@@ -55,7 +51,7 @@ class RequireTwoFactorAuthentication
         $uri = rtrim($request->getRequestUri(), '/') . '/';
         $current = $request->route()->getName();
 
-        if (! $user || Str::startsWith($uri, ['/auth/']) || Str::startsWith($current, ['auth.', 'account.'])) {
+        if (!$user || Str::startsWith($uri, ['/auth/']) || Str::startsWith($current, ['auth.', 'account.'])) {
             return $next($request);
         }
 
@@ -66,13 +62,13 @@ class RequireTwoFactorAuthentication
         // If the level is set as admin and the user is not an admin, pass them through as well.
         if ($level === self::LEVEL_NONE || $user->use_totp) {
             return $next($request);
-        } elseif ($level === self::LEVEL_ADMIN && ! $user->root_admin) {
+        } elseif ($level === self::LEVEL_ADMIN && !$user->root_admin) {
             return $next($request);
         }
 
         // For API calls return an exception which gets rendered nicely in the API response.
         if ($request->isJson() || Str::startsWith($uri, '/api/')) {
-            throw new TwoFactorAuthRequiredException;
+            throw new TwoFactorAuthRequiredException();
         }
 
         $this->alert->danger(trans('auth.2fa_must_be_enabled'))->flash();

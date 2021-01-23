@@ -13,14 +13,11 @@ final class TimestampDates implements ClaimsFormatter
      * by Wings and will cause a flood of errors and panic conditions because the times
      * cannot be parsed correctly. The default is time with microseconds, we just need
      * to use the normal unix timestamp here.
-     *
-     * @param array $claims
-     * @return array
      */
     public function formatClaims(array $claims): array
     {
         foreach (RegisteredClaims::DATE_CLAIMS as $claim) {
-            if (! array_key_exists($claim, $claims)) {
+            if (!array_key_exists($claim, $claims)) {
                 continue;
             }
 

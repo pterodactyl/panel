@@ -21,8 +21,6 @@ class ServerDatabaseTransformer extends BaseTransformer
 
     /**
      * Perform dependency injection.
-     *
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function handle(Encrypter $encrypter)
     {
@@ -31,8 +29,6 @@ class ServerDatabaseTransformer extends BaseTransformer
 
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -41,9 +37,6 @@ class ServerDatabaseTransformer extends BaseTransformer
 
     /**
      * Transform a database model in a representation for the application API.
-     *
-     * @param \Pterodactyl\Models\Database $model
-     * @return array
      */
     public function transform(Database $model): array
     {
@@ -63,7 +56,6 @@ class ServerDatabaseTransformer extends BaseTransformer
     /**
      * Include the database password in the request.
      *
-     * @param \Pterodactyl\Models\Database $model
      * @return \League\Fractal\Resource\Item
      */
     public function includePassword(Database $model)
@@ -78,13 +70,13 @@ class ServerDatabaseTransformer extends BaseTransformer
     /**
      * Return the database host relationship for this server database.
      *
-     * @param \Pterodactyl\Models\Database $model
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeHost(Database $model)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_DATABASE_HOSTS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_DATABASE_HOSTS)) {
             return $this->null();
         }
 

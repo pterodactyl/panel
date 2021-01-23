@@ -54,15 +54,12 @@ class MaintenanceMiddlewareTest extends MiddlewareTestCase
         $this->response->shouldReceive('view')
             ->once()
             ->with('errors.maintenance')
-            ->andReturn(new Response);
+            ->andReturn(new Response());
 
         $response = $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
         $this->assertInstanceOf(Response::class, $response);
     }
 
-    /**
-     * @return \Pterodactyl\Http\Middleware\MaintenanceMiddleware
-     */
     private function getMiddleware(): MaintenanceMiddleware
     {
         return new MaintenanceMiddleware($this->response);

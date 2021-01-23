@@ -49,7 +49,6 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
      * Test that variables that are either not user_viewable, or not user_editable, cannot be
      * updated via this endpoint.
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
     public function testStartupVariableCannotBeUpdatedIfNotUserViewableOrEditable(array $permissions)

@@ -21,8 +21,6 @@ class GetAllocationsRequest extends ApplicationApiRequest
     /**
      * Determine if the node that we are requesting the allocations
      * for exists on the Panel.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

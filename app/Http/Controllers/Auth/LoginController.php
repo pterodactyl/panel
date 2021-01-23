@@ -33,12 +33,6 @@ class LoginController extends AbstractLoginController
 
     /**
      * LoginController constructor.
-     *
-     * @param \Illuminate\Auth\AuthManager $auth
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Illuminate\Contracts\Cache\Repository $cache
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
-     * @param \Illuminate\Contracts\View\Factory $view
      */
     public function __construct(
         AuthManager $auth,
@@ -58,8 +52,6 @@ class LoginController extends AbstractLoginController
      * Handle all incoming requests for the authentication routes and render the
      * base authentication view component. Vuejs will take over at this point and
      * turn the login area into a SPA.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
     public function index(): View
     {
@@ -69,7 +61,6 @@ class LoginController extends AbstractLoginController
     /**
      * Handle a login request to the application.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse|void
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -95,7 +86,7 @@ class LoginController extends AbstractLoginController
         // continue. Previously this was handled in the 2FA checkpoint, however that has
         // a flaw in which you can discover if an account exists simply by seeing if you
         // can proceede to the next step in the login process.
-        if (! password_verify($request->input('password'), $user->password)) {
+        if (!password_verify($request->input('password'), $user->password)) {
             return $this->sendFailedLoginResponse($request, $user);
         }
 

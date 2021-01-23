@@ -111,9 +111,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
                 }
             }
 
-            throw new ExpectationFailedException(
-                sprintf('Failed asserting that token [%s] exists as a hashed value in recovery_tokens table.', $raw)
-            );
+            throw new ExpectationFailedException(sprintf('Failed asserting that token [%s] exists as a hashed value in recovery_tokens table.', $raw));
         }
     }
 

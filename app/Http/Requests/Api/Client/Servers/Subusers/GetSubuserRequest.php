@@ -8,8 +8,6 @@ class GetSubuserRequest extends SubuserRequest
 {
     /**
      * Confirm that a user is able to view subusers for the specified server.
-     *
-     * @return string
      */
     public function permission(): string
     {

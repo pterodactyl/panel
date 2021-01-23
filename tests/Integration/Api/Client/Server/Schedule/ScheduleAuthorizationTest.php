@@ -17,8 +17,6 @@ class ScheduleAuthorizationTest extends ClientApiIntegrationTestCase
      * The comments within the test code itself are better at explaining exactly what is
      * being tested and protected against.
      *
-     * @param string $method
-     * @param string $endpoint
      * @dataProvider methodDataProvider
      */
     public function testAccessToAServersSchedulesIsRestrictedProperly(string $method, string $endpoint)

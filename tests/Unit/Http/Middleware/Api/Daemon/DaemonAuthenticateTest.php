@@ -70,7 +70,6 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
      * Test that passing in an invalid node daemon secret will result in a bad request
      * exception being returned.
      *
-     * @param string $token
      * @dataProvider badTokenDataProvider
      */
     public function testResponseShouldFailIfTokenFormatIsIncorrect(string $token)
@@ -159,8 +158,6 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware using mocked dependencies.
-     *
-     * @return \Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate
      */
     private function getMiddleware(): DaemonAuthenticate
     {

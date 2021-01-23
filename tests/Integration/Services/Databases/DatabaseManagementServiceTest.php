@@ -184,9 +184,9 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
 
         $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
 
-        $this->repository->expects('createDatabase')->with($name)->andThrows(new BadMethodCallException);
+        $this->repository->expects('createDatabase')->with($name)->andThrows(new BadMethodCallException());
         $this->repository->expects('dropDatabase')->with($name);
-        $this->repository->expects('dropUser')->withAnyArgs()->andThrows(new InvalidArgumentException);
+        $this->repository->expects('dropUser')->withAnyArgs()->andThrows(new InvalidArgumentException());
 
         $this->expectException(BadMethodCallException::class);
 
@@ -199,9 +199,6 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $this->assertDatabaseMissing('databases', ['server_id' => $server->id]);
     }
 
-    /**
-     * @return array
-     */
     public function invalidDataDataProvider(): array
     {
         return [

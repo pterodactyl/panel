@@ -15,6 +15,7 @@ class TestResponse extends IlluminateTestResponse
      * look for that status response.
      *
      * @param int $status
+     *
      * @return \Pterodactyl\Tests\Integration\TestResponse
      */
     public function assertStatus($status)
@@ -25,7 +26,7 @@ class TestResponse extends IlluminateTestResponse
         // to fail so that debugging isn't such a nightmare.
         if ($actual !== $status && $status !== 500) {
             $this->dump();
-            if (! is_null($this->exception) && ! $this->exception instanceof DisplayException && ! $this->exception instanceof ValidationException) {
+            if (!is_null($this->exception) && !$this->exception instanceof DisplayException && !$this->exception instanceof ValidationException) {
                 dump($this->exception);
             }
         }

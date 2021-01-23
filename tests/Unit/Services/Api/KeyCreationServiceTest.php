@@ -149,8 +149,6 @@ class KeyCreationServiceTest extends TestCase
 
     /**
      * Provide key types that are not an application specific key.
-     *
-     * @return array
      */
     public function keyTypeDataProvider(): array
     {
@@ -161,8 +159,6 @@ class KeyCreationServiceTest extends TestCase
 
     /**
      * Return an instance of the service with mocked dependencies for testing.
-     *
-     * @return \Pterodactyl\Services\Api\KeyCreationService
      */
     private function getService(): KeyCreationService
     {

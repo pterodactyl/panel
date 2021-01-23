@@ -20,9 +20,6 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
     /**
      * Return the usage stats for a single node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return array
      */
     public function getUsageStats(Node $node): array
     {
@@ -55,9 +52,6 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
     /**
      * Return the usage stats for a single node.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @return array
      */
     public function getUsageStatsRaw(Node $node): array
     {
@@ -82,14 +76,10 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
     /**
      * Return a single node with location and server information.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @param bool $refresh
-     * @return \Pterodactyl\Models\Node
      */
     public function loadLocationAndServerCount(Node $node, bool $refresh = false): Node
     {
-        if (! $node->relationLoaded('location') || $refresh) {
+        if (!$node->relationLoaded('location') || $refresh) {
             $node->load('location');
         }
 
@@ -107,14 +97,11 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     /**
      * Attach a paginated set of allocations to a node mode including
      * any servers that are also attached to those allocations.
-     *
-     * @param \Pterodactyl\Models\Node $node
-     * @param bool $refresh
-     * @return \Pterodactyl\Models\Node
      */
     public function loadNodeAllocations(Node $node, bool $refresh = false): Node
     {
-        $node->setRelation('allocations',
+        $node->setRelation(
+            'allocations',
             $node->allocations()
                 ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
                 ->orderByRaw('INET_ATON(ip) ASC')
@@ -128,8 +115,6 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
     /**
      * Return a collection of nodes for all locations to use in server creation UI.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getNodesForServerCreation(): Collection
     {
@@ -155,9 +140,6 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
     /**
      * Returns a node with the given id with the Node's resource usage.
-     *
-     * @param int $node_id
-     * @return Node
      */
     public function getNodeWithResourceUsage(int $node_id): Node
     {

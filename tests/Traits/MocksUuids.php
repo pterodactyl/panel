@@ -37,8 +37,6 @@ trait MocksUuids
 
     /**
      * Returns the known UUID for tests to use.
-     *
-     * @return string
      */
     public function getKnownUuid(): string
     {

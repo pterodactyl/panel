@@ -18,8 +18,6 @@ class AllocationTransformer extends BaseTransformer
 
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -29,7 +27,6 @@ class AllocationTransformer extends BaseTransformer
     /**
      * Return a generic transformed allocation array.
      *
-     * @param \Pterodactyl\Models\Allocation $allocation
      * @return array
      */
     public function transform(Allocation $allocation)
@@ -40,43 +37,47 @@ class AllocationTransformer extends BaseTransformer
             'alias' => $allocation->ip_alias,
             'port' => $allocation->port,
             'notes' => $allocation->notes,
-            'assigned' => ! is_null($allocation->server_id),
+            'assigned' => !is_null($allocation->server_id),
         ];
     }
 
     /**
      * Load the node relationship onto a given transformation.
      *
-     * @param \Pterodactyl\Models\Allocation $allocation
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNode(Allocation $allocation)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_NODES)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
             return $this->null();
         }
 
         return $this->item(
-            $allocation->node, $this->makeTransformer(NodeTransformer::class), Node::RESOURCE_NAME
+            $allocation->node,
+            $this->makeTransformer(NodeTransformer::class),
+            Node::RESOURCE_NAME
         );
     }
 
     /**
      * Load the server relationship onto a given transformation.
      *
-     * @param \Pterodactyl\Models\Allocation $allocation
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServer(Allocation $allocation)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS) || ! $allocation->server) {
+        if (!$this->authorize(AdminAcl::RESOURCE_SERVERS) || !$allocation->server) {
             return $this->null();
         }
 
         return $this->item(
-            $allocation->server, $this->makeTransformer(ServerTransformer::class), Server::RESOURCE_NAME
+            $allocation->server,
+            $this->makeTransformer(ServerTransformer::class),
+            Server::RESOURCE_NAME
         );
     }
 }

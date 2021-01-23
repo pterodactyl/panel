@@ -19,7 +19,6 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Sets the backup adapter for this execution instance.
      *
-     * @param string $adapter
      * @return $this
      */
     public function setBackupAdapter(string $adapter)
@@ -31,9 +30,6 @@ class DaemonBackupRepository extends DaemonRepository
 
     /**
      * Tells the remote Daemon to begin generating a backup for the server.
-     *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @return \Psr\Http\Message\ResponseInterface
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
@@ -60,8 +56,6 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Deletes a backup from the daemon.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @return \Psr\Http\Message\ResponseInterface
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function delete(Backup $backup): ResponseInterface

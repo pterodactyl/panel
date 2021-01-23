@@ -24,14 +24,10 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Load the egg relations onto the server model.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param bool $refresh
-     * @return \Pterodactyl\Models\Server
      */
     public function loadEggRelations(Server $server, bool $refresh = false): Server
     {
-        if (! $server->relationLoaded('egg') || $refresh) {
+        if (!$server->relationLoaded('egg') || $refresh) {
             $server->load('egg.scriptFrom');
         }
 
@@ -40,18 +36,14 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Return a collection of servers with their associated data for rebuild operations.
-     *
-     * @param int|null $server
-     * @param int|null $node
-     * @return \Illuminate\Support\Collection
      */
     public function getDataForRebuild(int $server = null, int $node = null): Collection
     {
         $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
 
-        if (! is_null($server) && is_null($node)) {
+        if (!is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && ! is_null($node)) {
+        } elseif (is_null($server) && !is_null($node)) {
             $instance = $instance->where('node_id', '=', $node);
         }
 
@@ -60,18 +52,14 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Return a collection of servers with their associated data for reinstall operations.
-     *
-     * @param int|null $server
-     * @param int|null $node
-     * @return \Illuminate\Support\Collection
      */
     public function getDataForReinstall(int $server = null, int $node = null): Collection
     {
         $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
 
-        if (! is_null($server) && is_null($node)) {
+        if (!is_null($server) && is_null($node)) {
             $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && ! is_null($node)) {
+        } elseif (is_null($server) && !is_null($node)) {
             $instance = $instance->where('node_id', '=', $node);
         }
 
@@ -80,9 +68,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Return a server model and all variables associated with the server.
-     *
-     * @param int $id
-     * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -93,7 +78,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
                 ->where($this->getModel()->getKeyName(), '=', $id)
                 ->firstOrFail($this->getColumns());
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 
@@ -101,14 +86,10 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      * Get the primary allocation for a given server. If a model is passed into
      * the function, load the allocation relationship onto it. Otherwise, find and
      * return the server from the database.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param bool $refresh
-     * @return \Pterodactyl\Models\Server
      */
     public function getPrimaryAllocation(Server $server, bool $refresh = false): Server
     {
-        if (! $server->relationLoaded('allocation') || $refresh) {
+        if (!$server->relationLoaded('allocation') || $refresh) {
             $server->load('allocation');
         }
 
@@ -117,15 +98,11 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Return enough data to be used for the creation of a server via the daemon.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param bool $refresh
-     * @return \Pterodactyl\Models\Server
      */
     public function getDataForCreation(Server $server, bool $refresh = false): Server
     {
         foreach (['allocation', 'allocations', 'egg'] as $relation) {
-            if (! $server->relationLoaded($relation) || $refresh) {
+            if (!$server->relationLoaded($relation) || $refresh) {
                 $server->load($relation);
             }
         }
@@ -135,14 +112,10 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Load associated databases onto the server model.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param bool $refresh
-     * @return \Pterodactyl\Models\Server
      */
     public function loadDatabaseRelations(Server $server, bool $refresh = false): Server
     {
-        if (! $server->relationLoaded('databases') || $refresh) {
+        if (!$server->relationLoaded('databases') || $refresh) {
             $server->load('databases.host');
         }
 
@@ -153,14 +126,10 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
      * Get data for use when updating a server on the Daemon. Returns an array of
      * the egg which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param bool $refresh
-     * @return array
      */
     public function getDaemonServiceData(Server $server, bool $refresh = false): array
     {
-        if (! $server->relationLoaded('egg') || $refresh) {
+        if (!$server->relationLoaded('egg') || $refresh) {
             $server->load('egg');
         }
 
@@ -171,9 +140,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Return a server by UUID.
-     *
-     * @param string $uuid
-     * @return \Pterodactyl\Models\Server
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -190,26 +156,20 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
             return $model;
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 
     /**
      * Check if a given UUID and UUID-Short string are unique to a server.
-     *
-     * @param string $uuid
-     * @param string $short
-     * @return bool
      */
     public function isUniqueUuidCombo(string $uuid, string $short): bool
     {
-        return ! $this->getBuilder()->where('uuid', '=', $uuid)->orWhere('uuidShort', '=', $short)->exists();
+        return !$this->getBuilder()->where('uuid', '=', $uuid)->orWhere('uuidShort', '=', $short)->exists();
     }
 
     /**
      * Get the amount of servers that are suspended.
-     *
-     * @return int
      */
     public function getSuspendedServersCount(): int
     {
@@ -218,11 +178,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 
     /**
      * Returns all of the servers that exist for a given node in a paginated response.
-     *
-     * @param int $node
-     * @param int $limit
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator
     {

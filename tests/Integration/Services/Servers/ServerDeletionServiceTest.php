@@ -66,7 +66,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         $this->expectException(DaemonConnectionException::class);
 
         $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andThrows(
-            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response))
+            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response()))
         );
 
         $this->getService()->handle($server);
@@ -124,7 +124,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andReturnUndefined();
         $this->databaseManagementService->expects('delete')->with(Mockery::on(function ($value) use ($db) {
             return $value instanceof Database && $value->id === $db->id;
-        }))->andThrows(new Exception);
+        }))->andThrows(new Exception());
 
         $this->expectException(Exception::class);
         $this->getService()->handle($server);
@@ -149,7 +149,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andReturnUndefined();
         $this->databaseManagementService->expects('delete')->with(Mockery::on(function ($value) use ($db) {
             return $value instanceof Database && $value->id === $db->id;
-        }))->andThrows(new Exception);
+        }))->andThrows(new Exception());
 
         $this->getService()->withForce(true)->handle($server);
 

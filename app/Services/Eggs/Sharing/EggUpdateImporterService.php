@@ -29,10 +29,6 @@ class EggUpdateImporterService
 
     /**
      * EggUpdateImporterService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $variableRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -47,9 +43,6 @@ class EggUpdateImporterService
     /**
      * Update an existing Egg using an uploaded JSON file.
      *
-     * @param \Pterodactyl\Models\Egg $egg
-     * @param \Illuminate\Http\UploadedFile $file
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
@@ -57,24 +50,13 @@ class EggUpdateImporterService
      */
     public function handle(Egg $egg, UploadedFile $file)
     {
-        if ($file->getError() !== UPLOAD_ERR_OK || ! $file->isFile()) {
-            throw new InvalidFileUploadException(
-                sprintf(
-                    'The selected file ["%s"] was not in a valid format to import. (is_file: %s is_valid: %s err_code: %s err: %s)',
-                    $file->getFilename(),
-                    $file->isFile() ? 'true' : 'false',
-                    $file->isValid() ? 'true' : 'false',
-                    $file->getError(),
-                    $file->getErrorMessage()
-                )
-            );
+        if ($file->getError() !== UPLOAD_ERR_OK || !$file->isFile()) {
+            throw new InvalidFileUploadException(sprintf('The selected file ["%s"] was not in a valid format to import. (is_file: %s is_valid: %s err_code: %s err: %s)', $file->getFilename(), $file->isFile() ? 'true' : 'false', $file->isValid() ? 'true' : 'false', $file->getError(), $file->getErrorMessage()));
         }
 
         $parsed = json_decode($file->openFile()->fread($file->getSize()));
         if (json_last_error() !== 0) {
-            throw new BadJsonFormatException(trans('exceptions.nest.importer.json_error', [
-                'error' => json_last_error_msg(),
-            ]));
+            throw new BadJsonFormatException(trans('exceptions.nest.importer.json_error', ['error' => json_last_error_msg()]));
         }
 
         if (object_get($parsed, 'meta.version') !== 'PTDL_v1') {
@@ -113,7 +95,7 @@ class EggUpdateImporterService
 
         // Delete variables not present in the import.
         collect($existing)->each(function ($variable) use ($egg, $imported) {
-            if (! in_array($variable->env_variable, $imported)) {
+            if (!in_array($variable->env_variable, $imported)) {
                 $this->variableRepository->deleteWhere([
                     ['egg_id', '=', $egg->id],
                     ['env_variable', '=', $variable->env_variable],

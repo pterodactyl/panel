@@ -11,7 +11,7 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class TwoFactorSetupService
 {
-    const VALID_BASE32_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+    public const VALID_BASE32_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
     /**
      * @var \Illuminate\Contracts\Config\Repository
@@ -30,10 +30,6 @@ class TwoFactorSetupService
 
     /**
      * TwoFactorSetupService constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         ConfigRepository $config,
@@ -50,9 +46,6 @@ class TwoFactorSetupService
      * QR code URL. This URL will need to be attached to a QR generating service in
      * order to function.
      *
-     * @param \Pterodactyl\Models\User $user
-     * @return string
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -60,7 +53,7 @@ class TwoFactorSetupService
     {
         $secret = '';
         try {
-            for ($i = 0; $i < $this->config->get('pterodactyl.auth.2fa.bytes', 16); $i++) {
+            for ($i = 0; $i < $this->config->get('pterodactyl.auth.2fa.bytes', 16); ++$i) {
                 $secret .= substr(self::VALID_BASE32_CHARACTERS, random_int(0, 31), 1);
             }
         } catch (Exception $exception) {

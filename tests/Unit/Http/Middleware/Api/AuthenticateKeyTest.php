@@ -68,7 +68,7 @@ class AuthenticateKeyTest extends MiddlewareTestCase
         $this->expectException(AccessDeniedHttpException::class);
 
         $this->request->shouldReceive('bearerToken')->withNoArgs()->twice()->andReturn('abcd1234');
-        $this->repository->shouldReceive('findFirstWhere')->andThrow(new RecordNotFoundException);
+        $this->repository->shouldReceive('findFirstWhere')->andThrow(new RecordNotFoundException());
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions(), ApiKey::TYPE_APPLICATION);
     }
@@ -160,8 +160,6 @@ class AuthenticateKeyTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware with mocked dependencies for testing.
-     *
-     * @return \Pterodactyl\Http\Middleware\Api\AuthenticateKey
      */
     private function getMiddleware(): AuthenticateKey
     {

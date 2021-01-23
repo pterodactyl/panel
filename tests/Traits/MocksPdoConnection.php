@@ -41,7 +41,7 @@ trait MocksPdoConnection
      */
     protected function tearDownPdoMock()
     {
-        if (! self::$initialResolver) {
+        if (!self::$initialResolver) {
             return;
         }
 

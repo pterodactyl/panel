@@ -19,7 +19,7 @@ class SubstituteClientApiBindings extends ApiSubstituteBindings
      * a 404 error if a model is not found.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)

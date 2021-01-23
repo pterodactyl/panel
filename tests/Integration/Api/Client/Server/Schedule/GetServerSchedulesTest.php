@@ -24,7 +24,7 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
      * Test that schedules for a server are returned.
      *
      * @param array $permissions
-     * @param bool $individual
+     * @param bool  $individual
      * @dataProvider permissionsDataProvider
      */
     public function testServerSchedulesAreReturned($permissions, $individual)
@@ -45,7 +45,7 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
             ->assertOk();
 
         $prefix = $individual ? '' : 'data.0.';
-        if (! $individual) {
+        if (!$individual) {
             $response->assertJsonCount(1, 'data');
         }
 
@@ -91,9 +91,6 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
             ->assertForbidden();
     }
 
-    /**
-     * @return array
-     */
     public function permissionsDataProvider(): array
     {
         return [

@@ -55,8 +55,6 @@ class EggController extends Controller
     /**
      * Handle a request to display the Egg creation page.
      *
-     * @return \Illuminate\View\View
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function create(): View
@@ -70,16 +68,13 @@ class EggController extends Controller
     /**
      * Handle request to store a new Egg.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggFormRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
     public function store(EggFormRequest $request): RedirectResponse
     {
         $data = $request->normalize();
-        if (! empty($data['docker_images']) && ! is_array($data['docker_images'])) {
+        if (!empty($data['docker_images']) && !is_array($data['docker_images'])) {
             $data['docker_images'] = array_map(function ($value) {
                 return trim($value);
             }, explode("\n", $data['docker_images']));
@@ -93,9 +88,6 @@ class EggController extends Controller
 
     /**
      * Handle request to view a single Egg.
-     *
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Illuminate\View\View
      */
     public function view(Egg $egg): View
     {
@@ -105,10 +97,6 @@ class EggController extends Controller
     /**
      * Handle request to update an Egg.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggFormRequest $request
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
@@ -116,7 +104,7 @@ class EggController extends Controller
     public function update(EggFormRequest $request, Egg $egg): RedirectResponse
     {
         $data = $request->normalize();
-        if (! empty($data['docker_images']) && ! is_array($data['docker_images'])) {
+        if (!empty($data['docker_images']) && !is_array($data['docker_images'])) {
             $data['docker_images'] = array_map(function ($value) {
                 return trim($value);
             }, explode("\n", $data['docker_images']));
@@ -130,9 +118,6 @@ class EggController extends Controller
 
     /**
      * Handle request to destroy an egg.
-     *
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\Egg\HasChildrenException
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException

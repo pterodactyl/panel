@@ -17,6 +17,7 @@ class ServerConfigurationCollection extends ResourceCollection
      * have some serious performance issues from all of the N+1 queries.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return array
      */
     public function toArray($request)

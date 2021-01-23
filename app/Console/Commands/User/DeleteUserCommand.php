@@ -38,8 +38,6 @@ class DeleteUserCommand extends Command
 
     /**
      * DeleteUserCommand constructor.
-     *
-     * @param \Pterodactyl\Services\Users\UserDeletionService $deletionService
      */
     public function __construct(UserDeletionService $deletionService)
     {
@@ -50,6 +48,7 @@ class DeleteUserCommand extends Command
 
     /**
      * @return bool
+     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function handle()
@@ -79,7 +78,7 @@ class DeleteUserCommand extends Command
             }
 
             $this->table(['User ID', 'Email', 'Name'], $tableValues);
-            if (! $deleteUser = $this->ask(trans('command/messages.user.select_search_user'))) {
+            if (!$deleteUser = $this->ask(trans('command/messages.user.select_search_user'))) {
                 return $this->handle();
             }
         } else {
@@ -92,7 +91,7 @@ class DeleteUserCommand extends Command
             $deleteUser = $results->first();
         }
 
-        if ($this->confirm(trans('command/messages.user.confirm_delete')) || ! $this->input->isInteractive()) {
+        if ($this->confirm(trans('command/messages.user.confirm_delete')) || !$this->input->isInteractive()) {
             $this->deletionService->handle($deleteUser);
             $this->info(trans('command/messages.user.deleted'));
         }

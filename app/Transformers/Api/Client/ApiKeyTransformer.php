@@ -17,7 +17,6 @@ class ApiKeyTransformer extends BaseClientTransformer
     /**
      * Transform this model into a representation that can be consumed by a client.
      *
-     * @param \Pterodactyl\Models\ApiKey $model
      * @return array
      */
     public function transform(ApiKey $model)

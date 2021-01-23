@@ -20,9 +20,6 @@ class ReinstallServerService
 
     /**
      * ReinstallService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -35,7 +32,6 @@ class ReinstallServerService
     /**
      * Reinstall a server on the remote daemon.
      *
-     * @param \Pterodactyl\Models\Server $server
      * @return \Pterodactyl\Models\Server
      *
      * @throws \Throwable

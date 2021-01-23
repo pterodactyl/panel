@@ -292,9 +292,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
      * Test that an API key without write permissions cannot create, update, or
      * delete a user model.
      *
-     * @param string $method
-     * @param string $url
-     *
      * @dataProvider userWriteEndpointsDataProvider
      */
     public function testApiKeyWithoutWritePermissions(string $method, string $url)
@@ -313,8 +310,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
     /**
      * Endpoints that should return a 403 error when the key does not have write
      * permissions for user management.
-     *
-     * @return array
      */
     public function userWriteEndpointsDataProvider(): array
     {

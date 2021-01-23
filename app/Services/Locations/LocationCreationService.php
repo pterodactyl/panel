@@ -20,8 +20,6 @@ class LocationCreationService
 
     /**
      * LocationCreationService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
      */
     public function __construct(LocationRepositoryInterface $repository)
     {
@@ -31,7 +29,6 @@ class LocationCreationService
     /**
      * Create a new location.
      *
-     * @param array $data
      * @return \Pterodactyl\Models\Location
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

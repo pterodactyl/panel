@@ -151,9 +151,6 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         $this->assertDatabaseHas('tasks', ['id' => $task->id, 'is_queued' => false]);
     }
 
-    /**
-     * @return array
-     */
     public function dispatchNowDataProvider(): array
     {
         return [[true], [false]];

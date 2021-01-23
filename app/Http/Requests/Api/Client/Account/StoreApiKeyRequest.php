@@ -7,9 +7,6 @@ use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class StoreApiKeyRequest extends ClientApiRequest
 {
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         $rules = ApiKey::getRules();

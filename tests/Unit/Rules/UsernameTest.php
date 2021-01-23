@@ -12,7 +12,7 @@ class UsernameTest extends TestCase
      */
     public function testRuleIsStringable()
     {
-        $this->assertSame('p_username', (string) new Username);
+        $this->assertSame('p_username', (string) new Username());
     }
 
     /**
@@ -22,7 +22,7 @@ class UsernameTest extends TestCase
      */
     public function testValidUsernames(string $username)
     {
-        $this->assertTrue((new Username)->passes('test', $username), 'Assert username is valid.');
+        $this->assertTrue((new Username())->passes('test', $username), 'Assert username is valid.');
     }
 
     /**
@@ -32,12 +32,11 @@ class UsernameTest extends TestCase
      */
     public function testInvalidUsernames(string $username)
     {
-        $this->assertFalse((new Username)->passes('test', $username), 'Assert username is not valid.');
+        $this->assertFalse((new Username())->passes('test', $username), 'Assert username is not valid.');
     }
 
     /**
      * Provide valid usernames.
-     * @return array
      */
     public function validUsernameDataProvider(): array
     {
@@ -54,8 +53,6 @@ class UsernameTest extends TestCase
 
     /**
      * Provide invalid usernames.
-     *
-     * @return array
      */
     public function invalidUsernameDataProvider(): array
     {

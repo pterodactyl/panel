@@ -15,7 +15,6 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
      * an error in response. This checks against the specific permission needed to send
      * the command to the server.
      *
-     * @param string $action
      * @param string[] $permissions
      * @dataProvider invalidPermissionDataProvider
      */
@@ -47,8 +46,6 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
     /**
      * Test that sending a valid power actions works.
      *
-     * @param string $action
-     * @param string $permission
      * @dataProvider validPowerActionDataProvider
      */
     public function testActionCanBeSentToServer(string $action, string $permission)
@@ -74,8 +71,6 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
 
     /**
      * Returns invalid permission combinations for a given power action.
-     *
-     * @return array
      */
     public function invalidPermissionDataProvider(): array
     {
@@ -88,9 +83,6 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     public function validPowerActionDataProvider(): array
     {
         return [

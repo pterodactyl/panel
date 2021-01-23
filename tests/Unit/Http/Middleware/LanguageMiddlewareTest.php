@@ -50,8 +50,6 @@ class LanguageMiddlewareTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware using mocked dependencies.
-     *
-     * @return \Pterodactyl\Http\Middleware\LanguageMiddleware
      */
     private function getMiddleware(): LanguageMiddleware
     {

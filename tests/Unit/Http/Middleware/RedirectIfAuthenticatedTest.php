@@ -50,8 +50,6 @@ class RedirectIfAuthenticatedTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware using mocked dependencies.
-     *
-     * @return \Pterodactyl\Http\Middleware\RedirectIfAuthenticated
      */
     private function getMiddleware(): RedirectIfAuthenticated
     {

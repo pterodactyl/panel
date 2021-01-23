@@ -12,8 +12,6 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 class BackupAuthorizationTest extends ClientApiIntegrationTestCase
 {
     /**
-     * @param string $method
-     * @param string $endpoint
      * @dataProvider methodDataProvider
      */
     public function testAccessToAServersBackupIsRestrictedProperly(string $method, string $endpoint)

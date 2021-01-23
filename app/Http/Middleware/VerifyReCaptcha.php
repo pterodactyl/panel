@@ -26,9 +26,6 @@ class VerifyReCaptcha
 
     /**
      * VerifyReCaptcha constructor.
-     *
-     * @param \Illuminate\Contracts\Events\Dispatcher $dispatcher
-     * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct(Dispatcher $dispatcher, Repository $config)
     {
@@ -40,12 +37,12 @@ class VerifyReCaptcha
      * Handle an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     *
      * @return \Illuminate\Http\RedirectResponse|mixed
      */
     public function handle($request, Closure $next)
     {
-        if (! $this->config->get('recaptcha.enabled')) {
+        if (!$this->config->get('recaptcha.enabled')) {
             return $next($request);
         }
 
@@ -61,7 +58,7 @@ class VerifyReCaptcha
             if ($res->getStatusCode() === 200) {
                 $result = json_decode($res->getBody());
 
-                if ($result->success && (! $this->config->get('recaptcha.verify_domain') || $this->isResponseVerified($result, $request))) {
+                if ($result->success && (!$this->config->get('recaptcha.verify_domain') || $this->isResponseVerified($result, $request))) {
                     return $next($request);
                 }
             }
@@ -69,25 +66,20 @@ class VerifyReCaptcha
 
         $this->dispatcher->dispatch(
             new FailedCaptcha(
-                $request->ip(), ! empty($result) ? ($result->hostname ?? null) : null
+                $request->ip(),
+                !empty($result) ? ($result->hostname ?? null) : null
             )
         );
 
-        throw new HttpException(
-            Response::HTTP_BAD_REQUEST, 'Failed to validate reCAPTCHA data.'
-        );
+        throw new HttpException(Response::HTTP_BAD_REQUEST, 'Failed to validate reCAPTCHA data.');
     }
 
     /**
      * Determine if the response from the recaptcha servers was valid.
-     *
-     * @param stdClass $result
-     * @param \Illuminate\Http\Request $request
-     * @return bool
      */
     private function isResponseVerified(stdClass $result, Request $request): bool
     {
-        if (! $this->config->get('recaptcha.verify_domain')) {
+        if (!$this->config->get('recaptcha.verify_domain')) {
             return false;
         }
 

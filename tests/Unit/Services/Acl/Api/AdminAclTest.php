@@ -30,8 +30,6 @@ class AdminAclTest extends TestCase
 
     /**
      * Provide valid and invalid permissions combos for testing.
-     *
-     * @return array
      */
     public function permissionsDataProvider(): array
     {

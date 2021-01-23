@@ -11,10 +11,10 @@ use Prologue\Alerts\AlertsMessageBag;
 
 class DisplayException extends PterodactylException
 {
-    const LEVEL_DEBUG = 'debug';
-    const LEVEL_INFO = 'info';
-    const LEVEL_WARNING = 'warning';
-    const LEVEL_ERROR = 'error';
+    public const LEVEL_DEBUG = 'debug';
+    public const LEVEL_INFO = 'info';
+    public const LEVEL_WARNING = 'warning';
+    public const LEVEL_ERROR = 'error';
 
     /**
      * @var string
@@ -25,9 +25,8 @@ class DisplayException extends PterodactylException
      * Exception constructor.
      *
      * @param string $message
-     * @param Throwable|null $previous
      * @param string $level
-     * @param int $code
+     * @param int    $code
      */
     public function __construct($message, Throwable $previous = null, $level = self::LEVEL_ERROR, $code = 0)
     {
@@ -58,6 +57,7 @@ class DisplayException extends PterodactylException
      * request originated from an API hit, return the error in JSONAPI spec format.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function render($request)
@@ -83,7 +83,7 @@ class DisplayException extends PterodactylException
      */
     public function report()
     {
-        if (! $this->getPrevious() instanceof Exception || ! Handler::isReportable($this->getPrevious())) {
+        if (!$this->getPrevious() instanceof Exception || !Handler::isReportable($this->getPrevious())) {
             return null;
         }
 

@@ -37,10 +37,6 @@ class SubuserController extends ClientApiController
 
     /**
      * SubuserController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\SubuserRepository $repository
-     * @param \Pterodactyl\Services\Subusers\SubuserCreationService $creationService
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $serverRepository
      */
     public function __construct(
         SubuserRepository $repository,
@@ -57,8 +53,6 @@ class SubuserController extends ClientApiController
     /**
      * Return the users associated with this server instance.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\GetSubuserRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
     public function index(GetSubuserRequest $request, Server $server)
@@ -71,7 +65,6 @@ class SubuserController extends ClientApiController
     /**
      * Returns a single subuser associated with this server instance.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\GetSubuserRequest $request
      * @return array
      */
     public function view(GetSubuserRequest $request)
@@ -86,8 +79,6 @@ class SubuserController extends ClientApiController
     /**
      * Create a new subuser for the given server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\StoreSubuserRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -98,7 +89,9 @@ class SubuserController extends ClientApiController
     public function store(StoreSubuserRequest $request, Server $server)
     {
         $response = $this->creationService->handle(
-            $server, $request->input('email'), $this->getDefaultPermissions($request)
+            $server,
+            $request->input('email'),
+            $this->getDefaultPermissions($request)
         );
 
         return $this->fractal->item($response)
@@ -108,10 +101,6 @@ class SubuserController extends ClientApiController
 
     /**
      * Update a given subuser in the system for the server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\UpdateSubuserRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -151,8 +140,6 @@ class SubuserController extends ClientApiController
     /**
      * Removes a subusers from a server's assignment.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\DeleteSubuserRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(DeleteSubuserRequest $request, Server $server)
@@ -174,9 +161,6 @@ class SubuserController extends ClientApiController
 
     /**
      * Returns the default permissions for all subusers to ensure none are ever removed wrongly.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return array
      */
     protected function getDefaultPermissions(Request $request): array
     {

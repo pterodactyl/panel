@@ -90,9 +90,6 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
             ->assertForbidden();
     }
 
-    /**
-     * @return array
-     */
     public function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SCHEDULE_CREATE]]];

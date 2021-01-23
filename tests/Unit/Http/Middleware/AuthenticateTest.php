@@ -31,8 +31,6 @@ class AuthenticateTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware using mocked dependencies.
-     *
-     * @return \Pterodactyl\Http\Middleware\Authenticate
      */
     private function getMiddleware(): Authenticate
     {

@@ -14,9 +14,6 @@ class UpdateSubuserRequest extends SubuserRequest
         return Permission::ACTION_USER_UPDATE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [

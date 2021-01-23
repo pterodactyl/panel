@@ -14,7 +14,7 @@ class AccountEmailProcessTest extends DashboardTestCase
     {
         $this->browse(function (PterodactylBrowser $browser) {
             $browser->loginAs($this->user)
-                ->visit(new AccountPage)
+                ->visit(new AccountPage())
                 ->assertValue('@email', $this->user->email)
                 ->type('@email', 'new.email@example.com')
                 ->type('@password', 'Password123')
@@ -34,7 +34,7 @@ class AccountEmailProcessTest extends DashboardTestCase
     {
         $this->browse(function (PterodactylBrowser $browser) {
             $browser->loginAs($this->user)
-                ->visit(new AccountPage)
+                ->visit(new AccountPage())
                 ->assertMissing('@email ~ .input-help.error')
                 ->type('@email', 'admin')
                 ->assertVisible('@email ~ .input-help.error')
@@ -51,7 +51,7 @@ class AccountEmailProcessTest extends DashboardTestCase
     {
         $this->browse(function (PterodactylBrowser $browser) {
             $browser->loginAs($this->user)
-                ->visit(new AccountPage)
+                ->visit(new AccountPage())
                 ->type('@email', 'new.email@example.com')
                 ->click('@submit')
                 ->assertFocused('@password')

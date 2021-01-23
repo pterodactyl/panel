@@ -15,7 +15,7 @@ class ForgotPasswordProcessTest extends BrowserTestCase
     public function testResetPasswordWithInvalidAccount()
     {
         $this->browse(function (PterodactylBrowser $browser) {
-            $browser->visit(new LoginPage)
+            $browser->visit(new LoginPage())
                 ->assertSee(trans('auth.forgot_password.label'))
                 ->click('@forgotPassword')
                 ->waitForLocation('/auth/password')
@@ -39,7 +39,7 @@ class ForgotPasswordProcessTest extends BrowserTestCase
     public function testEmailCarryover()
     {
         $this->browse(function (PterodactylBrowser $browser) {
-            $browser->visit(new LoginPage)
+            $browser->visit(new LoginPage())
                 ->type('@username', 'dane@example.com')
                 ->click('@forgotPassword')
                 ->waitForLocation('/auth/password')

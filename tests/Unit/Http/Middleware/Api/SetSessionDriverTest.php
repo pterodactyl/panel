@@ -36,8 +36,6 @@ class SetSessionDriverTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware with mocked dependencies for testing.
-     *
-     * @return \Pterodactyl\Http\Middleware\Api\SetSessionDriver
      */
     private function getMiddleware(): SetSessionDriver
     {

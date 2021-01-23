@@ -41,11 +41,6 @@ class UserController extends ApplicationApiController
 
     /**
      * UserController constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Users\UserCreationService $creationService
-     * @param \Pterodactyl\Services\Users\UserDeletionService $deletionService
-     * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
      */
     public function __construct(
         UserRepositoryInterface $repository,
@@ -65,9 +60,6 @@ class UserController extends ApplicationApiController
      * Handle request to list all users on the panel. Returns a JSON-API representation
      * of a collection of users including any defined relations passed in
      * the request.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest $request
-     * @return array
      */
     public function index(GetUsersRequest $request): array
     {
@@ -84,10 +76,6 @@ class UserController extends ApplicationApiController
     /**
      * Handle a request to view a single user. Includes any relations that
      * were defined in the request.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest $request
-     * @param \Pterodactyl\Models\User $user
-     * @return array
      */
     public function view(GetUsersRequest $request, User $user): array
     {
@@ -103,10 +91,6 @@ class UserController extends ApplicationApiController
      *
      * Revocation errors are returned under the 'revocation_errors' key in the response
      * meta. If there are no errors this is an empty array.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest $request
-     * @param \Pterodactyl\Models\User $user
-     * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -125,9 +109,6 @@ class UserController extends ApplicationApiController
     /**
      * Store a new user on the system. Returns the created user and a HTTP/201
      * header on successful creation.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest $request
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -149,10 +130,6 @@ class UserController extends ApplicationApiController
     /**
      * Handle a request to delete a user from the Panel. Returns a HTTP/204 response
      * on successful deletion.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest $request
-     * @param \Pterodactyl\Models\User $user
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */

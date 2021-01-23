@@ -44,11 +44,9 @@ class AuthenticateUserTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware for testing.
-     *
-     * @return \Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser
      */
     private function getMiddleware(): AuthenticateApplicationUser
     {
-        return new AuthenticateApplicationUser;
+        return new AuthenticateApplicationUser();
     }
 }

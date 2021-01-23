@@ -24,7 +24,6 @@ class CreateNewAllocationTest extends ClientApiIntegrationTestCase
     /**
      * Tests that a new allocation can be properly assigned to a server.
      *
-     * @param array $permission
      * @dataProvider permissionDataProvider
      */
     public function testNewAllocationCanBeAssignedToServer(array $permission)

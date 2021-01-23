@@ -11,8 +11,6 @@ class TwoFactorAuthRequiredException extends HttpException implements HttpExcept
 {
     /**
      * TwoFactorAuthRequiredException constructor.
-     *
-     * @param \Throwable|null $previous
      */
     public function __construct(Throwable $previous = null)
     {

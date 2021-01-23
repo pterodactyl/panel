@@ -13,7 +13,6 @@ class SubuserAuthorizationTest extends ClientApiIntegrationTestCase
     /**
      * Test that mismatched subusers are not accessible to a server.
      *
-     * @param string $method
      * @dataProvider methodDataProvider
      */
     public function testUserCannotAccessResourceBelongingToOtherServers(string $method)

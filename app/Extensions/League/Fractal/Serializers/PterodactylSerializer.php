@@ -10,7 +10,7 @@ class PterodactylSerializer extends ArraySerializer
      * Serialize an item.
      *
      * @param string $resourceKey
-     * @param array $data
+     *
      * @return array
      */
     public function item($resourceKey, array $data)
@@ -25,7 +25,7 @@ class PterodactylSerializer extends ArraySerializer
      * Serialize a collection.
      *
      * @param string $resourceKey
-     * @param array $data
+     *
      * @return array
      */
     public function collection($resourceKey, array $data)
@@ -59,6 +59,7 @@ class PterodactylSerializer extends ArraySerializer
      *
      * @param array $transformedData
      * @param array $includedData
+     *
      * @return array
      */
     public function mergeIncludes($transformedData, $includedData)

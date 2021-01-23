@@ -49,7 +49,6 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     /**
      * Tests that notes on an allocation can be set correctly.
      *
-     * @param array $permissions
      * @dataProvider updatePermissionsDataProvider
      */
     public function testAllocationNotesCanBeUpdated(array $permissions)
@@ -98,7 +97,6 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * @param array $permissions
      * @dataProvider updatePermissionsDataProvider
      */
     public function testPrimaryAllocationCanBeModified(array $permissions)

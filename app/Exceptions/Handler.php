@@ -112,7 +112,7 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Throwable $exception
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws \Throwable
@@ -142,7 +142,7 @@ class Handler extends ExceptionHandler
      * calls to the API.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Illuminate\Validation\ValidationException $exception
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function invalidJson($request, ValidationException $exception)
@@ -162,7 +162,8 @@ class Handler extends ExceptionHandler
                 $meta = [
                     'source_field' => $field,
                     'rule' => str_replace(self::PTERODACTYL_RULE_STRING, 'p_', Arr::get(
-                        $codes, str_replace('.', '_', $field) . '.' . $key
+                        $codes,
+                        str_replace('.', '_', $field) . '.' . $key
                     )),
                 ];
 
@@ -183,10 +184,6 @@ class Handler extends ExceptionHandler
 
     /**
      * Return the exception as a JSONAPI representation for use on API requests.
-     *
-     * @param \Throwable $exception
-     * @param array $override
-     * @return array
      */
     public static function convertToArray(Throwable $exception, array $override = []): array
     {
@@ -225,9 +222,6 @@ class Handler extends ExceptionHandler
 
     /**
      * Return an array of exceptions that should not be reported.
-     *
-     * @param \Exception $exception
-     * @return bool
      */
     public static function isReportable(Exception $exception): bool
     {
@@ -238,7 +232,7 @@ class Handler extends ExceptionHandler
      * Convert an authentication exception into an unauthenticated response.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Illuminate\Auth\AuthenticationException $exception
+     *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     protected function unauthenticated($request, AuthenticationException $exception)
@@ -254,7 +248,6 @@ class Handler extends ExceptionHandler
      * Converts an exception into an array to render in the response. Overrides
      * Laravel's built-in converter to output as a JSONAPI spec compliant object.
      *
-     * @param \Throwable $exception
      * @return array
      */
     protected function convertExceptionToArray(Throwable $exception)

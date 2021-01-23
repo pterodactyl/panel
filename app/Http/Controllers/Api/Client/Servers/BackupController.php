@@ -33,10 +33,6 @@ class BackupController extends ClientApiController
 
     /**
      * BackupController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
-     * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
-     * @param \Pterodactyl\Services\Backups\InitiateBackupService $initiateBackupService
      */
     public function __construct(
         BackupRepository $repository,
@@ -54,8 +50,6 @@ class BackupController extends ClientApiController
      * Returns all of the backups for a given server instance in a paginated
      * result set.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\GetBackupsRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
     public function index(GetBackupsRequest $request, Server $server)
@@ -70,8 +64,6 @@ class BackupController extends ClientApiController
     /**
      * Starts the backup process for a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Exception|\Throwable
@@ -92,9 +84,6 @@ class BackupController extends ClientApiController
     /**
      * Returns information about a single backup.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\GetBackupsRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Backup $backup
      * @return array
      */
     public function view(GetBackupsRequest $request, Server $server, Backup $backup)
@@ -108,9 +97,6 @@ class BackupController extends ClientApiController
      * Deletes a backup from the panel as well as the remote source where it is currently
      * being stored.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DeleteBackupRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Backup $backup
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable

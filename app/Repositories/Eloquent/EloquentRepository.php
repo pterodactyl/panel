@@ -27,6 +27,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * context's such that we can pass through ?filter[name]=Dane&sort=desc for example.
      *
      * @param bool $usingFilters
+     *
      * @return $this
      */
     public function usingRequestFilters($usingFilters = true)
@@ -49,14 +50,11 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Paginate the response data based on the page para.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $instance
-     * @param int $default
-     *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     protected function paginate(Builder $instance, int $default = 50)
     {
-        if (! $this->useRequestFilters) {
+        if (!$this->useRequestFilters) {
             return $instance->paginate($default);
         }
 
@@ -87,9 +85,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Create a new record in the database and return the associated model.
      *
-     * @param array $fields
-     * @param bool $validate
-     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model|bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -99,10 +94,10 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         $instance = $this->getBuilder()->newModelInstance();
         ($force) ? $instance->forceFill($fields) : $instance->fill($fields);
 
-        if (! $validate) {
+        if (!$validate) {
             $saved = $instance->skipValidation()->save();
         } else {
-            if (! $saved = $instance->save()) {
+            if (!$saved = $instance->save()) {
                 throw new DataValidationException($instance->getValidator());
             }
         }
@@ -113,7 +108,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Find a model that has the specific ID passed.
      *
-     * @param int $id
      * @return \Illuminate\Database\Eloquent\Model
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -123,15 +117,12 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         try {
             return $this->getBuilder()->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 
     /**
      * Find a model matching an array of where clauses.
-     *
-     * @param array $fields
-     * @return \Illuminate\Support\Collection
      */
     public function findWhere(array $fields): Collection
     {
@@ -141,7 +132,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Find and return the first matching instance for the given fields.
      *
-     * @param array $fields
      * @return \Illuminate\Database\Eloquent\Model
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -151,15 +141,12 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         try {
             return $this->getBuilder()->where($fields)->firstOrFail($this->getColumns());
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 
     /**
      * Return a count of records matching the passed arguments.
-     *
-     * @param array $fields
-     * @return int
      */
     public function findCountWhere(array $fields): int
     {
@@ -168,10 +155,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
     /**
      * Delete a given record from the database.
-     *
-     * @param int $id
-     * @param bool $destroy
-     * @return int
      */
     public function delete(int $id, bool $destroy = false): int
     {
@@ -180,10 +163,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
     /**
      * Delete records matching the given attributes.
-     *
-     * @param array $attributes
-     * @param bool $force
-     * @return int
      */
     public function deleteWhere(array $attributes, bool $force = false): int
     {
@@ -196,9 +175,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Update a given ID with the passed array of fields.
      *
      * @param int $id
-     * @param array $fields
-     * @param bool $validate
-     * @param bool $force
+     *
      * @return \Illuminate\Database\Eloquent\Model|bool
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -209,15 +186,15 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         try {
             $instance = $this->getBuilder()->where('id', $id)->firstOrFail();
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
 
         ($force) ? $instance->forceFill($fields) : $instance->fill($fields);
 
-        if (! $validate) {
+        if (!$validate) {
             $saved = $instance->skipValidation()->save();
         } else {
-            if (! $saved = $instance->save()) {
+            if (!$saved = $instance->save()) {
                 throw new DataValidationException($instance->getValidator());
             }
         }
@@ -229,7 +206,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Update a model using the attributes passed.
      *
      * @param array|\Closure $attributes
-     * @param array $values
+     *
      * @return int
      */
     public function updateWhere($attributes, array $values)
@@ -240,11 +217,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Perform a mass update where matching records are updated using whereIn.
      * This does not perform any model data validation.
-     *
-     * @param string $column
-     * @param array $values
-     * @param array $fields
-     * @return int
      */
     public function updateWhereIn(string $column, array $values, array $fields): int
     {
@@ -256,10 +228,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Update a record if it exists in the database, otherwise create it.
      *
-     * @param array $where
-     * @param array $fields
-     * @param bool $validate
-     * @param bool $force
      * @return \Illuminate\Database\Eloquent\Model
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -283,7 +251,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Return all records associated with the given model.
      *
-     * @return \Illuminate\Support\Collection
      * @deprecated Just use the model
      */
     public function all(): Collection
@@ -293,9 +260,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
     /**
      * Return a paginated result set using a search term if set on the repository.
-     *
-     * @param int $perPage
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function paginated(int $perPage): LengthAwarePaginator
     {
@@ -305,9 +269,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Insert a single or multiple records into the database at once skipping
      * validation and mass assignment checking.
-     *
-     * @param array $data
-     * @return bool
      */
     public function insert(array $data): bool
     {
@@ -316,9 +277,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
     /**
      * Insert multiple records into the database and ignore duplicates.
-     *
-     * @param array $values
-     * @return bool
      */
     public function insertIgnore(array $values): bool
     {
@@ -332,7 +290,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
         }
 
         $bindings = array_values(array_filter(array_flatten($values, 1), function ($binding) {
-            return ! $binding instanceof Expression;
+            return !$binding instanceof Expression;
         }));
 
         $grammar = $this->getBuilder()->toBase()->getGrammar();
@@ -351,7 +309,6 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Get the amount of entries in the database.
      *
-     * @return int
      * @deprecated just use the count method off a model
      */
     public function count(): int

@@ -31,8 +31,6 @@ class BuildModificationService
      * BuildModificationService constructor.
      *
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $structureService
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      */
     public function __construct(
         ServerConfigurationStructureService $structureService,
@@ -47,8 +45,6 @@ class BuildModificationService
     /**
      * Change the build details for a specified server.
      *
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $data
      * @return \Pterodactyl\Models\Server
      *
      * @throws \Throwable
@@ -82,7 +78,7 @@ class BuildModificationService
 
         $updateData = $this->structureService->handle($server);
 
-        if (! empty($updateData['build'])) {
+        if (!empty($updateData['build'])) {
             $this->daemonServerRepository->setServer($server)->update([
                 'build' => $updateData['build'],
             ]);
@@ -96,9 +92,6 @@ class BuildModificationService
     /**
      * Process the allocations being assigned in the data and ensure they are available for a server.
      *
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $data
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
     private function processAllocations(Server $server, array &$data)
@@ -109,7 +102,7 @@ class BuildModificationService
 
         // Handle the addition of allocations to this server. Only assign allocations that are not currently
         // assigned to a different server, and only allocations on the same node as the server.
-        if (! empty($data['add_allocations'])) {
+        if (!empty($data['add_allocations'])) {
             $query = Allocation::query()
                 ->where('node_id', $server->node_id)
                 ->whereIn('id', $data['add_allocations'])
@@ -122,16 +115,14 @@ class BuildModificationService
             $query->update(['server_id' => $server->id, 'notes' => null]);
         }
 
-        if (! empty($data['remove_allocations'])) {
+        if (!empty($data['remove_allocations'])) {
             foreach ($data['remove_allocations'] as $allocation) {
                 // If we are attempting to remove the default allocation for the server, see if we can reassign
                 // to the first provided value in add_allocations. If there is no new first allocation then we
                 // will throw an exception back.
                 if ($allocation === ($data['allocation_id'] ?? $server->allocation_id)) {
                     if (empty($freshlyAllocated)) {
-                        throw new DisplayException(
-                            'You are attempting to delete the default allocation for this server but there is no fallback allocation to use.'
-                        );
+                        throw new DisplayException('You are attempting to delete the default allocation for this server but there is no fallback allocation to use.');
                     }
 
                     // Update the default allocation to be the first allocation that we are creating.

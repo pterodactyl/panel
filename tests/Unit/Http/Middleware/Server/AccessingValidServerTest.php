@@ -117,8 +117,6 @@ class AccessingValidServerTest extends MiddlewareTestCase
 
     /**
      * Provide test data that checks that the correct view is returned for each model type.
-     *
-     * @return array
      */
     public function viewDataProvider(): array
     {
@@ -134,8 +132,6 @@ class AccessingValidServerTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware using mocked dependencies.
-     *
-     * @return \Pterodactyl\Http\Middleware\Server\AccessingValidServer
      */
     private function getMiddleware(): AccessingValidServer
     {

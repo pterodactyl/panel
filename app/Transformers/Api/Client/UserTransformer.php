@@ -9,8 +9,6 @@ class UserTransformer extends BaseClientTransformer
 {
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -21,7 +19,6 @@ class UserTransformer extends BaseClientTransformer
      * Transforms a User model into a representation that can be shown to regular
      * users of the API.
      *
-     * @param \Pterodactyl\Models\User $model
      * @return array
      */
     public function transform(User $model)

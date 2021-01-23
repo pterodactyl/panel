@@ -27,8 +27,6 @@ class VariableValidatorService
 
     /**
      * VariableValidatorService constructor.
-     *
-     * @param \Illuminate\Contracts\Validation\Factory $validator
      */
     public function __construct(ValidationFactory $validator)
     {
@@ -38,15 +36,12 @@ class VariableValidatorService
     /**
      * Validate all of the passed data against the given service option variables.
      *
-     * @param int $egg
-     * @param array $fields
-     * @return \Illuminate\Support\Collection
      * @throws \Illuminate\Validation\ValidationException
      */
     public function handle(int $egg, array $fields = []): Collection
     {
         $query = EggVariable::query()->where('egg_id', $egg);
-        if (! $this->isUserLevel(User::USER_LEVEL_ADMIN)) {
+        if (!$this->isUserLevel(User::USER_LEVEL_ADMIN)) {
             // Don't attempt to validate variables if they aren't user editable
             // and we're not running this at an admin level.
             $query = $query->where('user_editable', true)->where('user_viewable', true);

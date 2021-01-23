@@ -53,13 +53,6 @@ class ServerTransferController extends Controller
 
     /**
      * ServerTransferController constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
-     * @param \Pterodactyl\Repositories\Wings\DaemonTransferRepository $daemonTransferRepository
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -80,8 +73,6 @@ class ServerTransferController extends Controller
     /**
      * The daemon notifies us about the archive status.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -92,7 +83,7 @@ class ServerTransferController extends Controller
         $server = $this->repository->getByUuid($uuid);
 
         // Unsuspend the server and don't continue the transfer.
-        if (! $request->input('successful')) {
+        if (!$request->input('successful')) {
             return $this->processFailedTransfer($server->transfer);
         }
 
@@ -137,7 +128,6 @@ class ServerTransferController extends Controller
     /**
      * The daemon notifies us about a transfer failure.
      *
-     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
@@ -152,7 +142,6 @@ class ServerTransferController extends Controller
     /**
      * The daemon notifies us about a transfer success.
      *
-     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
@@ -165,7 +154,7 @@ class ServerTransferController extends Controller
         /** @var \Pterodactyl\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $transfer) {
             $allocations = [$transfer->old_allocation];
-            if (! empty($transfer->old_additional_allocations)) {
+            if (!empty($transfer->old_additional_allocations)) {
                 array_push($allocations, $transfer->old_additional_allocations);
             }
 
@@ -201,7 +190,6 @@ class ServerTransferController extends Controller
      * Release all of the reserved allocations for this transfer and mark it as failed in
      * the database.
      *
-     * @param \Pterodactyl\Models\ServerTransfer $transfer
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
@@ -212,7 +200,7 @@ class ServerTransferController extends Controller
             $transfer->forceFill(['successful' => false])->saveOrFail();
 
             $allocations = [$transfer->new_allocation];
-            if (! empty($transfer->new_additional_allocations)) {
+            if (!empty($transfer->new_additional_allocations)) {
                 array_push($allocations, $transfer->new_additional_allocations);
             }
 

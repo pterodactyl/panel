@@ -36,9 +36,6 @@ abstract class IntegrationTestCase extends TestCase
 
     /**
      * Return an ISO-8601 formatted timestamp to use in the API response.
-     *
-     * @param string $timestamp
-     * @return string
      */
     protected function formatTimestamp(string $timestamp): string
     {

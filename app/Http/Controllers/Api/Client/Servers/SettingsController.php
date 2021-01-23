@@ -27,9 +27,6 @@ class SettingsController extends ClientApiController
 
     /**
      * SettingsController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Pterodactyl\Services\Servers\ReinstallServerService $reinstallServerService
      */
     public function __construct(
         ServerRepository $repository,
@@ -44,8 +41,6 @@ class SettingsController extends ClientApiController
     /**
      * Renames a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Settings\RenameServerRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -63,8 +58,6 @@ class SettingsController extends ClientApiController
     /**
      * Reinstalls the server on the daemon.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
@@ -79,18 +72,14 @@ class SettingsController extends ClientApiController
     /**
      * Changes the Docker image in use by the server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Settings\SetDockerImageRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
      */
     public function dockerImage(SetDockerImageRequest $request, Server $server)
     {
-        if (! in_array($server->image, $server->egg->docker_images)) {
-            throw new BadRequestHttpException(
-                'This server\'s Docker image has been manually set by an administrator and cannot be updated.'
-            );
+        if (!in_array($server->image, $server->egg->docker_images)) {
+            throw new BadRequestHttpException('This server\'s Docker image has been manually set by an administrator and cannot be updated.');
         }
 
         $server->forceFill(['image' => $request->input('docker_image')])->saveOrFail();

@@ -48,8 +48,6 @@ class AdminAuthenticateTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware using mocked dependencies.
-     *
-     * @return \Pterodactyl\Http\Middleware\AdminAuthenticate
      */
     private function getMiddleware(): AdminAuthenticate
     {

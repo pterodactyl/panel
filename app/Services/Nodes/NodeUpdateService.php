@@ -36,11 +36,6 @@ class NodeUpdateService
 
     /**
      * UpdateService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository $configurationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -57,11 +52,8 @@ class NodeUpdateService
     /**
      * Update the configuration values for a given node on the machine.
      *
-     * @param \Pterodactyl\Models\Node $node
-     * @param array $data
-     * @param bool $resetToken
-     *
      * @return \Pterodactyl\Models\Node
+     *
      * @throws \Throwable
      */
     public function handle(Node $node, array $data, bool $resetToken = false)

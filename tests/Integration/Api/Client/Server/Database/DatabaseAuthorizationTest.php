@@ -14,8 +14,6 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 class DatabaseAuthorizationTest extends ClientApiIntegrationTestCase
 {
     /**
-     * @param string $method
-     * @param string $endpoint
      * @dataProvider methodDataProvider
      */
     public function testAccessToAServersDatabasesIsRestrictedProperly(string $method, string $endpoint)

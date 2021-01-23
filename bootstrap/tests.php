@@ -18,9 +18,9 @@ $kernel->bootstrap();
 
 // Register the collision service provider so that errors during the test
 // setup process are output nicely.
-(new Provider)->register();
+(new Provider())->register();
 
-$output = new ConsoleOutput;
+$output = new ConsoleOutput();
 
 if (config('database.default') !== 'testing') {
     $output->writeln(PHP_EOL . '<error>Cannot run test process against non-testing database.</error>');
@@ -32,7 +32,7 @@ if (config('database.default') !== 'testing') {
  * Perform database migrations and reseeding before continuing with
  * running the tests.
  */
-if (! env('SKIP_MIGRATIONS')) {
+if (!env('SKIP_MIGRATIONS')) {
     $output->writeln(PHP_EOL . '<info>Refreshing database for Integration tests...</info>');
     $kernel->call('migrate:fresh', ['--database' => 'testing']);
 

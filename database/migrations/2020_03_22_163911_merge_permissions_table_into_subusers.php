@@ -83,7 +83,7 @@ class MergePermissionsTableIntoSubusers extends Migration
                     ->map(function ($value) {
                         return self::$permissionsMap[$value] ?? null;
                     })->filter(function ($value) {
-                        return ! is_null($value) && $value !== Permission::ACTION_WEBSOCKET_CONNECT;
+                        return !is_null($value) && $value !== Permission::ACTION_WEBSOCKET_CONNECT;
                     })
                     // All subusers get this permission, so make sure it gets pushed into the array.
                     ->merge([Permission::ACTION_WEBSOCKET_CONNECT])
@@ -109,13 +109,13 @@ class MergePermissionsTableIntoSubusers extends Migration
             $values = [];
             foreach (json_decode($datum->permissions, true) as $permission) {
                 $v = $flipped[$permission] ?? null;
-                if (! empty($v)) {
+                if (!empty($v)) {
                     $values[] = $datum->id;
                     $values[] = $v;
                 }
             }
 
-            if (! empty($values)) {
+            if (!empty($values)) {
                 $string = 'VALUES ' . implode(', ', array_fill(0, count($values) / 2, '(?, ?)'));
 
                 DB::insert('INSERT INTO permissions(`subuser_id`, `permission`) ' . $string, $values);

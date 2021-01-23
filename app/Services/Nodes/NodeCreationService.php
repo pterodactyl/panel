@@ -22,9 +22,6 @@ class NodeCreationService
 
     /**
      * CreationService constructor.
-     *
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(Encrypter $encrypter, NodeRepositoryInterface $repository)
     {
@@ -35,7 +32,6 @@ class NodeCreationService
     /**
      * Create a new node on the panel.
      *
-     * @param array $data
      * @return \Pterodactyl\Models\Node
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

@@ -20,16 +20,12 @@ class MultiFieldServerFilter implements Filter
      * search across multiple columns. This allows us to provide a very generic search ability for
      * the frontend.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param string $value
-     * @param string $property
      */
     public function __invoke(Builder $query, $value, string $property)
     {
         if ($query->getQuery()->from !== 'servers') {
-            throw new BadMethodCallException(
-                'Cannot use the MultiFieldServerFilter against a non-server model.'
-            );
+            throw new BadMethodCallException('Cannot use the MultiFieldServerFilter against a non-server model.');
         }
 
         if (preg_match(self::IPV4_REGEX, $value) || preg_match('/^:\d{1,5}$/', $value)) {
@@ -42,12 +38,12 @@ class MultiFieldServerFilter implements Filter
                     $parts = explode(':', $value);
 
                     $builder->when(
-                        ! Str::startsWith($value, ':'),
+                        !Str::startsWith($value, ':'),
                         // When the string does not start with a ":" it means we're looking for an IP or IP:Port
                         // combo, so use a query to handle that.
                         function (Builder $builder) use ($parts) {
                             $builder->orWhere('allocations.ip', $parts[0]);
-                            if (! is_null($parts[1] ?? null)) {
+                            if (!is_null($parts[1] ?? null)) {
                                 $builder->where('allocations.port', 'LIKE', "{$parts[1]}%");
                             }
                         },

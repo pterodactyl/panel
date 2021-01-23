@@ -7,20 +7,18 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
- * @property int $id
- * @property int $schedule_id
- * @property int $sequence_id
- * @property string $action
- * @property string $payload
- * @property int $time_offset
- * @property bool $is_queued
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @property string $hashid
- *
+ * @property int                          $id
+ * @property int                          $schedule_id
+ * @property int                          $sequence_id
+ * @property string                       $action
+ * @property string                       $payload
+ * @property int                          $time_offset
+ * @property bool                         $is_queued
+ * @property \Carbon\Carbon               $created_at
+ * @property \Carbon\Carbon               $updated_at
+ * @property string                       $hashid
  * @property \Pterodactyl\Models\Schedule $schedule
- * @property \Pterodactyl\Models\Server $server
+ * @property \Pterodactyl\Models\Server   $server
  */
 class Task extends Model
 {
@@ -30,7 +28,7 @@ class Task extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'schedule_task';
+    public const RESOURCE_NAME = 'schedule_task';
 
     /**
      * The table associated with the model.
@@ -119,6 +117,7 @@ class Task extends Model
      * Return the server a task is assigned to, acts as a belongsToThrough.
      *
      * @return \Znck\Eloquent\Relations\BelongsToThrough
+     *
      * @throws \Exception
      */
     public function server()

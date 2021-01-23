@@ -14,7 +14,6 @@ class DaemonCommandRepository extends DaemonRepository
      * Sends a command or multiple commands to a running server instance.
      *
      * @param string|string[] $command
-     * @return \Psr\Http\Message\ResponseInterface
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */

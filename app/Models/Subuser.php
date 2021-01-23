@@ -5,14 +5,13 @@ namespace Pterodactyl\Models;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * @property int $id
- * @property int $user_id
- * @property int $server_id
- * @property array $permissions
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @property \Pterodactyl\Models\User $user
+ * @property int                        $id
+ * @property int                        $user_id
+ * @property int                        $server_id
+ * @property array                      $permissions
+ * @property \Carbon\Carbon             $created_at
+ * @property \Carbon\Carbon             $updated_at
+ * @property \Pterodactyl\Models\User   $user
  * @property \Pterodactyl\Models\Server $server
  */
 class Subuser extends Model
@@ -23,7 +22,7 @@ class Subuser extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'server_subuser';
+    public const RESOURCE_NAME = 'server_subuser';
 
     /**
      * The table associated with the model.

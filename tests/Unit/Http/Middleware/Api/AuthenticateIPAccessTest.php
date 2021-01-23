@@ -65,8 +65,6 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware to be used when testing.
-     *
-     * @return \Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess
      */
     private function getMiddleware(): AuthenticateIPAccess
     {

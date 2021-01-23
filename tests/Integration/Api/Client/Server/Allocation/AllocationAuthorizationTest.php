@@ -9,8 +9,6 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 class AllocationAuthorizationTest extends ClientApiIntegrationTestCase
 {
     /**
-     * @param string $method
-     * @param string $endpoint
      * @dataProvider methodDataProvider
      */
     public function testAccessToAServersAllocationsIsRestrictedProperly(string $method, string $endpoint)

@@ -36,11 +36,6 @@ class EggImporterService
 
     /**
      * EggImporterService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $eggVariableRepository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $nestRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -57,10 +52,6 @@ class EggImporterService
     /**
      * Take an uploaded JSON file and parse it into a new egg.
      *
-     * @param \Illuminate\Http\UploadedFile $file
-     * @param int $nest
-     * @return \Pterodactyl\Models\Egg
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
@@ -68,24 +59,13 @@ class EggImporterService
      */
     public function handle(UploadedFile $file, int $nest): Egg
     {
-        if ($file->getError() !== UPLOAD_ERR_OK || ! $file->isFile()) {
-            throw new InvalidFileUploadException(
-                sprintf(
-                    'The selected file ["%s"] was not in a valid format to import. (is_file: %s is_valid: %s err_code: %s err: %s)',
-                    $file->getFilename(),
-                    $file->isFile() ? 'true' : 'false',
-                    $file->isValid() ? 'true' : 'false',
-                    $file->getError(),
-                    $file->getErrorMessage()
-                )
-            );
+        if ($file->getError() !== UPLOAD_ERR_OK || !$file->isFile()) {
+            throw new InvalidFileUploadException(sprintf('The selected file ["%s"] was not in a valid format to import. (is_file: %s is_valid: %s err_code: %s err: %s)', $file->getFilename(), $file->isFile() ? 'true' : 'false', $file->isValid() ? 'true' : 'false', $file->getError(), $file->getErrorMessage()));
         }
 
         $parsed = json_decode($file->openFile()->fread($file->getSize()));
         if (json_last_error() !== 0) {
-            throw new BadJsonFormatException(trans('exceptions.nest.importer.json_error', [
-                'error' => json_last_error_msg(),
-            ]));
+            throw new BadJsonFormatException(trans('exceptions.nest.importer.json_error', ['error' => json_last_error_msg()]));
         }
 
         if (object_get($parsed, 'meta.version') !== 'PTDL_v1') {

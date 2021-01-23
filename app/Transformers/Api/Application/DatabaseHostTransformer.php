@@ -17,8 +17,6 @@ class DatabaseHostTransformer extends BaseTransformer
 
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -28,7 +26,6 @@ class DatabaseHostTransformer extends BaseTransformer
     /**
      * Transform database host into a representation for the application API.
      *
-     * @param \Pterodactyl\Models\DatabaseHost $model
      * @return array
      */
     public function transform(DatabaseHost $model)
@@ -48,13 +45,13 @@ class DatabaseHostTransformer extends BaseTransformer
     /**
      * Include the databases associated with this host.
      *
-     * @param \Pterodactyl\Models\DatabaseHost $model
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeDatabases(DatabaseHost $model)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_SERVER_DATABASES)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_SERVER_DATABASES)) {
             return $this->null();
         }
 

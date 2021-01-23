@@ -24,9 +24,6 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
     /**
      * Return an egg with the variables relation attached.
      *
-     * @param int $id
-     * @return \Pterodactyl\Models\Egg
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithVariables(int $id): Egg
@@ -34,14 +31,12 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
         try {
             return $this->getBuilder()->with('variables')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 
     /**
      * Return all eggs and their relations to be used in the daemon API.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getAllWithCopyAttributes(): Collection
     {
@@ -52,8 +47,6 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
      * Return an egg with the scriptFrom and configFrom relations loaded onto the model.
      *
      * @param int|string $value
-     * @param string $column
-     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -64,15 +57,12 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
         try {
             return $this->getBuilder()->with('scriptFrom', 'configFrom')->where($column, '=', $value)->firstOrFail($this->getColumns());
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 
     /**
      * Return all of the data needed to export a service.
-     *
-     * @param int $id
-     * @return \Pterodactyl\Models\Egg
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -81,16 +71,12 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
         try {
             return $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 
     /**
      * Confirm a copy script belongs to the same nest as the item trying to use it.
-     *
-     * @param int $copyFromId
-     * @param int $service
-     * @return bool
      */
     public function isCopyableScript(int $copyFromId, int $service): bool
     {

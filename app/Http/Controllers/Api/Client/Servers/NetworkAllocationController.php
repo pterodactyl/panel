@@ -36,10 +36,6 @@ class NetworkAllocationController extends ClientApiController
 
     /**
      * NetworkController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\AllocationRepository $repository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $serverRepository
-     * @param \Pterodactyl\Services\Allocations\FindAssignableAllocationService $assignableAllocationService
      */
     public function __construct(
         AllocationRepository $repository,
@@ -56,10 +52,6 @@ class NetworkAllocationController extends ClientApiController
     /**
      * Lists all of the allocations available to a server and wether or
      * not they are currently assigned as the primary for this server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\GetNetworkRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      */
     public function index(GetNetworkRequest $request, Server $server): array
     {
@@ -70,11 +62,6 @@ class NetworkAllocationController extends ClientApiController
 
     /**
      * Set the primary allocation for a server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\UpdateAllocationRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Allocation $allocation
-     * @return array
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -93,11 +80,6 @@ class NetworkAllocationController extends ClientApiController
     /**
      * Set the primary allocation for a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Allocation $allocation
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -114,18 +96,12 @@ class NetworkAllocationController extends ClientApiController
      * Set the notes for the allocation for a server.
      *s.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\NewAllocationRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function store(NewAllocationRequest $request, Server $server): array
     {
         if ($server->allocations()->count() >= $server->allocation_limit) {
-            throw new DisplayException(
-                'Cannot assign additional allocations to this server: limit has been reached.'
-            );
+            throw new DisplayException('Cannot assign additional allocations to this server: limit has been reached.');
         }
 
         $allocation = $this->assignableAllocationService->handle($server);
@@ -138,9 +114,6 @@ class NetworkAllocationController extends ClientApiController
     /**
      * Delete an allocation from a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Network\DeleteAllocationRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Allocation $allocation
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -148,9 +121,7 @@ class NetworkAllocationController extends ClientApiController
     public function delete(DeleteAllocationRequest $request, Server $server, Allocation $allocation)
     {
         if ($allocation->id === $server->allocation_id) {
-            throw new DisplayException(
-                'You cannot delete the primary allocation for this server.'
-            );
+            throw new DisplayException('You cannot delete the primary allocation for this server.');
         }
 
         Allocation::query()->where('id', $allocation->id)->update([

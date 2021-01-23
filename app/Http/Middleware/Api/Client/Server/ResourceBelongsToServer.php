@@ -26,14 +26,12 @@ class ResourceBelongsToServer
      * server that is expected, and that we're not accessing a resource completely
      * unrelated to the server provided in the request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
         $params = $request->route()->parameters();
-        if (is_null($params) || ! $params['server'] instanceof Server) {
+        if (is_null($params) || !$params['server'] instanceof Server) {
             throw new InvalidArgumentException('This middleware cannot be used in a context that is missing a server in the parameters.');
         }
 
@@ -45,7 +43,7 @@ class ResourceBelongsToServer
             // other resources are assigned to this server. Also skip anything that
             // is not currently a Model instance since those will just end up being
             // a 404 down the road.
-            if ($key === 'server' || ! $model instanceof Model) {
+            if ($key === 'server' || !$model instanceof Model) {
                 continue;
             }
 

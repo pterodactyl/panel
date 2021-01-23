@@ -30,8 +30,6 @@ abstract class Repository implements RepositoryInterface
 
     /**
      * Repository constructor.
-     *
-     * @param \Illuminate\Foundation\Application $application
      */
     public function __construct(Application $application)
     {
@@ -61,6 +59,7 @@ abstract class Repository implements RepositoryInterface
      * Setup column selection functionality.
      *
      * @param array|string $columns
+     *
      * @return $this
      */
     public function setColumns($columns = ['*'])
@@ -106,7 +105,6 @@ abstract class Repository implements RepositoryInterface
      * Set whether or not the repository should return a fresh model
      * when changes are committed.
      *
-     * @param bool $fresh
      * @return $this
      */
     public function setFreshModel(bool $fresh = true)
@@ -121,6 +119,7 @@ abstract class Repository implements RepositoryInterface
      * Take the provided model and make it accessible to the rest of the repository.
      *
      * @param array $model
+     *
      * @return mixed
      */
     protected function initializeModel(...$model)

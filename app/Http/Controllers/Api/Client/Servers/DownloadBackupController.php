@@ -39,11 +39,6 @@ class DownloadBackupController extends ClientApiController
 
     /**
      * DownloadBackupController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
-     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
-     * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
-     * @param \Illuminate\Contracts\Routing\ResponseFactory $responseFactory
      */
     public function __construct(
         DaemonBackupRepository $daemonBackupRepository,
@@ -64,9 +59,6 @@ class DownloadBackupController extends ClientApiController
      * will be streamed back through the Panel. For AWS S3 files, a signed URL will be generated
      * which the user is redirected to.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DownloadBackupRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Backup $backup
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(DownloadBackupRequest $request, Server $server, Backup $backup)
@@ -79,7 +71,7 @@ class DownloadBackupController extends ClientApiController
                 $url = $this->getS3BackupUrl($backup, $server);
                 break;
             default:
-                throw new BadRequestHttpException;
+                throw new BadRequestHttpException();
         }
 
         return new JsonResponse([
@@ -94,8 +86,6 @@ class DownloadBackupController extends ClientApiController
      * Returns a signed URL that allows us to download a file directly out of a non-public
      * S3 bucket by using a signed URL.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @param \Pterodactyl\Models\Server $server
      * @return string
      */
     protected function getS3BackupUrl(Backup $backup, Server $server)
@@ -120,9 +110,6 @@ class DownloadBackupController extends ClientApiController
     /**
      * Returns a download link a backup stored on a wings instance.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\User $user
      * @return string
      */
     protected function getLocalBackupUrl(Backup $backup, Server $server, User $user)

@@ -47,13 +47,6 @@ class CreateServerController extends Controller
 
     /**
      * CreateServerController constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Pterodactyl\Repositories\Eloquent\NestRepository $nestRepository
-     * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Pterodactyl\Services\Servers\ServerCreationService $creationService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -75,6 +68,7 @@ class CreateServerController extends Controller
      * Displays the create server page.
      *
      * @return \Illuminate\Contracts\View\Factory
+     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index()
@@ -106,7 +100,6 @@ class CreateServerController extends Controller
     /**
      * Create a new server on the remote system.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\ServerFormRequest $request
      * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -118,7 +111,7 @@ class CreateServerController extends Controller
     public function store(ServerFormRequest $request)
     {
         $data = $request->except(['_token']);
-        if (! empty($data['custom_image'])) {
+        if (!empty($data['custom_image'])) {
             $data['image'] = $data['custom_image'];
             unset($data['custom_image']);
         }

@@ -33,10 +33,6 @@ class AuthenticateKey
 
     /**
      * AuthenticateKey constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Illuminate\Auth\AuthManager $auth
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(ApiKeyRepositoryInterface $repository, AuthManager $auth, Encrypter $encrypter)
     {
@@ -49,9 +45,6 @@ class AuthenticateKey
      * Handle an API request by verifying that the provided API key
      * is in a valid format and exists in the database.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
-     * @param int $keyType
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -85,10 +78,6 @@ class AuthenticateKey
     /**
      * Authenticate an API key.
      *
-     * @param string $key
-     * @param int $keyType
-     * @return \Pterodactyl\Models\ApiKey
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -103,11 +92,11 @@ class AuthenticateKey
                 ['key_type', '=', $keyType],
             ]);
         } catch (RecordNotFoundException $exception) {
-            throw new AccessDeniedHttpException;
+            throw new AccessDeniedHttpException();
         }
 
-        if (! hash_equals($this->encrypter->decrypt($model->token), $token)) {
-            throw new AccessDeniedHttpException;
+        if (!hash_equals($this->encrypter->decrypt($model->token), $token)) {
+            throw new AccessDeniedHttpException();
         }
 
         $this->repository->withoutFreshModel()->update($model->id, ['last_used_at' => CarbonImmutable::now()]);

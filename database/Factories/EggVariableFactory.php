@@ -17,8 +17,6 @@ class EggVariableFactory extends Factory
 
     /**
      * Define the model's default state.
-     *
-     * @return array
      */
     public function definition(): array
     {
@@ -35,8 +33,6 @@ class EggVariableFactory extends Factory
 
     /**
      * Indicate that the egg variable is viewable.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
     public function viewable(): Factory
     {
@@ -49,8 +45,6 @@ class EggVariableFactory extends Factory
 
     /**
      * Indicate that the egg variable is editable.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
      */
     public function editable(): Factory
     {

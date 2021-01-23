@@ -42,10 +42,6 @@ class FileController extends ClientApiController
 
     /**
      * FileController constructor.
-     *
-     * @param \Illuminate\Contracts\Routing\ResponseFactory $responseFactory
-     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
-     * @param \Pterodactyl\Repositories\Wings\DaemonFileRepository $fileRepository
      */
     public function __construct(
         ResponseFactory $responseFactory,
@@ -61,10 +57,6 @@ class FileController extends ClientApiController
 
     /**
      * Returns a listing of files in a given directory.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\ListFilesRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
@@ -82,10 +74,6 @@ class FileController extends ClientApiController
     /**
      * Return the contents of a specified file for the user.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
@@ -93,7 +81,8 @@ class FileController extends ClientApiController
     {
         return new Response(
             $this->fileRepository->setServer($server)->getContent(
-                $request->get('file'), config('pterodactyl.files.max_edit_size')
+                $request->get('file'),
+                config('pterodactyl.files.max_edit_size')
             ),
             Response::HTTP_OK,
             ['Content-Type' => 'text/plain']
@@ -104,8 +93,6 @@ class FileController extends ClientApiController
      * Generates a one-time token with a link that the user can use to
      * download a given file.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Exception
@@ -135,10 +122,6 @@ class FileController extends ClientApiController
     /**
      * Writes the contents of the specified file to the server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function write(WriteFileContentRequest $request, Server $server): JsonResponse
@@ -150,10 +133,6 @@ class FileController extends ClientApiController
 
     /**
      * Creates a new folder on the server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
@@ -169,10 +148,6 @@ class FileController extends ClientApiController
     /**
      * Renames a file on the remote machine.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function rename(RenameFileRequest $request, Server $server): JsonResponse
@@ -187,10 +162,6 @@ class FileController extends ClientApiController
     /**
      * Copies a file on the server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function copy(CopyFileRequest $request, Server $server): JsonResponse
@@ -203,10 +174,6 @@ class FileController extends ClientApiController
     }
 
     /**
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CompressFilesRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function compress(CompressFilesRequest $request, Server $server): array
@@ -216,7 +183,8 @@ class FileController extends ClientApiController
 
         $file = $this->fileRepository->setServer($server)
             ->compressFiles(
-                $request->input('root'), $request->input('files')
+                $request->input('root'),
+                $request->input('files')
             );
 
         return $this->fractal->item($file)
@@ -225,10 +193,6 @@ class FileController extends ClientApiController
     }
 
     /**
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DecompressFilesRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function decompress(DecompressFilesRequest $request, Server $server): JsonResponse
@@ -245,17 +209,14 @@ class FileController extends ClientApiController
     /**
      * Deletes files or folders for the server in the given root directory.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\DeleteFileRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function delete(DeleteFileRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository->setServer($server)
             ->deleteFiles(
-                $request->input('root'), $request->input('files')
+                $request->input('root'),
+                $request->input('files')
             );
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
@@ -264,17 +225,14 @@ class FileController extends ClientApiController
     /**
      * Updates file permissions for file(s) in the given root directory.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\ChmodFilesRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function chmod(ChmodFilesRequest $request, Server $server): JsonResponse
     {
         $this->fileRepository->setServer($server)
             ->chmodFiles(
-                $request->input('root'), $request->input('files')
+                $request->input('root'),
+                $request->input('files')
             );
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
@@ -284,8 +242,6 @@ class FileController extends ClientApiController
      * Requests that a file be downloaded from a remote location by Wings.
      *
      * @param $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */

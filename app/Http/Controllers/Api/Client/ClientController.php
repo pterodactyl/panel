@@ -20,8 +20,6 @@ class ClientController extends ClientApiController
 
     /**
      * ClientController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      */
     public function __construct(ServerRepository $repository)
     {
@@ -33,9 +31,6 @@ class ClientController extends ClientApiController
     /**
      * Return all of the servers available to the client making the API
      * request, including servers the user has access to as a subuser.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\GetServersRequest $request
-     * @return array
      */
     public function index(GetServersRequest $request): array
     {
@@ -49,7 +44,7 @@ class ClientController extends ClientApiController
             'uuid',
             'name',
             'external_id',
-            AllowedFilter::custom('*', new MultiFieldServerFilter),
+            AllowedFilter::custom('*', new MultiFieldServerFilter()),
         ]);
 
         $type = $request->input('type');
@@ -60,7 +55,7 @@ class ClientController extends ClientApiController
         if (in_array($type, ['admin', 'admin-all'])) {
             // If they aren't an admin but want all the admin servers don't fail the request, just
             // make it a query that will never return any results back.
-            if (! $user->root_admin) {
+            if (!$user->root_admin) {
                 $builder->whereRaw('1 = 2');
             } else {
                 $builder = $type === 'admin-all'
