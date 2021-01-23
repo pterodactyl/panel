@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Assertions;
+namespace Pterodactyl\Tests\Assertions;
 
 use PHPUnit\Framework\Assert;
 
@@ -8,8 +8,6 @@ trait MiddlewareAttributeAssertionsTrait
 {
     /**
      * Assert a request has an attribute assigned to it.
-     *
-     * @param string $attribute
      */
     public function assertRequestHasAttribute(string $attribute)
     {
@@ -18,8 +16,6 @@ trait MiddlewareAttributeAssertionsTrait
 
     /**
      * Assert a request does not have an attribute assigned to it.
-     *
-     * @param string $attribute
      */
     public function assertRequestMissingAttribute(string $attribute)
     {
@@ -29,8 +25,7 @@ trait MiddlewareAttributeAssertionsTrait
     /**
      * Assert a request attribute matches an expected value.
      *
-     * @param mixed  $expected
-     * @param string $attribute
+     * @param mixed $expected
      */
     public function assertRequestAttributeEquals($expected, string $attribute)
     {

@@ -30,6 +30,7 @@ class MailSettingsFormRequest extends AdminFormRequest
      * as we need to accept empty values on the keys.
      *
      * @param array $only
+     *
      * @return array
      */
     public function normalize(array $only = null)

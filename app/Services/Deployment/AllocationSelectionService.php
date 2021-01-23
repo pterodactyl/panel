@@ -32,8 +32,6 @@ class AllocationSelectionService
 
     /**
      * AllocationSelectionService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface $repository
      */
     public function __construct(AllocationRepositoryInterface $repository)
     {
@@ -45,7 +43,6 @@ class AllocationSelectionService
      * to the given IP address. If true an allocation will not be selected if an IP
      * already has another server set to use on if its allocations.
      *
-     * @param bool $dedicated
      * @return $this
      */
     public function setDedicated(bool $dedicated)
@@ -59,7 +56,6 @@ class AllocationSelectionService
      * A list of node IDs that should be used when selecting an allocation. If empty, all
      * nodes will be used to filter with.
      *
-     * @param array $nodes
      * @return $this
      */
     public function setNodes(array $nodes)
@@ -74,7 +70,6 @@ class AllocationSelectionService
      * empty, all ports will be considered when finding an allocation. If set, only ports appearing
      * in the array or range will be used.
      *
-     * @param array $ports
      * @return $this
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -105,8 +100,6 @@ class AllocationSelectionService
 
     /**
      * Return a single allocation that should be used as the default allocation for a server.
-     *
-     * @return \Pterodactyl\Models\Allocation
      *
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      */

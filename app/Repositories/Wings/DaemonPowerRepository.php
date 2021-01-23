@@ -13,9 +13,6 @@ class DaemonPowerRepository extends DaemonRepository
     /**
      * Sends a power action to the server instance.
      *
-     * @param string $action
-     * @return \Psr\Http\Message\ResponseInterface
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function send(string $action): ResponseInterface

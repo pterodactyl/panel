@@ -25,6 +25,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.REGISTRY_TOKEN }}
+      - name: Bump Version
+        if: "!contains(github.ref, 'develop')"
+        env:
+          REF: ${{ github.ref }}
+        run: |
+          sed -i "s/    'version' => 'canary',/    'version' => '${REF:11}',/" config/app.php
       - name: Release Production Build
         uses: docker/build-push-action@v2
         if: "!contains(github.ref, 'develop')"

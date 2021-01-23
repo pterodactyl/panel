@@ -12,13 +12,13 @@ class KeyGenerateCommand extends BaseKeyGenerateCommand
      */
     public function handle()
     {
-        if (! empty(config('app.key')) && $this->input->isInteractive()) {
+        if (!empty(config('app.key')) && $this->input->isInteractive()) {
             $this->output->warning(trans('command/messages.key.warning'));
-            if (! $this->confirm(trans('command/messages.key.confirm'))) {
+            if (!$this->confirm(trans('command/messages.key.confirm'))) {
                 return;
             }
 
-            if (! $this->confirm(trans('command/messages.key.final_confirm'))) {
+            if (!$this->confirm(trans('command/messages.key.final_confirm'))) {
                 return;
             }
         }

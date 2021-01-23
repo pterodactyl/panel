@@ -4,9 +4,6 @@ namespace Pterodactyl\Tests\Browser\Pages;
 
 class LoginPage extends BasePage
 {
-    /**
-     * @return string
-     */
     public function url(): string
     {
         return '/auth/login';

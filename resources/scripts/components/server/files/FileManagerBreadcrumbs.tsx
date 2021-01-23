@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { NavLink, useLocation } from 'react-router-dom';
-import { cleanDirectoryPath } from '@/helpers';
+import { encodePathSegments, hashToPath } from '@/helpers';
 import tw from 'twin.macro';
 
 interface Props {
@@ -17,22 +17,10 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
     const { hash } = useLocation();
 
     useEffect(() => {
-        let pathHash = cleanDirectoryPath(hash);
-        try {
-            pathHash = decodeURI(pathHash);
-        } catch (e) {
-            console.warn('Error decoding URL parts in hash:', e);
-        }
+        const path = hashToPath(hash);
 
         if (withinFileEditor && !isNewFile) {
-            let name = pathHash.split('/').pop() || null;
-            if (name) {
-                try {
-                    name = decodeURIComponent(name);
-                } catch (e) {
-                    console.warn('Error decoding filename:', e);
-                }
-            }
+            const name = path.split('/').pop() || null;
             setFile(name);
         }
     }, [ withinFileEditor, isNewFile, hash ]);
@@ -62,14 +50,14 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
                     crumb.path ?
                         <React.Fragment key={index}>
                             <NavLink
-                                to={`/server/${id}/files#${crumb.path}`}
+                                to={`/server/${id}/files#${encodePathSegments(crumb.path)}`}
                                 css={tw`px-1 text-neutral-200 no-underline hover:text-neutral-100`}
                             >
-                                {decodeURIComponent(crumb.name)}
+                                {crumb.name}
                             </NavLink>/
                         </React.Fragment>
                         :
-                        <span key={index} css={tw`px-1 text-neutral-300`}>{decodeURIComponent(crumb.name)}</span>
+                        <span key={index} css={tw`px-1 text-neutral-300`}>{crumb.name}</span>
                 ))
             }
             {file &&

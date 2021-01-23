@@ -31,11 +31,6 @@ class ServerDetailsController extends Controller
 
     /**
      * ServerConfigurationController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Services\Eggs\EggConfigurationService $eggConfigurationService
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
      */
     public function __construct(
         ServerRepository $repository,
@@ -52,8 +47,8 @@ class ServerDetailsController extends Controller
      * Returns details about the server that allows Wings to self-recover and ensure
      * that the state of the server matches the Panel at all times.
      *
-     * @param \Illuminate\Http\Request $request
      * @param string $uuid
+     *
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -71,7 +66,6 @@ class ServerDetailsController extends Controller
     /**
      * Lists all servers with their configurations that are assigned to the requesting node.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection
      */
     public function list(Request $request)
@@ -85,7 +79,7 @@ class ServerDetailsController extends Controller
             ->where('node_id', $node->id)
             // If you don't cast this to a string you'll end up with a stringified per_page returned in
             // the metadata, and then Wings will panic crash as a result.
-            ->paginate((int)$request->input('per_page', 50));
+            ->paginate((int) $request->input('per_page', 50));
 
         return new ServerConfigurationCollection($servers);
     }

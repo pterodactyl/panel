@@ -20,8 +20,6 @@ class DeleteUserRequest extends ApplicationApiRequest
 
     /**
      * Determine if the requested user exists on the Panel.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

@@ -47,10 +47,6 @@ class BulkReinstallActionCommand extends Command
 
     /**
      * BulkReinstallActionCommand constructor.
-     *
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonRepository
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      */
     public function __construct(
         DaemonServerRepository $daemonRepository,
@@ -71,7 +67,7 @@ class BulkReinstallActionCommand extends Command
     {
         $servers = $this->getServersToProcess();
 
-        if (! $this->confirm(trans('command/messages.server.reinstall.confirm')) && $this->input->isInteractive()) {
+        if (!$this->confirm(trans('command/messages.server.reinstall.confirm')) && $this->input->isInteractive()) {
             return;
         }
 

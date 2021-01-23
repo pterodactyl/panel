@@ -7,7 +7,7 @@
  * https://opensource.org/licenses/MIT
  */
 
-namespace Tests\Traits;
+namespace Pterodactyl\Tests\Traits;
 
 use Mockery as m;
 use Ramsey\Uuid\Uuid;
@@ -37,8 +37,6 @@ trait MocksUuids
 
     /**
      * Returns the known UUID for tests to use.
-     *
-     * @return string
      */
     public function getKnownUuid(): string
     {

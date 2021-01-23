@@ -223,7 +223,6 @@ export default () => {
                         type={'text'}
                         placeholder={'Type a command...'}
                         aria-label={'Console command input.'}
-                        aria-description={'Type a command and press enter to send to server.'}
                         disabled={!instance || !connected}
                         onKeyDown={handleCommandKeyDown}
                     />

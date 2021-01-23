@@ -19,8 +19,6 @@ class GetServerDatabaseRequest extends ApplicationApiRequest
 
     /**
      * Determine if the requested server database exists.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

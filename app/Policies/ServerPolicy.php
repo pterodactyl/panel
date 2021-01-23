@@ -16,8 +16,6 @@ class ServerPolicy
 
     /**
      * ServerPolicy constructor.
-     *
-     * @param \Illuminate\Contracts\Cache\Repository $cache
      */
     public function __construct(CacheRepository $cache)
     {
@@ -27,9 +25,8 @@ class ServerPolicy
     /**
      * Checks if the user has the given permission on/for the server.
      *
-     * @param \Pterodactyl\Models\User $user
-     * @param \Pterodactyl\Models\Server $server
      * @param string $permission
+     *
      * @return bool
      */
     protected function checkPermission(User $user, Server $server, $permission)
@@ -49,9 +46,8 @@ class ServerPolicy
     /**
      * Runs before any of the functions are called. Used to determine if user is root admin, if so, ignore permissions.
      *
-     * @param \Pterodactyl\Models\User $user
      * @param string $ability
-     * @param \Pterodactyl\Models\Server $server
+     *
      * @return bool
      */
     public function before(User $user, $ability, Server $server)
@@ -69,7 +65,7 @@ class ServerPolicy
      * policy permission.
      *
      * @param string $name
-     * @param mixed $arguments
+     * @param mixed  $arguments
      */
     public function __call($name, $arguments)
     {

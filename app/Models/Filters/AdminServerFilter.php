@@ -12,16 +12,12 @@ class AdminServerFilter implements Filter
      * A multi-column filter for the servers table that allows an administrative user to search
      * across UUID, name, owner username, and owner email.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param string $value
-     * @param string $property
      */
     public function __invoke(Builder $query, $value, string $property)
     {
         if ($query->getQuery()->from !== 'servers') {
-            throw new BadMethodCallException(
-                'Cannot use the AdminServerFilter against a non-server model.'
-            );
+            throw new BadMethodCallException('Cannot use the AdminServerFilter against a non-server model.');
         }
         $query
             ->select('servers.*')

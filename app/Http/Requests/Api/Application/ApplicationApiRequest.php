@@ -40,8 +40,6 @@ abstract class ApplicationApiRequest extends FormRequest
      * Determine if the current user is authorized to perform
      * the requested action against the API.
      *
-     * @return bool
-     *
      * @throws \Pterodactyl\Exceptions\PterodactylException
      */
     public function authorize(): bool
@@ -55,8 +53,6 @@ abstract class ApplicationApiRequest extends FormRequest
 
     /**
      * Determine if the requested resource exists on the server.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {
@@ -65,8 +61,6 @@ abstract class ApplicationApiRequest extends FormRequest
 
     /**
      * Default set of rules to apply to API requests.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -75,8 +69,6 @@ abstract class ApplicationApiRequest extends FormRequest
 
     /**
      * Return the API key being used for the request.
-     *
-     * @return \Pterodactyl\Models\ApiKey
      */
     public function key(): ApiKey
     {
@@ -87,8 +79,8 @@ abstract class ApplicationApiRequest extends FormRequest
      * Grab a model from the route parameters. If no model is found in the
      * binding mappings an exception will be thrown.
      *
-     * @param string $model
      * @return mixed
+     *
      * @deprecated
      *
      * @throws \Symfony\Component\Routing\Exception\InvalidParameterException
@@ -98,7 +90,7 @@ abstract class ApplicationApiRequest extends FormRequest
         $parameterKey = array_get(array_flip(ApiSubstituteBindings::getMappings()), $model);
 
         if (is_null($parameterKey)) {
-            throw new InvalidParameterException;
+            throw new InvalidParameterException();
         }
 
         return $this->route()->parameter($parameterKey);
@@ -112,7 +104,7 @@ abstract class ApplicationApiRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        if (! $this->passesAuthorization()) {
+        if (!$this->passesAuthorization()) {
             $this->failedAuthorization();
         }
 
@@ -137,7 +129,7 @@ abstract class ApplicationApiRequest extends FormRequest
             return true;
         }
 
-        if (! parent::passesAuthorization()) {
+        if (!parent::passesAuthorization()) {
             return false;
         }
 
@@ -145,7 +137,7 @@ abstract class ApplicationApiRequest extends FormRequest
         // authenticated to access the endpoint. This avoids exposing that
         // an item exists (or does not exist) to the user until they can prove
         // that they have permission to know about it.
-        if ($this->attributes->get('is_missing_model', false) || ! $this->resourceExists()) {
+        if ($this->attributes->get('is_missing_model', false) || !$this->resourceExists()) {
             throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
         }
 

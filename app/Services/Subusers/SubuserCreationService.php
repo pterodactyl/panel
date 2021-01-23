@@ -37,11 +37,6 @@ class SubuserCreationService
 
     /**
      * SubuserCreationService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Eloquent\SubuserRepository $subuserRepository
-     * @param \Pterodactyl\Services\Users\UserCreationService $userCreationService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $userRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -59,11 +54,6 @@ class SubuserCreationService
      * Creates a new user on the system and assigns them access to the provided server.
      * If the email address already belongs to a user on the system a new user will not
      * be created.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param string $email
-     * @param array $permissions
-     * @return \Pterodactyl\Models\Subuser
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException

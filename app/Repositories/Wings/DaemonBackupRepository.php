@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
-use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
@@ -20,7 +19,6 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Sets the backup adapter for this execution instance.
      *
-     * @param string $adapter
      * @return $this
      */
     public function setBackupAdapter(string $adapter)
@@ -32,9 +30,6 @@ class DaemonBackupRepository extends DaemonRepository
 
     /**
      * Tells the remote Daemon to begin generating a backup for the server.
-     *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @return \Psr\Http\Message\ResponseInterface
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
@@ -49,7 +44,7 @@ class DaemonBackupRepository extends DaemonRepository
                     'json' => [
                         'adapter' => $this->adapter ?? config('backups.default'),
                         'uuid' => $backup->uuid,
-                        'ignore' => implode('\n', $backup->ignored_files),
+                        'ignore' => implode("\n", $backup->ignored_files),
                     ],
                 ]
             );
@@ -61,8 +56,6 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Deletes a backup from the daemon.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @return \Psr\Http\Message\ResponseInterface
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function delete(Backup $backup): ResponseInterface

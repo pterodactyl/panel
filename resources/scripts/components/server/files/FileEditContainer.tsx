@@ -17,6 +17,8 @@ import modes from '@/modes';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import { encodePathSegments, hashToPath } from '@/helpers';
+import { dirname } from 'path';
 
 const LazyCodemirrorEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/CodemirrorEditor'));
 
@@ -43,8 +45,9 @@ export default () => {
 
         setError('');
         setLoading(true);
-        setDirectory(hash.replace(/^#/, '').split('/').filter(v => !!v).slice(0, -1).join('/'));
-        getFileContents(uuid, hash.replace(/^#/, ''))
+        const path = hashToPath(hash);
+        setDirectory(dirname(path));
+        getFileContents(uuid, path)
             .then(setContent)
             .catch(error => {
                 console.error(error);
@@ -61,10 +64,10 @@ export default () => {
         setLoading(true);
         clearFlashes('files:view');
         fetchFileContent()
-            .then(content => saveFileContents(uuid, name || decodeURI(hash.replace(/^#/, '')), content))
+            .then(content => saveFileContents(uuid, name || hashToPath(hash), content))
             .then(() => {
                 if (name) {
-                    history.push(`/server/${id}/files/edit#/${name}`);
+                    history.push(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
                     return;
                 }
 

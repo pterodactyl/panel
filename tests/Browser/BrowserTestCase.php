@@ -5,10 +5,10 @@ namespace Pterodactyl\Tests\Browser;
 use Laravel\Dusk\TestCase;
 use BadMethodCallException;
 use Pterodactyl\Models\User;
-use Tests\CreatesApplication;
 use Pterodactyl\Console\Kernel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
+use Pterodactyl\Tests\CreatesApplication;
 use Facebook\WebDriver\Chrome\ChromeOptions;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -70,14 +70,16 @@ abstract class BrowserTestCase extends TestCase
      */
     protected function driver()
     {
-        $options = (new ChromeOptions)->addArguments([
+        $options = (new ChromeOptions())->addArguments([
             '--disable-gpu',
             '--disable-infobars',
         ]);
 
         return RemoteWebDriver::create(
-            'http://host.pterodactyl.local:4444/wd/hub', DesiredCapabilities::chrome()->setCapability(
-                ChromeOptions::CAPABILITY, $options
+            'http://host.pterodactyl.local:4444/wd/hub',
+            DesiredCapabilities::chrome()->setCapability(
+                ChromeOptions::CAPABILITY,
+                $options
             )
         );
     }
@@ -86,6 +88,7 @@ abstract class BrowserTestCase extends TestCase
      * Return an instance of the browser to be used for tests.
      *
      * @param \Facebook\WebDriver\Remote\RemoteWebDriver $driver
+     *
      * @return \Pterodactyl\Tests\Browser\PterodactylBrowser
      */
     protected function newBrowser($driver): PterodactylBrowser
@@ -109,13 +112,10 @@ abstract class BrowserTestCase extends TestCase
 
     /**
      * Return a user model to authenticate aganist and use in the tests.
-     *
-     * @param array $attributes
-     * @return \Pterodactyl\Models\User
      */
     protected function user(array $attributes = []): User
     {
-        return factory(User::class)->create(array_merge([
+        return User::factory()->create(array_merge([
             'password' => Hash::make(static::$userPassword),
         ], $attributes));
     }

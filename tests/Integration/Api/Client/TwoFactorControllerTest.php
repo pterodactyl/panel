@@ -18,7 +18,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
     public function testTwoFactorImageDataIsReturned()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create(['use_totp' => false]);
+        $user = User::factory()->create(['use_totp' => false]);
 
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
@@ -42,7 +42,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
     public function testErrorIsReturnedWhenTwoFactorIsAlreadyEnabled()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create(['use_totp' => true]);
+        $user = User::factory()->create(['use_totp' => true]);
 
         $response = $this->actingAs($user)->getJson('/api/client/account/two-factor');
 
@@ -57,7 +57,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
     public function testValidationErrorIsReturnedIfInvalidDataIsPassedToEnabled2FA()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create(['use_totp' => false]);
+        $user = User::factory()->create(['use_totp' => false]);
 
         $response = $this->actingAs($user)->postJson('/api/client/account/two-factor', [
             'code' => '',
@@ -74,7 +74,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
     public function testTwoFactorCanBeEnabledOnAccount()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create(['use_totp' => false]);
+        $user = User::factory()->create(['use_totp' => false]);
 
         // Make the initial call to get the account setup for 2FA.
         $this->actingAs($user)->getJson('/api/client/account/two-factor')->assertOk();
@@ -111,9 +111,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
                 }
             }
 
-            throw new ExpectationFailedException(
-                sprintf('Failed asserting that token [%s] exists as a hashed value in recovery_tokens table.', $raw)
-            );
+            throw new ExpectationFailedException(sprintf('Failed asserting that token [%s] exists as a hashed value in recovery_tokens table.', $raw));
         }
     }
 
@@ -126,7 +124,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         Carbon::setTestNow(Carbon::now());
 
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create(['use_totp' => true]);
+        $user = User::factory()->create(['use_totp' => true]);
 
         $response = $this->actingAs($user)->deleteJson('/api/client/account/two-factor', [
             'password' => 'invalid',
@@ -157,7 +155,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         Carbon::setTestNow(Carbon::now());
 
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create(['use_totp' => false]);
+        $user = User::factory()->create(['use_totp' => false]);
 
         $response = $this->actingAs($user)->deleteJson('/api/client/account/two-factor', [
             'password' => 'password',

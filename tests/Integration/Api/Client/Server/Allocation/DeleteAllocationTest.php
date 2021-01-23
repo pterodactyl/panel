@@ -3,8 +3,8 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server\Allocation;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DeleteAllocationTest extends ClientApiIntegrationTestCase
@@ -13,7 +13,6 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
      * Test that an allocation is deleted from the server and the notes are properly reset
      * to an empty value on assignment.
      *
-     * @param array $permission
      * @dataProvider permissionDataProvider
      */
     public function testAllocationCanBeDeletedFromServer(array $permission)
@@ -22,7 +21,7 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permission);
 
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = factory(Allocation::class)->create([
+        $allocation = Allocation::factory()->create([
             'server_id' => $server->id,
             'node_id' => $server->node_id,
             'notes' => 'hodor',
@@ -42,7 +41,7 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_ALLOCATION_CREATE]);
 
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = factory(Allocation::class)->create([
+        $allocation = Allocation::factory()->create([
             'server_id' => $server->id,
             'node_id' => $server->node_id,
             'notes' => 'hodor',

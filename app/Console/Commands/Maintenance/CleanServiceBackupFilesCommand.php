@@ -9,7 +9,7 @@ use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
 class CleanServiceBackupFilesCommand extends Command
 {
-    const BACKUP_THRESHOLD_MINUTES = 5;
+    public const BACKUP_THRESHOLD_MINUTES = 5;
 
     /**
      * @var string
@@ -28,8 +28,6 @@ class CleanServiceBackupFilesCommand extends Command
 
     /**
      * CleanServiceBackupFilesCommand constructor.
-     *
-     * @param \Illuminate\Contracts\Filesystem\Factory $filesystem
      */
     public function __construct(FilesystemFactory $filesystem)
     {

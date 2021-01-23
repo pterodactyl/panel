@@ -9,27 +9,22 @@ use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 class UpdateEmailRequest extends ClientApiRequest
 {
     /**
-     * @return bool
-     *
      * @throws \Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException
      */
     public function authorize(): bool
     {
-        if (! parent::authorize()) {
+        if (!parent::authorize()) {
             return false;
         }
 
         // Verify password matches when changing password or email.
-        if (! password_verify($this->input('password'), $this->user()->password)) {
+        if (!password_verify($this->input('password'), $this->user()->password)) {
             throw new InvalidPasswordProvidedException(trans('validation.internal.invalid_password'));
         }
 
         return true;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         $rules = User::getRulesForUpdate($this->user());

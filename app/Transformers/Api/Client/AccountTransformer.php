@@ -8,8 +8,6 @@ class AccountTransformer extends BaseClientTransformer
 {
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -19,7 +17,6 @@ class AccountTransformer extends BaseClientTransformer
     /**
      * Return basic information about the currently logged in user.
      *
-     * @param \Pterodactyl\Models\User $model
      * @return array
      */
     public function transform(User $model)

@@ -19,8 +19,6 @@ class EggController extends ApplicationApiController
 
     /**
      * EggController constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(EggRepositoryInterface $repository)
     {
@@ -31,9 +29,6 @@ class EggController extends ApplicationApiController
 
     /**
      * Return all eggs that exist for a given nest.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\Eggs\GetEggsRequest $request
-     * @return array
      */
     public function index(GetEggsRequest $request): array
     {
@@ -48,9 +43,6 @@ class EggController extends ApplicationApiController
 
     /**
      * Return a single egg that exists on the specified nest.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\Eggs\GetEggRequest $request
-     * @return array
      */
     public function view(GetEggRequest $request): array
     {

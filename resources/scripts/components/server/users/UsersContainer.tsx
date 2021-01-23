@@ -48,7 +48,7 @@ export default () => {
     }
 
     return (
-        <ServerContentBlock title={'Subusers'}>
+        <ServerContentBlock title={'Users'}>
             <FlashMessageRender byKey={'users'} css={tw`mb-4`}/>
             {!subusers.length ?
                 <p css={tw`text-center text-sm text-neutral-300`}>

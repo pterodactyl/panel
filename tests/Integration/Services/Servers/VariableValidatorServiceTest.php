@@ -92,7 +92,6 @@ class VariableValidatorServiceTest extends IntegrationTestCase
             $this->assertArrayHasKey('environment.BUNGEE_VERSION', $exception->errors());
         }
 
-
         $response = $this->getService()->setUserLevel(User::USER_LEVEL_ADMIN)->handle($egg->id, [
             'BUNGEE_VERSION' => '123',
             'SERVER_JARFILE' => 'server.jar',

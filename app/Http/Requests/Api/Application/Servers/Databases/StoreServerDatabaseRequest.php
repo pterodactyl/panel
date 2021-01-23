@@ -24,8 +24,6 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
 
     /**
      * Validation rules for database creation.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -76,8 +74,6 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
 
     /**
      * Returns the database name in the expected format.
-     *
-     * @return string
      */
     public function databaseName(): string
     {

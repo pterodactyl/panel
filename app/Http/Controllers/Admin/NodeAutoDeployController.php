@@ -30,10 +30,6 @@ class NodeAutoDeployController extends Controller
 
     /**
      * NodeAutoDeployController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\ApiKeyRepository $repository
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Services\Api\KeyCreationService $keyCreationService
      */
     public function __construct(
         ApiKeyRepository $repository,
@@ -49,8 +45,6 @@ class NodeAutoDeployController extends Controller
      * Generates a new API key for the logged in user with only permission to read
      * nodes, and returns that as the deployment key for a node.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Node $node
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -72,7 +66,7 @@ class NodeAutoDeployController extends Controller
 
         // We couldn't find a key that exists for this user with only permission for
         // reading nodes. Go ahead and create it now.
-        if (! $key) {
+        if (!$key) {
             $key = $this->keyCreationService->setKeyType(ApiKey::TYPE_APPLICATION)->handle([
                 'user_id' => $request->user()->id,
                 'memo' => 'Automatically generated node deployment key.',

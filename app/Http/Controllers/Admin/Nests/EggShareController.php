@@ -43,11 +43,6 @@ class EggShareController extends Controller
 
     /**
      * OptionShareController constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggExporterService $exporterService
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggImporterService $importerService
-     * @param \Pterodactyl\Services\Eggs\Sharing\EggUpdateImporterService $updateImporterService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -62,9 +57,6 @@ class EggShareController extends Controller
     }
 
     /**
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function export(Egg $egg): Response
@@ -82,9 +74,6 @@ class EggShareController extends Controller
     /**
      * Import a new service option using an XML file.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggImportFormRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
@@ -100,10 +89,6 @@ class EggShareController extends Controller
 
     /**
      * Update an existing Egg using a new imported file.
-     *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggImportFormRequest $request
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

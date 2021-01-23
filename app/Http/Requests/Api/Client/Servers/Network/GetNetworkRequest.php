@@ -10,8 +10,6 @@ class GetNetworkRequest extends ClientApiRequest
     /**
      * Check that the user has permission to view the allocations for
      * this server.
-     *
-     * @return string
      */
     public function permission(): string
     {

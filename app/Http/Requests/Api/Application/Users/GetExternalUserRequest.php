@@ -27,8 +27,6 @@ class GetExternalUserRequest extends ApplicationApiRequest
 
     /**
      * Determine if the requested external user exists.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {
@@ -47,8 +45,6 @@ class GetExternalUserRequest extends ApplicationApiRequest
 
     /**
      * Return the user model for the requested external user.
-     *
-     * @return \Pterodactyl\Models\User
      */
     public function getUserModel(): User
     {

@@ -35,11 +35,6 @@ class DeleteBackupService
 
     /**
      * DeleteBackupService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
-     * @param \Pterodactyl\Extensions\Backups\BackupManager $manager
-     * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -56,7 +51,6 @@ class DeleteBackupService
     /**
      * Deletes a backup from the system.
      *
-     * @param \Pterodactyl\Models\Backup $backup
      * @throws \Throwable
      */
     public function handle(Backup $backup)
@@ -74,7 +68,7 @@ class DeleteBackupService
                 $previous = $exception->getPrevious();
                 // Don't fail the request if the Daemon responds with a 404, just assume the backup
                 // doesn't actually exist and remove it's reference from the Panel as well.
-                if (! $previous instanceof ClientException || $previous->getResponse()->getStatusCode() !== Response::HTTP_NOT_FOUND) {
+                if (!$previous instanceof ClientException || $previous->getResponse()->getStatusCode() !== Response::HTTP_NOT_FOUND) {
                     throw $exception;
                 }
             }
@@ -86,7 +80,6 @@ class DeleteBackupService
     /**
      * Deletes a backup from an S3 disk.
      *
-     * @param \Pterodactyl\Models\Backup $backup
      * @throws \Throwable
      */
     protected function deleteFromS3(Backup $backup)

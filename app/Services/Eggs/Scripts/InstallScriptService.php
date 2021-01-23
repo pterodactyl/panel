@@ -15,8 +15,6 @@ class InstallScriptService
 
     /**
      * InstallScriptService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(EggRepositoryInterface $repository)
     {
@@ -27,7 +25,6 @@ class InstallScriptService
      * Modify the install script for a given Egg.
      *
      * @param int|\Pterodactyl\Models\Egg $egg
-     * @param array $data
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -35,8 +32,8 @@ class InstallScriptService
      */
     public function handle(Egg $egg, array $data)
     {
-        if (! is_null(array_get($data, 'copy_script_from'))) {
-            if (! $this->repository->isCopyableScript(array_get($data, 'copy_script_from'), $egg->nest_id)) {
+        if (!is_null(array_get($data, 'copy_script_from'))) {
+            if (!$this->repository->isCopyableScript(array_get($data, 'copy_script_from'), $egg->nest_id)) {
                 throw new InvalidCopyFromException(trans('exceptions.nest.egg.invalid_copy_id'));
             }
         }

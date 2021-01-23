@@ -30,9 +30,6 @@ class AssetHashService
 
     /**
      * AssetHashService constructor.
-     *
-     * @param \Illuminate\Contracts\Foundation\Application $application
-     * @param \Illuminate\Filesystem\FilesystemManager $filesystem
      */
     public function __construct(Application $application, FilesystemManager $filesystem)
     {
@@ -42,9 +39,6 @@ class AssetHashService
 
     /**
      * Modify a URL to append the asset hash.
-     *
-     * @param string $resource
-     * @return string
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -59,9 +53,6 @@ class AssetHashService
     /**
      * Return the data integrity hash for a resource.
      *
-     * @param string $resource
-     * @return string
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function integrity(string $resource): string
@@ -74,9 +65,6 @@ class AssetHashService
 
     /**
      * Return a built CSS import using the provided URL.
-     *
-     * @param string $resource
-     * @return string
      *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
@@ -105,9 +93,6 @@ class AssetHashService
     /**
      * Return a built JS import using the provided URL.
      *
-     * @param string $resource
-     * @return string
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function js(string $resource): string
@@ -132,14 +117,13 @@ class AssetHashService
     /**
      * Get the asset manifest and store it in the cache for quicker lookups.
      *
-     * @return array
-     *
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function manifest(): array
     {
         return self::$manifest ?: self::$manifest = json_decode(
-            $this->filesystem->get(self::MANIFEST_PATH), true
+            $this->filesystem->get(self::MANIFEST_PATH),
+            true
         );
     }
 }

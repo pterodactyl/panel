@@ -33,10 +33,6 @@ class ApiController extends Controller
 
     /**
      * ApplicationApiController constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Api\KeyCreationService $keyCreationService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -50,9 +46,6 @@ class ApiController extends Controller
 
     /**
      * Render view showing all of a user's application API keys.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\View\View
      */
     public function index(Request $request): View
     {
@@ -64,7 +57,6 @@ class ApiController extends Controller
     /**
      * Render view allowing an admin to create a new application API key.
      *
-     * @return \Illuminate\View\View
      * @throws \ReflectionException
      */
     public function create(): View
@@ -85,9 +77,6 @@ class ApiController extends Controller
     /**
      * Store the new key and redirect the user back to the application key listing.
      *
-     * @param \Pterodactyl\Http\Requests\Admin\Api\StoreApplicationApiKeyRequest $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function store(StoreApplicationApiKeyRequest $request): RedirectResponse
@@ -104,10 +93,6 @@ class ApiController extends Controller
 
     /**
      * Delete an application API key from the database.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string $identifier
-     * @return \Illuminate\Http\Response
      */
     public function delete(Request $request, string $identifier): Response
     {

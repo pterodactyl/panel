@@ -18,8 +18,6 @@ export interface FileObject {
 
 export default async (uuid: string, directory?: string): Promise<FileObject[]> => {
     const { data } = await http.get(`/api/client/servers/${uuid}/files/list`, {
-        // At this point the directory is still encoded so we need to decode it since axios
-        // will automatically re-encode this value before sending it along in the request.
         params: { directory: directory ?? '/' },
     });
 
