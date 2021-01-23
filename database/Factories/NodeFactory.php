@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\factories2;
 
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;

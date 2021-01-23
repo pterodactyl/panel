@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\factories2;
 
 use Pterodactyl\Models\Allocation;
 use Illuminate\Database\Eloquent\Factories\Factory;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\factories2;
 
 use Illuminate\Support\Str;
 use Pterodactyl\Models\EggVariable;
