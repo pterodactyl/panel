@@ -7,15 +7,10 @@ use Pterodactyl\Models\Server;
 
 class ServerConfigurationStructureService
 {
-    /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
-     */
-    private $environment;
+    private EnvironmentService $environment;
 
     /**
      * ServerConfigurationStructureService constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\EnvironmentService $environment
      */
     public function __construct(EnvironmentService $environment)
     {
@@ -27,8 +22,6 @@ class ServerConfigurationStructureService
      *
      * DO NOT MODIFY THIS FUNCTION. This powers legacy code handling for the new Wings
      * daemon, if you modify the structure eggs will break unexpectedly.
-     *
-     * @param bool $legacy deprecated
      */
     public function handle(Server $server, array $override = [], bool $legacy = false): array
     {
@@ -49,10 +42,8 @@ class ServerConfigurationStructureService
 
     /**
      * Returns the new data format used for the Wings daemon.
-     *
-     * @return array
      */
-    protected function returnCurrentFormat(Server $server)
+    protected function returnCurrentFormat(Server $server): array
     {
         return [
             'uuid' => $server->uuid,
@@ -89,11 +80,7 @@ class ServerConfigurationStructureService
             }),
             'egg' => [
                 'id' => $server->egg->uuid,
-                'file_denylist' => [
-                    'config.yml',
-                    '**/*.json',
-                ],
-                // 'file_denylist' => explode(PHP_EOL, $server->egg->inherit_file_denylist),
+                'file_denylist' => explode(PHP_EOL, $server->egg->inherit_file_denylist),
             ],
         ];
     }
@@ -102,11 +89,9 @@ class ServerConfigurationStructureService
      * Returns the legacy server data format to continue support for old egg configurations
      * that have not yet been updated.
      *
-     * @return array
-     *
      * @deprecated
      */
-    protected function returnLegacyFormat(Server $server)
+    protected function returnLegacyFormat(Server $server): array
     {
         return [
             'uuid' => $server->uuid,
