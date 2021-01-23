@@ -3,15 +3,7 @@
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-$finder = (new Finder)->in([
-    'app',
-    'bootstrap',
-    'config',
-    'database',
-    'resources/lang',
-    'routes',
-    'tests',
-]);
+$finder = (new Finder)->in(__DIR__)->exclude(['vendor', 'node_modules', 'storage']);
 
 return (new Config)
     ->setRiskyAllowed(true)
