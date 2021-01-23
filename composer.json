@@ -68,6 +68,7 @@
         }
     },
     "scripts": {
+        "php-cs-fixer": "php-cs-fixer fix --diff --diff-format=udiff --config=./.php_cs.dist",
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
@@ -76,7 +77,7 @@
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover"
+            "@php artisan package:discover || true"
         ]
     },
     "prefer-stable": true,
