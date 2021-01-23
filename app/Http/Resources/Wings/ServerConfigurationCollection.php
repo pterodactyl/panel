@@ -17,6 +17,7 @@ class ServerConfigurationCollection extends ResourceCollection
      * have some serious performance issues from all of the N+1 queries.
      *
      * @param \Illuminate\Http\Request $request
+     *
      * @return array
      */
     public function toArray($request)
@@ -24,7 +25,7 @@ class ServerConfigurationCollection extends ResourceCollection
         $egg = Container::getInstance()->make(EggConfigurationService::class);
         $configuration = Container::getInstance()->make(ServerConfigurationStructureService::class);
 
-        return $this->collection->map(function (Server  $server) use ($configuration, $egg) {
+        return $this->collection->map(function (Server $server) use ($configuration, $egg) {
             return [
                 'uuid' => $server->uuid,
                 'settings' => $configuration->handle($server),

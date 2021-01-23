@@ -34,7 +34,7 @@ class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
         ])->save();
         $server = $server->refresh();
 
-        $response = $this->actingAs($user)->getJson($this->link($server) . "/startup");
+        $response = $this->actingAs($user)->getJson($this->link($server) . '/startup');
 
         $response->assertOk();
         $response->assertJsonPath('meta.startup_command', 'java bungeecord.jar --version [hidden]');
@@ -53,10 +53,10 @@ class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
     public function testStartupDataIsNotReturnedWithoutPermission()
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
-        $this->actingAs($user)->getJson($this->link($server) . "/startup")->assertForbidden();
+        $this->actingAs($user)->getJson($this->link($server) . '/startup')->assertForbidden();
 
-        $user2 = factory(User::class)->create();
-        $this->actingAs($user2)->getJson($this->link($server) . "/startup")->assertNotFound();
+        $user2 = User::factory()->create();
+        $this->actingAs($user2)->getJson($this->link($server) . '/startup')->assertNotFound();
     }
 
     /**

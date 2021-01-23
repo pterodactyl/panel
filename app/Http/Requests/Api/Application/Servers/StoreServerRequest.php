@@ -23,8 +23,6 @@ class StoreServerRequest extends ApplicationApiRequest
 
     /**
      * Rules to be applied to this request.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -120,7 +118,7 @@ class StoreServerRequest extends ApplicationApiRequest
                 $query->whereNull('server_id');
             }),
         ], function ($input) {
-            return ! ($input->deploy);
+            return !($input->deploy);
         });
 
         $validator->sometimes('allocation.additional.*', [
@@ -129,7 +127,7 @@ class StoreServerRequest extends ApplicationApiRequest
                 $query->whereNull('server_id');
             }),
         ], function ($input) {
-            return ! ($input->deploy);
+            return !($input->deploy);
         });
 
         $validator->sometimes('deploy.locations', 'present', function ($input) {
@@ -152,7 +150,7 @@ class StoreServerRequest extends ApplicationApiRequest
             return null;
         }
 
-        $object = new DeploymentObject;
+        $object = new DeploymentObject();
         $object->setDedicated($this->input('deploy.dedicated_ip', false));
         $object->setLocations($this->input('deploy.locations', []));
         $object->setPorts($this->input('deploy.port_range', []));

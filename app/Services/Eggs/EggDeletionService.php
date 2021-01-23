@@ -28,9 +28,6 @@ class EggDeletionService
 
     /**
      * EggDeletionService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
@@ -42,9 +39,6 @@ class EggDeletionService
 
     /**
      * Delete an Egg from the database if it has no active servers attached to it.
-     *
-     * @param int $egg
-     * @return int
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      * @throws \Pterodactyl\Exceptions\Service\Egg\HasChildrenException

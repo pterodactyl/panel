@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Pterodactyl\Services\Nests\NestCreationService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
@@ -18,9 +20,6 @@ class NestSeeder extends Seeder
 
     /**
      * NestSeeder constructor.
-     *
-     * @param \Pterodactyl\Services\Nests\NestCreationService           $creationService
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(
         NestCreationService $creationService,
@@ -50,8 +49,6 @@ class NestSeeder extends Seeder
     /**
      * Create the Minecraft nest to be used later on.
      *
-     * @param array|null $nest
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     private function createMinecraftNest(array $nest = null)
@@ -66,8 +63,6 @@ class NestSeeder extends Seeder
 
     /**
      * Create the Source Engine Games nest to be used later on.
-     *
-     * @param array|null $nest
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
@@ -84,8 +79,6 @@ class NestSeeder extends Seeder
     /**
      * Create the Voice Servers nest to be used later on.
      *
-     * @param array|null $nest
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     private function createVoiceServersNest(array $nest = null)
@@ -100,8 +93,6 @@ class NestSeeder extends Seeder
 
     /**
      * Create the Rust nest to be used later on.
-     *
-     * @param array|null $nest
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */

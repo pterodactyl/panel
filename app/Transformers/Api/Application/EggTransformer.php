@@ -21,8 +21,6 @@ class EggTransformer extends BaseTransformer
 
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -32,8 +30,6 @@ class EggTransformer extends BaseTransformer
     /**
      * Transform an Egg model into a representation that can be consumed by
      * the application api.
-     *
-     * @param \Pterodactyl\Models\Egg $model
      *
      * @return array
      */
@@ -75,15 +71,13 @@ class EggTransformer extends BaseTransformer
     /**
      * Include the Nest relationship for the given Egg in the transformation.
      *
-     * @param \Pterodactyl\Models\Egg $model
-     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeNest(Egg $model)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_NESTS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_NESTS)) {
             return $this->null();
         }
 
@@ -95,15 +89,13 @@ class EggTransformer extends BaseTransformer
     /**
      * Include the Servers relationship for the given Egg in the transformation.
      *
-     * @param \Pterodactyl\Models\Egg $model
-     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeServers(Egg $model)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();
         }
 
@@ -115,8 +107,6 @@ class EggTransformer extends BaseTransformer
     /**
      * Include more detailed information about the configuration if this Egg is
      * extending another.
-     *
-     * @param \Pterodactyl\Models\Egg $model
      *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
@@ -142,8 +132,6 @@ class EggTransformer extends BaseTransformer
      * Include more detailed information about the script configuration if the
      * Egg is extending another.
      *
-     * @param \Pterodactyl\Models\Egg $model
-     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeScript(Egg $model)
@@ -167,15 +155,13 @@ class EggTransformer extends BaseTransformer
     /**
      * Include the variables that are defined for this Egg.
      *
-     * @param \Pterodactyl\Models\Egg $model
-     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeVariables(Egg $model)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_EGGS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_EGGS)) {
             return $this->null();
         }
 

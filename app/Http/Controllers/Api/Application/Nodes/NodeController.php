@@ -42,11 +42,6 @@ class NodeController extends ApplicationApiController
 
     /**
      * NodeController constructor.
-     *
-     * @param \Pterodactyl\Services\Nodes\NodeCreationService $creationService
-     * @param \Pterodactyl\Services\Nodes\NodeDeletionService $deletionService
-     * @param \Pterodactyl\Services\Nodes\NodeUpdateService $updateService
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $repository
      */
     public function __construct(
         NodeCreationService $creationService,
@@ -64,11 +59,6 @@ class NodeController extends ApplicationApiController
 
     /**
      * Return all of the nodes currently available on the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodesRequest $request
-     *
-     * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetNodesRequest $request): array
     {
@@ -91,12 +81,6 @@ class NodeController extends ApplicationApiController
 
     /**
      * Return data for a single instance of a node.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest $request
-     * @param \Pterodactyl\Models\Node $node
-     *
-     * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetNodeRequest $request, Node $node): array
     {
@@ -109,11 +93,7 @@ class NodeController extends ApplicationApiController
      * Create a new node on the Panel. Returns the created node and a HTTP/201
      * status response on success.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\StoreNodeRequest $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException*@throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function store(StoreNodeRequest $request): JsonResponse
     {
@@ -132,17 +112,14 @@ class NodeController extends ApplicationApiController
     /**
      * Update an existing node on the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\UpdateNodeRequest $request
-     * @param \Pterodactyl\Models\Node $node
-     *
-     * @return array
-     *
      * @throws \Throwable
      */
     public function update(UpdateNodeRequest $request, Node $node): array
     {
         $node = $this->updateService->handle(
-            $node, $request->validated(), $request->input('reset_secret') === true
+            $node,
+            $request->validated(),
+            $request->input('reset_secret') === true
         );
 
         return $this->fractal->item($node)
@@ -153,11 +130,6 @@ class NodeController extends ApplicationApiController
     /**
      * Deletes a given node from the Panel as long as there are no servers
      * currently attached to it.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\DeleteNodeRequest $request
-     * @param \Pterodactyl\Models\Node $node
-     *
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */

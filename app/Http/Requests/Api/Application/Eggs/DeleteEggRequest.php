@@ -19,9 +19,7 @@ class DeleteEggRequest extends ApplicationApiRequest
     protected $permission = AdminAcl::WRITE;
 
     /**
-     * Determine if the requested egg exists on the Panel.
-     *
-     * @return bool
+     * Determine if the requested egg exists for the selected nest.
      */
     public function resourceExists(): bool
     {

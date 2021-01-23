@@ -22,8 +22,6 @@ class EggUpdateService
 
     /**
      * EggUpdateService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(EggRepositoryInterface $repository)
     {
@@ -33,16 +31,13 @@ class EggUpdateService
     /**
      * Update a service option.
      *
-     * @param \Pterodactyl\Models\Egg $egg
-     * @param array $data
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
     public function handle(Egg $egg, array $data)
     {
-        if (! is_null(array_get($data, 'config_from'))) {
+        if (!is_null(array_get($data, 'config_from'))) {
             $results = $this->repository->findCountWhere([
                 ['nest_id', '=', $egg->nest_id],
                 ['id', '=', array_get($data, 'config_from')],

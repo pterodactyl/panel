@@ -41,11 +41,6 @@ class NestController extends ApplicationApiController
 
     /**
      * NestController constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Nests\NestCreationService $nestCreationService
-     * @param \Pterodactyl\Services\Nests\NestDeletionService $nestDeletionService
-     * @param \Pterodactyl\Services\Nests\NestUpdateService $nestUpdateService
      */
     public function __construct(
         NestRepositoryInterface $repository,
@@ -64,11 +59,6 @@ class NestController extends ApplicationApiController
 
     /**
      * Return all Nests that exist on the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest $request
-     *
-     * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetNestsRequest $request): array
     {

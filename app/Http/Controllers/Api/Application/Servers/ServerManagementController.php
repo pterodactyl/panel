@@ -23,9 +23,6 @@ class ServerManagementController extends ApplicationApiController
 
     /**
      * SuspensionController constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\ReinstallServerService $reinstallServerService
-     * @param \Pterodactyl\Services\Servers\SuspensionService $suspensionService
      */
     public function __construct(
         ReinstallServerService $reinstallServerService,
@@ -40,11 +37,6 @@ class ServerManagementController extends ApplicationApiController
     /**
      * Suspend a server on the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     *
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Throwable
      */
     public function suspend(ServerWriteRequest $request, Server $server): Response
@@ -56,11 +48,6 @@ class ServerManagementController extends ApplicationApiController
 
     /**
      * Unsuspend a server on the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     *
-     * @return \Illuminate\Http\Response
      *
      * @throws \Throwable
      */
@@ -74,12 +61,9 @@ class ServerManagementController extends ApplicationApiController
     /**
      * Mark a server as needing to be reinstalled.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function reinstall(ServerWriteRequest $request, Server $server): Response
     {

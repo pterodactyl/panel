@@ -12,13 +12,11 @@ class AuthenticateApplicationUser
      * Authenticate that the currently authenticated user is an administrator
      * and should be allowed to proceed through the application API.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        if (is_null($request->user()) || ! $request->user()->root_admin) {
+        if (is_null($request->user()) || !$request->user()->root_admin) {
             throw new AccessDeniedHttpException('This account does not have permission to access the API.');
         }
 

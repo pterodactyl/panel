@@ -14,7 +14,7 @@ class AccountPasswordProcessTest extends DashboardTestCase
     {
         $this->browse(function (PterodactylBrowser $browser) {
             $browser->loginAs($this->user)
-                ->visit(new AccountPage)
+                ->visit(new AccountPage())
                 ->type('@current_password', self::$userPassword)
                 ->assertMissing('@new_password ~ .input-help.error')
                 ->type('@new_password', 'test')
@@ -42,7 +42,7 @@ class AccountPasswordProcessTest extends DashboardTestCase
     {
         $this->browse(function (PterodactylBrowser $browser) {
             $browser->loginAs($this->user)
-                ->visit(new AccountPage)
+                ->visit(new AccountPage())
                 ->type('@current_password', 'badpassword')
                 ->type('@new_password', 'testtest')
                 ->type('@confirm_password', 'testtest')

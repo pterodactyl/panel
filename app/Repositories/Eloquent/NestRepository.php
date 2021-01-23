@@ -38,10 +38,10 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     {
         $instance = $this->getBuilder()->with('eggs', 'eggs.variables');
 
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $instance = $instance->find($id, $this->getColumns());
-            if (! $instance) {
-                throw new RecordNotFoundException;
+            if (!$instance) {
+                throw new RecordNotFoundException();
             }
 
             return $instance;
@@ -53,7 +53,6 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     /**
      * Return a nest or all nests and the count of eggs and servers for that nest.
      *
-     * @param int|null $id
      * @return \Pterodactyl\Models\Nest|\Illuminate\Database\Eloquent\Collection
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -62,10 +61,10 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     {
         $instance = $this->getBuilder()->withCount(['eggs', 'servers']);
 
-        if (! is_null($id)) {
+        if (!is_null($id)) {
             $instance = $instance->find($id, $this->getColumns());
-            if (! $instance) {
-                throw new RecordNotFoundException;
+            if (!$instance) {
+                throw new RecordNotFoundException();
             }
 
             return $instance;
@@ -77,16 +76,13 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     /**
      * Return a nest along with its associated eggs and the servers relation on those eggs.
      *
-     * @param int $id
-     * @return \Pterodactyl\Models\Nest
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithEggServers(int $id): Nest
     {
         $instance = $this->getBuilder()->with('eggs.servers')->find($id, $this->getColumns());
-        if (! $instance) {
-            throw new RecordNotFoundException;
+        if (!$instance) {
+            throw new RecordNotFoundException();
         }
 
         /* @var Nest $instance */

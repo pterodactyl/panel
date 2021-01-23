@@ -19,7 +19,7 @@ class AddBackupLimitToServers extends Migration
         // here. If we find a result we'll actually keep the column around since we can maintain that backup
         // limit, but we need to correct the column definition a bit.
         $results = DB::select('SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = \'servers\' AND COLUMN_NAME = \'backup_limit\'', [
-            config("database.connections.{$db}.database")
+            config("database.connections.{$db}.database"),
         ]);
 
         if (count($results) === 1) {

@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Cake\Chronos\Chronos;
+use Carbon\CarbonImmutable;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +15,7 @@ use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
  */
 abstract class BaseTransformer extends TransformerAbstract
 {
-    const RESPONSE_TIMEZONE = 'UTC';
+    public const RESPONSE_TIMEZONE = 'UTC';
 
     /**
      * @var \Pterodactyl\Models\ApiKey
@@ -145,7 +145,7 @@ abstract class BaseTransformer extends TransformerAbstract
      */
     protected function formatTimestamp(string $timestamp): string
     {
-        return Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $timestamp)
+        return CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $timestamp)
             ->setTimezone(self::RESPONSE_TIMEZONE)
             ->toIso8601String();
     }

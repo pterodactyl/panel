@@ -10,58 +10,58 @@ class Permission extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'subuser_permission';
+    public const RESOURCE_NAME = 'subuser_permission';
 
     /**
      * Constants defining different permissions available.
      */
-    const ACTION_WEBSOCKET_CONNECT = 'websocket.connect';
-    const ACTION_CONTROL_CONSOLE = 'control.console';
-    const ACTION_CONTROL_START = 'control.start';
-    const ACTION_CONTROL_STOP = 'control.stop';
-    const ACTION_CONTROL_RESTART = 'control.restart';
+    public const ACTION_WEBSOCKET_CONNECT = 'websocket.connect';
+    public const ACTION_CONTROL_CONSOLE = 'control.console';
+    public const ACTION_CONTROL_START = 'control.start';
+    public const ACTION_CONTROL_STOP = 'control.stop';
+    public const ACTION_CONTROL_RESTART = 'control.restart';
 
-    const ACTION_DATABASE_READ = 'database.read';
-    const ACTION_DATABASE_CREATE = 'database.create';
-    const ACTION_DATABASE_UPDATE = 'database.update';
-    const ACTION_DATABASE_DELETE = 'database.delete';
-    const ACTION_DATABASE_VIEW_PASSWORD = 'database.view_password';
+    public const ACTION_DATABASE_READ = 'database.read';
+    public const ACTION_DATABASE_CREATE = 'database.create';
+    public const ACTION_DATABASE_UPDATE = 'database.update';
+    public const ACTION_DATABASE_DELETE = 'database.delete';
+    public const ACTION_DATABASE_VIEW_PASSWORD = 'database.view_password';
 
-    const ACTION_SCHEDULE_READ = 'schedule.read';
-    const ACTION_SCHEDULE_CREATE = 'schedule.create';
-    const ACTION_SCHEDULE_UPDATE = 'schedule.update';
-    const ACTION_SCHEDULE_DELETE = 'schedule.delete';
+    public const ACTION_SCHEDULE_READ = 'schedule.read';
+    public const ACTION_SCHEDULE_CREATE = 'schedule.create';
+    public const ACTION_SCHEDULE_UPDATE = 'schedule.update';
+    public const ACTION_SCHEDULE_DELETE = 'schedule.delete';
 
-    const ACTION_USER_READ = 'user.read';
-    const ACTION_USER_CREATE = 'user.create';
-    const ACTION_USER_UPDATE = 'user.update';
-    const ACTION_USER_DELETE = 'user.delete';
+    public const ACTION_USER_READ = 'user.read';
+    public const ACTION_USER_CREATE = 'user.create';
+    public const ACTION_USER_UPDATE = 'user.update';
+    public const ACTION_USER_DELETE = 'user.delete';
 
-    const ACTION_BACKUP_READ = 'backup.read';
-    const ACTION_BACKUP_CREATE = 'backup.create';
-    const ACTION_BACKUP_UPDATE = 'backup.update';
-    const ACTION_BACKUP_DELETE = 'backup.delete';
-    const ACTION_BACKUP_DOWNLOAD = 'backup.download';
+    public const ACTION_BACKUP_READ = 'backup.read';
+    public const ACTION_BACKUP_CREATE = 'backup.create';
+    public const ACTION_BACKUP_UPDATE = 'backup.update';
+    public const ACTION_BACKUP_DELETE = 'backup.delete';
+    public const ACTION_BACKUP_DOWNLOAD = 'backup.download';
 
-    const ACTION_ALLOCATION_READ = 'allocation.read';
-    const ACTION_ALLOCATION_CREATE = 'allocation.create';
-    const ACTION_ALLOCATION_UPDATE = 'allocation.update';
-    const ACTION_ALLOCATION_DELETE = 'allocation.delete';
+    public const ACTION_ALLOCATION_READ = 'allocation.read';
+    public const ACTION_ALLOCATION_CREATE = 'allocation.create';
+    public const ACTION_ALLOCATION_UPDATE = 'allocation.update';
+    public const ACTION_ALLOCATION_DELETE = 'allocation.delete';
 
-    const ACTION_FILE_READ = 'file.read';
-    const ACTION_FILE_READ_CONTENT = 'file.read-content';
-    const ACTION_FILE_CREATE = 'file.create';
-    const ACTION_FILE_UPDATE = 'file.update';
-    const ACTION_FILE_DELETE = 'file.delete';
-    const ACTION_FILE_ARCHIVE = 'file.archive';
-    const ACTION_FILE_SFTP = 'file.sftp';
+    public const ACTION_FILE_READ = 'file.read';
+    public const ACTION_FILE_READ_CONTENT = 'file.read-content';
+    public const ACTION_FILE_CREATE = 'file.create';
+    public const ACTION_FILE_UPDATE = 'file.update';
+    public const ACTION_FILE_DELETE = 'file.delete';
+    public const ACTION_FILE_ARCHIVE = 'file.archive';
+    public const ACTION_FILE_SFTP = 'file.sftp';
 
-    const ACTION_STARTUP_READ = 'startup.read';
-    const ACTION_STARTUP_UPDATE = 'startup.update';
-    const ACTION_STARTUP_DOCKER_IMAGE = 'startup.docker-image';
+    public const ACTION_STARTUP_READ = 'startup.read';
+    public const ACTION_STARTUP_UPDATE = 'startup.update';
+    public const ACTION_STARTUP_DOCKER_IMAGE = 'startup.docker-image';
 
-    const ACTION_SETTINGS_RENAME = 'settings.rename';
-    const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
+    public const ACTION_SETTINGS_RENAME = 'settings.rename';
+    public const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
 
     /**
      * Should timestamps be used on this model.
@@ -106,6 +106,7 @@ class Permission extends Model
      * to retrieve them, and not directly access this array as it is subject to change.
      *
      * @var array
+     *
      * @see \Pterodactyl\Models\Permission::permissions()
      */
     protected static $permissions = [

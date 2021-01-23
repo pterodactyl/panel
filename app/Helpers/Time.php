@@ -12,9 +12,6 @@ final class Time
      * for named timezones in MySQL.
      *
      * Returns the timezone as a string like +08:00 or -05:00 depending on the app timezone.
-     *
-     * @param string $timezone
-     * @return string
      */
     public static function getMySQLTimezoneOffset(string $timezone): string
     {

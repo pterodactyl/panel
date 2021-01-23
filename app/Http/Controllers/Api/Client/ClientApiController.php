@@ -13,8 +13,6 @@ abstract class ClientApiController extends ApplicationApiController
     /**
      * Returns only the includes which are valid for the given transformer.
      *
-     * @param \Pterodactyl\Transformers\Api\Client\BaseClientTransformer $transformer
-     * @param array $merge
      * @return string[]
      */
     protected function getIncludesForTransformer(BaseClientTransformer $transformer, array $merge = [])
@@ -35,7 +33,7 @@ abstract class ClientApiController extends ApplicationApiController
     {
         $includes = $this->request->query('include') ?? [];
 
-        if (! is_string($includes)) {
+        if (!is_string($includes)) {
             return $includes;
         }
 
@@ -47,7 +45,6 @@ abstract class ClientApiController extends ApplicationApiController
     /**
      * Return an instance of an application transformer.
      *
-     * @param string $abstract
      * @return \Pterodactyl\Transformers\Api\Client\BaseClientTransformer
      */
     public function getTransformer(string $abstract)

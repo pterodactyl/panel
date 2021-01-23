@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
 
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -42,11 +43,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * LocationController constructor.
-     *
-     * @param \Pterodactyl\Services\Locations\LocationCreationService $creationService
-     * @param \Pterodactyl\Services\Locations\LocationDeletionService $deletionService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Locations\LocationUpdateService $updateService
      */
     public function __construct(
         LocationCreationService $creationService,
@@ -64,11 +60,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * Return all of the locations currently registered on the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest $request
-     *
-     * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetLocationsRequest $request): array
     {
@@ -91,12 +82,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * Return a single location.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest $request
-     * @param \Pterodactyl\Models\Location $location
-     *
-     * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetLocationRequest $request, Location $location): array
     {
@@ -110,11 +95,9 @@ class LocationController extends ApplicationApiController
      * new location attached.
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest $request
-     *
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreLocationRequest $request): JsonResponse
     {
@@ -133,11 +116,6 @@ class LocationController extends ApplicationApiController
     /**
      * Update a location on the Panel and return the updated record to the user.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest $request
-     * @param \Pterodactyl\Models\Location $location
-     *
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
@@ -153,11 +131,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * Delete a location from the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest $request
-     * @param \Pterodactyl\Models\Location $location
-     *
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */

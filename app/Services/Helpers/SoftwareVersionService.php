@@ -6,34 +6,30 @@ use Exception;
 use GuzzleHttp\Client;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
 
 class SoftwareVersionService
 {
-    const VERSION_CACHE_KEY = 'pterodactyl:versioning_data';
+    public const VERSION_CACHE_KEY = 'pterodactyl:versioning_data';
 
     /**
      * @var array
      */
-    private static array $result;
+    private static $result;
 
     /**
      * @var \Illuminate\Contracts\Cache\Repository
      */
-    protected CacheRepository $cache;
+    protected $cache;
 
     /**
      * @var \GuzzleHttp\Client
      */
-    protected Client $client;
+    protected $client;
 
     /**
      * SoftwareVersionService constructor.
-     *
-     * @param \Illuminate\Contracts\Cache\Repository $cache
-     * @param \GuzzleHttp\Client $client
      */
     public function __construct(
         CacheRepository $cache,
@@ -118,11 +114,11 @@ class SoftwareVersionService
             try {
                 $response = $this->client->request('GET', config()->get('pterodactyl.cdn.url'));
 
-                if ($response->getStatusCode() !== 200) {
-                    throw new CdnVersionFetchingException;
+                if ($response->getStatusCode() === 200) {
+                    return json_decode($response->getBody(), true);
                 }
 
-                return json_decode($response->getBody(), true);
+                throw new CdnVersionFetchingException();
             } catch (Exception $exception) {
                 return [];
             }

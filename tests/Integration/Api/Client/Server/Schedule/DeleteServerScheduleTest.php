@@ -20,8 +20,8 @@ class DeleteServerScheduleTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id]);
 
         $this->actingAs($user)
             ->deleteJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
@@ -52,7 +52,7 @@ class DeleteServerScheduleTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
         [, $server2] = $this->generateTestAccount(['user_id' => $user->id]);
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server2->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
 
         $this->actingAs($user)
             ->deleteJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
@@ -69,7 +69,7 @@ class DeleteServerScheduleTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_UPDATE]);
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)
             ->deleteJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
@@ -78,9 +78,6 @@ class DeleteServerScheduleTest extends ClientApiIntegrationTestCase
         $this->assertDatabaseHas('schedules', ['id' => $schedule->id]);
     }
 
-    /**
-     * @return array
-     */
     public function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SCHEDULE_DELETE]]];

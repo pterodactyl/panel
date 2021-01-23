@@ -30,9 +30,6 @@ class ServerController extends ApplicationApiController
 
     /**
      * ServerController constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\ServerCreationService $creationService
-     * @param \Pterodactyl\Services\Servers\ServerDeletionService $deletionService
      */
     public function __construct(
         ServerCreationService $creationService,
@@ -46,11 +43,6 @@ class ServerController extends ApplicationApiController
 
     /**
      * Return all of the servers that currently exist on the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest $request
-     *
-     * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetServersRequest $request): array
     {
@@ -74,10 +66,6 @@ class ServerController extends ApplicationApiController
     /**
      * Create a new server on the system.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\StoreServerRequest $request
-     *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -96,12 +84,6 @@ class ServerController extends ApplicationApiController
 
     /**
      * Show a single server transformed for the application API.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     *
-     * @return array
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetServerRequest $request, Server $server): array
     {
@@ -111,15 +93,7 @@ class ServerController extends ApplicationApiController
     }
 
     /**
-     * Deletes a server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param string $force
-     *
-     * @return \Illuminate\Http\Response
-     *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function delete(ServerWriteRequest $request, Server $server, string $force = ''): Response
     {

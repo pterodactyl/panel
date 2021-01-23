@@ -24,9 +24,6 @@ class ServerDetailsController extends ApplicationApiController
 
     /**
      * ServerDetailsController constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\BuildModificationService $buildModificationService
-     * @param \Pterodactyl\Services\Servers\DetailsModificationService $detailsModificationService
      */
     public function __construct(
         BuildModificationService $buildModificationService,
@@ -41,18 +38,15 @@ class ServerDetailsController extends ApplicationApiController
     /**
      * Update the details for a specific server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerDetailsRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     *
-     * @return array
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function details(UpdateServerDetailsRequest $request, Server $server): array
     {
         $server = $this->detailsModificationService->returnUpdatedModel()->handle(
-            $server, $request->validated()
+            $server,
+            $request->validated()
         );
 
         return $this->fractal->item($server)
@@ -65,11 +59,11 @@ class ServerDetailsController extends ApplicationApiController
      *
      * @param \Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerBuildConfigurationRequest $request
      * @param \Pterodactyl\Models\Server $server
-     *
      * @return array
      *
-     * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function build(UpdateServerBuildConfigurationRequest $request, Server $server): array
     {

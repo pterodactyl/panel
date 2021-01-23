@@ -1,15 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
-namespace Tests\Unit\Helpers;
+namespace Pterodactyl\Tests\Unit\Helpers;
 
-use Tests\TestCase;
+use Pterodactyl\Tests\TestCase;
 
 class IsDigitTest extends TestCase
 {

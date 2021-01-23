@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Cake\Chronos\Chronos;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
@@ -13,7 +11,9 @@ class DatabaseHostTransformer extends BaseTransformer
     /**
      * @var array
      */
-    protected $availableIncludes = ['databases', 'nodes'];
+    protected $availableIncludes = [
+        'databases',
+    ];
 
     /**
      * Return the resource name for the JSONAPI output.
@@ -29,7 +29,6 @@ class DatabaseHostTransformer extends BaseTransformer
      * Transform database host into a representation for the application API.
      *
      * @param \Pterodactyl\Models\DatabaseHost $model
-     *
      * @return array
      */
     public function transform(DatabaseHost $model)
@@ -41,62 +40,26 @@ class DatabaseHostTransformer extends BaseTransformer
             'port' => $model->port,
             'username' => $model->username,
             'node' => $model->node_id,
-            'created_at' => Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $model->created_at)
-                ->setTimezone(config('app.timezone'))
-                ->toIso8601String(),
-            'updated_at' => Chronos::createFromFormat(Chronos::DEFAULT_TO_STRING_FORMAT, $model->updated_at)
-                ->setTimezone(config('app.timezone'))
-                ->toIso8601String(),
+            'created_at' => $model->created_at->toIso8601String(),
+            'updated_at' => $model->updated_at->toIso8601String(),
         ];
     }
 
     /**
      * Include the databases associated with this host.
      *
-     * @param \Pterodactyl\Models\DatabaseHost $model
-     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeDatabases(DatabaseHost $model)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_SERVER_DATABASES)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_SERVER_DATABASES)) {
             return $this->null();
         }
 
         $model->loadMissing('databases');
 
-        return $this->collection(
-            $model->getRelation('databases'),
-            $this->makeTransformer(ServerDatabaseTransformer::class),
-            Database::RESOURCE_NAME
-        );
-    }
-
-
-
-    /**
-     * Return the nodes associated with this mount.
-     *
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
-    public function includeNodes(DatabaseHost $model)
-    {
-        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
-            return $this->null();
-        }
-
-        $model->loadMissing('nodes');
-
-        return $this->collection(
-            $model->getRelation('nodes'),
-            $this->makeTransformer(NodeTransformer::class),
-            Node::RESOURCE_NAME
-        );
+        return $this->collection($model->getRelation('databases'), $this->makeTransformer(ServerDatabaseTransformer::class), Database::RESOURCE_NAME);
     }
 }

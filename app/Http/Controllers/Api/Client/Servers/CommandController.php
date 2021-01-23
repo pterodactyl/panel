@@ -21,8 +21,6 @@ class CommandController extends ClientApiController
 
     /**
      * CommandController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Wings\DaemonCommandRepository $repository
      */
     public function __construct(DaemonCommandRepository $repository)
     {
@@ -33,10 +31,6 @@ class CommandController extends ClientApiController
 
     /**
      * Send a command to a running server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\SendCommandRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
@@ -52,9 +46,7 @@ class CommandController extends ClientApiController
                     $previous->getResponse() instanceof ResponseInterface
                     && $previous->getResponse()->getStatusCode() === Response::HTTP_BAD_GATEWAY
                 ) {
-                    throw new HttpException(
-                        Response::HTTP_BAD_GATEWAY, 'Server must be online in order to send commands.', $exception
-                    );
+                    throw new HttpException(Response::HTTP_BAD_GATEWAY, 'Server must be online in order to send commands.', $exception);
                 }
             }
 

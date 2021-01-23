@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Pterodactyl\Tests;
 
 use Illuminate\Contracts\Console\Kernel;
 

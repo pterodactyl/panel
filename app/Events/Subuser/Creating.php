@@ -25,8 +25,6 @@ class Creating
 
     /**
      * Create a new event instance.
-     *
-     * @param \Pterodactyl\Models\Subuser $subuser
      */
     public function __construct(Subuser $subuser)
     {

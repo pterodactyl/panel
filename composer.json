@@ -11,65 +11,60 @@
         }
     ],
     "require": {
-        "php": "^7.4",
+        "php": "^7.4 || ^8.0",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
-        "appstract/laravel-blade-directives": "^1.10",
         "aws/aws-sdk-php": "^3.171",
-        "cakephp/chronos": "^1.3",
         "doctrine/dbal": "^2.12",
         "fideloper/proxy": "^4.4",
-        "guzzlehttp/guzzle": "^6.5",
+        "guzzlehttp/guzzle": "^7.2",
         "hashids/hashids": "^4.1",
         "laracasts/utilities": "^3.2",
-        "laravel/framework": "^7.30",
+        "laravel/framework": "^8.22",
         "laravel/helpers": "^1.4",
         "laravel/tinker": "^2.5",
-        "laravel/ui": "^2.5",
-        "lcobucci/jwt": "^3.4",
+        "laravel/ui": "^3.0",
+        "lcobucci/jwt": "^4.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "league/flysystem-memory": "^1.0",
         "matriphe/iso-639": "^1.2",
         "pragmarx/google2fa": "^5.0",
         "predis/predis": "^1.1",
         "prologue/alerts": "^0.4",
-        "psy/psysh": "^0.10.5",
         "s1lentium/iptools": "^1.1",
         "spatie/laravel-fractal": "^5.8",
-        "spatie/laravel-query-builder": "^2.8",
-        "staudenmeir/belongs-to-through": "^2.10",
+        "spatie/laravel-query-builder": "^3.3",
+        "staudenmeir/belongs-to-through": "^2.11",
         "symfony/yaml": "^4.4",
         "webmozart/assert": "^1.9"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",
-        "barryvdh/laravel-ide-helper": "^2.8",
-        "codedungeon/phpunit-result-printer": "^0.28.0",
-        "friendsofphp/php-cs-fixer": "^2.17.3",
-        "fzaninotto/faker": "^1.9",
+        "barryvdh/laravel-ide-helper": "^2.9",
+        "facade/ignition": "^2.5",
+        "fakerphp/faker": "^1.13",
+        "friendsofphp/php-cs-fixer": "^2.18",
         "laravel/dusk": "^6.11",
         "mockery/mockery": "^1.4",
+        "nunomaduro/collision": "^5.2",
         "php-mock/php-mock-phpunit": "^2.6",
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.0"
     },
     "autoload": {
-        "classmap": [
-            "database"
-        ],
         "files": [
             "app/helpers.php"
         ],
         "psr-4": {
-            "Pterodactyl\\": "app/"
+            "Pterodactyl\\": "app/",
+            "Database\\Factories\\": "database/Factories/",
+            "Database\\Seeders\\": "database/Seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Pterodactyl\\Tests\\Browser\\": "tests/Browser",
-            "Pterodactyl\\Tests\\Integration\\": "tests/Integration",
-            "Tests\\": "tests/"
+            "Pterodactyl\\Tests\\": "tests/"
         }
     },
     "scripts": {

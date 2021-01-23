@@ -17,8 +17,6 @@ class ResourceUtilizationController extends ClientApiController
 
     /**
      * ResourceUtilizationController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $repository
      */
     public function __construct(DaemonServerRepository $repository)
     {
@@ -29,10 +27,6 @@ class ResourceUtilizationController extends ClientApiController
 
     /**
      * Return the current resource utilization for a server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */

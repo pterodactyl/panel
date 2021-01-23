@@ -8,8 +8,6 @@ class GetLocationRequest extends GetLocationsRequest
 {
     /**
      * Determine if the requested location exists on the Panel.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

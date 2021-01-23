@@ -32,10 +32,6 @@ class ApiKeyController extends ClientApiController
 
     /**
      * ApiKeyController constructor.
-     *
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Services\Api\KeyCreationService $keyCreationService
-     * @param \Pterodactyl\Repositories\Eloquent\ApiKeyRepository $repository
      */
     public function __construct(
         Encrypter $encrypter,
@@ -52,7 +48,6 @@ class ApiKeyController extends ClientApiController
     /**
      * Returns all of the API keys that exist for the given client.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\ClientApiRequest $request
      * @return array
      */
     public function index(ClientApiRequest $request)
@@ -65,7 +60,6 @@ class ApiKeyController extends ClientApiController
     /**
      * Store a new API key for a user's account.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest $request
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -74,9 +68,7 @@ class ApiKeyController extends ClientApiController
     public function store(StoreApiKeyRequest $request)
     {
         if ($request->user()->apiKeys->count() >= 5) {
-            throw new DisplayException(
-                'You have reached the account limit for number of API keys.'
-            );
+            throw new DisplayException('You have reached the account limit for number of API keys.');
         }
 
         $key = $this->keyCreationService->setKeyType(ApiKey::TYPE_ACCOUNT)->handle([
@@ -96,8 +88,6 @@ class ApiKeyController extends ClientApiController
     /**
      * Deletes a given API key.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\ClientApiRequest $request
-     * @param string $identifier
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(ClientApiRequest $request, string $identifier)
@@ -108,8 +98,8 @@ class ApiKeyController extends ClientApiController
             'identifier' => $identifier,
         ]);
 
-        if (! $response) {
-            throw new NotFoundHttpException;
+        if (!$response) {
+            throw new NotFoundHttpException();
         }
 
         return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);

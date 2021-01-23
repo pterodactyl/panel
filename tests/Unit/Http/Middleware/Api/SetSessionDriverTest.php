@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api;
+namespace Pterodactyl\Tests\Unit\Http\Middleware\Api;
 
 use Mockery as m;
 use Illuminate\Contracts\Config\Repository;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\SetSessionDriver;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 
 class SetSessionDriverTest extends MiddlewareTestCase
 {
@@ -36,8 +36,6 @@ class SetSessionDriverTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware with mocked dependencies for testing.
-     *
-     * @return \Pterodactyl\Http\Middleware\Api\SetSessionDriver
      */
     private function getMiddleware(): SetSessionDriver
     {

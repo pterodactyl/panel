@@ -37,9 +37,6 @@ class InfoCommand extends Command
 
     /**
      * VersionCommand constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $versionService
      */
     public function __construct(ConfigRepository $config, SoftwareVersionService $versionService)
     {
@@ -65,7 +62,7 @@ class InfoCommand extends Command
         $this->output->title('Application Configuration');
         $this->table([], [
             ['Environment', $this->formatText($this->config->get('app.env'), $this->config->get('app.env') === 'production' ?: 'bg=red')],
-            ['Debug Mode', $this->formatText($this->config->get('app.debug') ? 'Yes' : 'No', ! $this->config->get('app.debug') ?: 'bg=red')],
+            ['Debug Mode', $this->formatText($this->config->get('app.debug') ? 'Yes' : 'No', !$this->config->get('app.debug') ?: 'bg=red')],
             ['Installation URL', $this->config->get('app.url')],
             ['Installation Directory', base_path()],
             ['Timezone', $this->config->get('app.timezone')],
@@ -103,6 +100,7 @@ class InfoCommand extends Command
      *
      * @param string $value
      * @param string $opts
+     *
      * @return string
      */
     private function formatText($value, $opts = '')

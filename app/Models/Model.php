@@ -7,11 +7,14 @@ use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
 use Illuminate\Validation\Validator;
 use Illuminate\Contracts\Validation\Factory;
-use Illuminate\Database\Eloquent\Model as IlluminateModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Pterodactyl\Exceptions\Model\DataValidationException;
+use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 abstract class Model extends IlluminateModel
 {
+    use HasFactory;
+
     /**
      * Set to true to return immutable Carbon date instances from the model.
      *
@@ -57,7 +60,7 @@ abstract class Model extends IlluminateModel
         static::$validatorFactory = Container::getInstance()->make(Factory::class);
 
         static::saving(function (Model $model) {
-            if (! $model->validate()) {
+            if (!$model->validate()) {
                 throw new DataValidationException($model->getValidator());
             }
 
@@ -87,7 +90,10 @@ abstract class Model extends IlluminateModel
         $rules = $this->getKey() ? static::getRulesForUpdate($this) : static::getRules();
 
         return $this->validator ?: $this->validator = static::$validatorFactory->make(
-            [], $rules, [], []
+            [],
+            $rules,
+            [],
+            []
         );
     }
 
@@ -111,7 +117,7 @@ abstract class Model extends IlluminateModel
      * rather than just creating it.
      *
      * @param \Illuminate\Database\Eloquent\Model|int|string $id
-     * @param string $primaryKey
+     *
      * @return array
      */
     public static function getRulesForUpdate($id, string $primaryKey = 'id')
@@ -127,7 +133,7 @@ abstract class Model extends IlluminateModel
             // working model so we don't run into errors due to the way that field validation
             // works.
             foreach ($data as &$datum) {
-                if (! is_string($datum) || ! Str::startsWith($datum, 'unique')) {
+                if (!is_string($datum) || !Str::startsWith($datum, 'unique')) {
                     continue;
                 }
 
@@ -157,7 +163,8 @@ abstract class Model extends IlluminateModel
         // for that model. Doing this will return all of the attributes in a format that can
         // properly be validated.
             $this->addCastAttributesToArray(
-                $this->getAttributes(), $this->getMutatedAttributes()
+                $this->getAttributes(),
+                $this->getMutatedAttributes()
             )
         )->passes();
     }
@@ -166,11 +173,12 @@ abstract class Model extends IlluminateModel
      * Return a timestamp as DateTime object.
      *
      * @param mixed $value
+     *
      * @return \Illuminate\Support\Carbon|\Carbon\CarbonImmutable
      */
     protected function asDateTime($value)
     {
-        if (! $this->immutableDates) {
+        if (!$this->immutableDates) {
             return parent::asDateTime($value);
         }
 

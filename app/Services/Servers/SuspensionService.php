@@ -6,13 +6,12 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
 
 class SuspensionService
 {
-    const ACTION_SUSPEND = 'suspend';
-    const ACTION_UNSUSPEND = 'unsuspend';
+    public const ACTION_SUSPEND = 'suspend';
+    public const ACTION_UNSUSPEND = 'unsuspend';
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -26,9 +25,6 @@ class SuspensionService
 
     /**
      * SuspensionService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -41,7 +37,6 @@ class SuspensionService
     /**
      * Suspends a server on the system.
      *
-     * @param \Pterodactyl\Models\Server $server
      * @param string $action
      *
      * @throws \Throwable
@@ -59,8 +54,8 @@ class SuspensionService
         }
 
         // Check if the server is currently being transferred.
-        if (! is_null($server->transfer)) {
-            throw new ServerTransferringException;
+        if (!is_null($server->transfer)) {
+            throw new ServerTransferringException();
         }
 
         $this->connection->transaction(function () use ($action, $server) {

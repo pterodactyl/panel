@@ -16,8 +16,6 @@ class ServerVariableTransformer extends BaseTransformer
 
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -27,7 +25,6 @@ class ServerVariableTransformer extends BaseTransformer
     /**
      * Return a generic transformed server variable array.
      *
-     * @param \Pterodactyl\Models\EggVariable $variable
      * @return array
      */
     public function transform(EggVariable $variable)
@@ -38,13 +35,13 @@ class ServerVariableTransformer extends BaseTransformer
     /**
      * Return the parent service variable data.
      *
-     * @param \Pterodactyl\Models\EggVariable $variable
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeParent(EggVariable $variable)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_EGGS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_EGGS)) {
             return $this->null();
         }
 

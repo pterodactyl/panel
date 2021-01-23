@@ -17,28 +17,26 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 /**
- * @property int $id
- * @property string|null $external_id
- * @property string $uuid
- * @property string $username
- * @property string $email
- * @property string|null $name_first
- * @property string|null $name_last
- * @property string $password
- * @property string|null $remember_token
- * @property string $language
- * @property bool $root_admin
- * @property bool $use_totp
- * @property string|null $totp_secret
- * @property \Carbon\Carbon|null $totp_authenticated_at
- * @property bool $gravatar
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @property string $name
- * @property \Pterodactyl\Models\AdminRole $adminRole
- * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property int                                                                          $id
+ * @property string|null                                                                  $external_id
+ * @property string                                                                       $uuid
+ * @property string                                                                       $username
+ * @property string                                                                       $email
+ * @property string|null                                                                  $name_first
+ * @property string|null                                                                  $name_last
+ * @property string                                                                       $password
+ * @property string|null                                                                  $remeber_token
+ * @property string                                                                       $language
+ * @property bool                                                                         $root_admin
+ * @property bool                                                                         $use_totp
+ * @property string|null                                                                  $totp_secret
+ * @property \Carbon\Carbon|null                                                          $totp_authenticated_at
+ * @property bool                                                                         $gravatar
+ * @property \Carbon\Carbon                                                               $created_at
+ * @property \Carbon\Carbon                                                               $updated_at
+ * @property string                                                                       $name
+ * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection        $apiKeys
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection        $servers
  * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
  */
 class User extends Model implements
@@ -52,14 +50,14 @@ class User extends Model implements
     use CanResetPassword;
     use Notifiable;
 
-    const USER_LEVEL_USER = 0;
-    const USER_LEVEL_ADMIN = 1;
+    public const USER_LEVEL_USER = 0;
+    public const USER_LEVEL_ADMIN = 1;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'user';
+    public const RESOURCE_NAME = 'user';
 
     /**
      * Level of servers to display when using access() on a user.
@@ -158,16 +156,14 @@ class User extends Model implements
     {
         $rules = parent::getRules();
 
-        $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
-        $rules['username'][] = new Username;
+        $rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
+        $rules['username'][] = new Username();
 
         return $rules;
     }
 
     /**
      * Return the user model in a format that can be passed over to Vue templates.
-     *
-     * @return array
      */
     public function toReactObject(): array
     {
@@ -190,8 +186,6 @@ class User extends Model implements
 
     /**
      * Store the username as a lowercase string.
-     *
-     * @param string $value
      */
     public function setUsernameAttribute(string $value)
     {

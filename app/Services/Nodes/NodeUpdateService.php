@@ -5,11 +5,9 @@ namespace Pterodactyl\Services\Nodes;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Facades\Log;
-use GuzzleHttp\Exception\ConnectException;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Daemon\ConfigurationRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
@@ -38,11 +36,6 @@ class NodeUpdateService
 
     /**
      * UpdateService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository $configurationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -59,11 +52,8 @@ class NodeUpdateService
     /**
      * Update the configuration values for a given node on the machine.
      *
-     * @param \Pterodactyl\Models\Node $node
-     * @param array $data
-     * @param bool $resetToken
-     *
      * @return \Pterodactyl\Models\Node
+     *
      * @throws \Throwable
      */
     public function handle(Node $node, array $data, bool $resetToken = false)
@@ -101,7 +91,7 @@ class NodeUpdateService
                 // inject their own response pages, causing this logic to get fucked up.
                 //
                 // @see https://github.com/pterodactyl/panel/issues/2712
-                return [ $updated, true ];
+                return [$updated, true];
             }
 
             return [$updated, false];

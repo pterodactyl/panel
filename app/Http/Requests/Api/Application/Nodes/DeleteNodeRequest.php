@@ -21,8 +21,6 @@ class DeleteNodeRequest extends ApplicationApiRequest
     /**
      * Determine if the node being requested for editing exists
      * on the Panel before validating the data.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

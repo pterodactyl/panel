@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits;
+namespace Pterodactyl\Tests\Traits;
 
 use Mockery;
 use Mockery\MockInterface;
@@ -22,8 +22,7 @@ trait MocksRequestException
      * Configure the exception mock to work with the Panel's default exception
      * handler actions.
      *
-     * @param string $abstract
-     * @param null   $response
+     * @param null $response
      */
     protected function configureExceptionMock(string $abstract = RequestException::class, $response = null)
     {
@@ -32,9 +31,6 @@ trait MocksRequestException
 
     /**
      * Return a mocked instance of the request exception.
-     *
-     * @param string $abstract
-     * @return \Mockery\MockInterface
      */
     protected function getExceptionMock(string $abstract = RequestException::class): MockInterface
     {

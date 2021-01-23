@@ -16,8 +16,6 @@ class UserTransformer extends BaseTransformer
 
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {
@@ -26,9 +24,6 @@ class UserTransformer extends BaseTransformer
 
     /**
      * Return a transformed User model that can be consumed by external services.
-     *
-     * @param \Pterodactyl\Models\User $model
-     * @return array
      */
     public function transform(User $model): array
     {
@@ -53,8 +48,6 @@ class UserTransformer extends BaseTransformer
     /**
      * Return the servers associated with this user.
      *
-     * @param \Pterodactyl\Models\User $user
-     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
@@ -62,7 +55,7 @@ class UserTransformer extends BaseTransformer
      */
     public function includeServers(User $user)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();
         }
 

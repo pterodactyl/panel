@@ -18,8 +18,6 @@ class StartupController extends ApplicationApiController
 
     /**
      * StartupController constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\StartupModificationService $modificationService
      */
     public function __construct(StartupModificationService $modificationService)
     {
@@ -31,11 +29,10 @@ class StartupController extends ApplicationApiController
     /**
      * Update the startup and environment settings for a specific server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerStartupRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     *
-     * @return array
-     * @throws \Throwable
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index(UpdateServerStartupRequest $request, Server $server): array
     {
