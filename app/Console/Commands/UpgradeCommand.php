@@ -35,11 +35,14 @@ class UpgradeCommand extends Command
     public function handle()
     {
         $skipDownload = $this->option('skip-download');
-
         if (!$skipDownload) {
             $this->output->warning('This command does not verify the integrity of downloaded assets. Please ensure that you trust the download source before continuing. If you do not wish to download an archive, please indicate that using the --skip-download flag, or answering "no" to the question below.');
             $this->output->comment('Download Source (set with --url=):');
             $this->line($this->getUrl());
+        }
+
+        if (version_compare(PHP_VERSION, '7.4.0') < 0) {
+            $this->error('Cannot execute self-upgrade process. The minimum required PHP version required is 7.4.0, you have [' . PHP_VERSION . '].');
         }
 
         $user = 'www-data';
