@@ -12,19 +12,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerDatabaseRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_SERVER_DATABASES;
+    protected string $resource = AdminAcl::RESOURCE_SERVER_DATABASES;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * Validation rules for database creation.
-     */
     public function rules(): array
     {
         $server = $this->route()->parameter('server');
@@ -44,12 +34,7 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
         ];
     }
 
-    /**
-     * Return data formatted in the correct format for the service to consume.
-     *
-     * @return array
-     */
-    public function validated()
+    public function validated(): array
     {
         return [
             'database' => $this->input('database'),
@@ -58,12 +43,7 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
         ];
     }
 
-    /**
-     * Format error messages in a more understandable format for API output.
-     *
-     * @return array
-     */
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'host' => 'Database Host Server ID',
@@ -72,9 +52,6 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
         ];
     }
 
-    /**
-     * Returns the database name in the expected format.
-     */
     public function databaseName(): string
     {
         $server = $this->route()->parameter('server');

@@ -10,24 +10,10 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetExternalServerRequest extends ApplicationApiRequest
 {
-    /**
-     * @var \Pterodactyl\Models\Server
-     */
-    private $serverModel;
+    private Server $serverModel;
+    protected string $resource = AdminAcl::RESOURCE_SERVERS;
+    protected int $permission = AdminAcl::READ;
 
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_SERVERS;
-
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::READ;
-
-    /**
-     * Determine if the requested external user exists.
-     */
     public function resourceExists(): bool
     {
         $repository = $this->container->make(ServerRepositoryInterface::class);
@@ -43,9 +29,6 @@ class GetExternalServerRequest extends ApplicationApiRequest
         return true;
     }
 
-    /**
-     * Return the server model for the requested external server.
-     */
     public function getServerModel(): Server
     {
         return $this->serverModel;

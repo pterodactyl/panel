@@ -10,7 +10,6 @@ namespace Pterodactyl\Models;
  * @property string                  $username
  * @property string                  $password
  * @property int|null                $max_databases
- * @property int|null                $node_id
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
  */
@@ -81,15 +80,5 @@ class DatabaseHost extends Model
     public function databases()
     {
         return $this->hasMany(Database::class);
-    }
-
-    /**
-     * Gets the nodes associated with a database host.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function nodes()
-    {
-        return $this->belongsToMany(Node::class);
     }
 }

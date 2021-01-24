@@ -64,10 +64,8 @@ abstract class ApplicationApiController extends Controller
     {
         /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->make($abstract);
-
-        $apiKey = $this->request->attributes->get('api_key');
-        $transformer->setKey($this->request->attributes->get('api_key'));
         $transformer->setRootAdmin($this->request->user()->root_admin);
+        $transformer->setKey($this->request->attributes->get('api_key'));
 
         Assert::isInstanceOf($transformer, BaseTransformer::class);
 

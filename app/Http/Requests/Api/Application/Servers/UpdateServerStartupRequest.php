@@ -8,22 +8,12 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class UpdateServerStartupRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_SERVERS;
+    protected string $resource = AdminAcl::RESOURCE_SERVERS;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * Validation rules to run the input against.
-     */
     public function rules(): array
     {
-        $data = Server::getRulesForUpdate($this->getModel(Server::class));
+        $data = Server::getRulesForUpdate($this->route()->parameter('server')->id);
 
         return [
             'startup' => $data['startup'],
@@ -34,12 +24,7 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
         ];
     }
 
-    /**
-     * Return the validated data in a format that is expected by the service.
-     *
-     * @return array
-     */
-    public function validated()
+    public function validated(): array
     {
         $data = parent::validated();
 
