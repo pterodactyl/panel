@@ -8,15 +8,8 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreNodeRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_NODES;
-
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
+    protected string $resource = AdminAcl::RESOURCE_NODES;
+    protected int $permission = AdminAcl::WRITE;
 
     /**
      * Validation rules to apply to this request.

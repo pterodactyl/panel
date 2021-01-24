@@ -7,23 +7,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class MountNodesRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_MOUNTS;
+    protected string $resource = AdminAcl::RESOURCE_MOUNTS;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * ?
-     *
-     * @param array|null $rules
-     *
-     * @return array
-     */
     public function rules(array $rules = null): array
     {
         return $rules ?? ['nodes' => 'required|exists:nodes,id'];

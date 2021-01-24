@@ -8,23 +8,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreNestRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_NESTS;
+    protected string $resource = AdminAcl::RESOURCE_NESTS;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * ?
-     *
-     * @param array|null $rules
-     *
-     * @return array
-     */
     public function rules(array $rules = null): array
     {
         return $rules ?? Nest::getRules();

@@ -7,13 +7,6 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetEggsRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_EGGS;
-
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::READ;
+    protected string $resource = AdminAcl::RESOURCE_EGGS;
+    protected int $permission = AdminAcl::READ;
 }

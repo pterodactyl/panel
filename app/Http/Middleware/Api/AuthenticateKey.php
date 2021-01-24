@@ -16,20 +16,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateKey
 {
-    /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    private $auth;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
-     */
-    private $repository;
+    private AuthManager $auth;
+    private Encrypter $encrypter;
+    private ApiKeyRepositoryInterface $repository;
 
     /**
      * AuthenticateKey constructor.

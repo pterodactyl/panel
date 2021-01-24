@@ -7,13 +7,6 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetMountsRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = Acl::RESOURCE_MOUNTS;
-
-    /**
-     * @var int
-     */
-    protected $permission = Acl::READ;
+    protected string $resource = Acl::RESOURCE_MOUNTS;
+    protected int $permission = Acl::READ;
 }

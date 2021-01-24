@@ -27,7 +27,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
                 ['object', 'attributes' => ['id', 'short', 'long', 'created_at', 'updated_at']],
                 ['object', 'attributes' => ['id', 'short', 'long', 'created_at', 'updated_at']],
             ],
-            'meta' => ['pagination' => ['total', 'count', 'per_page', 'current_page', 'total_pages']],
+            'meta' => ['pagination' => ['total', 'count', 'per_page', 'current_page', 'total_pages', 'links']],
         ]);
 
         $response
@@ -38,9 +38,10 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
                     'pagination' => [
                         'total' => 2,
                         'count' => 2,
-                        'per_page' => 100,
+                        'per_page' => 10,
                         'current_page' => 1,
                         'total_pages' => 1,
+                        'links' => [],
                     ],
                 ],
             ])

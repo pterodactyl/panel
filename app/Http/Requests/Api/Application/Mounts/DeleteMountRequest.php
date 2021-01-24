@@ -8,21 +8,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class DeleteMountRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_MOUNTS;
+    protected string $resource = AdminAcl::RESOURCE_MOUNTS;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * Determine if the requested mount exists on the Panel.
-     *
-     * @return bool
-     */
     public function resourceExists(): bool
     {
         $mount = $this->route()->parameter('mount');

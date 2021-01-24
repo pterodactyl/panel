@@ -7,13 +7,6 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetNodesRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_NODES;
-
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::READ;
+    protected string $resource = AdminAcl::RESOURCE_NODES;
+    protected int $permission = AdminAcl::READ;
 }

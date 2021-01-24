@@ -8,21 +8,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class DeleteNestRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_NESTS;
+    protected string $resource = AdminAcl::RESOURCE_NESTS;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * Determine if the requested nest exists on the Panel.
-     *
-     * @return bool
-     */
     public function resourceExists(): bool
     {
         $nest = $this->route()->parameter('nest');

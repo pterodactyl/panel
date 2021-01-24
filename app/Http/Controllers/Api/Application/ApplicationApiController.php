@@ -7,6 +7,7 @@ use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Log;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
@@ -45,9 +46,6 @@ abstract class ApplicationApiController extends Controller
     /**
      * Perform dependency injection of certain classes needed for core functionality
      * without littering the constructors of classes that extend this abstract.
-     *
-     * @param \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal $fractal
-     * @param \Illuminate\Http\Request $request
      */
     public function loadDependencies(Fractal $fractal, Request $request)
     {
@@ -58,17 +56,18 @@ abstract class ApplicationApiController extends Controller
     /**
      * Return an instance of an application transformer.
      *
-     * @param string $abstract
-     *
      * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getTransformer(string $abstract)
     {
         /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->make($abstract);
-        $transformer->setRootAdmin($this->request->user()->root_admin);
+
+        $apiKey = $this->request->attributes->get('api_key');
         $transformer->setKey($this->request->attributes->get('api_key'));
+        $transformer->setRootAdmin($this->request->user()->root_admin);
 
         Assert::isInstanceOf($transformer, BaseTransformer::class);
 
@@ -77,8 +76,6 @@ abstract class ApplicationApiController extends Controller
 
     /**
      * Return a HTTP/204 response for the API.
-     *
-     * @return \Illuminate\Http\Response
      */
     protected function returnNoContent(): Response
     {

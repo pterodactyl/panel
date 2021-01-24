@@ -17,20 +17,12 @@ abstract class BaseTransformer extends TransformerAbstract
 {
     public const RESPONSE_TIMEZONE = 'UTC';
 
-    /**
-     * @var \Pterodactyl\Models\ApiKey
-     */
     private ApiKey $key;
 
-    /**
-     * @var bool
-     */
     private bool $rootAdmin;
 
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     abstract public function getResourceName(): string;
 
@@ -48,8 +40,6 @@ abstract class BaseTransformer extends TransformerAbstract
     /**
      * Set the HTTP request class being used for this request.
      *
-     * @param \Pterodactyl\Models\ApiKey $key
-     *
      * @return $this
      */
     public function setKey(ApiKey $key)
@@ -61,8 +51,6 @@ abstract class BaseTransformer extends TransformerAbstract
 
     /**
      * Return the request instance being used for this transformer.
-     *
-     * @return \Pterodactyl\Models\ApiKey
      */
     public function getKey(): ApiKey
     {
@@ -71,8 +59,6 @@ abstract class BaseTransformer extends TransformerAbstract
 
     /**
      * ?
-     *
-     * @param bool $rootAdmin
      *
      * @return $this
      */
@@ -85,8 +71,6 @@ abstract class BaseTransformer extends TransformerAbstract
 
     /**
      * ?
-     *
-     * @return bool
      */
     public function isRootAdmin(): bool
     {
@@ -97,10 +81,6 @@ abstract class BaseTransformer extends TransformerAbstract
      * Determine if the API key loaded onto the transformer has permission
      * to access a different resource. This is used when including other
      * models on a transformation request.
-     *
-     * @param string $resource
-     *
-     * @return bool
      */
     protected function authorize(string $resource): bool
     {
@@ -115,9 +95,6 @@ abstract class BaseTransformer extends TransformerAbstract
      * Create a new instance of the transformer and pass along the currently
      * set API key.
      *
-     * @param string $abstract
-     * @param array $parameters
-     *
      * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
@@ -129,7 +106,7 @@ abstract class BaseTransformer extends TransformerAbstract
         $transformer = Container::getInstance()->makeWith($abstract, $parameters);
         $transformer->setKey($this->getKey());
 
-        if (! $transformer instanceof self) {
+        if (!$transformer instanceof self) {
             throw new InvalidTransformerLevelException('Calls to ' . __METHOD__ . ' must return a transformer that is an instance of ' . __CLASS__);
         }
 
@@ -138,10 +115,6 @@ abstract class BaseTransformer extends TransformerAbstract
 
     /**
      * Return an ISO-8601 formatted timestamp to use in the API response.
-     *
-     * @param string $timestamp
-     *
-     * @return string
      */
     protected function formatTimestamp(string $timestamp): string
     {

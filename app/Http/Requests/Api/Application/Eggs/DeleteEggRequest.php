@@ -8,19 +8,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class DeleteEggRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_EGGS;
+    protected string $resource = AdminAcl::RESOURCE_EGGS;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * Determine if the requested egg exists for the selected nest.
-     */
     public function resourceExists(): bool
     {
         $egg = $this->route()->parameter('egg');

@@ -7,13 +7,6 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetNestsRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_NESTS;
-
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::READ;
+    protected string $resource = AdminAcl::RESOURCE_NESTS;
+    protected int $permission = AdminAcl::READ;
 }

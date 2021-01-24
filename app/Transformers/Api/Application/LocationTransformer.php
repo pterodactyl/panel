@@ -41,6 +41,7 @@ class LocationTransformer extends BaseTransformer
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Location $location)
@@ -59,7 +60,9 @@ class LocationTransformer extends BaseTransformer
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+
      */
     public function includeNodes(Location $location)
     {

@@ -7,13 +7,6 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetRolesRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = Acl::RESOURCE_ROLES;
-
-    /**
-     * @var int
-     */
-    protected $permission = Acl::READ;
+    protected string $resource = Acl::RESOURCE_ROLES;
+    protected int $permission = Acl::READ;
 }

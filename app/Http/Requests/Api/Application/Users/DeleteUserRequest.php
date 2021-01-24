@@ -8,19 +8,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class DeleteUserRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_USERS;
+    protected string $resource = AdminAcl::RESOURCE_USERS;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * Determine if the requested user exists on the Panel.
-     */
     public function resourceExists(): bool
     {
         $user = $this->route()->parameter('user');

@@ -8,19 +8,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class DeleteLocationRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_LOCATIONS;
+    protected string $resource = AdminAcl::RESOURCE_LOCATIONS;
+    protected int $permission = AdminAcl::WRITE;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * Determine if the requested location exists on the Panel.
-     */
     public function resourceExists(): bool
     {
         $location = $this->route()->parameter('location');

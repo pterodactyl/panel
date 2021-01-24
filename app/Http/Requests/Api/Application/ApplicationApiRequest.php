@@ -15,10 +15,8 @@ abstract class ApplicationApiRequest extends FormRequest
     /**
      * Tracks if the request has been validated internally or not to avoid
      * making duplicate validation calls.
-     *
-     * @var bool
      */
-    private $hasValidated = false;
+    private bool $hasValidated = false;
 
     /**
      * The resource that should be checked when performing the authorization
@@ -26,7 +24,7 @@ abstract class ApplicationApiRequest extends FormRequest
      *
      * @var string|null
      */
-    protected $resource;
+    protected string $resource;
 
     /**
      * The permission level that a given API key should have for accessing
@@ -34,7 +32,7 @@ abstract class ApplicationApiRequest extends FormRequest
      *
      * @var int
      */
-    protected $permission = AdminAcl::NONE;
+    protected int $permission = AdminAcl::NONE;
 
     /**
      * Determine if the current user is authorized to perform
@@ -48,7 +46,7 @@ abstract class ApplicationApiRequest extends FormRequest
             throw new PterodactylException('An ACL resource must be defined on API requests.');
         }
 
-        if (! is_null($this->user())) {
+        if ($this->key()->key_type === ApiKey::TYPE_ACCOUNT) {
             return $this->user()->root_admin;
         }
 

@@ -10,24 +10,10 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetExternalUserRequest extends ApplicationApiRequest
 {
-    /**
-     * @var User
-     */
-    private $userModel;
+    private User $userModel;
+    protected string $resource = AdminAcl::RESOURCE_USERS;
+    protected int $permission = AdminAcl::READ;
 
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_USERS;
-
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::READ;
-
-    /**
-     * Determine if the requested external user exists.
-     */
     public function resourceExists(): bool
     {
         $repository = $this->container->make(UserRepositoryInterface::class);
@@ -43,9 +29,6 @@ class GetExternalUserRequest extends ApplicationApiRequest
         return true;
     }
 
-    /**
-     * Return the user model for the requested external user.
-     */
     public function getUserModel(): User
     {
         return $this->userModel;

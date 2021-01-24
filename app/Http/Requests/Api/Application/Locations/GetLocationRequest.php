@@ -6,9 +6,6 @@ use Pterodactyl\Models\Location;
 
 class GetLocationRequest extends GetLocationsRequest
 {
-    /**
-     * Determine if the requested location exists on the Panel.
-     */
     public function resourceExists(): bool
     {
         $location = $this->route()->parameter('location');
