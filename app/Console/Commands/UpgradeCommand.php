@@ -10,11 +10,13 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 class UpgradeCommand extends Command
 {
-    /** @var string */
-    protected $signature = 'p:upgrade {--force}';
+    protected const DEFAULT_URL = 'https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz';
 
     /** @var string */
-    protected $description = 'Executes the commands necessary for getting Pterodactyl operational after installing new files.';
+    protected $signature = 'p:upgrade {--url=} {--skip-download}';
+
+    /** @var string */
+    protected $description = 'Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.';
 
     /**
      * Executes an upgrade command which will run through all of our standard
@@ -28,15 +30,38 @@ class UpgradeCommand extends Command
      */
     public function handle()
     {
+        $skipDownload = $this->option('skip-download');
+
+        if (!$skipDownload) {
+            $this->output->warning('This command does not verify the integrity of downloaded assets. Please ensure that you trust the download source before continuing. If you do not wish to download an archive, please indicate that using the --skip-download flag, or answering "no" to the question below.');
+            $this->output->comment('Download Source (set with --url=):');
+            $this->line($this->option('url') ?? self::DEFAULT_URL);
+        }
+
         if ($this->input->isInteractive()) {
+            if (!$skipDownload) {
+                $skipDownload = !$this->confirm('Would you like to download and unpack the archive files for the latest version?', true);
+            }
+
             if (!$this->confirm('Are you sure you want to run the upgrade process for your Panel?')) {
                 return;
             }
         }
 
         ini_set('output_buffering', 0);
-        $bar = $this->output->createProgressBar(8);
+        $bar = $this->output->createProgressBar($skipDownload ? 8 : 9);
         $bar->start();
+
+        if (!$skipDownload) {
+            $this->withProgress($bar, function () {
+                $url = $this->option('url') ?? self::DEFAULT_URL;
+                $this->line("\$upgrader> curl -L \"$url\" | tar -xzv");
+                $process = Process::fromShellCommandline("curl -L \"$url\" | tar -xzvf");
+                $process->run(function ($type, $buffer) {
+                    $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
+                });
+            });
+        }
 
         $this->withProgress($bar, function () {
             $this->line('$upgrader> php artisan down');
