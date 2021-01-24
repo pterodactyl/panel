@@ -10,10 +10,13 @@ use Symfony\Component\Console\Helper\ProgressBar;
 
 class UpgradeCommand extends Command
 {
-    protected const DEFAULT_URL = 'https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz';
+    protected const DEFAULT_URL = 'https://github.com/pterodactyl/panel/releases/%s/panel.tar.gz';
 
     /** @var string */
-    protected $signature = 'p:upgrade {--url=} {--skip-download}';
+    protected $signature = 'p:upgrade
+        {--url= : The specific archive to download.}
+        {--release= : A specific Pterodactyl version to download from GitHub. Leave blank to use latest.}
+        {--skip-download : If set no archive will be downloaded.}';
 
     /** @var string */
     protected $description = 'Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.';
@@ -35,7 +38,7 @@ class UpgradeCommand extends Command
         if (!$skipDownload) {
             $this->output->warning('This command does not verify the integrity of downloaded assets. Please ensure that you trust the download source before continuing. If you do not wish to download an archive, please indicate that using the --skip-download flag, or answering "no" to the question below.');
             $this->output->comment('Download Source (set with --url=):');
-            $this->line($this->option('url') ?? self::DEFAULT_URL);
+            $this->line($this->getUrl());
         }
 
         if ($this->input->isInteractive()) {
@@ -54,9 +57,8 @@ class UpgradeCommand extends Command
 
         if (!$skipDownload) {
             $this->withProgress($bar, function () {
-                $url = $this->option('url') ?? self::DEFAULT_URL;
-                $this->line("\$upgrader> curl -L \"$url\" | tar -xzv");
-                $process = Process::fromShellCommandline("curl -L \"$url\" | tar -xzvf");
+                $this->line("\$upgrader> curl -L \"{$this->getUrl()}\" | tar -xzv");
+                $process = Process::fromShellCommandline("curl -L \"{$this->getUrl()}\" | tar -xzvf");
                 $process->run(function ($type, $buffer) {
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
                 });
@@ -132,5 +134,14 @@ class UpgradeCommand extends Command
         $callback();
         $bar->advance();
         $bar->display();
+    }
+
+    protected function getUrl(): string
+    {
+        if ($this->option('url')) {
+            return $this->option('url');
+        }
+
+        return sprintf(self::DEFAULT_URL, $this->option('release') ? 'download/v' . $this->option('release') : 'latest/download');
     }
 }
