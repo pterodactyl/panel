@@ -105,6 +105,7 @@ class UpgradeCommand extends Command
 
             $this->line('$upgrader> ' . implode(' ', $command));
             $process = new Process($command);
+            $process->setTimeout(10 * 60);
             $process->run(function ($type, $buffer) {
                 $this->line($buffer);
             });
@@ -134,7 +135,8 @@ class UpgradeCommand extends Command
 
         $this->withProgress($bar, function () use ($user) {
             $this->line("\$upgrader> chown -R {$user}:{$user} *");
-            $process = Process::fromShellCommandline("chown -R {$user}:{$user} *");
+            $process = Process::fromShellCommandline("chown -R {$user}:{$user} *", $this->getLaravel()->basePath());
+            $process->setTimeout(10 * 60);
             $process->run(function ($type, $buffer) {
                 $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
             });
