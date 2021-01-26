@@ -8,49 +8,48 @@ use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
 
 /**
- * @property int $id
- * @property string|null $external_id
- * @property string $uuid
- * @property string $uuidShort
- * @property int $node_id
- * @property string $name
- * @property string $description
- * @property string|null $status
- * @property bool $skip_scripts
- * @property int $owner_id
- * @property int $memory
- * @property int $swap
- * @property int $disk
- * @property int $io
- * @property int $cpu
- * @property string $threads
- * @property bool $oom_disabled
- * @property int $allocation_id
- * @property int $nest_id
- * @property int $egg_id
- * @property string $startup
- * @property string $image
- * @property int $allocation_limit
- * @property int $database_limit
- * @property int $backup_limit
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @property \Pterodactyl\Models\User $user
- * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subusers
- * @property \Pterodactyl\Models\Allocation $allocation
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
- * @property \Pterodactyl\Models\Node $node
- * @property \Pterodactyl\Models\Nest $nest
- * @property \Pterodactyl\Models\Egg $egg
+ * @property int                                                                        $id
+ * @property string|null                                                                $external_id
+ * @property string                                                                     $uuid
+ * @property string                                                                     $uuidShort
+ * @property int                                                                        $node_id
+ * @property string                                                                     $name
+ * @property string                                                                     $description
+ * @property string|null                                                                $status
+ * @property bool                                                                       $skip_scripts
+ * @property int                                                                        $owner_id
+ * @property int                                                                        $memory
+ * @property int                                                                        $swap
+ * @property int                                                                        $disk
+ * @property int                                                                        $io
+ * @property int                                                                        $cpu
+ * @property string                                                                     $threads
+ * @property bool                                                                       $oom_disabled
+ * @property int                                                                        $allocation_id
+ * @property int                                                                        $nest_id
+ * @property int                                                                        $egg_id
+ * @property string                                                                     $startup
+ * @property string                                                                     $image
+ * @property int                                                                        $allocation_limit
+ * @property int                                                                        $database_limit
+ * @property int                                                                        $backup_limit
+ * @property \Carbon\Carbon                                                             $created_at
+ * @property \Carbon\Carbon                                                             $updated_at
+ * @property \Pterodactyl\Models\User                                                   $user
+ * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection     $subusers
+ * @property \Pterodactyl\Models\Allocation                                             $allocation
+ * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection  $allocations
+ * @property \Pterodactyl\Models\Node                                                   $node
+ * @property \Pterodactyl\Models\Nest                                                   $nest
+ * @property \Pterodactyl\Models\Egg                                                    $egg
  * @property \Pterodactyl\Models\EggVariable[]|\Illuminate\Database\Eloquent\Collection $variables
- * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection $schedule
- * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
- * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\ServerTransfer $transfer
- * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
- * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
- * @property \Pterodactyl\Models\AuditLog[] $audits
+ * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection    $schedule
+ * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection    $databases
+ * @property \Pterodactyl\Models\Location                                               $location
+ * @property \Pterodactyl\Models\ServerTransfer                                         $transfer
+ * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection      $backups
+ * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection       $mounts
+ * @property \Pterodactyl\Models\AuditLog[]                                             $audits
  */
 class Server extends Model
 {
@@ -63,10 +62,10 @@ class Server extends Model
      */
     public const RESOURCE_NAME = 'server';
 
-    const STATUS_INSTALLING = 'installing';
-    const STATUS_INSTALL_FAILED = 'install_failed';
-    const STATUS_SUSPENDED = 'suspended';
-    const STATUS_RESTORING_BACKUP = 'restoring_backup';
+    public const STATUS_INSTALLING = 'installing';
+    public const STATUS_INSTALL_FAILED = 'install_failed';
+    public const STATUS_SUSPENDED = 'suspended';
+    public const STATUS_RESTORING_BACKUP = 'restoring_backup';
 
     /**
      * The table associated with the model.
@@ -332,8 +331,6 @@ class Server extends Model
      * Returns a fresh AuditLog model for the server. This model is not saved to the
      * database when created, so it is up to the caller to correctly store it as needed.
      *
-     * @param string $action
-     * @param array $metadata
      * @return \Pterodactyl\Models\AuditLog
      */
     public function newAuditEvent(string $action, array $metadata = []): AuditLog
@@ -352,9 +349,8 @@ class Server extends Model
      *
      * The response from the callback is returned to the caller.
      *
-     * @param string $action
-     * @param \Closure $callback
      * @return mixed
+     *
      * @throws \Throwable
      */
     public function audit(string $action, Closure $callback)

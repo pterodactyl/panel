@@ -75,16 +75,13 @@ class FileController extends ClientApiController
     /**
      * Return the contents of a specified file for the user.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\GetFileContentsRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Throwable
      */
     public function contents(GetFileContentsRequest $request, Server $server): Response
     {
         $response = $this->fileRepository->setServer($server)->getContent(
-            $request->get('file'), config('pterodactyl.files.max_edit_size')
+            $request->get('file'),
+            config('pterodactyl.files.max_edit_size')
         );
 
         return new Response($response, Response::HTTP_OK, ['Content-Type' => 'text/plain']);
@@ -146,10 +143,6 @@ class FileController extends ClientApiController
     /**
      * Creates a new folder on the server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\CreateFolderRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
     public function create(CreateFolderRequest $request, Server $server): JsonResponse
@@ -168,10 +161,6 @@ class FileController extends ClientApiController
 
     /**
      * Renames a file on the remote machine.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Files\RenameFileRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
      */
@@ -220,7 +209,8 @@ class FileController extends ClientApiController
 
             return $this->fileRepository->setServer($server)
                 ->compressFiles(
-                    $request->input('root'), $request->input('files')
+                    $request->input('root'),
+                    $request->input('files')
                 );
         });
 
@@ -259,7 +249,8 @@ class FileController extends ClientApiController
 
             $this->fileRepository->setServer($server)
                 ->deleteFiles(
-                    $request->input('root'), $request->input('files')
+                    $request->input('root'),
+                    $request->input('files')
                 );
         });
 

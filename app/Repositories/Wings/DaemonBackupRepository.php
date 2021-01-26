@@ -56,11 +56,6 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Sends a request to Wings to begin restoring a backup for a server.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @param string|null $url
-     * @param bool $truncate
-     * @return \Psr\Http\Message\ResponseInterface
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function restore(Backup $backup, string $url = null, bool $truncate = false): ResponseInterface

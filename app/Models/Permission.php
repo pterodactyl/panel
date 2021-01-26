@@ -157,7 +157,7 @@ class Permission extends Model
                 'read' => 'Allows a user to view all backups that exist for this server.',
                 'delete' => 'Allows a user to remove backups from the system.',
                 'download' => 'Allows a user to download a backup for the server. Danger: this allows a user to access all files for the server in the backup.',
-                'restore' => 'Allows a user to restore a backup for the server. Danger: this allows the user to delete all of the server files in the process.'
+                'restore' => 'Allows a user to restore a backup for the server. Danger: this allows the user to delete all of the server files in the process.',
             ],
         ],
 

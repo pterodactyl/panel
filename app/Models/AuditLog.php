@@ -7,38 +7,37 @@ use Illuminate\Http\Request;
 use Illuminate\Container\Container;
 
 /**
- * @property int $id
- * @property string $uuid
- * @property bool $is_system
- * @property int|null $user_id
- * @property int|null $server_id
- * @property string $action
- * @property string|null $subaction
- * @property array $device
- * @property array $metadata
- * @property \Carbon\CarbonImmutable $created_at
- *
- * @property \Pterodactyl\Models\User|null $user
+ * @property int                             $id
+ * @property string                          $uuid
+ * @property bool                            $is_system
+ * @property int|null                        $user_id
+ * @property int|null                        $server_id
+ * @property string                          $action
+ * @property string|null                     $subaction
+ * @property array                           $device
+ * @property array                           $metadata
+ * @property \Carbon\CarbonImmutable         $created_at
+ * @property \Pterodactyl\Models\User|null   $user
  * @property \Pterodactyl\Models\Server|null $server
  */
 class AuditLog extends Model
 {
-    const UPDATED_AT = null;
+    public const UPDATED_AT = null;
 
-    const SERVER__FILESYSTEM_DOWNLOAD = 'server:filesystem.download';
-    const SERVER__FILESYSTEM_WRITE = 'server:filesystem.write';
-    const SERVER__FILESYSTEM_DELETE = 'server:filesystem.delete';
-    const SERVER__FILESYSTEM_RENAME = 'server:filesystem.rename';
-    const SERVER__FILESYSTEM_COMPRESS = 'server:filesystem.compress';
-    const SERVER__FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
-    const SERVER__FILESYSTEM_PULL = 'server:filesystem.pull';
-    const SERVER__BACKUP_STARTED = 'server:backup.started';
-    const SERVER__BACKUP_FAILED = 'server:backup.failed';
-    const SERVER__BACKUP_COMPELTED = 'server:backup.completed';
-    const SERVER__BACKUP_DELETED = 'server:backup.deleted';
-    const SERVER__BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
-    const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
-    const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
+    public const SERVER__FILESYSTEM_DOWNLOAD = 'server:filesystem.download';
+    public const SERVER__FILESYSTEM_WRITE = 'server:filesystem.write';
+    public const SERVER__FILESYSTEM_DELETE = 'server:filesystem.delete';
+    public const SERVER__FILESYSTEM_RENAME = 'server:filesystem.rename';
+    public const SERVER__FILESYSTEM_COMPRESS = 'server:filesystem.compress';
+    public const SERVER__FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
+    public const SERVER__FILESYSTEM_PULL = 'server:filesystem.pull';
+    public const SERVER__BACKUP_STARTED = 'server:backup.started';
+    public const SERVER__BACKUP_FAILED = 'server:backup.failed';
+    public const SERVER__BACKUP_COMPELTED = 'server:backup.completed';
+    public const SERVER__BACKUP_DELETED = 'server:backup.deleted';
+    public const SERVER__BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
+    public const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
+    public const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
 
     /**
      * @var string[]
@@ -100,16 +99,13 @@ class AuditLog extends Model
      * currently authenticated user if available. This model is not saved at this point, so
      * you can always make modifications to it as needed before saving.
      *
-     * @param string $action
-     * @param array $metadata
-     * @param bool $isSystem
      * @return $this
      */
     public static function factory(string $action, array $metadata, bool $isSystem = false)
     {
         /** @var \Illuminate\Http\Request $request */
         $request = Container::getInstance()->make('request');
-        if ($isSystem || ! $request instanceof Request) {
+        if ($isSystem || !$request instanceof Request) {
             $request = null;
         }
 

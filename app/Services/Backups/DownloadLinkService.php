@@ -22,9 +22,6 @@ class DownloadLinkService
 
     /**
      * DownloadLinkService constructor.
-     *
-     * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
-     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
      */
     public function __construct(BackupManager $backupManager, NodeJWTService $jwtService)
     {
@@ -35,10 +32,6 @@ class DownloadLinkService
     /**
      * Returns the URL that allows for a backup to be downloaded by an individual
      * user, or by the Wings control software.
-     *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @param \Pterodactyl\Models\User $user
-     * @return string
      */
     public function handle(Backup $backup, User $user): string
     {
@@ -61,7 +54,6 @@ class DownloadLinkService
      * Returns a signed URL that allows us to download a file directly out of a non-public
      * S3 bucket by using a signed URL.
      *
-     * @param \Pterodactyl\Models\Backup $backup
      * @return string
      */
     protected function getS3BackupUrl(Backup $backup)

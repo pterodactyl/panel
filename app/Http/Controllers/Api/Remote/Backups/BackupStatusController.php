@@ -88,8 +88,6 @@ class BackupStatusController extends Controller
      * The only thing the successful field does is update the entry value for the audit logs
      * table tracking for this restoration.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string $backup
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
@@ -104,7 +102,7 @@ class BackupStatusController extends Controller
 
         // Just create a new audit entry for this event and update the server state
         // so that power actions, file management, and backups can resume as normal.
-        $model->server->audit($action, function (AuditLog $audit, Server $server) use ($backup, $request) {
+        $model->server->audit($action, function (AuditLog $audit, Server $server) use ($backup) {
             $audit->is_system = true;
             $audit->metadata = ['backup_uuid' => $backup];
             $server->update(['status' => null]);

@@ -67,7 +67,7 @@ class AccessingValidServer
 
         // Servers can have install statuses other than 1 or 0, so don't check
         // for a bool-type operator here.
-        if (! $server->isInstalled()) {
+        if (!$server->isInstalled()) {
             if ($isApiRequest) {
                 throw new ConflictHttpException('Server is still completing the installation process.');
             }
