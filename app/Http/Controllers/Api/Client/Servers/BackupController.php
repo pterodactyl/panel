@@ -61,9 +61,10 @@ class BackupController extends ClientApiController
      * Returns all of the backups for a given server instance in a paginated
      * result set.
      *
-     * @return array
+     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
+     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      */
-    public function index(Request $request, Server $server)
+    public function index(Request $request, Server $server): array
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
             throw new UnauthorizedException();
@@ -79,11 +80,11 @@ class BackupController extends ClientApiController
     /**
      * Starts the backup process for a server.
      *
-     * @return array
-     *
-     * @throws \Exception|\Throwable
+     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
+     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
+     * @throws \Throwable
      */
-    public function store(StoreBackupRequest $request, Server $server)
+    public function store(StoreBackupRequest $request, Server $server): array
     {
         /** @var \Pterodactyl\Models\Backup $backup */
         $backup = $server->audit(AuditLog::SERVER__BACKUP_STARTED, function (AuditLog $model, Server $server) use ($request) {
@@ -106,9 +107,10 @@ class BackupController extends ClientApiController
     /**
      * Returns information about a single backup.
      *
-     * @return array
+     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
+     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      */
-    public function view(Request $request, Server $server, Backup $backup)
+    public function view(Request $request, Server $server, Backup $backup): array
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
             throw new UnauthorizedException();
@@ -123,11 +125,9 @@ class BackupController extends ClientApiController
      * Deletes a backup from the panel as well as the remote source where it is currently
      * being stored.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function delete(Request $request, Server $server, Backup $backup)
+    public function delete(Request $request, Server $server, Backup $backup): JsonResponse
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
             throw new UnauthorizedException();
@@ -146,10 +146,8 @@ class BackupController extends ClientApiController
      * Download the backup for a given server instance. For daemon local files, the file
      * will be streamed back through the Panel. For AWS S3 files, a signed URL will be generated
      * which the user is redirected to.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function download(Request $request, Server $server, Backup $backup)
+    public function download(Request $request, Server $server, Backup $backup): JsonResponse
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_DOWNLOAD, $server)) {
             throw new UnauthorizedException();
@@ -176,11 +174,9 @@ class BackupController extends ClientApiController
      * files that currently exist on the server will be deleted before restoring.
      * Otherwise the archive will simply be unpacked over the existing files.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function restore(Request $request, Server $server, Backup $backup)
+    public function restore(Request $request, Server $server, Backup $backup): JsonResponse
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
             throw new UnauthorizedException();
