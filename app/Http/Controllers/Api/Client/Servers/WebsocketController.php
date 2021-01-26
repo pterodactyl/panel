@@ -26,9 +26,6 @@ class WebsocketController extends ClientApiController
 
     /**
      * WebsocketController constructor.
-     *
-     * @param \Pterodactyl\Services\Nodes\NodeJWTService $jwtService
-     * @param \Pterodactyl\Services\Servers\GetUserPermissionsService $permissionsService
      */
     public function __construct(
         NodeJWTService $jwtService,
@@ -46,8 +43,6 @@ class WebsocketController extends ClientApiController
      * allows us to continually renew this token and avoid users mainitaining sessions wrongly,
      * as well as ensure that user's only perform actions they're allowed to.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\ClientApiRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(ClientApiRequest $request, Server $server)
@@ -60,9 +55,9 @@ class WebsocketController extends ClientApiController
         $permissions = $this->permissionsService->handle($server, $user);
 
         $node = $server->node;
-        if (! is_null($server->transfer)) {
+        if (!is_null($server->transfer)) {
             // Check if the user has permissions to receive transfer logs.
-            if (! in_array('admin.websocket.transfer', $permissions)) {
+            if (!in_array('admin.websocket.transfer', $permissions)) {
                 throw new HttpForbiddenException('You do not have permission to view server transfer logs.');
             }
 
@@ -85,7 +80,7 @@ class WebsocketController extends ClientApiController
 
         return new JsonResponse([
             'data' => [
-                'token' => $token->__toString(),
+                'token' => $token->toString(),
                 'socket' => $socket . sprintf('/api/servers/%s/ws', $server->uuid),
             ],
         ]);

@@ -42,11 +42,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * LocationController constructor.
-     *
-     * @param \Pterodactyl\Services\Locations\LocationCreationService $creationService
-     * @param \Pterodactyl\Services\Locations\LocationDeletionService $deletionService
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Locations\LocationUpdateService $updateService
      */
     public function __construct(
         LocationCreationService $creationService,
@@ -64,9 +59,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * Return all of the locations currently registered on the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest $request
-     * @return array
      */
     public function index(GetLocationsRequest $request): array
     {
@@ -82,9 +74,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * Return a single location.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest $request
-     * @return array
      */
     public function view(GetLocationRequest $request): array
     {
@@ -96,9 +85,6 @@ class LocationController extends ApplicationApiController
     /**
      * Store a new location on the Panel and return a HTTP/201 response code with the
      * new location attached.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest $request
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
@@ -119,9 +105,6 @@ class LocationController extends ApplicationApiController
     /**
      * Update a location on the Panel and return the updated record to the user.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest $request
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -136,9 +119,6 @@ class LocationController extends ApplicationApiController
 
     /**
      * Delete a location from the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\DeleteLocationRequest $request
-     * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */

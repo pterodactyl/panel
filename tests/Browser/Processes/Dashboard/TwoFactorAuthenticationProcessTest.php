@@ -17,7 +17,7 @@ class TwoFactorAuthenticationProcessTest extends DashboardTestCase
     {
         $this->browse(function (PterodactylBrowser $browser) {
             $browser->loginAs($this->user)
-                ->visit(new AccountPage)
+                ->visit(new AccountPage())
                 ->assertMissing('.modal-mask')
                 ->click('@2fa_button')
                 ->waitFor('@2fa_modal')
@@ -42,7 +42,7 @@ class TwoFactorAuthenticationProcessTest extends DashboardTestCase
     {
         $this->browse(function (PterodactylBrowser $browser) {
             $browser->loginAs($this->user)
-                ->visit(new AccountPage)
+                ->visit(new AccountPage())
                 ->click('@2fa_button')
                 ->waitForText(trans('dashboard/account.two_factor.setup.title'))
                 ->assertFocused('@2fa_token')
@@ -76,7 +76,7 @@ class TwoFactorAuthenticationProcessTest extends DashboardTestCase
      */
     public function testTwoFactorCanBeDisabled()
     {
-        $secret = (new Google2FA)->generateSecretKey(16);
+        $secret = (new Google2FA())->generateSecretKey(16);
 
         $this->user->update([
             'use_totp' => true,
@@ -85,7 +85,7 @@ class TwoFactorAuthenticationProcessTest extends DashboardTestCase
 
         $this->browse(function (PterodactylBrowser $browser) use ($secret) {
             $browser->loginAs($this->user)
-                ->visit(new AccountPage)
+                ->visit(new AccountPage())
                 ->click('@2fa_button')
                 ->waitForText(trans('dashboard/account.two_factor.disable.title'))
                 ->click('@2fa_cancel')

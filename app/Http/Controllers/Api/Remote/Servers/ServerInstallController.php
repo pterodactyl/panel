@@ -19,8 +19,6 @@ class ServerInstallController extends Controller
 
     /**
      * ServerInstallController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      */
     public function __construct(ServerRepository $repository)
     {
@@ -30,8 +28,6 @@ class ServerInstallController extends Controller
     /**
      * Returns installation information for a server.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -51,8 +47,6 @@ class ServerInstallController extends Controller
     /**
      * Updates the installation state of a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest $request
-     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

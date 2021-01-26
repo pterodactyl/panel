@@ -10,7 +10,7 @@ return [
     | setup on the panel. When set to true, configurations stored in the
     | database will not be applied.
     */
-    'load_environment_only' => (bool)env('APP_ENVIRONMENT_ONLY', false),
+    'load_environment_only' => (bool) env('APP_ENVIRONMENT_ONLY', false),
 
     /*
     |--------------------------------------------------------------------------

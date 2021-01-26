@@ -16,8 +16,6 @@ class NodeDeploymentController extends ApplicationApiController
 
     /**
      * NodeDeploymentController constructor.
-     *
-     * @param \Pterodactyl\Services\Deployment\FindViableNodesService $viableNodesService
      */
     public function __construct(FindViableNodesService $viableNodesService)
     {
@@ -30,9 +28,6 @@ class NodeDeploymentController extends ApplicationApiController
      * Finds any nodes that are available using the given deployment criteria. This works
      * similarly to the server creation process, but allows you to pass the deployment object
      * to this endpoint and get back a list of all Nodes satisfying the requirements.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nodes\GetDeployableNodesRequest $request
-     * @return array
      *
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      */

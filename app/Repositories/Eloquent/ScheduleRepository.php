@@ -22,9 +22,6 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
 
     /**
      * Return all of the schedules for a given server.
-     *
-     * @param int $server
-     * @return \Illuminate\Support\Collection
      */
     public function findServerSchedules(int $server): Collection
     {
@@ -34,9 +31,6 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     /**
      * Return a schedule model with all of the associated tasks as a relationship.
      *
-     * @param int $schedule
-     * @return \Pterodactyl\Models\Schedule
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getScheduleWithTasks(int $schedule): Schedule
@@ -44,7 +38,7 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
         try {
             return $this->getBuilder()->with('tasks')->findOrFail($schedule, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 }

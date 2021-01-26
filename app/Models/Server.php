@@ -61,7 +61,7 @@ class Server extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'server';
+    public const RESOURCE_NAME = 'server';
 
     const STATUS_INSTALLING = 'installing';
     const STATUS_INSTALL_FAILED = 'install_failed';
@@ -160,8 +160,6 @@ class Server extends Model
 
     /**
      * Returns the format for server allocations when communicating with the Daemon.
-     *
-     * @return array
      */
     public function getAllocationMappings(): array
     {
@@ -170,9 +168,6 @@ class Server extends Model
         })->toArray();
     }
 
-    /**
-     * @return bool
-     */
     public function isInstalled(): bool
     {
         return $this->status !== self::STATUS_INSTALLING && $this->status !== self::STATUS_INSTALL_FAILED;

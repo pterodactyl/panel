@@ -22,7 +22,6 @@ trait AvailableLanguages
      * that are present in the language folder.
      *
      * @param bool $localize
-     * @return array
      */
     public function getAvailableLanguages($localize = false): array
     {
@@ -36,8 +35,6 @@ trait AvailableLanguages
 
     /**
      * Return an instance of the filesystem for getting a folder listing.
-     *
-     * @return \Illuminate\Filesystem\Filesystem
      */
     private function getFilesystemInstance(): Filesystem
     {
@@ -46,8 +43,6 @@ trait AvailableLanguages
 
     /**
      * Return an instance of the ISO639 class for generating names.
-     *
-     * @return \Matriphe\ISO639\ISO639
      */
     private function getIsoInstance(): ISO639
     {

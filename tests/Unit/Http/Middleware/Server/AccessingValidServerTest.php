@@ -1,13 +1,13 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Server;
+namespace Pterodactyl\Tests\Unit\Http\Middleware\Server;
 
 use Mockery as m;
 use Pterodactyl\Models\Server;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Routing\ResponseFactory;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Server\AccessingValidServer;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -49,7 +49,7 @@ class AccessingValidServerTest extends MiddlewareTestCase
         $this->expectException(AccessDeniedHttpException::class);
         $this->expectExceptionMessage('Server is suspended and cannot be accessed.');
 
-        $model = factory(Server::class)->make(['status' => Server::STATUS_SUSPENDED]);
+        $model = Server::factory()->make(['suspended' => 1]);
 
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');
         $this->request->shouldReceive('expectsJson')->withNoArgs()->once()->andReturn(true);
@@ -67,7 +67,7 @@ class AccessingValidServerTest extends MiddlewareTestCase
         $this->expectException(ConflictHttpException::class);
         $this->expectExceptionMessage('Server is still completing the installation process.');
 
-        $model = factory(Server::class)->make(['status' => Server::STATUS_INSTALLING]);
+        $model = Server::factory()->make(['installed' => 0]);
 
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');
         $this->request->shouldReceive('expectsJson')->withNoArgs()->once()->andReturn(true);
@@ -101,7 +101,7 @@ class AccessingValidServerTest extends MiddlewareTestCase
      */
     public function testValidServerProcess()
     {
-        $model = factory(Server::class)->make();
+        $model = Server::factory()->make();
 
         $this->request->shouldReceive('route->parameter')->with('server')->once()->andReturn('123456');
         $this->request->shouldReceive('expectsJson')->withNoArgs()->once()->andReturn(false);
@@ -117,8 +117,6 @@ class AccessingValidServerTest extends MiddlewareTestCase
 
     /**
      * Provide test data that checks that the correct view is returned for each model type.
-     *
-     * @return array
      */
     public function viewDataProvider(): array
     {
@@ -126,16 +124,14 @@ class AccessingValidServerTest extends MiddlewareTestCase
         $this->refreshApplication();
 
         return [
-            [factory(Server::class)->make(['status' => Server::STATUS_SUSPENDED]), 'errors.suspended', 403],
-            [factory(Server::class)->make(['status' => Server::STATUS_INSTALLING]), 'errors.installing', 409],
-            [factory(Server::class)->make(['status' => Server::STATUS_INSTALL_FAILED]), 'errors.installing', 409],
+            [Server::factory()->make(['suspended' => 1]), 'errors.suspended', 403],
+            [Server::factory()->make(['installed' => 0]), 'errors.installing', 409],
+            [Server::factory()->make(['installed' => 2]), 'errors.installing', 409],
         ];
     }
 
     /**
      * Return an instance of the middleware using mocked dependencies.
-     *
-     * @return \Pterodactyl\Http\Middleware\Server\AccessingValidServer
      */
     private function getMiddleware(): AccessingValidServer
     {

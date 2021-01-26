@@ -33,8 +33,6 @@ class MakeLocationCommand extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @param \Pterodactyl\Services\Locations\LocationCreationService $creationService
      */
     public function __construct(LocationCreationService $creationService)
     {

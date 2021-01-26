@@ -7,17 +7,11 @@ use Pterodactyl\Models\Permission;
 
 class StoreScheduleRequest extends ViewScheduleRequest
 {
-    /**
-     * @return string
-     */
     public function permission(): string
     {
         return Permission::ACTION_SCHEDULE_CREATE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         $rules = Schedule::getRules();

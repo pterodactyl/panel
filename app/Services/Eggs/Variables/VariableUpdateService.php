@@ -26,9 +26,6 @@ class VariableUpdateService
 
     /**
      * VariableUpdateService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Validation\Factory $validator
      */
     public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
     {
@@ -39,8 +36,6 @@ class VariableUpdateService
     /**
      * Return the validation factory instance to be used by rule validation
      * checking in the trait.
-     *
-     * @return \Illuminate\Contracts\Validation\Factory
      */
     protected function getValidator(): Factory
     {
@@ -50,8 +45,6 @@ class VariableUpdateService
     /**
      * Update a specific egg variable.
      *
-     * @param \Pterodactyl\Models\EggVariable $variable
-     * @param array $data
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -61,11 +54,9 @@ class VariableUpdateService
      */
     public function handle(EggVariable $variable, array $data)
     {
-        if (! is_null(array_get($data, 'env_variable'))) {
+        if (!is_null(array_get($data, 'env_variable'))) {
             if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
-                throw new ReservedVariableNameException(trans('exceptions.service.variables.reserved_name', [
-                    'name' => array_get($data, 'env_variable'),
-                ]));
+                throw new ReservedVariableNameException(trans('exceptions.service.variables.reserved_name', ['name' => array_get($data, 'env_variable')]));
             }
 
             $search = $this->repository->setColumns('id')->findCountWhere([
@@ -75,13 +66,11 @@ class VariableUpdateService
             ]);
 
             if ($search > 0) {
-                throw new DisplayException(trans('exceptions.service.variables.env_not_unique', [
-                    'name' => array_get($data, 'env_variable'),
-                ]));
+                throw new DisplayException(trans('exceptions.service.variables.env_not_unique', ['name' => array_get($data, 'env_variable')]));
             }
         }
 
-        if (! empty($data['rules'] ?? '')) {
+        if (!empty($data['rules'] ?? '')) {
             $this->validateRules(
                 (is_string($data['rules']) && Str::contains($data['rules'], ';;'))
                     ? explode(';;', $data['rules'])

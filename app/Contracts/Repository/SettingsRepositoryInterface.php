@@ -7,9 +7,6 @@ interface SettingsRepositoryInterface extends RepositoryInterface
     /**
      * Store a new persistent setting in the database.
      *
-     * @param string $key
-     * @param string|null $value
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -18,16 +15,14 @@ interface SettingsRepositoryInterface extends RepositoryInterface
     /**
      * Retrieve a persistent setting from the database.
      *
-     * @param string $key
      * @param mixed $default
+     *
      * @return mixed
      */
     public function get(string $key, $default);
 
     /**
      * Remove a key from the database cache.
-     *
-     * @param string $key
      */
     public function forget(string $key);
 }

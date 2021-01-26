@@ -31,8 +31,6 @@ class DisableTwoFactorCommand extends Command
 
     /**
      * DisableTwoFactorCommand constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(UserRepositoryInterface $repository)
     {

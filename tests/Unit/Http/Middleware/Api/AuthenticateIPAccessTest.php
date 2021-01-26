@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware\Api;
+namespace Pterodactyl\Tests\Unit\Http\Middleware\Api;
 
 use Pterodactyl\Models\ApiKey;
-use Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
+use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateIPAccessTest extends MiddlewareTestCase
@@ -14,7 +14,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
      */
     public function testWithNoIPRestrictions()
     {
-        $model = factory(ApiKey::class)->make(['allowed_ips' => []]);
+        $model = ApiKey::factory()->make(['allowed_ips' => []]);
         $this->setRequestAttribute('api_key', $model);
 
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
@@ -26,7 +26,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
      */
     public function testWithValidIP()
     {
-        $model = factory(ApiKey::class)->make(['allowed_ips' => ['127.0.0.1']]);
+        $model = ApiKey::factory()->make(['allowed_ips' => ['127.0.0.1']]);
         $this->setRequestAttribute('api_key', $model);
 
         $this->request->shouldReceive('ip')->withNoArgs()->once()->andReturn('127.0.0.1');
@@ -39,7 +39,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
      */
     public function testValidIPAgainstCIDRRange()
     {
-        $model = factory(ApiKey::class)->make(['allowed_ips' => ['192.168.1.1/28']]);
+        $model = ApiKey::factory()->make(['allowed_ips' => ['192.168.1.1/28']]);
         $this->setRequestAttribute('api_key', $model);
 
         $this->request->shouldReceive('ip')->withNoArgs()->once()->andReturn('192.168.1.15');
@@ -55,7 +55,7 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
     {
         $this->expectException(AccessDeniedHttpException::class);
 
-        $model = factory(ApiKey::class)->make(['allowed_ips' => ['127.0.0.1']]);
+        $model = ApiKey::factory()->make(['allowed_ips' => ['127.0.0.1']]);
         $this->setRequestAttribute('api_key', $model);
 
         $this->request->shouldReceive('ip')->withNoArgs()->twice()->andReturn('127.0.0.2');
@@ -65,8 +65,6 @@ class AuthenticateIPAccessTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware to be used when testing.
-     *
-     * @return \Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess
      */
     private function getMiddleware(): AuthenticateIPAccess
     {

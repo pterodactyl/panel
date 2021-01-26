@@ -29,7 +29,6 @@ class ScheduleTransformer extends BaseClientTransformer
     /**
      * Returns a transformed schedule model such that a client can view the information.
      *
-     * @param \Pterodactyl\Models\Schedule $model
      * @return array
      */
     public function transform(Schedule $model)
@@ -40,6 +39,7 @@ class ScheduleTransformer extends BaseClientTransformer
             'cron' => [
                 'day_of_week' => $model->cron_day_of_week,
                 'day_of_month' => $model->cron_day_of_month,
+                'month' => $model->cron_month,
                 'hour' => $model->cron_hour,
                 'minute' => $model->cron_minute,
             ],
@@ -55,7 +55,6 @@ class ScheduleTransformer extends BaseClientTransformer
     /**
      * Allows attaching the tasks specific to the schedule in the response.
      *
-     * @param \Pterodactyl\Models\Schedule $model
      * @return \League\Fractal\Resource\Collection
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
@@ -63,7 +62,9 @@ class ScheduleTransformer extends BaseClientTransformer
     public function includeTasks(Schedule $model)
     {
         return $this->collection(
-            $model->tasks, $this->makeTransformer(TaskTransformer::class), Task::RESOURCE_NAME
+            $model->tasks,
+            $this->makeTransformer(TaskTransformer::class),
+            Task::RESOURCE_NAME
         );
     }
 }

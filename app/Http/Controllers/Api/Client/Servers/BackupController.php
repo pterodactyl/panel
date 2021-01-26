@@ -86,8 +86,6 @@ class BackupController extends ClientApiController
     /**
      * Starts the backup process for a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Exception|\Throwable

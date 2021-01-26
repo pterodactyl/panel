@@ -49,7 +49,6 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
      * Test that variables that are either not user_viewable, or not user_editable, cannot be
      * updated via this endpoint.
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
     public function testStartupVariableCannotBeUpdatedIfNotUserViewableOrEditable(array $permissions)
@@ -145,10 +144,10 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
     public function testStartupVariableCannotBeUpdatedIfNotUserViewable()
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
-        $this->actingAs($user)->putJson($this->link($server) . "/startup/variable")->assertForbidden();
+        $this->actingAs($user)->putJson($this->link($server) . '/startup/variable')->assertForbidden();
 
-        $user2 = factory(User::class)->create();
-        $this->actingAs($user2)->putJson($this->link($server) . "/startup/variable")->assertNotFound();
+        $user2 = User::factory()->create();
+        $this->actingAs($user2)->putJson($this->link($server) . '/startup/variable')->assertNotFound();
     }
 
     /**

@@ -10,8 +10,6 @@ class DownloadFileRequest extends ClientApiRequest
     /**
      * Ensure that the user making this request has permission to download files
      * from this server.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {

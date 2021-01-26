@@ -3,13 +3,12 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int $id
- * @property string $short
- * @property string $long
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- *
- * @property \Pterodactyl\Models\Node[] $nodes
+ * @property int                          $id
+ * @property string                       $short
+ * @property string                       $long
+ * @property \Carbon\Carbon               $created_at
+ * @property \Carbon\Carbon               $updated_at
+ * @property \Pterodactyl\Models\Node[]   $nodes
  * @property \Pterodactyl\Models\Server[] $servers
  */
 class Location extends Model
@@ -18,7 +17,7 @@ class Location extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'location';
+    public const RESOURCE_NAME = 'location';
 
     /**
      * The table associated with the model.

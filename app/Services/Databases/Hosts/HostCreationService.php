@@ -38,12 +38,6 @@ class HostCreationService
 
     /**
      * HostCreationService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Illuminate\Database\DatabaseManager $databaseManager
-     * @param \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface $repository
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -61,9 +55,6 @@ class HostCreationService
 
     /**
      * Create a new database host on the Panel.
-     *
-     * @param array $data
-     * @return \Pterodactyl\Models\DatabaseHost
      *
      * @throws \Throwable
      */

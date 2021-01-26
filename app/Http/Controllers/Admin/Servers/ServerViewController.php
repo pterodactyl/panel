@@ -64,15 +64,6 @@ class ServerViewController extends Controller
 
     /**
      * ServerViewController constructor.
-     *
-     * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository $databaseHostRepository
-     * @param \Pterodactyl\Repositories\Eloquent\LocationRepository $locationRepository
-     * @param \Pterodactyl\Repositories\Eloquent\MountRepository $mountRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NestRepository $nestRepository
-     * @param \Pterodactyl\Repositories\Eloquent\NodeRepository $nodeRepository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Pterodactyl\Services\Servers\EnvironmentService $environmentService
      */
     public function __construct(
         Factory $view,
@@ -97,8 +88,6 @@ class ServerViewController extends Controller
     /**
      * Returns the index view for a server.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request, Server $server)
@@ -109,8 +98,6 @@ class ServerViewController extends Controller
     /**
      * Returns the server details page.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Contracts\View\View
      */
     public function details(Request $request, Server $server)
@@ -121,8 +108,6 @@ class ServerViewController extends Controller
     /**
      * Returns a view of server build settings.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Contracts\View\View
      */
     public function build(Request $request, Server $server)
@@ -139,8 +124,6 @@ class ServerViewController extends Controller
     /**
      * Returns the server startup management page.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Contracts\View\View
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -166,8 +149,6 @@ class ServerViewController extends Controller
     /**
      * Returns all of the databases that exist for the server.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Contracts\View\View
      */
     public function database(Request $request, Server $server)
@@ -181,8 +162,6 @@ class ServerViewController extends Controller
     /**
      * Returns all of the mounts that exist for the server.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Contracts\View\View
      */
     public function mounts(Request $request, Server $server)
@@ -199,8 +178,6 @@ class ServerViewController extends Controller
      * Returns the base server management page, or an exception if the server
      * is in a state that cannot be recovered from.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Contracts\View\View
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -234,8 +211,6 @@ class ServerViewController extends Controller
     /**
      * Returns the server deletion page.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Pterodactyl\Models\Server $server
      * @return \Illuminate\Contracts\View\View
      */
     public function delete(Request $request, Server $server)

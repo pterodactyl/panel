@@ -8,17 +8,11 @@ use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class UpdateAllocationRequest extends ClientApiRequest
 {
-    /**
-     * @return string
-     */
     public function permission(): string
     {
         return Permission::ACTION_ALLOCATION_UPDATE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         $rules = Allocation::getRules();

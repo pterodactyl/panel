@@ -30,9 +30,6 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
     /**
      * Store a new persistent setting in the database.
      *
-     * @param string $key
-     * @param string|null $value
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -48,8 +45,8 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
     /**
      * Retrieve a persistent setting from the database.
      *
-     * @param string $key
      * @param mixed $default
+     *
      * @return mixed
      */
     public function get(string $key, $default = null)
@@ -74,8 +71,6 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
 
     /**
      * Remove a key from the database cache.
-     *
-     * @param string $key
      */
     public function forget(string $key)
     {
@@ -85,8 +80,6 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
 
     /**
      * Remove a key from the cache.
-     *
-     * @param string $key
      */
     private function clearCache(string $key)
     {

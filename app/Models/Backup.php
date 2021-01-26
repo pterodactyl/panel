@@ -5,31 +5,30 @@ namespace Pterodactyl\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @property int $id
- * @property int $server_id
- * @property string $uuid
- * @property bool $is_successful
- * @property string $name
- * @property string[] $ignored_files
- * @property string $disk
- * @property string|null $checksum
- * @property int $bytes
- * @property string|null $upload_id
+ * @property int                          $id
+ * @property int                          $server_id
+ * @property string                       $uuid
+ * @property bool                         $is_successful
+ * @property string                       $name
+ * @property string[]                     $ignored_files
+ * @property string                       $disk
+ * @property string|null                  $checksum
+ * @property int                          $bytes
+ * @property string|null                  $upload_id
  * @property \Carbon\CarbonImmutable|null $completed_at
- * @property \Carbon\CarbonImmutable $created_at
- * @property \Carbon\CarbonImmutable $updated_at
+ * @property \Carbon\CarbonImmutable      $created_at
+ * @property \Carbon\CarbonImmutable      $updated_at
  * @property \Carbon\CarbonImmutable|null $deleted_at
- *
- * @property \Pterodactyl\Models\Server $server
+ * @property \Pterodactyl\Models\Server   $server
  */
 class Backup extends Model
 {
     use SoftDeletes;
 
-    const RESOURCE_NAME = 'backup';
+    public const RESOURCE_NAME = 'backup';
 
-    const ADAPTER_WINGS = 'wings';
-    const ADAPTER_AWS_S3 = 's3';
+    public const ADAPTER_WINGS = 'wings';
+    public const ADAPTER_AWS_S3 = 's3';
 
     /**
      * @var string

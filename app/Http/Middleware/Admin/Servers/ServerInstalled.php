@@ -14,8 +14,6 @@ class ServerInstalled
     /**
      * Checks that the server is installed before allowing access through the route.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
@@ -23,10 +21,8 @@ class ServerInstalled
         /** @var \Pterodactyl\Models\Server|null $server */
         $server = $request->route()->parameter('server');
 
-        if (! $server instanceof Server) {
-            throw new NotFoundHttpException(
-                'No server resource was located in the request parameters.'
-            );
+        if (!$server instanceof Server) {
+            throw new NotFoundHttpException('No server resource was located in the request parameters.');
         }
 
         if (! $server->isInstalled()) {

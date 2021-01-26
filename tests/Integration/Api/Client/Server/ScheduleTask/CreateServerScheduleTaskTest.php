@@ -21,7 +21,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permissions);
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
         $this->assertEmpty($schedule->tasks);
 
         $response = $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
@@ -51,7 +51,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $response = $this->actingAs($user)->postJson($this->link($schedule, '/tasks'))->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
@@ -96,7 +96,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
             'action' => 'backup',
@@ -121,8 +121,8 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
-        factory(Task::class)->times(2)->create(['schedule_id' => $schedule->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        Task::factory()->times(2)->create(['schedule_id' => $schedule->id]);
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
             'action' => 'command',
@@ -144,7 +144,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         [, $server2] = $this->generateTestAccount(['user_id' => $user->id]);
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server2->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
 
         $this->actingAs($user)
             ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}/tasks")
@@ -160,16 +160,13 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_CREATE]);
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)
             ->postJson($this->link($schedule, '/tasks'))
             ->assertForbidden();
     }
 
-    /**
-     * @return array
-     */
     public function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE]]];

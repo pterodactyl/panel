@@ -31,10 +31,6 @@ class TwoFactorController extends ClientApiController
 
     /**
      * TwoFactorController constructor.
-     *
-     * @param \Pterodactyl\Services\Users\ToggleTwoFactorService $toggleTwoFactorService
-     * @param \Pterodactyl\Services\Users\TwoFactorSetupService $setupService
-     * @param \Illuminate\Contracts\Validation\Factory $validation
      */
     public function __construct(
         ToggleTwoFactorService $toggleTwoFactorService,
@@ -53,7 +49,6 @@ class TwoFactorController extends ClientApiController
      * it on their account. If two-factor is already enabled this endpoint
      * will return a 400 error.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -75,7 +70,6 @@ class TwoFactorController extends ClientApiController
     /**
      * Updates a user's account to have two-factor enabled.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -110,15 +104,12 @@ class TwoFactorController extends ClientApiController
      * Disables two-factor authentication on an account if the password provided
      * is valid.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function delete(Request $request)
     {
-        if (! password_verify($request->input('password') ?? '', $request->user()->password)) {
-            throw new BadRequestHttpException(
-                'The password provided was not valid.'
-            );
+        if (!password_verify($request->input('password') ?? '', $request->user()->password)) {
+            throw new BadRequestHttpException('The password provided was not valid.');
         }
 
         /** @var \Pterodactyl\Models\User $user */

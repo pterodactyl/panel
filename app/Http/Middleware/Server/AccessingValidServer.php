@@ -31,10 +31,6 @@ class AccessingValidServer
 
     /**
      * AccessingValidServer constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Illuminate\Contracts\Routing\ResponseFactory $response
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(
         ConfigRepository $config,
@@ -49,8 +45,6 @@ class AccessingValidServer
     /**
      * Determine if a given user has permission to access a server.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @return \Illuminate\Http\Response|mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -81,9 +75,9 @@ class AccessingValidServer
             return $this->response->view('errors.installing', [], 409);
         }
 
-        if (! is_null($server->transfer)) {
+        if (!is_null($server->transfer)) {
             if ($isApiRequest) {
-                throw new ServerTransferringException;
+                throw new ServerTransferringException();
             }
 
             return $this->response->view('errors.transferring', [], 409);

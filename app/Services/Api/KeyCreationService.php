@@ -25,9 +25,6 @@ class KeyCreationService
 
     /**
      * ApiKeyService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface $repository
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(ApiKeyRepositoryInterface $repository, Encrypter $encrypter)
     {
@@ -39,7 +36,6 @@ class KeyCreationService
      * Set the type of key that should be created. By default an orphaned key will be
      * created. These keys cannot be used for anything, and will not render in the UI.
      *
-     * @param int $type
      * @return \Pterodactyl\Services\Api\KeyCreationService
      */
     public function setKeyType(int $type)
@@ -53,10 +49,6 @@ class KeyCreationService
      * Create a new API key for the Panel using the permissions passed in the data request.
      * This will automatically generate an identifier and an encrypted token that are
      * stored in the database.
-     *
-     * @param array $data
-     * @param array $permissions
-     * @return \Pterodactyl\Models\ApiKey
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */

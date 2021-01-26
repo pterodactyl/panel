@@ -8,7 +8,6 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Helpers\Utilities;
 use Illuminate\Database\ConnectionInterface;
-use Symfony\Component\VarDumper\Cloner\Data;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
@@ -58,11 +57,6 @@ class DatabaseManagementService
 
     /**
      * CreationService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
-     * @param \Pterodactyl\Repositories\Eloquent\DatabaseRepository $repository
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -80,10 +74,6 @@ class DatabaseManagementService
      * Generates a unique database name for the given server. This name should be passed through when
      * calling this handle function for this service, otherwise the database will be created with
      * whatever name is provided.
-     *
-     * @param string $name
-     * @param int $serverId
-     * @return string
      */
     public static function generateUniqueDatabaseName(string $name, int $serverId): string
     {
@@ -95,7 +85,6 @@ class DatabaseManagementService
      * Set wether or not this class should validate that the server has enough slots
      * left before creating the new database.
      *
-     * @param bool $validate
      * @return $this
      */
     public function setValidateDatabaseLimit(bool $validate): self
@@ -108,8 +97,6 @@ class DatabaseManagementService
     /**
      * Create a new database that is linked to a specific host.
      *
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $data
      * @return \Pterodactyl\Models\Database
      *
      * @throws \Throwable
@@ -118,23 +105,21 @@ class DatabaseManagementService
      */
     public function create(Server $server, array $data)
     {
-        if (! config('pterodactyl.client_features.databases.enabled')) {
-            throw new DatabaseClientFeatureNotEnabledException;
+        if (!config('pterodactyl.client_features.databases.enabled')) {
+            throw new DatabaseClientFeatureNotEnabledException();
         }
 
         if ($this->validateDatabaseLimit) {
             // If the server has a limit assigned and we've already reached that limit, throw back
             // an exception and kill the process.
-            if (! is_null($server->database_limit) && $server->databases()->count() >= $server->database_limit) {
-                throw new TooManyDatabasesException;
+            if (!is_null($server->database_limit) && $server->databases()->count() >= $server->database_limit) {
+                throw new TooManyDatabasesException();
             }
         }
 
         // Protect against developer mistakes...
-        if (empty($data['database']) || ! preg_match(self::MATCH_NAME_REGEX, $data['database'])) {
-            throw new InvalidArgumentException(
-                'The database name passed to DatabaseManagementService::handle MUST be prefixed with "s{server_id}_".'
-            );
+        if (empty($data['database']) || !preg_match(self::MATCH_NAME_REGEX, $data['database'])) {
+            throw new InvalidArgumentException('The database name passed to DatabaseManagementService::handle MUST be prefixed with "s{server_id}_".');
         }
 
         $data = array_merge($data, [
@@ -155,7 +140,10 @@ class DatabaseManagementService
 
                 $this->repository->createDatabase($database->database);
                 $this->repository->createUser(
-                    $database->username, $database->remote, $this->encrypter->decrypt($database->password), $database->max_connections
+                    $database->username,
+                    $database->remote,
+                    $this->encrypter->decrypt($database->password),
+                    $database->max_connections
                 );
                 $this->repository->assignUserToDatabase($database->database, $database->username, $database->remote);
                 $this->repository->flush();
@@ -181,7 +169,6 @@ class DatabaseManagementService
     /**
      * Delete a database from the given host server.
      *
-     * @param \Pterodactyl\Models\Database $database
      * @return bool|null
      *
      * @throws \Exception
@@ -202,9 +189,6 @@ class DatabaseManagementService
      * have the same name across multiple hosts, for the sake of keeping this logic easy to understand
      * and avoiding user confusion we will ignore the specific host and just look across all hosts.
      *
-     * @param array $data
-     * @return \Pterodactyl\Models\Database
-     *
      * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
      * @throws \Throwable
      */
@@ -215,12 +199,10 @@ class DatabaseManagementService
             ->exists();
 
         if ($exists) {
-            throw new DuplicateDatabaseNameException(
-                'A database with that name already exists for this server.'
-            );
+            throw new DuplicateDatabaseNameException('A database with that name already exists for this server.');
         }
 
-        $database = (new Database)->forceFill($data);
+        $database = (new Database())->forceFill($data);
         $database->saveOrFail();
 
         return $database;

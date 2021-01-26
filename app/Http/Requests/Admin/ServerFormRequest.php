@@ -30,7 +30,7 @@ class ServerFormRequest extends AdminFormRequest
     {
         $validator->after(function ($validator) {
             $validator->sometimes('node_id', 'required|numeric|bail|exists:nodes,id', function ($input) {
-                return ! ($input->auto_deploy);
+                return !($input->auto_deploy);
             });
 
             $validator->sometimes('allocation_id', [
@@ -42,7 +42,7 @@ class ServerFormRequest extends AdminFormRequest
                     $query->whereNull('server_id');
                 }),
             ], function ($input) {
-                return ! ($input->auto_deploy);
+                return !($input->auto_deploy);
             });
 
             $validator->sometimes('allocation_additional.*', [
@@ -54,7 +54,7 @@ class ServerFormRequest extends AdminFormRequest
                     $query->whereNull('server_id');
                 }),
             ], function ($input) {
-                return ! ($input->auto_deploy);
+                return !($input->auto_deploy);
             });
         });
     }

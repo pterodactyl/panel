@@ -16,8 +16,9 @@ import Pagination from '@/components/elements/Pagination';
 export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ page, setPage ] = useState(1);
-    const { rootAdmin } = useStoreState(state => state.user.data!);
-    const [ showOnlyAdmin, setShowOnlyAdmin ] = usePersistedState('show_all_servers', false);
+    const uuid = useStoreState(state => state.user.data!.uuid);
+    const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
+    const [ showOnlyAdmin, setShowOnlyAdmin ] = usePersistedState(`${uuid}:show_all_servers`, false);
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
         [ '/api/client/servers', showOnlyAdmin, page ],

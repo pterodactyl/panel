@@ -20,8 +20,6 @@ class StoreLocationRequest extends ApplicationApiRequest
 
     /**
      * Rules to validate the request against.
-     *
-     * @return array
      */
     public function rules(): array
     {

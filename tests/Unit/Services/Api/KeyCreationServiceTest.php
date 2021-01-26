@@ -1,11 +1,11 @@
 <?php
 
-namespace Tests\Unit\Services\Api;
+namespace Pterodactyl\Tests\Unit\Services\Api;
 
 use Mockery as m;
-use Tests\TestCase;
 use phpmock\phpunit\PHPMock;
 use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Tests\TestCase;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -40,7 +40,7 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testKeyIsCreated()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
@@ -68,7 +68,7 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testIdentifierAndTokenAreOnlySetByFunction()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
@@ -95,7 +95,7 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testPermissionsAreRetrievedForApplicationKeys()
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
@@ -125,7 +125,7 @@ class KeyCreationServiceTest extends TestCase
      */
     public function testPermissionsAreNotRetrievedForNonApplicationKeys($keyType)
     {
-        $model = factory(ApiKey::class)->make();
+        $model = ApiKey::factory()->make();
 
         $this->getFunctionMock('\\Pterodactyl\\Services\\Api', 'str_random')
             ->expects($this->exactly(2))->willReturnCallback(function ($length) {
@@ -149,8 +149,6 @@ class KeyCreationServiceTest extends TestCase
 
     /**
      * Provide key types that are not an application specific key.
-     *
-     * @return array
      */
     public function keyTypeDataProvider(): array
     {
@@ -161,8 +159,6 @@ class KeyCreationServiceTest extends TestCase
 
     /**
      * Return an instance of the service with mocked dependencies for testing.
-     *
-     * @return \Pterodactyl\Services\Api\KeyCreationService
      */
     private function getService(): KeyCreationService
     {

@@ -29,9 +29,6 @@ class LocationDeletionService
 
     /**
      * LocationDeletionService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\LocationRepositoryInterface $repository
-     * @param \Pterodactyl\Contracts\Repository\NodeRepositoryInterface $nodeRepository
      */
     public function __construct(
         LocationRepositoryInterface $repository,
@@ -45,6 +42,7 @@ class LocationDeletionService
      * Delete an existing location.
      *
      * @param int|\Pterodactyl\Models\Location $location
+     *
      * @return int|null
      *
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
