@@ -30,19 +30,23 @@ export default () => {
                         <TitledGreyBox title={'SFTP Details'} css={tw`mb-6 md:mb-10`}>
                             <div>
                                 <Label>Server Address</Label>
-                                <Input
-                                    type={'text'}
-                                    value={`sftp://${sftp.ip}:${sftp.port}`}
-                                    readOnly
-                                />
+                                <CopyOnClick text={`sftp://${sftp.ip}:${sftp.port}`}>
+                                    <Input
+                                        type={'text'}
+                                        value={`sftp://${sftp.ip}:${sftp.port}`}
+                                        readOnly
+                                    />
+                                </CopyOnClick>
                             </div>
                             <div css={tw`mt-6`}>
                                 <Label>Username</Label>
-                                <Input
-                                    type={'text'}
-                                    value={`${username}.${id}`}
-                                    readOnly
-                                />
+                                <CopyOnClick text={`${username}.${id}`}>
+                                    <Input
+                                        type={'text'}
+                                        value={`${username}.${id}`}
+                                        readOnly
+                                    />
+                                </CopyOnClick>
                             </div>
                             <div css={tw`mt-6 flex items-center`}>
                                 <div css={tw`flex-1`}>

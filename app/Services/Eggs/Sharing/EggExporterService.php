@@ -3,6 +3,8 @@
 namespace Pterodactyl\Services\Eggs\Sharing;
 
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 
 class EggExporterService
@@ -41,7 +43,9 @@ class EggExporterService
             'description' => $egg->description,
             'features' => $egg->features,
             'images' => $egg->docker_images,
-            'file_denylist' => $egg->inherit_file_denylist,
+            'file_denylist' => Collection::make($egg->inherit_file_denylist)->filter(function ($value) {
+                return !empty($value);
+            }),
             'startup' => $egg->startup,
             'config' => [
                 'files' => $egg->inherit_config_files,
@@ -56,10 +60,10 @@ class EggExporterService
                     'entrypoint' => $egg->copy_script_entry,
                 ],
             ],
-            'variables' => $egg->variables->transform(function ($item) {
-                return collect($item->toArray())->except([
-                    'id', 'egg_id', 'created_at', 'updated_at',
-                ])->toArray();
+            'variables' => $egg->variables->transform(function (EggVariable $item) {
+                return Collection::make($item->toArray())
+                    ->except(['id', 'egg_id', 'created_at', 'updated_at'])
+                    ->toArray();
             }),
         ];
 
