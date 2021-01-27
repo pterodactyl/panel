@@ -13,7 +13,7 @@ namespace Pterodactyl\Models;
  * @property string                                                                     $docker_image           -- deprecated, use $docker_images
  * @property string                                                                     $update_url
  * @property array                                                                      $docker_images
- * @property string                                                                     $file_denylist
+ * @property array|null                                                                 $file_denylist
  * @property string|null                                                                $config_files
  * @property string|null                                                                $config_startup
  * @property string|null                                                                $config_logs
@@ -105,6 +105,7 @@ class Egg extends Model
         'copy_script_from' => 'integer',
         'features' => 'array',
         'docker_images' => 'array',
+        'file_denylist' => 'array',
     ];
 
     /**
@@ -117,6 +118,8 @@ class Egg extends Model
         'description' => 'string|nullable',
         'features' => 'array|nullable',
         'author' => 'required|string|email',
+        'file_denylist' => 'array|nullable',
+        'file_denylist.*' => 'string',
         'docker_images' => 'required|array|min:1',
         'docker_images.*' => 'required|string',
         'startup' => 'required|nullable|string',
@@ -133,6 +136,7 @@ class Egg extends Model
      */
     protected $attributes = [
         'features' => null,
+        'file_denylist' => null,
         'config_stop' => null,
         'config_startup' => null,
         'config_logs' => null,
@@ -260,7 +264,7 @@ class Egg extends Model
      * Returns the features available to this egg from the parent configuration if there are
      * no features defined for this egg specifically and there is a parent egg configured.
      *
-     * @return string
+     * @return string[]|null
      */
     public function getInheritFileDenylistAttribute()
     {

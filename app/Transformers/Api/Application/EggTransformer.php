@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api\Application;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
+use Illuminate\Support\Collection;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
@@ -16,7 +17,11 @@ class EggTransformer extends BaseTransformer
      * @var array
      */
     protected $availableIncludes = [
-        'nest', 'servers', 'config', 'script', 'variables',
+        'nest',
+        'servers',
+        'config',
+        'script',
+        'variables',
     ];
 
     /**
@@ -52,7 +57,7 @@ class EggTransformer extends BaseTransformer
                 'startup' => json_decode($model->config_startup, true),
                 'stop' => $model->config_stop,
                 'logs' => json_decode($model->config_logs, true),
-                'file_denylist' => explode(PHP_EOL, $model->file_denylist),
+                'file_denylist' => $model->file_denylist,
                 'extends' => $model->config_from,
             ],
             'startup' => $model->startup,
