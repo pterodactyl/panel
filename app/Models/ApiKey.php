@@ -5,16 +5,16 @@ namespace Pterodactyl\Models;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 /**
- * @property int                 $id
- * @property int                 $user_id
- * @property int                 $key_type
- * @property string              $identifier
- * @property string              $token
- * @property array               $allowed_ips
- * @property string              $memo
+ * @property int $id
+ * @property int $user_id
+ * @property int $key_type
+ * @property string $identifier
+ * @property string $token
+ * @property array $allowed_ips
+ * @property string $memo
  * @property \Carbon\Carbon|null $last_used_at
- * @property \Carbon\Carbon      $created_at
- * @property \Carbon\Carbon      $updated_at
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  */
 class ApiKey extends Model
 {

@@ -8,31 +8,31 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Encryption\Encrypter;
 
 /**
- * @property int                                                                       $id
- * @property string                                                                    $uuid
- * @property bool                                                                      $public
- * @property string                                                                    $name
- * @property string|null                                                               $description
- * @property int                                                                       $location_id
- * @property string                                                                    $fqdn
- * @property string                                                                    $scheme
- * @property bool                                                                      $behind_proxy
- * @property bool                                                                      $maintenance_mode
- * @property int                                                                       $memory
- * @property int                                                                       $memory_overallocate
- * @property int                                                                       $disk
- * @property int                                                                       $disk_overallocate
- * @property int                                                                       $upload_size
- * @property string                                                                    $daemon_token_id
- * @property string                                                                    $daemon_token
- * @property int                                                                       $daemonListen
- * @property int                                                                       $daemonSFTP
- * @property string                                                                    $daemonBase
- * @property \Carbon\Carbon                                                            $created_at
- * @property \Carbon\Carbon                                                            $updated_at
- * @property \Pterodactyl\Models\Location                                              $location
- * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection      $mounts
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection     $servers
+ * @property int $id
+ * @property string $uuid
+ * @property bool $public
+ * @property string $name
+ * @property string|null $description
+ * @property int $location_id
+ * @property string $fqdn
+ * @property string $scheme
+ * @property bool $behind_proxy
+ * @property bool $maintenance_mode
+ * @property int $memory
+ * @property int $memory_overallocate
+ * @property int $disk
+ * @property int $disk_overallocate
+ * @property int $upload_size
+ * @property string $daemon_token_id
+ * @property string $daemon_token
+ * @property int $daemonListen
+ * @property int $daemonSFTP
+ * @property string $daemonBase
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Pterodactyl\Models\Location $location
+ * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
 class Node extends Model

@@ -2,8 +2,16 @@
 
 namespace Pterodactyl\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
+/**
+ * @property int $id
+ * @property int $server_id
+ * @property int $variable_id
+ * @property string $variable_value
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property \Pterodactyl\Models\EggVariable $variable
+ * @property \Pterodactyl\Models\Server $server
+ */
 class ServerVariable extends Model
 {
     /**
@@ -12,58 +20,36 @@ class ServerVariable extends Model
      */
     public const RESOURCE_NAME = 'server_variable';
 
-    /**
-     * The table associated with the model.
-     *
-     * @var string
-     */
+    /** @var bool */
+    protected $immutableDates = true;
+
+    /** @var string */
     protected $table = 'server_variables';
 
-    /**
-     * Fields that are not mass assignable.
-     *
-     * @var array
-     */
+    /** @var string[] */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    /**
-     * Cast values to correct type.
-     *
-     * @var array
-     */
+    /** @var string[] */
     protected $casts = [
         'server_id' => 'integer',
         'variable_id' => 'integer',
     ];
 
-    /**
-     * Determine if variable is viewable by users.
-     *
-     * @return bool
-     */
-    public function getUserCanViewAttribute()
-    {
-        return (bool) $this->variable->user_viewable;
-    }
+    /** @var string[] */
+    public static $validationRules = [
+        'server_id' => 'required|int',
+        'variable_id' => 'required|int',
+        'variable_value' => 'string',
+    ];
 
     /**
-     * Determine if variable is editable by users.
+     * Returns the server this variable is associated with.
      *
-     * @return bool
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function getUserCanEditAttribute()
+    public function server()
     {
-        return (bool) $this->variable->user_editable;
-    }
-
-    /**
-     * Determine if variable is required.
-     *
-     * @return bool
-     */
-    public function getRequiredAttribute()
-    {
-        return $this->variable->required;
+        return $this->belongsTo(Server::class);
     }
 
     /**

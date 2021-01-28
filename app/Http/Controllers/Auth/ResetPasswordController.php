@@ -88,7 +88,7 @@ class ResetPasswordController extends Controller
      * form with a note telling them their password was changed and to log back in.
      *
      * @param \Illuminate\Contracts\Auth\CanResetPassword|\Pterodactyl\Models\User $user
-     * @param string                                                               $password
+     * @param string $password
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

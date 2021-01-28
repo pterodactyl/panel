@@ -17,26 +17,26 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 /**
- * @property int                                                                          $id
- * @property string|null                                                                  $external_id
- * @property string                                                                       $uuid
- * @property string                                                                       $username
- * @property string                                                                       $email
- * @property string|null                                                                  $name_first
- * @property string|null                                                                  $name_last
- * @property string                                                                       $password
- * @property string|null                                                                  $remeber_token
- * @property string                                                                       $language
- * @property bool                                                                         $root_admin
- * @property bool                                                                         $use_totp
- * @property string|null                                                                  $totp_secret
- * @property \Carbon\Carbon|null                                                          $totp_authenticated_at
- * @property bool                                                                         $gravatar
- * @property \Carbon\Carbon                                                               $created_at
- * @property \Carbon\Carbon                                                               $updated_at
- * @property string                                                                       $name
- * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection        $apiKeys
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection        $servers
+ * @property int $id
+ * @property string|null $external_id
+ * @property string $uuid
+ * @property string $username
+ * @property string $email
+ * @property string|null $name_first
+ * @property string|null $name_last
+ * @property string $password
+ * @property string|null $remeber_token
+ * @property string $language
+ * @property bool $root_admin
+ * @property bool $use_totp
+ * @property string|null $totp_secret
+ * @property \Carbon\Carbon|null $totp_authenticated_at
+ * @property bool $gravatar
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $name
+ * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
+ * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
  */
 class User extends Model implements

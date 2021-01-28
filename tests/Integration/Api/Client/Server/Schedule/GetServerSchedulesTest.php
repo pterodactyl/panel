@@ -24,7 +24,7 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
      * Test that schedules for a server are returned.
      *
      * @param array $permissions
-     * @param bool  $individual
+     * @param bool $individual
      * @dataProvider permissionsDataProvider
      */
     public function testServerSchedulesAreReturned($permissions, $individual)

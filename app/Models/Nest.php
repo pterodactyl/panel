@@ -3,15 +3,15 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int                                                                   $id
- * @property string                                                                $uuid
- * @property string                                                                $author
- * @property string                                                                $name
- * @property string|null                                                           $description
- * @property \Carbon\Carbon                                                        $created_at
- * @property \Carbon\Carbon                                                        $updated_at
+ * @property int $id
+ * @property string $uuid
+ * @property string $author
+ * @property string $name
+ * @property string|null $description
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Egg[]    $eggs
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Egg[] $eggs
  */
 class Nest extends Model
 {
