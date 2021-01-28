@@ -5,7 +5,6 @@ namespace Pterodactyl\Transformers\Api\Application;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
-use Illuminate\Support\Collection;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 

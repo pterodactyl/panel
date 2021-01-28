@@ -3,17 +3,17 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int                              $id
- * @property int                              $server_id
- * @property int                              $database_host_id
- * @property string                           $database
- * @property string                           $username
- * @property string                           $remote
- * @property string                           $password
- * @property int                              $max_connections
- * @property \Carbon\Carbon                   $created_at
- * @property \Carbon\Carbon                   $updated_at
- * @property \Pterodactyl\Models\Server       $server
+ * @property int $id
+ * @property int $server_id
+ * @property int $database_host_id
+ * @property string $database
+ * @property string $username
+ * @property string $remote
+ * @property string $password
+ * @property int $max_connections
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Pterodactyl\Models\Server $server
  * @property \Pterodactyl\Models\DatabaseHost $host
  */
 class Database extends Model

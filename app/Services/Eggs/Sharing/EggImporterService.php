@@ -3,8 +3,8 @@
 namespace Pterodactyl\Services\Eggs\Sharing;
 
 use Ramsey\Uuid\Uuid;
-use Pterodactyl\Models\Egg;
 use Illuminate\Support\Arr;
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Database\ConnectionInterface;

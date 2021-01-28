@@ -17,7 +17,7 @@ interface HashidsInterface extends VendorHashidsInterface
      * Decode an encoded hashid and return the first result.
      *
      * @param string $encoded
-     * @param null   $default
+     * @param null $default
      *
      * @return mixed
      *

@@ -5,16 +5,16 @@ namespace Pterodactyl\Models;
 use Illuminate\Validation\Rules\NotIn;
 
 /**
- * @property int                                                                   $id
- * @property string                                                                $uuid
- * @property string                                                                $name
- * @property string                                                                $description
- * @property string                                                                $source
- * @property string                                                                $target
- * @property bool                                                                  $read_only
- * @property bool                                                                  $user_mountable
- * @property \Pterodactyl\Models\Egg[]|\Illuminate\Database\Eloquent\Collection    $eggs
- * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection   $nodes
+ * @property int $id
+ * @property string $uuid
+ * @property string $name
+ * @property string $description
+ * @property string $source
+ * @property string $target
+ * @property bool $read_only
+ * @property bool $user_mountable
+ * @property \Pterodactyl\Models\Egg[]|\Illuminate\Database\Eloquent\Collection $eggs
+ * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  */
 class Mount extends Model

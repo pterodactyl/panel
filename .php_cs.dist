@@ -23,6 +23,17 @@ return (new Config())
         'ordered_imports' => [
             'sortAlgorithm' => 'length',
         ],
+        'phpdoc_align' => [
+            'align' => 'left',
+            'tags' => [
+                'param',
+                'property',
+                'return',
+                'throws',
+                'type',
+                'var',
+            ],
+        ],
         'random_api_migration' => true,
         'ternary_to_null_coalescing' => true,
         'yoda_style' => [

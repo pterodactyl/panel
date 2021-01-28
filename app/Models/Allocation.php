@@ -3,19 +3,19 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int                             $id
- * @property int                             $node_id
- * @property string                          $ip
- * @property string|null                     $ip_alias
- * @property int                             $port
- * @property int|null                        $server_id
- * @property string|null                     $notes
- * @property \Carbon\Carbon|null             $created_at
- * @property \Carbon\Carbon|null             $updated_at
- * @property string                          $alias
- * @property bool                            $has_alias
+ * @property int $id
+ * @property int $node_id
+ * @property string $ip
+ * @property string|null $ip_alias
+ * @property int $port
+ * @property int|null $server_id
+ * @property string|null $notes
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property string $alias
+ * @property bool $has_alias
  * @property \Pterodactyl\Models\Server|null $server
- * @property \Pterodactyl\Models\Node        $node
+ * @property \Pterodactyl\Models\Node $node
  */
 class Allocation extends Model
 {

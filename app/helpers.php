@@ -22,7 +22,7 @@ if (!function_exists('object_get_strict')) {
      *
      * @param object $object
      * @param string $key
-     * @param null   $default
+     * @param null $default
      *
      * @return mixed
      */

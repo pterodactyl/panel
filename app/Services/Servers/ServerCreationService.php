@@ -76,8 +76,8 @@ class ServerCreationService
      * CreationService constructor.
      *
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Services\Servers\ServerDeletionService               $serverDeletionService
-     * @param \Pterodactyl\Services\Servers\VariableValidatorService            $validatorService
+     * @param \Pterodactyl\Services\Servers\ServerDeletionService $serverDeletionService
+     * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
      */
     public function __construct(
         AllocationSelectionService $allocationSelectionService,

@@ -65,7 +65,7 @@ class ServerPolicy
      * policy permission.
      *
      * @param string $name
-     * @param mixed  $arguments
+     * @param mixed $arguments
      */
     public function __call($name, $arguments)
     {
