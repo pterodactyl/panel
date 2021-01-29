@@ -10,10 +10,11 @@ import AuthenticationRouter from '@/routers/AuthenticationRouter';
 import { SiteSettings } from '@/state/settings';
 import ProgressBar from '@/components/elements/ProgressBar';
 import NotFound from '@/components/screens/NotFound';
-import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
+import tw from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 import { history } from '@/components/history';
 import { setupInterceptors } from '@/api/interceptors';
+import TailwindGlobalStyles from '@/components/GlobalStyles';
 
 const ChunkedAdminRouter = lazy(() => import(/* webpackChunkName: "admin" */'@/routers/AdminRouter'));
 
