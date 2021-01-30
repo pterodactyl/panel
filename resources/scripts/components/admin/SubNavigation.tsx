@@ -4,7 +4,7 @@ import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 
 export const SubNavigation = styled.div`
-    ${tw`h-12 flex flex-row items-center border-b border-neutral-700`};
+    ${tw`h-12 flex flex-row items-center border-b border-neutral-700 mb-4`};
 
     & > div {
         ${tw`h-full flex flex-col flex-shrink-0 justify-center`};

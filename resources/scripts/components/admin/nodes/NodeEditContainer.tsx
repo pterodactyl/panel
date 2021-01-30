@@ -1,3 +1,5 @@
+import AdminBox from '@/components/admin/AdminBox';
+import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import tw from 'twin.macro';
@@ -23,6 +25,14 @@ export const Context = createContextStore<ctx>({
         state.node = payload;
     }),
 });
+
+const Code = ({ children }: { children: React.ReactNode }) => {
+    return (
+        <code css={tw`text-sm font-mono bg-neutral-900 rounded`} style={{ padding: '2px 6px' }}>
+            {children}
+        </code>
+    );
+};
 
 const NodeEditContainer = () => {
     const location = useLocation();
@@ -60,12 +70,14 @@ const NodeEditContainer = () => {
 
     return (
         <AdminContentBlock title={'Node - ' + node.name}>
-            <div css={tw`w-full flex flex-row items-center mb-4`}>
+            <div css={tw`w-full flex flex-row items-center mb-6`}>
                 <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{node.name}</h2>
                     <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>{node.uuid}</p>
                 </div>
             </div>
+
+            <FlashMessageRender byKey={'node'} css={tw`mb-4`}/>
 
             <SubNavigation>
                 <SubNavigationLink to={`${match.url}`} name={'About'}>
@@ -99,15 +111,19 @@ const NodeEditContainer = () => {
                 </SubNavigationLink>
             </SubNavigation>
 
-            <FlashMessageRender byKey={'node'} css={tw`mb-4`}/>
-
             <Switch location={location}>
                 <Route path={`${match.path}`} exact>
-                    <p>About</p>
+                    <AdminBox title={'Node Information'}>
+                        <p>Version <Code>1.2.2</Code></p>
+                    </AdminBox>
                 </Route>
 
                 <Route path={`${match.path}/settings`} exact>
-                    <p>Settings</p>
+                    <div css={tw`flex flex-row`}>
+                        <div css={tw`w-full flex flex-col`}>
+                            <NodeSettingsContainer/>
+                        </div>
+                    </div>
                 </Route>
 
                 <Route path={`${match.path}/configuration`} exact>
