@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
-import { number, object, string } from 'yup';
+import { object, string } from 'yup';
 import updateNode from '@/api/admin/nodes/updateNode';
 import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';

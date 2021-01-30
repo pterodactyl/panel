@@ -35,6 +35,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
  * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
+ * @property \Pterodactyl\Models\DatabaseHost $databaseHost
  */
 class Node extends Model
 {
