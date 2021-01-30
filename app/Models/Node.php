@@ -28,6 +28,7 @@ use Illuminate\Contracts\Encryption\Encrypter;
  * @property int $daemonListen
  * @property int $daemonSFTP
  * @property string $daemonBase
+ * @property int|null $database_host_id
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Pterodactyl\Models\Location $location
@@ -237,6 +238,16 @@ class Node extends Model
     public function allocations()
     {
         return $this->hasMany(Allocation::class);
+    }
+
+    /**
+     * Gets the database host associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function databaseHost()
+    {
+        return $this->belongsTo(DatabaseHost::class);
     }
 
     /**

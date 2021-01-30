@@ -18,25 +18,10 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest
 
 class DatabaseController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Databases\DeployServerDatabaseService
-     */
-    private $deployDatabaseService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\DatabaseRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    private $managementService;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
-     */
-    private $passwordService;
+    private DeployServerDatabaseService $deployDatabaseService;
+    private DatabaseRepository $repository;
+    private DatabaseManagementService $managementService;
+    private DatabasePasswordService $passwordService;
 
     /**
      * DatabaseController constructor.
