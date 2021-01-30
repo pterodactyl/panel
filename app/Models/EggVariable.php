@@ -3,19 +3,19 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int                                $id
- * @property int                                $egg_id
- * @property string                             $name
- * @property string                             $description
- * @property string                             $env_variable
- * @property string                             $default_value
- * @property bool                               $user_viewable
- * @property bool                               $user_editable
- * @property string                             $rules
- * @property \Carbon\CarbonImmutable            $created_at
- * @property \Carbon\CarbonImmutable            $updated_at
- * @property bool                               $required
- * @property \Pterodactyl\Models\Egg            $egg
+ * @property int $id
+ * @property int $egg_id
+ * @property string $name
+ * @property string $description
+ * @property string $env_variable
+ * @property string $default_value
+ * @property bool $user_viewable
+ * @property bool $user_editable
+ * @property string $rules
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property \Carbon\CarbonImmutable $updated_at
+ * @property bool $required
+ * @property \Pterodactyl\Models\Egg $egg
  * @property \Pterodactyl\Models\ServerVariable $serverVariable
  *
  * The "server_value" variable is only present on the object if you've loaded this model

@@ -3,44 +3,44 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int                                                                        $id
- * @property string                                                                     $uuid
- * @property int                                                                        $nest_id
- * @property string                                                                     $author
- * @property string                                                                     $name
- * @property string|null                                                                $description
- * @property array|null                                                                 $features
- * @property string                                                                     $docker_image           -- deprecated, use $docker_images
- * @property string                                                                     $update_url
- * @property array                                                                      $docker_images
- * @property string                                                                     $file_denylist
- * @property string|null                                                                $config_files
- * @property string|null                                                                $config_startup
- * @property string|null                                                                $config_logs
- * @property string|null                                                                $config_stop
- * @property int|null                                                                   $config_from
- * @property string|null                                                                $startup
- * @property bool                                                                       $script_is_privileged
- * @property string|null                                                                $script_install
- * @property string                                                                     $script_entry
- * @property string                                                                     $script_container
- * @property int|null                                                                   $copy_script_from
- * @property \Carbon\Carbon                                                             $created_at
- * @property \Carbon\Carbon                                                             $updated_at
- * @property string|null                                                                $copy_script_install
- * @property string                                                                     $copy_script_entry
- * @property string                                                                     $copy_script_container
- * @property string|null                                                                $inherit_config_files
- * @property string|null                                                                $inherit_config_startup
- * @property string|null                                                                $inherit_config_logs
- * @property string|null                                                                $inherit_config_stop
- * @property string                                                                     $inherit_file_denylist
- * @property array|null                                                                 $inherit_features
- * @property \Pterodactyl\Models\Nest                                                   $nest
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[]      $servers
+ * @property int $id
+ * @property string $uuid
+ * @property int $nest_id
+ * @property string $author
+ * @property string $name
+ * @property string|null $description
+ * @property array|null $features
+ * @property string $docker_image -- deprecated, use $docker_images
+ * @property string $update_url
+ * @property array $docker_images
+ * @property array|null $file_denylist
+ * @property string|null $config_files
+ * @property string|null $config_startup
+ * @property string|null $config_logs
+ * @property string|null $config_stop
+ * @property int|null $config_from
+ * @property string|null $startup
+ * @property bool $script_is_privileged
+ * @property string|null $script_install
+ * @property string $script_entry
+ * @property string $script_container
+ * @property int|null $copy_script_from
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string|null $copy_script_install
+ * @property string $copy_script_entry
+ * @property string $copy_script_container
+ * @property string|null $inherit_config_files
+ * @property string|null $inherit_config_startup
+ * @property string|null $inherit_config_logs
+ * @property string|null $inherit_config_stop
+ * @property string $inherit_file_denylist
+ * @property array|null $inherit_features
+ * @property \Pterodactyl\Models\Nest $nest
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\EggVariable[] $variables
- * @property \Pterodactyl\Models\Egg|null                                               $scriptFrom
- * @property \Pterodactyl\Models\Egg|null                                               $configFrom
+ * @property \Pterodactyl\Models\Egg|null $scriptFrom
+ * @property \Pterodactyl\Models\Egg|null $configFrom
  */
 class Egg extends Model
 {
@@ -105,6 +105,7 @@ class Egg extends Model
         'copy_script_from' => 'integer',
         'features' => 'array',
         'docker_images' => 'array',
+        'file_denylist' => 'array',
     ];
 
     /**
@@ -117,6 +118,8 @@ class Egg extends Model
         'description' => 'string|nullable',
         'features' => 'array|nullable',
         'author' => 'required|string|email',
+        'file_denylist' => 'array|nullable',
+        'file_denylist.*' => 'string',
         'docker_images' => 'required|array|min:1',
         'docker_images.*' => 'required|string',
         'startup' => 'required|nullable|string',
@@ -133,6 +136,7 @@ class Egg extends Model
      */
     protected $attributes = [
         'features' => null,
+        'file_denylist' => null,
         'config_stop' => null,
         'config_startup' => null,
         'config_logs' => null,
@@ -260,7 +264,7 @@ class Egg extends Model
      * Returns the features available to this egg from the parent configuration if there are
      * no features defined for this egg specifically and there is a parent egg configured.
      *
-     * @return string
+     * @return string[]|null
      */
     public function getInheritFileDenylistAttribute()
     {

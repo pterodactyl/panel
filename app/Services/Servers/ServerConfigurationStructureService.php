@@ -80,7 +80,7 @@ class ServerConfigurationStructureService
             }),
             'egg' => [
                 'id' => $server->egg->uuid,
-                'file_denylist' => explode(PHP_EOL, $server->egg->inherit_file_denylist),
+                'file_denylist' => $server->egg->inherit_file_denylist,
             ],
         ];
     }

@@ -7,18 +7,18 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
- * @property int                          $id
- * @property int                          $schedule_id
- * @property int                          $sequence_id
- * @property string                       $action
- * @property string                       $payload
- * @property int                          $time_offset
- * @property bool                         $is_queued
- * @property \Carbon\Carbon               $created_at
- * @property \Carbon\Carbon               $updated_at
- * @property string                       $hashid
+ * @property int $id
+ * @property int $schedule_id
+ * @property int $sequence_id
+ * @property string $action
+ * @property string $payload
+ * @property int $time_offset
+ * @property bool $is_queued
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property string $hashid
  * @property \Pterodactyl\Models\Schedule $schedule
- * @property \Pterodactyl\Models\Server   $server
+ * @property \Pterodactyl\Models\Server $server
  */
 class Task extends Model
 {

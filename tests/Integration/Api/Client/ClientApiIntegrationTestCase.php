@@ -55,7 +55,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Returns a link to the specific resource using the client API.
      *
-     * @param mixed       $model
+     * @param mixed $model
      * @param string|null $append
      */
     protected function link($model, $append = null): string

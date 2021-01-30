@@ -3,12 +3,12 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int                          $id
- * @property string                       $short
- * @property string                       $long
- * @property \Carbon\Carbon               $created_at
- * @property \Carbon\Carbon               $updated_at
- * @property \Pterodactyl\Models\Node[]   $nodes
+ * @property int $id
+ * @property string $short
+ * @property string $long
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Pterodactyl\Models\Node[] $nodes
  * @property \Pterodactyl\Models\Server[] $servers
  */
 class Location extends Model

@@ -51,9 +51,9 @@ class DynamicDatabaseConnection
     /**
      * Adds a dynamic database connection entry to the runtime config.
      *
-     * @param string                               $connection
+     * @param string $connection
      * @param \Pterodactyl\Models\DatabaseHost|int $host
-     * @param string                               $database
+     * @param string $database
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

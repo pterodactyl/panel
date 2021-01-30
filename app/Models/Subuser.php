@@ -5,13 +5,13 @@ namespace Pterodactyl\Models;
 use Illuminate\Notifications\Notifiable;
 
 /**
- * @property int                        $id
- * @property int                        $user_id
- * @property int                        $server_id
- * @property array                      $permissions
- * @property \Carbon\Carbon             $created_at
- * @property \Carbon\Carbon             $updated_at
- * @property \Pterodactyl\Models\User   $user
+ * @property int $id
+ * @property int $user_id
+ * @property int $server_id
+ * @property array $permissions
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Pterodactyl\Models\User $user
  * @property \Pterodactyl\Models\Server $server
  */
 class Subuser extends Model

@@ -3,10 +3,10 @@
 namespace Pterodactyl\Models;
 
 /**
- * @property int                      $id
- * @property int                      $user_id
- * @property string                   $token
- * @property \Carbon\CarbonImmutable  $created_at
+ * @property int $id
+ * @property int $user_id
+ * @property string $token
+ * @property \Carbon\CarbonImmutable $created_at
  * @property \Pterodactyl\Models\User $user
  */
 class RecoveryToken extends Model
