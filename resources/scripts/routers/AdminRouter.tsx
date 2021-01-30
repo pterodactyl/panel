@@ -108,7 +108,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
             <Sidebar collapsed={collapsed}>
                 <div className={'header'} onClick={ () => { setCollapsed(!collapsed); } }>
                     { !collapsed ?
-                        <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap`}>{applicationName}</h1>
+                        <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap font-medium`}>{applicationName}</h1>
                         :
                         <img src={'/favicons/android-icon-48x48.png'} alt={'Pterodactyl Icon'} />
                     }
@@ -227,7 +227,6 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route
                             path={`${match.path}/nodes/:id`}
                             component={NodeEditContainer}
-                            exact
                         />
 
                         <Route path={`${match.path}/servers`} component={ServersContainer} exact/>
@@ -235,7 +234,6 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route
                             path={`${match.path}/servers/:id`}
                             component={ServerEditContainer}
-                            exact
                         />
 
                         <Route path={`${match.path}/users`} component={UsersContainer} exact/>
