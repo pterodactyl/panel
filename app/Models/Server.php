@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 
 /**
  * @property int $id
@@ -370,5 +371,24 @@ class Server extends Model
     public function audits()
     {
         return $this->hasMany(AuditLog::class);
+    }
+
+    /**
+     * Checks if the server is currently in a user-accessible state. If not, an
+     * exception is raised. This should be called whenever something needs to make
+     * sure the server is not in a weird state that should block user access.
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Server\ServerStateConflictException
+     */
+    public function validateCurrentState()
+    {
+        if (
+            $this->isSuspended() ||
+            !$this->isInstalled() ||
+            $this->status === self::STATUS_RESTORING_BACKUP ||
+            !is_null($this->transfer)
+        ) {
+            throw new ServerStateConflictException($this);
+        }
     }
 }

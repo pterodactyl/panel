@@ -6,10 +6,8 @@ use Closure;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 
 class AuthenticateServerAccess
 {
@@ -60,23 +58,17 @@ class AuthenticateServerAccess
             }
         }
 
-        if ($server->suspended && !$request->routeIs('api:client:server.resources')) {
-            throw new BadRequestHttpException('This server is currently suspended and the functionality requested is unavailable.');
-        }
-
-        // Still allow users to get information about their server if it is installing or being transferred.
-        if (!$request->routeIs('api:client:server.view')) {
-            if (!$server->isInstalled()) {
-                // Throw an exception for all server routes; however if the user is an admin and requesting the
-                // server details, don't throw the exception for them.
-                if (!$user->root_admin || ($user->root_admin && !$request->routeIs($this->except))) {
-                    throw new ConflictHttpException('Server has not completed the installation process.');
+        try {
+            $server->validateCurrentState();
+        } catch (ServerStateConflictException $exception) {
+            // Still allow users to get information about their server if it is installing or
+            // being transferred.
+            if (!$request->routeIs('api:client:server.view')) {
+                if ($server->isSuspended() && !$request->routeIs('api:client:server.resources')) {
+                    throw $exception;
                 }
-            }
-
-            if (!is_null($server->transfer)) {
-                if (!$user->root_admin || ($user->root_admin && !$request->routeIs($this->except))) {
-                    throw new ServerTransferringException();
+                if (!$user->root_admin || !$request->routeIs($this->except)) {
+                    throw $exception;
                 }
             }
         }

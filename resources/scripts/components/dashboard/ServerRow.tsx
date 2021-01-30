@@ -111,21 +111,23 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </span>
                         </div>
                         :
-                        server.isInstalling ?
+                        (server.isTransferring || server.status) ?
                             <div css={tw`flex-1 text-center`}>
                                 <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
-                                    Installing
+                                    {server.isTransferring ?
+                                        'Transferring'
+                                        :
+                                        server.status === 'installing' ? 'Installing' : (
+                                            server.status === 'restoring_backup' ?
+                                                'Restoring Backup'
+                                                :
+                                                'Unavailable'
+                                        )
+                                    }
                                 </span>
                             </div>
                             :
-                            server.isTransferring ?
-                                <div css={tw`flex-1 text-center`}>
-                                    <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
-                                        Transferring
-                                    </span>
-                                </div>
-                                :
-                                <Spinner size={'small'}/>
+                            <Spinner size={'small'}/>
                     :
                     <React.Fragment>
                         <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>
