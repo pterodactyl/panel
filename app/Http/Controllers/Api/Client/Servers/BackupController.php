@@ -8,7 +8,7 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
-use Illuminate\Validation\UnauthorizedException;
+use Illuminate\Auth\Access\AuthorizationException;
 use Pterodactyl\Services\Backups\DeleteBackupService;
 use Pterodactyl\Services\Backups\DownloadLinkService;
 use Pterodactyl\Services\Backups\InitiateBackupService;
@@ -63,11 +63,12 @@ class BackupController extends ClientApiController
      *
      * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
      * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request, Server $server): array
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
-            throw new UnauthorizedException();
+            throw new AuthorizationException();
         }
 
         $limit = min($request->query('per_page') ?? 20, 50);
@@ -109,11 +110,12 @@ class BackupController extends ClientApiController
      *
      * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
      * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function view(Request $request, Server $server, Backup $backup): array
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
-            throw new UnauthorizedException();
+            throw new AuthorizationException();
         }
 
         return $this->fractal->item($backup)
@@ -130,7 +132,7 @@ class BackupController extends ClientApiController
     public function delete(Request $request, Server $server, Backup $backup): JsonResponse
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            throw new UnauthorizedException();
+            throw new AuthorizationException();
         }
 
         $server->audit(AuditLog::SERVER__BACKUP_DELETED, function (AuditLog $audit) use ($backup) {
@@ -146,11 +148,13 @@ class BackupController extends ClientApiController
      * Download the backup for a given server instance. For daemon local files, the file
      * will be streamed back through the Panel. For AWS S3 files, a signed URL will be generated
      * which the user is redirected to.
+     *
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function download(Request $request, Server $server, Backup $backup): JsonResponse
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_DOWNLOAD, $server)) {
-            throw new UnauthorizedException();
+            throw new AuthorizationException();
         }
 
         switch ($backup->disk) {
@@ -179,7 +183,7 @@ class BackupController extends ClientApiController
     public function restore(Request $request, Server $server, Backup $backup): JsonResponse
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
-            throw new UnauthorizedException();
+            throw new AuthorizationException();
         }
 
         // Cannot restore a backup unless a server is fully installed and not currently

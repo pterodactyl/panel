@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Tests\Integration;
 
+use Illuminate\Http\Response;
 use Illuminate\Testing\Assert as PHPUnit;
 use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Validation\ValidationException;
@@ -34,5 +35,13 @@ class TestResponse extends IlluminateTestResponse
         PHPUnit::assertSame($actual, $status, "Expected status code {$status} but received {$actual}.");
 
         return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function assertForbidden()
+    {
+        return self::assertStatus(Response::HTTP_FORBIDDEN);
     }
 }

@@ -39,11 +39,6 @@ export interface Server {
         allocations: number;
         backups: number;
     };
-    // Only isSuspended got marked as deprecated since the isInstalling is a nice helper
-    // since you'd have to check multiple potential values for that. isSuspended should
-    // be replaced with status !== 'suspended'.
-    /** @deprecated */
-    isSuspended: boolean;
     isInstalling: boolean;
     isTransferring: boolean;
     variables: ServerEggVariable[];
@@ -67,7 +62,6 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     limits: { ...data.limits },
     eggFeatures: data.egg_features || [],
     featureLimits: { ...data.feature_limits },
-    isSuspended: data.status === 'suspended',
     isInstalling: data.status === 'installing' || data.status === 'install_failed',
     isTransferring: data.is_transferring,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(rawDataToServerEggVariable),
