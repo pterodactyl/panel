@@ -6,6 +6,7 @@ import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import { SocketEvent, SocketRequest } from '@/components/server/events';
 
 interface Stats {
     memory: number;
@@ -55,11 +56,11 @@ const ServerDetailsBlock = () => {
             return;
         }
 
-        instance.addListener('stats', statsListener);
-        instance.send('send stats');
+        instance.addListener(SocketEvent.STATS, statsListener);
+        instance.send(SocketRequest.SEND_STATS);
 
         return () => {
-            instance.removeListener('stats', statsListener);
+            instance.removeListener(SocketEvent.STATS, statsListener);
         };
     }, [ instance, connected ]);
 
