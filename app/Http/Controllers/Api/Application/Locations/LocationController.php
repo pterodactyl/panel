@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
 
-use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -21,25 +20,10 @@ use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
 
 class LocationController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Locations\LocationCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Locations\LocationDeletionService
-     */
-    private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Locations\LocationUpdateService
-     */
-    private $updateService;
+    private LocationCreationService $creationService;
+    private LocationDeletionService $deletionService;
+    private LocationUpdateService $updateService;
+    private LocationRepositoryInterface $repository;
 
     /**
      * LocationController constructor.
@@ -47,15 +31,15 @@ class LocationController extends ApplicationApiController
     public function __construct(
         LocationCreationService $creationService,
         LocationDeletionService $deletionService,
-        LocationRepositoryInterface $repository,
-        LocationUpdateService $updateService
+        LocationUpdateService $updateService,
+        LocationRepositoryInterface $repository
     ) {
         parent::__construct();
 
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
-        $this->repository = $repository;
         $this->updateService = $updateService;
+        $this->repository = $repository;
     }
 
     /**
@@ -66,7 +50,7 @@ class LocationController extends ApplicationApiController
         $perPage = $request->query('per_page', 10);
         if ($perPage < 1) {
             $perPage = 10;
-        } else if ($perPage > 100) {
+        } elseif ($perPage > 100) {
             throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
         }
 
@@ -93,9 +77,6 @@ class LocationController extends ApplicationApiController
     /**
      * Store a new location on the Panel and return a HTTP/201 response code with the
      * new location attached.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Locations\StoreLocationRequest $request
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */

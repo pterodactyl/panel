@@ -188,7 +188,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
             </Sidebar>
 
             <div css={tw`h-16 w-screen flex md:hidden flex-row flex-shrink-0 items-center bg-neutral-900 px-6`}>
-                <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap`}>{applicationName}</h1>
+                <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap font-medium`}>{applicationName}</h1>
 
                 <div css={tw`flex md:hidden flex-shrink-0 ml-auto`}>
                     <button css={tw`inline-flex items-center justify-center p-2 rounded-md text-neutral-400 hover:text-neutral-50 hover:bg-neutral-700 focus:outline-none focus:bg-neutral-700 focus:text-neutral-50`}>

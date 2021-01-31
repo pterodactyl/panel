@@ -1,3 +1,4 @@
+import LocationSelect from '@/components/admin/nodes/LocationSelect';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
@@ -12,8 +13,11 @@ import { ApplicationStore } from '@/state';
 import { Actions, useStoreActions } from 'easy-peasy';
 
 interface Values {
+    public: boolean;
     name: string;
     description: string;
+    locationId: number;
+    fqdn: string;
 }
 
 export default () => {
@@ -44,8 +48,11 @@ export default () => {
         <Formik
             onSubmit={submit}
             initialValues={{
+                public: node.public,
                 name: node.name,
                 description: node.description || '',
+                locationId: node.locationId,
+                fqdn: node.fqdn,
             }}
             validationSchema={object().shape({
                 name: string().required().max(191),
@@ -73,6 +80,19 @@ export default () => {
                                         id={'description'}
                                         name={'description'}
                                         label={'Description'}
+                                        type={'text'}
+                                    />
+                                </div>
+
+                                <div css={tw`mb-6`}>
+                                    <LocationSelect defaultLocation={{ id: 1, short: 'local', long: '', createdAt: new Date(), updatedAt: new Date() }}/>
+                                </div>
+
+                                <div css={tw`mb-6`}>
+                                    <Field
+                                        id={'fqdn'}
+                                        name={'fqdn'}
+                                        label={'FQDN'}
                                         type={'text'}
                                     />
                                 </div>
