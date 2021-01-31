@@ -71,7 +71,8 @@ export default ({ backup }: Props) => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
             })
-            .then(() => setLoading(false));
+            .then(() => setLoading(false))
+            .then(() => setModal(''));
     };
 
     return (

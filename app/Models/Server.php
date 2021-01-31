@@ -336,7 +336,7 @@ class Server extends Model
      */
     public function newAuditEvent(string $action, array $metadata = []): AuditLog
     {
-        return AuditLog::factory($action, $metadata)->fill([
+        return AuditLog::instance($action, $metadata)->fill([
             'server_id' => $this->id,
         ]);
     }

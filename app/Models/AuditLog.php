@@ -101,7 +101,7 @@ class AuditLog extends Model
      *
      * @return $this
      */
-    public static function factory(string $action, array $metadata, bool $isSystem = false)
+    public static function instance(string $action, array $metadata, bool $isSystem = false)
     {
         /** @var \Illuminate\Http\Request $request */
         $request = Container::getInstance()->make('request');
