@@ -184,7 +184,7 @@ class ServerViewController extends Controller
      */
     public function manage(Request $request, Server $server)
     {
-        if ($server->installed > 1) {
+        if ($server->status === Server::STATUS_INSTALL_FAILED) {
             throw new DisplayException('This server is in a failed install state and cannot be recovered. Please delete and re-create the server.');
         }
 

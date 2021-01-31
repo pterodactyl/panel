@@ -25,7 +25,7 @@ class ServerInstalled
             throw new NotFoundHttpException('No server resource was located in the request parameters.');
         }
 
-        if ($server->installed !== 1) {
+        if (!$server->isInstalled()) {
             throw new HttpException(Response::HTTP_FORBIDDEN, 'Access to this resource is not allowed due to the current installation state.');
         }
 

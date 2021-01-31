@@ -31,7 +31,7 @@
                     <p>This will reinstall the server with the assigned service scripts. <strong>Danger!</strong> This could overwrite server data.</p>
                 </div>
                 <div class="box-footer">
-                    @if($server->installed === 1)
+                    @if($server->isInstalled())
                         <form action="{{ route('admin.servers.view.manage.reinstall', $server->id) }}" method="POST">
                             {!! csrf_field() !!}
                             <button type="submit" class="btn btn-danger">Reinstall Server</button>
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        @if(! $server->suspended)
+        @if(! $server->isSuspended())
             <div class="col-sm-4">
                 <div class="box box-warning">
                     <div class="box-header with-border">

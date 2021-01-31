@@ -57,9 +57,9 @@
                                     <code>{{ $server->allocation->alias }}:{{ $server->allocation->port }}</code>
                                 </td>
                                 <td class="text-center">
-                                    @if($server->suspended)
+                                    @if($server->isSuspended())
                                         <span class="label bg-maroon">Suspended</span>
-                                    @elseif(! $server->installed)
+                                    @elseif(! $server->isInstalled())
                                         <span class="label label-warning">Installing</span>
                                     @else
                                         <span class="label label-success">Active</span>

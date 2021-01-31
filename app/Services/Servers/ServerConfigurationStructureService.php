@@ -47,7 +47,7 @@ class ServerConfigurationStructureService
     {
         return [
             'uuid' => $server->uuid,
-            'suspended' => $server->suspended,
+            'suspended' => $server->isSuspended(),
             'environment' => $this->environment->handle($server),
             'invocation' => $server->startup,
             'skip_egg_scripts' => $server->skip_scripts,
@@ -118,7 +118,7 @@ class ServerConfigurationStructureService
                 'skip_scripts' => $server->skip_scripts,
             ],
             'rebuild' => false,
-            'suspended' => (int) $server->suspended,
+            'suspended' => $server->isSuspended() ? 1 : 0,
         ];
     }
 }

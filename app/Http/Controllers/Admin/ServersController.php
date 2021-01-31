@@ -203,12 +203,12 @@ class ServersController extends Controller
      */
     public function toggleInstall(Server $server)
     {
-        if ($server->installed > 1) {
+        if ($server->status === Server::STATUS_INSTALL_FAILED) {
             throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
         }
 
         $this->repository->update($server->id, [
-            'installed' => !$server->installed,
+            'status' => $server->isInstalled() ? Server::STATUS_INSTALLING : null,
         ], true, true);
 
         $this->alert->success(trans('admin/server.alerts.install_toggled'))->flash();

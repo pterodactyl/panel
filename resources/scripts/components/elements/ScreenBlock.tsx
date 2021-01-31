@@ -5,6 +5,8 @@ import { faArrowLeft, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import styled, { keyframes } from 'styled-components/macro';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import NotFoundSvg from '@/assets/images/not_found.svg';
+import ServerErrorSvg from '@/assets/images/server_error.svg';
 
 interface BaseProps {
     title: string;
@@ -16,15 +18,15 @@ interface BaseProps {
 
 interface PropsWithRetry extends BaseProps {
     onRetry?: () => void;
-    onBack?: never | undefined;
+    onBack?: never;
 }
 
 interface PropsWithBack extends BaseProps {
     onBack?: () => void;
-    onRetry?: never | undefined;
+    onRetry?: never;
 }
 
-type Props = PropsWithBack | PropsWithRetry;
+export type ScreenBlockProps = PropsWithBack | PropsWithRetry;
 
 const spin = keyframes`
     to { transform: rotate(360deg) }
@@ -38,7 +40,7 @@ const ActionButton = styled(Button)`
     }
 `;
 
-export default ({ title, image, message, onBack, onRetry }: Props) => (
+const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => (
     <PageContentBlock>
         <div css={tw`flex justify-center`}>
             <div css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-100 rounded-lg shadow-lg text-center relative`}>
@@ -61,3 +63,23 @@ export default ({ title, image, message, onBack, onRetry }: Props) => (
         </div>
     </PageContentBlock>
 );
+
+type ServerErrorProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWithRetry, 'image' | 'title'>) & {
+    title?: string;
+}
+
+const ServerError = ({ title, ...props }: ServerErrorProps) => (
+    <ScreenBlock title={title || 'Something went wrong'} image={ServerErrorSvg} {...props}/>
+);
+
+const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'title' | 'message' | 'onBack'>>) => (
+    <ScreenBlock
+        title={title || '404'}
+        image={NotFoundSvg}
+        message={message || 'The requested resource was not found.'}
+        onBack={onBack}
+    />
+);
+
+export { ServerError, NotFound };
+export default ScreenBlock;

@@ -11,6 +11,7 @@ import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
+import { SocketEvent } from '@/components/server/events';
 
 interface Props {
     backup: ServerBackup;
@@ -20,7 +21,7 @@ interface Props {
 export default ({ backup, className }: Props) => {
     const { mutate } = getServerBackups();
 
-    useWebsocketEvent(`backup completed:${backup.uuid}`, data => {
+    useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${backup.uuid}` as SocketEvent, data => {
         try {
             const parsed = JSON.parse(data);
 

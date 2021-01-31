@@ -13,6 +13,7 @@ import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
+import { SocketEvent, SocketRequest } from '@/components/server/events';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -172,32 +173,35 @@ export default () => {
     useEventListener('resize', () => fit());
 
     useEffect(() => {
+        const listeners: Record<string, (s: string) => void> = {
+            [SocketEvent.STATUS]: handlePowerChangeEvent,
+            [SocketEvent.CONSOLE_OUTPUT]: handleConsoleOutput,
+            [SocketEvent.INSTALL_OUTPUT]: handleConsoleOutput,
+            [SocketEvent.TRANSFER_LOGS]: handleConsoleOutput,
+            [SocketEvent.TRANSFER_STATUS]: handleTransferStatus,
+            [SocketEvent.DAEMON_MESSAGE]: line => handleConsoleOutput(line, true),
+            [SocketEvent.DAEMON_ERROR]: handleDaemonErrorOutput,
+        };
+
         if (connected && instance) {
             // Do not clear the console if the server is being transferred.
             if (!isTransferring) {
                 terminal.clear();
             }
 
-            instance.addListener('status', handlePowerChangeEvent);
-            instance.addListener('console output', handleConsoleOutput);
-            instance.addListener('install output', handleConsoleOutput);
-            instance.addListener('transfer logs', handleConsoleOutput);
-            instance.addListener('transfer status', handleTransferStatus);
-            instance.addListener('daemon message', line => handleConsoleOutput(line, true));
-            instance.addListener('daemon error', handleDaemonErrorOutput);
-            instance.send('send logs');
+            Object.keys(listeners).forEach((key: string) => {
+                instance.addListener(key, listeners[key]);
+            });
+            instance.send(SocketRequest.SEND_LOGS);
         }
 
         return () => {
-            instance && instance.removeListener('status', handlePowerChangeEvent)
-                .removeListener('console output', handleConsoleOutput)
-                .removeListener('install output', handleConsoleOutput)
-                .removeListener('transfer logs', handleConsoleOutput)
-                .removeListener('transfer status', handleTransferStatus)
-                .removeListener('daemon message', line => handleConsoleOutput(line, true))
-                .removeListener('daemon error', handleDaemonErrorOutput);
+            if (instance) {
+                Object.keys(listeners).forEach((key: string) => {
+                    instance.removeListener(key, listeners[key]);
+                });
+            }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ connected, instance ]);
 
     return (
