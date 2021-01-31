@@ -4,7 +4,7 @@ import LoginContainer from '@/components/auth/LoginContainer';
 import ForgotPasswordContainer from '@/components/auth/ForgotPasswordContainer';
 import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
 import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer';
-import NotFound from '@/components/screens/NotFound';
+import { NotFound } from '@/components/elements/ScreenBlock';
 
 export default ({ location, history, match }: RouteComponentProps) => (
     <div className={'pt-8 xl:pt-32'}>

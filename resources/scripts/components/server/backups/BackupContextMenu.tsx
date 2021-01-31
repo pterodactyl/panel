@@ -14,6 +14,7 @@ import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
 import Input from '@/components/elements/Input';
+import { restoreServerBackup } from '@/api/server/backups';
 
 interface Props {
     backup: ServerBackup;
@@ -21,10 +22,9 @@ interface Props {
 
 export default ({ backup }: Props) => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
+    const [ modal, setModal ] = useState('');
     const [ loading, setLoading ] = useState(false);
-    const [ visible, setVisible ] = useState(false);
-    const [ deleteVisible, setDeleteVisible ] = useState(false);
-    const [ restoreVisible, setRestoreVisible ] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { mutate } = getServerBackups();
 
@@ -47,36 +47,47 @@ export default ({ backup }: Props) => {
         setLoading(true);
         clearFlashes('backups');
         deleteBackup(uuid, backup.uuid)
-            .then(() => {
-                mutate(data => ({
-                    ...data,
-                    items: data.items.filter(b => b.uuid !== backup.uuid),
-                }), false);
-            })
+            .then(() => mutate(data => ({
+                ...data,
+                items: data.items.filter(b => b.uuid !== backup.uuid),
+            }), false))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
                 setLoading(false);
-                setDeleteVisible(false);
+                setModal('');
             });
+    };
+
+    const doRestorationAction = () => {
+        setLoading(true);
+        clearFlashes('backups');
+        restoreServerBackup(uuid, backup.uuid)
+            .then(() => setServerFromState(s => ({
+                ...s,
+                status: 'restoring_backup',
+            })))
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'backups', error });
+            })
+            .then(() => setLoading(false));
     };
 
     return (
         <>
-            {visible &&
             <ChecksumModal
                 appear
-                visible={visible}
-                onDismissed={() => setVisible(false)}
+                visible={modal === 'checksum'}
+                onDismissed={() => setModal('')}
                 checksum={backup.checksum}
             />
-            }
             <ConfirmationModal
-                visible={restoreVisible}
+                visible={modal === 'restore'}
                 title={'Restore this backup?'}
                 buttonText={'Restore backup'}
-                onConfirmed={() => null}
-                onModalDismissed={() => setRestoreVisible(false)}
+                onConfirmed={() => doRestorationAction()}
+                onModalDismissed={() => setModal('')}
             >
                 <p css={tw`text-neutral-300`}>
                     This server will be stopped in order to restore the backup. Once the backup has started you will
@@ -87,7 +98,10 @@ export default ({ backup }: Props) => {
                     Are you sure you want to continue?
                 </p>
                 <p css={tw`mt-4 -mb-2 bg-neutral-900 p-3 rounded`}>
-                    <label htmlFor={'restore_truncate'} css={tw`text-base text-neutral-200 flex items-center cursor-pointer`}>
+                    <label
+                        htmlFor={'restore_truncate'}
+                        css={tw`text-base text-neutral-200 flex items-center cursor-pointer`}
+                    >
                         <Input
                             type={'checkbox'}
                             css={tw`text-red-500! w-5! h-5! mr-2`}
@@ -99,11 +113,11 @@ export default ({ backup }: Props) => {
                 </p>
             </ConfirmationModal>
             <ConfirmationModal
-                visible={deleteVisible}
+                visible={modal === 'delete'}
                 title={'Delete this backup?'}
                 buttonText={'Yes, delete backup'}
                 onConfirmed={() => doDeletion()}
-                onModalDismissed={() => setDeleteVisible(false)}
+                onModalDismissed={() => setModal('')}
             >
                 Are you sure you wish to delete this backup? This is a permanent operation and the backup cannot
                 be recovered once deleted.
@@ -122,23 +136,23 @@ export default ({ backup }: Props) => {
                 >
                     <div css={tw`text-sm`}>
                         <Can action={'backup.download'}>
-                            <DropdownButtonRow onClick={() => doDownload()}>
+                            <DropdownButtonRow onClick={doDownload}>
                                 <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`}/>
                                 <span css={tw`ml-2`}>Download</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.restore'}>
-                            <DropdownButtonRow onClick={() => setRestoreVisible(true)}>
+                            <DropdownButtonRow onClick={() => setModal('restore')}>
                                 <FontAwesomeIcon fixedWidth icon={faBoxOpen} css={tw`text-xs`}/>
                                 <span css={tw`ml-2`}>Restore</span>
                             </DropdownButtonRow>
                         </Can>
-                        <DropdownButtonRow onClick={() => setVisible(true)}>
+                        <DropdownButtonRow onClick={() => setModal('checksum')}>
                             <FontAwesomeIcon fixedWidth icon={faLock} css={tw`text-xs`}/>
                             <span css={tw`ml-2`}>Checksum</span>
                         </DropdownButtonRow>
                         <Can action={'backup.delete'}>
-                            <DropdownButtonRow danger onClick={() => setDeleteVisible(true)}>
+                            <DropdownButtonRow danger onClick={() => setModal('delete')}>
                                 <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
                                 <span css={tw`ml-2`}>Delete</span>
                             </DropdownButtonRow>
@@ -147,7 +161,7 @@ export default ({ backup }: Props) => {
                 </DropdownMenu>
                 :
                 <button
-                    onClick={() => setDeleteVisible(true)}
+                    onClick={() => setModal('delete')}
                     css={tw`text-neutral-200 transition-colors duration-150 hover:text-neutral-100 p-2`}
                 >
                     <FontAwesomeIcon icon={faTrashAlt}/>

@@ -5,7 +5,7 @@ import VariableBox from '@/components/server/startup/VariableBox';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import getServerStartup from '@/api/swr/getServerStartup';
 import Spinner from '@/components/elements/Spinner';
-import ServerError from '@/components/screens/ServerError';
+import { ServerError } from '@/components/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';

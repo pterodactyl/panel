@@ -8,7 +8,7 @@ import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { NavLink, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';
-import ServerError from '@/components/screens/ServerError';
+import { ServerError } from '@/components/elements/ScreenBlock';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import { ServerContext } from '@/state/server';
