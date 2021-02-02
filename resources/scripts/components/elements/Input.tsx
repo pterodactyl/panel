@@ -59,7 +59,7 @@ const inputStyle = css<Props>`
         ${tw`opacity-75`};
     }
 
-    &:read-only {
+    &:not(.ignoreReadOnly):read-only {
         ${tw`border-neutral-800 bg-neutral-900`};
     }
 

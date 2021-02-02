@@ -27,27 +27,21 @@ export default ({ defaultLocation }: { defaultLocation: Location }) => {
         setExpanded(true);
     };
 
-    const onBlur = () => {
-        // setInputText(location.short);
-        // setExpanded(false);
-    };
-
     const search = debounce((query: string) => {
         if (!expanded) {
             return;
         }
 
-        if (query === '') {
+        if (query === '' || query.length < 2) {
             setLocations([]);
             return;
         }
 
         setLoading(true);
         searchLocations({ short: query }).then((locations) => {
-            console.log(locations);
             setLocations(locations);
         }).then(() => setLoading(false));
-    }, 200);
+    }, 250);
 
     const selectLocation = (location: Location) => {
         setLocation(location);
@@ -58,13 +52,29 @@ export default ({ defaultLocation }: { defaultLocation: Location }) => {
         setExpanded(false);
     }, [ location ]);
 
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.key !== 'Escape') {
+                return;
+            }
+
+            setInputText(location.short);
+            setExpanded(false);
+        };
+
+        window.addEventListener('keydown', handler);
+        return () => {
+            window.removeEventListener('keydown', handler);
+        };
+    }, [ expanded ]);
+
     return (
         <div>
             <Label htmlFor="listbox-label">Location</Label>
 
             <div css={tw`mt-1 relative`}>
                 <InputSpinner visible={loading}>
-                    <Input type="text" value={inputText} onFocus={onFocus} onBlur={onBlur} onChange={e => {
+                    <Input type="text" className="ignoreReadOnly" value={inputText} readOnly={!expanded} onFocus={onFocus} onChange={e => {
                         setInputText(e.currentTarget.value);
                         search(e.currentTarget.value);
                     }}
@@ -78,32 +88,46 @@ export default ({ defaultLocation }: { defaultLocation: Location }) => {
                 </div>
 
                 <Dropdown expanded={expanded}>
-                    <ul tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-item-3" css={tw`max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm`}>
-                        {locations.map(l => (
-                            l.id === location.id ?
-                                <li key={l.id} id={'listbox-item-' + l.id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={() => selectLocation(l)}>
-                                    <div css={tw`flex items-center`}>
-                                        <span css={tw`block font-medium truncate`}>
-                                            {l.short}
-                                        </span>
-                                    </div>
+                    {locations.length < 1 ?
+                        <div css={tw`h-10 flex flex-row items-center px-3`}>
+                            <p css={tw`text-sm`}>Please type 2 or more characters.</p>
+                        </div>
+                        :
+                        <ul tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-item-3" css={tw`max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm`}>
+                            {locations.map(l => (
+                                l.id === location.id ?
+                                    <li key={l.id} id={'listbox-item-' + l.id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={(e) => {
+                                        e.stopPropagation();
+                                        selectLocation(l);
+                                    }}
+                                    >
+                                        <div css={tw`flex items-center`}>
+                                            <span css={tw`block font-medium truncate`}>
+                                                {l.short}
+                                            </span>
+                                        </div>
 
-                                    <span css={tw`absolute inset-y-0 right-0 flex items-center pr-4`}>
-                                        <svg css={tw`h-5 w-5 text-primary-400`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path clipRule="evenodd" fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
-                                        </svg>
-                                    </span>
-                                </li>
-                                :
-                                <li key={l.id} id={'listbox-item-' + l.id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={() => selectLocation(l)}>
-                                    <div css={tw`flex items-center`}>
-                                        <span css={tw`block font-normal truncate`}>
-                                            {l.short}
+                                        <span css={tw`absolute inset-y-0 right-0 flex items-center pr-4`}>
+                                            <svg css={tw`h-5 w-5 text-primary-400`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                <path clipRule="evenodd" fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                                            </svg>
                                         </span>
-                                    </div>
-                                </li>
-                        ))}
-                    </ul>
+                                    </li>
+                                    :
+                                    <li key={l.id} id={'listbox-item-' + l.id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={(e) => {
+                                        e.stopPropagation();
+                                        selectLocation(l);
+                                    }}
+                                    >
+                                        <div css={tw`flex items-center`}>
+                                            <span css={tw`block font-normal truncate`}>
+                                                {l.short}
+                                            </span>
+                                        </div>
+                                    </li>
+                            ))}
+                        </ul>
+                    }
                 </Dropdown>
             </div>
         </div>
