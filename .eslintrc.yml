@@ -76,6 +76,9 @@ rules:
     - 1
     - "line-aligned"
   "react/jsx-closing-tag-location": 1
+  "no-use-before-define": 0
+  "@typescript-eslint/no-use-before-define": 1
+  "multiline-ternary": 0
 overrides:
   - files:
       - "**/*.tsx"

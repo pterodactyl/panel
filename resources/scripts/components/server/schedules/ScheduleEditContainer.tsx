@@ -48,7 +48,7 @@ const ActivePill = ({ active }: { active: boolean }) => (
 export default () => {
     const params = useParams() as Params;
     const history = useHistory();
-    const state: State = useLocation().state;
+    const state = useLocation<State>().state;
 
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);

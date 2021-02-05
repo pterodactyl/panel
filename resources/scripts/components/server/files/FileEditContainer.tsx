@@ -24,7 +24,7 @@ const LazyCodemirrorEditor = lazy(() => import(/* webpackChunkName: "editor" */'
 
 export default () => {
     const [ error, setError ] = useState('');
-    const { action } = useParams();
+    const { action } = useParams<{ action: string }>();
     const [ loading, setLoading ] = useState(action === 'edit');
     const [ content, setContent ] = useState('');
     const [ modalVisible, setModalVisible ] = useState(false);
