@@ -18,12 +18,9 @@ Route::group(['prefix' => '/databases'], function () {
 
     Route::post('/', 'Databases\DatabaseController@store');
 
-    Route::put('/{databaseHost}/nodes', 'Databases\DatabaseController@addNodes');
-
     Route::patch('/{databaseHost}', 'Databases\DatabaseController@update');
 
     Route::delete('/{databaseHost}', 'Databases\DatabaseController@delete');
-    Route::delete('/{databaseHost}/nodes', 'Databases\DatabaseController@deleteNodes');
 });
 
 /*

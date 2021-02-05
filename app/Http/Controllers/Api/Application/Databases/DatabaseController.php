@@ -12,28 +12,17 @@ use Pterodactyl\Transformers\Api\Application\DatabaseHostTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Databases\GetDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Application\Databases\GetDatabasesRequest;
-use Pterodactyl\Http\Requests\Api\Application\Databases\DatabaseNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Databases\StoreDatabaseRequest;
-use Pterodactyl\Http\Requests\Api\Application\Databases\UpdateDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Application\Databases\DeleteDatabaseRequest;
+use Pterodactyl\Http\Requests\Api\Application\Databases\UpdateDatabaseRequest;
 
 class DatabaseController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostUpdateService
-     */
-    private $updateService;
+    private HostCreationService $creationService;
+    private HostUpdateService $updateService;
 
     /**
      * DatabaseController constructor.
-     *
-     * @param \Pterodactyl\Services\Databases\Hosts\HostCreationService $creationService
-     * @param \Pterodactyl\Services\Databases\Hosts\HostUpdateService $updateService
      */
     public function __construct(HostCreationService $creationService, HostUpdateService $updateService)
     {
@@ -46,9 +35,6 @@ class DatabaseController extends ApplicationApiController
     /**
      * Returns an array of all database hosts.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\GetDatabasesRequest $request
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetDatabasesRequest $request): array
@@ -56,7 +42,7 @@ class DatabaseController extends ApplicationApiController
         $perPage = $request->query('per_page', 10);
         if ($perPage < 1) {
             $perPage = 10;
-        } else if ($perPage > 100) {
+        } elseif ($perPage > 100) {
             throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
         }
 
@@ -73,10 +59,6 @@ class DatabaseController extends ApplicationApiController
     /**
      * Returns a single database host.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\GetDatabaseRequest $request
-     * @param \Pterodactyl\Models\DatabaseHost $databaseHost
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetDatabaseRequest $request, DatabaseHost $databaseHost): array
@@ -89,9 +71,6 @@ class DatabaseController extends ApplicationApiController
     /**
      * Creates a new database host.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\StoreDatabaseRequest $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Throwable
      */
     public function store(StoreDatabaseRequest $request): JsonResponse
@@ -106,10 +85,6 @@ class DatabaseController extends ApplicationApiController
     /**
      * Updates a database host.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\UpdateDatabaseRequest $request
-     * @param \Pterodactyl\Models\DatabaseHost $databaseHost
-     *
-     * @return array
      * @throws \Throwable
      */
     public function update(UpdateDatabaseRequest $request, DatabaseHost $databaseHost): array
@@ -124,10 +99,6 @@ class DatabaseController extends ApplicationApiController
     /**
      * Deletes a database host.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\DeleteDatabaseRequest $request
-     * @param \Pterodactyl\Models\DatabaseHost $databaseHost
-     *
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function delete(DeleteDatabaseRequest $request, DatabaseHost $databaseHost): JsonResponse
@@ -135,49 +106,5 @@ class DatabaseController extends ApplicationApiController
         $databaseHost->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * ?
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\DatabaseNodesRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return array
-     */
-    public function addNodes(DatabaseNodesRequest $request, DatabaseHost $databaseHost): array
-    {
-        $data = $request->validated();
-
-        $nodes = $data['nodes'] ?? [];
-        if (count($nodes) > 0) {
-            $databaseHost->nodes()->syncWithoutDetaching($nodes);
-        }
-
-        return $this->fractal->item($databaseHost)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
-            ->toArray();
-    }
-
-    /**
-     * ?
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Databases\DatabaseNodesRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return array
-     */
-    public function deleteNodes(DatabaseNodesRequest $request, DatabaseHost $databaseHost): array
-    {
-        $data = $request->validated();
-
-        $nodes = $data['nodes'] ?? [];
-        if (count($nodes) > 0) {
-            $databaseHost->nodes()->detach($nodes);
-        }
-
-        return $this->fractal->item($databaseHost)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
-            ->toArray();
     }
 }
