@@ -89,9 +89,14 @@ export default ({ defaultLocation }: { defaultLocation: Location }) => {
 
                 <Dropdown expanded={expanded}>
                     {locations.length < 1 ?
-                        <div css={tw`h-10 flex flex-row items-center px-3`}>
-                            <p css={tw`text-sm`}>Please type 2 or more characters.</p>
-                        </div>
+                        inputText.length < 2 ?
+                            <div css={tw`h-10 flex flex-row items-center px-3`}>
+                                <p css={tw`text-sm`}>Please type 2 or more characters.</p>
+                            </div>
+                            :
+                            <div css={tw`h-10 flex flex-row items-center px-3`}>
+                                <p css={tw`text-sm`}>No results found.</p>
+                            </div>
                         :
                         <ul tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-item-3" css={tw`max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm`}>
                             {locations.map(l => (
