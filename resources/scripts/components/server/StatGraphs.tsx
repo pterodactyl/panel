@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Chart, { ChartConfiguration } from 'chart.js';
 import { ServerContext } from '@/state/server';
 import { bytesToMegabytes } from '@/helpers';
@@ -6,6 +6,8 @@ import merge from 'deepmerge';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
+import { SocketEvent } from '@/components/server/events';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 
 const chartDefaults = (ticks?: Chart.TickOptions | undefined): ChartConfiguration => ({
     type: 'line',
@@ -70,7 +72,6 @@ const chartDefaults = (ticks?: Chart.TickOptions | undefined): ChartConfiguratio
 export default () => {
     const status = ServerContext.useStoreState(state => state.status.value);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
-    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 
     const [ memory, setMemory ] = useState<Chart>();
     const [ cpu, setCpu ] = useState<Chart>();
@@ -84,7 +85,7 @@ export default () => {
             new Chart(node.getContext('2d')!, chartDefaults({
                 callback: (value) => `${value}Mb  `,
                 suggestedMax: limits.memory,
-            }))
+            })),
         );
     }, []);
 
@@ -100,7 +101,7 @@ export default () => {
         );
     }, []);
 
-    const statsListener = (data: string) => {
+    useWebsocketEvent(SocketEvent.STATS, (data: string) => {
         let stats: any = {};
         try {
             stats = JSON.parse(data);
@@ -125,27 +126,19 @@ export default () => {
 
             cpu.update({ lazy: true });
         }
-    };
-
-    useEffect(() => {
-        if (!connected || !instance) {
-            return;
-        }
-
-        instance.addListener('stats', statsListener);
-
-        return () => {
-            instance.removeListener('stats', statsListener);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ instance, connected, memory, cpu ]);
+    });
 
     return (
         <div css={tw`flex flex-wrap mt-4`}>
             <div css={tw`w-full sm:w-1/2`}>
                 <TitledGreyBox title={'Memory usage'} icon={faMemory} css={tw`mr-0 sm:mr-4`}>
                     {status !== 'offline' ?
-                        <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
+                        <canvas
+                            id={'memory_chart'}
+                            ref={memoryRef}
+                            aria-label={'Server Memory Usage Graph'}
+                            role={'img'}
+                        />
                         :
                         <p css={tw`text-xs text-neutral-400 text-center p-3`}>
                             Server is offline.

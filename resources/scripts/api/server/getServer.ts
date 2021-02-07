@@ -1,6 +1,6 @@
 import http, { FractalResponseData, FractalResponseList } from '@/api/http';
 import { rawDataToServerAllocation, rawDataToServerEggVariable } from '@/api/transformers';
-import { ServerEggVariable } from '@/api/server/types';
+import { ServerEggVariable, ServerStatus } from '@/api/server/types';
 
 export interface Allocation {
     id: number;
@@ -17,6 +17,7 @@ export interface Server {
     uuid: string;
     name: string;
     node: string;
+    status: ServerStatus;
     sftpDetails: {
         ip: string;
         port: number;
@@ -38,7 +39,6 @@ export interface Server {
         allocations: number;
         backups: number;
     };
-    isSuspended: boolean;
     isInstalling: boolean;
     isTransferring: boolean;
     variables: ServerEggVariable[];
@@ -51,6 +51,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     uuid: data.uuid,
     name: data.name,
     node: data.node,
+    status: data.status,
     invocation: data.invocation,
     dockerImage: data.docker_image,
     sftpDetails: {
@@ -61,8 +62,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     limits: { ...data.limits },
     eggFeatures: data.egg_features || [],
     featureLimits: { ...data.feature_limits },
-    isSuspended: data.is_suspended,
-    isInstalling: data.is_installing,
+    isInstalling: data.status === 'installing' || data.status === 'install_failed',
     isTransferring: data.is_transferring,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(rawDataToServerEggVariable),
     allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(rawDataToServerAllocation),

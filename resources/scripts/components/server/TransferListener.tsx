@@ -1,5 +1,6 @@
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { ServerContext } from '@/state/server';
+import { SocketEvent } from '@/components/server/events';
 
 const TransferListener = () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -7,7 +8,7 @@ const TransferListener = () => {
     const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
 
     // Listen for the transfer status event so we can update the state of the server.
-    useWebsocketEvent('transfer status', (status: string) => {
+    useWebsocketEvent(SocketEvent.TRANSFER_STATUS, (status: string) => {
         if (status === 'starting') {
             setServerFromState(s => ({ ...s, isTransferring: true }));
             return;

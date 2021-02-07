@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -55,10 +56,13 @@ class ServerInstallController extends Controller
     {
         $server = $this->repository->getByUuid($uuid);
 
-        $this->repository->update($server->id, [
-            'installed' => (string) $request->input('successful') === '1' ? 1 : 2,
-        ], true, true);
+        $status = $request->input('successful') === '1' ? null : Server::STATUS_INSTALL_FAILED;
+        if ($server->status === Server::STATUS_SUSPENDED) {
+            $status = Server::STATUS_SUSPENDED;
+        }
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        $this->repository->update($server->id, ['status' => $status], true, true);
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

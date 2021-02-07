@@ -67,11 +67,6 @@ interface ServerRepositoryInterface extends RepositoryInterface
     public function isUniqueUuidCombo(string $uuid, string $short): bool;
 
     /**
-     * Get the amount of servers that are suspended.
-     */
-    public function getSuspendedServersCount(): int;
-
-    /**
      * Returns all of the servers that exist for a given node in a paginated response.
      */
     public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator;

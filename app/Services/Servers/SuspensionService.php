@@ -6,7 +6,7 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class SuspensionService
 {
@@ -49,18 +49,18 @@ class SuspensionService
         // Nothing needs to happen if we're suspending the server and it is already
         // suspended in the database. Additionally, nothing needs to happen if the server
         // is not suspended and we try to un-suspend the instance.
-        if ($isSuspending === $server->suspended) {
+        if ($isSuspending === $server->isSuspended()) {
             return;
         }
 
         // Check if the server is currently being transferred.
         if (!is_null($server->transfer)) {
-            throw new ServerTransferringException();
+            throw new ConflictHttpException('Cannot toggle suspension status on a server that is currently being transferred.');
         }
 
-        $this->connection->transaction(function () use ($action, $server) {
+        $this->connection->transaction(function () use ($action, $server, $isSuspending) {
             $server->update([
-                'suspended' => $action === self::ACTION_SUSPEND,
+                'status' => $isSuspending ? Server::STATUS_SUSPENDED : null,
             ]);
 
             // Only send the suspension request to wings if the server is not currently being transferred.

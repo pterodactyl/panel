@@ -1,5 +1,5 @@
 import getServer, { Server } from '@/api/server/getServer';
-import { action, Action, createContextStore, thunk, Thunk } from 'easy-peasy';
+import { action, Action, computed, Computed, createContextStore, thunk, Thunk } from 'easy-peasy';
 import socket, { SocketStore } from './socket';
 import files, { ServerFileStore } from '@/state/server/files';
 import subusers, { ServerSubuserStore } from '@/state/server/subusers';
@@ -12,6 +12,7 @@ export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | nul
 
 interface ServerDataStore {
     data?: Server;
+    inConflictState: Computed<ServerDataStore, boolean>;
     permissions: string[];
 
     getServer: Thunk<ServerDataStore, string, Record<string, unknown>, ServerStore, Promise<void>>;
@@ -22,6 +23,14 @@ interface ServerDataStore {
 
 const server: ServerDataStore = {
     permissions: [],
+
+    inConflictState: computed(state => {
+        if (!state.data) {
+            return false;
+        }
+
+        return state.data.status !== null || state.data.isTransferring;
+    }),
 
     getServer: thunk(async (actions, payload) => {
         const [ server, permissions ] = await getServer(payload);

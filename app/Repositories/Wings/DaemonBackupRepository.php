@@ -54,6 +54,31 @@ class DaemonBackupRepository extends DaemonRepository
     }
 
     /**
+     * Sends a request to Wings to begin restoring a backup for a server.
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function restore(Backup $backup, string $url = null, bool $truncate = false): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            return $this->getHttpClient()->post(
+                sprintf('/api/servers/%s/backup/%s/restore', $this->server->uuid, $backup->uuid),
+                [
+                    'json' => [
+                        'adapter' => $backup->disk,
+                        'truncate_directory' => $truncate,
+                        'download_url' => $url ?? '',
+                    ],
+                ]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
+
+    /**
      * Deletes a backup from the daemon.
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException

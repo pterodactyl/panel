@@ -89,9 +89,7 @@ class BulkPowerActionCommand extends Command
      */
     protected function getQueryBuilder(array $servers, array $nodes)
     {
-        $instance = Server::query()
-            ->where('suspended', false)
-            ->where('installed', Server::STATUS_INSTALLED);
+        $instance = Server::query()->whereNull('status');
 
         if (!empty($nodes) && !empty($servers)) {
             $instance->whereIn('id', $servers)->orWhereIn('node_id', $nodes);

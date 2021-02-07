@@ -4,7 +4,7 @@ import AccountOverviewContainer from '@/components/dashboard/AccountOverviewCont
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
-import NotFound from '@/components/screens/NotFound';
+import { NotFound } from '@/components/elements/ScreenBlock';
 import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
 
