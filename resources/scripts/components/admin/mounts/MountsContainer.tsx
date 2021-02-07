@@ -1,4 +1,3 @@
-import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useContext, useEffect, useState } from 'react';
 import getMounts, { Context as MountsContext } from '@/api/admin/mounts/getMounts';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -10,6 +9,7 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper } from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
+import CopyOnClick from '@/components/elements/CopyOnClick';
 
 const RowCheckbox = ({ id }: { id: number}) => {
     const isChecked = AdminContext.useStoreState(state => state.mounts.selectedMounts.indexOf(id) >= 0);

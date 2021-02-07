@@ -18,6 +18,10 @@ interface Values {
     description: string;
     locationId: number;
     fqdn: string;
+    listenPort: number;
+    publicPort: number;
+    listenPortSFTP: number;
+    publicPortSFTP: number;
 }
 
 export default () => {
@@ -53,6 +57,10 @@ export default () => {
                 description: node.description || '',
                 locationId: node.locationId,
                 fqdn: node.fqdn,
+                listenPort: node.daemonListen,
+                publicPort: node.daemonListen,
+                listenPortSFTP: node.daemonSftp,
+                publicPortSFTP: node.daemonSftp,
             }}
             validationSchema={object().shape({
                 name: string().required().max(191),
@@ -95,6 +103,46 @@ export default () => {
                                         label={'FQDN'}
                                         type={'text'}
                                     />
+                                </div>
+
+                                <div css={tw`md:w-full md:flex md:flex-row mb-6`}>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mb-6 md:mb-0`}>
+                                        <Field
+                                            id={'listenPort'}
+                                            name={'listenPort'}
+                                            label={'Listen Port'}
+                                            type={'number'}
+                                        />
+                                    </div>
+
+                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mb-6 md:mb-0`}>
+                                        <Field
+                                            id={'publicPort'}
+                                            name={'publicPort'}
+                                            label={'Public Port'}
+                                            type={'number'}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div css={tw`md:w-full md:flex md:flex-row mb-6`}>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mb-6 md:mb-0`}>
+                                        <Field
+                                            id={'listenPortSFTP'}
+                                            name={'listenPortSFTP'}
+                                            label={'SFTP Listen Port'}
+                                            type={'number'}
+                                        />
+                                    </div>
+
+                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mb-6 md:mb-0`}>
+                                        <Field
+                                            id={'publicPortSFTP'}
+                                            name={'publicPortSFTP'}
+                                            label={'SFTP Public Port'}
+                                            type={'number'}
+                                        />
+                                    </div>
                                 </div>
 
                                 <div css={tw`w-full flex flex-row items-center`}>
