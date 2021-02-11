@@ -21,6 +21,10 @@ class StoreNodeRequest extends ApplicationApiRequest
             'name',
             'location_id',
             'fqdn',
+            'listen_port_http',
+            'listen_port_sftp',
+            'public_port_http',
+            'public_port_sftp',
             'scheme',
             'behind_proxy',
             'memory',
@@ -28,12 +32,8 @@ class StoreNodeRequest extends ApplicationApiRequest
             'disk',
             'disk_overallocate',
             'upload_size',
-            'daemonListen',
-            'daemonSFTP',
-            'daemonBase',
+            'daemon_base',
         ])->mapWithKeys(function ($value, $key) {
-            $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
-
             return [snake_case($key) => $value];
         })->toArray();
     }
@@ -62,11 +62,7 @@ class StoreNodeRequest extends ApplicationApiRequest
     public function validated()
     {
         $response = parent::validated();
-        $response['daemonListen'] = $response['daemon_listen'];
-        $response['daemonSFTP'] = $response['daemon_sftp'];
-        $response['daemonBase'] = $response['daemon_base'] ?? (new Node())->getAttribute('daemonBase');
-
-        unset($response['daemon_base'], $response['daemon_listen'], $response['daemon_sftp']);
+        $response['daemon_base'] = $response['daemon_base'] ?? (new Node())->getAttribute('daemon_base');
 
         return $response;
     }

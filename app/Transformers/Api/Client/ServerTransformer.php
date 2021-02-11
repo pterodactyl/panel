@@ -46,7 +46,7 @@ class ServerTransformer extends BaseClientTransformer
             'node' => $server->node->name,
             'sftp_details' => [
                 'ip' => $server->node->fqdn,
-                'port' => $server->node->daemonSFTP,
+                'port' => $server->node->public_port_sftp,
             ],
             'description' => $server->description,
             'limits' => [

@@ -28,13 +28,7 @@ class NodeTransformer extends BaseTransformer
      */
     public function transform(Node $model): array
     {
-        $response = collect($model->toArray())->mapWithKeys(function ($value, $key) {
-            // I messed up early in 2016 when I named this column as poorly
-            // as I did. This is the tragic result of my mistakes.
-            $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
-
-            return [snake_case($key) => $value];
-        })->toArray();
+        $response = $model->toArray();
 
         $response[$model->getUpdatedAtColumn()] = $this->formatTimestamp($model->updated_at);
         $response[$model->getCreatedAtColumn()] = $this->formatTimestamp($model->created_at);

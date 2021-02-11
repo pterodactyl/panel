@@ -19,7 +19,7 @@ class AddDatabaseHostIdColumnToNodesTable extends Migration
         });
 
         Schema::table('nodes', function (Blueprint $table) {
-            $table->integer('database_host_id')->nullable()->unsigned()->after('daemonBase');
+            $table->integer('database_host_id')->nullable()->unsigned()->after('location_id');
             $table->index('database_host_id')->nullable();
             $table->foreign('database_host_id')->references('id')->on('database_hosts')->onDelete('set null');
         });
