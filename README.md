@@ -7,7 +7,7 @@
 
 # Pterodactyl Panel
 Pterodactyl is an open-source game server management panel built with PHP 7, React, and Go. Designed with security 
-in mind, Pterodactyl runs all game servers in isolated Docker container while exposing a beautiful and intuitive
+in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive
 UI to end users.
 
 Stop settling for less. Make game servers a first class citizen on your platform.
@@ -30,7 +30,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**Spill Hosting**](https://spillhosting.no/) | Spill Hosting is a Norwegian hosting service, which aims for cheap services on quality servers. Premium i9-9900K processors will run your game like a dream. |
 | [**DeinServerHost**](https://deinserverhost.de/) | DeinServerHost offers Dedicated, vps and Gameservers for many popular Games like Minecraft and Rust in Germany since 2013. |
 | [**HostBend**](https://hostbend.com/) | HostBend offers a variety of solutions for developers, students, and others who have a tight budget but don't want to compromise quality and support. |
-| [**Capitol Hosting Solutions**](https://chs.gg/) | CHS is *the* budget friendly hosting company for Australian and American gamers, offering a variety of plans for all your hosting needs. |
+| [**Capitol Hosting Solutions**](https://capitolsolutions.cloud/) | CHS is *the* budget friendly hosting company for Australian and American gamers, offering a variety of plans from Web Hosting to Game Servers; Custom Solutions too! |
 
 ## Documentation
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
