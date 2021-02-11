@@ -22,6 +22,7 @@ interface Values {
     publicPortHTTP: number;
     listenPortSFTP: number;
     publicPortSFTP: number;
+    scheme: string;
 }
 
 export default () => {
@@ -61,6 +62,7 @@ export default () => {
                 publicPortHTTP: node.publicPortHTTP,
                 listenPortSFTP: node.listenPortSFTP,
                 publicPortSFTP: node.publicPortSFTP,
+                scheme: node.scheme,
             }}
             validationSchema={object().shape({
                 name: string().required().max(191),

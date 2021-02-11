@@ -107,7 +107,7 @@ class Node extends Model
         'name' => 'required|regex:/^([\w .-]{1,100})$/',
         'description' => 'string|nullable',
         'location_id' => 'required|exists:locations,id',
-        'database_host_id' => 'required|exists:database_hosts,id',
+        'database_host_id' => 'sometimes|nullable|exists:database_hosts,id',
         'public' => 'boolean',
         'fqdn' => 'required|string',
         'listen_port_http' => 'required|numeric|between:1,65535',
