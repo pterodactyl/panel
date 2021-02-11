@@ -56,7 +56,7 @@ class ServerInstallController extends Controller
     {
         $server = $this->repository->getByUuid($uuid);
 
-        $status = $request->input('successful') === '1' ? null : Server::STATUS_INSTALL_FAILED;
+        $status = $request->boolean('successful') ? null : Server::STATUS_INSTALL_FAILED;
         if ($server->status === Server::STATUS_SUSPENDED) {
             $status = Server::STATUS_SUSPENDED;
         }
