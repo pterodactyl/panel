@@ -1,4 +1,3 @@
-import LocationSelect from '@/components/admin/nodes/LocationSelect';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
@@ -11,6 +10,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { Context } from '@/components/admin/nodes/NodeEditContainer';
 import { ApplicationStore } from '@/state';
 import { Actions, useStoreActions } from 'easy-peasy';
+import LocationSelect from '@/components/admin/nodes/LocationSelect';
 
 interface Values {
     public: boolean;
@@ -18,8 +18,8 @@ interface Values {
     description: string;
     locationId: number;
     fqdn: string;
-    listenPort: number;
-    publicPort: number;
+    listenPortHTTP: number;
+    publicPortHTTP: number;
     listenPortSFTP: number;
     publicPortSFTP: number;
 }
@@ -36,11 +36,11 @@ export default () => {
         );
     }
 
-    const submit = ({ name, description }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('database');
+    const submit = ({ name, description, locationId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('node');
 
-        updateNode(node.id, name, description)
-            .then(() => setNode({ ...node, name, description }))
+        updateNode(node.id, { name, description, locationId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP })
+            .then(() => setNode({ ...node, name, description, locationId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'node', error });
@@ -57,10 +57,10 @@ export default () => {
                 description: node.description || '',
                 locationId: node.locationId,
                 fqdn: node.fqdn,
-                listenPort: node.daemonListen,
-                publicPort: node.daemonListen,
-                listenPortSFTP: node.daemonSftp,
-                publicPortSFTP: node.daemonSftp,
+                listenPortHTTP: node.listenPortHTTP,
+                publicPortHTTP: node.publicPortHTTP,
+                listenPortSFTP: node.listenPortSFTP,
+                publicPortSFTP: node.publicPortSFTP,
             }}
             validationSchema={object().shape({
                 name: string().required().max(191),
@@ -108,18 +108,18 @@ export default () => {
                                 <div css={tw`md:w-full md:flex md:flex-row mb-6`}>
                                     <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mb-6 md:mb-0`}>
                                         <Field
-                                            id={'listenPort'}
-                                            name={'listenPort'}
-                                            label={'Listen Port'}
+                                            id={'listenPortHTTP'}
+                                            name={'listenPortHTTP'}
+                                            label={'HTTP Listen Port'}
                                             type={'number'}
                                         />
                                     </div>
 
                                     <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mb-6 md:mb-0`}>
                                         <Field
-                                            id={'publicPort'}
-                                            name={'publicPort'}
-                                            label={'Public Port'}
+                                            id={'publicPortHTTP'}
+                                            name={'publicPortHTTP'}
+                                            label={'HTTP Public Port'}
                                             type={'number'}
                                         />
                                     </div>

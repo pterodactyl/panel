@@ -142,7 +142,7 @@ const UsersContainer = () => {
                                                                 </div>
 
                                                                 <div css={tw`text-sm text-neutral-400`}>
-                                                                    {server.relations.node?.fqdn}:{server.relations.node?.daemonListen}
+                                                                    {server.relations.node?.fqdn}
                                                                 </div>
                                                             </NavLink>
                                                         </td>

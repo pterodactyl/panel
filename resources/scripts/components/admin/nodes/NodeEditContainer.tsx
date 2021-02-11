@@ -1,5 +1,3 @@
-import AdminBox from '@/components/admin/AdminBox';
-import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import tw from 'twin.macro';
@@ -12,6 +10,9 @@ import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ApplicationStore } from '@/state';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
+import AdminBox from '@/components/admin/AdminBox';
+import NodeLimitContainer from '@/components/admin/nodes/NodeLimitContainer';
+import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
 
 interface ctx {
     node: Node | undefined;
@@ -119,9 +120,13 @@ const NodeEditContainer = () => {
                 </Route>
 
                 <Route path={`${match.path}/settings`} exact>
-                    <div css={tw`flex flex-row`}>
-                        <div css={tw`w-full flex flex-col`}>
+                    <div css={tw`flex flex-col lg:flex-row`}>
+                        <div css={tw`w-full lg:w-1/2 flex flex-col mr-0 lg:mr-2`}>
                             <NodeSettingsContainer/>
+                        </div>
+
+                        <div css={tw`w-full lg:w-1/2 flex flex-col ml-0 lg:ml-2 mt-4 lg:mt-0`}>
+                            <NodeLimitContainer/>
                         </div>
                     </div>
                 </Route>

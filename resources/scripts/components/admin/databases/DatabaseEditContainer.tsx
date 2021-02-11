@@ -134,6 +134,7 @@ const EditInformationContainer = () => {
                                             name={'password'}
                                             label={'Password'}
                                             type={'password'}
+                                            placeholder={'••••••••'}
                                         />
                                     </div>
                                 </div>

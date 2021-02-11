@@ -11,6 +11,10 @@ export interface Node {
     description: string | null;
     locationId: number;
     fqdn: string;
+    listenPortHTTP: number;
+    publicPortHTTP: number;
+    listenPortSFTP: number;
+    publicPortSFTP: number;
     scheme: string;
     behindProxy: boolean;
     maintenanceMode: boolean;
@@ -19,8 +23,6 @@ export interface Node {
     disk: number;
     diskOverallocate: number;
     uploadSize: number;
-    daemonListen: number;
-    daemonSftp: number;
     daemonBase: string;
     createdAt: Date;
     updatedAt: Date;
@@ -38,6 +40,10 @@ export const rawDataToNode = ({ attributes }: FractalResponseData): Node => ({
     description: attributes.description,
     locationId: attributes.location_id,
     fqdn: attributes.fqdn,
+    listenPortHTTP: attributes.listen_port_http,
+    publicPortHTTP: attributes.public_port_http,
+    listenPortSFTP: attributes.listen_port_sftp,
+    publicPortSFTP: attributes.public_port_sftp,
     scheme: attributes.scheme,
     behindProxy: attributes.behind_proxy,
     maintenanceMode: attributes.maintenance_mode,
@@ -46,8 +52,6 @@ export const rawDataToNode = ({ attributes }: FractalResponseData): Node => ({
     disk: attributes.disk,
     diskOverallocate: attributes.disk_overallocate,
     uploadSize: attributes.upload_size,
-    daemonListen: attributes.daemon_listen,
-    daemonSftp: attributes.daemon_sftp,
     daemonBase: attributes.daemon_base,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
