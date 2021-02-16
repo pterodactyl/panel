@@ -63,7 +63,7 @@ export default () => {
                             }}
                         >
                             <FlashMessageRender byKey={'role:create'} css={tw`mb-6`}/>
-                            <h2 css={tw`text-neutral-100 text-2xl mb-6`}>New Role</h2>
+                            <h2 css={tw`mb-6 text-2xl text-neutral-100`}>New Role</h2>
                             <Form css={tw`m-0`}>
                                 <Field
                                     type={'string'}
@@ -71,6 +71,7 @@ export default () => {
                                     name={'name'}
                                     label={'Name'}
                                     description={'A short name used to identify this role.'}
+                                    autoFocus
                                 />
 
                                 <div css={tw`mt-6`}>
