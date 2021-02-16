@@ -48,7 +48,7 @@ const NodeEditContainer = () => {
     useEffect(() => {
         clearFlashes('node');
 
-        getNode(Number(match.params?.id))
+        getNode(Number(match.params?.id), [ 'database_host', 'location' ])
             .then(node => setNode(node))
             .catch(error => {
                 console.error(error);

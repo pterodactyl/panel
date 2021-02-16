@@ -13,10 +13,10 @@ const Dropdown = styled.div<{ expanded: boolean }>`
     ${props => !props.expanded && tw`hidden`};
 `;
 
-export default ({ defaultLocation }: { defaultLocation: Location }) => {
+export default ({ defaultLocation }: { defaultLocation: Location | null }) => {
     const [ loading, setLoading ] = useState(false);
     const [ expanded, setExpanded ] = useState(false);
-    const [ location, setLocation ] = useState<Location>(defaultLocation);
+    const [ location, setLocation ] = useState<Location | null>(defaultLocation);
     const [ locations, setLocations ] = useState<Location[]>([]);
 
     const [ inputText, setInputText ] = useState('');
@@ -48,7 +48,7 @@ export default ({ defaultLocation }: { defaultLocation: Location }) => {
     };
 
     useEffect(() => {
-        setInputText(location.short);
+        setInputText(location?.short || '');
         setExpanded(false);
     }, [ location ]);
 
@@ -58,7 +58,7 @@ export default ({ defaultLocation }: { defaultLocation: Location }) => {
                 return;
             }
 
-            setInputText(location.short);
+            setInputText(location?.short || '');
             setExpanded(false);
         };
 
@@ -100,7 +100,7 @@ export default ({ defaultLocation }: { defaultLocation: Location }) => {
                         :
                         <ul tabIndex={-1} role="listbox" aria-labelledby="listbox-label" aria-activedescendant="listbox-item-3" css={tw`max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm`}>
                             {locations.map(l => (
-                                l.id === location.id ?
+                                l.id === location?.id ?
                                     <li key={l.id} id={'listbox-item-' + l.id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={(e) => {
                                         e.stopPropagation();
                                         selectLocation(l);

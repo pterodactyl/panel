@@ -1,6 +1,7 @@
 import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
 import { createContext, useContext } from 'react';
 import useSWR from 'swr';
+import { Database, rawDataToDatabase } from '@/api/admin/databases/getDatabases';
 import { Location, rawDataToLocation } from '@/api/admin/locations/getLocations';
 
 export interface Node {
@@ -10,6 +11,7 @@ export interface Node {
     name: string;
     description: string | null;
     locationId: number;
+    databaseHostId: number | null;
     fqdn: string;
     listenPortHTTP: number;
     publicPortHTTP: number;
@@ -28,6 +30,7 @@ export interface Node {
     updatedAt: Date;
 
     relations: {
+        databaseHost: Database | undefined;
         location: Location | undefined;
     };
 }
@@ -39,6 +42,7 @@ export const rawDataToNode = ({ attributes }: FractalResponseData): Node => ({
     name: attributes.name,
     description: attributes.description,
     locationId: attributes.location_id,
+    databaseHostId: attributes.database_host_id,
     fqdn: attributes.fqdn,
     listenPortHTTP: attributes.listen_port_http,
     publicPortHTTP: attributes.public_port_http,
@@ -57,6 +61,7 @@ export const rawDataToNode = ({ attributes }: FractalResponseData): Node => ({
     updatedAt: new Date(attributes.updated_at),
 
     relations: {
+        databaseHost: attributes.relationships?.databaseHost !== undefined ? rawDataToDatabase(attributes.relationships.databaseHost as FractalResponseData) : undefined,
         location: attributes.relationships?.location !== undefined ? rawDataToLocation(attributes.relationships.location as FractalResponseData) : undefined,
     },
 });

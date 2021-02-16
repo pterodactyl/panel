@@ -1,3 +1,4 @@
+import DatabaseSelect from '@/components/admin/nodes/DatabaseSelect';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
@@ -17,6 +18,7 @@ interface Values {
     name: string;
     description: string;
     locationId: number;
+    databaseHostId: number | null;
     fqdn: string;
     listenPortHTTP: number;
     publicPortHTTP: number;
@@ -57,6 +59,7 @@ export default () => {
                 name: node.name,
                 description: node.description || '',
                 locationId: node.locationId,
+                databaseHostId: node.databaseHostId,
                 fqdn: node.fqdn,
                 listenPortHTTP: node.listenPortHTTP,
                 publicPortHTTP: node.publicPortHTTP,
@@ -95,7 +98,11 @@ export default () => {
                                 </div>
 
                                 <div css={tw`mb-6`}>
-                                    <LocationSelect defaultLocation={{ id: 1, short: 'local', long: '', createdAt: new Date(), updatedAt: new Date() }}/>
+                                    <LocationSelect defaultLocation={node?.relations.location || null}/>
+                                </div>
+
+                                <div css={tw`mb-6`}>
+                                    <DatabaseSelect selected={node?.relations.databaseHost}/>
                                 </div>
 
                                 <div css={tw`mb-6`}>
