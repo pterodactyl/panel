@@ -4,17 +4,17 @@ import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 
 export const SubNavigation = styled.div`
-    ${tw`h-12 flex flex-row items-center border-b border-neutral-700 mb-4`};
+    ${tw`flex flex-row items-center flex-shrink-0 h-12 mb-4 border-b border-neutral-700`};
 
     & > div {
-        ${tw`h-full flex flex-col flex-shrink-0 justify-center`};
+        ${tw`flex flex-col justify-center flex-shrink-0 h-full`};
 
         & > a {
-            ${tw`h-full flex flex-row items-center text-neutral-300 border-t px-4`};
+            ${tw`flex flex-row items-center h-full px-4 border-t text-neutral-300`};
             border-top-color: transparent !important;
 
             & > svg {
-                ${tw`h-6 w-6 mr-2`};
+                ${tw`w-6 h-6 mr-2`};
             }
 
             & > span {
@@ -22,7 +22,7 @@ export const SubNavigation = styled.div`
             }
 
             &:active, &.active {
-                ${tw`text-primary-300 border-b border-primary-300`};
+                ${tw`border-b text-primary-300 border-primary-300`};
             }
         }
     }

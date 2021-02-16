@@ -39,10 +39,13 @@ export default () => {
         );
     }
 
-    const submit = ({ name, description, locationId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const submit = ({ name, description, locationId, databaseHostId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('node');
 
-        updateNode(node.id, { name, description, locationId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP })
+        console.log(`Location ID: ${locationId}`);
+        console.log(`Database Host ID: ${databaseHostId || 'null'}`);
+
+        updateNode(node.id, { name, description, locationId, databaseHostId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP })
             .then(() => setNode({ ...node, name, description, locationId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }))
             .catch(error => {
                 console.error(error);
@@ -114,8 +117,8 @@ export default () => {
                                     />
                                 </div>
 
-                                <div css={tw`md:w-full md:flex md:flex-row mb-6`}>
-                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mb-6 md:mb-0`}>
+                                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
                                         <Field
                                             id={'listenPortHTTP'}
                                             name={'listenPortHTTP'}
@@ -124,7 +127,7 @@ export default () => {
                                         />
                                     </div>
 
-                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mb-6 md:mb-0`}>
+                                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
                                         <Field
                                             id={'publicPortHTTP'}
                                             name={'publicPortHTTP'}
@@ -134,8 +137,8 @@ export default () => {
                                     </div>
                                 </div>
 
-                                <div css={tw`md:w-full md:flex md:flex-row mb-6`}>
-                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mb-6 md:mb-0`}>
+                                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
                                         <Field
                                             id={'listenPortSFTP'}
                                             name={'listenPortSFTP'}
@@ -144,7 +147,7 @@ export default () => {
                                         />
                                     </div>
 
-                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mb-6 md:mb-0`}>
+                                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
                                         <Field
                                             id={'publicPortSFTP'}
                                             name={'publicPortSFTP'}
@@ -154,7 +157,7 @@ export default () => {
                                     </div>
                                 </div>
 
-                                <div css={tw`w-full flex flex-row items-center`}>
+                                <div css={tw`flex flex-row items-center w-full`}>
                                     <div css={tw`flex ml-auto`}>
                                         <Button type={'submit'} disabled={isSubmitting || !isValid}>
                                             Save

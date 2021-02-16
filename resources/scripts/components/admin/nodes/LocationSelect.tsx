@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useFormikContext } from 'formik';
 import { Location } from '@/api/admin/locations/getLocations';
 import searchLocations from '@/api/admin/locations/searchLocations';
 import SearchableSelect, { Option } from '@/components/elements/SearchableSelect';
 
 export default ({ selected }: { selected: Location | null }) => {
+    const context = useFormikContext();
+
     const [ location, setLocation ] = useState<Location | null>(selected);
     const [ locations, setLocations ] = useState<Location[]>([]);
 
@@ -16,8 +19,9 @@ export default ({ selected }: { selected: Location | null }) => {
         });
     };
 
-    const onSelect = (location: Location) => {
+    const onSelect = (location: Location | null) => {
         setLocation(location);
+        context.setFieldValue('locationId', location?.id || null);
     };
 
     const getSelectedText = (location: Location | null): string => {

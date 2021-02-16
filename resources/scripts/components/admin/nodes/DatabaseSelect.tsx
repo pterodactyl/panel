@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { useFormikContext } from 'formik';
 import { Database } from '@/api/admin/databases/getDatabases';
 import searchDatabases from '@/api/admin/databases/searchDatabases';
 import SearchableSelect, { Option } from '@/components/elements/SearchableSelect';
 
 export default ({ selected }: { selected: Database | null }) => {
+    const context = useFormikContext();
+
     const [ database, setDatabase ] = useState<Database | null>(selected);
     const [ databases, setDatabases ] = useState<Database[]>([]);
 
@@ -16,8 +19,9 @@ export default ({ selected }: { selected: Database | null }) => {
         });
     };
 
-    const onSelect = (database: Database) => {
+    const onSelect = (database: Database | null) => {
         setDatabase(database);
+        context.setFieldValue('databaseHostId', database?.id || null);
     };
 
     const getSelectedText = (database: Database | null): string => {

@@ -7,7 +7,7 @@ import Label from '@/components/elements/Label';
 import InputSpinner from '@/components/elements/InputSpinner';
 
 const Dropdown = styled.div<{ expanded: boolean }>`
-    ${tw`absolute mt-1 w-full rounded-md bg-neutral-900 shadow-lg z-10`};
+    ${tw`absolute z-10 w-full mt-1 rounded-md shadow-lg bg-neutral-900`};
     ${props => !props.expanded && tw`hidden`};
 `;
 
@@ -22,7 +22,7 @@ interface SearchableSelectProps<T> {
     setItems: (items: T[]) => void;
 
     onSearch: (query: string) => Promise<void>;
-    onSelect: (item: T) => void;
+    onSelect: (item: T | null) => void;
 
     getSelectedText: (item: T | null) => string;
 
@@ -135,7 +135,7 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
         <div>
             <Label htmlFor={id + '-select-label'}>{name}</Label>
 
-            <div css={tw`mt-1 relative`}>
+            <div css={tw`relative mt-1`}>
                 <InputSpinner visible={loading}>
                     <Input ref={searchInput} type="text" className="ignoreReadOnly" id={id} name={id} value={inputText} readOnly={!expanded} onFocus={onFocus} onChange={e => {
                         setInputText(e.currentTarget.value);
@@ -144,8 +144,8 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
                     />
                 </InputSpinner>
 
-                <div css={tw`ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none`}>
-                    <svg css={tw`h-5 w-5 text-neutral-400`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <div css={tw`absolute inset-y-0 right-0 flex items-center pr-2 ml-3 pointer-events-none`}>
+                    <svg css={tw`w-5 h-5 text-neutral-400`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/>
                     </svg>
                 </div>
@@ -153,11 +153,11 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
                 <Dropdown ref={itemsList} expanded={expanded}>
                     { items.length < 1 ?
                         inputText.length < 2 ?
-                            <div css={tw`h-10 flex flex-row items-center px-3`}>
+                            <div css={tw`flex flex-row items-center h-10 px-3`}>
                                 <p css={tw`text-sm`}>Please type 2 or more characters.</p>
                             </div>
                             :
-                            <div css={tw`h-10 flex flex-row items-center px-3`}>
+                            <div css={tw`flex flex-row items-center h-10 px-3`}>
                                 <p css={tw`text-sm`}>No results found.</p>
                             </div>
                         :
@@ -166,7 +166,7 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
                             role={id + '-select'}
                             aria-labelledby={id + '-select-label'}
                             aria-activedescendant={id + '-select-item-' + selectedId}
-                            css={tw`max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm`}
+                            css={tw`py-1 overflow-auto text-base rounded-md max-h-56 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm`}
                         >
                             {c}
                         </ul>
@@ -197,7 +197,7 @@ export function Option<T> ({ selectId, id, item, active, onClick, children }: Op
 
     if (active) {
         return (
-            <li id={selectId + '-select-item-' + id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={onClick(item)}>
+            <li id={selectId + '-select-item-' + id} role="option" css={tw`relative py-2 pl-3 cursor-pointer select-none text-neutral-200 pr-9 hover:bg-neutral-700`} onClick={onClick(item)}>
                 <div css={tw`flex items-center`}>
                     <span css={tw`block font-medium truncate`}>
                         {children}
@@ -205,7 +205,7 @@ export function Option<T> ({ selectId, id, item, active, onClick, children }: Op
                 </div>
 
                 <span css={tw`absolute inset-y-0 right-0 flex items-center pr-4`}>
-                    <svg css={tw`h-5 w-5 text-primary-400`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <svg css={tw`w-5 h-5 text-primary-400`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path clipRule="evenodd" fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
                     </svg>
                 </span>
@@ -214,7 +214,7 @@ export function Option<T> ({ selectId, id, item, active, onClick, children }: Op
     }
 
     return (
-        <li id={'select-item-' + id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={onClick(item)}>
+        <li id={'select-item-' + id} role="option" css={tw`relative py-2 pl-3 cursor-pointer select-none text-neutral-200 pr-9 hover:bg-neutral-700`} onClick={onClick(item)}>
             <div css={tw`flex items-center`}>
                 <span css={tw`block font-normal truncate`}>
                     {children}
