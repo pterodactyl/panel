@@ -63,7 +63,7 @@ export default () => {
                         >
                             <FlashMessageRender byKey={'location:create'} css={tw`mb-6`}/>
 
-                            <h2 css={tw`text-neutral-100 text-2xl mb-6`}>New Location</h2>
+                            <h2 css={tw`mb-6 text-2xl text-neutral-100`}>New Location</h2>
 
                             <Form css={tw`m-0`}>
                                 <Field
@@ -72,6 +72,7 @@ export default () => {
                                     name={'short'}
                                     label={'Short'}
                                     description={'A short name used to identify this location.'}
+                                    autoFocus
                                 />
 
                                 <div css={tw`mt-6`}>
