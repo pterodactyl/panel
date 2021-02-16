@@ -8,7 +8,7 @@ export default ({ selected }: { selected: Database | null }) => {
     const context = useFormikContext();
 
     const [ database, setDatabase ] = useState<Database | null>(selected);
-    const [ databases, setDatabases ] = useState<Database[]>([]);
+    const [ databases, setDatabases ] = useState<Database[] | null>(null);
 
     const onSearch = (query: string): Promise<void> => {
         return new Promise((resolve, reject) => {
@@ -40,7 +40,7 @@ export default ({ selected }: { selected: Database | null }) => {
             getSelectedText={getSelectedText}
             nullable
         >
-            {databases.map(d => (
+            {databases?.map(d => (
                 <Option key={d.id} selectId="database" id={d.id} item={d} active={d.id === database?.id}>
                     {d.name}
                 </Option>

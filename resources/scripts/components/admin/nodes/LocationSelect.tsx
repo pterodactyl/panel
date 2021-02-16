@@ -8,7 +8,7 @@ export default ({ selected }: { selected: Location | null }) => {
     const context = useFormikContext();
 
     const [ location, setLocation ] = useState<Location | null>(selected);
-    const [ locations, setLocations ] = useState<Location[]>([]);
+    const [ locations, setLocations ] = useState<Location[] | null>(null);
 
     const onSearch = (query: string): Promise<void> => {
         return new Promise((resolve, reject) => {
@@ -40,7 +40,7 @@ export default ({ selected }: { selected: Location | null }) => {
             getSelectedText={getSelectedText}
             nullable
         >
-            {locations.map(d => (
+            {locations?.map(d => (
                 <Option key={d.id} selectId="location" id={d.id} item={d} active={d.id === location?.id}>
                     {d.short}
                 </Option>

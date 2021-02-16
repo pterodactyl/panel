@@ -18,8 +18,8 @@ interface SearchableSelectProps<T> {
 
     selected: T | null;
 
-    items: T[];
-    setItems: (items: T[]) => void;
+    items: T[] | null;
+    setItems: (items: T[] | null) => void;
 
     onSearch: (query: string) => Promise<void>;
     onSelect: (item: T | null) => void;
@@ -40,7 +40,7 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
 
     const onFocus = () => {
         setInputText('');
-        setItems([]);
+        setItems(null);
         setExpanded(true);
     };
 
@@ -55,13 +55,13 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
         }
 
         if (query === '' || query.length < 2) {
-            setItems([]);
+            setItems(null);
             return;
         }
 
         setLoading(true);
         onSearch(query).then(() => setLoading(false));
-    }, 1000);
+    }, 250);
 
     useEffect(() => {
         setInputText(getSelectedText(selected) || '');
@@ -151,8 +151,8 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
                 </div>
 
                 <Dropdown ref={itemsList} expanded={expanded}>
-                    { items.length < 1 ?
-                        inputText.length < 2 ?
+                    { items === null || items.length < 1 ?
+                        items === null || inputText.length < 2 ?
                             <div css={tw`flex flex-row items-center h-10 px-3`}>
                                 <p css={tw`text-sm`}>Please type 2 or more characters.</p>
                             </div>
