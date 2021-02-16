@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import SearchableSelect, { Option } from '@/components/elements/SearchableSelect';
-import searchDatabases from '@/api/admin/databases/searchDatabases';
 import { Database } from '@/api/admin/databases/getDatabases';
+import searchDatabases from '@/api/admin/databases/searchDatabases';
+import SearchableSelect, { Option } from '@/components/elements/SearchableSelect';
 
-export default ({ selected }: { selected?: Database | null }) => {
-    const [ database, setDatabase ] = useState<Database | null>(selected || null);
+export default ({ selected }: { selected: Database | null }) => {
+    const [ database, setDatabase ] = useState<Database | null>(selected);
     const [ databases, setDatabases ] = useState<Database[]>([]);
 
     const onSearch = (query: string): Promise<void> => {
@@ -37,7 +37,7 @@ export default ({ selected }: { selected?: Database | null }) => {
             nullable
         >
             {databases.map(d => (
-                <Option key={d.id} id={d.id} item={d} active={d.id === database?.id}>
+                <Option key={d.id} selectId="database" id={d.id} item={d} active={d.id === database?.id}>
                     {d.name}
                 </Option>
             ))}

@@ -61,7 +61,7 @@ export const rawDataToNode = ({ attributes }: FractalResponseData): Node => ({
     updatedAt: new Date(attributes.updated_at),
 
     relations: {
-        databaseHost: attributes.relationships?.databaseHost !== undefined ? rawDataToDatabase(attributes.relationships.databaseHost as FractalResponseData) : undefined,
+        databaseHost: attributes.relationships?.database_host !== undefined ? rawDataToDatabase(attributes.relationships.database_host as FractalResponseData) : undefined,
         location: attributes.relationships?.location !== undefined ? rawDataToLocation(attributes.relationships.location as FractalResponseData) : undefined,
     },
 });

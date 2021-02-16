@@ -1,7 +1,12 @@
 import http from '@/api/http';
 import { Location, rawDataToLocation } from '@/api/admin/locations/getLocations';
 
-export default (filters?: Record<string, string>): Promise<Location[]> => {
+interface Filters {
+    short?: string;
+    long?: string;
+}
+
+export default (filters?: Filters): Promise<Location[]> => {
     const params = {};
     if (filters !== undefined) {
         Object.keys(filters).forEach(key => {

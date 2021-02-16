@@ -98,11 +98,11 @@ export default () => {
                                 </div>
 
                                 <div css={tw`mb-6`}>
-                                    <LocationSelect defaultLocation={node?.relations.location || null}/>
+                                    <LocationSelect selected={node?.relations.location || null}/>
                                 </div>
 
                                 <div css={tw`mb-6`}>
-                                    <DatabaseSelect selected={node?.relations.databaseHost}/>
+                                    <DatabaseSelect selected={node?.relations.databaseHost || null}/>
                                 </div>
 
                                 <div css={tw`mb-6`}>

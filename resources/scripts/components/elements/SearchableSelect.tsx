@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import { debounce } from 'debounce';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
@@ -35,10 +35,18 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
 
     const [ inputText, setInputText ] = useState('');
 
+    const searchInput = createRef<HTMLInputElement>();
+    const itemsList = createRef<HTMLDivElement>();
+
     const onFocus = () => {
         setInputText('');
         setItems([]);
         setExpanded(true);
+    };
+
+    const onBlur = () => {
+        setInputText(getSelectedText(selected) || '');
+        setExpanded(false);
     };
 
     const search = debounce((query: string) => {
@@ -53,7 +61,7 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
 
         setLoading(true);
         onSearch(query).then(() => setLoading(false));
-    }, 250);
+    }, 1000);
 
     useEffect(() => {
         setInputText(getSelectedText(selected) || '');
@@ -61,18 +69,52 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
     }, [ selected ]);
 
     useEffect(() => {
-        const handler = (e: KeyboardEvent) => {
-            if (e.key !== 'Escape') {
+        const keydownHandler = (e: KeyboardEvent) => {
+            if (e.key !== 'Tab' && e.key !== 'Escape') {
                 return;
             }
 
-            setInputText(getSelectedText(selected) || '');
-            setExpanded(false);
+            onBlur();
         };
 
-        window.addEventListener('keydown', handler);
+        const clickHandler = (e: MouseEvent) => {
+            const input = searchInput.current;
+            const menu = itemsList.current;
+
+            if (e.button === 2 || !expanded || !input || !menu) {
+                return;
+            }
+
+            if (e.target === input || input.contains(e.target as Node)) {
+                return;
+            }
+
+            if (e.target === menu || menu.contains(e.target as Node)) {
+                return;
+            }
+
+            if (e.target === input || input.contains(e.target as Node)) {
+                return;
+            }
+
+            if (e.target === menu || menu.contains(e.target as Node)) {
+                return;
+            }
+
+            onBlur();
+        };
+
+        const contextmenuHandler = () => {
+            onBlur();
+        };
+
+        window.addEventListener('keydown', keydownHandler);
+        window.addEventListener('click', clickHandler);
+        window.addEventListener('contextmenu', contextmenuHandler);
         return () => {
-            window.removeEventListener('keydown', handler);
+            window.removeEventListener('keydown', keydownHandler);
+            window.removeEventListener('click', clickHandler);
+            window.removeEventListener('contextmenu', contextmenuHandler);
         };
     }, [ expanded ]);
 
@@ -86,13 +128,16 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
         onClick: onClick.bind(child),
     }));
 
+    // @ts-ignore
+    const selectedId = selected?.id;
+
     return (
         <div>
-            <Label htmlFor={id}>{name}</Label>
+            <Label htmlFor={id + '-select-label'}>{name}</Label>
 
             <div css={tw`mt-1 relative`}>
                 <InputSpinner visible={loading}>
-                    <Input type="text" className="ignoreReadOnly" id={id} name={id} value={inputText} readOnly={!expanded} onFocus={onFocus} onChange={e => {
+                    <Input ref={searchInput} type="text" className="ignoreReadOnly" id={id} name={id} value={inputText} readOnly={!expanded} onFocus={onFocus} onChange={e => {
                         setInputText(e.currentTarget.value);
                         search(e.currentTarget.value);
                     }}
@@ -105,7 +150,7 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
                     </svg>
                 </div>
 
-                <Dropdown expanded={expanded}>
+                <Dropdown ref={itemsList} expanded={expanded}>
                     { items.length < 1 ?
                         inputText.length < 2 ?
                             <div css={tw`h-10 flex flex-row items-center px-3`}>
@@ -116,7 +161,13 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
                                 <p css={tw`text-sm`}>No results found.</p>
                             </div>
                         :
-                        <ul tabIndex={-1} css={tw`max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm`}>
+                        <ul
+                            tabIndex={-1}
+                            role={id + '-select'}
+                            aria-labelledby={id + '-select-label'}
+                            aria-activedescendant={id + '-select-item-' + selectedId}
+                            css={tw`max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm`}
+                        >
                             {c}
                         </ul>
                     }
@@ -127,6 +178,7 @@ function SearchableSelect<T> ({ id, name, selected, items, setItems, onSearch, o
 }
 
 interface OptionProps<T> {
+    selectId: string;
     id: string | number;
     item: T;
     active: boolean;
@@ -136,7 +188,8 @@ interface OptionProps<T> {
     children: React.ReactNode;
 }
 
-export function Option<T> ({ id, item, active, onClick, children }: OptionProps<T>) {
+export function Option<T> ({ selectId, id, item, active, onClick, children }: OptionProps<T>) {
+    // This should never be true, but just in-case we set it to an empty function to make sure shit doesn't blow up.
     if (onClick === undefined) {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onClick = () => () => {};
@@ -144,7 +197,7 @@ export function Option<T> ({ id, item, active, onClick, children }: OptionProps<
 
     if (active) {
         return (
-            <li id={'select-item-' + id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={onClick(item)}>
+            <li id={selectId + '-select-item-' + id} role="option" css={tw`text-neutral-200 cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-neutral-700`} onClick={onClick(item)}>
                 <div css={tw`flex items-center`}>
                     <span css={tw`block font-medium truncate`}>
                         {children}

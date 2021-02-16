@@ -1,25 +1,18 @@
-import { Database, rawDataToDatabase } from '@/api/admin/databases/getDatabases';
 import http from '@/api/http';
+import { Database, rawDataToDatabase } from '@/api/admin/databases/getDatabases';
 
 interface Filters {
     name?: string;
     host?: string;
 }
 
-interface Wow {
-    [index: string]: string;
-}
-
 export default (filters?: Filters): Promise<Database[]> => {
-    let params = {};
+    const params = {};
     if (filters !== undefined) {
-        params = Object.keys(filters).map((key) => {
-            const a: Wow = {};
-            a[`filter[${key}]`] = (filters as unknown as Wow)[key];
-            return a;
+        Object.keys(filters).forEach(key => {
+            // @ts-ignore
+            params['filter[' + key + ']'] = filters[key];
         });
-
-        console.log(params);
     }
 
     return new Promise((resolve, reject) => {
