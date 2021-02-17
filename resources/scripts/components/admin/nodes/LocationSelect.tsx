@@ -34,6 +34,7 @@ export default ({ selected }: { selected: Location | null }) => {
             name="Location"
             items={locations}
             selected={location}
+            setSelected={setLocation}
             setItems={setLocations}
             onSearch={onSearch}
             onSelect={onSelect}

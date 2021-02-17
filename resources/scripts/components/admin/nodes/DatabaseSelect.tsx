@@ -34,6 +34,7 @@ export default ({ selected }: { selected: Database | null }) => {
             name="Database"
             items={databases}
             selected={database}
+            setSelected={setDatabase}
             setItems={setDatabases}
             onSearch={onSearch}
             onSelect={onSelect}
