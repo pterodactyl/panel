@@ -39,7 +39,7 @@
             "default_value": "",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|alpha_num|size:32"
+            "rules": "nullable|string|alpha_num|size:32"
         },
         {
             "name": "Source AppID",
