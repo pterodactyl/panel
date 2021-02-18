@@ -144,23 +144,16 @@ export default () => {
 
             // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-                // Ctrl + C (Copy)
-                if (e.ctrlKey && e.key === 'c') {
+                if (e.metaKey && e.key === 'c') {
                     document.execCommand('copy');
                     return false;
-                }
-
-                // Ctrl + F (Find)
-                if (e.ctrlKey && e.key === 'f') {
+                } else if (e.metaKey && e.key === 'f') {
+                    e.preventDefault();
                     searchBar.show();
                     return false;
-                }
-
-                // Escape
-                if (e.key === 'Escape') {
+                } else if (e.key === 'Escape') {
                     searchBar.hidden();
                 }
-
                 return true;
             });
         }
