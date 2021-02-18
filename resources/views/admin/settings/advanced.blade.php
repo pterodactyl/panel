@@ -101,14 +101,14 @@
                             <div class="form-group col-md-4">
                                 <label class="control-label">Starting Port</label>
                                 <div>
-                                    <input type="number" required class="form-control" name="pterodactyl:client_features:allocations:range_start" value="{{ old('pterodactyl:client_features:allocations:range_start', config('pterodactyl.client_features.allocations.range_start')) }}">
+                                    <input type="number" class="form-control" name="pterodactyl:client_features:allocations:range_start" value="{{ old('pterodactyl:client_features:allocations:range_start', config('pterodactyl.client_features.allocations.range_start')) }}">
                                     <p class="text-muted small">The starting port in the range that can be automatically allocated.</p>
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
                                 <label class="control-label">Ending Port</label>
                                 <div>
-                                    <input type="number" required class="form-control" name="pterodactyl:client_features:allocations:range_end" value="{{ old('pterodactyl:client_features:allocations:range_end', config('pterodactyl.client_features.allocations.range_end')) }}">
+                                    <input type="number" class="form-control" name="pterodactyl:client_features:allocations:range_end" value="{{ old('pterodactyl:client_features:allocations:range_end', config('pterodactyl.client_features.allocations.range_end')) }}">
                                     <p class="text-muted small">The ending port in the range that can be automatically allocated.</p>
                                 </div>
                             </div>
