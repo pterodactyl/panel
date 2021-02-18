@@ -31,6 +31,7 @@ import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import RequireServerPermission from '@/hoc/RequireServerPermission';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
+import ServerErrorSvg from '@/assets/images/server_error.svg';
 
 const ConflictStateRenderer = () => {
     const status = ServerContext.useStoreState(state => state.server.data?.status || null);
@@ -44,11 +45,18 @@ const ConflictStateRenderer = () => {
                 message={'Your server should be ready soon, please try again in a few minutes.'}
             />
             :
-            <ScreenBlock
-                title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
-                image={ServerRestoreSvg}
-                message={isTransferring ? 'Your server is being transfered to a new node, please check back later.' : 'Your server is currently being restored from a backup, please check back in a few minutes.'}
-            />
+            status === 'suspended' ?
+                <ScreenBlock
+                    title={'Server Suspended'}
+                    image={ServerErrorSvg}
+                    message={'This server is suspended and cannot be accessed.'}
+                />
+                :
+                <ScreenBlock
+                    title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
+                    image={ServerRestoreSvg}
+                    message={isTransferring ? 'Your server is being transfered to a new node, please check back later.' : 'Your server is currently being restored from a backup, please check back in a few minutes.'}
+                />
     );
 };
 
