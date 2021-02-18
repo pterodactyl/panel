@@ -212,10 +212,7 @@ export default () => {
                     tw`rounded-t p-2 bg-black w-full`,
                     !canSendCommands && tw`rounded-b`,
                 ]}
-                style={{
-                    minHeight: '16rem',
-                    maxHeight: '32rem',
-                }}
+                style={{ minHeight: '16rem' }}
             >
                 <TerminalDiv id={'terminal'} ref={ref}/>
             </div>
