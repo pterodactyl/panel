@@ -23,7 +23,7 @@ class AddNodes extends Migration
             $table->mediumInteger('disk_overallocate')->unsigned()->nullable();
             $table->char('daemonSecret', 36)->unique();
             $table->smallInteger('daemonListen')->unsigned()->default(8080);
-            $table->smallInteger('daemonSFTP')->unsgined()->default(2022);
+            $table->smallInteger('daemonSFTP')->unsigned()->default(2022);
             $table->string('daemonBase')->default('/home/daemon-files');
             $table->timestamps();
         });
