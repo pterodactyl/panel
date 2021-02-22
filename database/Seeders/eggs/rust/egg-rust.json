@@ -121,7 +121,7 @@
             "default_value": "CHANGEME",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|regex:\/^[a-zA-Z0-9_.-]*$\/|max:64"
+            "rules": "required|regex:/^[\w.-]*$/|max:64"
         },
         {
             "name": "Save Interval",
