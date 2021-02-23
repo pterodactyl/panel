@@ -27,7 +27,7 @@ class UpdateDaemonSftp extends Migration
     public function down()
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->smallInteger('daemonSFTP')->default(2022);
+            $table->smallInteger('daemonSFTP')->default(2022)->change();
         });
     }
 }
