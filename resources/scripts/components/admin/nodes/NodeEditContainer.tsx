@@ -1,3 +1,4 @@
+import NodeConfigurationContainer from '@/components/admin/nodes/NodeConfigurationContainer';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import tw from 'twin.macro';
@@ -132,7 +133,7 @@ const NodeEditContainer = () => {
                 </Route>
 
                 <Route path={`${match.path}/configuration`} exact>
-                    <p>Configuration</p>
+                    <NodeConfigurationContainer/>
                 </Route>
 
                 <Route path={`${match.path}/allocations`} exact>
