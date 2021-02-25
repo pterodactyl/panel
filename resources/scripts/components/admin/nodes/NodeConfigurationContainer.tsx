@@ -22,10 +22,7 @@ export default () => {
 
     useEffect(() => {
         getNodeConfiguration(node.id)
-            .then((configuration) => {
-                console.log(configuration);
-                setConfiguration(configuration);
-            })
+            .then((configuration) => setConfiguration(configuration))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'node', error });

@@ -42,9 +42,6 @@ export default () => {
     const submit = ({ name, description, locationId, databaseHostId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('node');
 
-        console.log(`Location ID: ${locationId}`);
-        console.log(`Database Host ID: ${databaseHostId || 'null'}`);
-
         updateNode(node.id, { name, description, locationId, databaseHostId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP })
             .then(() => setNode({ ...node, name, description, locationId, fqdn, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }))
             .catch(error => {

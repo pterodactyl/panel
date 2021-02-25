@@ -23,7 +23,6 @@ export default () => {
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('api:create');
 
-        console.log(values);
         setSubmitting(true);
 
         setTimeout(() => {
