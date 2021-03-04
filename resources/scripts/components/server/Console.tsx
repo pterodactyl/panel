@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { ITerminalOptions, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
@@ -135,11 +135,12 @@ export default () => {
 
     useEffect(() => {
         if (connected && ref.current && !terminal.element) {
-            terminal.open(ref.current);
             terminal.loadAddon(fitAddon);
             terminal.loadAddon(searchAddon);
             terminal.loadAddon(searchBar);
             terminal.loadAddon(webLinksAddon);
+
+            terminal.open(ref.current);
             fitAddon.fit();
 
             // Add support for capturing keys
@@ -159,11 +160,11 @@ export default () => {
         }
     }, [ terminal, connected ]);
 
-    const fit = debounce(() => {
-        fitAddon.fit();
-    }, 100);
-
-    useEventListener('resize', () => fit());
+    useEventListener('resize', debounce(() => {
+        if (terminal.element) {
+            fitAddon.fit();
+        }
+    }, 100));
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {
