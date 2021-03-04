@@ -2,9 +2,11 @@
 
 namespace Pterodactyl\Services\Allocations;
 
+use Exception;
 use IPTools\Network;
 use Pterodactyl\Models\Node;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException;
 use Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException;
@@ -42,9 +44,10 @@ class AssignmentService
     /**
      * Insert allocations into the database and link them to a specific node.
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
-     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
     public function handle(Node $node, array $data)
@@ -56,8 +59,16 @@ class AssignmentService
             }
         }
 
+        try {
+            $underlying = gethostbyname($data['allocation_ip']);
+            $parsed = Network::parse($underlying);
+        } catch (Exception $exception) {
+            /* @noinspection PhpUndefinedVariableInspection */
+            throw new DisplayException("Could not parse provided allocation IP address ({$underlying}): {$exception->getMessage()}", $exception);
+        }
+
         $this->connection->beginTransaction();
-        foreach (Network::parse(gethostbyname($data['allocation_ip'])) as $ip) {
+        foreach ($parsed as $ip) {
             foreach ($data['allocation_ports'] as $port) {
                 if (!is_digit($port) && !preg_match(self::PORT_RANGE_REGEX, $port)) {
                     throw new InvalidPortMappingException($port);
