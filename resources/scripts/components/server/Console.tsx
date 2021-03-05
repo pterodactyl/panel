@@ -136,11 +136,12 @@ export default () => {
 
     useEffect(() => {
         if (connected && ref.current && !terminal.element) {
-            terminal.open(ref.current);
             terminal.loadAddon(fitAddon);
             terminal.loadAddon(searchAddon);
             terminal.loadAddon(searchBar);
             terminal.loadAddon(webLinksAddon);
+
+            terminal.open(ref.current);
             fitAddon.fit();
 
             // Add support for capturing keys
@@ -160,11 +161,11 @@ export default () => {
         }
     }, [ terminal, connected ]);
 
-    const fit = debounce(() => {
-        fitAddon.fit();
-    }, 100);
-
-    useEventListener('resize', () => fit());
+    useEventListener('resize', debounce(() => {
+        if (terminal.element) {
+            fitAddon.fit();
+        }
+    }, 100));
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {

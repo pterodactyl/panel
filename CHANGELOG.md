@@ -3,7 +3,34 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.3.0
+### Fixed
+* Fixes administrator "Other Servers" toggle being persisted wrongly when signing out and signing into a non-administrator account on the server dashboard.
+* Fixes composer failing to run properly in local environments where there is no database connection available once configured.
+* Fixes SQL exception caused by the Panel attempting to store null values in the database.
+* Fixes validation errors caused by improper defaults when trying to edit system settings in the admin area.
+* Fixes console overflow when using smaller-than-default font sizes in Firefox.
+* Fixes console text input field having a white background when manually building new assets from the release build due to a missing `babel-macros` definition file.
+* Fixes database improperly using a signed `smallint` field rather than an unsigned field which restricted SFTP ports to 32767 or less.
+* Fixes server console resize handler to no longer encounter an exception at random that breaks the entire UI.
+* Fixes unhandled error caused by entering an invalid IP address or FQDN when creating a new node allocation.
+* Fixes unhandled error when Wings would fetch a server configuration from the Panel that uses an Egg with invalid JSON data for the configuration fields.
+
+### Added
+* Adds support for automatically copying SFTP connection details when clicking into the text field.
+* Messaging about a node not having any allocations available for deployment has been adjusted to be more understandable by users.
+* Adds automated self-upgrade process for Pterodactyl Panel once this version is installed on servers. This allows users to update by using a single command.
+* Adds support for specifying a month when creating or modifying a server schedule.
+* Adds support for restoring backups (including those in S3 buckets) to a server and optionally deleting all existing files when doing so.
+* Adds underlying support for audit logging on servers. Currently this is only used by some internal functionality but will be slowly expanded as time permits to allow more robust logging.
+* Adds logic to automatically reset failed server states when Wings is rebooted. This will kick servers out of "installing" and "restoring from backup" states automatically.
+
+### Changed
+* Updated to `Laravel 8` and bumped minimum PHP version from `7.3` to `7.4` with PHP `8.0` being the recommended.
+* Server state is now stored in a single `status` column within the database rather than multiple different `tinyint` columns.
+
 ## v1.2.2
+### Fixed
 * **[security]** Fixes authentication bypass allowing a user to take control of specific server actions such as executing schedules, rotating database passwords, and viewing or deleting a backup.
 
 ## v1.2.1

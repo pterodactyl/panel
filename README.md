@@ -31,6 +31,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**DeinServerHost**](https://deinserverhost.de/) | DeinServerHost offers Dedicated, vps and Gameservers for many popular Games like Minecraft and Rust in Germany since 2013. |
 | [**HostBend**](https://hostbend.com/) | HostBend offers a variety of solutions for developers, students, and others who have a tight budget but don't want to compromise quality and support. |
 | [**Capitol Hosting Solutions**](https://capitolsolutions.cloud/) | CHS is *the* budget friendly hosting company for Australian and American gamers, offering a variety of plans from Web Hosting to Game Servers; Custom Solutions too! |
+| [**ByteAnia**](https://ByteAnia.com/) | ByteAnia offers the best performing and most affordable **Ryzen 5000 Series hosting** on the market for *unbeatable prices*! |
 
 ## Documentation
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)

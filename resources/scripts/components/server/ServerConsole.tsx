@@ -9,6 +9,7 @@ import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
 import PowerControls from '@/components/server/PowerControls';
 import { EulaModalFeature } from '@feature/index';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -51,7 +52,9 @@ const ServerConsole = () => {
             </div>
             <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
                 <SuspenseSpinner>
-                    <ChunkedConsole/>
+                    <ErrorBoundary>
+                        <ChunkedConsole/>
+                    </ErrorBoundary>
                     <ChunkedStatGraphs/>
                 </SuspenseSpinner>
                 {eggFeatures.includes('eula') &&
