@@ -10,7 +10,6 @@ namespace Pterodactyl\Models;
  * @property string $username
  * @property string $password
  * @property int|null $max_databases
- * @property int|null $node_id
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
  */
