@@ -114,7 +114,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingEgg()
     {
-        $response = $this->getJson('/api/application/nests/eggs/nil');
+        $response = $this->getJson('/api/application/eggs/nil');
         $this->assertNotFoundJson($response);
     }
 
@@ -139,7 +139,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
     {
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_eggs' => 0]);
 
-        $response = $this->getJson('/api/application/nests/eggs/nil');
+        $response = $this->getJson('/api/application/eggs/nil');
         $this->assertAccessDeniedJson($response);
     }
 }
