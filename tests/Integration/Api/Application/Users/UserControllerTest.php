@@ -38,7 +38,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'pagination' => [
                         'total' => 2,
                         'count' => 2,
-                        'per_page' => 100,
+                        'per_page' => 10,
                         'current_page' => 1,
                         'total_pages' => 1,
                         'links' => [],
