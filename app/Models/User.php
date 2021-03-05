@@ -25,7 +25,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string|null $name_first
  * @property string|null $name_last
  * @property string $password
- * @property string|null $remeber_token
+ * @property string|null $remember_token
  * @property string $language
  * @property bool $root_admin
  * @property bool $use_totp
@@ -156,7 +156,7 @@ class User extends Model implements
     {
         $rules = parent::getRules();
 
-        $rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
+        //$rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
         $rules['username'][] = new Username();
 
         return $rules;

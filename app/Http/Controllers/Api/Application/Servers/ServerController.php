@@ -18,15 +18,8 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class ServerController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerDeletionService
-     */
-    private $deletionService;
+    private ServerCreationService $creationService;
+    private ServerDeletionService $deletionService;
 
     /**
      * ServerController constructor.
@@ -43,13 +36,15 @@ class ServerController extends ApplicationApiController
 
     /**
      * Return all of the servers that currently exist on the Panel.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetServersRequest $request): array
     {
         $perPage = $request->query('per_page', 10);
         if ($perPage < 1) {
             $perPage = 10;
-        } else if ($perPage > 100) {
+        } elseif ($perPage > 100) {
             throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
         }
 
@@ -84,6 +79,8 @@ class ServerController extends ApplicationApiController
 
     /**
      * Show a single server transformed for the application API.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetServerRequest $request, Server $server): array
     {
@@ -93,7 +90,15 @@ class ServerController extends ApplicationApiController
     }
 
     /**
+     * Deletes a server.
+     *
+     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
+     * @param \Pterodactyl\Models\Server $server
+     * @param string $force
+     *
+     * @return \Illuminate\Http\Response
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Throwable
      */
     public function delete(ServerWriteRequest $request, Server $server, string $force = ''): Response
     {

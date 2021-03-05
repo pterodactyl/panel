@@ -140,7 +140,6 @@ Route::group(['prefix' => '/nodes'], function () {
 | Endpoint: /api/application/roles
 |
 */
-
 Route::group(['prefix' => '/roles'], function () {
     Route::get('/', 'Roles\RoleController@index');
     Route::get('/{role}', 'Roles\RoleController@view');
@@ -198,7 +197,6 @@ Route::group(['prefix' => '/servers'], function () {
 | Endpoint: /api/application/users
 |
 */
-
 Route::group(['prefix' => '/users'], function () {
     Route::get('/', 'Users\UserController@index')->name('api.application.users');
     Route::get('/{user}', 'Users\UserController@view')->name('api.application.users.view');

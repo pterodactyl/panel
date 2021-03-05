@@ -72,7 +72,7 @@ class UserController extends ApplicationApiController
         $perPage = $request->query('per_page', 10);
         if ($perPage < 1) {
             $perPage = 10;
-        } else if ($perPage > 100) {
+        } elseif ($perPage > 100) {
             throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
         }
 

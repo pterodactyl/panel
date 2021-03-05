@@ -25,9 +25,6 @@ class RoleController extends ApplicationApiController
     /**
      * Returns an array of all roles.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Roles\GetRolesRequest $request
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetRolesRequest $request): array
@@ -40,10 +37,6 @@ class RoleController extends ApplicationApiController
     /**
      * Returns a single role.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Roles\GetRoleRequest $request
-     * @param \Pterodactyl\Models\AdminRole $role
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetRoleRequest $request, AdminRole $role): array
@@ -56,14 +49,14 @@ class RoleController extends ApplicationApiController
     /**
      * Creates a new role.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Roles\StoreRoleRequest $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreRoleRequest $request): JsonResponse
     {
-        $role = AdminRole::query()->create($request->validated());
+        $data = array_merge($request->validated(), [
+            'sort_id' => 99,
+        ]);
+        $role = AdminRole::query()->create($data);
 
         return $this->fractal->item($role)
             ->transformWith($this->getTransformer(AdminRoleTransformer::class))
@@ -73,10 +66,6 @@ class RoleController extends ApplicationApiController
     /**
      * Updates a role.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Roles\UpdateRoleRequest $request
-     * @param \Pterodactyl\Models\AdminRole $role
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function update(UpdateRoleRequest $request, AdminRole $role): array
@@ -91,10 +80,6 @@ class RoleController extends ApplicationApiController
     /**
      * Deletes a role.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Roles\DeleteRoleRequest $request
-     * @param \Pterodactyl\Models\AdminRole $role
-     *
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
     public function delete(DeleteRoleRequest $request, AdminRole $role): JsonResponse

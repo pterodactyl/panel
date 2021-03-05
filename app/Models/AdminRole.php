@@ -15,7 +15,7 @@ class AdminRole extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'admin_role';
+    public const RESOURCE_NAME = 'admin_role';
 
     /**
      * The table associated with the model.
@@ -32,6 +32,7 @@ class AdminRole extends Model
     protected $fillable = [
         'name',
         'description',
+        'sort_id',
     ];
 
     /**
@@ -50,6 +51,7 @@ class AdminRole extends Model
     public static $validationRules = [
         'name' => 'required|string|max:64',
         'description' => 'nullable|string|max:255',
+        'sort_id' => 'sometimes|numeric',
     ];
 
     /**
