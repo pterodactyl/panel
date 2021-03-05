@@ -18,20 +18,9 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatab
 
 class DatabaseController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    private $databaseManagementService;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
-     */
-    private $databasePasswordService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    private $repository;
+    private DatabaseManagementService $databaseManagementService;
+    private DatabasePasswordService $databasePasswordService;
+    private DatabaseRepositoryInterface $repository;
 
     /**
      * DatabaseController constructor.
@@ -51,6 +40,8 @@ class DatabaseController extends ApplicationApiController
     /**
      * Return a listing of all databases currently available to a single
      * server.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetServerDatabasesRequest $request, Server $server): array
     {
@@ -61,6 +52,8 @@ class DatabaseController extends ApplicationApiController
 
     /**
      * Return a single server database.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetServerDatabaseRequest $request, Server $server, Database $database): array
     {
@@ -74,11 +67,11 @@ class DatabaseController extends ApplicationApiController
      *
      * @throws \Throwable
      */
-    public function resetPassword(ServerDatabaseWriteRequest $request, Server $server, Database $database): JsonResponse
+    public function resetPassword(ServerDatabaseWriteRequest $request, Server $server, Database $database): Response
     {
         $this->databasePasswordService->handle($database);
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
@@ -106,12 +99,12 @@ class DatabaseController extends ApplicationApiController
     /**
      * Handle a request to delete a specific server database from the Panel.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Exception
      */
-    public function delete(ServerDatabaseWriteRequest $request, Database $database): JsonResponse
+    public function delete(ServerDatabaseWriteRequest $request, Database $database): Response
     {
         $this->databaseManagementService->delete($database);
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

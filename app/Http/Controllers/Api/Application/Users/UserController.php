@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Users;
 
 use Pterodactyl\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Users\UserUpdateService;
@@ -20,25 +21,10 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class UserController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserDeletionService
-     */
-    private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
+    private UserRepositoryInterface $repository;
+    private UserCreationService $creationService;
+    private UserDeletionService $deletionService;
+    private UserUpdateService $updateService;
 
     /**
      * UserController constructor.
@@ -62,9 +48,6 @@ class UserController extends ApplicationApiController
      * of a collection of users including any defined relations passed in
      * the request.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest $request
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetUsersRequest $request): array
@@ -89,6 +72,8 @@ class UserController extends ApplicationApiController
     /**
      * Handle a request to view a single user. Includes any relations that
      * were defined in the request.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetUserRequest $request, User $user): array
     {
@@ -146,10 +131,10 @@ class UserController extends ApplicationApiController
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(DeleteUserRequest $request, User $user): JsonResponse
+    public function delete(DeleteUserRequest $request, User $user): Response
     {
         $this->deletionService->handle($user);
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

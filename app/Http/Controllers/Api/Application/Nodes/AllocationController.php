@@ -3,7 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
 use Pterodactyl\Models\Node;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
@@ -15,21 +15,11 @@ use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationReques
 
 class AllocationController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Allocations\AssignmentService
-     */
-    private $assignmentService;
-
-    /**
-     * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
-     */
-    private $deletionService;
+    private AssignmentService $assignmentService;
+    private AllocationDeletionService $deletionService;
 
     /**
      * AllocationController constructor.
-     *
-     * @param \Pterodactyl\Services\Allocations\AssignmentService $assignmentService
-     * @param \Pterodactyl\Services\Allocations\AllocationDeletionService $deletionService
      */
     public function __construct(
         AssignmentService $assignmentService,
@@ -44,10 +34,6 @@ class AllocationController extends ApplicationApiController
     /**
      * Return all of the allocations that exist for a given node.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest $request
-     * @param \Pterodactyl\Models\Node $node
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetAllocationsRequest $request, Node $node): array
@@ -62,36 +48,28 @@ class AllocationController extends ApplicationApiController
     /**
      * Store new allocations for a given node.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\StoreAllocationRequest $request
-     * @param \Pterodactyl\Models\Node $node
-     * @return \Illuminate\Http\JsonResponse
-     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
-    public function store(StoreAllocationRequest $request, Node $node): JsonResponse
+    public function store(StoreAllocationRequest $request, Node $node): Response
     {
         $this->assignmentService->handle($node, $request->validated());
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
      * Delete a specific allocation from the Panel.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest $request
-     * @param \Pterodactyl\Models\Node $node
-     * @param \Pterodactyl\Models\Allocation $allocation
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function delete(DeleteAllocationRequest $request, Node $node, Allocation $allocation): JsonResponse
+    public function delete(DeleteAllocationRequest $request, Node $node, Allocation $allocation): Response
     {
         $this->deletionService->handle($allocation);
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

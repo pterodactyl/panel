@@ -6,7 +6,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
-use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
@@ -26,28 +25,17 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 
 class FileController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonFileRepository
-     */
-    private $fileRepository;
-
-    /**
-     * @var \Illuminate\Contracts\Routing\ResponseFactory
-     */
-    private $responseFactory;
-
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeJWTService
-     */
-    private $jwtService;
+    private DaemonFileRepository $fileRepository;
+    private ResponseFactory $responseFactory;
+    private NodeJWTService $jwtService;
 
     /**
      * FileController constructor.
      */
     public function __construct(
+        DaemonFileRepository $fileRepository,
         ResponseFactory $responseFactory,
-        NodeJWTService $jwtService,
-        DaemonFileRepository $fileRepository
+        NodeJWTService $jwtService
     ) {
         parent::__construct();
 
@@ -60,6 +48,7 @@ class FileController extends ClientApiController
      * Returns a listing of files in a given directory.
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function directory(ListFilesRequest $request, Server $server): array
     {
@@ -91,11 +80,9 @@ class FileController extends ClientApiController
      * Generates a one-time token with a link that the user can use to
      * download a given file.
      *
-     * @return array
-     *
      * @throws \Throwable
      */
-    public function download(GetFileContentsRequest $request, Server $server)
+    public function download(GetFileContentsRequest $request, Server $server): array
     {
         $token = $server->audit(AuditLog::SERVER__FILESYSTEM_DOWNLOAD, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['file' => $request->get('file')];
@@ -124,9 +111,9 @@ class FileController extends ClientApiController
     /**
      * Writes the contents of the specified file to the server.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Throwable
      */
-    public function write(WriteFileContentRequest $request, Server $server): JsonResponse
+    public function write(WriteFileContentRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
             $audit->subaction = 'write_content';
@@ -137,7 +124,7 @@ class FileController extends ClientApiController
                 ->putContent($request->get('file'), $request->getContent());
         });
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
@@ -145,7 +132,7 @@ class FileController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function create(CreateFolderRequest $request, Server $server): JsonResponse
+    public function create(CreateFolderRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
             $audit->subaction = 'create_folder';
@@ -156,7 +143,7 @@ class FileController extends ClientApiController
                 ->createDirectory($request->input('name'), $request->input('root', '/'));
         });
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
@@ -164,7 +151,7 @@ class FileController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function rename(RenameFileRequest $request, Server $server): JsonResponse
+    public function rename(RenameFileRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_RENAME, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
@@ -174,15 +161,15 @@ class FileController extends ClientApiController
                 ->renameFiles($request->input('root'), $request->input('files'));
         });
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
      * Copies a file on the server.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Throwable
      */
-    public function copy(CopyFileRequest $request, Server $server): JsonResponse
+    public function copy(CopyFileRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_WRITE, function (AuditLog $audit, Server $server) use ($request) {
             $audit->subaction = 'copy_file';
@@ -193,11 +180,11 @@ class FileController extends ClientApiController
                 ->copyFile($request->input('location'));
         });
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Throwable
      */
     public function compress(CompressFilesRequest $request, Server $server): array
     {
@@ -220,9 +207,9 @@ class FileController extends ClientApiController
     }
 
     /**
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Throwable
      */
-    public function decompress(DecompressFilesRequest $request, Server $server): JsonResponse
+    public function decompress(DecompressFilesRequest $request, Server $server): Response
     {
         $file = $server->audit(AuditLog::SERVER__FILESYSTEM_DECOMPRESS, function (AuditLog $audit, Server $server) use ($request) {
             // Allow up to five minutes for this request to process before timing out.
@@ -234,15 +221,15 @@ class FileController extends ClientApiController
                 ->decompressFile($request->input('root'), $request->input('file'));
         });
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
      * Deletes files or folders for the server in the given root directory.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Throwable
      */
-    public function delete(DeleteFileRequest $request, Server $server): JsonResponse
+    public function delete(DeleteFileRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_DELETE, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
@@ -254,7 +241,7 @@ class FileController extends ClientApiController
                 );
         });
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
@@ -262,7 +249,7 @@ class FileController extends ClientApiController
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function chmod(ChmodFilesRequest $request, Server $server): JsonResponse
+    public function chmod(ChmodFilesRequest $request, Server $server): Response
     {
         $this->fileRepository->setServer($server)
             ->chmodFiles(
@@ -270,17 +257,15 @@ class FileController extends ClientApiController
                 $request->input('files')
             );
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
      * Requests that a file be downloaded from a remote location by Wings.
      *
-     * @param $request
-     *
      * @throws \Throwable
      */
-    public function pull(PullFileRequest $request, Server $server): JsonResponse
+    public function pull(PullFileRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_PULL, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['directory' => $request->input('directory'), 'url' => $request->input('url')];
@@ -288,6 +273,6 @@ class FileController extends ClientApiController
             $this->fileRepository->setServer($server)->pull($request->input('url'), $request->input('directory'));
         });
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

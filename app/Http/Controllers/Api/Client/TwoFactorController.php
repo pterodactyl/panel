@@ -14,20 +14,9 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TwoFactorController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Users\TwoFactorSetupService
-     */
-    private $setupService;
-
-    /**
-     * @var \Illuminate\Contracts\Validation\Factory
-     */
-    private $validation;
-
-    /**
-     * @var \Pterodactyl\Services\Users\ToggleTwoFactorService
-     */
-    private $toggleTwoFactorService;
+    private ToggleTwoFactorService $toggleTwoFactorService;
+    private TwoFactorSetupService $setupService;
+    private Factory $validation;
 
     /**
      * TwoFactorController constructor.
@@ -39,9 +28,9 @@ class TwoFactorController extends ClientApiController
     ) {
         parent::__construct();
 
+        $this->toggleTwoFactorService = $toggleTwoFactorService;
         $this->setupService = $setupService;
         $this->validation = $validation;
-        $this->toggleTwoFactorService = $toggleTwoFactorService;
     }
 
     /**
@@ -49,12 +38,10 @@ class TwoFactorController extends ClientApiController
      * it on their account. If two-factor is already enabled this endpoint
      * will return a 400 error.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         if ($request->user()->use_totp) {
             throw new BadRequestHttpException('Two-factor authentication is already enabled on this account.');
@@ -70,17 +57,9 @@ class TwoFactorController extends ClientApiController
     /**
      * Updates a user's account to have two-factor enabled.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
-     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
-     * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
+     * @throws \Throwable
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = $this->validation->make($request->all(), [
             'code' => 'required|string',
@@ -103,10 +82,8 @@ class TwoFactorController extends ClientApiController
     /**
      * Disables two-factor authentication on an account if the password provided
      * is valid.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(Request $request)
+    public function delete(Request $request): JsonResponse
     {
         if (!password_verify($request->input('password') ?? '', $request->user()->password)) {
             throw new BadRequestHttpException('The password provided was not valid.');
@@ -120,6 +97,6 @@ class TwoFactorController extends ClientApiController
             'use_totp' => false,
         ]);
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

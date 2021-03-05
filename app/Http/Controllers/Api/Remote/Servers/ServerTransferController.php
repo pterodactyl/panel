@@ -6,7 +6,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\ServerTransfer;
@@ -21,35 +20,12 @@ use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class ServerTransferController extends Controller
 {
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $daemonServerRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonTransferRepository
-     */
-    private $daemonTransferRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
-     */
-    private $configurationStructureService;
-
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeJWTService
-     */
-    private $jwtService;
+    private ConnectionInterface $connection;
+    private ServerRepository $repository;
+    private DaemonServerRepository $daemonServerRepository;
+    private DaemonTransferRepository $daemonTransferRepository;
+    private ServerConfigurationStructureService $configurationStructureService;
+    private NodeJWTService $jwtService;
 
     /**
      * ServerTransferController constructor.
@@ -73,12 +49,10 @@ class ServerTransferController extends Controller
     /**
      * The daemon notifies us about the archive status.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Throwable
      */
-    public function archive(Request $request, string $uuid)
+    public function archive(Request $request, string $uuid): Response
     {
         $server = $this->repository->getByUuid($uuid);
 
@@ -122,17 +96,15 @@ class ServerTransferController extends Controller
                 ->notify($server, $data, $server->node, $token->toString());
         });
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
      * The daemon notifies us about a transfer failure.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function failure(string $uuid)
+    public function failure(string $uuid): Response
     {
         $server = $this->repository->getByUuid($uuid);
 
@@ -142,11 +114,9 @@ class ServerTransferController extends Controller
     /**
      * The daemon notifies us about a transfer success.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function success(string $uuid)
+    public function success(string $uuid): Response
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
@@ -173,7 +143,7 @@ class ServerTransferController extends Controller
         });
 
         // Delete the server from the old node making sure to point it to the old node so
-        // that we do not delete it from the new node the server was transfered to.
+        // that we do not delete it from the new node the server was transferred to.
         try {
             $this->daemonServerRepository
                 ->setServer($server)
@@ -183,18 +153,16 @@ class ServerTransferController extends Controller
             Log::warning($exception, ['transfer_id' => $server->transfer->id]);
         }
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
      * Release all of the reserved allocations for this transfer and mark it as failed in
      * the database.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    protected function processFailedTransfer(ServerTransfer $transfer)
+    protected function processFailedTransfer(ServerTransfer $transfer): Response
     {
         $this->connection->transaction(function () use (&$transfer) {
             $transfer->forceFill(['successful' => false])->saveOrFail();
@@ -207,6 +175,6 @@ class ServerTransferController extends Controller
             Allocation::query()->whereIn('id', $allocations)->update(['server_id' => null]);
         });
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }

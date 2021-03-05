@@ -11,15 +11,8 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 
 class ServerController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\SubuserRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\GetUserPermissionsService
-     */
-    private $permissionsService;
+    private SubuserRepository $repository;
+    private GetUserPermissionsService $permissionsService;
 
     /**
      * ServerController constructor.
@@ -35,6 +28,8 @@ class ServerController extends ClientApiController
     /**
      * Transform an individual server into a response that can be consumed by a
      * client using the API.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetServerRequest $request, Server $server): array
     {

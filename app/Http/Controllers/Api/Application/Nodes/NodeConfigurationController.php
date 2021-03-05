@@ -14,10 +14,9 @@ class NodeConfigurationController extends ApplicationApiController
      * to remote machines so long as an API key is provided to the machine to make the request
      * with, and the node is known.
      *
-     * @return string
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function __invoke(GetNodeRequest $request, Node $node)
+    public function __invoke(GetNodeRequest $request, Node $node): string
     {
         if ($request->query('format') === 'yaml') {
             return $node->getYamlConfiguration();

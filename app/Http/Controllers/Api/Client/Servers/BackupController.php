@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
@@ -20,25 +21,10 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
 
 class BackupController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Backups\InitiateBackupService
-     */
-    private $initiateBackupService;
-
-    /**
-     * @var \Pterodactyl\Services\Backups\DeleteBackupService
-     */
-    private $deleteBackupService;
-
-    /**
-     * @var \Pterodactyl\Services\Backups\DownloadLinkService
-     */
-    private $downloadLinkService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonBackupRepository
-     */
-    private $repository;
+    private InitiateBackupService $initiateBackupService;
+    private DeleteBackupService $deleteBackupService;
+    private DownloadLinkService $downloadLinkService;
+    private DaemonBackupRepository $repository;
 
     /**
      * BackupController constructor.
@@ -61,9 +47,8 @@ class BackupController extends ClientApiController
      * Returns all of the backups for a given server instance in a paginated
      * result set.
      *
-     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
-     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(Request $request, Server $server): array
     {
@@ -81,8 +66,6 @@ class BackupController extends ClientApiController
     /**
      * Starts the backup process for a server.
      *
-     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
-     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      * @throws \Throwable
      */
     public function store(StoreBackupRequest $request, Server $server): array
@@ -108,9 +91,8 @@ class BackupController extends ClientApiController
     /**
      * Returns information about a single backup.
      *
-     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
-     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(Request $request, Server $server, Backup $backup): array
     {
@@ -129,7 +111,7 @@ class BackupController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function delete(Request $request, Server $server, Backup $backup): JsonResponse
+    public function delete(Request $request, Server $server, Backup $backup): Response
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
             throw new AuthorizationException();
@@ -141,7 +123,7 @@ class BackupController extends ClientApiController
             $this->deleteBackupService->handle($backup);
         });
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
@@ -180,7 +162,7 @@ class BackupController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function restore(Request $request, Server $server, Backup $backup): JsonResponse
+    public function restore(Request $request, Server $server, Backup $backup): Response
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
             throw new AuthorizationException();
@@ -212,6 +194,6 @@ class BackupController extends ClientApiController
             $this->repository->setServer($server)->restore($backup, $url ?? null, $request->input('truncate') === 'true');
         });
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

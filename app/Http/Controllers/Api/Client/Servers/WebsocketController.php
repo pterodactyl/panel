@@ -14,15 +14,8 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 
 class WebsocketController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeJWTService
-     */
-    private $jwtService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\GetUserPermissionsService
-     */
-    private $permissionsService;
+    private NodeJWTService $jwtService;
+    private GetUserPermissionsService $permissionsService;
 
     /**
      * WebsocketController constructor.
@@ -40,12 +33,10 @@ class WebsocketController extends ClientApiController
     /**
      * Generates a one-time token that is sent along in every websocket call to the Daemon.
      * This is a signed JWT that the Daemon then uses the verify the user's identity, and
-     * allows us to continually renew this token and avoid users mainitaining sessions wrongly,
+     * allows us to continually renew this token and avoid users maintaining sessions wrongly,
      * as well as ensure that user's only perform actions they're allowed to.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke(ClientApiRequest $request, Server $server)
+    public function __invoke(ClientApiRequest $request, Server $server): JsonResponse
     {
         $user = $request->user();
         if ($user->cannot(Permission::ACTION_WEBSOCKET_CONNECT, $server)) {

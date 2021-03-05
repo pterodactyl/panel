@@ -12,15 +12,8 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerBuildConfigura
 
 class ServerDetailsController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Servers\BuildModificationService
-     */
-    private $buildModificationService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\DetailsModificationService
-     */
-    private $detailsModificationService;
+    private BuildModificationService $buildModificationService;
+    private DetailsModificationService $detailsModificationService;
 
     /**
      * ServerDetailsController constructor.
@@ -38,9 +31,7 @@ class ServerDetailsController extends ApplicationApiController
     /**
      * Update the details for a specific server.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function details(UpdateServerDetailsRequest $request, Server $server): array
     {
@@ -57,13 +48,7 @@ class ServerDetailsController extends ApplicationApiController
     /**
      * Update the build details for a specific server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerBuildConfigurationRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function build(UpdateServerBuildConfigurationRequest $request, Server $server): array
     {

@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
-use Illuminate\Http\JsonResponse;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -15,15 +14,8 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ReinstallServerRequest
 
 class SettingsController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ReinstallServerService
-     */
-    private $reinstallServerService;
+    private ServerRepository $repository;
+    private ReinstallServerService $reinstallServerService;
 
     /**
      * SettingsController constructor.
@@ -41,42 +33,36 @@ class SettingsController extends ClientApiController
     /**
      * Renames a server.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function rename(RenameServerRequest $request, Server $server)
+    public function rename(RenameServerRequest $request, Server $server): Response
     {
         $this->repository->update($server->id, [
             'name' => $request->input('name'),
         ]);
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
      * Reinstalls the server on the daemon.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function reinstall(ReinstallServerRequest $request, Server $server)
+    public function reinstall(ReinstallServerRequest $request, Server $server): Response
     {
         $this->reinstallServerService->handle($server);
 
-        return new JsonResponse([], Response::HTTP_ACCEPTED);
+        return $this->returnAccepted();
     }
 
     /**
      * Changes the Docker image in use by the server.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function dockerImage(SetDockerImageRequest $request, Server $server)
+    public function dockerImage(SetDockerImageRequest $request, Server $server): Response
     {
         if (!in_array($server->image, $server->egg->docker_images)) {
             throw new BadRequestHttpException('This server\'s Docker image has been manually set by an administrator and cannot be updated.');
@@ -84,6 +70,6 @@ class SettingsController extends ClientApiController
 
         $server->forceFill(['image' => $request->input('docker_image')])->saveOrFail();
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

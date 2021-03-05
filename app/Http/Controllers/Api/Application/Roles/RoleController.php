@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Roles;
 
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\AdminRole;
 use Pterodactyl\Transformers\Api\Application\AdminRoleTransformer;
@@ -82,10 +83,10 @@ class RoleController extends ApplicationApiController
      *
      * @throws \Exception
      */
-    public function delete(DeleteRoleRequest $request, AdminRole $role): JsonResponse
+    public function delete(DeleteRoleRequest $request, AdminRole $role): Response
     {
         $role->delete();
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

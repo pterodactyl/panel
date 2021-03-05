@@ -11,10 +11,7 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerStartupRequest
 
 class StartupController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Servers\StartupModificationService
-     */
-    private $modificationService;
+    private StartupModificationService $modificationService;
 
     /**
      * StartupController constructor.
@@ -29,10 +26,7 @@ class StartupController extends ApplicationApiController
     /**
      * Update the startup and environment settings for a specific server.
      *
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function index(UpdateServerStartupRequest $request, Server $server): array
     {

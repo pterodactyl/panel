@@ -10,6 +10,8 @@ class ExternalServerController extends ApplicationApiController
 {
     /**
      * Retrieve a specific server from the database using its external ID.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetExternalServerRequest $request): array
     {

@@ -7,22 +7,14 @@ use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
-use Illuminate\Support\Facades\Log;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class ApplicationApiController extends Controller
 {
-    /**
-     * @var \Illuminate\Http\Request
-     */
-    protected $request;
-
-    /**
-     * @var \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal
-     */
-    protected $fractal;
+    protected Request $request;
+    protected Fractal $fractal;
 
     /**
      * ApplicationApiController constructor.
@@ -56,11 +48,9 @@ abstract class ApplicationApiController extends Controller
     /**
      * Return an instance of an application transformer.
      *
-     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
-     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function getTransformer(string $abstract)
+    public function getTransformer(string $abstract): BaseTransformer
     {
         /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->make($abstract);
@@ -70,6 +60,14 @@ abstract class ApplicationApiController extends Controller
         Assert::isInstanceOf($transformer, BaseTransformer::class);
 
         return $transformer;
+    }
+
+    /**
+     * Return a HTTP/201 response for the API.
+     */
+    protected function returnAccepted(): Response
+    {
+        return new Response('', Response::HTTP_ACCEPTED);
     }
 
     /**

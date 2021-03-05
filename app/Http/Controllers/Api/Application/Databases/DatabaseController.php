@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Databases;
 
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\DatabaseHost;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -101,10 +102,10 @@ class DatabaseController extends ApplicationApiController
      *
      * @throws \Exception
      */
-    public function delete(DeleteDatabaseRequest $request, DatabaseHost $databaseHost): JsonResponse
+    public function delete(DeleteDatabaseRequest $request, DatabaseHost $databaseHost): Response
     {
         $databaseHost->delete();
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Mounts;
 
 use Pterodactyl\Models\Mount;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Transformers\Api\Application\MountTransformer;
@@ -12,8 +13,8 @@ use Pterodactyl\Http\Requests\Api\Application\Mounts\GetMountsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\MountEggsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\MountNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\StoreMountRequest;
-use Pterodactyl\Http\Requests\Api\Application\Mounts\UpdateMountRequest;
 use Pterodactyl\Http\Requests\Api\Application\Mounts\DeleteMountRequest;
+use Pterodactyl\Http\Requests\Api\Application\Mounts\UpdateMountRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class MountController extends ApplicationApiController
@@ -29,9 +30,6 @@ class MountController extends ApplicationApiController
     /**
      * Returns an array of all mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\GetMountsRequest $request
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetMountsRequest $request): array
@@ -56,10 +54,6 @@ class MountController extends ApplicationApiController
     /**
      * Returns a single mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\GetMountRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetMountRequest $request, Mount $mount): array
@@ -72,9 +66,6 @@ class MountController extends ApplicationApiController
     /**
      * Creates a new mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\StoreMountRequest $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreMountRequest $request): JsonResponse
@@ -89,10 +80,6 @@ class MountController extends ApplicationApiController
     /**
      * Updates a mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\UpdateMountRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function update(UpdateMountRequest $request, Mount $mount): array
@@ -107,26 +94,19 @@ class MountController extends ApplicationApiController
     /**
      * Deletes a mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\DeleteMountRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Exception
      */
-    public function delete(DeleteMountRequest $request, Mount $mount): JsonResponse
+    public function delete(DeleteMountRequest $request, Mount $mount): Response
     {
         $mount->delete();
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
-     * ?
+     * Attaches eggs to a mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountEggsRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function addEggs(MountEggsRequest $request, Mount $mount): array
     {
@@ -143,12 +123,9 @@ class MountController extends ApplicationApiController
     }
 
     /**
-     * ?
+     * Attaches nodes to a mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountNodesRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function addNodes(MountNodesRequest $request, Mount $mount): array
     {
@@ -165,12 +142,9 @@ class MountController extends ApplicationApiController
     }
 
     /**
-     * ?
+     * Detaches eggs from a mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountEggsRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function deleteEggs(MountEggsRequest $request, Mount $mount): array
     {
@@ -187,12 +161,9 @@ class MountController extends ApplicationApiController
     }
 
     /**
-     * ?
+     * Detaches nodes from a mount.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Mounts\MountNodesRequest $request
-     * @param \Pterodactyl\Models\Mount $mount
-     *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function deleteNodes(MountNodesRequest $request, Mount $mount): array
     {

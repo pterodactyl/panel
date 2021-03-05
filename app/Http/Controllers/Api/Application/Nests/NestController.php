@@ -3,7 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Nests;
 
 use Pterodactyl\Models\Nest;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Pterodactyl\Services\Nests\NestUpdateService;
 use Pterodactyl\Services\Nests\NestCreationService;
 use Pterodactyl\Services\Nests\NestDeletionService;
@@ -13,31 +13,16 @@ use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestRequest;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\StoreNestRequest;
-use Pterodactyl\Http\Requests\Api\Application\Nests\UpdateNestRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\DeleteNestRequest;
+use Pterodactyl\Http\Requests\Api\Application\Nests\UpdateNestRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class NestController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Nests\NestCreationService
-     */
-    protected $nestCreationService;
-
-    /**
-     * @var \Pterodactyl\Services\Nests\NestDeletionService
-     */
-    protected $nestDeletionService;
-
-    /**
-     * @var \Pterodactyl\Services\Nests\NestUpdateService
-     */
-    protected $nestUpdateService;
+    private NestRepositoryInterface $repository;
+    protected NestCreationService $nestCreationService;
+    protected NestDeletionService $nestDeletionService;
+    protected NestUpdateService $nestUpdateService;
 
     /**
      * NestController constructor.
@@ -59,6 +44,8 @@ class NestController extends ApplicationApiController
 
     /**
      * Return all Nests that exist on the Panel.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetNestsRequest $request): array
     {
@@ -79,10 +66,6 @@ class NestController extends ApplicationApiController
     /**
      * Return information about a single Nest model.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\GetNestRequest $request
-     * @param \Pterodactyl\Models\Nest $nest
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetNestRequest $request, Nest $nest): array
@@ -95,9 +78,6 @@ class NestController extends ApplicationApiController
     /**
      * Creates a new nest.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\StoreNestRequest $request
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
@@ -113,10 +93,6 @@ class NestController extends ApplicationApiController
     /**
      * Updates an existing nest.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\UpdateNestRequest $request
-     * @param \Pterodactyl\Models\Nest $nest
-     *
-     * @return array
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -133,16 +109,12 @@ class NestController extends ApplicationApiController
     /**
      * Deletes an existing nest.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\DeleteNestRequest $request
-     * @param \Pterodactyl\Models\Nest $nest
-     *
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function delete(DeleteNestRequest $request, Nest $nest): JsonResponse
+    public function delete(DeleteNestRequest $request, Nest $nest): Response
     {
         $this->nestDeletionService->handle($nest->id);
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

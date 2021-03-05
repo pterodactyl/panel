@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Locations;
 
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -44,6 +45,8 @@ class LocationController extends ApplicationApiController
 
     /**
      * Return all of the locations currently registered on the Panel.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetLocationsRequest $request): array
     {
@@ -66,6 +69,8 @@ class LocationController extends ApplicationApiController
 
     /**
      * Return a single location.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetLocationRequest $request, Location $location): array
     {
@@ -79,6 +84,7 @@ class LocationController extends ApplicationApiController
      * new location attached.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreLocationRequest $request): JsonResponse
     {
@@ -115,10 +121,10 @@ class LocationController extends ApplicationApiController
      *
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */
-    public function delete(DeleteLocationRequest $request, Location $location): JsonResponse
+    public function delete(DeleteLocationRequest $request, Location $location): Response
     {
         $this->deletionService->handle($location);
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

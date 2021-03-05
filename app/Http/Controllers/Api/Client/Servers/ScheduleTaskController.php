@@ -6,7 +6,6 @@ use Pterodactyl\Models\Task;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
-use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
@@ -19,10 +18,7 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest;
 
 class ScheduleTaskController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\TaskRepository
-     */
-    private $repository;
+    private TaskRepository $repository;
 
     /**
      * ScheduleTaskController constructor.
@@ -37,12 +33,11 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Create a new task for a given schedule and store it in the database.
      *
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\ServiceLimitExceededException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function store(StoreTaskRequest $request, Server $server, Schedule $schedule)
+    public function store(StoreTaskRequest $request, Server $server, Schedule $schedule): array
     {
         $limit = config('pterodactyl.client_features.schedules.per_schedule_task_limit', 10);
         if ($schedule->tasks()->count() >= $limit) {
@@ -69,12 +64,11 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Updates a given task for a server.
      *
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function update(StoreTaskRequest $request, Server $server, Schedule $schedule, Task $task)
+    public function update(StoreTaskRequest $request, Server $server, Schedule $schedule, Task $task): array
     {
         if ($schedule->id !== $task->schedule_id || $server->id !== $schedule->server_id) {
             throw new NotFoundHttpException();
@@ -95,11 +89,9 @@ class ScheduleTaskController extends ClientApiController
      * Delete a given task for a schedule. If there are subsequent tasks stored in the database
      * for this schedule their sequence IDs are decremented properly.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Exception
      */
-    public function delete(ClientApiRequest $request, Server $server, Schedule $schedule, Task $task)
+    public function delete(ClientApiRequest $request, Server $server, Schedule $schedule, Task $task): Response
     {
         if ($task->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {
             throw new NotFoundHttpException();
@@ -115,6 +107,6 @@ class ScheduleTaskController extends ClientApiController
 
         $task->delete();
 
-        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

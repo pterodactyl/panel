@@ -7,15 +7,10 @@ use Pterodactyl\Services\Helpers\SoftwareVersionService;
 
 class VersionController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
-     */
     private SoftwareVersionService $softwareVersionService;
 
     /**
      * VersionController constructor.
-     *
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $softwareVersionService
      */
     public function __construct(SoftwareVersionService $softwareVersionService)
     {
@@ -26,8 +21,6 @@ class VersionController extends ApplicationApiController
 
     /**
      * Returns version information.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function __invoke(): JsonResponse
     {

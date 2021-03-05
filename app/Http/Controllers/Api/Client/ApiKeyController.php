@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
+use Illuminate\Http\Response;
 use Pterodactyl\Models\ApiKey;
-use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
@@ -15,42 +15,31 @@ use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 
 class ApiKeyController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
-     */
-    private $keyCreationService;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ApiKeyRepository
-     */
-    private $repository;
+    private Encrypter $encrypter;
+    private ApiKeyRepository $repository;
+    private KeyCreationService $keyCreationService;
 
     /**
      * ApiKeyController constructor.
      */
     public function __construct(
         Encrypter $encrypter,
-        KeyCreationService $keyCreationService,
-        ApiKeyRepository $repository
+        ApiKeyRepository $repository,
+        KeyCreationService $keyCreationService
     ) {
         parent::__construct();
 
         $this->encrypter = $encrypter;
-        $this->keyCreationService = $keyCreationService;
         $this->repository = $repository;
+        $this->keyCreationService = $keyCreationService;
     }
 
     /**
      * Returns all of the API keys that exist for the given client.
      *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function index(ClientApiRequest $request)
+    public function index(ClientApiRequest $request): array
     {
         return $this->fractal->collection($request->user()->apiKeys)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
@@ -60,12 +49,11 @@ class ApiKeyController extends ClientApiController
     /**
      * Store a new API key for a user's account.
      *
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function store(StoreApiKeyRequest $request)
+    public function store(StoreApiKeyRequest $request): array
     {
         if ($request->user()->apiKeys->count() >= 5) {
             throw new DisplayException('You have reached the account limit for number of API keys.');
@@ -87,10 +75,8 @@ class ApiKeyController extends ClientApiController
 
     /**
      * Deletes a given API key.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(ClientApiRequest $request, string $identifier)
+    public function delete(ClientApiRequest $request, string $identifier): Response
     {
         $response = $this->repository->deleteWhere([
             'key_type' => ApiKey::TYPE_ACCOUNT,
@@ -102,6 +88,6 @@ class ApiKeyController extends ClientApiController
             throw new NotFoundHttpException();
         }
 
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

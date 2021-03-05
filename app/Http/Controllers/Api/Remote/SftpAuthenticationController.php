@@ -19,28 +19,17 @@ class SftpAuthenticationController extends Controller
 {
     use ThrottlesLogins;
 
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\UserRepository
-     */
-    private $userRepository;
+    private UserRepository $userRepository;
+    private ServerRepository $serverRepository;
+    private GetUserPermissionsService $permissionsService;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $serverRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\GetUserPermissionsService
-     */
-    private $permissionsService;
-
-    /**
-     * SftpController constructor.
+     * SftpAuthenticationController constructor.
      */
     public function __construct(
-        GetUserPermissionsService $permissionsService,
         UserRepository $userRepository,
-        ServerRepository $serverRepository
+        ServerRepository $serverRepository,
+        GetUserPermissionsService $permissionsService
     ) {
         $this->userRepository = $userRepository;
         $this->serverRepository = $serverRepository;

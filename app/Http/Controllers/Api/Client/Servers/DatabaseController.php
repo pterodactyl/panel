@@ -42,6 +42,8 @@ class DatabaseController extends ClientApiController
 
     /**
      * Return all of the databases that belong to the given server.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetDatabasesRequest $request, Server $server): array
     {
@@ -71,11 +73,9 @@ class DatabaseController extends ClientApiController
      * Rotates the password for the given server model and returns a fresh instance to
      * the caller.
      *
-     * @return array
-     *
      * @throws \Throwable
      */
-    public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database)
+    public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database): array
     {
         $this->passwordService->handle($database);
         $database->refresh();
@@ -89,12 +89,12 @@ class DatabaseController extends ClientApiController
     /**
      * Removes a database from the server.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Exception
      */
     public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
     {
         $this->managementService->delete($database);
 
-        return Response::create('', Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

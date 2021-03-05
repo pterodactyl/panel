@@ -10,10 +10,7 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 
 class ResourceUtilizationController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $repository;
+    private DaemonServerRepository $repository;
 
     /**
      * ResourceUtilizationController constructor.
@@ -29,6 +26,7 @@ class ResourceUtilizationController extends ClientApiController
      * Return the current resource utilization for a server.
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __invoke(GetServerRequest $request, Server $server): array
     {

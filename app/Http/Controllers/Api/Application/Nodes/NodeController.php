@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
 use Pterodactyl\Models\Node;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
@@ -20,34 +21,19 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class NodeController extends ApplicationApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeDeletionService
-     */
-    private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeUpdateService
-     */
-    private $updateService;
+    private NodeRepositoryInterface $repository;
+    private NodeCreationService $creationService;
+    private NodeDeletionService $deletionService;
+    private NodeUpdateService $updateService;
 
     /**
      * NodeController constructor.
      */
     public function __construct(
+        NodeRepositoryInterface $repository,
         NodeCreationService $creationService,
         NodeDeletionService $deletionService,
-        NodeUpdateService $updateService,
-        NodeRepositoryInterface $repository
+        NodeUpdateService $updateService
     ) {
         parent::__construct();
 
@@ -59,6 +45,8 @@ class NodeController extends ApplicationApiController
 
     /**
      * Return all of the nodes currently available on the Panel.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetNodesRequest $request): array
     {
@@ -81,6 +69,8 @@ class NodeController extends ApplicationApiController
 
     /**
      * Return data for a single instance of a node.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetNodeRequest $request, Node $node): array
     {
@@ -94,6 +84,7 @@ class NodeController extends ApplicationApiController
      * status response on success.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreNodeRequest $request): JsonResponse
     {
@@ -133,10 +124,10 @@ class NodeController extends ApplicationApiController
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function delete(DeleteNodeRequest $request, Node $node): JsonResponse
+    public function delete(DeleteNodeRequest $request, Node $node): Response
     {
         $this->deletionService->handle($node);
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

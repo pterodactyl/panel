@@ -14,20 +14,9 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRe
 
 class StartupController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Servers\VariableValidatorService
-     */
-    private $service;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerVariableRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\StartupCommandService
-     */
-    private $startupCommandService;
+    private VariableValidatorService $service;
+    private ServerVariableRepository $repository;
+    private StartupCommandService $startupCommandService;
 
     /**
      * StartupController constructor.
@@ -44,9 +33,9 @@ class StartupController extends ClientApiController
     /**
      * Returns the startup information for the server including all of the variables.
      *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function index(GetStartupRequest $request, Server $server)
+    public function index(GetStartupRequest $request, Server $server): array
     {
         $startup = $this->startupCommandService->handle($server, false);
 
@@ -65,13 +54,12 @@ class StartupController extends ClientApiController
     /**
      * Updates a single variable for a server.
      *
-     * @return array
-     *
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function update(UpdateStartupVariableRequest $request, Server $server)
+    public function update(UpdateStartupVariableRequest $request, Server $server): array
     {
         /** @var \Pterodactyl\Models\EggVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();

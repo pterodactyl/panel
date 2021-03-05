@@ -13,10 +13,7 @@ use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
 
 class ClientController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
+    private ServerRepository $repository;
 
     /**
      * ClientController constructor.
@@ -31,6 +28,8 @@ class ClientController extends ClientApiController
     /**
      * Return all of the servers available to the client making the API
      * request, including servers the user has access to as a subuser.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetServersRequest $request): array
     {
@@ -75,10 +74,8 @@ class ClientController extends ClientApiController
 
     /**
      * Returns all of the subuser permissions available on the system.
-     *
-     * @return array
      */
-    public function permissions()
+    public function permissions(): array
     {
         return [
             'object' => 'system_permissions',

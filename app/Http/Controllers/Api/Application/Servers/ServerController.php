@@ -92,11 +92,6 @@ class ServerController extends ApplicationApiController
     /**
      * Deletes a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param string $force
-     *
-     * @return \Illuminate\Http\Response
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Throwable
      */

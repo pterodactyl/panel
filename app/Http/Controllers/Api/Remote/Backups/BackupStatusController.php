@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
@@ -18,15 +19,8 @@ use Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 
 class BackupStatusController extends Controller
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $backupManager;
+    private BackupRepository $repository;
+    private BackupManager $backupManager;
 
     /**
      * BackupStatusController constructor.
@@ -40,11 +34,9 @@ class BackupStatusController extends Controller
     /**
      * Handles updating the state of a backup.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function index(ReportBackupCompleteRequest $request, string $backup)
+    public function index(ReportBackupCompleteRequest $request, string $backup): Response
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
@@ -77,7 +69,7 @@ class BackupStatusController extends Controller
             }
         });
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -88,11 +80,9 @@ class BackupStatusController extends Controller
      * The only thing the successful field does is update the entry value for the audit logs
      * table tracking for this restoration.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function restore(Request $request, string $backup)
+    public function restore(Request $request, string $backup): Response
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
@@ -108,7 +98,7 @@ class BackupStatusController extends Controller
             $server->update(['status' => null]);
         });
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     /**
