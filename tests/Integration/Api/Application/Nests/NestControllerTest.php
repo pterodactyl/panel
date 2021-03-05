@@ -38,7 +38,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonStructure([
             'object',
             'data' => [['object', 'attributes' => ['id', 'uuid', 'author', 'name', 'description', 'created_at', 'updated_at']]],
-            'meta' => ['pagination' => ['total', 'count', 'per_page', 'current_page', 'total_pages']],
+            'meta' => ['pagination' => ['total', 'count', 'per_page', 'current_page', 'total_pages', 'links']],
         ]);
 
         $response->assertJson([
@@ -51,6 +51,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
                     'per_page' => 50,
                     'current_page' => 1,
                     'total_pages' => 1,
+                    'links' => [],
                 ],
             ],
         ]);

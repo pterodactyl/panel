@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Application\Nests;
+namespace Pterodactyl\Tests\Integration\Api\Application\Eggs;
 
 use Illuminate\Support\Arr;
 use Illuminate\Http\Response;
@@ -10,10 +10,7 @@ use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestC
 
 class EggControllerTest extends ApplicationApiIntegrationTestCase
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    private $repository;
+    private EggRepositoryInterface $repository;
 
     /**
      * Setup tests.
@@ -76,7 +73,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
     {
         $egg = $this->repository->find(1);
 
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/' . $egg->id);
+        $response = $this->getJson('/api/application/eggs/' . $egg->id);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'object',
@@ -98,7 +95,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
     {
         $egg = $this->repository->find(1);
 
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/' . $egg->id . '?include=servers,variables,nest');
+        $response = $this->getJson('/api/application/eggs/' . $egg->id . '?include=servers,variables,nest');
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             'object',
@@ -117,9 +114,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingEgg()
     {
-        $egg = $this->repository->find(1);
-
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/nil');
+        $response = $this->getJson('/api/application/nests/eggs/nil');
         $this->assertNotFoundJson($response);
     }
 
@@ -142,10 +137,9 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testResourceIsNotExposedWithoutPermissions()
     {
-        $egg = $this->repository->find(1);
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_eggs' => 0]);
 
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/nil');
+        $response = $this->getJson('/api/application/nests/eggs/nil');
         $this->assertAccessDeniedJson($response);
     }
 }

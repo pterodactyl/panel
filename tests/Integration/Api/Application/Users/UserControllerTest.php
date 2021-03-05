@@ -24,10 +24,10 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonStructure([
             'object',
             'data' => [
-                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'language', 'root_admin', '2fa', 'created_at', 'updated_at']],
-                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'language', 'root_admin', '2fa', 'created_at', 'updated_at']],
+                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'language', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at']],
+                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'language', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at']],
             ],
-            'meta' => ['pagination' => ['total', 'count', 'per_page', 'current_page', 'total_pages']],
+            'meta' => ['pagination' => ['total', 'count', 'per_page', 'current_page', 'total_pages', 'links']],
         ]);
 
         $response
@@ -41,6 +41,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                         'per_page' => 100,
                         'current_page' => 1,
                         'total_pages' => 1,
+                        'links' => [],
                     ],
                 ],
             ])
@@ -57,6 +58,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'language' => $this->getApiUser()->language,
                     'root_admin' => (bool) $this->getApiUser()->root_admin,
                     '2fa' => (bool) $this->getApiUser()->totp_enabled,
+                    'avatar_url' => $this->getApiUser()->avatarURL(),
+                    'role_name' => $this->getApiUser()->adminRoleName(),
                     'created_at' => $this->formatTimestamp($this->getApiUser()->created_at),
                     'updated_at' => $this->formatTimestamp($this->getApiUser()->updated_at),
                 ],
@@ -74,6 +77,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'language' => $user->language,
                     'root_admin' => (bool) $user->root_admin,
                     '2fa' => (bool) $user->totp_enabled,
+                    'avatar_url' => $user->getApiUser()->avatarURL(),
+                    'role_name' => $user->getApiUser()->adminRoleName(),
                     'created_at' => $this->formatTimestamp($user->created_at),
                     'updated_at' => $this->formatTimestamp($user->updated_at),
                 ],
