@@ -37,7 +37,7 @@ class LocationTransformer extends BaseTransformer
     }
 
     /**
-     * Return the nodes associated with this location.
+     * Return the servers associated with this location.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
      *
@@ -62,7 +62,6 @@ class LocationTransformer extends BaseTransformer
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-
      */
     public function includeNodes(Location $location)
     {

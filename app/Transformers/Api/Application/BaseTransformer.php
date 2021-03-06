@@ -84,7 +84,7 @@ abstract class BaseTransformer extends TransformerAbstract
      */
     protected function authorize(string $resource): bool
     {
-        if ($this->isRootAdmin()) {
+        if ($this->getKey()->key_type === ApiKey::TYPE_ACCOUNT && $this->isRootAdmin()) {
             return true;
         }
 
