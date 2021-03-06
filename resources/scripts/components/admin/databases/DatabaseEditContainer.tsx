@@ -30,7 +30,7 @@ export const Context = createContextStore<ctx>({
     }),
 });
 
-interface Values {
+export interface Values {
     name: string;
     host: string;
     port: number;
@@ -38,42 +38,33 @@ interface Values {
     password: string;
 }
 
-const EditInformationContainer = () => {
-    const history = useHistory();
+export interface Params {
+    title: string;
+    initialValues?: Values;
+    children?: React.ReactNode;
 
-    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    onSubmit: (values: Values, helpers: FormikHelpers<Values>) => void;
+}
 
-    const database = Context.useStoreState(state => state.database);
-    const setDatabase = Context.useStoreActions(actions => actions.setDatabase);
-
-    if (database === undefined) {
-        return (
-            <></>
-        );
-    }
-
-    const submit = ({ name, host, port, username, password }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('database');
-
-        updateDatabase(database.id, name, host, port, username, password || undefined)
-            .then(() => setDatabase({ ...database, name, host, port, username }))
-            .catch(error => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'database', error });
-            })
-            .then(() => setSubmitting(false));
+export const InformationContainer = ({ title, initialValues, children, onSubmit }: Params) => {
+    const submit = (values: Values, helpers: FormikHelpers<Values>) => {
+        onSubmit(values, helpers);
     };
+
+    if (!initialValues) {
+        initialValues = {
+            name: '',
+            host: '',
+            port: 3306,
+            username: '',
+            password: '',
+        };
+    }
 
     return (
         <Formik
             onSubmit={submit}
-            initialValues={{
-                name: database.name,
-                host: database.host,
-                port: database.port,
-                username: database.username,
-                password: '',
-            }}
+            initialValues={initialValues}
             validationSchema={object().shape({
                 name: string().required().max(191),
                 host: string().max(255),
@@ -85,7 +76,7 @@ const EditInformationContainer = () => {
             {
                 ({ isSubmitting, isValid }) => (
                     <React.Fragment>
-                        <AdminBox title={'Edit Database'} css={tw`relative`}>
+                        <AdminBox title={title} css={tw`relative`}>
                             <SpinnerOverlay visible={isSubmitting}/>
 
                             <Form css={tw`mb-0`}>
@@ -140,13 +131,7 @@ const EditInformationContainer = () => {
                                 </div>
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>
-                                    <div css={tw`flex`}>
-                                        <DatabaseDeleteButton
-                                            databaseId={database.id}
-                                            onDeleted={() => history.push('/admin/databases')}
-                                        />
-                                    </div>
-
+                                    {children}
                                     <div css={tw`flex ml-auto`}>
                                         <Button type={'submit'} disabled={isSubmitting || !isValid}>
                                             Save
@@ -159,6 +144,54 @@ const EditInformationContainer = () => {
                 )
             }
         </Formik>
+    );
+};
+
+const EditInformationContainer = () => {
+    const history = useHistory();
+
+    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+
+    const database = Context.useStoreState(state => state.database);
+    const setDatabase = Context.useStoreActions(actions => actions.setDatabase);
+
+    if (database === undefined) {
+        return (
+            <></>
+        );
+    }
+
+    const submit = ({ name, host, port, username, password }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('database');
+
+        updateDatabase(database.id, name, host, port, username, password || undefined)
+            .then(() => setDatabase({ ...database, name, host, port, username }))
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'database', error });
+            })
+            .then(() => setSubmitting(false));
+    };
+
+    return (
+        <InformationContainer
+            title={'Edit Database'}
+            initialValues={{
+                name: database.name,
+                host: database.host,
+                port: database.port,
+                username: database.username,
+                password: '',
+            }}
+            onSubmit={submit}
+        >
+            <div css={tw`flex`}>
+                <DatabaseDeleteButton
+                    databaseId={database.id}
+                    onDeleted={() => history.push('/admin/databases')}
+                />
+            </div>
+        </InformationContainer>
     );
 };
 
