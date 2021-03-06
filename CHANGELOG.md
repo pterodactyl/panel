@@ -15,6 +15,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes server console resize handler to no longer encounter an exception at random that breaks the entire UI.
 * Fixes unhandled error caused by entering an invalid IP address or FQDN when creating a new node allocation.
 * Fixes unhandled error when Wings would fetch a server configuration from the Panel that uses an Egg with invalid JSON data for the configuration fields.
+* Fixes email not being sent to a user when their server is done installing.
 
 ### Added
 * Adds support for automatically copying SFTP connection details when clicking into the text field.

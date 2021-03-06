@@ -8,18 +8,22 @@ use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Events\Server\Installed as ServerInstalled;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
 
 class ServerInstallController extends Controller
 {
     private ServerRepository $repository;
+    private EventDispatcher $eventDispatcher;
 
     /**
      * ServerInstallController constructor.
      */
-    public function __construct(ServerRepository $repository)
+    public function __construct(ServerRepository $repository, EventDispatcher $eventDispatcher)
     {
         $this->repository = $repository;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
@@ -55,6 +59,11 @@ class ServerInstallController extends Controller
         }
 
         $this->repository->update($server->id, ['status' => $status], true, true);
+
+        // If the server successfully installed, fire installed event.
+        if ($status === null) {
+            $this->eventDispatcher->dispatch(new ServerInstalled($server));
+        }
 
         return new Response('', Response::HTTP_NO_CONTENT);
     }
