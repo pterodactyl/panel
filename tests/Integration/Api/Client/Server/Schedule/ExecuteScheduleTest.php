@@ -68,7 +68,7 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertJsonPath('errors.0.code', 'BadRequestHttpException');
-        $response->assertJsonPath('errors.0.detail', 'Cannot trigger schedule exection for a schedule that is not currently active.');
+        $response->assertJsonPath('errors.0.detail', 'Cannot trigger schedule exception for a schedule that is not currently active.');
     }
 
     /**

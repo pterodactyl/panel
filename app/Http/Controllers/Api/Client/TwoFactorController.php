@@ -83,7 +83,7 @@ class TwoFactorController extends ClientApiController
      * Disables two-factor authentication on an account if the password provided
      * is valid.
      */
-    public function delete(Request $request): JsonResponse
+    public function delete(Request $request): Response
     {
         if (!password_verify($request->input('password') ?? '', $request->user()->password)) {
             throw new BadRequestHttpException('The password provided was not valid.');
