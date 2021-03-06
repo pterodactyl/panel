@@ -4,8 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Auth\SessionGuard;
+use Illuminate\Auth\AuthManager;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -13,17 +12,17 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 
 class AccountController extends ClientApiController
 {
-    private SessionGuard $sessionGuard;
+    private AuthManager $authManager;
     private UserUpdateService $updateService;
 
     /**
      * AccountController constructor.
      */
-    public function __construct(SessionGuard $sessionGuard, UserUpdateService $updateService)
+    public function __construct(AuthManager $authManager, UserUpdateService $updateService)
     {
         parent::__construct();
 
-        $this->sessionGuard = $sessionGuard;
+        $this->authManager = $authManager;
         $this->updateService = $updateService;
     }
 
@@ -45,7 +44,7 @@ class AccountController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updateEmail(UpdateEmailRequest $request): JsonResponse
+    public function updateEmail(UpdateEmailRequest $request): Response
     {
         $this->updateService->handle($request->user(), $request->validated());
 
@@ -59,11 +58,11 @@ class AccountController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updatePassword(UpdatePasswordRequest $request): JsonResponse
+    public function updatePassword(UpdatePasswordRequest $request): Response
     {
         $this->updateService->handle($request->user(), $request->validated());
 
-        $this->sessionGuard->logoutOtherDevices($request->input('password'));
+        $this->authManager->logoutOtherDevices($request->input('password'));
 
         return $this->returnNoContent();
     }
