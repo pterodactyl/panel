@@ -160,13 +160,18 @@ class BackupController extends ClientApiController
         switch ($backup->disk) {
             case Backup::ADAPTER_WINGS:
             case Backup::ADAPTER_AWS_S3:
-                return new JsonResponse([
-                    'object' => 'signed_url',
-                    'attributes' => ['url' => ''],
-                ]);
+                 $url = $this->downloadLinkService->handle($backup, $request->user());
+                 break;
             default:
                 throw new BadRequestHttpException();
         }
+
+        return new JsonResponse([
+            'object' => 'signed_url',
+            'attributes' => [
+                'url' => $url,
+            ],
+        ]);
     }
 
     /**
