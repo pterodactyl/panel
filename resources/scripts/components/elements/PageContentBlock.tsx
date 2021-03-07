@@ -28,7 +28,7 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                 </ContentContainer>
                 <ContentContainer css={tw`mb-4`}>
                     <p css={tw`text-center text-neutral-500 text-xs`}>
-                        &copy; 2015 - 2020&nbsp;
+                        &copy; 2015 - 2021&nbsp;
                         <a
                             rel={'noopener nofollow noreferrer'}
                             href={'https://pterodactyl.io'}
