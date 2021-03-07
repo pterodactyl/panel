@@ -160,8 +160,8 @@ class BackupController extends ClientApiController
         switch ($backup->disk) {
             case Backup::ADAPTER_WINGS:
             case Backup::ADAPTER_AWS_S3:
-                 $url = $this->downloadLinkService->handle($backup, $request->user());
-                 break;
+                $url = $this->downloadLinkService->handle($backup, $request->user());
+                break;
             default:
                 throw new BadRequestHttpException();
         }
