@@ -47,7 +47,7 @@ class DownloadLinkService
             ])
             ->handle($backup->server->node, $user->id . $backup->server->uuid);
 
-        return sprintf('%s/download/backup?token=%s', $backup->server->node->getConnectionAddress(), $token->__toString());
+        return sprintf('%s/download/backup?token=%s', $backup->server->node->getConnectionAddress(), $token->toString());
     }
 
     /**
