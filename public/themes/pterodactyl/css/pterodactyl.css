@@ -684,6 +684,9 @@ textarea.form-control {
     box-shadow: none;
     -webkit-transition: border .15s linear,box-shaodw .15s ease-in;
     transition: border .15s linear,box-shaodw .15s ease-in;
+    min-width: 100%;
+    width : 100%;
+    max-width: 100%;
 }
 
 .input-group .input-group-addon {
