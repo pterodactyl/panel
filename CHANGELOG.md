@@ -3,6 +3,12 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.3.1
+### Fixed
+* Fixes the Rust egg not properly seeding during the upgrade & installation process.
+* Fixes backups not being downloadable via the frontend.
+* Fixes backup listing showing the wrong number of existing backups based on the current page you're on.
+
 ## v1.3.0
 ### Fixed
 * Fixes administrator "Other Servers" toggle being persisted wrongly when signing out and signing into a non-administrator account on the server dashboard.
