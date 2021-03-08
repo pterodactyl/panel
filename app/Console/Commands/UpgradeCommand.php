@@ -79,7 +79,7 @@ class UpgradeCommand extends Command
         if (!$skipDownload) {
             $this->withProgress($bar, function () {
                 $this->line("\$upgrader> curl -L \"{$this->getUrl()}\" | tar -xzv");
-                $process = Process::fromShellCommandline("curl -L \"{$this->getUrl()}\" | tar -xzvf");
+                $process = Process::fromShellCommandline("curl -L \"{$this->getUrl()}\" | tar -xzv");
                 $process->run(function ($type, $buffer) {
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
                 });
