@@ -48,9 +48,11 @@ abstract class ApplicationApiController extends Controller
     /**
      * Return an instance of an application transformer.
      *
+     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function getTransformer(string $abstract): BaseTransformer
+    public function getTransformer(string $abstract)
     {
         /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->make($abstract);
