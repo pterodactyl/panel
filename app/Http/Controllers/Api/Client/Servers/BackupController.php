@@ -131,6 +131,7 @@ class BackupController extends ClientApiController
      * will be streamed back through the Panel. For AWS S3 files, a signed URL will be generated
      * which the user is redirected to.
      *
+     * @throws \Throwable
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function download(Request $request, Server $server, Backup $backup): JsonResponse
@@ -139,16 +140,19 @@ class BackupController extends ClientApiController
             throw new AuthorizationException();
         }
 
-        switch ($backup->disk) {
-            case Backup::ADAPTER_WINGS:
-            case Backup::ADAPTER_AWS_S3:
-                return new JsonResponse([
-                    'object' => 'signed_url',
-                    'attributes' => ['url' => ''],
-                ]);
-            default:
-                throw new BadRequestHttpException();
+        if ($backup->disk !== Backup::ADAPTER_AWS_S3 && $backup->disk !== Backup::ADAPTER_WINGS) {
+            throw new BadRequestHttpException('The backup requested references an unknown disk driver type and cannot be downloaded.');
         }
+
+        $url = $this->downloadLinkService->handle($backup, $request->user());
+        $server->audit(AuditLog::SERVER__BACKUP_DOWNLOADED, function (AuditLog $audit) use ($backup) {
+            $audit->metadata = ['backup_uuid' => $backup->uuid];
+        });
+
+        return new JsonResponse([
+            'object' => 'signed_url',
+            'attributes' => ['url' => $url],
+        ]);
     }
 
     /**

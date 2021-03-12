@@ -35,6 +35,7 @@ class AuditLog extends Model
     public const SERVER__BACKUP_FAILED = 'server:backup.failed';
     public const SERVER__BACKUP_COMPELTED = 'server:backup.completed';
     public const SERVER__BACKUP_DELETED = 'server:backup.deleted';
+    public const SERVER__BACKUP_DOWNLOADED = 'server:backup.downloaded';
     public const SERVER__BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
     public const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
     public const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
