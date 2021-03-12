@@ -60,7 +60,7 @@ export default ({ backup }: Props) => {
             });
     };
 
-    const doRestorationAction = (truncate: boolean) => {
+    const doRestorationAction = () => {
         setLoading(true);
         clearFlashes('backups');
         restoreServerBackup(uuid, backup.uuid, truncate)
@@ -88,7 +88,7 @@ export default ({ backup }: Props) => {
                 visible={modal === 'restore'}
                 title={'Restore this backup?'}
                 buttonText={'Restore backup'}
-                onConfirmed={() => doRestorationAction(truncate)}
+                onConfirmed={() => doRestorationAction()}
                 onModalDismissed={() => setModal('')}
             >
                 <p css={tw`text-neutral-300`}>
@@ -110,7 +110,7 @@ export default ({ backup }: Props) => {
                             id={'restore_truncate'}
                             value={'true'}
                             checked={truncate}
-                            onChange={() => setTruncate(!truncate)}
+                            onChange={() => setTruncate(s => !s)}
                         />
                         Remove all files and folders before restoring this backup.
                     </label>
