@@ -1,4 +1,3 @@
-import NodeConfigurationContainer from '@/components/admin/nodes/NodeConfigurationContainer';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import tw from 'twin.macro';
@@ -14,6 +13,8 @@ import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigati
 import AdminBox from '@/components/admin/AdminBox';
 import NodeLimitContainer from '@/components/admin/nodes/NodeLimitContainer';
 import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
+import NodeConfigurationContainer from '@/components/admin/nodes/NodeConfigurationContainer';
+import NodeListenContainer from '@/components/admin/nodes/NodeListenContainer';
 
 interface ctx {
     node: Node | undefined;
@@ -72,7 +73,7 @@ const NodeEditContainer = () => {
 
     return (
         <AdminContentBlock title={'Node - ' + node.name}>
-            <div css={tw`w-full flex flex-row items-center mb-6`}>
+            <div css={tw`w-full flex flex-row items-center mb-4`}>
                 <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{node.name}</h2>
                     <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>{node.uuid}</p>
@@ -116,7 +117,7 @@ const NodeEditContainer = () => {
             <Switch location={location}>
                 <Route path={`${match.path}`} exact>
                     <AdminBox title={'Node Information'}>
-                        <p>Version <Code>1.2.2</Code></p>
+                        <p>Version <Code>1.3.1</Code></p>
                     </AdminBox>
                 </Route>
 
@@ -127,7 +128,13 @@ const NodeEditContainer = () => {
                         </div>
 
                         <div css={tw`w-full lg:w-1/2 flex flex-col ml-0 lg:ml-2 mt-4 lg:mt-0`}>
-                            <NodeLimitContainer/>
+                            <div css={tw`flex w-full`}>
+                                <NodeListenContainer/>
+                            </div>
+
+                            <div css={tw`flex w-full mt-4`}>
+                                <NodeLimitContainer/>
+                            </div>
                         </div>
                     </div>
                 </Route>

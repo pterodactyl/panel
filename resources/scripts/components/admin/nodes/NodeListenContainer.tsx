@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
-import { number, object } from 'yup';
+import { object } from 'yup';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -11,10 +11,10 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import updateNode from '@/api/admin/nodes/updateNode';
 
 interface Values {
-    memory: number;
-    memoryOverallocate: number;
-    disk: number;
-    diskOverallocate: number;
+    listenPortHTTP: number;
+    publicPortHTTP: number;
+    listenPortSFTP: number;
+    publicPortSFTP: number;
 }
 
 export default () => {
@@ -29,11 +29,11 @@ export default () => {
         );
     }
 
-    const submit = ({ memory, memoryOverallocate, disk, diskOverallocate }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const submit = ({ listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('node');
 
-        updateNode(node.id, { memory, memoryOverallocate, disk, diskOverallocate })
-            .then(() => setNode({ ...node, memory, memoryOverallocate, disk, diskOverallocate }))
+        updateNode(node.id, { listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP })
+            .then(() => setNode({ ...node, listenPortHTTP, publicPortHTTP, listenPortSFTP, publicPortSFTP }))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'node', error });
@@ -45,60 +45,56 @@ export default () => {
         <Formik
             onSubmit={submit}
             initialValues={{
-                memory: node.memory,
-                memoryOverallocate: node.memoryOverallocate,
-                disk: node.disk,
-                diskOverallocate: node.diskOverallocate,
+                listenPortHTTP: node.listenPortHTTP,
+                publicPortHTTP: node.publicPortHTTP,
+                listenPortSFTP: node.listenPortSFTP,
+                publicPortSFTP: node.publicPortSFTP,
             }}
             validationSchema={object().shape({
-                memory: number().required(),
-                memoryOverallocate: number().required(),
-                disk: number().required(),
-                diskOverallocate: number().required(),
             })}
         >
             {
                 ({ isSubmitting }) => (
                     <React.Fragment>
-                        <AdminBox title={'Limits'} css={tw`w-full relative`}>
+                        <AdminBox title={'Listen'} css={tw`w-full relative`}>
                             <SpinnerOverlay visible={isSubmitting}/>
 
                             <Form css={tw`mb-0`}>
-                                <div css={tw`md:w-full md:flex md:flex-row mb-6`}>
-                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mb-6 md:mb-0`}>
+                                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
                                         <Field
-                                            id={'memory'}
-                                            name={'memory'}
-                                            label={'Memory'}
+                                            id={'listenPortHTTP'}
+                                            name={'listenPortHTTP'}
+                                            label={'HTTP Listen Port'}
                                             type={'number'}
                                         />
                                     </div>
 
-                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mb-6 md:mb-0`}>
+                                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
                                         <Field
-                                            id={'memoryOverallocate'}
-                                            name={'memoryOverallocate'}
-                                            label={'Memory Overallocate'}
+                                            id={'publicPortHTTP'}
+                                            name={'publicPortHTTP'}
+                                            label={'HTTP Public Port'}
                                             type={'number'}
                                         />
                                     </div>
                                 </div>
 
-                                <div css={tw`md:w-full md:flex md:flex-row mb-6`}>
-                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mb-6 md:mb-0`}>
+                                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
                                         <Field
-                                            id={'disk'}
-                                            name={'disk'}
-                                            label={'Disk'}
+                                            id={'listenPortSFTP'}
+                                            name={'listenPortSFTP'}
+                                            label={'SFTP Listen Port'}
                                             type={'number'}
                                         />
                                     </div>
 
-                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mb-6 md:mb-0`}>
+                                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
                                         <Field
-                                            id={'diskOverallocate'}
-                                            name={'diskOverallocate'}
-                                            label={'Disk Overallocate'}
+                                            id={'publicPortSFTP'}
+                                            name={'publicPortSFTP'}
+                                            label={'SFTP Public Port'}
                                             type={'number'}
                                         />
                                     </div>
