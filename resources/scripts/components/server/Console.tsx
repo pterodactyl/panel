@@ -145,10 +145,10 @@ export default () => {
 
             // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-                if (e.metaKey && e.key === 'c') {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
                     document.execCommand('copy');
                     return false;
-                } else if (e.metaKey && e.key === 'f') {
+                } else if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
                     e.preventDefault();
                     searchBar.show();
                     return false;
