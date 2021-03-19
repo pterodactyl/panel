@@ -38,7 +38,7 @@
         },
         {
             "name": "Server Version",
-            "description": "The version of Minecraft Vanilla to install. Use \"latest\" to install the latest version, or use \"snapshot\" to install the latest snapshot.",
+            "description": "The version of Minecraft Vanilla to install. Use \"latest\" to install the latest version, or use \"snapshot\" to install the latest snapshot. Go to Settings > Reinstall Server to apply.",
             "env_variable": "VANILLA_VERSION",
             "default_value": "latest",
             "user_viewable": true,
