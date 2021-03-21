@@ -21,10 +21,18 @@ export default ({ location }: RouteComponentProps) => (
         }
         <TransitionRouter>
             <Switch location={location}>
-                <Route path={'/'} component={DashboardContainer} exact/>
-                <Route path={'/account'} component={AccountOverviewContainer} exact/>
-                <Route path={'/account/api'} component={AccountApiContainer} exact/>
-                <Route path={'*'} component={NotFound}/>
+                <Route path={'/'} exact>
+                    <DashboardContainer/>
+                </Route>
+                <Route path={'/account'} exact>
+                    <AccountOverviewContainer/>
+                </Route>
+                <Route path={'/account/api'} exact>
+                    <AccountApiContainer/>
+                </Route>
+                <Route path={'*'}>
+                    <NotFound/>
+                </Route>
             </Switch>
         </TransitionRouter>
     </>

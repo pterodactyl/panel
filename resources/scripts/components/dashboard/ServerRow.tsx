@@ -59,7 +59,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
 
         getStats().then(() => {
             // @ts-ignore
-            interval.current = setInterval(() => getStats(), 20000);
+            interval.current = setInterval(() => getStats(), 30000);
         });
 
         return () => {

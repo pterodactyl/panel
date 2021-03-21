@@ -57,7 +57,14 @@ class TwoFactorController extends ClientApiController
     /**
      * Updates a user's account to have two-factor enabled.
      *
+     * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Throwable
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+     * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+     * @throws \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
      */
     public function store(Request $request): JsonResponse
     {

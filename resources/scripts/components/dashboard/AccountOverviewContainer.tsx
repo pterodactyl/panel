@@ -27,7 +27,7 @@ const Container = styled.div`
 `;
 
 export default () => {
-    const state = useLocation<{ twoFactorRedirect: boolean }>().state;
+    const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
 
     return (
         <PageContentBlock title={'Account Overview'}>
