@@ -72,12 +72,11 @@ class TwoFactorController extends ClientApiController
      *
      * @return \Illuminate\Http\JsonResponse
      *
+     * @throws \Throwable
      * @throws \Illuminate\Validation\ValidationException
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
      */
     public function store(Request $request)
