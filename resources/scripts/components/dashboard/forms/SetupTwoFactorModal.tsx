@@ -78,7 +78,7 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
                             <h2 css={tw`text-2xl mb-4`}>Two-factor authentication enabled</h2>
                             <p css={tw`text-neutral-300`}>
                                 Two-factor authentication has been enabled on your account. Should you loose access to
-                                this device you&apos;ll need to use on of the codes displayed below in order to access your
+                                this device you&apos;ll need to use one of the codes displayed below in order to access your
                                 account.
                             </p>
                             <p css={tw`text-neutral-300 mt-4`}>
