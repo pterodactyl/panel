@@ -7,8 +7,8 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
-import { RouteComponentProps } from 'react-router';
 import MessageBox from '@/components/MessageBox';
+import { useLocation } from 'react-router-dom';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -26,7 +26,9 @@ const Container = styled.div`
     }
 `;
 
-export default ({ location: { state } }: RouteComponentProps) => {
+export default () => {
+    const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
+
     return (
         <PageContentBlock title={'Account Overview'}>
             {state?.twoFactorRedirect &&

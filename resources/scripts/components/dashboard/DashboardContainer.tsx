@@ -12,10 +12,14 @@ import tw from 'twin.macro';
 import useSWR from 'swr';
 import { PaginatedResult } from '@/api/http';
 import Pagination from '@/components/elements/Pagination';
+import { useLocation } from 'react-router-dom';
 
 export default () => {
+    const { search } = useLocation();
+    const defaultPage = Number(new URLSearchParams(search).get('page') || '1');
+
+    const [ page, setPage ] = useState((!isNaN(defaultPage) && defaultPage > 0) ? defaultPage : 1);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const [ page, setPage ] = useState(1);
     const uuid = useStoreState(state => state.user.data!.uuid);
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ showOnlyAdmin, setShowOnlyAdmin ] = usePersistedState(`${uuid}:show_all_servers`, false);
@@ -24,6 +28,20 @@ export default () => {
         [ '/api/client/servers', showOnlyAdmin, page ],
         () => getServers({ page, type: showOnlyAdmin ? 'admin' : undefined }),
     );
+
+    useEffect(() => {
+        if (!servers) return;
+        if (servers.pagination.currentPage > 1 && !servers.items.length) {
+            setPage(1);
+        }
+    }, [ servers?.pagination.currentPage ]);
+
+    useEffect(() => {
+        // Don't use react-router to handle changing this part of the URL, otherwise it
+        // triggers a needless re-render. We just want to track this in the URL incase the
+        // user refreshes the page.
+        window.history.replaceState(null, document.title, `/${page <= 1 ? '' : `?page=${page}`}`);
+    }, [ page ]);
 
     useEffect(() => {
         if (error) clearAndAddHttpError({ key: 'dashboard', error });
