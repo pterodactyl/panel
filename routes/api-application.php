@@ -117,6 +117,7 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::get('/deployable', 'Nodes\NodeDeploymentController');
     Route::get('/{node}', 'Nodes\NodeController@view')->name('api.application.nodes.view');
     Route::get('/{node}/configuration', 'Nodes\NodeConfigurationController');
+    Route::get('/{node}/information', 'Nodes\NodeInformationController');
 
     Route::post('/', 'Nodes\NodeController@store');
 

@@ -108,7 +108,7 @@ class NodeController extends ApplicationApiController
         $node = $this->updateService->handle(
             $node,
             $request->validated(),
-            $request->input('reset_secret') === true
+            $request->input('reset_secret')
         );
 
         return $this->fractal->item($node)
