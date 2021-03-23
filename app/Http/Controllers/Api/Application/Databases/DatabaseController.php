@@ -8,7 +8,7 @@ use Pterodactyl\Models\DatabaseHost;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 use Pterodactyl\Services\Databases\Hosts\HostCreationService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Transformers\Api\Application\DatabaseHostTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Databases\GetDatabaseRequest;
@@ -41,10 +41,8 @@ class DatabaseController extends ApplicationApiController
     public function index(GetDatabasesRequest $request): array
     {
         $perPage = $request->query('per_page', 10);
-        if ($perPage < 1) {
-            $perPage = 10;
-        } elseif ($perPage > 100) {
-            throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
+        if ($perPage < 1 || $perPage > 100) {
+            throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
 
         $databases = QueryBuilder::for(DatabaseHost::query())

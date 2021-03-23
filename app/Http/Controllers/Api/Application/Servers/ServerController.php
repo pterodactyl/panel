@@ -9,7 +9,7 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
@@ -42,10 +42,8 @@ class ServerController extends ApplicationApiController
     public function index(GetServersRequest $request): array
     {
         $perPage = $request->query('per_page', 10);
-        if ($perPage < 1) {
-            $perPage = 10;
-        } elseif ($perPage > 100) {
-            throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
+        if ($perPage < 1 || $perPage > 100) {
+            throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
 
         $servers = QueryBuilder::for(Server::query())

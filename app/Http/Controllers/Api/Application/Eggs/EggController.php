@@ -6,13 +6,15 @@ use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggRequest;
+use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\StoreEggRequest;
-use Pterodactyl\Http\Requests\Api\Application\Eggs\UpdateEggRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\DeleteEggRequest;
+use Pterodactyl\Http\Requests\Api\Application\Eggs\UpdateEggRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class EggController extends ApplicationApiController
@@ -36,9 +38,17 @@ class EggController extends ApplicationApiController
      */
     public function index(GetEggsRequest $request, Nest $nest): array
     {
-        $eggs = $this->repository->findWhere([
-            ['nest_id', '=', $nest->id],
-        ]);
+        $perPage = $request->query('per_page', 0);
+        if ($perPage > 100) {
+            throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
+        }
+
+        $eggs = QueryBuilder::for(Egg::query())
+            ->allowedFilters(['id', 'name', 'author'])
+            ->allowedSorts(['id', 'name', 'author']);
+        if ($perPage > 0) {
+            $eggs = $eggs->paginate($perPage);
+        }
 
         return $this->fractal->collection($eggs)
             ->transformWith($this->getTransformer(EggTransformer::class))

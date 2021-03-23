@@ -11,7 +11,7 @@ use Pterodactyl\Services\Locations\LocationCreationService;
 use Pterodactyl\Services\Locations\LocationDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\LocationTransformer;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationsRequest;
@@ -51,10 +51,8 @@ class LocationController extends ApplicationApiController
     public function index(GetLocationsRequest $request): array
     {
         $perPage = $request->query('per_page', 10);
-        if ($perPage < 1) {
-            $perPage = 10;
-        } elseif ($perPage > 100) {
-            throw new BadRequestHttpException('"per_page" query parameter must be below 100.');
+        if ($perPage < 1 || $perPage > 100) {
+            throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
 
         $locations = QueryBuilder::for(Location::query())
