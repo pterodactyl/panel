@@ -42,7 +42,13 @@ export default (include: string[] = []) => {
     const { page } = useContext(Context);
 
     return useSWR<PaginatedResult<Nest>>([ 'nests', page ], async () => {
-        const { data } = await http.get('/api/application/nests', { params: { include: include.join(','), page } });
+        const { data } = await http.get('/api/application/nests', {
+            params: {
+                include: include.join(','),
+                per_page: 10,
+                page,
+            },
+        });
 
         return ({
             items: (data.data || []).map(rawDataToNest),
