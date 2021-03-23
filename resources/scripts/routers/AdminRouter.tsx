@@ -15,7 +15,7 @@ import NewDatabaseContainer from '@/components/admin/databases/NewDatabaseContai
 import DatabaseEditContainer from '@/components/admin/databases/DatabaseEditContainer';
 import NodesContainer from '@/components/admin/nodes/NodesContainer';
 import NewNodeContainer from '@/components/admin/nodes/NewNodeContainer';
-import NodeEditContainer from '@/components/admin/nodes/NodeEditContainer';
+import NodeRouter from '@/components/admin/nodes/NodeRouter';
 import LocationsContainer from '@/components/admin/locations/LocationsContainer';
 import LocationEditContainer from '@/components/admin/locations/LocationEditContainer';
 import ServersContainer from '@/components/admin/servers/ServersContainer';
@@ -226,7 +226,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route path={`${match.path}/nodes/new`} component={NewNodeContainer} exact/>
                         <Route
                             path={`${match.path}/nodes/:id`}
-                            component={NodeEditContainer}
+                            component={NodeRouter}
                         />
 
                         <Route path={`${match.path}/servers`} component={ServersContainer} exact/>

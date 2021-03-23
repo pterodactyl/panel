@@ -75,7 +75,7 @@ export const InformationContainer = ({ title, initialValues, children, onSubmit 
         >
             {
                 ({ isSubmitting, isValid }) => (
-                    <React.Fragment>
+                    <>
                         <AdminBox title={title} css={tw`relative`}>
                             <SpinnerOverlay visible={isSubmitting}/>
 
@@ -140,7 +140,7 @@ export const InformationContainer = ({ title, initialValues, children, onSubmit 
                                 </div>
                             </Form>
                         </AdminBox>
-                    </React.Fragment>
+                    </>
                 )
             }
         </Formik>

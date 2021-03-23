@@ -101,7 +101,8 @@ const NodesContainer = () => {
                                             <TableHeader name={'FQDN'}/>
                                             <TableHeader name={'Total Memory'}/>
                                             <TableHeader name={'Total Disk'}/>
-                                            <th css={tw`px-6 py-2`}/>
+                                            <TableHeader/>
+                                            <TableHeader/>
                                         </TableHead>
 
                                         <TableBody>
@@ -147,7 +148,7 @@ const NodesContainer = () => {
                                                         <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{bytesToHuman(megabytesToBytes(node.disk))}</td>
 
                                                         <td css={tw`px-6 whitespace-nowrap`}>
-                                                            { node.scheme === 'https' ?
+                                                            {node.scheme === 'https' ?
                                                                 <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
                                                                     Secure
                                                                 </span>
@@ -156,6 +157,13 @@ const NodesContainer = () => {
                                                                     Non-Secure
                                                                 </span>
                                                             }
+                                                        </td>
+
+                                                        <td css={tw`px-6 whitespace-nowrap`}>
+                                                            {/* TODO: Change color based off of online/offline status */}
+                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={[ tw`h-5 w-5`, node.scheme === 'https' ? tw`text-green-200` : tw`text-red-300` ]}>
+                                                                <path clipRule="evenodd" fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                                                            </svg>
                                                         </td>
                                                     </TableRow>
                                                 ))

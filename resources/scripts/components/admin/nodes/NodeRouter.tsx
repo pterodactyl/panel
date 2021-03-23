@@ -10,11 +10,9 @@ import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ApplicationStore } from '@/state';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
-import AdminBox from '@/components/admin/AdminBox';
-import NodeLimitContainer from '@/components/admin/nodes/NodeLimitContainer';
+import NodeAboutContainer from '@/components/admin/nodes/NodeAboutContainer';
 import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
 import NodeConfigurationContainer from '@/components/admin/nodes/NodeConfigurationContainer';
-import NodeListenContainer from '@/components/admin/nodes/NodeListenContainer';
 
 interface ctx {
     node: Node | undefined;
@@ -29,15 +27,7 @@ export const Context = createContextStore<ctx>({
     }),
 });
 
-const Code = ({ children }: { children: React.ReactNode }) => {
-    return (
-        <code css={tw`text-sm font-mono bg-neutral-900 rounded`} style={{ padding: '2px 6px' }}>
-            {children}
-        </code>
-    );
-};
-
-const NodeEditContainer = () => {
+const NodeRouter = () => {
     const location = useLocation();
     const match = useRouteMatch<{ id?: string }>();
 
@@ -116,27 +106,11 @@ const NodeEditContainer = () => {
 
             <Switch location={location}>
                 <Route path={`${match.path}`} exact>
-                    <AdminBox title={'Node Information'}>
-                        <p>Version <Code>1.3.1</Code></p>
-                    </AdminBox>
+                    <NodeAboutContainer/>
                 </Route>
 
                 <Route path={`${match.path}/settings`} exact>
-                    <div css={tw`flex flex-col lg:flex-row`}>
-                        <div css={tw`w-full lg:w-1/2 flex flex-col mr-0 lg:mr-2`}>
-                            <NodeSettingsContainer/>
-                        </div>
-
-                        <div css={tw`w-full lg:w-1/2 flex flex-col ml-0 lg:ml-2 mt-4 lg:mt-0`}>
-                            <div css={tw`flex w-full`}>
-                                <NodeListenContainer/>
-                            </div>
-
-                            <div css={tw`flex w-full mt-4`}>
-                                <NodeLimitContainer/>
-                            </div>
-                        </div>
-                    </div>
+                    <NodeSettingsContainer/>
                 </Route>
 
                 <Route path={`${match.path}/configuration`} exact>
@@ -158,7 +132,7 @@ const NodeEditContainer = () => {
 export default () => {
     return (
         <Context.Provider>
-            <NodeEditContainer/>
+            <NodeRouter/>
         </Context.Provider>
     );
 };

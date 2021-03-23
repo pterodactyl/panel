@@ -3,13 +3,13 @@ import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
 import { faCode, faDragon } from '@fortawesome/free-solid-svg-icons';
 import getNodeConfiguration from '@/api/admin/nodes/getNodeConfiguration';
-import { Context } from '@/components/admin/nodes/NodeEditContainer';
+import { Context } from '@/components/admin/nodes/NodeRouter';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { ApplicationStore } from '@/state';
 import { Actions, useStoreActions } from 'easy-peasy';
 
 export default () => {
-    const { clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const [ configuration, setConfiguration ] = useState('');
 
@@ -22,6 +22,8 @@ export default () => {
     }
 
     useEffect(() => {
+        clearFlashes('node');
+
         getNodeConfiguration(node.id)
             .then((configuration) => setConfiguration(configuration))
             .catch(error => {
@@ -31,7 +33,7 @@ export default () => {
     }, []);
 
     return (
-        <div>
+        <>
             <AdminBox title={'Configuration'} icon={faCode} css={tw`mb-4`}>
                 <div css={tw`relative`}>
                     <div css={tw`absolute top-0 right-0`}>
@@ -41,7 +43,7 @@ export default () => {
                             </svg>
                         </CopyOnClick>
                     </div>
-                    <pre css={tw`text-sm rounded font-mono bg-neutral-900 shadow-md p-4 overflow-x-auto`}>
+                    <pre css={tw`text-sm rounded font-mono bg-neutral-900 shadow-md px-4 py-3 overflow-x-auto`}>
                         {configuration}
                     </pre>
                 </div>
@@ -50,6 +52,6 @@ export default () => {
             <AdminBox title={'Auto Deploy'} icon={faDragon}>
                 Never&trade;
             </AdminBox>
-        </div>
+        </>
     );
 };
