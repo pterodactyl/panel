@@ -66,7 +66,7 @@ class UserController extends ApplicationApiController
         $users = QueryBuilder::for(User::query())
             ->allowedFilters(['email', 'uuid', 'username', 'external_id'])
             ->allowedSorts(['id', 'uuid'])
-            ->paginate(100);
+            ->paginate($request->query('per_page') ?? 50);
 
         return $this->fractal->collection($users)
             ->transformWith($this->getTransformer(UserTransformer::class))

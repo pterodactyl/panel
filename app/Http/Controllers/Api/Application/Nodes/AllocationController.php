@@ -43,7 +43,7 @@ class AllocationController extends ApplicationApiController
      */
     public function index(GetAllocationsRequest $request, Node $node): array
     {
-        $allocations = $node->allocations()->paginate(50);
+        $allocations = $node->allocations()->paginate($request->query('per_page') ?? 50);
 
         return $this->fractal->collection($allocations)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
@@ -53,6 +53,7 @@ class AllocationController extends ApplicationApiController
     /**
      * Store new allocations for a given node.
      *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
