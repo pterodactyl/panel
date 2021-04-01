@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import { useStoreState } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import SetupOAuthModal from "@/components/dashboard/forms/SetupOAuthModal";
+import SetupOAuthModal from '@/components/dashboard/forms/SetupOAuthModal';
+import tw from 'twin.macro';
+import Button from '@/components/elements/Button';
 
 export default () => {
-    const user = useStoreState((state: ApplicationStore) => state.user.data!);
     const [ visible, setVisible ] = useState(false);
 
     return (
         <div>
             {visible &&
             <SetupOAuthModal
-                appear={true}
+                appear
                 visible={visible}
                 onDismissed={() => setVisible(false)}
             />
@@ -19,13 +18,14 @@ export default () => {
             <p className={'text-sm'}>
                 Click the button below to setup your linked OAuth accounts
             </p>
-            <div className={'mt-6'}>
-                <button
+            <div css={tw`mt-6`}>
+                <Button
+                    color={'green'}
+                    isSecondary
                     onClick={() => setVisible(true)}
-                    className={'btn btn-green btn-secondary btn-sm'}
                 >
                     Begin Setup
-                </button>
+                </Button>
             </div>
         </div>
     );
