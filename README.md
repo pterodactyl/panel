@@ -21,6 +21,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | Company | About |
 | ------- | ----- |
 | [**WISP**](https://wisp.gg) | Extra features. |
+| [**MixmlHosting**](https://mixmlhosting.com) | MixmlHosting provides high quality Virtual Private Servers along with game servers, all at a affordable price. |
 | [**Bloom.host**](https://bloom.host) | Bloom.host offers dedicated core VPS and Minecraft hosting with Ryzen 9 processors. With owned-hardware, we offer truly unbeatable prices on high-performance hosting. |
 | [**MineStrator**](https://minestrator.com/) | Looking for a French highend hosting company for you minecraft server? More than 14,000 members on our discord, trust us. |
 | [**DedicatedMC**](https://dedicatedmc.io/) | DedicatedMC provides Raw Power hosting at affordable pricing, making sure to never compromise on your performance and giving you the best performance money can buy. |
