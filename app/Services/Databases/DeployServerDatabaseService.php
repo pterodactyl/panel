@@ -6,6 +6,7 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 
 class DeployServerDatabaseService
@@ -40,9 +41,20 @@ class DeployServerDatabaseService
             throw new NoSuitableDatabaseHostException();
         } else {
             $nodeHosts = $hosts->where('node_id', $server->node_id)->toBase();
-
-            if ($nodeHosts->isEmpty() && !config('pterodactyl.client_features.databases.allow_random')) {
-                throw new NoSuitableDatabaseHostException();
+            if ($nodeHosts->isEmpty()) {
+                /* Geting DataBase Host by Location */
+                $nodes = Node::query()->get()->toBase();
+                $serverNode = $nodes->where('id', $server->node_id)->toBase();
+                $nodesLocation = $nodes->where('location_id', $serverNode->first()->location_id)->toArray();
+                foreach ($nodesLocation as $node) {
+                    $nodeHosts = $hosts->where('node_id', $node['id'])->toBase();
+                    if (!$nodeHosts->isEmpty()) {
+                        break;
+                    }
+                }
+                if ($nodeHosts->isEmpty()) {
+                    throw new NoSuitableDatabaseHostException();
+                }
             }
         }
 
