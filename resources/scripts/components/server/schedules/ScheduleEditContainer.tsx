@@ -46,9 +46,9 @@ const ActivePill = ({ active }: { active: boolean }) => (
 );
 
 export default () => {
-    const params = useParams() as Params;
     const history = useHistory();
-    const state: State = useLocation().state;
+    const { state } = useLocation<State>();
+    const { id: scheduleId } = useParams<Params>();
 
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -61,20 +61,20 @@ export default () => {
     const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 
     useEffect(() => {
-        if (schedule?.id === Number(params.id)) {
+        if (schedule?.id === Number(scheduleId)) {
             setIsLoading(false);
             return;
         }
 
         clearFlashes('schedules');
-        getServerSchedule(uuid, Number(params.id))
+        getServerSchedule(uuid, Number(scheduleId))
             .then(schedule => appendSchedule(schedule))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ error, key: 'schedules' });
             })
             .then(() => setIsLoading(false));
-    }, [ params ]);
+    }, [ scheduleId ]);
 
     const toggleEditModal = useCallback(() => {
         setShowEditModal(s => !s);
