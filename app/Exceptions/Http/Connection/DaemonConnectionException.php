@@ -38,6 +38,15 @@ class DaemonConnectionException extends DisplayException
 
         if ($useStatusCode) {
             $this->statusCode = is_null($response) ? $this->statusCode : $response->getStatusCode();
+            // There are rare conditions where wings encounters a panic condition and crashes the
+            // request being made after content has already been sent over the wire. In these cases
+            // you can end up with a "successful" response code that is actual an error.
+            //
+            // Handle those better here since we shouldn't ever end up in this exception state and
+            // be returning a 2XX level response.
+            if ($this->statusCode < 400) {
+                $this->statusCode = Response::HTTP_BAD_GATEWAY;
+            }
         }
 
         if (is_null($response)) {
