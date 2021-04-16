@@ -58,6 +58,14 @@
                                 <td>{{ $server->name }}</td>
                             </tr>
                             <tr>
+                                <td>Server Description</td>
+                                @if($server->description != null)
+									<td>{{ str_limit($server->description) }}</td>
+                                @else
+                                    <td><span class="label label-default">Not Set</span></td>
+                                @endif
+                            </tr>
+                            <tr>
                                 <td>CPU Limit</td>
                                 <td>
                                     @if($server->cpu === 0)
