@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tw, { TwStyle } from 'twin.macro';
-import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer, faTag } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -65,6 +65,7 @@ const ServerDetailsBlock = () => {
     }, [ instance, connected ]);
 
     const name = ServerContext.useStoreState(state => state.server.data!.name);
+    const description = ServerContext.useStoreState(state => state.server.data!.description);
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
@@ -88,6 +89,11 @@ const ServerDetailsBlock = () => {
                 />
                 &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
             </p>
+            {!!description &&
+			<p css={tw`text-xs mt-2`}>
+                <FontAwesomeIcon icon={faTag} fixedWidth css={tw`mr-1`}/>&nbsp;{description}
+            </p>
+			}
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>
                     <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
