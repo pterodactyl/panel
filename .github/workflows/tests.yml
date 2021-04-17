@@ -31,7 +31,7 @@ jobs:
       matrix:
         php: [ 7.4, 8.0 ]
         database: [ mysql, mariadb ]
-    name: PHP ${{ matrix.php }}
+    name: "php-${{ matrix.php }} (engine: ${{ matrix.database }})"
     steps:
       - name: checkout
         uses: actions/checkout@v2
