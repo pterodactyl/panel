@@ -5,13 +5,13 @@ about: For reporting code or design bugs with the software. DO NOT REPORT APACHE
 
 DO NOT REPORT ISSUES CONFIGURING: SSL, PHP, APACHE, NGINX, YOUR MACHINE, SSH, SFTP, ETC. ON THIS GITHUB TRACKER.
 
-For assistance installing this software, as well as debugging issues with dependencies, please use our discord server: <https://discord.gg/pterodactyl>
+For assistance installing this software, as well as debugging issues with dependencies, please use our discord server: https://discord.gg/pterodactyl
 
-You MUST complete all of the below information when reporting a bug, failure to do so will result in closure of your issue. PLEASE stop spamming our tracker with "bugs" that are not related to this project.
+You MUST complete all of the below information when reporting a bug, failure to do so will result in the closure of your issue. PLEASE stop spamming our tracker with "bugs" that are not related to this project.
 
-To obtain logs for the panel and wings the below commands should help with the retrevial of them.
-Panel: ``` tail -n 100 /var/www/pterodactyl/storage/logs/laravel-$(date +%F).log | nc bin.ptdl.co 99 ```
-Wings: ``` sudo wings diagnostics ```
+To obtain logs for the panel and wings the below commands should help with the retrieval of them.
+Panel: tail -n 100 /var/www/pterodactyl/storage/logs/laravel-$(date +%F).log | nc bin.ptdl.co 99
+Wings: sudo wings diagnostics
 
 **STOP: READ FIRST, AND THEN DELETE THE ABOVE LINES**
 
