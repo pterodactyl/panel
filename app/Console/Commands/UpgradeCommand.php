@@ -14,7 +14,7 @@ class UpgradeCommand extends Command
 
     /** @var string */
     protected $signature = 'p:upgrade
-        {--user= : The user that PHP runs under. All files will be owned by this user.}
+        {--user= : The user (and group) that PHP runs under. All files will be owned by this user (and group).}
         {--url= : The specific archive to download.}
         {--release= : A specific Pterodactyl version to download from GitHub. Leave blank to use latest.}
         {--skip-download : If set no archive will be downloaded.}';
@@ -46,22 +46,26 @@ class UpgradeCommand extends Command
         }
 
         $user = 'www-data';
+        $group = 'www-data';
         if ($this->input->isInteractive()) {
             if (!$skipDownload) {
                 $skipDownload = !$this->confirm('Would you like to download and unpack the archive files for the latest version?', true);
             }
 
             if (is_null($this->option('user'))) {
-                $details = posix_getpwuid(fileowner('public'));
+                $user_details = posix_getpwuid(fileowner('public'));
                 $user = $details['name'] ?? 'www-data';
+                
+                $group_details = posix_getgrgid(filegroup('public'));
+                $group = $details['name'] ?? 'www-data';
 
-                if (!$this->confirm("Your webserver user has been detected as [{$user}]: is this correct?", true)) {
+                if (!$this->confirm("Your webserver user (and group) has been detected as [{$user}:{$group}]: is this correct?", true)) {
                     $user = $this->anticipate(
-                        'Please enter the name of the user running your webserver process. This varies from system to system, but is generally "www-data", "nginx", or "apache".',
+                        'Please enter the name of the user running your webserver process. This varies from system to system, but is generally "www-data:www-data", "nginx:nginx", or "apache:apache".',
                         [
-                            'www-data',
-                            'apache',
-                            'nginx',
+                            'www-data:www-data',
+                            'nginx:nginx',
+                            'apache:apache',
                         ]
                     );
                 }
@@ -136,9 +140,9 @@ class UpgradeCommand extends Command
             $this->call('migrate', ['--seed' => '', '--force' => '']);
         });
 
-        $this->withProgress($bar, function () use ($user) {
-            $this->line("\$upgrader> chown -R {$user}:{$user} *");
-            $process = Process::fromShellCommandline("chown -R {$user}:{$user} *", $this->getLaravel()->basePath());
+        $this->withProgress($bar, function () use ($user, $group) {
+            $this->line("\$upgrader> chown -R {$user}:{$group} *");
+            $process = Process::fromShellCommandline("chown -R {$user}:{$group} *", $this->getLaravel()->basePath());
             $process->setTimeout(10 * 60);
             $process->run(function ($type, $buffer) {
                 $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
