@@ -54,10 +54,10 @@ class UpgradeCommand extends Command
 
             if (is_null($this->option('user'))) {
                 $user_details = posix_getpwuid(fileowner('public'));
-                $user = $details['name'] ?? 'www-data';
+                $user = $user_details['name'] ?? 'www-data';
                 
                 $group_details = posix_getgrgid(filegroup('public'));
-                $group = $details['name'] ?? 'www-data';
+                $group = $group_details['name'] ?? 'www-data';
 
                 if (!$this->confirm("Your webserver user (and group) has been detected as [{$user}:{$group}]: is this correct?", true)) {
                     $user = $this->anticipate(
