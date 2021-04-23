@@ -23,9 +23,6 @@ class ServerController extends ClientApiController
 
     /**
      * ServerController constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\GetUserPermissionsService $permissionsService
-     * @param \Pterodactyl\Repositories\Eloquent\SubuserRepository $repository
      */
     public function __construct(GetUserPermissionsService $permissionsService, SubuserRepository $repository)
     {
@@ -38,10 +35,6 @@ class ServerController extends ClientApiController
     /**
      * Transform an individual server into a response that can be consumed by a
      * client using the API.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      */
     public function index(GetServerRequest $request, Server $server): array
     {

@@ -6,6 +6,7 @@ import Button from '@/components/elements/Button';
 import saveFileContents from '@/api/server/files/saveFileContents';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
+import { SocketEvent, SocketRequest } from '@/components/server/events';
 
 const EulaModalFeature = () => {
     const [ visible, setVisible ] = useState(false);
@@ -25,10 +26,10 @@ const EulaModalFeature = () => {
             }
         };
 
-        instance.addListener('console output', listener);
+        instance.addListener(SocketEvent.CONSOLE_OUTPUT, listener);
 
         return () => {
-            instance.removeListener('console output', listener);
+            instance.removeListener(SocketEvent.CONSOLE_OUTPUT, listener);
         };
     }, [ connected, instance, status ]);
 
@@ -39,7 +40,7 @@ const EulaModalFeature = () => {
         saveFileContents(uuid, 'eula.txt', 'eula=true')
             .then(() => {
                 if (status === 'offline' && instance) {
-                    instance.send('set state', 'restart');
+                    instance.send(SocketRequest.SET_STATE, 'restart');
                 }
 
                 setLoading(false);

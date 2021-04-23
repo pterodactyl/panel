@@ -75,15 +75,8 @@ class ServerCreationService
     /**
      * CreationService constructor.
      *
-     * @param \Pterodactyl\Services\Deployment\AllocationSelectionService $allocationSelectionService
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
-     * @param \Pterodactyl\Repositories\Eloquent\EggRepository $eggRepository
-     * @param \Pterodactyl\Services\Deployment\FindViableNodesService $findViableNodesService
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
      * @param \Pterodactyl\Services\Servers\ServerDeletionService $serverDeletionService
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerVariableRepository $serverVariableRepository
      * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
      */
     public function __construct(
@@ -115,10 +108,6 @@ class ServerCreationService
      * creation process. This function will attempt to set as many additional values
      * as possible given the input data. For example, if an allocation_id is passed with
      * no node_id the node_is will be picked from the allocation.
-     *
-     * @param array $data
-     * @param \Pterodactyl\Models\Objects\DeploymentObject|null $deployment
-     * @return \Pterodactyl\Models\Server
      *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -187,10 +176,6 @@ class ServerCreationService
     /**
      * Gets an allocation to use for automatic deployment.
      *
-     * @param array $data
-     * @param \Pterodactyl\Models\Objects\DeploymentObject $deployment
-     *
-     * @return \Pterodactyl\Models\Allocation
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
@@ -212,9 +197,6 @@ class ServerCreationService
     /**
      * Store the server in the database and return the model.
      *
-     * @param array $data
-     * @return \Pterodactyl\Models\Server
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     private function createModel(array $data): Server
@@ -229,8 +211,8 @@ class ServerCreationService
             'node_id' => Arr::get($data, 'node_id'),
             'name' => Arr::get($data, 'name'),
             'description' => Arr::get($data, 'description') ?? '',
+            'status' => Server::STATUS_INSTALLING,
             'skip_scripts' => Arr::get($data, 'skip_scripts') ?? isset($data['skip_scripts']),
-            'suspended' => false,
             'owner_id' => Arr::get($data, 'owner_id'),
             'memory' => Arr::get($data, 'memory'),
             'swap' => Arr::get($data, 'swap'),
@@ -254,9 +236,6 @@ class ServerCreationService
 
     /**
      * Configure the allocations assigned to this server.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $data
      */
     private function storeAssignedAllocations(Server $server, array $data)
     {
@@ -272,9 +251,6 @@ class ServerCreationService
 
     /**
      * Process environment variables passed for this server and store them in the database.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Illuminate\Support\Collection $variables
      */
     private function storeEggVariables(Server $server, Collection $variables)
     {
@@ -282,25 +258,23 @@ class ServerCreationService
             return [
                 'server_id' => $server->id,
                 'variable_id' => $result->id,
-                'variable_value' => $result->value,
+                'variable_value' => $result->value ?? '',
             ];
         })->toArray();
 
-        if (! empty($records)) {
+        if (!empty($records)) {
             $this->serverVariableRepository->insert($records);
         }
     }
 
     /**
      * Create a unique UUID and UUID-Short combo for a server.
-     *
-     * @return string
      */
     private function generateUniqueUuidCombo(): string
     {
         $uuid = Uuid::uuid4()->toString();
 
-        if (! $this->repository->isUniqueUuidCombo($uuid, substr($uuid, 0, 8))) {
+        if (!$this->repository->isUniqueUuidCombo($uuid, substr($uuid, 0, 8))) {
             return $this->generateUniqueUuidCombo();
         }
 

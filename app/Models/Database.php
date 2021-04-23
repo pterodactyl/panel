@@ -13,7 +13,6 @@ namespace Pterodactyl\Models;
  * @property int $max_connections
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property \Pterodactyl\Models\Server $server
  * @property \Pterodactyl\Models\DatabaseHost $host
  */
@@ -23,7 +22,7 @@ class Database extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'server_database';
+    public const RESOURCE_NAME = 'server_database';
 
     /**
      * The table associated with the model.

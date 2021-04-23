@@ -22,7 +22,7 @@ class EggFormRequest extends AdminFormRequest
             'name' => 'required|string|max:191',
             'description' => 'nullable|string',
             'docker_images' => 'required|string',
-            'file_denylist' => 'string',
+            'file_denylist' => 'array',
             'startup' => 'required|string',
             'config_from' => 'sometimes|bail|nullable|numeric',
             'config_stop' => 'required_without:config_from|nullable|string|max:191',
@@ -44,7 +44,7 @@ class EggFormRequest extends AdminFormRequest
     public function withValidator($validator)
     {
         $validator->sometimes('config_from', 'exists:eggs,id', function () {
-            return (int)$this->input('config_from') !== 0;
+            return (int) $this->input('config_from') !== 0;
         });
     }
 }

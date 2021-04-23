@@ -17,9 +17,6 @@ class StoreAllocationRequest extends ApplicationApiRequest
      */
     protected $permission = AdminAcl::WRITE;
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [

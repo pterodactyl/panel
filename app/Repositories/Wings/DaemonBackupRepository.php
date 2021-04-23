@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
-use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
@@ -20,7 +19,6 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Sets the backup adapter for this execution instance.
      *
-     * @param string $adapter
      * @return $this
      */
     public function setBackupAdapter(string $adapter)
@@ -32,9 +30,6 @@ class DaemonBackupRepository extends DaemonRepository
 
     /**
      * Tells the remote Daemon to begin generating a backup for the server.
-     *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @return \Psr\Http\Message\ResponseInterface
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
@@ -59,10 +54,33 @@ class DaemonBackupRepository extends DaemonRepository
     }
 
     /**
+     * Sends a request to Wings to begin restoring a backup for a server.
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function restore(Backup $backup, string $url = null, bool $truncate = false): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            return $this->getHttpClient()->post(
+                sprintf('/api/servers/%s/backup/%s/restore', $this->server->uuid, $backup->uuid),
+                [
+                    'json' => [
+                        'adapter' => $backup->disk,
+                        'truncate_directory' => $truncate,
+                        'download_url' => $url ?? '',
+                    ],
+                ]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
+
+    /**
      * Deletes a backup from the daemon.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @return \Psr\Http\Message\ResponseInterface
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function delete(Backup $backup): ResponseInterface

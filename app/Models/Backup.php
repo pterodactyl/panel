@@ -19,17 +19,16 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
  * @property \Carbon\CarbonImmutable|null $deleted_at
- *
  * @property \Pterodactyl\Models\Server $server
  */
 class Backup extends Model
 {
     use SoftDeletes;
 
-    const RESOURCE_NAME = 'backup';
+    public const RESOURCE_NAME = 'backup';
 
-    const ADAPTER_WINGS = 'wings';
-    const ADAPTER_AWS_S3 = 's3';
+    public const ADAPTER_WINGS = 'wings';
+    public const ADAPTER_AWS_S3 = 's3';
 
     /**
      * @var string

@@ -34,7 +34,6 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property bool $gravatar
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property string $name
  * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
@@ -51,14 +50,14 @@ class User extends Model implements
     use CanResetPassword;
     use Notifiable;
 
-    const USER_LEVEL_USER = 0;
-    const USER_LEVEL_ADMIN = 1;
+    public const USER_LEVEL_USER = 0;
+    public const USER_LEVEL_ADMIN = 1;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'user';
+    public const RESOURCE_NAME = 'user';
 
     /**
      * Level of servers to display when using access() on a user.
@@ -157,16 +156,14 @@ class User extends Model implements
     {
         $rules = parent::getRules();
 
-        $rules['language'][] = new In(array_keys((new self)->getAvailableLanguages()));
-        $rules['username'][] = new Username;
+        $rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
+        $rules['username'][] = new Username();
 
         return $rules;
     }
 
     /**
      * Return the user model in a format that can be passed over to Vue templates.
-     *
-     * @return array
      */
     public function toVueObject(): array
     {
@@ -185,8 +182,6 @@ class User extends Model implements
 
     /**
      * Store the username as a lowercase string.
-     *
-     * @param string $value
      */
     public function setUsernameAttribute(string $value)
     {

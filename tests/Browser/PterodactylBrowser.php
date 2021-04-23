@@ -11,8 +11,6 @@ class PterodactylBrowser extends Browser
     /**
      * Move the mouse to a specific location and then perform a left click action.
      *
-     * @param int $x
-     * @param int $y
      * @return $this
      */
     public function clickPosition(int $x, int $y)
@@ -26,6 +24,7 @@ class PterodactylBrowser extends Browser
      * Perform a case insensitive search for a string in the body.
      *
      * @param string $text
+     *
      * @return \Pterodactyl\Tests\Browser\PterodactylBrowser
      */
     public function assertSee($text)
@@ -38,6 +37,7 @@ class PterodactylBrowser extends Browser
      *
      * @param string $selector
      * @param string $text
+     *
      * @return \Pterodactyl\Tests\Browser\PterodactylBrowser
      */
     public function assertSeeIn($selector, $text)

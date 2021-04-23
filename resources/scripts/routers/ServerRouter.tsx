@@ -18,11 +18,9 @@ import UsersContainer from '@/components/server/users/UsersContainer';
 import Can from '@/components/elements/Can';
 import BackupContainer from '@/components/server/backups/BackupContainer';
 import Spinner from '@/components/elements/Spinner';
-import ServerError from '@/components/screens/ServerError';
+import ScreenBlock, { NotFound, ServerError } from '@/components/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
-import NotFound from '@/components/screens/NotFound';
 import { useStoreState } from 'easy-peasy';
-import ScreenBlock from '@/components/screens/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
 import InstallListener from '@/components/server/InstallListener';
@@ -31,17 +29,44 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import RequireServerPermission from '@/hoc/RequireServerPermission';
+import ServerInstallSvg from '@/assets/images/server_installing.svg';
+import ServerRestoreSvg from '@/assets/images/server_restore.svg';
+import ServerErrorSvg from '@/assets/images/server_error.svg';
+
+const ConflictStateRenderer = () => {
+    const status = ServerContext.useStoreState(state => state.server.data?.status || null);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data?.isTransferring || false);
+
+    return (
+        status === 'installing' || status === 'install_failed' ?
+            <ScreenBlock
+                title={'Running Installer'}
+                image={ServerInstallSvg}
+                message={'Your server should be ready soon, please try again in a few minutes.'}
+            />
+            :
+            status === 'suspended' ?
+                <ScreenBlock
+                    title={'Server Suspended'}
+                    image={ServerErrorSvg}
+                    message={'This server is suspended and cannot be accessed.'}
+                />
+                :
+                <ScreenBlock
+                    title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
+                    image={ServerRestoreSvg}
+                    message={isTransferring ? 'Your server is being transfered to a new node, please check back later.' : 'Your server is currently being restored from a backup, please check back in a few minutes.'}
+                />
+    );
+};
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ error, setError ] = useState('');
-    const [ installing, setInstalling ] = useState(false);
-    const [ transferring, setTransferring ] = useState(false);
 
     const id = ServerContext.useStoreState(state => state.server.data?.id);
     const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
-    const isInstalling = ServerContext.useStoreState(state => state.server.data?.isInstalling);
-    const isTransferring = ServerContext.useStoreState(state => state.server.data?.isTransferring);
+    const inConflictState = ServerContext.useStoreState(state => state.server.inConflictState);
     const serverId = ServerContext.useStoreState(state => state.server.data?.internalId);
     const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
@@ -51,30 +76,12 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
     }, []);
 
     useEffect(() => {
-        setInstalling(!!isInstalling);
-    }, [ isInstalling ]);
-
-    useEffect(() => {
-        setTransferring(!!isTransferring);
-    }, [ isTransferring ]);
-
-    useEffect(() => {
         setError('');
-        setInstalling(false);
-        setTransferring(false);
 
         getServer(match.params.id)
             .catch(error => {
-                if (error.response?.status === 409) {
-                    if (error.response.data?.errors[0]?.code === 'ServerTransferringException') {
-                        setTransferring(true);
-                    } else {
-                        setInstalling(true);
-                    }
-                } else {
-                    console.error(error);
-                    setError(httpErrorToHuman(error));
-                }
+                console.error(error);
+                setError(httpErrorToHuman(error));
             });
 
         return () => {
@@ -131,12 +138,8 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     <InstallListener/>
                     <TransferListener/>
                     <WebsocketHandler/>
-                    {((installing || transferring) && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
-                        <ScreenBlock
-                            title={installing ? 'Your server is installing.' : 'Your server is currently being transferred.'}
-                            image={'/assets/svgs/server_installing.svg'}
-                            message={'Please check back in a few minutes.'}
-                        />
+                    {(inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
+                        <ConflictStateRenderer/>
                         :
                         <ErrorBoundary>
                             <TransitionRouter>
@@ -144,22 +147,22 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
                                     <Route path={`${match.path}/files`} exact>
                                         <RequireServerPermission permissions={'file.*'}>
-                                            <FileManagerContainer />
+                                            <FileManagerContainer/>
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/files/:action(edit|new)`} exact>
                                         <SuspenseSpinner>
-                                            <FileEditContainer />
+                                            <FileEditContainer/>
                                         </SuspenseSpinner>
                                     </Route>
                                     <Route path={`${match.path}/databases`} exact>
                                         <RequireServerPermission permissions={'database.*'}>
-                                            <DatabasesContainer />
+                                            <DatabasesContainer/>
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/schedules`} exact>
                                         <RequireServerPermission permissions={'schedule.*'}>
-                                            <ScheduleContainer />
+                                            <ScheduleContainer/>
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/schedules/:id`} exact>
@@ -167,17 +170,17 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     </Route>
                                     <Route path={`${match.path}/users`} exact>
                                         <RequireServerPermission permissions={'user.*'}>
-                                            <UsersContainer />
+                                            <UsersContainer/>
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/backups`} exact>
                                         <RequireServerPermission permissions={'backup.*'}>
-                                            <BackupContainer />
+                                            <BackupContainer/>
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/network`} exact>
                                         <RequireServerPermission permissions={'allocation.*'}>
-                                            <NetworkContainer />
+                                            <NetworkContainer/>
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/startup`} component={StartupContainer} exact/>

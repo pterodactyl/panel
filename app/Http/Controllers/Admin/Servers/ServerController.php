@@ -25,9 +25,6 @@ class ServerController extends Controller
 
     /**
      * ServerController constructor.
-     *
-     * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
      */
     public function __construct(
         Factory $view,
@@ -41,7 +38,6 @@ class ServerController extends Controller
      * Returns all of the servers that exist on the system using a paginated result set. If
      * a query is passed along in the request it is also passed to the repository function.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request)
@@ -49,7 +45,7 @@ class ServerController extends Controller
         $servers = QueryBuilder::for(Server::query()->with('node', 'user', 'allocation'))
             ->allowedFilters([
                 AllowedFilter::exact('owner_id'),
-                AllowedFilter::custom('*', new AdminServerFilter),
+                AllowedFilter::custom('*', new AdminServerFilter()),
             ])
             ->paginate(config()->get('pterodactyl.paginate.admin.servers'));
 

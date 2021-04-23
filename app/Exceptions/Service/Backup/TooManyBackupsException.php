@@ -8,8 +8,6 @@ class TooManyBackupsException extends DisplayException
 {
     /**
      * TooManyBackupsException constructor.
-     *
-     * @param int $backupLimit
      */
     public function __construct(int $backupLimit)
     {

@@ -7,9 +7,8 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
-import { RouteComponentProps } from 'react-router';
 import MessageBox from '@/components/MessageBox';
-import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -27,27 +26,28 @@ const Container = styled.div`
     }
 `;
 
-export default ({ location: { state } }: RouteComponentProps) => {
-    const { t } = useTranslation('dashboard');
+export default () => {
+    const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
+
     return (
-        <PageContentBlock title={t('account_overview')}>
+        <PageContentBlock title={'Account Overview'}>
             {state?.twoFactorRedirect &&
-            <MessageBox title={t('2fa_required')} type={'error'}>
-                {t('2fa_required_text')}
+            <MessageBox title={'2-Factor Required'} type={'error'}>
+                Your account must have two-factor authentication enabled in order to continue.
             </MessageBox>
             }
             <Container css={[ tw`mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
-                <ContentBox title={t('update_password')} showFlashes={'account:password'}>
+                <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm/>
                 </ContentBox>
                 <ContentBox
                     css={tw`mt-8 md:mt-0 md:ml-8`}
-                    title={t('update_email')}
+                    title={'Update Email Address'}
                     showFlashes={'account:email'}
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={t('configure_2fa')}>
+                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure Two Factor'}>
                     <ConfigureTwoFactorForm/>
                 </ContentBox>
             </Container>

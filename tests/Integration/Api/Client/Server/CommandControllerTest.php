@@ -69,7 +69,7 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
         $this->repository->expects('setServer')->with(Mockery::on(function ($value) use ($server) {
             return $value->uuid === $server->uuid;
         }))->andReturnSelf();
-        $this->repository->expects('send')->with('say Test')->andReturn(new GuzzleResponse);
+        $this->repository->expects('send')->with('say Test')->andReturn(new GuzzleResponse());
 
         $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", [
             'command' => 'say Test',

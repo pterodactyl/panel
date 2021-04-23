@@ -13,7 +13,7 @@ import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
-import { useTranslation } from 'react-i18next';
+import { SocketEvent, SocketRequest } from '@/components/server/events';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -78,7 +78,6 @@ export default () => {
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [ historyIndex, setHistoryIndex ] = useState(-1);
-    const { t } = useTranslation('server');
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -88,12 +87,12 @@ export default () => {
         switch (status) {
             // Sent by either the source or target node if a failure occurs.
             case 'failure':
-                terminal.writeln(TERMINAL_PRELUDE + t('transfer_failed') + '\u001b[0m');
+                terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
                 return;
 
             // Sent by the source node whenever the server was archived successfully.
             case 'archive':
-                terminal.writeln(TERMINAL_PRELUDE + t('archive_successfully') + '\u001b[0m');
+                terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
         }
     };
 
@@ -102,7 +101,7 @@ export default () => {
     );
 
     const handlePowerChangeEvent = (state: string) => terminal.writeln(
-        TERMINAL_PRELUDE + t('server_marked', { state }) + '...\u001b[0m',
+        TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
     );
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -136,70 +135,67 @@ export default () => {
 
     useEffect(() => {
         if (connected && ref.current && !terminal.element) {
-            terminal.open(ref.current);
             terminal.loadAddon(fitAddon);
             terminal.loadAddon(searchAddon);
             terminal.loadAddon(searchBar);
             terminal.loadAddon(webLinksAddon);
+
+            terminal.open(ref.current);
             fitAddon.fit();
 
             // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-                // Ctrl + C (Copy)
-                if (e.ctrlKey && e.key === 'c') {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
                     document.execCommand('copy');
                     return false;
-                }
-
-                // Ctrl + F (Find)
-                if (e.ctrlKey && e.key === 'f') {
+                } else if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+                    e.preventDefault();
                     searchBar.show();
                     return false;
-                }
-
-                // Escape
-                if (e.key === 'Escape') {
+                } else if (e.key === 'Escape') {
                     searchBar.hidden();
                 }
-
                 return true;
             });
         }
     }, [ terminal, connected ]);
 
-    const fit = debounce(() => {
-        fitAddon.fit();
-    }, 100);
-
-    useEventListener('resize', () => fit());
+    useEventListener('resize', debounce(() => {
+        if (terminal.element) {
+            fitAddon.fit();
+        }
+    }, 100));
 
     useEffect(() => {
+        const listeners: Record<string, (s: string) => void> = {
+            [SocketEvent.STATUS]: handlePowerChangeEvent,
+            [SocketEvent.CONSOLE_OUTPUT]: handleConsoleOutput,
+            [SocketEvent.INSTALL_OUTPUT]: handleConsoleOutput,
+            [SocketEvent.TRANSFER_LOGS]: handleConsoleOutput,
+            [SocketEvent.TRANSFER_STATUS]: handleTransferStatus,
+            [SocketEvent.DAEMON_MESSAGE]: line => handleConsoleOutput(line, true),
+            [SocketEvent.DAEMON_ERROR]: handleDaemonErrorOutput,
+        };
+
         if (connected && instance) {
             // Do not clear the console if the server is being transferred.
             if (!isTransferring) {
                 terminal.clear();
             }
 
-            instance.addListener('status', handlePowerChangeEvent);
-            instance.addListener('console output', handleConsoleOutput);
-            instance.addListener('install output', handleConsoleOutput);
-            instance.addListener('transfer logs', handleConsoleOutput);
-            instance.addListener('transfer status', handleTransferStatus);
-            instance.addListener('daemon message', line => handleConsoleOutput(line, true));
-            instance.addListener('daemon error', handleDaemonErrorOutput);
-            instance.send('send logs');
+            Object.keys(listeners).forEach((key: string) => {
+                instance.addListener(key, listeners[key]);
+            });
+            instance.send(SocketRequest.SEND_LOGS);
         }
 
         return () => {
-            instance && instance.removeListener('status', handlePowerChangeEvent)
-                .removeListener('console output', handleConsoleOutput)
-                .removeListener('install output', handleConsoleOutput)
-                .removeListener('transfer logs', handleConsoleOutput)
-                .removeListener('transfer status', handleTransferStatus)
-                .removeListener('daemon message', line => handleConsoleOutput(line, true))
-                .removeListener('daemon error', handleDaemonErrorOutput);
+            if (instance) {
+                Object.keys(listeners).forEach((key: string) => {
+                    instance.removeListener(key, listeners[key]);
+                });
+            }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ connected, instance ]);
 
     return (
@@ -210,10 +206,7 @@ export default () => {
                     tw`rounded-t p-2 bg-black w-full`,
                     !canSendCommands && tw`rounded-b`,
                 ]}
-                style={{
-                    minHeight: '16rem',
-                    maxHeight: '32rem',
-                }}
+                style={{ minHeight: '16rem' }}
             >
                 <TerminalDiv id={'terminal'} ref={ref}/>
             </div>
@@ -223,8 +216,8 @@ export default () => {
                 <div css={tw`w-full`}>
                     <CommandInput
                         type={'text'}
-                        placeholder={t('type_a_command')}
-                        aria-label={t('console_command_input')}
+                        placeholder={'Type a command...'}
+                        aria-label={'Console command input.'}
                         disabled={!instance || !connected}
                         onKeyDown={handleCommandKeyDown}
                     />

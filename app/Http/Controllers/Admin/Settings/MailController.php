@@ -47,12 +47,6 @@ class MailController extends Controller
 
     /**
      * MailController constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Illuminate\Contracts\Console\Kernel $kernel
-     * @param \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface $settings
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -71,8 +65,6 @@ class MailController extends Controller
     /**
      * Render UI for editing mail settings. This UI should only display if
      * the server is configured to send mail using SMTP.
-     *
-     * @return \Illuminate\View\View
      */
     public function index(): View
     {
@@ -83,9 +75,6 @@ class MailController extends Controller
 
     /**
      * Handle request to update SMTP mail settings.
-     *
-     * @param \Pterodactyl\Http\Requests\Admin\Settings\MailSettingsFormRequest $request
-     * @return \Illuminate\Http\Response
      *
      * @throws DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -103,7 +92,7 @@ class MailController extends Controller
         }
 
         foreach ($values as $key => $value) {
-            if (in_array($key, SettingsServiceProvider::getEncryptedKeys()) && ! empty($value)) {
+            if (in_array($key, SettingsServiceProvider::getEncryptedKeys()) && !empty($value)) {
                 $value = $this->encrypter->encrypt($value);
             }
 
@@ -117,9 +106,6 @@ class MailController extends Controller
 
     /**
      * Submit a request to send a test mail message.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\Response
      */
     public function test(Request $request): Response
     {

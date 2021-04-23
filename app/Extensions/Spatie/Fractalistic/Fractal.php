@@ -22,7 +22,7 @@ class Fractal extends SpatieFractal
     {
         // Set the serializer by default.
         if (is_null($this->serializer)) {
-            $this->serializer = new PterodactylSerializer;
+            $this->serializer = new PterodactylSerializer();
         }
 
         // Automatically set the paginator on the response object if the

@@ -10,7 +10,6 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useTranslation } from 'react-i18next';
 
 interface Values {
     code: string;
@@ -20,7 +19,6 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
     const [ token, setToken ] = useState('');
     const [ loading, setLoading ] = useState(true);
     const [ recoveryTokens, setRecoveryTokens ] = useState<string[]>([]);
-    const { t } = useTranslation('dashboard');
 
     const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
     const { clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
@@ -61,8 +59,8 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
             initialValues={{ code: '' }}
             validationSchema={object().shape({
                 code: string()
-                    .required(t('need_authentication_code'))
-                    .matches(/^(\d){6}$/, t('auth_code_digits')),
+                    .required('You must provide an authentication code to continue.')
+                    .matches(/^(\d){6}$/, 'Authenticator code must be 6 digits.'),
             })}
         >
             {({ isSubmitting }) => (
@@ -77,19 +75,22 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
                 >
                     {recoveryTokens.length > 0 ?
                         <>
-                            <h2 css={tw`text-2xl mb-4`}>{t('2fa_enabled')}</h2>
+                            <h2 css={tw`text-2xl mb-4`}>Two-factor authentication enabled</h2>
                             <p css={tw`text-neutral-300`}>
-                                {t('2fa_enabled_text1')}
+                                Two-factor authentication has been enabled on your account. Should you loose access to
+                                this device you&apos;ll need to use one of the codes displayed below in order to access your
+                                account.
                             </p>
                             <p css={tw`text-neutral-300 mt-4`}>
-                                <strong>{t('2fa_enabled_text2')}</strong> {t('2fa_enabled_text3')}
+                                <strong>These codes will not be displayed again.</strong> Please take note of them now
+                                by storing them in a secure repository such as a password manager.
                             </p>
                             <pre css={tw`text-sm mt-4 rounded font-mono bg-neutral-900 p-4`}>
                                 {recoveryTokens.map(token => <code key={token} css={tw`block mb-1`}>{token}</code>)}
                             </pre>
                             <div css={tw`text-right`}>
                                 <Button css={tw`mt-6`} onClick={dismiss}>
-                                    {t('close')}
+                                    Close
                                 </Button>
                             </div>
                         </>
@@ -119,14 +120,14 @@ export default ({ onDismissed, ...props }: RequiredModalProps) => {
                                             id={'code'}
                                             name={'code'}
                                             type={'text'}
-                                            title={t('2fa_code')}
-                                            description={t('2fa_code_text')}
+                                            title={'Code From Authenticator'}
+                                            description={'Enter the code from your authenticator device after scanning the QR image.'}
                                             autoFocus={!loading}
                                         />
                                     </div>
                                     <div css={tw`mt-6 md:mt-0 text-right`}>
                                         <Button>
-                                            {t('setup')}
+                                            Setup
                                         </Button>
                                     </div>
                                 </div>

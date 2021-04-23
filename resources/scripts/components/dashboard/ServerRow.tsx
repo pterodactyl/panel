@@ -10,7 +10,6 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
 import styled from 'styled-components/macro';
 import isEqual from 'react-fast-compare';
-import { useTranslation } from 'react-i18next';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
@@ -42,17 +41,16 @@ const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | unde
 
 export default ({ server, className }: { server: Server; className?: string }) => {
     const interval = useRef<number>(null);
-    const [ isSuspended, setIsSuspended ] = useState(server.isSuspended);
+    const [ isSuspended, setIsSuspended ] = useState(server.status === 'suspended');
     const [ stats, setStats ] = useState<ServerStats | null>(null);
-    const { t } = useTranslation('dashboard');
 
     const getStats = () => getServerResourceUsage(server.uuid)
         .then(data => setStats(data))
         .catch(error => console.error(error));
 
     useEffect(() => {
-        setIsSuspended(stats?.isSuspended || server.isSuspended);
-    }, [ stats?.isSuspended, server.isSuspended ]);
+        setIsSuspended(stats?.isSuspended || server.status === 'suspended');
+    }, [ stats?.isSuspended, server.status ]);
 
     useEffect(() => {
         // Don't waste a HTTP request if there is nothing important to show to the user because
@@ -61,7 +59,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
 
         getStats().then(() => {
             // @ts-ignore
-            interval.current = setInterval(() => getStats(), 20000);
+            interval.current = setInterval(() => getStats(), 30000);
         });
 
         return () => {
@@ -76,8 +74,8 @@ export default ({ server, className }: { server: Server; className?: string }) =
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
-    const diskLimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : t('unlimited');
-    const memoryLimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : t('unlimited');
+    const diskLimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : 'Unlimited';
+    const memoryLimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : 'Unlimited';
 
     return (
         <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
@@ -109,25 +107,27 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     isSuspended ?
                         <div css={tw`flex-1 text-center`}>
                             <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
-                                {server.isSuspended ? 'Suspended' : 'Connection Error'}
+                                {server.status === 'suspended' ? 'Suspended' : 'Connection Error'}
                             </span>
                         </div>
                         :
-                        server.isInstalling ?
+                        (server.isTransferring || server.status) ?
                             <div css={tw`flex-1 text-center`}>
                                 <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
-                                    {t('installing')}
+                                    {server.isTransferring ?
+                                        'Transferring'
+                                        :
+                                        server.status === 'installing' ? 'Installing' : (
+                                            server.status === 'restoring_backup' ?
+                                                'Restoring Backup'
+                                                :
+                                                'Unavailable'
+                                        )
+                                    }
                                 </span>
                             </div>
                             :
-                            server.isTransferring ?
-                                <div css={tw`flex-1 text-center`}>
-                                    <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
-                                        Transferring
-                                    </span>
-                                </div>
-                                :
-                                <Spinner size={'small'}/>
+                            <Spinner size={'small'}/>
                     :
                     <React.Fragment>
                         <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>
@@ -143,7 +143,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>{t('of')} {memoryLimit}</p>
+                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memoryLimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
@@ -152,7 +152,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </IconDescription>
                             </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>{t('of')} {diskLimit}</p>
+                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {diskLimit}</p>
                         </div>
                     </React.Fragment>
                 }

@@ -9,8 +9,6 @@ class SendCommandRequest extends ClientApiRequest
 {
     /**
      * Determine if the API user has permission to perform this action.
-     *
-     * @return string
      */
     public function permission(): string
     {
@@ -19,8 +17,6 @@ class SendCommandRequest extends ClientApiRequest
 
     /**
      * Rules to validate this request against.
-     *
-     * @return array
      */
     public function rules(): array
     {

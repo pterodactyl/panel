@@ -2,19 +2,21 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
-use Carbon\Carbon;
 use ReflectionClass;
-use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
+use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Tests\Integration\TestResponse;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
@@ -25,6 +27,9 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function tearDown(): void
     {
+        Database::query()->forceDelete();
+        DatabaseHost::query()->forceDelete();
+        Backup::query()->forceDelete();
         Server::query()->forceDelete();
         Node::query()->forceDelete();
         Location::query()->forceDelete();
@@ -34,14 +39,17 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
     }
 
     /**
-     * Setup tests and ensure all of the times are always the same.
+     * Override the default createTestResponse from Illuminate so that we can
+     * just dump 500-level errors to the screen in the tests without having
+     * to keep re-assigning variables.
+     *
+     * @param \Illuminate\Http\Response $response
+     *
+     * @return \Illuminate\Testing\TestResponse
      */
-    public function setUp(): void
+    protected function createTestResponse($response)
     {
-        parent::setUp();
-
-        Carbon::setTestNow(Carbon::now());
-        CarbonImmutable::setTestNow(Carbon::now());
+        return TestResponse::fromBaseResponse($response);
     }
 
     /**
@@ -49,7 +57,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      *
      * @param mixed $model
      * @param string|null $append
-     * @return string
      */
     protected function link($model, $append = null): string
     {
@@ -79,17 +86,17 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * is assumed that the user is actually a subuser of the server.
      *
      * @param string[] $permissions
-     * @return array
      */
     protected function generateTestAccount(array $permissions = []): array
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         if (empty($permissions)) {
             return [$user, $this->createServerModel(['user_id' => $user->id])];
         }
 
+        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->createServerModel();
 
         Subuser::query()->create([
@@ -105,7 +112,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * Asserts that the data passed through matches the output of the data from the transformer. This
      * will remove the "relationships" key when performing the comparison.
      *
-     * @param array $data
      * @param \Pterodactyl\Models\Model|\Illuminate\Database\Eloquent\Model $model
      */
     protected function assertJsonTransformedWith(array $data, $model)
@@ -113,7 +119,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
         $reflect = new ReflectionClass($model);
         $transformer = sprintf('\\Pterodactyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
 
-        $transformer = new $transformer;
+        $transformer = new $transformer();
         $this->assertInstanceOf(BaseClientTransformer::class, $transformer);
 
         $this->assertSame(

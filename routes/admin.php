@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Middleware\Admin\Servers\ServerInstalled;
 
 Route::get('/', 'BaseController@index')->name('admin.index');
-Route::get('/statistics', 'StatisticsController@index')->name('admin.statistics');
 
 /*
 |--------------------------------------------------------------------------

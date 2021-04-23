@@ -20,9 +20,6 @@ class SessionRepository extends EloquentRepository implements SessionRepositoryI
 
     /**
      * Return all of the active sessions for a user.
-     *
-     * @param int $user
-     * @return \Illuminate\Support\Collection
      */
     public function getUserSessions(int $user): Collection
     {
@@ -32,8 +29,6 @@ class SessionRepository extends EloquentRepository implements SessionRepositoryI
     /**
      * Delete a session for a given user.
      *
-     * @param int $user
-     * @param string $session
      * @return int|null
      */
     public function deleteUserSession(int $user, string $session)

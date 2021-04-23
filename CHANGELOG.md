@@ -3,6 +3,59 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.3.2
+### Fixed
+* Fixes self-upgrade incorrectly executing the command to un-tar downloaded archives.
+* Fixes the checkbox to delete all files when restoring a backup not actually passing that along in the API call. Files will now properly be deleted when restoring if selected.
+* Fixes some keybindings not working correctly in the server console on Windows machines.
+* Fixes mobile UI incorrectly squishing the Docker image selector on the server settings page.
+* Fixes recovery tokens not having a `created_at` value set on them properly when they are created.
+* Fixes flawed migration that would not correctly set the month value into schedule crons.
+* Fixes incorrect mounting for Docker compose file that would cause error logs to be missing.
+
+### Changed
+* Server resource lookups are now cached on the Panel for 20 seconds at a time to reduce the load from multiple clients requesting the same server's stats.
+* Bungeecord egg no longer force-enables the query listener.
+* Adds page to the dashboard URL to allow easy loading of a specific pagination page rather than resetting back to the first page when refreshing.
+* All application API endpoints now correctly support the `?per_page=N` query parameter to specify how many resources to return at once.
+
+## v1.3.1
+### Fixed
+* Fixes the Rust egg not properly seeding during the upgrade & installation process.
+* Fixes backups not being downloadable via the frontend.
+* Fixes backup listing showing the wrong number of existing backups based on the current page you're on.
+
+## v1.3.0
+### Fixed
+* Fixes administrator "Other Servers" toggle being persisted wrongly when signing out and signing into a non-administrator account on the server dashboard.
+* Fixes composer failing to run properly in local environments where there is no database connection available once configured.
+* Fixes SQL exception caused by the Panel attempting to store null values in the database.
+* Fixes validation errors caused by improper defaults when trying to edit system settings in the admin area.
+* Fixes console overflow when using smaller-than-default font sizes in Firefox.
+* Fixes console text input field having a white background when manually building new assets from the release build due to a missing `babel-macros` definition file.
+* Fixes database improperly using a signed `smallint` field rather than an unsigned field which restricted SFTP ports to 32767 or less.
+* Fixes server console resize handler to no longer encounter an exception at random that breaks the entire UI.
+* Fixes unhandled error caused by entering an invalid IP address or FQDN when creating a new node allocation.
+* Fixes unhandled error when Wings would fetch a server configuration from the Panel that uses an Egg with invalid JSON data for the configuration fields.
+* Fixes email not being sent to a user when their server is done installing.
+
+### Added
+* Adds support for automatically copying SFTP connection details when clicking into the text field.
+* Messaging about a node not having any allocations available for deployment has been adjusted to be more understandable by users.
+* Adds automated self-upgrade process for Pterodactyl Panel once this version is installed on servers. This allows users to update by using a single command.
+* Adds support for specifying a month when creating or modifying a server schedule.
+* Adds support for restoring backups (including those in S3 buckets) to a server and optionally deleting all existing files when doing so.
+* Adds underlying support for audit logging on servers. Currently this is only used by some internal functionality but will be slowly expanded as time permits to allow more robust logging.
+* Adds logic to automatically reset failed server states when Wings is rebooted. This will kick servers out of "installing" and "restoring from backup" states automatically.
+
+### Changed
+* Updated to `Laravel 8` and bumped minimum PHP version from `7.3` to `7.4` with PHP `8.0` being the recommended.
+* Server state is now stored in a single `status` column within the database rather than multiple different `tinyint` columns.
+
+## v1.2.2
+### Fixed
+* **[security]** Fixes authentication bypass allowing a user to take control of specific server actions such as executing schedules, rotating database passwords, and viewing or deleting a backup.
+
 ## v1.2.1
 ### Fixed
 * Fixes URL-encoding of filenames when working in the filemanager to fix issues when moving, renaming, or deleting files.

@@ -27,9 +27,6 @@ class NestDeletionService
 
     /**
      * NestDeletionService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $serverRepository
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(
         ServerRepositoryInterface $serverRepository,
@@ -41,9 +38,6 @@ class NestDeletionService
 
     /**
      * Delete a nest from the system only if there are no servers attached to it.
-     *
-     * @param int $nest
-     * @return int
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */

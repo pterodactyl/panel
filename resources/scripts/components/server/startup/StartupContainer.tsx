@@ -5,7 +5,7 @@ import VariableBox from '@/components/server/startup/VariableBox';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import getServerStartup from '@/api/swr/getServerStartup';
 import Spinner from '@/components/elements/Spinner';
-import ServerError from '@/components/screens/ServerError';
+import { ServerError } from '@/components/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
@@ -78,7 +78,7 @@ const StartupContainer = () => {
                 />
             :
             <ServerContentBlock title={'Startup Settings'} showFlashKey={'startup:image'}>
-                <div css={tw`flex`}>
+                <div css={tw`md:flex`}>
                     <TitledGreyBox title={'Startup Command'} css={tw`flex-1`}>
                         <div css={tw`px-1 py-2`}>
                             <p css={tw`font-mono bg-neutral-900 rounded py-2 px-4`}>
@@ -86,7 +86,7 @@ const StartupContainer = () => {
                             </p>
                         </div>
                     </TitledGreyBox>
-                    <TitledGreyBox title={'Docker Image'} css={tw`flex-1 lg:flex-none lg:w-1/3 ml-10`}>
+                    <TitledGreyBox title={'Docker Image'} css={tw`flex-1 lg:flex-none lg:w-1/3 mt-8 md:mt-0 md:ml-10`}>
                         {data.dockerImages.length > 1 && !isCustomImage ?
                             <>
                                 <InputSpinner visible={loading}>

@@ -13,7 +13,7 @@ class AddArkServiceOptionFixed extends Migration
             $service = DB::table('services')->select('id')->where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('name', 'Source Engine')->first();
 
             // No SRCDS Service, Skipping
-            if (! $service) {
+            if (!$service) {
                 return;
             }
 

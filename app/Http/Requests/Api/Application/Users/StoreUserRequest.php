@@ -20,9 +20,6 @@ class StoreUserRequest extends ApplicationApiRequest
 
     /**
      * Return the validation rules for this request.
-     *
-     * @param array|null $rules
-     * @return array
      */
     public function rules(array $rules = null): array
     {

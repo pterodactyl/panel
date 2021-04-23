@@ -15,9 +15,6 @@ class StoreBackupRequest extends ClientApiRequest
         return Permission::ACTION_BACKUP_CREATE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [

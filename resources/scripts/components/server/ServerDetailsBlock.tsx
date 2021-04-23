@@ -6,7 +6,7 @@ import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import { useTranslation } from 'react-i18next';
+import { SocketEvent, SocketRequest } from '@/components/server/events';
 
 interface Stats {
     memory: number;
@@ -35,7 +35,6 @@ const ServerDetailsBlock = () => {
     const status = ServerContext.useStoreState(state => state.status.value);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
     const instance = ServerContext.useStoreState(state => state.socket.instance);
-    const { t } = useTranslation('server');
 
     const statsListener = (data: string) => {
         let stats: any = {};
@@ -57,11 +56,11 @@ const ServerDetailsBlock = () => {
             return;
         }
 
-        instance.addListener('stats', statsListener);
-        instance.send('send stats');
+        instance.addListener(SocketEvent.STATS, statsListener);
+        instance.send(SocketRequest.SEND_STATS);
 
         return () => {
-            instance.removeListener('stats', statsListener);
+            instance.removeListener(SocketEvent.STATS, statsListener);
         };
     }, [ instance, connected ]);
 
@@ -73,8 +72,8 @@ const ServerDetailsBlock = () => {
         allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
     )).toString();
 
-    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : t('unlimited');
-    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : t('unlimited');
+    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
+    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
@@ -87,7 +86,7 @@ const ServerDetailsBlock = () => {
                         statusToColor(status, isInstalling || isTransferring),
                     ]}
                 />
-                &nbsp;{!status ? t('connecting') : (isInstalling ? t('installing') : (isTransferring) ? t('transferring') : status)}
+                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>

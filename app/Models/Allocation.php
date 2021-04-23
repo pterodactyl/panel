@@ -12,10 +12,8 @@ namespace Pterodactyl\Models;
  * @property string|null $notes
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
- *
  * @property string $alias
  * @property bool $has_alias
- *
  * @property \Pterodactyl\Models\Server|null $server
  * @property \Pterodactyl\Models\Node $node
  */
@@ -25,7 +23,7 @@ class Allocation extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'allocation';
+    public const RESOURCE_NAME = 'allocation';
 
     /**
      * The table associated with the model.
@@ -78,6 +76,7 @@ class Allocation extends Model
      * Accessor to automatically provide the IP alias if defined.
      *
      * @param string|null $value
+     *
      * @return string
      */
     public function getAliasAttribute($value)
@@ -89,11 +88,12 @@ class Allocation extends Model
      * Accessor to quickly determine if this allocation has an alias.
      *
      * @param string|null $value
+     *
      * @return bool
      */
     public function getHasAliasAttribute($value)
     {
-        return ! is_null($this->ip_alias);
+        return !is_null($this->ip_alias);
     }
 
     /**

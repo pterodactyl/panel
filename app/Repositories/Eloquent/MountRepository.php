@@ -22,8 +22,6 @@ class MountRepository extends EloquentRepository
 
     /**
      * Return mounts with a count of eggs, nodes, and servers attached to it.
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getAllWithDetails(): Collection
     {
@@ -33,7 +31,6 @@ class MountRepository extends EloquentRepository
     /**
      * Return all of the mounts and their respective relations.
      *
-     * @param string $id
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -43,15 +40,12 @@ class MountRepository extends EloquentRepository
         try {
             return $this->getBuilder()->with('eggs', 'nodes')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
-            throw new RecordNotFoundException;
+            throw new RecordNotFoundException();
         }
     }
 
     /**
      * Return mounts available to a server (ignoring if they are or are not mounted).
-     *
-     * @param Server $server
-     * @return \Illuminate\Support\Collection
      */
     public function getMountListForServer(Server $server): Collection
     {

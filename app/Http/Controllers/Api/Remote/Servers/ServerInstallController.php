@@ -4,10 +4,13 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
+use Pterodactyl\Events\Server\Installed as ServerInstalled;
+use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 
 class ServerInstallController extends Controller
 {
@@ -17,20 +20,22 @@ class ServerInstallController extends Controller
     private $repository;
 
     /**
-     * ServerInstallController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $repository
+     * @var \Illuminate\Contracts\Events\Dispatcher
      */
-    public function __construct(ServerRepository $repository)
+    private $eventDispatcher;
+
+    /**
+     * ServerInstallController constructor.
+     */
+    public function __construct(ServerRepository $repository, EventDispatcher $eventDispatcher)
     {
         $this->repository = $repository;
+        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
      * Returns installation information for a server.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -50,8 +55,6 @@ class ServerInstallController extends Controller
     /**
      * Updates the installation state of a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest $request
-     * @param string $uuid
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
@@ -61,10 +64,18 @@ class ServerInstallController extends Controller
     {
         $server = $this->repository->getByUuid($uuid);
 
-        $this->repository->update($server->id, [
-            'installed' => (string) $request->input('successful') === '1' ? 1 : 2,
-        ], true, true);
+        $status = $request->boolean('successful') ? null : Server::STATUS_INSTALL_FAILED;
+        if ($server->status === Server::STATUS_SUSPENDED) {
+            $status = Server::STATUS_SUSPENDED;
+        }
 
-        return JsonResponse::create([], Response::HTTP_NO_CONTENT);
+        $this->repository->update($server->id, ['status' => $status], true, true);
+
+        // If the server successfully installed, fire installed event.
+        if ($status === null) {
+            $this->eventDispatcher->dispatch(new ServerInstalled($server));
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }

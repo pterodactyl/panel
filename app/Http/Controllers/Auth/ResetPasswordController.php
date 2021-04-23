@@ -47,10 +47,6 @@ class ResetPasswordController extends Controller
 
     /**
      * ResetPasswordController constructor.
-     *
-     * @param \Illuminate\Contracts\Events\Dispatcher $dispatcher
-     * @param \Illuminate\Contracts\Hashing\Hasher $hasher
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $userRepository
      */
     public function __construct(Dispatcher $dispatcher, Hasher $hasher, UserRepositoryInterface $userRepository)
     {
@@ -62,9 +58,6 @@ class ResetPasswordController extends Controller
     /**
      * Reset the given user's password.
      *
-     * @param \Pterodactyl\Http\Requests\Auth\ResetPasswordRequest $request
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function __invoke(ResetPasswordRequest $request): JsonResponse
@@ -73,7 +66,8 @@ class ResetPasswordController extends Controller
         // will update the password on an actual user model and persist it to the
         // database. Otherwise we will parse the error and return the response.
         $response = $this->broker()->reset(
-            $this->credentials($request), function ($user, $password) {
+            $this->credentials($request),
+            function ($user, $password) {
                 $this->resetPassword($user, $password);
             }
         );
@@ -110,7 +104,7 @@ class ResetPasswordController extends Controller
 
         // If the user is not using 2FA log them in, otherwise skip this step and force a
         // fresh login where they'll be prompted to enter a token.
-        if (! $user->use_totp) {
+        if (!$user->use_totp) {
             $this->guard()->login($user);
         }
 
@@ -119,8 +113,6 @@ class ResetPasswordController extends Controller
 
     /**
      * Send a successful password reset response back to the callee.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     protected function sendResetResponse(): JsonResponse
     {

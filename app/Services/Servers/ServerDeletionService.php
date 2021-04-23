@@ -35,10 +35,6 @@ class ServerDeletionService
 
     /**
      * DeletionService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -54,6 +50,7 @@ class ServerDeletionService
      * Set if the server should be forcibly deleted from the panel (ignoring daemon errors) or not.
      *
      * @param bool $bool
+     *
      * @return $this
      */
     public function withForce($bool = true)
@@ -65,8 +62,6 @@ class ServerDeletionService
 
     /**
      * Delete a server from the panel and remove any associated databases from hosts.
-     *
-     * @param \Pterodactyl\Models\Server $server
      *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -80,7 +75,7 @@ class ServerDeletionService
             // go ahead and bail out. We specifically ignore a 404 since that can be assumed
             // to be a safe error, meaning the server doesn't exist at all on Wings so there
             // is no reason we need to bail out from that.
-            if (! $this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
+            if (!$this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
                 throw $exception;
             }
 

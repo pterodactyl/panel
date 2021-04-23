@@ -9,7 +9,7 @@ import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
 import PowerControls from '@/components/server/PowerControls';
 import { EulaModalFeature } from '@feature/index';
-import { useTranslation } from 'react-i18next';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -19,7 +19,6 @@ const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/c
 const ServerConsole = () => {
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const { t } = useTranslation('server');
     const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
 
     return (
@@ -30,7 +29,8 @@ const ServerConsole = () => {
                     <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                         <ContentContainer>
                             <p css={tw`text-sm text-yellow-900`}>
-                                {t('currently_running_installation_process')}
+                                This server is currently running its installation process and most actions are
+                                unavailable.
                             </p>
                         </ContentContainer>
                     </div>
@@ -39,7 +39,8 @@ const ServerConsole = () => {
                         <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                             <ContentContainer>
                                 <p css={tw`text-sm text-yellow-900`}>
-                                    {t('currently_running_transfer_process')}
+                                    This server is currently being transferred to another node and all actions
+                                    are unavailable.
                                 </p>
                             </ContentContainer>
                         </div>
@@ -51,7 +52,9 @@ const ServerConsole = () => {
             </div>
             <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
                 <SuspenseSpinner>
-                    <ChunkedConsole/>
+                    <ErrorBoundary>
+                        <ChunkedConsole/>
+                    </ErrorBoundary>
                     <ChunkedStatGraphs/>
                 </SuspenseSpinner>
                 {eggFeatures.includes('eula') &&

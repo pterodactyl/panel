@@ -15,9 +15,6 @@ class EnvironmentService
     /**
      * Dynamically configure additional environment variables to be assigned
      * with a specific server.
-     *
-     * @param string $key
-     * @param callable $closure
      */
     public function setEnvironmentKey(string $key, callable $closure)
     {
@@ -26,8 +23,6 @@ class EnvironmentService
 
     /**
      * Return the dynamically added additional keys.
-     *
-     * @return array
      */
     public function getEnvironmentKeys(): array
     {
@@ -37,9 +32,6 @@ class EnvironmentService
     /**
      * Take all of the environment variables configured for this server and return
      * them in an easy to process format.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      */
     public function handle(Server $server): array
     {
@@ -57,7 +49,8 @@ class EnvironmentService
         // Process variables set in the configuration file.
         foreach (config('pterodactyl.environment_variables', []) as $key => $object) {
             $variables->put(
-                $key, is_callable($object) ? call_user_func($object, $server) : object_get($server, $object)
+                $key,
+                is_callable($object) ? call_user_func($object, $server) : object_get($server, $object)
             );
         }
 
@@ -71,8 +64,6 @@ class EnvironmentService
 
     /**
      * Return a mapping of Panel default environment variables.
-     *
-     * @return array
      */
     private function getEnvironmentMappings(): array
     {

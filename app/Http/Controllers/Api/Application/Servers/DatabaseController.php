@@ -35,10 +35,6 @@ class DatabaseController extends ApplicationApiController
 
     /**
      * DatabaseController constructor.
-     *
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $databaseManagementService
-     * @param \Pterodactyl\Services\Databases\DatabasePasswordService $databasePasswordService
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
      */
     public function __construct(
         DatabaseManagementService $databaseManagementService,
@@ -55,10 +51,6 @@ class DatabaseController extends ApplicationApiController
     /**
      * Return a listing of all databases currently available to a single
      * server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabasesRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      */
     public function index(GetServerDatabasesRequest $request, Server $server): array
     {
@@ -69,11 +61,6 @@ class DatabaseController extends ApplicationApiController
 
     /**
      * Return a single server database.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Database $database
-     * @return array
      */
     public function view(GetServerDatabaseRequest $request, Server $server, Database $database): array
     {
@@ -84,11 +71,6 @@ class DatabaseController extends ApplicationApiController
 
     /**
      * Reset the password for a specific server database.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @param \Pterodactyl\Models\Database $database
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
      */
@@ -101,10 +83,6 @@ class DatabaseController extends ApplicationApiController
 
     /**
      * Create a new database on the Panel for a given server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatabaseRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
      */
@@ -127,9 +105,6 @@ class DatabaseController extends ApplicationApiController
 
     /**
      * Handle a request to delete a specific server database from the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Servers\Databases\ServerDatabaseWriteRequest $request
-     * @return \Illuminate\Http\Response
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

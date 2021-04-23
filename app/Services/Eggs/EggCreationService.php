@@ -30,9 +30,6 @@ class EggCreationService
 
     /**
      * EggCreationService constructor.
-     *
-     * @param \Illuminate\Contracts\Config\Repository $config
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
      */
     public function __construct(ConfigRepository $config, EggRepositoryInterface $repository)
     {
@@ -43,16 +40,13 @@ class EggCreationService
     /**
      * Create a new service option and assign it to the given service.
      *
-     * @param array $data
-     * @return \Pterodactyl\Models\Egg
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
     public function handle(array $data): Egg
     {
         $data['config_from'] = array_get($data, 'config_from');
-        if (! is_null($data['config_from'])) {
+        if (!is_null($data['config_from'])) {
             $results = $this->repository->findCountWhere([
                 ['nest_id', '=', array_get($data, 'nest_id')],
                 ['id', '=', array_get($data, 'config_from')],

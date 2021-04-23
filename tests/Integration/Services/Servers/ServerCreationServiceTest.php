@@ -4,16 +4,16 @@ namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
 use Pterodactyl\Models\Egg;
+use GuzzleHttp\Psr7\Request;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Validation\ValidationException;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Services\Servers\ServerCreationService;
@@ -48,15 +48,18 @@ class ServerCreationServiceTest extends IntegrationTestCase
     public function testServerIsCreatedWithDeploymentObject()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
+
+        /** @var \Pterodactyl\Models\Location $location */
+        $location = Location::factory()->create();
 
         /** @var \Pterodactyl\Models\Node $node */
-        $node = factory(Node::class)->create([
-            'location_id' => factory(Location::class)->create()->id,
+        $node = Node::factory()->create([
+            'location_id' => $location->id,
         ]);
 
         /** @var \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations */
-        $allocations = factory(Allocation::class)->times(5)->create([
+        $allocations = Allocation::factory()->times(5)->create([
             'node_id' => $node->id,
         ]);
 
@@ -142,7 +145,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
         $this->assertSame($allocations[0]->id, $response->allocations[0]->id);
         $this->assertSame($allocations[4]->id, $response->allocations[1]->id);
 
-        $this->assertFalse($response->suspended);
+        $this->assertFalse($response->isSuspended());
         $this->assertTrue($response->oom_disabled);
         $this->assertSame(0, $response->database_limit);
         $this->assertSame(0, $response->allocation_limit);
@@ -156,15 +159,18 @@ class ServerCreationServiceTest extends IntegrationTestCase
     public function testErrorEncounteredByWingsCausesServerToBeDeleted()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
+
+        /** @var \Pterodactyl\Models\Location $location */
+        $location = Location::factory()->create();
 
         /** @var \Pterodactyl\Models\Node $node */
-        $node = factory(Node::class)->create([
-            'location_id' => factory(Location::class)->create()->id,
+        $node = Node::factory()->create([
+            'location_id' => $location->id,
         ]);
 
         /** @var \Pterodactyl\Models\Allocation $allocation */
-        $allocation = factory(Allocation::class)->create([
+        $allocation = Allocation::factory()->create([
             'node_id' => $node->id,
         ]);
 

@@ -12,8 +12,6 @@ use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Pterodactyl\Exceptions\Http\Server\ServerTransferringException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -38,10 +36,6 @@ class SftpAuthenticationController extends Controller
 
     /**
      * SftpController constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\GetUserPermissionsService $permissionsService
-     * @param \Pterodactyl\Repositories\Eloquent\UserRepository $userRepository
-     * @param \Pterodactyl\Repositories\Eloquent\ServerRepository $serverRepository
      */
     public function __construct(
         GetUserPermissionsService $permissionsService,
@@ -56,9 +50,6 @@ class SftpAuthenticationController extends Controller
     /**
      * Authenticate a set of credentials and return the associated server details
      * for a SFTP connection on the daemon.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest $request
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -76,15 +67,13 @@ class SftpAuthenticationController extends Controller
         if ($this->hasTooManyLoginAttempts($request)) {
             $seconds = $this->limiter()->availableIn($this->throttleKey($request));
 
-            throw new TooManyRequestsHttpException(
-                $seconds, "Too many login attempts for this account, please try again in {$seconds} seconds."
-            );
+            throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in {$seconds} seconds.");
         }
 
         /** @var \Pterodactyl\Models\Node $node */
         $node = $request->attributes->get('node');
         if (empty($connection['server'])) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
 
         /** @var \Pterodactyl\Models\User $user */
@@ -93,36 +82,21 @@ class SftpAuthenticationController extends Controller
         ]);
 
         $server = $this->serverRepository->getByUuid($connection['server'] ?? '');
-        if (! password_verify($request->input('password'), $user->password) || $server->node_id !== $node->id) {
+        if (!password_verify($request->input('password'), $user->password) || $server->node_id !== $node->id) {
             $this->incrementLoginAttempts($request);
 
-            throw new HttpForbiddenException(
-                'Authorization credentials were not correct, please try again.'
-            );
+            throw new HttpForbiddenException('Authorization credentials were not correct, please try again.');
         }
 
-        if (! $user->root_admin && $server->owner_id !== $user->id) {
+        if (!$user->root_admin && $server->owner_id !== $user->id) {
             $permissions = $this->permissionsService->handle($server, $user);
 
-            if (! in_array(Permission::ACTION_FILE_SFTP, $permissions)) {
-                throw new HttpForbiddenException(
-                    'You do not have permission to access SFTP for this server.'
-                );
+            if (!in_array(Permission::ACTION_FILE_SFTP, $permissions)) {
+                throw new HttpForbiddenException('You do not have permission to access SFTP for this server.');
             }
         }
 
-        // Prevent SFTP access to servers that are being transferred.
-        if (! is_null($server->transfer)) {
-            throw new ServerTransferringException;
-        }
-
-        // Remember, for security purposes, only reveal the existence of the server to people that
-        // have provided valid credentials, and have permissions to know about it.
-        if ($server->installed !== 1 || $server->suspended) {
-            throw new BadRequestHttpException(
-                'Server is not installed or is currently suspended.'
-            );
-        }
+        $server->validateCurrentState();
 
         return new JsonResponse([
             'server' => $server->uuid,
@@ -134,9 +108,6 @@ class SftpAuthenticationController extends Controller
 
     /**
      * Get the throttle key for the given request.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return string
      */
     protected function throttleKey(Request $request): string
     {

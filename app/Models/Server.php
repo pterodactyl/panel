@@ -2,9 +2,11 @@
 
 namespace Pterodactyl\Models;
 
+use Closure;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 
 /**
  * @property int $id
@@ -14,8 +16,8 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $node_id
  * @property string $name
  * @property string $description
+ * @property string|null $status
  * @property bool $skip_scripts
- * @property bool $suspended
  * @property int $owner_id
  * @property int $memory
  * @property int $swap
@@ -29,13 +31,11 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property int $egg_id
  * @property string $startup
  * @property string $image
- * @property int $installed
  * @property int $allocation_limit
  * @property int $database_limit
  * @property int $backup_limit
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property \Pterodactyl\Models\User $user
  * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subusers
  * @property \Pterodactyl\Models\Allocation $allocation
@@ -50,6 +50,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
  * @property \Pterodactyl\Models\ServerTransfer $transfer
  * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
  * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
+ * @property \Pterodactyl\Models\AuditLog[] $audits
  */
 class Server extends Model
 {
@@ -60,11 +61,12 @@ class Server extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'server';
+    public const RESOURCE_NAME = 'server';
 
-    const STATUS_INSTALLING = 0;
-    const STATUS_INSTALLED = 1;
-    const STATUS_INSTALL_FAILED = 2;
+    public const STATUS_INSTALLING = 'installing';
+    public const STATUS_INSTALL_FAILED = 'install_failed';
+    public const STATUS_SUSPENDED = 'suspended';
+    public const STATUS_RESTORING_BACKUP = 'restoring_backup';
 
     /**
      * The table associated with the model.
@@ -80,6 +82,7 @@ class Server extends Model
      * @var array
      */
     protected $attributes = [
+        'status' => self::STATUS_INSTALLING,
         'oom_disabled' => true,
     ];
 
@@ -102,7 +105,7 @@ class Server extends Model
      *
      * @var array
      */
-    protected $guarded = ['id', 'installed', self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
+    protected $guarded = ['id', self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
     /**
      * @var array
@@ -113,6 +116,7 @@ class Server extends Model
         'name' => 'required|string|min:1|max:191',
         'node_id' => 'required|exists:nodes,id',
         'description' => 'string',
+        'status' => 'nullable|string',
         'memory' => 'required|numeric|min:0',
         'swap' => 'required|numeric|min:-1',
         'io' => 'required|numeric|between:10,1000',
@@ -126,7 +130,6 @@ class Server extends Model
         'startup' => 'required|string',
         'skip_scripts' => 'sometimes|boolean',
         'image' => 'required|string|max:191',
-        'installed' => 'in:0,1,2',
         'database_limit' => 'present|nullable|integer|min:0',
         'allocation_limit' => 'sometimes|nullable|integer|min:0',
         'backup_limit' => 'present|nullable|integer|min:0',
@@ -140,7 +143,6 @@ class Server extends Model
     protected $casts = [
         'node_id' => 'integer',
         'skip_scripts' => 'boolean',
-        'suspended' => 'boolean',
         'owner_id' => 'integer',
         'memory' => 'integer',
         'swap' => 'integer',
@@ -151,7 +153,6 @@ class Server extends Model
         'allocation_id' => 'integer',
         'nest_id' => 'integer',
         'egg_id' => 'integer',
-        'installed' => 'integer',
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
         'backup_limit' => 'integer',
@@ -159,8 +160,6 @@ class Server extends Model
 
     /**
      * Returns the format for server allocations when communicating with the Daemon.
-     *
-     * @return array
      */
     public function getAllocationMappings(): array
     {
@@ -169,12 +168,14 @@ class Server extends Model
         })->toArray();
     }
 
-    /**
-     * @return bool
-     */
     public function isInstalled(): bool
     {
-        return $this->installed === 1;
+        return $this->status !== self::STATUS_INSTALLING && $this->status !== self::STATUS_INSTALL_FAILED;
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->status === self::STATUS_SUSPENDED;
     }
 
     /**
@@ -325,5 +326,69 @@ class Server extends Model
     public function mounts()
     {
         return $this->hasManyThrough(Mount::class, MountServer::class, 'server_id', 'id', 'id', 'mount_id');
+    }
+
+    /**
+     * Returns a fresh AuditLog model for the server. This model is not saved to the
+     * database when created, so it is up to the caller to correctly store it as needed.
+     *
+     * @return \Pterodactyl\Models\AuditLog
+     */
+    public function newAuditEvent(string $action, array $metadata = []): AuditLog
+    {
+        return AuditLog::instance($action, $metadata)->fill([
+            'server_id' => $this->id,
+        ]);
+    }
+
+    /**
+     * Stores a new audit event for a server by using a transaction. If the transaction
+     * fails for any reason everything executed within will be rolled back. The callback
+     * passed in will receive the AuditLog model before it is saved and the second argument
+     * will be the current server instance. The callback should modify the audit entry as
+     * needed before finishing, any changes will be persisted.
+     *
+     * The response from the callback is returned to the caller.
+     *
+     * @return mixed
+     *
+     * @throws \Throwable
+     */
+    public function audit(string $action, Closure $callback)
+    {
+        return $this->getConnection()->transaction(function () use ($action, $callback) {
+            $model = $this->newAuditEvent($action);
+            $response = $callback($model, $this);
+            $model->save();
+
+            return $response;
+        });
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function audits()
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    /**
+     * Checks if the server is currently in a user-accessible state. If not, an
+     * exception is raised. This should be called whenever something needs to make
+     * sure the server is not in a weird state that should block user access.
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Server\ServerStateConflictException
+     */
+    public function validateCurrentState()
+    {
+        if (
+            $this->isSuspended() ||
+            !$this->isInstalled() ||
+            $this->status === self::STATUS_RESTORING_BACKUP ||
+            !is_null($this->transfer)
+        ) {
+            throw new ServerStateConflictException($this);
+        }
     }
 }

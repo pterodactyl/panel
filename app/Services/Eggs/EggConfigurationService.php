@@ -16,8 +16,6 @@ class EggConfigurationService
 
     /**
      * EggConfigurationService constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
      */
     public function __construct(ServerConfigurationStructureService $configurationStructureService)
     {
@@ -26,14 +24,12 @@ class EggConfigurationService
 
     /**
      * Return an Egg file to be used by the Daemon.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
      */
     public function handle(Server $server): array
     {
         $configs = $this->replacePlaceholders(
-            $server, json_decode($server->egg->inherit_config_files)
+            $server,
+            json_decode($server->egg->inherit_config_files)
         );
 
         return [
@@ -46,7 +42,6 @@ class EggConfigurationService
     /**
      * Convert the "done" variable into an array if it is not currently one.
      *
-     * @param array $startup
      * @return array
      */
     protected function convertStartupToNewFormat(array $startup)
@@ -66,13 +61,10 @@ class EggConfigurationService
      * For most eggs, this ends up just being a command sent to the server console, but
      * if the stop command is something starting with a caret (^), it will be converted
      * into the associated kill signal for the instance.
-     *
-     * @param string $stop
-     * @return array
      */
     protected function convertStopToNewFormat(string $stop): array
     {
-        if (! Str::startsWith($stop, '^')) {
+        if (!Str::startsWith($stop, '^')) {
             return [
                 'type' => 'command',
                 'value' => $stop,
@@ -94,8 +86,6 @@ class EggConfigurationService
     }
 
     /**
-     * @param \Pterodactyl\Models\Server $server
-     * @param object $configs
      * @return array
      */
     protected function replacePlaceholders(Server $server, object $configs)
@@ -108,7 +98,17 @@ class EggConfigurationService
         // Normalize the output of the configuration for the new Wings Daemon to more
         // easily ingest, as well as make things more flexible down the road.
         foreach ($configs as $file => $data) {
-            $append = array_merge((array)$data, ['file' => $file, 'replace' => []]);
+            // Try to head off any errors relating to parsing a set of configuration files
+            // or other JSON data for the egg. This should probably be blocked at the time
+            // of egg creation/update, but it isn't so this check will at least prevent a
+            // 500 error which would crash the entire Wings boot process.
+            //
+            // @see https://github.com/pterodactyl/panel/issues/3055
+            if (!is_object($data) || !isset($data->find)) {
+                continue;
+            }
+
+            $append = array_merge((array) $data, ['file' => $file, 'replace' => []]);
 
             foreach ($this->iterate($data->find, $structure) as $find => $replace) {
                 if (is_object($replace)) {
@@ -142,10 +142,6 @@ class EggConfigurationService
      * set SERVER_MEMORY, SERVER_IP, and SERVER_PORT with their respective values on the Daemon
      * side. Ensure that anything referencing those properly replaces them with the matching config
      * value.
-     *
-     * @param string $key
-     * @param string $value
-     * @return string
      */
     protected function replaceLegacyModifiers(string $key, string $value): string
     {
@@ -175,7 +171,7 @@ class EggConfigurationService
 
     /**
      * @param mixed $value
-     * @param array $structure
+     *
      * @return mixed|null
      */
     protected function matchAndReplaceKeys($value, array $structure)
@@ -187,13 +183,13 @@ class EggConfigurationService
             // value from the server properties.
             //
             // The Daemon supports server.X, env.X, and config.X placeholders.
-            if (! Str::startsWith($key, ['server.', 'env.', 'config.'])) {
+            if (!Str::startsWith($key, ['server.', 'env.', 'config.'])) {
                 continue;
             }
 
             // Don't do a replacement on anything that is not a string, we don't want to unintentionally
             // modify the resulting output.
-            if (! is_string($value)) {
+            if (!is_string($value)) {
                 continue;
             }
 
@@ -218,7 +214,9 @@ class EggConfigurationService
             // Finally, replace anything starting with env. with the expected environment
             // variable from the server configuration.
             $plucked = Arr::get(
-                $structure, preg_replace('/^env\./', 'build.env.', $key), ''
+                $structure,
+                preg_replace('/^env\./', 'build.env.', $key),
+                ''
             );
 
             $value = str_replace("{{{$key}}}", $plucked, $value);
@@ -233,12 +231,12 @@ class EggConfigurationService
      * a match & replace.
      *
      * @param mixed $data
-     * @param array $structure
+     *
      * @return mixed
      */
     private function iterate($data, array $structure)
     {
-        if (! is_iterable($data) && ! is_object($data)) {
+        if (!is_iterable($data) && !is_object($data)) {
             return $data;
         }
 

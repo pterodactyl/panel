@@ -14,7 +14,6 @@ namespace Pterodactyl\Models;
  * @property string $rules
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
- *
  * @property bool $required
  * @property \Pterodactyl\Models\Egg $egg
  * @property \Pterodactyl\Models\ServerVariable $serverVariable
@@ -29,14 +28,14 @@ class EggVariable extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'egg_variable';
+    public const RESOURCE_NAME = 'egg_variable';
 
     /**
      * Reserved environment variable names.
      *
      * @var string
      */
-    const RESERVED_ENV_NAMES = 'SERVER_MEMORY,SERVER_IP,SERVER_PORT,ENV,HOME,USER,STARTUP,SERVER_UUID,UUID';
+    public const RESERVED_ENV_NAMES = 'SERVER_MEMORY,SERVER_IP,SERVER_PORT,ENV,HOME,USER,STARTUP,SERVER_UUID,UUID';
 
     /**
      * @var bool
