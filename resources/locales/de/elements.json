@@ -1,6 +1,4 @@
 {
     "cancel": "Abbrechen",
-
-    "copied": "",
-    "to_clipboard": "in die Zwischenablage kopiert."
+    "copied_to_clipboard": "{{text}} in die Zwischenablage kopiert."
 }

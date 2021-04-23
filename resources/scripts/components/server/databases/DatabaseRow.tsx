@@ -19,6 +19,7 @@ import Label from '@/components/elements/Label';
 import Input from '@/components/elements/Input';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     database: ServerDatabase;
@@ -30,14 +31,15 @@ export default ({ database, className }: Props) => {
     const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
     const [ connectionVisible, setConnectionVisible ] = useState(false);
+    const { t } = useTranslation('server');
 
     const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
     const removeDatabase = ServerContext.useStoreActions(actions => actions.databases.removeDatabase);
 
     const schema = object().shape({
         confirm: string()
-            .required('The database name must be provided.')
-            .oneOf([ database.name.split('_', 2)[1], database.name ], 'The database name must be provided.'),
+            .required(t('database_name_must_provided'))
+            .oneOf([ database.name.split('_', 2)[1], database.name ], t('database_name_must_provided')),
     });
 
     const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
@@ -74,18 +76,15 @@ export default ({ database, className }: Props) => {
                             }}
                         >
                             <FlashMessageRender byKey={'database:delete'} css={tw`mb-6`}/>
-                            <h2 css={tw`text-2xl mb-6`}>Confirm database deletion</h2>
-                            <p css={tw`text-sm`}>
-                                Deleting a database is a permanent action, it cannot be undone. This will permanetly
-                                delete the <strong>{database.name}</strong> database and remove all associated data.
-                            </p>
+                            <h2 css={tw`text-2xl mb-6`}>{t('confirm_database_deletion')}</h2>
+                            <p css={tw`text-sm`}>{t('database_delete_text', { database: '<strong>' + database.name + '</strong>' })}</p>
                             <Form css={tw`m-0 mt-6`}>
                                 <Field
                                     type={'text'}
                                     id={'confirm_name'}
                                     name={'confirm'}
-                                    label={'Confirm Database Name'}
-                                    description={'Enter the database name to confirm deletion.'}
+                                    label={t('confirm_database_name')}
+                                    description={t('enter_database_name')}
                                 />
                                 <div css={tw`mt-6 text-right`}>
                                     <Button
@@ -94,14 +93,14 @@ export default ({ database, className }: Props) => {
                                         css={tw`mr-2`}
                                         onClick={() => setVisible(false)}
                                     >
-                                        Cancel
+                                        {t('cancel')}
                                     </Button>
                                     <Button
                                         type={'submit'}
                                         color={'red'}
                                         disabled={!isValid}
                                     >
-                                        Delete Database
+                                        {t('delete_database')}
                                     </Button>
                                 </div>
                             </Form>

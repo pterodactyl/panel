@@ -1,6 +1,4 @@
 {
     "cancel": "Cancel",
-
-    "copied": "Copied",
-    "to_clipboard": "to clipboard."
- }
+    "copied_to_clipboard": "Copied {{text}} to clipboard."
+}

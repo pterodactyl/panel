@@ -12,6 +12,7 @@ import tw from 'twin.macro';
 import { Textarea } from '@/components/elements/Input';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerContext } from '@/state/server';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     name: string;
@@ -20,36 +21,32 @@ interface Values {
 
 const ModalContent = ({ ...props }: RequiredModalProps) => {
     const { isSubmitting } = useFormikContext<Values>();
+    const { t } = useTranslation('server');
 
     return (
         <Modal {...props} showSpinnerOverlay={isSubmitting}>
             <Form>
                 <FlashMessageRender byKey={'backups:create'} css={tw`mb-4`}/>
-                <h2 css={tw`text-2xl mb-6`}>Create server backup</h2>
+                <h2 css={tw`text-2xl mb-6`}>{t('create_server_backup')}</h2>
                 <div css={tw`mb-6`}>
                     <Field
                         name={'name'}
-                        label={'Backup name'}
-                        description={'If provided, the name that should be used to reference this backup.'}
+                        label={t('backup_name')}
+                        description={t('backup_name_description')}
                     />
                 </div>
                 <div css={tw`mb-6`}>
                     <FormikFieldWrapper
                         name={'ignored'}
-                        label={'Ignored Files & Directories'}
-                        description={`
-                            Enter the files or folders to ignore while generating this backup. Leave blank to use
-                            the contents of the .pteroignore file in the root of the server directory if present.
-                            Wildcard matching of files and folders is supported in addition to negating a rule by
-                            prefixing the path with an exclamation point.
-                        `}
+                        label={t('ignored')}
+                        description={t('ignored_description')}
                     >
                         <FormikField as={Textarea} name={'ignored'} rows={6}/>
                     </FormikFieldWrapper>
                 </div>
                 <div css={tw`flex justify-end`}>
                     <Button type={'submit'} disabled={isSubmitting}>
-                        Start backup
+                        {t('start_backup')}
                     </Button>
                 </div>
             </Form>
@@ -62,6 +59,7 @@ export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
     const { mutate } = getServerBackups();
+    const { t } = useTranslation('server');
 
     useEffect(() => {
         clearFlashes('backups:create');
@@ -95,7 +93,7 @@ export default () => {
             </Formik>
             }
             <Button css={tw`w-full sm:w-auto`} onClick={() => setVisible(true)}>
-                Create backup
+                {t('create_backup')}
             </Button>
         </>
     );

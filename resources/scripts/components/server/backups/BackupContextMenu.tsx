@@ -13,6 +13,7 @@ import tw from 'twin.macro';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     backup: ServerBackup;
@@ -25,6 +26,7 @@ export default ({ backup }: Props) => {
     const [ deleteVisible, setDeleteVisible ] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { mutate } = getServerBackups();
+    const { t } = useTranslation('server');
 
     const doDownload = () => {
         setLoading(true);
@@ -71,13 +73,12 @@ export default ({ backup }: Props) => {
             }
             <ConfirmationModal
                 visible={deleteVisible}
-                title={'Delete this backup?'}
-                buttonText={'Yes, delete backup'}
+                title={t('delete_backup_question')}
+                buttonText={t('delete_backup_yes')}
                 onConfirmed={() => doDeletion()}
                 onModalDismissed={() => setDeleteVisible(false)}
             >
-                Are you sure you wish to delete this backup? This is a permanent operation and the backup cannot
-                be recovered once deleted.
+                {t('delete_backup_demand')}
             </ConfirmationModal>
             <SpinnerOverlay visible={loading} fixed/>
             {backup.isSuccessful ?
@@ -95,17 +96,17 @@ export default ({ backup }: Props) => {
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={() => doDownload()}>
                                 <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`}/>
-                                <span css={tw`ml-2`}>Download</span>
+                                <span css={tw`ml-2`}>{t('download')}</span>
                             </DropdownButtonRow>
                         </Can>
                         <DropdownButtonRow onClick={() => setVisible(true)}>
                             <FontAwesomeIcon fixedWidth icon={faLock} css={tw`text-xs`}/>
-                            <span css={tw`ml-2`}>Checksum</span>
+                            <span css={tw`ml-2`}>{t('checksum')}</span>
                         </DropdownButtonRow>
                         <Can action={'backup.delete'}>
                             <DropdownButtonRow danger onClick={() => setDeleteVisible(true)}>
                                 <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
-                                <span css={tw`ml-2`}>Delete</span>
+                                <span css={tw`ml-2`}>{t('delete')}</span>
                             </DropdownButtonRow>
                         </Can>
                     </div>

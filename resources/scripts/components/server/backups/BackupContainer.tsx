@@ -10,11 +10,13 @@ import getServerBackups, { Context as ServerBackupContext } from '@/api/swr/getS
 import { ServerContext } from '@/state/server';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import Pagination from '@/components/elements/Pagination';
+import { useTranslation } from 'react-i18next';
 
 const BackupContainer = () => {
     const { page, setPage } = useContext(ServerBackupContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: backups, error, isValidating } = getServerBackups();
+    const { t } = useTranslation('server');
 
     const backupLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.backups);
 
@@ -33,7 +35,7 @@ const BackupContainer = () => {
     }
 
     return (
-        <ServerContentBlock title={'Backups'}>
+        <ServerContentBlock title={t('backups')}>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
             <Pagination data={backups} onPageSelect={setPage}>
                 {({ items }) => (
@@ -45,9 +47,9 @@ const BackupContainer = () => {
                             :
                             <p css={tw`text-center text-sm text-neutral-300`}>
                                 {page > 1 ?
-                                    'Looks like we\'ve run out of backups to show you, try going back a page.'
+                                    t('run_out_of_backups_for_pagination')
                                     :
-                                    'It looks like there are no backups currently stored for this server.'
+                                    t('no_backups_exist')
                                 }
                             </p>
                         :
@@ -60,14 +62,14 @@ const BackupContainer = () => {
             </Pagination>
             {backupLimit === 0 &&
             <p css={tw`text-center text-sm text-neutral-300`}>
-                Backups cannot be created for this server.
+                {t('backups_cant_be_created')}
             </p>
             }
             <Can action={'backup.create'}>
                 <div css={tw`mt-6 sm:flex items-center justify-end`}>
                     {(backupLimit > 0 && backups.items.length > 0) &&
                     <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
-                        {backups.items.length} of {backupLimit} backups have been created for this server.
+                        {t('used_backups_count', { used: backups.items.length, limit: backupLimit })}
                     </p>
                     }
                     {backupLimit > 0 && backupLimit !== backups.items.length &&

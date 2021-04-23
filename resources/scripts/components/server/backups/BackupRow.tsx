@@ -11,6 +11,7 @@ import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     backup: ServerBackup;
@@ -19,6 +20,7 @@ interface Props {
 
 export default ({ backup, className }: Props) => {
     const { mutate } = getServerBackups();
+    const { t } = useTranslation('server');
 
     useWebsocketEvent(`backup completed:${backup.uuid}`, data => {
         try {
@@ -53,7 +55,7 @@ export default ({ backup, className }: Props) => {
                     <div css={tw`flex items-center text-sm mb-1`}>
                         {!backup.isSuccessful &&
                         <span css={tw`bg-red-500 py-px px-2 rounded-full text-white text-xs uppercase border border-red-600 mr-2`}>
-                            Failed
+                            {t('failed')}
                         </span>
                         }
                         <p css={tw`break-words truncate`}>
@@ -75,7 +77,7 @@ export default ({ backup, className }: Props) => {
                 >
                     {formatDistanceToNow(backup.createdAt, { includeSeconds: true, addSuffix: true })}
                 </p>
-                <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>Created</p>
+                <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>{t('created')}</p>
             </div>
             <Can action={'backup.download'}>
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>

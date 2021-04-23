@@ -1,6 +1,4 @@
 {
     "cancel": "PTERO TESTCancel",
-
-    "copied": "PTERO TESTCopied",
-    "to_clipboard": "PTERO TESTto clipboard."
+    "copied_to_clipboard": "PTERO TESTCopied {{text}} to clipboard."
  }
