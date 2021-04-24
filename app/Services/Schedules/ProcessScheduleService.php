@@ -53,7 +53,7 @@ class ProcessScheduleService
             $task->update(['is_queued' => true]);
         });
 
-        $job = new RunTaskJob($task);
+        $job = new RunTaskJob($task, $now);
 
         if (!$now) {
             $this->dispatcher->dispatch($job->delay($task->time_offset));
