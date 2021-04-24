@@ -15,6 +15,7 @@ use Pterodactyl\Extensions\Themes\Theme;
 use Pterodactyl\Observers\ServerObserver;
 use Pterodactyl\Observers\SubuserObserver;
 
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -23,6 +24,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        $driver = config('database.connections.' . env('DB_CONNECTION', 'mysql') . '.driver');
+        $this->loadMigrationsFrom(database_path("migrations\\$driver"));
 
         User::observe(UserObserver::class);
         Server::observe(ServerObserver::class);
