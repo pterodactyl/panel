@@ -161,7 +161,7 @@ export default () => {
                                 onDeleted={() => history.push(`/server/${id}/schedules`)}
                             />
                         </Can>
-                        {schedule.isActive && schedule.tasks.length > 0 &&
+                        {schedule.tasks.length > 0 &&
                         <Can action={'schedule.update'}>
                             <RunScheduleButton schedule={schedule}/>
                         </Can>
