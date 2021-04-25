@@ -177,7 +177,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingLocation()
     {
-        $response = $this->getJson('/api/application/locations/nil');
+        $response = $this->getJson('/api/application/locations/-1');
         $this->assertNotFoundJson($response);
     }
 
@@ -202,7 +202,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
     {
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
 
-        $response = $this->getJson('/api/application/locations/nil');
+        $response = $this->getJson('/api/application/locations/-1');
         $this->assertAccessDeniedJson($response);
     }
 }
