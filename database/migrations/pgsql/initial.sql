@@ -8,10 +8,10 @@ CREATE TABLE public.api_logs (
 	id bigserial NOT NULL,
 	authorized bool NOT NULL,
 	error text NULL,
-	"key" bpchar(16) NULL,
-	"method" bpchar(6) NOT NULL,
+	key varchar(16) NULL,
+	method varchar(6) NOT NULL,
 	route text NOT NULL,
-	"content" text NULL,
+	content text NULL,
 	user_agent text NOT NULL,
 	request_ip varchar(45) NOT NULL,
 	created_at timestamptz NULL,
@@ -41,11 +41,11 @@ CREATE UNIQUE INDEX idx_16476_egg_mount_egg_id_mount_id_unique ON public.egg_mou
 
 CREATE TABLE public.failed_jobs (
 	id bigserial NOT NULL,
-	"connection" text NOT NULL,
+	connection text NOT NULL,
 	queue text NOT NULL,
 	payload text NOT NULL,
 	failed_at timestamptz NULL,
-	"exception" text NOT NULL,
+	exception text NOT NULL,
 	CONSTRAINT idx_16490_primary PRIMARY KEY (id)
 );
 
@@ -119,10 +119,10 @@ CREATE UNIQUE INDEX idx_16533_mount_server_server_id_mount_id_unique ON public.m
 
 CREATE TABLE public.mounts (
 	id bigserial NOT NULL,
-	uuid bpchar(36) NOT NULL,
-	"name" varchar(191) NOT NULL,
+	uuid varchar(36) NOT NULL,
+    name varchar(191) NOT NULL,
 	description text NULL,
-	"source" varchar(191) NOT NULL,
+	source varchar(191) NOT NULL,
 	target varchar(191) NOT NULL,
 	read_only int2 NOT NULL,
 	user_mountable int2 NOT NULL,
@@ -141,9 +141,9 @@ CREATE UNIQUE INDEX idx_16523_mounts_uuid_unique ON public.mounts USING btree (u
 
 CREATE TABLE public.nests (
 	id bigserial NOT NULL,
-	uuid bpchar(36) NOT NULL,
-	author bpchar(191) NOT NULL,
-	"name" varchar(191) NOT NULL,
+	uuid varchar(36) NOT NULL,
+	author varchar(191) NOT NULL,
+	name varchar(191) NOT NULL,
 	description text NULL,
 	created_at timestamptz NULL,
 	updated_at timestamptz NULL,
@@ -160,10 +160,10 @@ CREATE UNIQUE INDEX idx_16538_services_uuid_unique ON public.nests USING btree (
 
 CREATE TABLE public.notifications (
 	id varchar(191) NOT NULL,
-	"type" varchar(191) NOT NULL,
+	type varchar(191) NOT NULL,
 	notifiable_type varchar(191) NOT NULL,
 	notifiable_id numeric NOT NULL,
-	"data" text NOT NULL,
+	data text NOT NULL,
 	read_at timestamptz NULL,
 	created_at timestamptz NULL,
 	updated_at timestamptz NULL,
@@ -180,7 +180,7 @@ CREATE INDEX idx_16563_notifications_notifiable_type_notifiable_id_index ON publ
 
 CREATE TABLE public.password_resets (
 	email varchar(191) NOT NULL,
-	"token" varchar(191) NOT NULL,
+	token varchar(191) NOT NULL,
 	created_at timestamptz NULL
 );
 CREATE INDEX idx_16569_password_resets_email_index ON public.password_resets USING btree (email);
@@ -211,7 +211,7 @@ CREATE UNIQUE INDEX idx_16619_sessions_id_unique ON public.sessions USING btree 
 
 CREATE TABLE public.settings (
 	id bigserial NOT NULL,
-	"key" varchar(191) NOT NULL,
+	key varchar(191) NOT NULL,
 	value text NOT NULL,
 	CONSTRAINT idx_16627_primary PRIMARY KEY (id)
 );
@@ -244,14 +244,14 @@ CREATE TABLE public.tasks_log (
 CREATE TABLE public.users (
 	id bigserial NOT NULL,
 	external_id varchar(191) NULL,
-	uuid bpchar(36) NOT NULL,
+	uuid varchar(36) NOT NULL,
 	username varchar(191) NOT NULL,
 	email varchar(191) NOT NULL,
 	name_first varchar(191) NULL,
 	name_last varchar(191) NULL,
-	"password" text NOT NULL,
+	password text NOT NULL,
 	remember_token varchar(191) NULL,
-	"language" bpchar(5) NOT NULL DEFAULT 'en'::bpchar,
+	language varchar(5) NOT NULL DEFAULT 'en'::bpchar,
 	root_admin int2 NOT NULL DEFAULT '0'::smallint,
 	use_totp int2 NOT NULL,
 	totp_secret text NULL,
@@ -276,9 +276,9 @@ CREATE UNIQUE INDEX idx_16663_users_uuid_unique ON public.users USING btree (uui
 CREATE TABLE public.api_keys (
 	id bigserial NOT NULL,
 	user_id int8 NOT NULL,
-	"key_type" int2 NOT NULL DEFAULT '0'::smallint,
-	identifier bpchar(16) NULL,
-	"token" text NOT NULL,
+	key_type int2 NOT NULL DEFAULT '0'::smallint,
+	identifier varchar(16) NULL,
+	token text NOT NULL,
 	allowed_ips text NULL,
 	memo text NULL,
 	last_used_at timestamptz NULL,
@@ -308,10 +308,10 @@ CREATE INDEX idx_16397_api_keys_user_id_foreign ON public.api_keys USING btree (
 
 CREATE TABLE public.eggs (
 	id bigserial NOT NULL,
-	uuid bpchar(36) NOT NULL,
+	uuid varchar(36) NOT NULL,
 	nest_id int8 NOT NULL,
 	author varchar(191) NOT NULL,
-	"name" varchar(191) NOT NULL,
+	name varchar(191) NOT NULL,
 	description text NULL,
 	features json NULL,
 	docker_images json NULL,
@@ -349,9 +349,9 @@ CREATE UNIQUE INDEX idx_16466_service_options_uuid_unique ON public.eggs USING b
 
 CREATE TABLE public.nodes (
 	id bigserial NOT NULL,
-	uuid bpchar(36) NOT NULL,
+	uuid varchar(36) NOT NULL,
 	public int4 NOT NULL,
-	"name" varchar(191) NOT NULL,
+	name varchar(191) NOT NULL,
 	description text NULL,
 	location_id int8 NOT NULL,
 	fqdn varchar(191) NOT NULL,
@@ -363,11 +363,11 @@ CREATE TABLE public.nodes (
 	disk int8 NOT NULL,
 	disk_overallocate int8 NOT NULL DEFAULT '0'::bigint,
 	upload_size int8 NOT NULL DEFAULT '100'::bigint,
-	daemon_token_id bpchar(16) NOT NULL,
+	daemon_token_id varchar(16) NOT NULL,
 	daemon_token text NOT NULL,
-	daemonlisten int4 NOT NULL DEFAULT 8080,
-	daemonsftp int4 NOT NULL DEFAULT 2022,
-	daemonbase varchar(191) NOT NULL DEFAULT '/home/daemon-files'::character varying,
+	"daemonListen" int4 NOT NULL DEFAULT 8080,
+	"daemonSFTP" int4 NOT NULL DEFAULT 2022,
+	"daemonBase" varchar(191) NOT NULL DEFAULT '/home/daemon-files'::character varying,
 	created_at timestamptz NULL,
 	updated_at timestamptz NULL,
 	CONSTRAINT idx_16547_primary PRIMARY KEY (id),
@@ -387,7 +387,7 @@ CREATE UNIQUE INDEX idx_16547_nodes_uuid_unique ON public.nodes USING btree (uui
 CREATE TABLE public.recovery_tokens (
 	id bigserial NOT NULL,
 	user_id int8 NOT NULL,
-	"token" varchar(191) NOT NULL,
+	token varchar(191) NOT NULL,
 	created_at timestamptz NULL,
 	CONSTRAINT idx_16574_primary PRIMARY KEY (id),
 	CONSTRAINT recovery_tokens_user_id_foreign FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE RESTRICT ON DELETE CASCADE
@@ -403,11 +403,11 @@ CREATE INDEX idx_16574_recovery_tokens_user_id_foreign ON public.recovery_tokens
 
 CREATE TABLE public.database_hosts (
 	id bigserial NOT NULL,
-	"name" varchar(191) NOT NULL,
+	name varchar(191) NOT NULL,
 	host varchar(191) NOT NULL,
 	port int8 NOT NULL,
 	username varchar(191) NOT NULL,
-	"password" text NOT NULL,
+	password text NOT NULL,
 	max_databases int8 NULL,
 	node_id int8 NULL,
 	created_at timestamptz NULL,
@@ -427,7 +427,7 @@ CREATE INDEX idx_16457_database_hosts_node_id_foreign ON public.database_hosts U
 CREATE TABLE public.egg_variables (
 	id bigserial NOT NULL,
 	egg_id int8 NOT NULL,
-	"name" varchar(191) NOT NULL,
+	name varchar(191) NOT NULL,
 	description text NOT NULL,
 	env_variable varchar(191) NOT NULL,
 	default_value text NOT NULL,
@@ -472,11 +472,11 @@ CREATE INDEX idx_16388_allocations_server_id_foreign ON public.allocations USING
 
 CREATE TABLE public.audit_logs (
 	id bigserial NOT NULL,
-	uuid bpchar(36) NOT NULL,
+	uuid varchar(36) NOT NULL,
 	is_system bool NOT NULL DEFAULT false,
 	user_id int8 NULL,
 	server_id int8 NULL,
-	"action" varchar(191) NOT NULL,
+	action varchar(191) NOT NULL,
 	subaction varchar(191) NULL,
 	device json NOT NULL,
 	metadata json NOT NULL,
@@ -496,10 +496,10 @@ CREATE INDEX idx_16425_audit_logs_user_id_foreign ON public.audit_logs USING btr
 CREATE TABLE public.backups (
 	id bigserial NOT NULL,
 	server_id int8 NOT NULL,
-	uuid bpchar(36) NOT NULL,
+	uuid varchar(36) NOT NULL,
 	upload_id text NULL,
 	is_successful bool NOT NULL DEFAULT true,
-	"name" varchar(191) NOT NULL,
+	name varchar(191) NOT NULL,
 	ignored_files text NOT NULL,
 	disk varchar(191) NOT NULL,
 	checksum varchar(191) NULL,
@@ -524,10 +524,10 @@ CREATE TABLE public.databases (
 	id bigserial NOT NULL,
 	server_id int8 NOT NULL,
 	database_host_id int8 NOT NULL,
-	"database" varchar(191) NOT NULL,
+	database varchar(191) NOT NULL,
 	username varchar(191) NOT NULL,
 	remote varchar(191) NOT NULL DEFAULT '%'::character varying,
-	"password" text NOT NULL,
+	password text NOT NULL,
 	max_connections int8 NULL DEFAULT '0'::bigint,
 	created_at timestamptz NULL,
 	updated_at timestamptz NULL,
@@ -547,7 +547,7 @@ CREATE INDEX idx_16446_databases_server_id_foreign ON public.databases USING btr
 CREATE TABLE public.schedules (
 	id bigserial NOT NULL,
 	server_id int8 NOT NULL,
-	"name" varchar(191) NOT NULL,
+	name varchar(191) NOT NULL,
 	cron_day_of_week varchar(191) NOT NULL,
 	cron_month varchar(191) NOT NULL,
 	cron_day_of_month varchar(191) NOT NULL,
@@ -616,10 +616,10 @@ CREATE INDEX idx_16612_server_variables_variable_id_foreign ON public.server_var
 CREATE TABLE public.servers (
 	id bigserial NOT NULL,
 	external_id varchar(191) NULL,
-	uuid bpchar(36) NOT NULL,
-	uuidshort bpchar(8) NOT NULL,
+	uuid varchar(36) NOT NULL,
+	"uuidShort" varchar(8) NOT NULL,
 	node_id int8 NOT NULL,
-	"name" varchar(191) NOT NULL,
+	name varchar(191) NOT NULL,
 	description text NOT NULL,
 	status varchar(191) NULL,
 	skip_scripts bool NOT NULL DEFAULT false,
@@ -650,7 +650,7 @@ CREATE INDEX idx_16589_servers_nest_id_foreign ON public.servers USING btree (ne
 CREATE INDEX idx_16589_servers_node_id_foreign ON public.servers USING btree (node_id);
 CREATE INDEX idx_16589_servers_owner_id_foreign ON public.servers USING btree (owner_id);
 CREATE UNIQUE INDEX idx_16589_servers_uuid_unique ON public.servers USING btree (uuid);
-CREATE UNIQUE INDEX idx_16589_servers_uuidshort_unique ON public.servers USING btree (uuidshort);
+CREATE UNIQUE INDEX idx_16589_servers_uuidshort_unique ON public.servers USING btree ("uuidShort");
 
 
 -- public.subusers definition
@@ -682,7 +682,7 @@ CREATE TABLE public.tasks (
 	id bigserial NOT NULL,
 	schedule_id int8 NOT NULL,
 	sequence_id int8 NOT NULL,
-	"action" varchar(191) NOT NULL,
+	action varchar(191) NOT NULL,
 	payload text NOT NULL,
 	time_offset int8 NOT NULL,
 	is_queued bool NOT NULL,
