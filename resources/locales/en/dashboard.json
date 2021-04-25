@@ -1,5 +1,4 @@
 {
-
     "2fa_code": "Code From Authenticator",
     "2fa_code_text": "Enter the code from your authenticator device after scanning the QR image.",
     "2fa_currently_disabled": "You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.",
