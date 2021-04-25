@@ -59,7 +59,7 @@ return [
             'collation' => 'en_US.UTF-8',
             'prefix' => env('DB_PREFIX', ''),
             'strict' => env('DB_STRICT_MODE', false),
-            'timezone' => env('DB_TIMEZONE', Time::getMySQLTimezoneOffset(env('APP_TIMEZONE', 'UTC'))),
+            'timezone' => env('DB_TIMEZONE', env('APP_TIMEZONE', 'UTC')),
         ],
 
         /*
@@ -95,7 +95,7 @@ return [
             'collation' => 'en_US.UTF-8',
             'prefix' => '',
             'strict' => false,
-            'timezone' => env('DB_TIMEZONE', Time::getMySQLTimezoneOffset(env('APP_TIMEZONE', 'UTC'))),
+            'timezone' => env('DB_TIMEZONE', (env('APP_TIMEZONE', 'UTC'))),
         ],
     ],
 
