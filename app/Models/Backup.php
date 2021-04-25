@@ -65,6 +65,7 @@ class Backup extends Model
         'checksum' => null,
         'bytes' => 0,
         'upload_id' => null,
+        'ignored_files' => '',
     ];
 
     /**
