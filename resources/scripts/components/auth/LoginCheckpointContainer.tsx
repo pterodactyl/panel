@@ -10,7 +10,7 @@ import { FlashStore } from '@/state/flashes';
 import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface Values {
     code: string;
@@ -19,15 +19,13 @@ interface Values {
 
 type OwnProps = RouteComponentProps<Record<string, string | undefined>, StaticContext, { token?: string }>
 
-type Props = OwnProps & {
+type Props = OwnProps & WithTranslation & {
     clearAndAddHttpError: ActionCreator<FlashStore['clearAndAddHttpError']['payload']>;
 }
 
-const LoginCheckpointContainer = () => {
+const LoginCheckpointContainer = ({ t }: WithTranslation) => {
     const { isSubmitting, setFieldValue } = useFormikContext<Values>();
     const [ isMissingDevice, setIsMissingDevice ] = useState(false);
-
-    const { t } = useTranslation('auth');
 
     return (
         <LoginFormContainer title={t('2fa_login_title')} css={tw`w-full flex`}>
@@ -104,7 +102,7 @@ const EnhancedForm = withFormik<Props, Values>({
     }),
 })(LoginCheckpointContainer);
 
-export default ({ history, location, ...props }: OwnProps) => {
+export default withTranslation('auth')(({ history, location, ...props }: OwnProps & WithTranslation) => {
     const { clearAndAddHttpError } = useFlash();
 
     if (!location.state?.token) {
@@ -119,4 +117,4 @@ export default ({ history, location, ...props }: OwnProps) => {
         location={location}
         {...props}
     />;
-};
+});

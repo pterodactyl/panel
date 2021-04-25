@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import login from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useStoreState } from 'easy-peasy';
@@ -10,15 +10,17 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
-import { useTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 
 interface Values {
     username: string;
     password: string;
 }
 
-const LoginContainer = ({ history }: RouteComponentProps) => {
+const LoginContainer = ({ t }: WithTranslation) => {
     const ref = useRef<Reaptcha>(null);
+    const { replace } = useHistory();
     const [ token, setToken ] = useState('');
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -27,8 +29,6 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
     useEffect(() => {
         clearFlashes();
     }, []);
-
-    const { t } = useTranslation('auth');
 
     const onSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
@@ -54,7 +54,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     return;
                 }
 
-                history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
+                replace('/auth/login/checkpoint', { token: response.confirmationToken });
             })
             .catch(error => {
                 console.error(error);
@@ -128,4 +128,4 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
     );
 };
 
-export default LoginContainer;
+export default withTranslation('auth')(LoginContainer);

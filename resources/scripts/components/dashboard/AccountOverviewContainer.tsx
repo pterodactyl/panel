@@ -9,6 +9,7 @@ import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import MessageBox from '@/components/MessageBox';
 import { useLocation } from 'react-router-dom';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -26,31 +27,33 @@ const Container = styled.div`
     }
 `;
 
-export default () => {
+const AccountOverviewContainer = ({ t }: WithTranslation) => {
     const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
 
     return (
         <PageContentBlock title={'Account Overview'}>
             {state?.twoFactorRedirect &&
-            <MessageBox title={'2-Factor Required'} type={'error'}>
-                Your account must have two-factor authentication enabled in order to continue.
+            <MessageBox title={t('2fa_required_title')} type={'error'}>
+                {t('2fa_required_desc')}
             </MessageBox>
             }
             <Container css={[ tw`mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
-                <ContentBox title={'Update Password'} showFlashes={'account:password'}>
+                <ContentBox title={t('update_password')} showFlashes={'account:password'}>
                     <UpdatePasswordForm/>
                 </ContentBox>
                 <ContentBox
                     css={tw`mt-8 md:mt-0 md:ml-8`}
-                    title={'Update Email Address'}
+                    title={t('update_email')}
                     showFlashes={'account:email'}
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure Two Factor'}>
+                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={t('configure_2fa')}>
                     <ConfigureTwoFactorForm/>
                 </ContentBox>
             </Container>
         </PageContentBlock>
     );
 };
+
+export default withTranslation('dashboard')(AccountOverviewContainer);

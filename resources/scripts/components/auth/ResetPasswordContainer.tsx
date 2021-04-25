@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { RouteComponentProps } from 'react-router';
 import { parse } from 'query-string';
 import { Link } from 'react-router-dom';
 import performPasswordReset from '@/api/auth/performPasswordReset';
@@ -13,19 +12,18 @@ import Field from '@/components/elements/Field';
 import Input from '@/components/elements/Input';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 interface Values {
     password: string;
     passwordConfirmation: string;
 }
 
-export default ({ match, location }: RouteComponentProps<{ token: string }>) => {
+const ResetPasswordContainer = ({ t }: WithTranslation) => {
     const [ email, setEmail ] = useState('');
-
+    const { token } = useParams<{ token: string }>();
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-
-    const { t } = useTranslation('auth');
 
     const parsed = parse(location.search);
     if (email.length === 0 && parsed.email) {
@@ -34,7 +32,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
 
     const submit = ({ password, passwordConfirmation }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
-        performPasswordReset(email, { token: match.params.token, password, passwordConfirmation })
+        performPasswordReset(email, { token, password, passwordConfirmation })
             .then(() => {
                 // @ts-ignore
                 window.location = '/';
@@ -112,3 +110,5 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
         </Formik>
     );
 };
+
+export default withTranslation('auth')(ResetPasswordContainer);

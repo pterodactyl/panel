@@ -12,13 +12,13 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
-import { useTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
 }
 
-export default () => {
+const ForgotPasswordContainer = ({ t }: WithTranslation) => {
     const ref = useRef<Reaptcha>(null);
     const [ token, setToken ] = useState('');
 
@@ -28,8 +28,6 @@ export default () => {
     useEffect(() => {
         clearFlashes();
     }, []);
-
-    const { t } = useTranslation('auth');
 
     const handleSubmission = ({ email }: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes();
@@ -123,3 +121,5 @@ export default () => {
         </Formik>
     );
 };
+
+export default withTranslation('auth')(ForgotPasswordContainer);
