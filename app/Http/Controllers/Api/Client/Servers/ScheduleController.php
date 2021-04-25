@@ -156,10 +156,6 @@ class ScheduleController extends ClientApiController
      */
     public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule)
     {
-        if (!$schedule->is_active) {
-            throw new BadRequestHttpException('Cannot trigger schedule exection for a schedule that is not currently active.');
-        }
-
         $this->service->handle($schedule, true);
 
         return new JsonResponse([], JsonResponse::HTTP_ACCEPTED);
