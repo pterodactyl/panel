@@ -58,13 +58,24 @@ class MultiFieldServerFilter implements Filter
             return;
         }
 
-        $query
-            ->where(function (Builder $builder) use ($value) {
-                $builder->where('servers.uuid', $value)
-                    ->orWhere('servers.uuid', 'LIKE', "$value%")
-                    ->orWhere('servers.uuidShort', $value)
-                    ->orWhere('servers.external_id', $value)
-                    ->orWhereRaw('LOWER(servers.name) LIKE ?', ["%$value%"]);
-            });
+        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+            $query
+                ->where(function (Builder $builder) use ($value) {
+                    $builder->where('servers.uuid', $value)
+                        ->orWhere('servers.uuid', 'LIKE', "$value%")
+                        ->orWhere('servers.uuidShort', $value)
+                        ->orWhere('servers.external_id', $value)
+                        ->orWhereRaw('servers.name ILIKE ?', ["%$value%"]);
+                });
+        } else {
+            $query
+                ->where(function (Builder $builder) use ($value) {
+                    $builder->where('servers.uuid', $value)
+                        ->orWhere('servers.uuid', 'LIKE', "$value%")
+                        ->orWhere('servers.uuidShort', $value)
+                        ->orWhere('servers.external_id', $value)
+                        ->orWhereRaw('LOWER(servers.name) LIKE ?', ["%$value%"]);
+                });
+        }
     }
 }

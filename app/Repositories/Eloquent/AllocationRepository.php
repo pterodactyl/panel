@@ -42,17 +42,29 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      */
     protected function getDiscardableDedicatedAllocations(array $nodes = []): array
     {
-        $query = Allocation::query()->selectRaw('CONCAT_WS("-", node_id, ip) as result');
+        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+            $query = Allocation::query()->selectRaw('CONCAT_WS(\'-\', node_id, ip) as result');
+        } else {
+            $query = Allocation::query()->selectRaw('CONCAT_WS("-", node_id, ip) as result');
+        }
 
         if (!empty($nodes)) {
             $query->whereIn('node_id', $nodes);
         }
 
-        return $query->whereNotNull('server_id')
-            ->groupByRaw('CONCAT(node_id, ip)')
-            ->get()
-            ->pluck('result')
-            ->toArray();
+        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+            return $query->whereNotNull('server_id')
+                ->groupByRaw('node_id, ip')
+                ->get()
+                ->pluck('result')
+                ->toArray();
+        } else {
+            return $query->whereNotNull('server_id')
+                ->groupByRaw('CONCAT(node_id, ip)')
+                ->get()
+                ->pluck('result')
+                ->toArray();
+        }
     }
 
     /**

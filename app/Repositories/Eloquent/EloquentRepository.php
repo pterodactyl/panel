@@ -301,7 +301,12 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
             return sprintf('(%s)', $grammar->parameterize($record));
         })->implode(', ');
 
-        $statement = "insert ignore into $table ($columns) values $parameters";
+        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+            $statement = "insert into $table ($columns) values $parameters on conflict do nothing";
+        } else {
+            $statement = "insert ignore into $table ($columns) values $parameters";
+        }
+
 
         return $this->getBuilder()->getConnection()->statement($statement, $bindings);
     }
