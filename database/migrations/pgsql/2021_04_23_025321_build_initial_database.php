@@ -5,20 +5,20 @@ use Illuminate\Database\Migrations\Migration;
 
 class BuildInitialDatabase extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up()
-    {
-        DB::unprepared(file_get_contents(database_path('migrations\\pgsql\\initial.sql')));
-    }
+	/**
+	 * Run the migrations.
+	 */
+	public function up()
+	{
+		DB::unprepared(file_get_contents(database_path('migrations/pgsql/initial.sql')));
+	}
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down()
-    {
-        DB::statement('DROP TABLE IF EXISTS
+	/**
+	 * Reverse the migrations.
+	 */
+	public function down()
+	{
+		DB::statement('DROP TABLE IF EXISTS
                 locations,
 				api_logs,
 				tasks,
@@ -52,5 +52,5 @@ class BuildInitialDatabase extends Migration
 				servers,
 				subusers
 		CASCADE');
-    }
+	}
 }

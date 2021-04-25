@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         $driver = config('database.connections.' . env('DB_CONNECTION', 'mysql') . '.driver');
-        $this->loadMigrationsFrom(database_path("migrations\\$driver"));
+        $this->loadMigrationsFrom(database_path("migrations/$driver"));
 
         User::observe(UserObserver::class);
         Server::observe(ServerObserver::class);
