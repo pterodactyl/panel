@@ -30,16 +30,16 @@ class RunTaskJob extends Job implements ShouldQueue
     /**
      * @var bool
      */
-    public $now;
+    public $manualRun;
 
     /**
      * RunTaskJob constructor.
      */
-    public function __construct(Task $task, $now = false)
+    public function __construct(Task $task, $manualRun = false)
     {
         $this->queue = config('pterodactyl.queues.standard');
         $this->task = $task;
-        $this->now = $now;
+        $this->manualRun = $manualRun;
     }
 
     /**
@@ -52,8 +52,8 @@ class RunTaskJob extends Job implements ShouldQueue
         InitiateBackupService $backupService,
         DaemonPowerRepository $powerRepository
     ) {
-        // Do not process a task that is not set to active, unless it's been trigger by the run now API.
-        if ($this->task->schedule->is_active && !$this->now) {
+        // Do not process a task that is not set to active, unless it's been manually triggered.
+        if (!$this->task->schedule->is_active && !$this->manualRun) {
             $this->markTaskNotQueued();
             $this->markScheduleComplete();
 
@@ -107,7 +107,7 @@ class RunTaskJob extends Job implements ShouldQueue
 
         $nextTask->update(['is_queued' => true]);
 
-        $this->dispatch((new self($nextTask, $this->now))->delay($nextTask->time_offset));
+        $this->dispatch((new self($nextTask, $this->manualRun))->delay($nextTask->time_offset));
     }
 
     /**
