@@ -74,7 +74,18 @@ const MassActionsBar = () => {
                     onConfirmed={onClickConfirmDeletion}
                     onModalDismissed={() => setShowConfirm(false)}
                 >
-                    Deleting files is a permanent operation, you cannot undo this action.
+                    Are you sure you want to delete {selectedFiles.length} files?
+                    <br/>
+                    Deleting the files listed below is a permanent operation, you cannot undo this action.
+                    <br/>
+                    <code>
+                        { selectedFiles.slice(0, 15).map(file => (
+                            <li key={file}>{file}<br/></li>))
+                        }
+                        { selectedFiles.length > 15 &&
+                                    <li> + {selectedFiles.length - 15} other(s) </li>
+                        }
+                    </code>
                 </ConfirmationModal>
                 {showMove &&
                 <RenameFileModal
