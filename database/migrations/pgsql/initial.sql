@@ -13,7 +13,7 @@ CREATE TABLE public.api_logs (
 	route text NOT NULL,
 	content text NULL,
 	user_agent text NOT NULL,
-	request_ip varchar(45) NOT NULL,
+	request_ip inet NOT NULL,
 	created_at timestamptz NULL,
 	updated_at timestamptz NULL,
 	CONSTRAINT idx_16416_primary PRIMARY KEY (id)
@@ -195,7 +195,7 @@ CREATE INDEX idx_16569_password_resets_token_index ON public.password_resets USI
 CREATE TABLE public.sessions (
 	id varchar(191) NOT NULL,
 	user_id int8 NULL,
-	ip_address varchar(45) NULL,
+	ip_address inet NULL,
 	user_agent text NULL,
 	payload text NOT NULL,
 	last_activity int8 NOT NULL
@@ -451,7 +451,7 @@ CREATE INDEX idx_16481_service_variables_egg_id_foreign ON public.egg_variables 
 CREATE TABLE public.allocations (
 	id bigserial NOT NULL,
 	node_id int8 NOT NULL,
-	ip varchar(191) NOT NULL,
+	ip inet NOT NULL,
 	ip_alias text NULL,
 	port int4 NOT NULL,
 	server_id int8 NULL,
