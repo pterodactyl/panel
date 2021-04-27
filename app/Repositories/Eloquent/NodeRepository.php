@@ -4,6 +4,7 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface
@@ -23,7 +24,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getUsageStats(Node $node): array
     {
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             $stats = $this->getBuilder()
                 ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
                 ->join('servers', 'servers.node_id', '=', 'nodes.id')
@@ -63,7 +64,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getUsageStatsRaw(Node $node): array
     {
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             $stats = $this->getBuilder()->select(
                 $this->getBuilder()->raw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
             )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
@@ -114,7 +115,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function loadNodeAllocations(Node $node, bool $refresh = false): Node
     {
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             $node->setRelation(
                 'allocations',
                 $node->allocations()
@@ -169,7 +170,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodeWithResourceUsage(int $node_id): Node
     {
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             $instance = $this->getBuilder()
                 ->select(['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
                 ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')

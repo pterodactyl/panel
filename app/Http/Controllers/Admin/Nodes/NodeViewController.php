@@ -7,6 +7,7 @@ use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -118,7 +119,7 @@ class NodeViewController extends Controller
 
         $this->plainInject(['node' => Collection::wrap($node)->only(['id'])]);
 
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             return $this->view->make('admin.nodes.view.allocation', [
                 'node' => $node,
                 'allocations' => Allocation::query()->where('node_id', $node->id)

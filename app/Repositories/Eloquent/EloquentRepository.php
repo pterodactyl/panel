@@ -5,6 +5,7 @@ namespace Pterodactyl\Repositories\Eloquent;
 use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Repositories\Repository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
@@ -301,7 +302,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
             return sprintf('(%s)', $grammar->parameterize($record));
         })->implode(', ');
 
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             $statement = "insert into $table ($columns) values $parameters on conflict do nothing";
         } else {
             $statement = "insert ignore into $table ($columns) values $parameters";

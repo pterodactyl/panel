@@ -5,6 +5,7 @@ namespace Pterodactyl\Services\Deployment;
 use Pterodactyl\Models\Node;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
+use Illuminate\Support\Facades\DB;
 
 class FindViableNodesService
 {
@@ -88,7 +89,7 @@ class FindViableNodesService
         Assert::integer($this->disk, 'Disk space must be an int, got %s');
         Assert::integer($this->memory, 'Memory usage must be an int, got %s');
 
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             $query = Node::query()->select('nodes.*')
                 ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory')
                 ->selectRaw('COALESCE(SUM(servers.disk), 0) as sum_disk')
@@ -106,7 +107,7 @@ class FindViableNodesService
             $query = $query->whereIn('nodes.location_id', $this->locations);
         }
 
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             $results = $query->groupBy('nodes.id')
                 ->havingRaw('(COALESCE(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate::decimal / 100)))', [$this->memory])
                 ->havingRaw('(COALESCE(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate::decimal / 100)))', [$this->disk]);

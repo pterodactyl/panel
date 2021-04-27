@@ -4,6 +4,7 @@ namespace Pterodactyl\Models\Filters;
 
 use BadMethodCallException;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -58,7 +59,7 @@ class MultiFieldServerFilter implements Filter
             return;
         }
 
-        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+        if (DB::getDriverName() === 'pgsql') {
             $query
                 ->where(function (Builder $builder) use ($value) {
                     $builder->where('servers.uuid', $value)
