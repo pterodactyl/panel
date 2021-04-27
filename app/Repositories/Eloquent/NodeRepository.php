@@ -114,15 +114,27 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function loadNodeAllocations(Node $node, bool $refresh = false): Node
     {
-        $node->setRelation(
-            'allocations',
-            $node->allocations()
-                ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
-                ->orderByRaw('INET_ATON(ip) ASC')
-                ->orderBy('port', 'asc')
-                ->with('server:id,name')
-                ->paginate(50)
-        );
+        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+            $node->setRelation(
+                'allocations',
+                $node->allocations()
+                    ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
+                    ->orderByRaw('ip ASC')
+                    ->orderBy('port', 'asc')
+                    ->with('server:id,name')
+                    ->paginate(50)
+            );
+        } else {
+            $node->setRelation(
+                'allocations',
+                $node->allocations()
+                    ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
+                    ->orderByRaw('INET_ATON(ip) ASC')
+                    ->orderBy('port', 'asc')
+                    ->with('server:id,name')
+                    ->paginate(50)
+            );
+        }
 
         return $node;
     }

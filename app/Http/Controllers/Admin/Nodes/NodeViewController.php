@@ -118,13 +118,23 @@ class NodeViewController extends Controller
 
         $this->plainInject(['node' => Collection::wrap($node)->only(['id'])]);
 
-        return $this->view->make('admin.nodes.view.allocation', [
-            'node' => $node,
-            'allocations' => Allocation::query()->where('node_id', $node->id)
-                ->groupBy('ip')
-                ->orderByRaw('INET_ATON(ip) ASC')
-                ->get(['ip']),
-        ]);
+        if (config('database.connections.' . env('DB_CONNECTION') . '.driver') === 'pgsql') {
+            return $this->view->make('admin.nodes.view.allocation', [
+                'node' => $node,
+                'allocations' => Allocation::query()->where('node_id', $node->id)
+                    ->groupBy('ip')
+                    ->orderByRaw('ip ASC')
+                    ->get(['ip']),
+            ]);
+        } else {
+            return $this->view->make('admin.nodes.view.allocation', [
+                'node' => $node,
+                'allocations' => Allocation::query()->where('node_id', $node->id)
+                    ->groupBy('ip')
+                    ->orderByRaw('INET_ATON(ip) ASC')
+                    ->get(['ip']),
+            ]);
+        }
     }
 
     /**
