@@ -1,8 +1,4 @@
--- public.api_logs definition
-
--- Drop table
-
--- DROP TABLE public.api_logs;
+-- public.api_logs
 
 CREATE TABLE public.api_logs (
 	id bigserial NOT NULL,
@@ -20,11 +16,7 @@ CREATE TABLE public.api_logs (
 );
 
 
--- public.egg_mount definition
-
--- Drop table
-
--- DROP TABLE public.egg_mount;
+-- public.egg_mount
 
 CREATE TABLE public.egg_mount (
 	egg_id int8 NOT NULL,
@@ -33,11 +25,7 @@ CREATE TABLE public.egg_mount (
 CREATE UNIQUE INDEX idx_16476_egg_mount_egg_id_mount_id_unique ON public.egg_mount USING btree (egg_id, mount_id);
 
 
--- public.failed_jobs definition
-
--- Drop table
-
--- DROP TABLE public.failed_jobs;
+-- public.failed_jobs
 
 CREATE TABLE public.failed_jobs (
 	id bigserial NOT NULL,
@@ -49,11 +37,8 @@ CREATE TABLE public.failed_jobs (
 	CONSTRAINT idx_16490_primary PRIMARY KEY (id)
 );
 
--- public.jobs definition
 
--- Drop table
-
--- DROP TABLE public.jobs;
+-- public.jobs
 
 CREATE TABLE public.jobs (
 	id bigserial NOT NULL,
@@ -68,11 +53,7 @@ CREATE TABLE public.jobs (
 CREATE INDEX idx_16499_jobs_queue_reserved_at_index ON public.jobs USING btree (queue, reserved_at);
 
 
--- public.locations definition
-
--- Drop table
-
--- DROP TABLE public.locations;
+-- public.locations
 
 CREATE TABLE public.locations (
 	id bigserial NOT NULL,
@@ -85,11 +66,7 @@ CREATE TABLE public.locations (
 CREATE UNIQUE INDEX idx_16508_locations_short_unique ON public.locations USING btree (short);
 
 
--- public.mount_node definition
-
--- Drop table
-
--- DROP TABLE public.mount_node;
+-- public.mount_node
 
 CREATE TABLE public.mount_node (
 	node_id int8 NOT NULL,
@@ -98,11 +75,7 @@ CREATE TABLE public.mount_node (
 CREATE UNIQUE INDEX idx_16530_mount_node_node_id_mount_id_unique ON public.mount_node USING btree (node_id, mount_id);
 
 
--- public.mount_server definition
-
--- Drop table
-
--- DROP TABLE public.mount_server;
+-- public.mount_server
 
 CREATE TABLE public.mount_server (
 	server_id int8 NOT NULL,
@@ -111,11 +84,7 @@ CREATE TABLE public.mount_server (
 CREATE UNIQUE INDEX idx_16533_mount_server_server_id_mount_id_unique ON public.mount_server USING btree (server_id, mount_id);
 
 
--- public.mounts definition
-
--- Drop table
-
--- DROP TABLE public.mounts;
+-- public.mounts
 
 CREATE TABLE public.mounts (
 	id bigserial NOT NULL,
@@ -133,11 +102,7 @@ CREATE UNIQUE INDEX idx_16523_mounts_name_unique ON public.mounts USING btree (n
 CREATE UNIQUE INDEX idx_16523_mounts_uuid_unique ON public.mounts USING btree (uuid);
 
 
--- public.nests definition
-
--- Drop table
-
--- DROP TABLE public.nests;
+-- public.nests
 
 CREATE TABLE public.nests (
 	id bigserial NOT NULL,
@@ -152,11 +117,7 @@ CREATE TABLE public.nests (
 CREATE UNIQUE INDEX idx_16538_services_uuid_unique ON public.nests USING btree (uuid);
 
 
--- public.notifications definition
-
--- Drop table
-
--- DROP TABLE public.notifications;
+-- public.notifications
 
 CREATE TABLE public.notifications (
 	id varchar(191) NOT NULL,
@@ -172,11 +133,7 @@ CREATE TABLE public.notifications (
 CREATE INDEX idx_16563_notifications_notifiable_type_notifiable_id_index ON public.notifications USING btree (notifiable_type, notifiable_id);
 
 
--- public.password_resets definition
-
--- Drop table
-
--- DROP TABLE public.password_resets;
+-- public.password_resets
 
 CREATE TABLE public.password_resets (
 	email varchar(191) NOT NULL,
@@ -186,11 +143,8 @@ CREATE TABLE public.password_resets (
 CREATE INDEX idx_16569_password_resets_email_index ON public.password_resets USING btree (email);
 CREATE INDEX idx_16569_password_resets_token_index ON public.password_resets USING btree (token);
 
--- public.sessions definition
 
--- Drop table
-
--- DROP TABLE public.sessions;
+-- public.sessions
 
 CREATE TABLE public.sessions (
 	id varchar(191) NOT NULL,
@@ -203,11 +157,7 @@ CREATE TABLE public.sessions (
 CREATE UNIQUE INDEX idx_16619_sessions_id_unique ON public.sessions USING btree (id);
 
 
--- public.settings definition
-
--- Drop table
-
--- DROP TABLE public.settings;
+-- public.settings
 
 CREATE TABLE public.settings (
 	id bigserial NOT NULL,
@@ -218,11 +168,7 @@ CREATE TABLE public.settings (
 CREATE UNIQUE INDEX idx_16627_settings_key_unique ON public.settings USING btree (key);
 
 
--- public.tasks_log definition
-
--- Drop table
-
--- DROP TABLE public.tasks_log;
+-- public.tasks_log
 
 CREATE TABLE public.tasks_log (
 	id bigserial NOT NULL,
@@ -235,11 +181,8 @@ CREATE TABLE public.tasks_log (
 	CONSTRAINT idx_16654_primary PRIMARY KEY (id)
 );
 
--- public.users definition
 
--- Drop table
-
--- DROP TABLE public.users;
+-- public.users
 
 CREATE TABLE public.users (
 	id bigserial NOT NULL,
@@ -267,11 +210,7 @@ CREATE UNIQUE INDEX idx_16663_users_username_unique ON public.users USING btree 
 CREATE UNIQUE INDEX idx_16663_users_uuid_unique ON public.users USING btree (uuid);
 
 
--- public.api_keys definition
-
--- Drop table
-
--- DROP TABLE public.api_keys;
+-- public.api_keys
 
 CREATE TABLE public.api_keys (
 	id bigserial NOT NULL,
@@ -300,11 +239,7 @@ CREATE UNIQUE INDEX idx_16397_api_keys_identifier_unique ON public.api_keys USIN
 CREATE INDEX idx_16397_api_keys_user_id_foreign ON public.api_keys USING btree (user_id);
 
 
--- public.eggs definition
-
--- Drop table
-
--- DROP TABLE public.eggs;
+-- public.eggs
 
 CREATE TABLE public.eggs (
 	id bigserial NOT NULL,
@@ -341,11 +276,7 @@ CREATE INDEX idx_16466_service_options_nest_id_foreign ON public.eggs USING btre
 CREATE UNIQUE INDEX idx_16466_service_options_uuid_unique ON public.eggs USING btree (uuid);
 
 
--- public.nodes definition
-
--- Drop table
-
--- DROP TABLE public.nodes;
+-- public.nodes
 
 CREATE TABLE public.nodes (
 	id bigserial NOT NULL,
@@ -378,11 +309,7 @@ CREATE INDEX idx_16547_nodes_location_id_foreign ON public.nodes USING btree (lo
 CREATE UNIQUE INDEX idx_16547_nodes_uuid_unique ON public.nodes USING btree (uuid);
 
 
--- public.recovery_tokens definition
-
--- Drop table
-
--- DROP TABLE public.recovery_tokens;
+-- public.recovery_tokens
 
 CREATE TABLE public.recovery_tokens (
 	id bigserial NOT NULL,
@@ -395,11 +322,7 @@ CREATE TABLE public.recovery_tokens (
 CREATE INDEX idx_16574_recovery_tokens_user_id_foreign ON public.recovery_tokens USING btree (user_id);
 
 
--- public.database_hosts definition
-
--- Drop table
-
--- DROP TABLE public.database_hosts;
+-- public.database_hosts
 
 CREATE TABLE public.database_hosts (
 	id bigserial NOT NULL,
@@ -418,11 +341,7 @@ CREATE TABLE public.database_hosts (
 CREATE INDEX idx_16457_database_hosts_node_id_foreign ON public.database_hosts USING btree (node_id);
 
 
--- public.egg_variables definition
-
--- Drop table
-
--- DROP TABLE public.egg_variables;
+-- public.egg_variables
 
 CREATE TABLE public.egg_variables (
 	id bigserial NOT NULL,
@@ -442,11 +361,7 @@ CREATE TABLE public.egg_variables (
 CREATE INDEX idx_16481_service_variables_egg_id_foreign ON public.egg_variables USING btree (egg_id);
 
 
--- public.allocations definition
-
--- Drop table
-
--- DROP TABLE public.allocations;
+-- public.allocations
 
 CREATE TABLE public.allocations (
 	id bigserial NOT NULL,
@@ -464,11 +379,7 @@ CREATE UNIQUE INDEX idx_16388_allocations_node_id_ip_port_unique ON public.alloc
 CREATE INDEX idx_16388_allocations_server_id_foreign ON public.allocations USING btree (server_id);
 
 
--- public.audit_logs definition
-
--- Drop table
-
--- DROP TABLE public.audit_logs;
+-- public.audit_logs
 
 CREATE TABLE public.audit_logs (
 	id bigserial NOT NULL,
@@ -487,11 +398,8 @@ CREATE INDEX idx_16425_audit_logs_action_server_id_index ON public.audit_logs US
 CREATE INDEX idx_16425_audit_logs_server_id_foreign ON public.audit_logs USING btree (server_id);
 CREATE INDEX idx_16425_audit_logs_user_id_foreign ON public.audit_logs USING btree (user_id);
 
--- public.backups definition
 
--- Drop table
-
--- DROP TABLE public.backups;
+-- public.backups
 
 CREATE TABLE public.backups (
 	id bigserial NOT NULL,
@@ -514,11 +422,7 @@ CREATE INDEX idx_16435_backups_server_id_foreign ON public.backups USING btree (
 CREATE UNIQUE INDEX idx_16435_backups_uuid_unique ON public.backups USING btree (uuid);
 
 
--- public.databases definition
-
--- Drop table
-
--- DROP TABLE public.databases;
+-- public.databases
 
 CREATE TABLE public.databases (
 	id bigserial NOT NULL,
@@ -538,11 +442,7 @@ CREATE UNIQUE INDEX idx_16446_databases_database_host_id_username_unique ON publ
 CREATE INDEX idx_16446_databases_server_id_foreign ON public.databases USING btree (server_id);
 
 
--- public.schedules definition
-
--- Drop table
-
--- DROP TABLE public.schedules;
+-- public.schedules
 
 CREATE TABLE public.schedules (
 	id bigserial NOT NULL,
@@ -564,11 +464,7 @@ CREATE TABLE public.schedules (
 CREATE INDEX idx_16580_schedules_server_id_foreign ON public.schedules USING btree (server_id);
 
 
--- public.server_transfers definition
-
--- Drop table
-
--- DROP TABLE public.server_transfers;
+-- public.server_transfers
 
 CREATE TABLE public.server_transfers (
 	id bigserial NOT NULL,
@@ -588,11 +484,7 @@ CREATE TABLE public.server_transfers (
 CREATE INDEX idx_16602_server_transfers_server_id_foreign ON public.server_transfers USING btree (server_id);
 
 
--- public.server_variables definition
-
--- Drop table
-
--- DROP TABLE public.server_variables;
+-- public.server_variables
 
 CREATE TABLE public.server_variables (
 	id bigserial NOT NULL,
@@ -607,11 +499,7 @@ CREATE INDEX idx_16612_server_variables_server_id_foreign ON public.server_varia
 CREATE INDEX idx_16612_server_variables_variable_id_foreign ON public.server_variables USING btree (variable_id);
 
 
--- public.servers definition
-
--- Drop table
-
--- DROP TABLE public.servers;
+-- public.servers
 
 CREATE TABLE public.servers (
 	id bigserial NOT NULL,
@@ -653,11 +541,7 @@ CREATE UNIQUE INDEX idx_16589_servers_uuid_unique ON public.servers USING btree 
 CREATE UNIQUE INDEX idx_16589_servers_uuidshort_unique ON public.servers USING btree ("uuidShort");
 
 
--- public.subusers definition
-
--- Drop table
-
--- DROP TABLE public.subusers;
+-- public.subusers
 
 CREATE TABLE public.subusers (
 	id bigserial NOT NULL,
@@ -672,11 +556,7 @@ CREATE INDEX idx_16636_subusers_server_id_foreign ON public.subusers USING btree
 CREATE INDEX idx_16636_subusers_user_id_foreign ON public.subusers USING btree (user_id);
 
 
--- public.tasks definition
-
--- Drop table
-
--- DROP TABLE public.tasks;
+-- public.tasks
 
 CREATE TABLE public.tasks (
 	id bigserial NOT NULL,
