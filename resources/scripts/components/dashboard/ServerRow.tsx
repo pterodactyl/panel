@@ -133,7 +133,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                         <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>
                             <Icon icon={faMicrochip} $alarm={alarms.cpu}/>
                             <IconDescription $alarm={alarms.cpu}>
-                                {stats.cpuUsagePercent} %
+                                {stats.cpuUsagePercent.toFixed(2)} %
                             </IconDescription>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
