@@ -74,9 +74,9 @@ const MassActionsBar = () => {
                     onConfirmed={onClickConfirmDeletion}
                     onModalDismissed={() => setShowConfirm(false)}
                 >
-                    Are you sure you want to delete {selectedFiles.length} files?
+                    Are you sure you want to delete {selectedFiles.length} file(s)?
                     <br/>
-                    Deleting the files listed below is a permanent operation, you cannot undo this action.
+                    Deleting the file(s) listed below is a permanent operation, you cannot undo this action.
                     <br/>
                     <code>
                         { selectedFiles.slice(0, 15).map(file => (
