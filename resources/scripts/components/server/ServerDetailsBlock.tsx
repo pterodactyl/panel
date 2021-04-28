@@ -74,7 +74,7 @@ const ServerDetailsBlock = () => {
 
     const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
     const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
-    const cpuLimit = limits.cpu !== 0 ? limits.cpu + '%' : 'Unlimited';
+    const cpuLimit = limits.cpu ? limits.cpu + '%' : 'Unlimited';
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
