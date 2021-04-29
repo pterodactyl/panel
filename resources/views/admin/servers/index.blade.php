@@ -39,10 +39,16 @@
                 <table class="table table-hover">
                     <tbody>
                         <tr>
-                            <th>Server Name</th>
+                            <th>
+                                @include('admin.servers.partials.sortable_column', ['name' => 'Server Name', 'column' => 'name'])
+                            </th>
                             <th>UUID</th>
-                            <th>Owner</th>
-                            <th>Node</th>
+                            <th>
+                                @include('admin.servers.partials.sortable_column', ['name' => 'Owner', 'column' => 'owner'])
+                            </th>
+                            <th>
+                                @include('admin.servers.partials.sortable_column', ['name' => 'Node', 'column' => 'node'])
+                            </th>
                             <th>Connection</th>
                             <th></th>
                             <th></th>
