@@ -15,6 +15,6 @@ class NodeServerSorter implements Sort
             throw new BadMethodCallException('Cannot use the NodeServerSorter against a non-server model.');
         }
 
-        $query->join('nodes', 'nodes.id', '=', 'servers.node_id')->orderBy('nodes.name', $descending ? 'DESC' : 'ASC');
+        $query->join('nodes as ns', 'ns.id', '=', 'servers.node_id')->orderBy('ns.name', $descending ? 'DESC' : 'ASC');
     }
 }

@@ -15,6 +15,6 @@ class AdminServerSorter implements Sort
             throw new BadMethodCallException('Cannot use the AdminServerSorter against a non-server model.');
         }
 
-        $query->join('users', 'users.id', '=', 'servers.owner_id')->orderBy('users.username', $descending ? 'DESC' : 'ASC');
+        $query->join('users as us', 'us.id', '=', 'servers.owner_id')->orderBy('us.username', $descending ? 'DESC' : 'ASC');
     }
 }
