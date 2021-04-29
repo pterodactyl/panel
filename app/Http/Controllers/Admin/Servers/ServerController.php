@@ -4,6 +4,9 @@ namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Sorters\AdminServerSorter;
+use Pterodactyl\Models\Sorters\NodeServerSorter;
+use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Contracts\View\Factory;
 use Spatie\QueryBuilder\AllowedFilter;
@@ -29,7 +32,8 @@ class ServerController extends Controller
     public function __construct(
         Factory $view,
         ServerRepository $repository
-    ) {
+    )
+    {
         $this->view = $view;
         $this->repository = $repository;
     }
@@ -46,6 +50,11 @@ class ServerController extends Controller
             ->allowedFilters([
                 AllowedFilter::exact('owner_id'),
                 AllowedFilter::custom('*', new AdminServerFilter()),
+            ])
+            ->allowedSorts([
+                'name',
+                AllowedSort::custom('owner', new AdminServerSorter()),
+                AllowedSort::custom('node', new NodeServerSorter()),
             ])
             ->paginate(config()->get('pterodactyl.paginate.admin.servers'));
 
