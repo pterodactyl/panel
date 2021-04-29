@@ -26,6 +26,7 @@
                 <div class="box-tools search01">
                     <form action="{{ route('admin.servers') }}" method="GET">
                         <div class="input-group input-group-sm">
+                            <input type="hidden" name="sort" value="{{ request()->get('sort') }}">
                             <input type="text" name="filter[*]" class="form-control pull-right" value="{{ request()->input()['filter']['*'] ?? '' }}" placeholder="Search Servers">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
