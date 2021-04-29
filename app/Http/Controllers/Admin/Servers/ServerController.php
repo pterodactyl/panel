@@ -4,14 +4,14 @@ namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Sorters\AdminServerSorter;
-use Pterodactyl\Models\Sorters\NodeServerSorter;
 use Spatie\QueryBuilder\AllowedSort;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Contracts\View\Factory;
 use Spatie\QueryBuilder\AllowedFilter;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Models\Sorters\NodeServerSorter;
 use Pterodactyl\Models\Filters\AdminServerFilter;
+use Pterodactyl\Models\Sorters\AdminServerSorter;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 
 class ServerController extends Controller
@@ -32,8 +32,7 @@ class ServerController extends Controller
     public function __construct(
         Factory $view,
         ServerRepository $repository
-    )
-    {
+    ) {
         $this->view = $view;
         $this->repository = $repository;
     }
