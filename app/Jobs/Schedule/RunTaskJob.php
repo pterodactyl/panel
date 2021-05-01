@@ -74,7 +74,7 @@ class RunTaskJob extends Job implements ShouldQueue
                     $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
                     break;
                 default:
-                    throw new InvalidArgumentException('Cannot run a task that points to a non-existent action.');
+                    throw new InvalidArgumentException('Invalid task action provided: ' . $this->task->action);
             }
         } catch (Exception $exception) {
             // If this isn't a DaemonConnectionException on a task that allows for failures
