@@ -104,15 +104,15 @@ const EditScheduleModal = ({ schedule }: Props) => {
                     </p>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
-                            name={'only_when_online'}
-                            description={'If disabled this schedule will always run, regardless of the server\'s current power state.'}
+                            name={'onlyWhenOnline'}
+                            description={'Only execute this schedule when the server is in a running state.'}
                             label={'Only When Server Is Online'}
                         />
                     </div>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'enabled'}
-                            description={'If disabled this schedule and it\'s associated tasks will not run.'}
+                            description={'This schedule will be executed automatically if enabled.'}
                             label={'Schedule Enabled'}
                         />
                     </div>
