@@ -12,6 +12,7 @@ export interface Schedule {
     };
     isActive: boolean;
     isProcessing: boolean;
+    onlyWhenOnline: boolean;
     lastRunAt: Date | null;
     nextRunAt: Date | null;
     createdAt: Date;
@@ -27,6 +28,7 @@ export interface Task {
     payload: string;
     timeOffset: number;
     isQueued: boolean;
+    continueOnFailure: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -38,6 +40,7 @@ export const rawDataToServerTask = (data: any): Task => ({
     payload: data.payload,
     timeOffset: data.time_offset,
     isQueued: data.is_queued,
+    continueOnFailure: data.continue_on_failure,
     createdAt: new Date(data.created_at),
     updatedAt: new Date(data.updated_at),
 });
@@ -54,6 +57,7 @@ export const rawDataToServerSchedule = (data: any): Schedule => ({
     },
     isActive: data.is_active,
     isProcessing: data.is_processing,
+    onlyWhenOnline: data.only_when_online,
     lastRunAt: data.last_run_at ? new Date(data.last_run_at) : null,
     nextRunAt: data.next_run_at ? new Date(data.next_run_at) : null,
     createdAt: new Date(data.created_at),
@@ -62,14 +66,12 @@ export const rawDataToServerSchedule = (data: any): Schedule => ({
     tasks: (data.relationships?.tasks?.data || []).map((row: any) => rawDataToServerTask(row.attributes)),
 });
 
-export default (uuid: string): Promise<Schedule[]> => {
-    return new Promise((resolve, reject) => {
-        http.get(`/api/client/servers/${uuid}/schedules`, {
-            params: {
-                include: [ 'tasks' ],
-            },
-        })
-            .then(({ data }) => resolve((data.data || []).map((row: any) => rawDataToServerSchedule(row.attributes))))
-            .catch(reject);
+export default async (uuid: string): Promise<Schedule[]> => {
+    const { data } = await http.get(`/api/client/servers/${uuid}/schedules`, {
+        params: {
+            include: [ 'tasks' ],
+        },
     });
+
+    return (data.data || []).map((row: any) => rawDataToServerSchedule(row.attributes));
 };

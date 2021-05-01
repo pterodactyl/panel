@@ -17,7 +17,7 @@ const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, la
     <FormikField innerRef={ref} name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
-                <>
+                <div>
                     {label &&
                     <Label htmlFor={id} isLight={light}>{label}</Label>
                     }
@@ -35,7 +35,7 @@ const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, la
                         :
                         description ? <p className={'input-help'}>{description}</p> : null
                     }
-                </>
+                </div>
             )
         }
     </FormikField>

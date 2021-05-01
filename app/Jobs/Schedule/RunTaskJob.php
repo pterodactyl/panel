@@ -7,6 +7,7 @@ use Pterodactyl\Jobs\Job;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Task;
 use InvalidArgumentException;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,6 +16,7 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class RunTaskJob extends Job implements ShouldQueue
 {
@@ -62,18 +64,32 @@ class RunTaskJob extends Job implements ShouldQueue
 
         $server = $this->task->server;
         // Perform the provided task against the daemon.
-        switch ($this->task->action) {
-            case 'power':
-                $powerRepository->setServer($server)->send($this->task->payload);
-                break;
-            case 'command':
-                $commandRepository->setServer($server)->send($this->task->payload);
-                break;
-            case 'backup':
-                $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
-                break;
-            default:
-                throw new InvalidArgumentException('Cannot run a task that points to a non-existent action.');
+        try {
+            switch ($this->task->action) {
+                case Task::ACTION_POWER:
+                    $powerRepository->setServer($server)->send($this->task->payload);
+                    break;
+                case Task::ACTION_COMMAND:
+                    $commandRepository->setServer($server)->send($this->task->payload);
+                    break;
+                case Task::ACTION_BACKUP:
+                    $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
+                    break;
+                default:
+                    throw new InvalidArgumentException('Cannot run a task that points to a non-existent action.');
+            }
+        } catch (Exception $exception) {
+            if ($exception instanceof DaemonConnectionException) {
+                // If the task "failed" because the server is offline and it was sending a command or
+                // executing a power action (which shouldn't happen?) then just stop trying to process
+                // the schedule, but don't actually log the failure.
+                if ($this->task->action === Task::ACTION_POWER || $this->task->action === Task::ACTION_COMMAND) {
+                    // Do the thing
+                    if ($exception->getStatusCode() === Response::HTTP_CONFLICT) {
+                    }
+                }
+            }
+            throw $exception;
         }
 
         $this->markTaskNotQueued();
