@@ -79,7 +79,8 @@ const EditScheduleModal = ({ schedule }: Props) => {
                 dayOfMonth: schedule?.cron.dayOfMonth || '*',
                 month: schedule?.cron.month || '*',
                 dayOfWeek: schedule?.cron.dayOfWeek || '*',
-                enabled: schedule ? schedule.isActive : true,
+                enabled: schedule?.isActive ?? true,
+                onlyWhenOnline: schedule?.onlyWhenOnline ?? true,
             } as Values}
         >
             {({ isSubmitting }) => (
