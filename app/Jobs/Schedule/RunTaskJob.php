@@ -7,8 +7,6 @@ use Pterodactyl\Jobs\Job;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Task;
 use InvalidArgumentException;
-use Illuminate\Http\Response;
-use Pterodactyl\Models\Schedule;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -79,17 +77,11 @@ class RunTaskJob extends Job implements ShouldQueue
                     throw new InvalidArgumentException('Cannot run a task that points to a non-existent action.');
             }
         } catch (Exception $exception) {
-            if ($exception instanceof DaemonConnectionException) {
-                // If the task "failed" because the server is offline and it was sending a command or
-                // executing a power action (which shouldn't happen?) then just stop trying to process
-                // the schedule, but don't actually log the failure.
-                if ($this->task->action === Task::ACTION_POWER || $this->task->action === Task::ACTION_COMMAND) {
-                    // Do the thing
-                    if ($exception->getStatusCode() === Response::HTTP_CONFLICT) {
-                    }
-                }
+            // If this isn't a DaemonConnectionException on a task that allows for failures
+            // throw the exception back up the chain so that the task is stopped.
+            if (!($this->task->continue_on_failure && $exception instanceof DaemonConnectionException)) {
+                throw $exception;
             }
-            throw $exception;
         }
 
         $this->markTaskNotQueued();
