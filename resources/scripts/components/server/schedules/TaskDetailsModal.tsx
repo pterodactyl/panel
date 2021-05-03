@@ -82,7 +82,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
         if (backupLimit === 0 && values.action === 'backup') {
             console.error('This server is not allowed to create backups.');
             setSubmitting(false);
-            addError({ message: 'This server is not allow to create backups.', key: 'schedule:task' });
+            addError({ message: 'This server is not allowed to create backups.', key: 'schedule:task' });
         } else {
             createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
                 .then(task => {
