@@ -51,7 +51,11 @@
                         @foreach ($servers as $server)
                             <tr data-server="{{ $server->uuidShort }}">
                                 <td><a href="{{ route('admin.servers.view', $server->id) }}">{{ $server->name }}</a></td>
-                                <td><code title="{{ $server->external_id }}">{{ $server->external_id }}</code></td>
+                                @if(is_null($server->external_id))
+                                    <td><span class="label label-default">Not Set</span></td>
+                                @else
+                                    <td><code>{{ $server->external_id }}</code></td>
+                                @endif
                                 <td><code title="{{ $server->uuid }}">{{ $server->uuid }}</code></td>
                                 <td><a href="{{ route('admin.users.view', $server->user->id) }}">{{ $server->user->username }}</a></td>
                                 <td><a href="{{ route('admin.nodes.view', $server->node->id) }}">{{ $server->node->name }}</a></td>
