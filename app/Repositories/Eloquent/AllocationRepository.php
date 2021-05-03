@@ -53,19 +53,11 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
             $query->whereIn('node_id', $nodes);
         }
 
-        if (DB::getDriverName() === 'pgsql') {
-            return $query->whereNotNull('server_id')
-                ->groupByRaw('node_id, ip')
-                ->get()
-                ->pluck('result')
-                ->toArray();
-        } else {
-            return $query->whereNotNull('server_id')
-                ->groupByRaw('CONCAT(node_id, ip)')
-                ->get()
-                ->pluck('result')
-                ->toArray();
-        }
+        return $query->whereNotNull('server_id')
+            ->groupByRaw(DB::getDriverName() === 'pgsql' ? 'node_id, ip' : 'CONCAT(node_id, ip)')
+            ->get()
+            ->pluck('result')
+            ->toArray();
     }
 
     /**

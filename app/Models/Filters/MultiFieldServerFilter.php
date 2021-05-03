@@ -59,24 +59,13 @@ class MultiFieldServerFilter implements Filter
             return;
         }
 
-        if (DB::getDriverName() === 'pgsql') {
-            $query
-                ->where(function (Builder $builder) use ($value) {
-                    $builder->where('servers.uuid', $value)
-                        ->orWhere('servers.uuid', 'LIKE', "$value%")
-                        ->orWhere('servers.uuidShort', $value)
-                        ->orWhere('servers.external_id', $value)
-                        ->orWhereRaw('servers.name ILIKE ?', ["%$value%"]);
-                });
-        } else {
-            $query
-                ->where(function (Builder $builder) use ($value) {
-                    $builder->where('servers.uuid', $value)
-                        ->orWhere('servers.uuid', 'LIKE', "$value%")
-                        ->orWhere('servers.uuidShort', $value)
-                        ->orWhere('servers.external_id', $value)
-                        ->orWhereRaw('LOWER(servers.name) LIKE ?', ["%$value%"]);
-                });
-        }
+        $query
+            ->where(function (Builder $builder) use ($value) {
+                $builder->where('servers.uuid', $value)
+                    ->orWhere('servers.uuid', 'LIKE', "$value%")
+                    ->orWhere('servers.uuidShort', $value)
+                    ->orWhere('servers.external_id', $value)
+                    ->orWhereRaw(DB::getDriverName() === 'pgsql' ? 'servers.name ILIKE ?' : 'LOWER(servers.name) LIKE ?', ["%$value%"]);
+            });
     }
 }
