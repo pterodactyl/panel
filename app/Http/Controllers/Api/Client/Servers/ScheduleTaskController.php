@@ -59,6 +59,7 @@ class ScheduleTaskController extends ClientApiController
             'action' => $request->input('action'),
             'payload' => $request->input('payload') ?? '',
             'time_offset' => $request->input('time_offset'),
+            'continue_on_failure' => (bool) $request->input('continue_on_failure'),
         ]);
 
         return $this->fractal->item($task)
@@ -84,6 +85,7 @@ class ScheduleTaskController extends ClientApiController
             'action' => $request->input('action'),
             'payload' => $request->input('payload') ?? '',
             'time_offset' => $request->input('time_offset'),
+            'continue_on_failure' => (bool) $request->input('continue_on_failure'),
         ]);
 
         return $this->fractal->item($task->refresh())

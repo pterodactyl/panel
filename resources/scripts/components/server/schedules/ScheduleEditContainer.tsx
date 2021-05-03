@@ -153,7 +153,7 @@ export default () => {
                             }
                         </div>
                     </div>
-                    <EditScheduleModal visible={showEditModal} schedule={schedule} onDismissed={toggleEditModal}/>
+                    <EditScheduleModal visible={showEditModal} schedule={schedule} onModalDismissed={toggleEditModal}/>
                     <div css={tw`mt-6 flex sm:justify-end`}>
                         <Can action={'schedule.delete'}>
                             <DeleteScheduleButton
