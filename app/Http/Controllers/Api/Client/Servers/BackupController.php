@@ -61,8 +61,6 @@ class BackupController extends ClientApiController
      * Returns all of the backups for a given server instance in a paginated
      * result set.
      *
-     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
-     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request, Server $server): array
@@ -89,11 +87,18 @@ class BackupController extends ClientApiController
     {
         /** @var \Pterodactyl\Models\Backup $backup */
         $backup = $server->audit(AuditLog::SERVER__BACKUP_STARTED, function (AuditLog $model, Server $server) use ($request) {
-            $backup = $this->initiateBackupService
-                ->setIgnoredFiles(
-                    explode(PHP_EOL, $request->input('ignored') ?? '')
-                )
-                ->handle($server, $request->input('name'));
+            $action = $this->initiateBackupService
+                ->setIgnoredFiles(explode(PHP_EOL, $request->input('ignored') ?? ''));
+
+            // Only set the lock status if the user even has permission to delete backups,
+            // otherwise ignore this status. This gets a little funky since it isn't clear
+            // how best to allow a user to create a backup that is locked without also preventing
+            // them from just filling up a server with backups that can never be deleted?
+            if ($request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
+                $action->setIsLocked((bool) $request->input('is_locked'));
+            }
+
+            $backup = $action->handle($server, $request->input('name'));
 
             $model->metadata = ['backup_uuid' => $backup->uuid];
 
@@ -106,10 +111,34 @@ class BackupController extends ClientApiController
     }
 
     /**
+     * Toggles the lock status of a given backup for a server.
+     *
+     * @throws \Throwable
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function toggleLock(Request $request, Server $server, Backup $backup): array
+    {
+        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
+            throw new AuthorizationException();
+        }
+
+        $action = $backup->is_locked ? AuditLog::SERVER__BACKUP_UNLOCKED : AuditLog::SERVER__BACKUP_LOCKED;
+        $server->audit($action, function (AuditLog $audit) use ($backup) {
+            $audit->metadata = ['backup_uuid' => $backup->uuid];
+
+            $backup->update(['is_locked' => !$backup->is_locked]);
+        });
+
+        $backup->refresh();
+
+        return $this->fractal->item($backup)
+            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->toArray();
+    }
+
+    /**
      * Returns information about a single backup.
      *
-     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
-     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function view(Request $request, Server $server, Backup $backup): array

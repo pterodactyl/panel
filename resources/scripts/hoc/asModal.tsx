@@ -1,5 +1,5 @@
 import React from 'react';
-import Modal, { ModalProps } from '@/components/elements/Modal';
+import PortaledModal, { ModalProps } from '@/components/elements/Modal';
 import ModalContext from '@/context/ModalContext';
 
 export interface AsModalProps {
@@ -57,7 +57,7 @@ function asModal<P extends object> (modalProps?: ExtendedModalProps | ((props: P
             render () {
                 return (
                     this.state.render ?
-                        <Modal
+                        <PortaledModal
                             appear
                             visible={this.state.visible}
                             onDismissed={() => this.setState({ render: false }, () => {
@@ -75,7 +75,7 @@ function asModal<P extends object> (modalProps?: ExtendedModalProps | ((props: P
                             >
                                 <Component {...this.props}/>
                             </ModalContext.Provider>
-                        </Modal>
+                        </PortaledModal>
                         :
                         null
                 );
