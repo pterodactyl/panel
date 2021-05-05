@@ -80,9 +80,8 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('schedule:task');
         if (backupLimit === 0 && values.action === 'backup') {
-            console.error('This server is not allowed to create backups.');
             setSubmitting(false);
-            addError({ message: 'This server is not allowed to create backups.', key: 'schedule:task' });
+            addError({ message: 'A backup task cannot be created when the server\'s backup limit is set to 0.', key: 'schedule:task' });
         } else {
             createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
                 .then(task => {
