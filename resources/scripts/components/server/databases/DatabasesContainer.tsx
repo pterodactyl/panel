@@ -53,7 +53,7 @@ export default () => {
                                 />
                             ))
                             :
-                            <p css={tw`text-center text-sm text-neutral-400`}>
+                            <p css={tw`text-center text-sm text-neutral-300`}>
                                 {databaseLimit > 0 ?
                                     'It looks like you have no databases.'
                                     :
