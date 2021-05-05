@@ -39,6 +39,7 @@ class ScheduleTaskController extends ClientApiController
      *
      * @return array
      *
+     * @throws \Pterodactyl\Exceptions\Model\HttpForbiddenException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\ServiceLimitExceededException
      */
@@ -47,6 +48,10 @@ class ScheduleTaskController extends ClientApiController
         $limit = config('pterodactyl.client_features.schedules.per_schedule_task_limit', 10);
         if ($schedule->tasks()->count() >= $limit) {
             throw new ServiceLimitExceededException("Schedules may not have more than {$limit} tasks associated with them. Creating this task would put this schedule over the limit.");
+        }
+
+        if ($server->backup_limit === 0 && $request->action === 'backup'){
+            throw new HttpForbiddenException("A backup task cannot be created when the backup limit for a server is set to {$server->backup_limit}.");
         }
 
         /** @var \Pterodactyl\Models\Task|null $lastTask */
@@ -72,6 +77,7 @@ class ScheduleTaskController extends ClientApiController
      *
      * @return array
      *
+     * @throws \Pterodactyl\Exceptions\Model\HttpForbiddenException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -79,6 +85,10 @@ class ScheduleTaskController extends ClientApiController
     {
         if ($schedule->id !== $task->schedule_id || $server->id !== $schedule->server_id) {
             throw new NotFoundHttpException();
+        }
+
+        if ($server->backup_limit === 0 && $request->action === 'backup'){
+            throw new HttpForbiddenException("A backup task cannot be created when the backup limit for a server is set to {$server->backup_limit}.");
         }
 
         $this->repository->update($task->id, [
