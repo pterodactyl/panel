@@ -14,6 +14,7 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property string $payload
  * @property int $time_offset
  * @property bool $is_queued
+ * @property bool $continue_on_failure
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $hashid
@@ -29,6 +30,13 @@ class Task extends Model
      * API representation using fractal.
      */
     public const RESOURCE_NAME = 'schedule_task';
+
+    /**
+     * The default actions that can exist for a task in Pterodactyl.
+     */
+    public const ACTION_POWER = 'power';
+    public const ACTION_COMMAND = 'command';
+    public const ACTION_BACKUP = 'backup';
 
     /**
      * The table associated with the model.
@@ -56,6 +64,7 @@ class Task extends Model
         'payload',
         'time_offset',
         'is_queued',
+        'continue_on_failure',
     ];
 
     /**
@@ -69,6 +78,7 @@ class Task extends Model
         'sequence_id' => 'integer',
         'time_offset' => 'integer',
         'is_queued' => 'boolean',
+        'continue_on_failure' => 'boolean',
     ];
 
     /**
@@ -79,6 +89,7 @@ class Task extends Model
     protected $attributes = [
         'time_offset' => 0,
         'is_queued' => false,
+        'continue_on_failure' => false,
     ];
 
     /**
@@ -91,6 +102,7 @@ class Task extends Model
         'payload' => 'required_unless:action,backup|string',
         'time_offset' => 'required|numeric|between:0,900',
         'is_queued' => 'boolean',
+        'continue_on_failure' => 'boolean',
     ];
 
     /**
