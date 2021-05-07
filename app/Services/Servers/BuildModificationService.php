@@ -5,10 +5,12 @@ namespace Pterodactyl\Services\Servers;
 use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationService
 {
@@ -78,10 +80,18 @@ class BuildModificationService
 
         $updateData = $this->structureService->handle($server);
 
+        // Because Wings always fetches an updated configuration from the Panel when booting
+        // a server this type of exception can be safely "ignored" and just written to the logs.
+        // Ideally this request succeedes so we can apply resource modifications on the fly
+        // but if it fails it isn't the end of the world.
         if (!empty($updateData['build'])) {
-            $this->daemonServerRepository->setServer($server)->update([
-                'build' => $updateData['build'],
-            ]);
+            try {
+                $this->daemonServerRepository->setServer($server)->update([
+                    'build' => $updateData['build'],
+                ]);
+            } catch (DaemonConnectionException $exception) {
+                Log::warning($exception, ['server_id' => $server->id]);
+            }
         }
 
         $this->connection->commit();

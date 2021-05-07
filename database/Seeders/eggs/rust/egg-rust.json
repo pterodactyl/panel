@@ -31,7 +31,7 @@
             "default_value": "A Rust Server",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:40"
+            "rules": "required|string|max:60"
         },
         {
             "name": "OxideMod",
@@ -121,7 +121,7 @@
             "default_value": "CHANGEME",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:64"
+            "rules": "required|regex:/^[\\w.-]*$/|max:64"
         },
         {
             "name": "Save Interval",

@@ -3,12 +3,17 @@
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Servers\BuildModificationService;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationServiceTest extends IntegrationTestCase
 {
@@ -150,6 +155,30 @@ class BuildModificationServiceTest extends IntegrationTestCase
     }
 
     /**
+     * Test that an exception when connecting to the Wings instance is properly ignored
+     * when making updates. This allows for a server to be modified even when the Wings
+     * node is offline.
+     */
+    public function testConnectionExceptionIsIgnoredWhenUpdatingServerSettings()
+    {
+        $server = $this->createServerModel();
+
+        $this->daemonServerRepository->expects('setServer->update')->andThrows(
+            new DaemonConnectionException(
+                new RequestException('Bad request', new Request('GET', '/test'), new Response())
+            )
+        );
+
+        $response = $this->getService()->handle($server, ['memory' => 256, 'disk' => 10240]);
+
+        $this->assertInstanceOf(Server::class, $response);
+        $this->assertSame(256, $response->memory);
+        $this->assertSame(10240, $response->disk);
+
+        $this->assertDatabaseHas('servers', ['id' => $response->id, 'memory' => 256, 'disk' => 10240]);
+    }
+
+    /**
      * Test that no exception is thrown if we are only removing an allocation.
      */
     public function testNoExceptionIsThrownIfOnlyRemovingAllocation()
@@ -215,7 +244,9 @@ class BuildModificationServiceTest extends IntegrationTestCase
 
     /**
      * Test that any changes we made to the server or allocations are rolled back if there is an
-     * exception while performing any action.
+     * exception while performing any action. This is different than the connection exception
+     * test which should properly ignore connection issues. We want any other type of exception
+     * to properly be thrown back to the caller.
      */
     public function testThatUpdatesAreRolledBackIfExceptionIsEncountered()
     {

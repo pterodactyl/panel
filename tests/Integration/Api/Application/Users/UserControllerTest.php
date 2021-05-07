@@ -18,7 +18,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->getJson('/api/application/users');
+        $response = $this->getJson('/api/application/users?per_page=60');
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2, 'data');
         $response->assertJsonStructure([
@@ -38,7 +38,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'pagination' => [
                         'total' => 2,
                         'count' => 2,
-                        'per_page' => 100,
+                        'per_page' => 60,
                         'current_page' => 1,
                         'total_pages' => 1,
                     ],

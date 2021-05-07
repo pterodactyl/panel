@@ -59,7 +59,7 @@ services:
       - "/srv/pterodactyl/var/:/app/var/"
       - "/srv/pterodactyl/nginx/:/etc/nginx/conf.d/"
       - "/srv/pterodactyl/certs/:/etc/letsencrypt/"
-      - "/srv/pterodactyl/logs/:/var/log/"
+      - "/srv/pterodactyl/logs/:/app/storage/logs"
     environment:
       <<: *panel-environment
       <<: *mail-environment

@@ -7,17 +7,17 @@ use Illuminate\Http\Request;
 use Illuminate\Container\Container;
 
 /**
- * @property int                             $id
- * @property string                          $uuid
- * @property bool                            $is_system
- * @property int|null                        $user_id
- * @property int|null                        $server_id
- * @property string                          $action
- * @property string|null                     $subaction
- * @property array                           $device
- * @property array                           $metadata
- * @property \Carbon\CarbonImmutable         $created_at
- * @property \Pterodactyl\Models\User|null   $user
+ * @property int $id
+ * @property string $uuid
+ * @property bool $is_system
+ * @property int|null $user_id
+ * @property int|null $server_id
+ * @property string $action
+ * @property string|null $subaction
+ * @property array $device
+ * @property array $metadata
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property \Pterodactyl\Models\User|null $user
  * @property \Pterodactyl\Models\Server|null $server
  */
 class AuditLog extends Model
@@ -35,6 +35,9 @@ class AuditLog extends Model
     public const SERVER__BACKUP_FAILED = 'server:backup.failed';
     public const SERVER__BACKUP_COMPELTED = 'server:backup.completed';
     public const SERVER__BACKUP_DELETED = 'server:backup.deleted';
+    public const SERVER__BACKUP_DOWNLOADED = 'server:backup.downloaded';
+    public const SERVER__BACKUP_LOCKED = 'server:backup.locked';
+    public const SERVER__BACKUP_UNLOCKED = 'server:backup.unlocked';
     public const SERVER__BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
     public const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
     public const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';

@@ -60,17 +60,17 @@ const BackupContainer = () => {
             </Pagination>
             {backupLimit === 0 &&
             <p css={tw`text-center text-sm text-neutral-300`}>
-                Backups cannot be created for this server.
+                Backups cannot be created for this server because the backup limit is set to 0.
             </p>
             }
             <Can action={'backup.create'}>
                 <div css={tw`mt-6 sm:flex items-center justify-end`}>
-                    {(backupLimit > 0 && backups.items.length > 0) &&
+                    {(backupLimit > 0 && backups.pagination.total > 0) &&
                     <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
-                        {backups.items.length} of {backupLimit} backups have been created for this server.
+                        {backups.pagination.total} of {backupLimit} backups have been created for this server.
                     </p>
                     }
-                    {backupLimit > 0 && backupLimit !== backups.items.length &&
+                    {backupLimit > 0 && backupLimit !== backups.pagination.total &&
                     <CreateBackupButton css={tw`w-full sm:w-auto`}/>
                     }
                 </div>

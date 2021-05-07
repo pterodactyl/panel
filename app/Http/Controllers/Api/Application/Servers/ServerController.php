@@ -56,7 +56,7 @@ class ServerController extends ApplicationApiController
         $servers = QueryBuilder::for(Server::query())
             ->allowedFilters(['uuid', 'name', 'image', 'external_id'])
             ->allowedSorts(['id', 'uuid'])
-            ->paginate(100);
+            ->paginate($request->query('per_page') ?? 50);
 
         return $this->fractal->collection($servers)
             ->transformWith($this->getTransformer(ServerTransformer::class))

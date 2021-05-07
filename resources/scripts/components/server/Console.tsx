@@ -135,19 +135,20 @@ export default () => {
 
     useEffect(() => {
         if (connected && ref.current && !terminal.element) {
-            terminal.open(ref.current);
             terminal.loadAddon(fitAddon);
             terminal.loadAddon(searchAddon);
             terminal.loadAddon(searchBar);
             terminal.loadAddon(webLinksAddon);
+
+            terminal.open(ref.current);
             fitAddon.fit();
 
             // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
-                if (e.metaKey && e.key === 'c') {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
                     document.execCommand('copy');
                     return false;
-                } else if (e.metaKey && e.key === 'f') {
+                } else if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
                     e.preventDefault();
                     searchBar.show();
                     return false;
@@ -159,11 +160,11 @@ export default () => {
         }
     }, [ terminal, connected ]);
 
-    const fit = debounce(() => {
-        fitAddon.fit();
-    }, 100);
-
-    useEventListener('resize', () => fit());
+    useEventListener('resize', debounce(() => {
+        if (terminal.element) {
+            fitAddon.fit();
+        }
+    }, 100));
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {

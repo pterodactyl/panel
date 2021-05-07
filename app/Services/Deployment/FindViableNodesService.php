@@ -83,7 +83,7 @@ class FindViableNodesService
      *
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      */
-    public function handle(int $page = null)
+    public function handle(int $perPage = null, int $page = null)
     {
         Assert::integer($this->disk, 'Disk space must be an int, got %s');
         Assert::integer($this->memory, 'Memory usage must be an int, got %s');
@@ -103,7 +103,7 @@ class FindViableNodesService
             ->havingRaw('(IFNULL(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100)))', [$this->disk]);
 
         if (!is_null($page)) {
-            $results = $results->paginate(50, ['*'], 'page', $page);
+            $results = $results->paginate($perPage ?? 50, ['*'], 'page', $page);
         } else {
             $results = $results->get()->toBase();
         }

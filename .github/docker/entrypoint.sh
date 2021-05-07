@@ -1,4 +1,4 @@
-#!/bin/ash
+#!/bin/ash -e
 cd /app
 
 mkdir -p /var/log/panel/logs/ /var/log/supervisord/ /var/log/nginx/ /var/log/php7/ \
