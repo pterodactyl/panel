@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { faBoxOpen, faCloudDownloadAlt, faEllipsisH, faLock, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBoxOpen,
+    faCloudDownloadAlt,
+    faEllipsisH,
+    faLock,
+    faTrashAlt,
+    faUnlock,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import useFlash from '@/plugins/useFlash';
-import ChecksumModal from '@/components/server/backups/ChecksumModal';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import deleteBackup from '@/api/server/backups/deleteBackup';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
@@ -15,6 +21,7 @@ import { ServerBackup } from '@/api/server/types';
 import { ServerContext } from '@/state/server';
 import Input from '@/components/elements/Input';
 import { restoreServerBackup } from '@/api/server/backups';
+import http, { httpErrorToHuman } from '@/api/http';
 
 interface Props {
     backup: ServerBackup;
@@ -76,14 +83,35 @@ export default ({ backup }: Props) => {
             .then(() => setModal(''));
     };
 
+    const onLockToggle = () => {
+        if (backup.isLocked && modal !== 'unlock') {
+            return setModal('unlock');
+        }
+
+        http.post(`/api/client/servers/${uuid}/backups/${backup.uuid}/lock`)
+            .then(() => mutate(data => ({
+                ...data,
+                items: data.items.map(b => b.uuid !== backup.uuid ? b : {
+                    ...b,
+                    isLocked: !b.isLocked,
+                }),
+            }), false))
+            .catch(error => alert(httpErrorToHuman(error)))
+            .then(() => setModal(''));
+    };
+
     return (
         <>
-            <ChecksumModal
-                appear
-                visible={modal === 'checksum'}
-                onDismissed={() => setModal('')}
-                checksum={backup.checksum}
-            />
+            <ConfirmationModal
+                visible={modal === 'unlock'}
+                title={'Unlock this backup?'}
+                onConfirmed={onLockToggle}
+                onModalDismissed={() => setModal('')}
+                buttonText={'Yes, unlock'}
+            >
+                Are you sure you want to unlock this backup? It will no longer be protected from automated or
+                accidental deletions.
+            </ConfirmationModal>
             <ConfirmationModal
                 visible={modal === 'restore'}
                 title={'Restore this backup?'}
@@ -151,15 +179,23 @@ export default ({ backup }: Props) => {
                                 <span css={tw`ml-2`}>Restore</span>
                             </DropdownButtonRow>
                         </Can>
-                        <DropdownButtonRow onClick={() => setModal('checksum')}>
-                            <FontAwesomeIcon fixedWidth icon={faLock} css={tw`text-xs`}/>
-                            <span css={tw`ml-2`}>Checksum</span>
-                        </DropdownButtonRow>
                         <Can action={'backup.delete'}>
-                            <DropdownButtonRow danger onClick={() => setModal('delete')}>
-                                <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
-                                <span css={tw`ml-2`}>Delete</span>
-                            </DropdownButtonRow>
+                            <>
+                                <DropdownButtonRow onClick={onLockToggle}>
+                                    <FontAwesomeIcon
+                                        fixedWidth
+                                        icon={backup.isLocked ? faUnlock : faLock}
+                                        css={tw`text-xs mr-2`}
+                                    />
+                                    {backup.isLocked ? 'Unlock' : 'Lock'}
+                                </DropdownButtonRow>
+                                {!backup.isLocked &&
+                                <DropdownButtonRow danger onClick={() => setModal('delete')}>
+                                    <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
+                                    <span css={tw`ml-2`}>Delete</span>
+                                </DropdownButtonRow>
+                                }
+                            </>
                         </Can>
                     </div>
                 </DropdownMenu>

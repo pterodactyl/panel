@@ -8,6 +8,8 @@ use Illuminate\Contracts\Bus\Dispatcher;
 use Pterodactyl\Jobs\Schedule\RunTaskJob;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ProcessScheduleService
 {
@@ -22,12 +24,18 @@ class ProcessScheduleService
     private $connection;
 
     /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     */
+    private $serverRepository;
+
+    /**
      * ProcessScheduleService constructor.
      */
-    public function __construct(ConnectionInterface $connection, Dispatcher $dispatcher)
+    public function __construct(ConnectionInterface $connection, DaemonServerRepository $serverRepository, Dispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
         $this->connection = $connection;
+        $this->serverRepository = $serverRepository;
     }
 
     /**
@@ -38,7 +46,7 @@ class ProcessScheduleService
     public function handle(Schedule $schedule, bool $now = false)
     {
         /** @var \Pterodactyl\Models\Task $task */
-        $task = $schedule->tasks()->orderBy('sequence_id', 'asc')->first();
+        $task = $schedule->tasks()->orderBy('sequence_id')->first();
 
         if (is_null($task)) {
             throw new DisplayException('Cannot process schedule for task execution: no tasks are registered.');
@@ -54,6 +62,30 @@ class ProcessScheduleService
         });
 
         $job = new RunTaskJob($task, $now);
+        if ($schedule->only_when_online) {
+            // Check that the server is currently in a starting or running state before executing
+            // this schedule if this option has been set.
+            try {
+                $details = $this->serverRepository->setServer($schedule->server)->getDetails();
+                $state = $details['state'] ?? 'offline';
+                // If the server is stopping or offline just do nothing with this task.
+                if (in_array($state, ['offline', 'stopping'])) {
+                    $job->failed();
+
+                    return;
+                }
+            } catch (Exception $exception) {
+                if (!$exception instanceof DaemonConnectionException) {
+                    // If we encountered some exception during this process that wasn't just an
+                    // issue connecting to Wings run the failed sequence for a job. Otherwise we
+                    // can just quietly mark the task as completed without actually running anything.
+                    $job->failed($exception);
+                }
+                $job->failed();
+
+                return;
+            }
+        }
 
         if (!$now) {
             $this->dispatcher->dispatch($job->delay($task->time_offset));

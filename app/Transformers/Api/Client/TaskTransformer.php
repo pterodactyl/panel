@@ -28,6 +28,7 @@ class TaskTransformer extends BaseClientTransformer
             'payload' => $model->payload,
             'time_offset' => $model->time_offset,
             'is_queued' => $model->is_queued,
+            'continue_on_failure' => $model->continue_on_failure,
             'created_at' => $model->created_at->toIso8601String(),
             'updated_at' => $model->updated_at->toIso8601String(),
         ];

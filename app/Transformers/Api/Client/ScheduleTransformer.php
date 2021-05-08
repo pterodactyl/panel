@@ -45,6 +45,7 @@ class ScheduleTransformer extends BaseClientTransformer
             ],
             'is_active' => $model->is_active,
             'is_processing' => $model->is_processing,
+            'only_when_online' => $model->only_when_online,
             'last_run_at' => $model->last_run_at ? $model->last_run_at->toIso8601String() : null,
             'next_run_at' => $model->next_run_at ? $model->next_run_at->toIso8601String() : null,
             'created_at' => $model->created_at->toIso8601String(),
