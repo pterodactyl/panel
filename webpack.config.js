@@ -71,10 +71,17 @@ module.exports = {
     },
     plugins: [
         new AssetsManifestPlugin({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
-        new ForkTsCheckerWebpackPlugin(isProduction ? {} : {
-            eslint: {
-                files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                mode: 'write-references',
+                diagnosticOptions: {
+                    semantic: true,
+                    syntactic: true,
+                },
             },
+            eslint: isProduction ? undefined : {
+                files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
+            }
         }),
         process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin({
             analyzerHost: '0.0.0.0',
