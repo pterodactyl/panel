@@ -1,42 +1,28 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LocalStorageBackend from 'i18next-localstorage-backend';
 import { WebpackBackend } from 'i18next-webpack-backend';
-import Backend from 'i18next-chained-backend';
 
-let cacheExpirationTime = 7 * 24 * 60 * 60 * 1000; // 7 days, in milliseconds
-
-// Set ExpirationTime to 0, so you can see changes directly
-if (process.env.NODE_ENV !== 'production') {
-    cacheExpirationTime = 0;
+// Fixes issue with module not loading due to incorrect typings.
+//
+// @see https://github.com/i18next/i18next/pull/1442
+// @see https://github.com/i18next/i18next/issues/1440#issuecomment-621654219
+class FixedWebpackBackend extends WebpackBackend {
+    static readonly type: 'backend' = 'backend';
 }
 
-i18n
-    .use(Backend)
-    .use(initReactI18next)
-    .init({
-        debug: process.env.NODE_ENV !== 'production',
-        lng: 'de',
-        fallbackLng: 'en',
-        keySeparator: '.',
-        interpolation: {
-            // not needed for react as it escapes by default
-            escapeValue: false,
-        },
-        backend: {
-            backends: [
-                LocalStorageBackend,
-                WebpackBackend,
-            ],
-            backendOptions: [ {
-                prefix: 'pterodactyl_lng__',
-                expirationTime: cacheExpirationTime,
-                store: window.localStorage,
-                defaultVersion: 'v1', // TODO: Get version from config/app.php
-            }, {
-                context: require.context('../locales', true, /\.json$/, 'lazy'),
-            } ],
-        },
-    });
+i18n.use(initReactI18next).use(FixedWebpackBackend).init({
+    lng: 'en-us',
+    fallbackLng: 'en-us',
+    ns: [ 'en-us', 'de' ],
+    debug: process.env.NODE_ENV !== 'production',
+    lowerCaseLng: true,
+    keySeparator: '.',
+    interpolation: {
+        escapeValue: false,
+    },
+    backend: {
+        context: require.context('./locales', true, /\.json$/, 'lazy-once'),
+    },
+});
 
 export default i18n;

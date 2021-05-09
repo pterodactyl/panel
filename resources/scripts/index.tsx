@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from '@/components/App';
-import './i18n';
 import { setConfig } from 'react-hot-loader';
+import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 
+import '@/i18n';
 import 'tailwindcss/dist/base.min.css';
 
 // Prevents page reloads while making component changes which
@@ -13,15 +14,4 @@ import 'tailwindcss/dist/base.min.css';
 // @see https://github.com/gaearon/react-hot-loader#hook-support
 setConfig({ reloadHooks: false });
 
-// Disabled this render. See below for more informations
-// ReactDOM.render(<App/>, document.getElementById('app'));
-
-// Need the StrictMode and the Suspense fallback for the i18n lazy loading
-ReactDOM.render(
-    <React.StrictMode>
-        <React.Suspense fallback='Loading...'>
-            <App />
-        </React.Suspense>
-    </React.StrictMode>,
-    document.getElementById('app'),
-);
+ReactDOM.render(<SuspenseSpinner><App/></SuspenseSpinner>, document.getElementById('app'));
