@@ -8,7 +8,7 @@
         "axios": "^0.21.1",
         "chart.js": "^2.8.0",
         "codemirror": "^5.57.0",
-        "cross-os": "^1.3.0",
+        "cross-os": "^1.4.0",
         "date-fns": "^2.16.1",
         "debounce": "^1.2.0",
         "deepmerge": "^4.2.2",
