@@ -5,12 +5,11 @@ import SetupTwoFactorModal from '@/components/dashboard/forms/SetupTwoFactorModa
 import DisableTwoFactorModal from '@/components/dashboard/forms/DisableTwoFactorModal';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-export default () => {
+const ConfigureTwoFactorForm = ({ t }: WithTranslation) => {
     const user = useStoreState((state: ApplicationStore) => state.user.data!);
     const [ visible, setVisible ] = useState(false);
-    const { t } = useTranslation('dashboard');
 
     return user.useTotp ?
         <div>
@@ -58,3 +57,5 @@ export default () => {
         </div>
     ;
 };
+
+export default withTranslation('dashboard')(ConfigureTwoFactorForm);

@@ -9,7 +9,7 @@ import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface Values {
     current: string;
@@ -17,10 +17,9 @@ interface Values {
     confirmPassword: string;
 }
 
-export default () => {
+const UpdatePasswordForm = ({ t }: WithTranslation) => {
     const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const { t } = useTranslation('dashboard');
 
     if (!user) {
         return null;
@@ -98,3 +97,5 @@ export default () => {
         </React.Fragment>
     );
 };
+
+export default withTranslation('dashboard')(UpdatePasswordForm);
