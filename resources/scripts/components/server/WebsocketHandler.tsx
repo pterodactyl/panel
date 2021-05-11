@@ -6,21 +6,20 @@ import ContentContainer from '@/components/elements/ContentContainer';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
-import { useTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 const reconnectErrors = [
     'jwt: exp claim is invalid',
     'jwt: created too far in past (denylist)',
 ];
 
-export default () => {
+const WebsocketHandler = ({ t }: WithTranslation) => {
     let updatingToken = false;
     const [ error, setError ] = useState<'connecting' | string>('');
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
     const setServerStatus = ServerContext.useStoreActions(actions => actions.status.setServerStatus);
     const { setInstance, setConnectionState } = ServerContext.useStoreActions(actions => actions.socket);
-    const { t } = useTranslation('server');
 
     const updateToken = (uuid: string, socket: Websocket) => {
         if (updatingToken) return;
@@ -131,3 +130,5 @@ export default () => {
             null
     );
 };
+
+export default withTranslation('server')(WebsocketHandler);
