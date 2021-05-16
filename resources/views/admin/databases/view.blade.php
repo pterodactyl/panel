@@ -44,7 +44,7 @@
                     <div class="form-group">
                         <label for="pNodeId" class="form-label">Linked Node</label>
                         <select name="node_id" id="pNodeId" class="form-control">
-                            <option value="0">None</option>
+                            <option value="">None</option>
                             @foreach($locations as $location)
                                 <optgroup label="{{ $location->short }}">
                                     @foreach($location->nodes as $node)
