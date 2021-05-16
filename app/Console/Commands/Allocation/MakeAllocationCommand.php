@@ -56,5 +56,10 @@ class MakeAllocationCommand extends Command
         $ip_alias = $this->option('alias') ?? $this->ask(trans('command/messages.allocation.ask_alias'));
 
         $allocation = $this->creationService->handle(compact('node_id', 'ip', 'ip_alias', 'port'));
+        $this->line(trans('command/messages.allocation.created', [
+            'ip' => $allocation->ip,
+            'port' => $allocation->port,
+            'node' => $allocation->node_id,
+        ]));
     }
 }

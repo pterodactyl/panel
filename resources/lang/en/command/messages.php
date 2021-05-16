@@ -32,6 +32,7 @@ return [
         'ask_ip' => 'Enter the IP Address of the machine',
         'ask_port' => 'Enter the Port to be created',
         'ask_alias' => 'Enter an alias if you wish to assign one to the Port',
+        'created' => 'Successfully created the allocation (:ip::port) on node (:node).',
     ],
     'user' => [
         'search_users' => 'Enter a Username, User ID, or Email Address',
