@@ -25,7 +25,7 @@ class MakeNodeCommand extends Command
     protected $signature = 'p:node:make
                             {--name= : A name to identify the node.}
                             {--description= : A description to identify the node.}
-                            {--locationId= : A valid locationId.}
+                            {--locationid= : A valid locationid.}
                             {--fqdn= : The domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.}
                             {--public= : Should the node be public or private? (public=1 / private=0).}
                             {--scheme= : Which scheme should be used? (Enable SSL=https / Disable SSL=http).}
