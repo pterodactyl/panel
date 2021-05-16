@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faArchive, faEllipsisH, faLock } from '@fortawesome/free-solid-svg-icons';
 import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/components/elements/Spinner';
 import { bytesToHuman } from '@/helpers';
@@ -45,7 +45,10 @@ export default ({ backup, className }: Props) => {
             <div css={tw`flex items-center truncate w-full md:flex-1`}>
                 <div css={tw`mr-4`}>
                     {backup.completedAt ?
-                        <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
+                        backup.isLocked ?
+                            <FontAwesomeIcon icon={faLock} css={tw`text-yellow-500`}/>
+                            :
+                            <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
                         :
                         <Spinner size={'small'}/>
                     }
@@ -65,7 +68,7 @@ export default ({ backup, className }: Props) => {
                         }
                     </div>
                     <p css={tw`mt-1 md:mt-0 text-xs text-neutral-400 font-mono truncate`}>
-                        {backup.uuid}
+                        {backup.checksum}
                     </p>
                 </div>
             </div>

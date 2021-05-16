@@ -9,6 +9,7 @@ use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
+use Pterodactyl\Exceptions\Service\Backup\BackupLockedException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DeleteBackupService
@@ -55,6 +56,10 @@ class DeleteBackupService
      */
     public function handle(Backup $backup)
     {
+        if ($backup->is_locked) {
+            throw new BackupLockedException();
+        }
+
         if ($backup->disk === Backup::ADAPTER_AWS_S3) {
             $this->deleteFromS3($backup);
 
