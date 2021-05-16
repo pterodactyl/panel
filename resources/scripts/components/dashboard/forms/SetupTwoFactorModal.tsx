@@ -11,6 +11,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
+import QRCode from 'qrcode.react';
 
 interface Values {
     code: string;
@@ -18,7 +19,6 @@ interface Values {
 
 const SetupTwoFactorModal = () => {
     const [ token, setToken ] = useState('');
-    const [ loading, setLoading ] = useState(true);
     const [ recoveryTokens, setRecoveryTokens ] = useState<string[]>([]);
 
     const { dismiss, setPropOverrides } = useContext(ModalContext);
@@ -108,11 +108,7 @@ const SetupTwoFactorModal = () => {
                                         css={tw`w-64 h-64 rounded`}
                                     />
                                     :
-                                    <img
-                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${token}`}
-                                        onLoad={() => setLoading(false)}
-                                        css={tw`w-full h-full shadow-none rounded-none`}
-                                    />
+                                    <QRCode renderAs={'svg'} value={token} css={tw`w-full h-full shadow-none rounded-none`}/>
                                 }
                             </div>
                         </div>
@@ -124,7 +120,6 @@ const SetupTwoFactorModal = () => {
                                     type={'text'}
                                     title={'Code From Authenticator'}
                                     description={'Enter the code from your authenticator device after scanning the QR image.'}
-                                    autoFocus={!loading}
                                 />
                             </div>
                             <div css={tw`mt-6 md:mt-0 text-right`}>

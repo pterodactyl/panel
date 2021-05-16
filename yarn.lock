@@ -1228,6 +1228,13 @@
   version "15.7.1"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.1.tgz#f1a11e7babb0c3cad68100be381d1e064c68f1f6"
 
+"@types/qrcode.react@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@types/qrcode.react/-/qrcode.react-1.0.1.tgz#0904e7a075a6274a5258f19567b4f64013c159d8"
+  integrity sha512-PcVCjpsiT2KFKfJibOgTQtkt0QQT/6GbQUp1Np/hMPhwUzMJ2DRUkR9j7tXN9Q8X06qukw+RbaJ8lJ22SBod+Q==
+  dependencies:
+    "@types/react" "*"
+
 "@types/query-string@^6.3.0":
   version "6.3.0"
   resolved "https://registry.yarnpkg.com/@types/query-string/-/query-string-6.3.0.tgz#b6fa172a01405abcaedac681118e78429d62ea39"
