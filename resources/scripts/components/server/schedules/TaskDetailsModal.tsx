@@ -69,6 +69,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
+    const backupLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.backups);
 
     useEffect(() => {
         return () => {
@@ -78,21 +79,26 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('schedule:task');
-        createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
-            .then(task => {
-                let tasks = schedule.tasks.map(t => t.id === task.id ? task : t);
-                if (!schedule.tasks.find(t => t.id === task.id)) {
-                    tasks = [ ...tasks, task ];
-                }
+        if (backupLimit === 0 && values.action === 'backup') {
+            setSubmitting(false);
+            addError({ message: 'A backup task cannot be created when the server\'s backup limit is set to 0.', key: 'schedule:task' });
+        } else {
+            createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
+                .then(task => {
+                    let tasks = schedule.tasks.map(t => t.id === task.id ? task : t);
+                    if (!schedule.tasks.find(t => t.id === task.id)) {
+                        tasks = [ ...tasks, task ];
+                    }
 
-                appendSchedule({ ...schedule, tasks });
-                dismiss();
-            })
-            .catch(error => {
-                console.error(error);
-                setSubmitting(false);
-                addError({ message: httpErrorToHuman(error), key: 'schedule:task' });
-            });
+                    appendSchedule({ ...schedule, tasks });
+                    dismiss();
+                })
+                .catch(error => {
+                    console.error(error);
+                    setSubmitting(false);
+                    addError({ message: httpErrorToHuman(error), key: 'schedule:task' });
+                });
+        }
     };
 
     return (
