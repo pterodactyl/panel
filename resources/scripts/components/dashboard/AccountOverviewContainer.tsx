@@ -48,7 +48,7 @@ const AccountOverviewContainer = ({ t }: WithTranslation) => {
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={t('configure_2fa')}>
+                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={t('2fa.dashboard_title')}>
                     <ConfigureTwoFactorForm/>
                 </ContentBox>
             </Container>

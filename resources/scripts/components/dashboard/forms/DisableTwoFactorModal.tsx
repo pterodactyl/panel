@@ -9,16 +9,15 @@ import { ApplicationStore } from '@/state';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface Values {
     password: string;
 }
 
-export default ({ ...props }: RequiredModalProps) => {
+const DisableTwoFactorModal = ({ t, ...props }: RequiredModalProps & WithTranslation) => {
     const { clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
-    const { t } = useTranslation('dashboard');
 
     const submit = ({ password }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         disableAccountTwoFactor(password)
@@ -41,7 +40,7 @@ export default ({ ...props }: RequiredModalProps) => {
                 password: '',
             }}
             validationSchema={object().shape({
-                password: string().required(t('need_current_password')),
+                password: string().required(t('dashboard:2fa.disable_password_desc')),
             })}
         >
             {({ isSubmitting, isValid }) => (
@@ -52,8 +51,8 @@ export default ({ ...props }: RequiredModalProps) => {
                             id={'password'}
                             name={'password'}
                             type={'password'}
-                            label={t('current_password')}
-                            description={t('disable_2fa_text')}
+                            label={t('elements:current_password')}
+                            description={t('dashboard:2fa.disable_password_desc')}
                             autoFocus
                         />
                         <div css={tw`mt-6 text-right`}>
@@ -61,7 +60,7 @@ export default ({ ...props }: RequiredModalProps) => {
                                 color={'red'}
                                 disabled={!isValid}
                             >
-                                {t('disable_2fa')}
+                                {t('elements:disable')}
                             </Button>
                         </div>
                     </Form>
@@ -70,3 +69,5 @@ export default ({ ...props }: RequiredModalProps) => {
         </Formik>
     );
 };
+
+export default withTranslation([ 'elements', 'dashboard' ])(DisableTwoFactorModal);
