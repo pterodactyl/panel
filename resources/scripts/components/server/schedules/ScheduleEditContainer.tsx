@@ -81,7 +81,7 @@ export default () => {
     }, []);
 
     return (
-        <PageContentBlock>
+        <PageContentBlock title={'Schedules'}>
             <FlashMessageRender byKey={'schedules'} css={tw`mb-4`}/>
             {!schedule || isLoading ?
                 <Spinner size={'large'} centered/>
@@ -153,7 +153,7 @@ export default () => {
                             }
                         </div>
                     </div>
-                    <EditScheduleModal visible={showEditModal} schedule={schedule} onDismissed={toggleEditModal}/>
+                    <EditScheduleModal visible={showEditModal} schedule={schedule} onModalDismissed={toggleEditModal}/>
                     <div css={tw`mt-6 flex sm:justify-end`}>
                         <Can action={'schedule.delete'}>
                             <DeleteScheduleButton
@@ -161,7 +161,7 @@ export default () => {
                                 onDeleted={() => history.push(`/server/${id}/schedules`)}
                             />
                         </Can>
-                        {schedule.isActive && schedule.tasks.length > 0 &&
+                        {schedule.tasks.length > 0 &&
                         <Can action={'schedule.update'}>
                             <RunScheduleButton schedule={schedule}/>
                         </Can>

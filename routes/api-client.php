@@ -103,6 +103,7 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/', 'Servers\BackupController@store');
         Route::get('/{backup}', 'Servers\BackupController@view');
         Route::get('/{backup}/download', 'Servers\BackupController@download');
+        Route::post('/{backup}/lock', 'Servers\BackupController@toggleLock');
         Route::post('/{backup}/restore', 'Servers\BackupController@restore');
         Route::delete('/{backup}', 'Servers\BackupController@delete');
     });

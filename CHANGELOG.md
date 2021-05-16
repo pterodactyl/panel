@@ -3,6 +3,24 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.4.1
+### Added
+* Adds support for only running a schedule if the server is currently in an online state.
+* Adds support for ignoring errors during task execution and continuing on to the next item in the sequence. For example, continuing to a server restart even if sending a command beforehand failed.
+* Adds the ability to specify the group to use for file permissions when using the `p:upgrade` command.
+* Adds the ability to manually run a schedule even if it is currently disabled.
+
+## v1.4.0
+### Fixed
+* Removes the use of tagging when storing server resource usage in the cache. This addresses errors encountered when using the `file` driver.
+* Fixes Wings response handling if Wings returns an error response with a 200-level status code that would improperly be passed back to the client as a successful request.
+* Fixes use of JSON specific functions in SQL queries to better support MariaDB users.
+* Fixes a migration that could fail on some MySQL/MariaDB setups when trying to encrypt node token values.
+
+### Changed
+* Increases the maximum length allowed for a server name using the Rust egg.
+* Updated server resource utilization API call to Wings to use new API response format used by `Wings@1.4.0`.
+
 ## v1.3.2
 ### Fixed
 * Fixes self-upgrade incorrectly executing the command to un-tar downloaded archives.
