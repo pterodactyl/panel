@@ -8,17 +8,16 @@ import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
     password: string;
 }
 
-export default () => {
+const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
     const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
     const updateEmail = useStoreActions((state: Actions<ApplicationStore>) => state.user.updateUserEmail);
-    const { t } = useTranslation('dashboard');
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -85,3 +84,5 @@ export default () => {
         </Formik>
     );
 };
+
+export default withTranslation('dashboard')(UpdateEmailAddressForm);

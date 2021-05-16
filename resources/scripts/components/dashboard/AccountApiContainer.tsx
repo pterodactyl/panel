@@ -15,14 +15,13 @@ import { format } from 'date-fns';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import { useTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-export default () => {
+const AccountApiContainer = ({ t }: WithTranslation) => {
     const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
     const [ keys, setKeys ] = useState<ApiKey[]>([]);
     const [ loading, setLoading ] = useState(true);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const { t } = useTranslation('dashboard');
 
     useEffect(() => {
         clearFlashes('account');
@@ -111,3 +110,5 @@ export default () => {
         </PageContentBlock>
     );
 };
+
+export default withTranslation('dashboard')(AccountApiContainer);
