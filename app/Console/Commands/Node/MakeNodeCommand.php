@@ -64,7 +64,7 @@ class MakeNodeCommand extends Command
     {
         $name = $this->option('name') ?? $this->ask(trans('command/messages.node.ask_name'));
         $description = $this->option('description') ?? $this->ask(trans('command/messages.node.ask_description'));
-        $location_id = $this->option('locationId') ?? $this->ask(trans('command/messages.node.ask_location_id'));
+        $location_id = $this->option('locationid') ?? $this->ask(trans('command/messages.node.ask_location_id'));
         $fqdn = $this->option('fqdn') ?? $this->ask(trans('command/messages.node.ask_fqdn'));
         if (!filter_var(gethostbyname($fqdn), FILTER_VALIDATE_IP)) {
             $this->error(trans('admin/node.validation.fqdn_not_resolvable'));
