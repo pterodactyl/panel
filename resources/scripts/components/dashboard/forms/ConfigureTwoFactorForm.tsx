@@ -7,53 +7,29 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 
 export default () => {
-    const user = useStoreState((state: ApplicationStore) => state.user.data!);
     const [ visible, setVisible ] = useState(false);
+    const isEnabled = useStoreState((state: ApplicationStore) => state.user.data!.useTotp);
 
-    return user.useTotp ?
+    return (
         <div>
-            {visible &&
-            <DisableTwoFactorModal
-                appear
-                visible={visible}
-                onDismissed={() => setVisible(false)}
-            />
-            }
+            {visible && (
+                isEnabled ?
+                    <DisableTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)}/>
+                    :
+                    <SetupTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)}/>
+            )}
             <p css={tw`text-sm`}>
-                Two-factor authentication is currently enabled on your account.
+                {isEnabled ?
+                    'Two-factor authentication is currently enabled on your account.'
+                    :
+                    'You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.'
+                }
             </p>
             <div css={tw`mt-6`}>
-                <Button
-                    color={'red'}
-                    isSecondary
-                    onClick={() => setVisible(true)}
-                >
-                    Disable
+                <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
+                    {isEnabled ? 'Disable' : 'Enable'}
                 </Button>
             </div>
         </div>
-        :
-        <div>
-            {visible &&
-            <SetupTwoFactorModal
-                appear
-                visible={visible}
-                onDismissed={() => setVisible(false)}
-            />
-            }
-            <p css={tw`text-sm`}>
-                You do not currently have two-factor authentication enabled on your account. Click
-                the button below to begin configuring it.
-            </p>
-            <div css={tw`mt-6`}>
-                <Button
-                    color={'green'}
-                    isSecondary
-                    onClick={() => setVisible(true)}
-                >
-                    Begin Setup
-                </Button>
-            </div>
-        </div>
-    ;
+    );
 };

@@ -32,7 +32,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const appendSubuser = ServerContext.useStoreActions(actions => actions.subusers.appendSubuser);
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const { dismiss, toggleSpinner } = useContext(ModalContext);
+    const { dismiss, setPropOverrides } = useContext(ModalContext);
 
     const isRootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const permissions = useStoreState(state => state.permissions.data);
@@ -56,7 +56,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
     }, [ isRootAdmin, permissions, loggedInPermissions ]);
 
     const submit = (values: Values) => {
-        toggleSpinner(true);
+        setPropOverrides({ showSpinnerOverlay: true });
         clearFlashes('user:edit');
 
         createOrUpdateSubuser(uuid, values, subuser)
@@ -66,7 +66,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
             })
             .catch(error => {
                 console.error(error);
-                toggleSpinner(false);
+                setPropOverrides(null);
                 clearAndAddHttpError({ key: 'user:edit', error });
 
                 if (ref.current) {
