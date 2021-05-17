@@ -19,11 +19,6 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 class DeployNodeCommand extends Command
 {
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeConfigurationService
-     */
-    protected $configurationService;
-
-    /**
      * @var string
      */
     protected $signature = 'p:node:deploy
@@ -32,7 +27,7 @@ class DeployNodeCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Creates a new node on the system via the CLI.';
+    protected $description = 'Deploys an existing node on the system via the CLI.';
 
     /**
      * @var \Illuminate\Support\Collection
@@ -115,7 +110,6 @@ class DeployNodeCommand extends Command
 
         $this->line(trans('command/messages.node.unencrypted', [
             'key' => Container::getInstance()->make(Encrypter::class)->decrypt($node->daemon_token),
-            '',
         ]));
     }
 }
