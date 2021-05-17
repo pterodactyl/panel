@@ -26,6 +26,9 @@ return [
         'ask_daemonSFTP' => 'Enter the wings SFTP listening port. (default 2022)',
         'ask_daemonBase' => 'Enter the base folder. (default /var/lib/pterodactyl/volumes)',
         'created' => 'Successfully created a new node on location (:location) with the name (:name) and id (:id).',
+        'unencrypted' => 'Successfully unencrypted the requested Node Token! - :key',
+        'ask_node_name' => 'Enter a valid node name',
+        'no_node_found' => 'Could not locate a Node using the ID you provided',
     ],
     'allocation' => [
         'ask_nodeid' => 'Enter a valid Node ID',
