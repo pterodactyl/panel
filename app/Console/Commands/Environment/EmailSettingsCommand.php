@@ -37,6 +37,7 @@ class EmailSettingsCommand extends Command
                             {--encryption=}
                             {--host=}
                             {--port=}
+                            {--endpoint=}
                             {--username=}
                             {--password=}';
 
@@ -139,6 +140,11 @@ class EmailSettingsCommand extends Command
         $this->variables['MAILGUN_SECRET'] = $this->option('password') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mailgun_secret'),
             $this->config->get('services.mailgun.secret')
+        );
+
+        $this->variables['MAILGUN_ENDPOINT'] = $this->option('endpoint') ?? $this->ask(
+            trans('command/messages.environment.mail.ask_mailgun_endpoint'),
+            $this->config->get('services.mailgun.endpoint')
         );
     }
 
