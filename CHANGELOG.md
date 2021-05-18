@@ -3,6 +3,40 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.4.1
+### Added
+* Adds support for only running a schedule if the server is currently in an online state.
+* Adds support for ignoring errors during task execution and continuing on to the next item in the sequence. For example, continuing to a server restart even if sending a command beforehand failed.
+* Adds the ability to specify the group to use for file permissions when using the `p:upgrade` command.
+* Adds the ability to manually run a schedule even if it is currently disabled.
+
+## v1.4.0
+### Fixed
+* Removes the use of tagging when storing server resource usage in the cache. This addresses errors encountered when using the `file` driver.
+* Fixes Wings response handling if Wings returns an error response with a 200-level status code that would improperly be passed back to the client as a successful request.
+* Fixes use of JSON specific functions in SQL queries to better support MariaDB users.
+* Fixes a migration that could fail on some MySQL/MariaDB setups when trying to encrypt node token values.
+
+### Changed
+* Increases the maximum length allowed for a server name using the Rust egg.
+* Updated server resource utilization API call to Wings to use new API response format used by `Wings@1.4.0`.
+
+## v1.3.2
+### Fixed
+* Fixes self-upgrade incorrectly executing the command to un-tar downloaded archives.
+* Fixes the checkbox to delete all files when restoring a backup not actually passing that along in the API call. Files will now properly be deleted when restoring if selected.
+* Fixes some keybindings not working correctly in the server console on Windows machines.
+* Fixes mobile UI incorrectly squishing the Docker image selector on the server settings page.
+* Fixes recovery tokens not having a `created_at` value set on them properly when they are created.
+* Fixes flawed migration that would not correctly set the month value into schedule crons.
+* Fixes incorrect mounting for Docker compose file that would cause error logs to be missing.
+
+### Changed
+* Server resource lookups are now cached on the Panel for 20 seconds at a time to reduce the load from multiple clients requesting the same server's stats.
+* Bungeecord egg no longer force-enables the query listener.
+* Adds page to the dashboard URL to allow easy loading of a specific pagination page rather than resetting back to the first page when refreshing.
+* All application API endpoints now correctly support the `?per_page=N` query parameter to specify how many resources to return at once.
+
 ## v1.3.1
 ### Fixed
 * Fixes the Rust egg not properly seeding during the upgrade & installation process.

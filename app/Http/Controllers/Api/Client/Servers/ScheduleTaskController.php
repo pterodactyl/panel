@@ -33,6 +33,7 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Create a new task for a given schedule and store it in the database.
      *
+     * @throws \Pterodactyl\Exceptions\Http\HttpForbiddenException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\ServiceLimitExceededException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
@@ -42,6 +43,10 @@ class ScheduleTaskController extends ClientApiController
         $limit = config('pterodactyl.client_features.schedules.per_schedule_task_limit', 10);
         if ($schedule->tasks()->count() >= $limit) {
             throw new ServiceLimitExceededException("Schedules may not have more than {$limit} tasks associated with them. Creating this task would put this schedule over the limit.");
+        }
+
+        if ($server->backup_limit === 0 && $request->action === 'backup') {
+            throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
         /** @var \Pterodactyl\Models\Task|null $lastTask */
@@ -54,6 +59,7 @@ class ScheduleTaskController extends ClientApiController
             'action' => $request->input('action'),
             'payload' => $request->input('payload') ?? '',
             'time_offset' => $request->input('time_offset'),
+            'continue_on_failure' => (bool) $request->input('continue_on_failure'),
         ]);
 
         return $this->fractal->item($task)
@@ -64,6 +70,7 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Updates a given task for a server.
      *
+     * @throws \Pterodactyl\Exceptions\Http\HttpForbiddenException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
@@ -74,10 +81,15 @@ class ScheduleTaskController extends ClientApiController
             throw new NotFoundHttpException();
         }
 
+        if ($server->backup_limit === 0 && $request->action === 'backup') {
+            throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
+        }
+
         $this->repository->update($task->id, [
             'action' => $request->input('action'),
             'payload' => $request->input('payload') ?? '',
             'time_offset' => $request->input('time_offset'),
+            'continue_on_failure' => (bool) $request->input('continue_on_failure'),
         ]);
 
         return $this->fractal->item($task->refresh())

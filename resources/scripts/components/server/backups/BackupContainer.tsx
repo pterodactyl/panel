@@ -60,7 +60,7 @@ const BackupContainer = () => {
             </Pagination>
             {backupLimit === 0 &&
             <p css={tw`text-center text-sm text-neutral-300`}>
-                Backups cannot be created for this server.
+                Backups cannot be created for this server because the backup limit is set to 0.
             </p>
             }
             <Can action={'backup.create'}>

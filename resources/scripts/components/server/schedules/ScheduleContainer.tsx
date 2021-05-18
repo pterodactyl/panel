@@ -67,7 +67,7 @@ export default () => {
                     }
                     <Can action={'schedule.create'}>
                         <div css={tw`mt-8 flex justify-end`}>
-                            {visible && <EditScheduleModal appear visible onDismissed={() => setVisible(false)}/>}
+                            <EditScheduleModal visible={visible} onModalDismissed={() => setVisible(false)}/>
                             <Button type={'button'} onClick={() => setVisible(true)}>
                                 Create schedule
                             </Button>

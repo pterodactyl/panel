@@ -89,9 +89,9 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that backups can be tasked out correctly since they do not require a payload.
+     * Test that backups can not be tasked when the backup limit is 0
      */
-    public function testBackupsCanBeTaskedCorrectly()
+    public function testBackupsCanNotBeTaskedIfLimit0()
     {
         [$user, $server] = $this->generateTestAccount();
 
@@ -101,13 +101,17 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
             'action' => 'backup',
             'time_offset' => 0,
-        ])->assertOk();
+        ])
+            ->assertStatus(Response::HTTP_FORBIDDEN)
+            ->assertJsonPath('errors.0.detail', 'A backup task cannot be created when the server\'s backup limit is set to 0.');
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
             'action' => 'backup',
             'payload' => "file.txt\nfile2.log",
             'time_offset' => 0,
-        ])->assertOk();
+        ])
+            ->assertStatus(Response::HTTP_FORBIDDEN)
+            ->assertJsonPath('errors.0.detail', 'A backup task cannot be created when the server\'s backup limit is set to 0.');
     }
 
     /**

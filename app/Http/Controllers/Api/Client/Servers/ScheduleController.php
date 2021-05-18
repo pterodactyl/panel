@@ -15,7 +15,6 @@ use Pterodactyl\Services\Schedules\ProcessScheduleService;
 use Pterodactyl\Transformers\Api\Client\ScheduleTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\ViewScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;
@@ -72,6 +71,7 @@ class ScheduleController extends ClientApiController
             'cron_hour' => $request->input('hour'),
             'cron_minute' => $request->input('minute'),
             'is_active' => (bool) $request->input('is_active'),
+            'only_when_online' => (bool) $request->input('only_when_online'),
             'next_run_at' => $this->getNextRunAt($request),
         ]);
 
@@ -118,6 +118,7 @@ class ScheduleController extends ClientApiController
             'cron_hour' => $request->input('hour'),
             'cron_minute' => $request->input('minute'),
             'is_active' => $active,
+            'only_when_online' => (bool) $request->input('only_when_online'),
             'next_run_at' => $this->getNextRunAt($request),
         ];
 

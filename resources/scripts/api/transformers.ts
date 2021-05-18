@@ -58,6 +58,7 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
 export const rawDataToServerBackup = ({ attributes }: FractalResponseData): ServerBackup => ({
     uuid: attributes.uuid,
     isSuccessful: attributes.is_successful,
+    isLocked: attributes.is_locked,
     name: attributes.name,
     ignoredFiles: attributes.ignored_files,
     checksum: attributes.checksum,

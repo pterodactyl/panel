@@ -19,6 +19,7 @@ class StoreBackupRequest extends ClientApiRequest
     {
         return [
             'name' => 'nullable|string|max:191',
+            'is_locked' => 'nullable|boolean',
             'ignored' => 'nullable|string',
         ];
     }

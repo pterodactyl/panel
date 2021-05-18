@@ -90,7 +90,7 @@ class ServerDetailsController extends Controller
         /** @var \Pterodactyl\Models\Server[] $servers */
         $servers = Server::query()
             ->select('servers.*')
-            ->selectRaw('started.metadata->>"$.backup_uuid" as backup_uuid')
+            ->selectRaw('JSON_UNQUOTE(JSON_EXTRACT(started.metadata, "$.backup_uuid")) as backup_uuid')
             ->leftJoinSub(function (Builder $builder) {
                 $builder->select('*')->from('audit_logs')
                     ->where('action', AuditLog::SERVER__BACKUP_RESTORE_STARTED)

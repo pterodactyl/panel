@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faCode, faFileArchive, faPencilAlt, faToggleOn, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowCircleDown,
+    faClock,
+    faCode,
+    faFileArchive,
+    faPencilAlt,
+    faToggleOn,
+    faTrashAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -59,11 +67,12 @@ export default ({ schedule, task }: Props) => {
     return (
         <div css={tw`sm:flex items-center p-3 sm:p-6 border-b border-neutral-800`}>
             <SpinnerOverlay visible={isLoading} fixed size={'large'}/>
-            {isEditing && <TaskDetailsModal
+            <TaskDetailsModal
                 schedule={schedule}
                 task={task}
-                onDismissed={() => setIsEditing(false)}
-            />}
+                visible={isEditing}
+                onModalDismissed={() => setIsEditing(false)}
+            />
             <ConfirmationModal
                 title={'Confirm task deletion'}
                 buttonText={'Delete Task'}
@@ -89,6 +98,14 @@ export default ({ schedule, task }: Props) => {
                 }
             </div>
             <div css={tw`mt-3 sm:mt-0 flex items-center w-full sm:w-auto`}>
+                {task.continueOnFailure &&
+                <div css={tw`mr-6`}>
+                    <div css={tw`flex items-center px-2 py-1 bg-yellow-500 text-yellow-800 text-sm rounded-full`}>
+                        <Icon icon={faArrowCircleDown} css={tw`w-3 h-3 mr-2`}/>
+                        Continues on Failure
+                    </div>
+                </div>
+                }
                 {task.sequenceId > 1 && task.timeOffset > 0 &&
                 <div css={tw`mr-6`}>
                     <div css={tw`flex items-center px-2 py-1 bg-neutral-500 text-sm rounded-full`}>
