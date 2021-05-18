@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, Suspense } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import ReactGA from 'react-ga';
 import { hot } from 'react-hot-loader/root';
 import { Route, Router, Switch, useLocation } from 'react-router-dom';
@@ -15,8 +15,9 @@ import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 import { history } from '@/components/history';
 import { setupInterceptors } from '@/api/interceptors';
 import TailwindGlobalStyles from '@/components/GlobalStyles';
+import AdminRouter from '@/routers/AdminRouter';
 
-const ChunkedAdminRouter = lazy(() => import(/* webpackChunkName: "admin" */'@/routers/AdminRouter'));
+// const ChunkedAdminRouter = lazy(() => import(/* webpackChunkName: "admin" */'@/routers/AdminRouter'));
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -93,7 +94,7 @@ const App = () => {
                             <Switch>
                                 <Route path="/server/:id" component={ServerRouter}/>
                                 <Route path="/auth" component={AuthenticationRouter}/>
-                                <Route path="/admin" component={ChunkedAdminRouter}/>
+                                <Route path="/admin" component={AdminRouter}/>
                                 <Route path="/" component={DashboardRouter}/>
                                 <Route path={'*'} component={NotFound}/>
                             </Switch>
