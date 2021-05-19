@@ -48,7 +48,7 @@ class ServerController extends ApplicationApiController
 
         $servers = QueryBuilder::for(Server::query())
             ->allowedFilters(['uuid', 'name', 'image', 'external_id'])
-            ->allowedSorts(['id', 'uuid'])
+            ->allowedSorts(['id', 'uuid', 'owner_id', 'node_id', 'status'])
             ->paginate($perPage);
 
         return $this->fractal->collection($servers)
@@ -72,7 +72,7 @@ class ServerController extends ApplicationApiController
 
         return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
-            ->respond(201);
+            ->respond(Response::HTTP_CREATED);
     }
 
     /**

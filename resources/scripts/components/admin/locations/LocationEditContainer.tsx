@@ -1,6 +1,8 @@
+import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 import tw from 'twin.macro';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
 import { Location } from '@/api/admin/locations/getLocations';
 import getLocation from '@/api/admin/locations/getLocation';
@@ -15,7 +17,6 @@ import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
 import updateLocation from '@/api/admin/locations/updateLocation';
-import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
 
 interface ctx {
     location: Location | undefined;
@@ -99,12 +100,12 @@ const EditInformationContainer = () => {
                                 </div>
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>
-                                    <div css={tw`flex`}>
-                                        <LocationDeleteButton
-                                            locationId={location.id}
-                                            onDeleted={() => history.push('/admin/locations')}
-                                        />
-                                    </div>
+                                     <div css={tw`flex`}>
+                                         <LocationDeleteButton
+                                             locationId={location.id}
+                                             onDeleted={() => history.push('/admin/locations')}
+                                         />
+                                     </div>
 
                                     <div css={tw`flex ml-auto`}>
                                         <Button type={'submit'} disabled={isSubmitting || !isValid}>

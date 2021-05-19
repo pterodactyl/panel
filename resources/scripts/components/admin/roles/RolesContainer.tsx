@@ -98,7 +98,7 @@ export default () => {
                                     <TableBody>
                                         {
                                             roles.map(role => (
-                                                <TableRow key={role.id}>
+                                                <TableRow key={role.id} css={role.id === roles[roles.length - 1].id ? tw`rounded-b-lg` : undefined}>
                                                     <td css={tw`pl-6`}>
                                                         <RowCheckbox id={role.id}/>
                                                     </td>

@@ -1,26 +1,33 @@
-import React from 'react';
+import Input from '@/components/elements/Input';
+import InputSpinner from '@/components/elements/InputSpinner';
+import { debounce } from 'debounce';
+import React, { useCallback, useState } from 'react';
 import { TableCheckbox } from '@/components/admin/AdminCheckbox';
 import Spinner from '@/components/elements/Spinner';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
-import { PaginatedResult } from '@/api/http';
+import { PaginatedResult, PaginationDataSet } from '@/api/http';
 
-export const TableHeader = ({ name }: { name?: string }) => {
+export const TableHeader = ({ name, onClick, direction }: { name?: string, onClick?: (e: React.MouseEvent) => void, direction?: number | null }) => {
     if (!name) {
         return <th css={tw`px-6 py-2`}/>;
     }
 
     return (
-        <th css={tw`px-6 py-2`}>
+        <th css={tw`px-6 py-2`} onClick={onClick}>
             <span css={tw`flex flex-row items-center cursor-pointer`}>
-                <span css={tw`text-xs font-medium tracking-wider uppercase text-neutral-300 whitespace-nowrap`}>{name}</span>
+                <span css={tw`text-xs font-medium tracking-wider uppercase text-neutral-300 whitespace-nowrap select-none`}>{name}</span>
 
-                <div css={tw`ml-1`}>
-                    <svg fill="none" viewBox="0 0 20 20" css={tw`w-4 h-4 text-neutral-400`}>
-                        <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M13 7L10 4L7 7"/>
-                        <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M7 13L10 16L13 13"/>
-                    </svg>
-                </div>
+                {direction !== undefined ?
+                    <div css={tw`ml-1`}>
+                        <svg fill="none" viewBox="0 0 20 20" css={tw`w-4 h-4 text-neutral-400`}>
+                            {(direction === null || direction === 1) ? <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M13 7L10 4L7 7"/> : null}
+                            {(direction === null || direction === 2) ? <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M7 13L10 16L13 13"/> : null}
+                        </svg>
+                    </div>
+                    :
+                    null
+                }
             </span>
         </th>
     );
@@ -54,7 +61,7 @@ export const TableRow = ({ children }: { children: React.ReactNode }) => {
 };
 
 interface Props<T> {
-    data: PaginatedResult<T>;
+    data?: PaginatedResult<T>;
     onPageSelect: (page: number) => void;
 
     children: React.ReactNode;
@@ -78,7 +85,20 @@ const PaginationArrow = styled.button`
     }
 `;
 
-export function Pagination<T> ({ data: { pagination }, onPageSelect, children }: Props<T>) {
+export function Pagination<T> ({ data, onPageSelect, children }: Props<T>) {
+    let pagination: PaginationDataSet;
+    if (data === undefined) {
+        pagination = {
+            total: 0,
+            count: 0,
+            perPage: 0,
+            currentPage: 1,
+            totalPages: 1,
+        };
+    } else {
+        pagination = data.pagination;
+    }
+
     const setPage = (page: number) => {
         if (page < 1 || page > pagination.totalPages) {
             return;
@@ -173,11 +193,27 @@ export const NoItems = () => {
 interface Params {
     checked: boolean;
     onSelectAllClick: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onSearch?: (query: string) => Promise<void>;
 
     children: React.ReactNode;
 }
 
-export const ContentWrapper = ({ checked, onSelectAllClick, children }: Params) => {
+export const ContentWrapper = ({ checked, onSelectAllClick, onSearch, children }: Params) => {
+    const [ loading, setLoading ] = useState(false);
+    const [ inputText, setInputText ] = useState('');
+
+    const search = useCallback(
+        debounce((query: string) => {
+            if (onSearch === undefined) {
+                return;
+            }
+
+            setLoading(true);
+            onSearch(query).then(() => setLoading(false));
+        }, 200),
+        [],
+    );
+
     return (
         <>
             <div css={tw`flex flex-row items-center h-12 px-6`}>
@@ -194,15 +230,19 @@ export const ContentWrapper = ({ checked, onSelectAllClick, children }: Params) 
                     </svg>
                 </div>
 
-                {/* <div css={tw`flex flex-row items-center px-2 py-1 ml-auto rounded cursor-pointer bg-neutral-600`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" css={tw`w-6 h-6 text-neutral-300`}>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-                    </svg>
-
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={tw`w-4 h-4 ml-1 text-neutral-200`}>
-                        <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
-                    </svg>
-                </div> */}
+                <div css={tw`flex flex-row items-center ml-auto`}>
+                    <InputSpinner visible={loading}>
+                        <Input
+                            value={inputText}
+                            css={tw`h-8`}
+                            placeholder="Search..."
+                            onChange={e => {
+                                setInputText(e.currentTarget.value);
+                                search(e.currentTarget.value);
+                            }}
+                        />
+                    </InputSpinner>
+                </div>
             </div>
 
             {children}

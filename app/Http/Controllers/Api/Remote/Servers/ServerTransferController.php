@@ -125,7 +125,9 @@ class ServerTransferController extends Controller
         $server = $this->connection->transaction(function () use ($server, $transfer) {
             $allocations = [$transfer->old_allocation];
             if (!empty($transfer->old_additional_allocations)) {
-                array_push($allocations, $transfer->old_additional_allocations);
+                foreach ($transfer->old_additional_allocations as $allocation) {
+                    $allocations[] = $allocation;
+                }
             }
 
             // Remove the old allocations for the server and re-assign the server to the new
@@ -169,7 +171,9 @@ class ServerTransferController extends Controller
 
             $allocations = [$transfer->new_allocation];
             if (!empty($transfer->new_additional_allocations)) {
-                array_push($allocations, $transfer->new_additional_allocations);
+                foreach ($transfer->new_additional_allocations as $allocation) {
+                    $allocations[] = $allocation;
+                }
             }
 
             Allocation::query()->whereIn('id', $allocations)->update(['server_id' => null]);

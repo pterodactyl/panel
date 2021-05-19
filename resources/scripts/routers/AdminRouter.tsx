@@ -1,3 +1,5 @@
+import ServerRouter
+    from '@/components/admin/servers/ServerRouter';
 import React, { useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { State, useStoreState } from 'easy-peasy';
@@ -20,7 +22,6 @@ import LocationsContainer from '@/components/admin/locations/LocationsContainer'
 import LocationEditContainer from '@/components/admin/locations/LocationEditContainer';
 import ServersContainer from '@/components/admin/servers/ServersContainer';
 import NewServerContainer from '@/components/admin/servers/NewServerContainer';
-import ServerEditContainer from '@/components/admin/servers/ServerEditContainer';
 import UsersContainer from '@/components/admin/users/UsersContainer';
 import NewUserContainer from '@/components/admin/users/NewUserContainer';
 import UserEditContainer from '@/components/admin/users/UserEditContainer';
@@ -233,7 +234,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route path={`${match.path}/servers/new`} component={NewServerContainer} exact/>
                         <Route
                             path={`${match.path}/servers/:id`}
-                            component={ServerEditContainer}
+                            component={ServerRouter}
                         />
 
                         <Route path={`${match.path}/users`} component={UsersContainer} exact/>

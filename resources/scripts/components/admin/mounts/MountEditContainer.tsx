@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useRouteMatch } from 'react-router-dom';
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
 import { Mount } from '@/api/admin/mounts/getMounts';
 import getMount from '@/api/admin/mounts/getMount';
@@ -15,7 +15,6 @@ import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Field as FormikField, Form, Formik, FormikHelpers } from 'formik';
-import MountDeleteButton from '@/components/admin/mounts/MountDeleteButton';
 import Label from '@/components/elements/Label';
 
 interface ctx {
@@ -41,8 +40,6 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
-    const history = useHistory();
-
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const mount = Context.useStoreState(state => state.mount);
@@ -184,10 +181,10 @@ const EditInformationContainer = () => {
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>
                                     <div css={tw`flex`}>
-                                        <MountDeleteButton
-                                            mountId={mount.id}
-                                            onDeleted={() => history.push('/admin/mounts')}
-                                        />
+                                        {/* <MountDeleteButton */}
+                                        {/*     mountId={mount.id} */}
+                                        {/*     onDeleted={() => history.push('/admin/mounts')} */}
+                                        {/* /> */}
                                     </div>
 
                                     <div css={tw`flex ml-auto`}>

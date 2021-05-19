@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, useHistory, useRouteMatch } from 'react-router-dom';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
@@ -20,7 +20,6 @@ import AdminTable, { ContentWrapper, NoItems, TableBody, TableHead, TableHeader,
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
-import NestDeleteButton from '@/components/admin/nests/NestDeleteButton';
 
 interface ctx {
     nest: Nest | undefined;
@@ -61,8 +60,6 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
-    const history = useHistory();
-
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const nest = Context.useStoreState(state => state.nest);
@@ -125,10 +122,10 @@ const EditInformationContainer = () => {
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>
                                     <div css={tw`flex`}>
-                                        <NestDeleteButton
-                                            nestId={nest.id}
-                                            onDeleted={() => history.push('/admin/nests')}
-                                        />
+                                        {/* <NestDeleteButton */}
+                                        {/*     nestId={nest.id} */}
+                                        {/*     onDeleted={() => history.push('/admin/nests')} */}
+                                        {/* /> */}
                                     </div>
 
                                     <div css={tw`flex ml-auto`}>
