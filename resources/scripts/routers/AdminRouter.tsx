@@ -1,5 +1,3 @@
-import ServerRouter
-    from '@/components/admin/servers/ServerRouter';
 import React, { useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { State, useStoreState } from 'easy-peasy';
@@ -29,9 +27,10 @@ import RolesContainer from '@/components/admin/roles/RolesContainer';
 import RoleEditContainer from '@/components/admin/roles/RoleEditContainer';
 import NestsContainer from '@/components/admin/nests/NestsContainer';
 import NestEditContainer from '@/components/admin/nests/NestEditContainer';
-import EggEditContainer from '@/components/admin/nests/eggs/EggEditContainer';
 import MountsContainer from '@/components/admin/mounts/MountsContainer';
 import MountEditContainer from '@/components/admin/mounts/MountEditContainer';
+import EggRouter from '@/components/admin/nests/eggs/EggRouter';
+import ServerRouter from '@/components/admin/servers/ServerRouter';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
     ${tw`fixed h-screen hidden md:flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
@@ -260,8 +259,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         />
                         <Route
                             path={`${match.path}/nests/:nestId/eggs/:id`}
-                            component={EggEditContainer}
-                            exact
+                            component={EggRouter}
                         />
 
                         <Route path={`${match.path}/mounts`} component={MountsContainer} exact/>

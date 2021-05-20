@@ -55,7 +55,7 @@ export default ({ className }: WithClassname) => {
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, directoryName)
-            .then(() => mutate(data => [ ...data, generateDirectoryData(directoryName) ], false))
+            .then(() => mutate(data => [ ...data!, generateDirectoryData(directoryName) ], false))
             .then(() => setVisible(false))
             .catch(error => {
                 console.error(error);

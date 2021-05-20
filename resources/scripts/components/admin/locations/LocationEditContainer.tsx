@@ -1,6 +1,4 @@
-import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
 import tw from 'twin.macro';
 import { useRouteMatch } from 'react-router-dom';
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
@@ -37,7 +35,7 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
-    const history = useHistory();
+    // const history = useHistory();
 
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -100,12 +98,12 @@ const EditInformationContainer = () => {
                                 </div>
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>
-                                     <div css={tw`flex`}>
-                                         <LocationDeleteButton
-                                             locationId={location.id}
-                                             onDeleted={() => history.push('/admin/locations')}
-                                         />
-                                     </div>
+                                    <div css={tw`flex`}>
+                                        {/* <LocationDeleteButton */}
+                                        {/*     locationId={location.id} */}
+                                        {/*     onDeleted={() => history.push('/admin/locations')} */}
+                                        {/* /> */}
+                                    </div>
 
                                     <div css={tw`flex ml-auto`}>
                                         <Button type={'submit'} disabled={isSubmitting || !isValid}>

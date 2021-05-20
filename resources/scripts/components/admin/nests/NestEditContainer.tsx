@@ -270,6 +270,12 @@ const NestEditContainer = () => {
                             <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>{nest.description}</p>
                     }
                 </div>
+
+                <div css={tw`flex ml-auto pl-4`}>
+                    <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
+                        New Egg
+                    </Button>
+                </div>
             </div>
 
             <FlashMessageRender byKey={'nest'} css={tw`mb-4`}/>

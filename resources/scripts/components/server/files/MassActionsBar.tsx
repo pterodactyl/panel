@@ -51,7 +51,7 @@ const MassActionsBar = () => {
 
         deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
-                mutate(files => files.filter(f => selectedFiles.indexOf(f.name) < 0), false);
+                mutate(files => files!.filter(f => selectedFiles.indexOf(f.name) < 0), false);
                 setSelectedFiles([]);
             })
             .catch(error => {

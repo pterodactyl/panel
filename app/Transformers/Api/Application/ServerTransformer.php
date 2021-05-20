@@ -60,8 +60,6 @@ class ServerTransformer extends BaseTransformer
             'name' => $model->name,
             'description' => $model->description,
             'status' => $model->status,
-            // This field is deprecated, please use "status".
-            'suspended' => $model->isSuspended(),
             'limits' => [
                 'memory' => $model->memory,
                 'swap' => $model->swap,
@@ -75,16 +73,14 @@ class ServerTransformer extends BaseTransformer
                 'allocations' => $model->allocation_limit,
                 'backups' => $model->backup_limit,
             ],
-            'user' => $model->owner_id,
-            'node' => $model->node_id,
-            'allocation' => $model->allocation_id,
-            'nest' => $model->nest_id,
-            'egg' => $model->egg_id,
+            'owner_id' => $model->owner_id,
+            'node_id' => $model->node_id,
+            'allocation_id' => $model->allocation_id,
+            'nest_id' => $model->nest_id,
+            'egg_id' => $model->egg_id,
             'container' => [
                 'startup_command' => $model->startup,
                 'image' => $model->image,
-                // This field is deprecated, please use "status".
-                'installed' => $model->isInstalled() ? 1 : 0,
                 'environment' => $this->environmentService->handle($model),
             ],
             $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),

@@ -34,7 +34,7 @@ export default () => {
 
         createLocation(short, long)
             .then(location => {
-                mutate(data => ({ ...data, items: data.items.concat(location) }), false);
+                mutate(data => ({ ...data!, items: data!.items.concat(location) }), false);
                 setVisible(false);
             })
             .catch(error => {

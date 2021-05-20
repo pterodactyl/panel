@@ -34,7 +34,7 @@ export default () => {
 
         createNest(name, description)
             .then(nest => {
-                mutate(data => ({ ...data, items: data.items.concat(nest) }), false);
+                mutate(data => ({ ...data!, items: data!.items.concat(nest) }), false);
                 setVisible(false);
             })
             .catch(error => {

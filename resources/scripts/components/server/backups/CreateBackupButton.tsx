@@ -81,7 +81,7 @@ export default () => {
         clearFlashes('backups:create');
         createServerBackup(uuid, values)
             .then(backup => {
-                mutate(data => ({ ...data, items: data.items.concat(backup) }), false);
+                mutate(data => ({ ...data!, items: data!.items.concat(backup) }), false);
                 setVisible(false);
             })
             .catch(error => {

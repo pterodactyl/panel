@@ -19,7 +19,7 @@ use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
-class UserController extends ApplicationApiController
+class                       UserController extends ApplicationApiController
 {
     private UserRepositoryInterface $repository;
     private UserCreationService $creationService;

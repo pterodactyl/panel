@@ -4,18 +4,9 @@ import tw from 'twin.macro';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, useFormikContext } from 'formik';
-import { Context } from '@/components/admin/nodes/NodeRouter';
 
 export default () => {
     const { isSubmitting } = useFormikContext();
-
-    const node = Context.useStoreState(state => state.node);
-
-    if (node === undefined) {
-        return (
-            <></>
-        );
-    }
 
     return (
         <AdminBox title={'Limits'} css={tw`w-full relative`}>

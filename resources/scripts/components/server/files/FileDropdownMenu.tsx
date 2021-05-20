@@ -75,7 +75,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        mutate(files => files.filter(f => f.key !== file.key), false);
+        mutate(files => files!.filter(f => f.key !== file.key), false);
 
         deleteFiles(uuid, directory, [ file.name ]).catch(error => {
             mutate();

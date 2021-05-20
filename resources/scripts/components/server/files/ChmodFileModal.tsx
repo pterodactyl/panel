@@ -31,7 +31,7 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
     const submit = ({ mode }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
         clearFlashes('files');
 
-        mutate(data => data.map(f => f.name === files[0].file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f), false);
+        mutate(data => data!.map(f => f.name === files[0].file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f), false);
 
         const data = files.map(f => ({ file: f.file, mode: mode }));
 

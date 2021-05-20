@@ -1,3 +1,4 @@
+import { Filters } from '@/api/admin/servers/getServers';
 import React, { useContext, useEffect, useState } from 'react';
 import getNodes, { Context as NodesContext } from '@/api/admin/nodes/getNodes';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -35,7 +36,7 @@ const RowCheckbox = ({ id }: { id: number}) => {
 const NodesContainer = () => {
     const match = useRouteMatch();
 
-    const { page, setPage } = useContext(NodesContext);
+    const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(NodesContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: nodes, error, isValidating } = getNodes([ 'location' ]);
 
@@ -55,6 +56,17 @@ const NodesContainer = () => {
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedNodes(e.currentTarget.checked ? (nodes?.items?.map(node => node.id) || []) : []);
+    };
+
+    const onSearch = (query: string): Promise<void> => {
+        return new Promise((resolve) => {
+            if (query.length < 2) {
+                setFilters(null);
+            } else {
+                setFilters({ name: query });
+            }
+            return resolve();
+        });
     };
 
     useEffect(() => {
@@ -90,17 +102,18 @@ const NodesContainer = () => {
                         <ContentWrapper
                             checked={selectedNodesLength === (length === 0 ? -1 : length)}
                             onSelectAllClick={onSelectAllClick}
+                            onSearch={onSearch}
                         >
                             <Pagination data={nodes} onPageSelect={setPage}>
                                 <div css={tw`overflow-x-auto`}>
                                     <table css={tw`w-full table-auto`}>
                                         <TableHead>
-                                            <TableHeader name={'ID'}/>
-                                            <TableHeader name={'Name'}/>
-                                            <TableHeader name={'Location'}/>
-                                            <TableHeader name={'FQDN'}/>
-                                            <TableHeader name={'Total Memory'}/>
-                                            <TableHeader name={'Total Disk'}/>
+                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                            <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
+                                            <TableHeader name={'Location'} direction={sort === 'location_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('location_id')}/>
+                                            <TableHeader name={'FQDN'} direction={sort === 'fqdn' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('fqdn')}/>
+                                            <TableHeader name={'Total Memory'} direction={sort === 'memory' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('memory')}/>
+                                            <TableHeader name={'Total Disk'} direction={sort === 'disk' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('disk')}/>
                                             <TableHeader/>
                                             <TableHeader/>
                                         </TableHead>
@@ -181,9 +194,21 @@ const NodesContainer = () => {
 
 export default () => {
     const [ page, setPage ] = useState<number>(1);
+    const [ filters, setFilters ] = useState<Filters | null>(null);
+    const [ sort, setSortState ] = useState<string | null>(null);
+    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
+
+    const setSort = (newSort: string | null) => {
+        if (sort === newSort) {
+            setSortDirection(!sortDirection);
+        } else {
+            setSortState(newSort);
+            setSortDirection(false);
+        }
+    };
 
     return (
-        <NodesContext.Provider value={{ page, setPage }}>
+        <NodesContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
             <NodesContainer/>
         </NodesContext.Provider>
     );

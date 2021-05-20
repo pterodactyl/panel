@@ -48,7 +48,7 @@ class ServerController extends ApplicationApiController
 
         $servers = QueryBuilder::for(Server::query())
             ->allowedFilters(['uuid', 'name', 'image', 'external_id'])
-            ->allowedSorts(['id', 'uuid', 'owner_id', 'node_id', 'status'])
+            ->allowedSorts(['id', 'uuid', 'uuidShort', 'name', 'owner_id', 'node_id', 'status'])
             ->paginate($perPage);
 
         return $this->fractal->collection($servers)

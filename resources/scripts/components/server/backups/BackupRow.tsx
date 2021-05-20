@@ -26,8 +26,8 @@ export default ({ backup, className }: Props) => {
             const parsed = JSON.parse(data);
 
             mutate(data => ({
-                ...data,
-                items: data.items.map(b => b.uuid !== backup.uuid ? b : ({
+                ...data!,
+                items: data!.items.map(b => b.uuid !== backup.uuid ? b : ({
                     ...b,
                     isSuccessful: parsed.is_successful || true,
                     checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),
