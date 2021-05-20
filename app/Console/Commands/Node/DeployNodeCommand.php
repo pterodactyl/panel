@@ -13,7 +13,6 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Console\Command;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Nodes\NodeDeploymentService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class DeployNodeCommand extends Command
