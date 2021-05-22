@@ -50,12 +50,12 @@ class MakeAllocationCommand extends Command
      */
     public function handle()
     {
-        $node_id = $this->option('nodeid') ?? $this->ask(trans('command/messages.allocation.ask_nodeid'));
-        $ip = $this->option('ip') ?? $this->ask(trans('command/messages.allocation.ask_ip'));
-        $port = $this->option('port') ?? $this->ask(trans('command/messages.allocation.ask_port'));
-        $ip_alias = $this->option('alias') ?? $this->ask(trans('command/messages.allocation.ask_alias'));
+        $data['node_id'] = $this->option('nodeid') ?? $this->ask(trans('command/messages.allocation.ask_nodeid'));
+        $data['ip'] = $this->option('ip') ?? $this->ask(trans('command/messages.allocation.ask_ip'));
+        $data['port'] = $this->option('port') ?? $this->ask(trans('command/messages.allocation.ask_port'));
+        $data['alias'] = $this->option('alias') ?? $this->ask(trans('command/messages.allocation.ask_alias'));
 
-        $allocation = $this->creationService->handle(compact('node_id', 'ip', 'ip_alias', 'port'));
+        $allocation = $this->creationService->handle($data);
         $this->line(trans('command/messages.allocation.created', [
             'ip' => $allocation->ip,
             'port' => $allocation->port,

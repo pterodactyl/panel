@@ -41,9 +41,8 @@ class DeployNodeCommand extends Command
     /**
      * Create a new command instance.
      */
-    public function __construct(
-        NodeRepositoryInterface $repository
-    ){
+    public function __construct(NodeRepositoryInterface $repository)
+    {
         parent::__construct();
 
         $this->repository = $repository;
@@ -92,7 +91,7 @@ class DeployNodeCommand extends Command
     public function handle()
     {
         $this->nodes = $this->nodes ?? $this->repository->all();
-        $name = $this->option('name') ?? $this->ask(trans('command/messages.node.ask_node_name'),);
+        $name = $this->option('name') ?? $this->ask(trans('command/messages.node.ask_node_name'));
 
         $node = $this->nodes->where('name', $name)->first();
         if (is_null($node)) {
