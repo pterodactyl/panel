@@ -52,14 +52,14 @@ class MakeHostCommand extends Command
      */
     public function handle()
     {
-        $name = $this->option('name') ?? $this->ask(trans('command/messages.database-host.ask_name'));
-        $host = $this->option('host') ?? $this->ask(trans('command/messages.database-host.ask_host'));
-        $port = $this->option('port') ?? $this->ask(trans('command/messages.database-host.ask_port'));
-        $username = $this->option('username') ?? $this->ask(trans('command/messages.database-host.ask_username'));
-        $password = $this->option('password') ?? $this->ask(trans('command/messages.database-host.ask_password'));
-        $node_id = $this->option('node_id') ?? $this->ask(trans('command/messages.database-host.ask_node_id'));
-
-        $dbhost = $this->creationService->handle(compact('name', 'host', 'port', 'username', 'password', 'node_id'));
+        $data['name'] = $this->option('name') ?? $this->ask(trans('command/messages.database-host.ask_name'));
+        $data['host'] = $this->option('host') ?? $this->ask(trans('command/messages.database-host.ask_host'));
+        $data['port'] = $this->option('port') ?? $this->ask(trans('command/messages.database-host.ask_port'));
+        $data['username'] = $this->option('username') ?? $this->ask(trans('command/messages.database-host.ask_username'));
+        $data['password'] = $this->option('password') ?? $this->ask(trans('command/messages.database-host.ask_password'));
+        $data['node_id'] = $this->option('node_id') ?? $this->ask(trans('command/messages.database-host.ask_node_id'));
+        
+        $dbhost = $this->creationService->handle($data);
         $this->line(trans('command/messages.database-host.created', [
             'name' => $dbhost->name,
             'node' => $dbhost->node_id,
