@@ -4,7 +4,6 @@ import { faArchive, faEllipsisH, faLock } from '@fortawesome/free-solid-svg-icon
 import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/components/elements/Spinner';
 import { bytesToHuman } from '@/helpers';
-import Can from '@/components/elements/Can';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
 import tw from 'twin.macro';
@@ -81,17 +80,15 @@ export default ({ backup, className }: Props) => {
                 </p>
                 <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>Created</p>
             </div>
-            <Can action={'backup.download'}>
-                <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
-                    {!backup.completedAt ?
-                        <div css={tw`p-2 invisible`}>
-                            <FontAwesomeIcon icon={faEllipsisH}/>
-                        </div>
-                        :
-                        <BackupContextMenu backup={backup}/>
-                    }
-                </div>
-            </Can>
+            <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
+                {!backup.completedAt ?
+                    <div css={tw`p-2 invisible`}>
+                        <FontAwesomeIcon icon={faEllipsisH}/>
+                    </div>
+                    :
+                    <BackupContextMenu backup={backup}/>
+                }
+            </div>
         </GreyRowBox>
     );
 };
