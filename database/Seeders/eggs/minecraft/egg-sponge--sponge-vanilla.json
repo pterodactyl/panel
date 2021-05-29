@@ -1,14 +1,20 @@
 {
     "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
     "meta": {
-        "version": "PTDL_v1"
+        "version": "PTDL_v1",
+        "update_url": null
     },
-    "exported_at": "2020-11-03T04:22:56+00:00",
+    "exported_at": "2021-05-29T17:15:04-04:00",
     "name": "Sponge (SpongeVanilla)",
     "author": "support@pterodactyl.io",
     "description": "SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.",
-    "features": ["eula"],
-    "images": ["quay.io\/pterodactyl\/core:java-glibc"],
+    "features": [
+        "eula"
+    ],
+    "images": [
+        "ghcr.io\/pterodactyl\/yolks:java_8"
+    ],
+    "file_denylist": [],
     "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
     "config": {
         "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"enable-query\": \"true\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
@@ -18,9 +24,9 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/bash\r\n# Sponge Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\napt update\r\napt install -y curl\r\n\r\ncd \/mnt\/server\r\n\r\ncurl -sSL \"https:\/\/repo.spongepowered.org\/maven\/org\/spongepowered\/spongevanilla\/${SPONGE_VERSION}\/spongevanilla-${SPONGE_VERSION}.jar\" -o ${SERVER_JARFILE}",
-            "container": "debian:buster-slim",
-            "entrypoint": "bash"
+            "script": "#!\/bin\/ash\r\n# Sponge Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\napt update\r\napt install -y curl\r\n\r\ncd \/mnt\/server\r\n\r\ncurl -sSL \"https:\/\/repo.spongepowered.org\/maven\/org\/spongepowered\/spongevanilla\/${SPONGE_VERSION}\/spongevanilla-${SPONGE_VERSION}.jar\" -o ${SERVER_JARFILE}",
+            "container": "ghcr.io\/pterodactyl\/installers:alpine",
+            "entrypoint": "ash"
         }
     },
     "variables": [

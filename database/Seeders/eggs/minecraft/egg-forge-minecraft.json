@@ -4,7 +4,7 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-04-21T23:01:35+03:00",
+    "exported_at": "2021-05-29T16:55:00-04:00",
     "name": "Forge Minecraft",
     "author": "support@pterodactyl.io",
     "description": "Minecraft Forge Server. Minecraft Forge is a modding API (Application Programming Interface), which makes it easier to create mods, and also make sure mods are compatible with each other.",
@@ -12,8 +12,12 @@
         "eula"
     ],
     "images": [
-        "quay.io\/pterodactyl\/core:java",
-        "quay.io\/pterodactyl\/core:java-11"
+        "ghcr.io\/pterodactyl\/yolks:java_16",
+        "ghcr.io\/pterodactyl\/yolks:java_14",
+        "ghcr.io\/pterodactyl\/yolks:java_11",
+        "ghcr.io\/pterodactyl\/yolks:java_9",
+        "ghcr.io\/pterodactyl\/yolks:java_8",
+        "ghcr.io\/pterodactyl\/yolks:java_7"
     ],
     "file_denylist": [],
     "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",

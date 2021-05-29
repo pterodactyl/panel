@@ -1,17 +1,25 @@
 {
     "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
     "meta": {
-        "version": "PTDL_v1"
+        "version": "PTDL_v1",
+        "update_url": null
     },
-    "exported_at": "2021-02-10T15:36:26-05:00",
+    "exported_at": "2021-05-29T16:54:24-04:00",
     "name": "Vanilla Minecraft",
     "author": "support@pterodactyl.io",
     "description": "Minecraft is a game about placing blocks and going on adventures. Explore randomly generated worlds and build amazing things from the simplest of homes to the grandest of castles. Play in Creative Mode with unlimited resources or mine deep in Survival Mode, crafting weapons and armor to fend off dangerous mobs. Do all this alone or with friends.",
-    "features": ["eula"],
-    "images": [
-        "quay.io\/pterodactyl\/core:java",
-        "quay.io\/pterodactyl\/core:java-11"
+    "features": [
+        "eula"
     ],
+    "images": [
+        "ghcr.io\/pterodactyl\/yolks:java_16",
+        "ghcr.io\/pterodactyl\/yolks:java_14",
+        "ghcr.io\/pterodactyl\/yolks:java_11",
+        "ghcr.io\/pterodactyl\/yolks:java_9",
+        "ghcr.io\/pterodactyl\/yolks:java_8",
+        "ghcr.io\/pterodactyl\/yolks:java_7"
+    ],
+    "file_denylist": [],
     "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -jar {{SERVER_JARFILE}}",
     "config": {
         "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"enable-query\": \"true\",\r\n            \"server-port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
