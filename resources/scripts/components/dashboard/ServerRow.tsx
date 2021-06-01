@@ -76,6 +76,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
 
     const diskLimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : 'Unlimited';
     const memoryLimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : 'Unlimited';
+    const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : 'Unlimited';
 
     return (
         <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
@@ -130,11 +131,14 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             <Spinner size={'small'}/>
                     :
                     <React.Fragment>
-                        <div css={tw`flex-1 flex md:ml-4 sm:flex hidden justify-center`}>
+                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                          <div css={tw`flex justify-center`}>
                             <Icon icon={faMicrochip} $alarm={alarms.cpu}/>
                             <IconDescription $alarm={alarms.cpu}>
                                 {stats.cpuUsagePercent.toFixed(2)} %
                             </IconDescription>
+                        </div>
+                        <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {cpuLimit}</p>
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
