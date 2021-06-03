@@ -55,7 +55,7 @@ class DaemonAuthenticate
         }
 
         if (is_null($bearer = $request->bearerToken())) {
-            throw new HttpException(401, 'Access this this endpoint must include an Authorization header.', null, ['WWW-Authenticate' => 'Bearer']);
+            throw new HttpException(401, 'Access to this endpoint must include an Authorization header.', null, ['WWW-Authenticate' => 'Bearer']);
         }
 
         $parts = explode('.', $bearer);
