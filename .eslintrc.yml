@@ -44,6 +44,8 @@ rules:
   array-bracket-spacing:
     - warn
     - always
+  # Remove errors for not having newlines between operands of ternary expressions https://eslint.org/docs/rules/multiline-ternary
+  multiline-ternary: 0
   "react-hooks/rules-of-hooks":
     - error
   "react-hooks/exhaustive-deps": 0
