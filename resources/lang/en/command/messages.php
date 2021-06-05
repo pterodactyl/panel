@@ -65,6 +65,7 @@ return [
             'ask_smtp_username' => 'SMTP Username',
             'ask_smtp_password' => 'SMTP Password',
             'ask_mailgun_domain' => 'Mailgun Domain',
+            'ask_mailgun_endpoint' => 'Mailgun Endpoint',
             'ask_mailgun_secret' => 'Mailgun Secret',
             'ask_mandrill_secret' => 'Mandrill Secret',
             'ask_postmark_username' => 'Postmark API Key',
