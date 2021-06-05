@@ -8,18 +8,6 @@ return [
         'created' => 'Successfully created a new location (:name) with an ID of :id.',
         'deleted' => 'Successfully deleted the requested location.',
     ],
-    'node' => [
-        'unencrypted' => 'Successfully unencrypted the requested Node Token! - :key',
-        'ask_node_name' => 'Enter a valid node name',
-        'no_node_found' => 'Could not locate a Node using the ID you provided',
-    ],
-    'allocation' => [
-        'ask_nodeid' => 'Enter a valid Node ID',
-        'ask_ip' => 'Enter the IP Address of the machine',
-        'ask_port' => 'Enter the Port to be created',
-        'ask_alias' => 'Enter an alias if you wish to assign one to the Port',
-        'created' => 'Successfully created the allocation (:ip::port) on node (:node).',
-    ],
     'user' => [
         'search_users' => 'Enter a Username, User ID, or Email Address',
         'select_search_user' => 'ID of user to delete (Enter \'0\' to re-search)',
