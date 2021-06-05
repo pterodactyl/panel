@@ -99,7 +99,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                     <h2 css={tw`text-2xl`} ref={ref}>
                         {subuser ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}` : 'Create new subuser'}
                     </h2>
-                    <div>
+                      <div>
                         <Button type={'submit'} css={tw`w-full sm:w-auto`}>
                             {subuser ? 'Save' : 'Invite User'}
                         </Button>
