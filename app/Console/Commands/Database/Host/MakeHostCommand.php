@@ -44,7 +44,7 @@ class MakeHostCommand extends Command
     {
         $this->creationService = $creationService;
         
-        $data['name'] = $this->option('name') ?? $this->ask('Enter a short identifier used to distinguish this location from others');
+        $data['name'] = $this->option('name') ?? $this->ask('Enter a short identifier used to distinguish this host from others');
         $data['host'] = $this->option('host') ?? $this->ask('Enter the IP address or FQDN that should be used when attempting to connect to this MySQL');
         $data['port'] = $this->option('port') ?? $this->ask('Enter the Port that MySQL is running on for this host');
         $data['username'] = $this->option('username') ?? $this->ask('Enter the username of an account that has enough permissions to create new users and databases on the system');
