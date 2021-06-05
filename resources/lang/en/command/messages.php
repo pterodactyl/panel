@@ -35,15 +35,6 @@ return [
     'maintenance' => [
         'deleting_service_backup' => 'Deleting service backup file :file.',
     ],
-    'database-host' => [
-        'ask_name' => 'Enter a short identifier used to distinguish this location from others',
-        'ask_host' => 'Enter the IP address or FQDN that should be used when attempting to connect to this MySQL',
-        'ask_port' => 'Enter the Port that MySQL is running on for this host',
-        'ask_username' => 'Enter the username of an account that has enough permissions to create new users and databases on the system',
-        'ask_password' => 'Enter the password to the account defined',
-        'ask_node_id' => 'Enter a valid Node ID',
-        'created' => 'Successfully created the Database Host :name on node (:node).',
-    ],
     'server' => [
         'rebuild_failed' => 'Rebuild request for ":name" (#:id) on node ":node" failed with error: :message',
         'reinstall' => [
