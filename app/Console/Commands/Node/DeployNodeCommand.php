@@ -74,12 +74,13 @@ class DeployNodeCommand extends Command
 
     public function handle(NodeRepositoryInterface $repository)
     {
+        $this->repository = $repository;
         $this->nodes = $this->nodes ?? $this->repository->all();
-        $data['name'] = $this->option('name') ?? $this->ask(trans('command/messages.node.ask_node_name'));
+        $data['name'] = $this->option('name') ?? $this->anticipate('Enter a valid node name', $this->nodes->pluck('name')->toArray());
 
         $node = $this->nodes->where('name', $data['name'])->first();
         if (is_null($node)) {
-            $this->error(trans('command/messages.node.no_node_found'));
+            $this->error('Could not locate a record using the provided name.');
             if ($this->input->isInteractive()) {
                 $this->handle();
             }
@@ -90,8 +91,6 @@ class DeployNodeCommand extends Command
         $config = Yaml::dump($this->getConfiguration($node), 4, 2, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE);
         file_put_contents("/etc/pterodactyl/config.yml", $config);
 
-        $this->line(trans('command/messages.node.unencrypted', [
-            'key' => Container::getInstance()->make(Encrypter::class)->decrypt($node->daemon_token),
-        ]));
+        $this->line('Successfully unencrypted the requested Node Token! - ' . Container::getInstance()->make(Encrypter::class)->decrypt($node->daemon_token));
     }
 }
