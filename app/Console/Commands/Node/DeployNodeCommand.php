@@ -38,22 +38,6 @@ class DeployNodeCommand extends Command
      */
     protected $repository;
 
-    /**
-     * Create a new command instance.
-     */
-    public function __construct(NodeRepositoryInterface $repository)
-    {
-        parent::__construct();
-
-        $this->repository = $repository;
-    }
-
-    /**
-     * Handle the command execution process.
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     */
-
 
     /**
      * Returns the configuration as an array.
@@ -88,7 +72,7 @@ class DeployNodeCommand extends Command
         ];
     }
 
-    public function handle()
+    public function handle(NodeRepositoryInterface $repository)
     {
         $this->nodes = $this->nodes ?? $this->repository->all();
         $data['name'] = $this->option('name') ?? $this->ask(trans('command/messages.node.ask_node_name'));
