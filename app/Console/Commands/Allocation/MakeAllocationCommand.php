@@ -33,22 +33,13 @@ class MakeAllocationCommand extends Command
      */
     protected $description = 'Creates a new allocation on the system via the CLI.';
 
-    /**
-     * Create a new command instance.
-     */
-    public function __construct(AllocationCreationService $creationService)
-    {
-        parent::__construct();
-
-        $this->creationService = $creationService;
-    }
 
     /**
      * Handle the command execution process.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle()
+    public function handle(AllocationCreationService $creationService)
     {
         $data['node_id'] = $this->option('nodeid') ?? $this->ask(trans('command/messages.allocation.ask_nodeid'));
         $data['ip'] = $this->option('ip') ?? $this->ask(trans('command/messages.allocation.ask_ip'));
