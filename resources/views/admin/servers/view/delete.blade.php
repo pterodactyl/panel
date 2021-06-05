@@ -32,9 +32,9 @@
                 <p class="text-danger small">Deleting a server is an irreversible action. <strong>All server data</strong> (including files and users) will be removed from the system.</p>
             </div>
             <div class="box-footer">
-                <form action="{{ route('admin.servers.view.delete', $server->id) }}" method="POST">
+                <form id="deleteform" action="{{ route('admin.servers.view.delete', $server->id) }}" method="POST">
                     {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-danger">Safely Delete This Server</button>
+                    <button id="deletebtn" class="btn btn-danger">Safely Delete This Server</button>
                 </form>
             </div>
         </div>
@@ -49,10 +49,10 @@
                 <p class="text-danger small">Deleting a server is an irreversible action. <strong>All server data</strong> (including files and users) will be removed from the system. This method may leave dangling files on your daemon if it reports an error.</p>
             </div>
             <div class="box-footer">
-                <form action="{{ route('admin.servers.view.delete', $server->id) }}" method="POST">
+                <form id="forcedeleteform" action="{{ route('admin.servers.view.delete', $server->id) }}" method="POST">
                     {!! csrf_field() !!}
                     <input type="hidden" name="force_delete" value="1" />
-                    <button type="submit" class="btn btn-danger">Forcibly Delete This Server</button>
+                    <button id="forcedeletebtn"" class="btn btn-danger">Forcibly Delete This Server</button>
                 </form>
             </div>
         </div>
@@ -63,7 +63,7 @@
 @section('footer-scripts')
     @parent
     <script>
-    $('form[data-action="delete"]').submit(function (event) {
+    $('#deletebtn').click(function (event) {
         event.preventDefault();
         swal({
             title: '',
@@ -74,7 +74,22 @@
             confirmButtonColor: '#d9534f',
             closeOnConfirm: false
         }, function () {
-            event.target.submit();
+            $('#deleteform').submit()
+        });
+    });
+	
+    $('#forcedeletebtn').click(function (event) {
+        event.preventDefault();
+        swal({
+            title: '',
+            type: 'warning',
+            text: 'Are you sure that you want to delete this server? There is no going back, all data will immediately be removed.',
+            showCancelButton: true,
+            confirmButtonText: 'Delete',
+            confirmButtonColor: '#d9534f',
+            closeOnConfirm: false
+        }, function () {
+            $('#forcedeleteform').submit()
         });
     });
     </script>
