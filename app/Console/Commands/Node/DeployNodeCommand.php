@@ -91,7 +91,7 @@ class DeployNodeCommand extends Command
     public function handle()
     {
         $this->nodes = $this->nodes ?? $this->repository->all();
-        $name = $this->option('name') ?? $this->ask(trans('command/messages.node.ask_node_name'));
+        $data['name'] = $this->option('name') ?? $this->ask(trans('command/messages.node.ask_node_name'));
 
         $node = $this->nodes->where('name', $name)->first();
         if (is_null($node)) {
