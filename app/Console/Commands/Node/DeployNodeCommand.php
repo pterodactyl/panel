@@ -76,15 +76,11 @@ class DeployNodeCommand extends Command
     {
         $this->repository = $repository;
         $this->nodes = $this->nodes ?? $this->repository->all();
-        $data['name'] = $this->option('name') ?? $this->anticipate('Enter a valid node name', $this->nodes->pluck('name')->toArray());
+        $data['name'] = $this->option('name') ?? $this->ask('Enter a valid node name');
 
         $node = $this->nodes->where('name', $data['name'])->first();
         if (is_null($node)) {
             $this->error('Could not locate a record using the provided name.');
-            if ($this->input->isInteractive()) {
-                $this->handle();
-            }
-
             return;
         }
 

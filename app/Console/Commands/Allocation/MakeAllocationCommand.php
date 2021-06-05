@@ -46,8 +46,8 @@ class MakeAllocationCommand extends Command
         $data['node_id'] = $this->option('nodeid') ?? $this->ask('Enter a valid Node ID');
         $data['ip'] = $this->option('ip') ?? $this->ask('Enter the IP Address of the machine');
         $data['port'] = $this->option('port') ?? $this->ask('Enter the Port to be created');
-        $alias = $this->confirm('Do you wish to create an alias for this allocation?');
-        if($alias) {
+        $aliaschoice = $this->confirm('Do you wish to create an alias for this allocation?');
+        if($aliaschoice) {
             $data['alias'] = $this->option('alias') ?? $this->ask('Enter an alias if you wish to assign one to the Port');
         };
 
