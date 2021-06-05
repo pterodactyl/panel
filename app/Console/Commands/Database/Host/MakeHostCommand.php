@@ -36,21 +36,11 @@ class MakeHostCommand extends Command
     protected $description = 'Creates a new Database Host on the system via the CLI.';
 
     /**
-     * Create a new command instance.
-     */
-    public function __construct(HostCreationService $creationService)
-    {
-        parent::__construct();
-
-        $this->creationService = $creationService;
-    }
-
-    /**
      * Handle the command execution process.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle()
+    public function handle(HostCreationService $creationService)
     {
         $data['name'] = $this->option('name') ?? $this->ask(trans('command/messages.database-host.ask_name'));
         $data['host'] = $this->option('host') ?? $this->ask(trans('command/messages.database-host.ask_host'));
@@ -58,7 +48,7 @@ class MakeHostCommand extends Command
         $data['username'] = $this->option('username') ?? $this->ask(trans('command/messages.database-host.ask_username'));
         $data['password'] = $this->option('password') ?? $this->ask(trans('command/messages.database-host.ask_password'));
         $data['node_id'] = $this->option('node_id') ?? $this->ask(trans('command/messages.database-host.ask_node_id'));
-        
+
         $dbhost = $this->creationService->handle($data);
         $this->line(trans('command/messages.database-host.created', [
             'name' => $dbhost->name,
