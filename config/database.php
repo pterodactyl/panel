@@ -45,7 +45,14 @@ return [
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => env('DB_PREFIX', ''),
             'strict' => env('DB_STRICT_MODE', false),
+            'sslmode' => env('DB_SSLMODE', 'prefer'),
             'timezone' => env('DB_TIMEZONE', Time::getMySQLTimezoneOffset(env('APP_TIMEZONE', 'UTC'))),
+            'options'   => array(
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('DB_VERIFY_SERVER_CERT', false),
+                PDO::MYSQL_ATTR_SSL_KEY => env('DB_SSL_KEY', ''),
+                PDO::MYSQL_ATTR_SSL_CERT => env('DB_SSL_CERT', ''),
+                PDO::MYSQL_ATTR_SSL_CA => env('DB_SSL_CA', ''),
+            ),
         ],
 
         /*
