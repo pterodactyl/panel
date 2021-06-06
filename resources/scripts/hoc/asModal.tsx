@@ -1,6 +1,7 @@
 import React from 'react';
 import PortaledModal, { ModalProps } from '@/components/elements/Modal';
 import ModalContext, { ModalContextValues } from '@/context/ModalContext';
+import isEqual from 'react-fast-compare';
 
 export interface AsModalProps {
     visible: boolean;
@@ -47,13 +48,13 @@ function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) =>
             /**
              * @this {React.PureComponent<P & AsModalProps, State>}
              */
-            componentDidUpdate (prevProps: Readonly<P & AsModalProps>) {
+            componentDidUpdate (prevProps: Readonly<P & AsModalProps>, prevState: Readonly<State>) {
                 if (prevProps.visible && !this.props.visible) {
                     this.setState({ visible: false, showSpinnerOverlay: false });
                 } else if (!prevProps.visible && this.props.visible) {
                     this.setState({ render: true, visible: true });
                 }
-                if (!this.state.render) {
+                if (!this.state.render && !isEqual(prevState.propOverrides, this.state.propOverrides)) {
                     this.setState({ propOverrides: {} });
                 }
             }

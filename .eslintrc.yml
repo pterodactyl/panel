@@ -44,6 +44,8 @@ rules:
   array-bracket-spacing:
     - warn
     - always
+  # Remove errors for not having newlines between operands of ternary expressions https://eslint.org/docs/rules/multiline-ternary
+  multiline-ternary: 0
   "react-hooks/rules-of-hooks":
     - error
   "react-hooks/exhaustive-deps": 0
@@ -76,9 +78,13 @@ rules:
     - 1
     - "line-aligned"
   "react/jsx-closing-tag-location": 1
-  "no-use-before-define": 0
-  "@typescript-eslint/no-use-before-define": 1
-  "multiline-ternary": 0
+  # This setup is required to avoid a spam of errors when running eslint about React being
+  # used before it is defined.
+  #
+  # see https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-use-before-define.md#how-to-use
+  no-use-before-define: 0
+  "@typescript-eslint/no-use-before-define":
+    - warn
 overrides:
   - files:
       - "**/*.tsx"
