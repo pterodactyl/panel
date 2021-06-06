@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 import tw from 'twin.macro';
 import { useRouteMatch } from 'react-router-dom';
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
@@ -15,6 +16,7 @@ import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
 import updateLocation from '@/api/admin/locations/updateLocation';
+import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
 
 interface ctx {
     location: Location | undefined;
@@ -35,7 +37,7 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
-    // const history = useHistory();
+    const history = useHistory();
 
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -99,10 +101,10 @@ const EditInformationContainer = () => {
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>
                                     <div css={tw`flex`}>
-                                        {/* <LocationDeleteButton */}
-                                        {/*     locationId={location.id} */}
-                                        {/*     onDeleted={() => history.push('/admin/locations')} */}
-                                        {/* /> */}
+                                        <LocationDeleteButton
+                                            locationId={location.id}
+                                            onDeleted={() => history.push('/admin/locations')}
+                                        />
                                     </div>
 
                                     <div css={tw`flex ml-auto`}>
