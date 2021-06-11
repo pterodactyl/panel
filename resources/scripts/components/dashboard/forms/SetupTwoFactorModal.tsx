@@ -9,7 +9,6 @@ import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import { Trans, WithTranslation, withTranslation } from 'react-i18next';
-=======
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
 import QRCode from 'qrcode.react';
@@ -17,7 +16,6 @@ import QRCode from 'qrcode.react';
 interface Values {
     code: string;
 }
-
 
 const SetupTwoFactorModal = ({ t }: WithTranslation) => {
     const [ token, setToken ] = useState('');
@@ -91,7 +89,7 @@ const SetupTwoFactorModal = ({ t }: WithTranslation) => {
                     </pre>
                     <div css={tw`text-right`}>
                         <Button css={tw`mt-6`} onClick={dismiss}>
-                          {t('elements:close')}
+                            {t('elements:close')}
                         </Button>
                     </div>
                 </>
@@ -134,4 +132,4 @@ const SetupTwoFactorModal = ({ t }: WithTranslation) => {
     );
 };
 
-export default asModal()withTranslation([ 'elements', 'dashboard' ])(SetupTwoFactorModal);
+export default asModal()(withTranslation([ 'elements', 'dashboard' ])(SetupTwoFactorModal));

@@ -69,4 +69,4 @@ const DisableTwoFactorModal = ({ t }: WithTranslation) => {
     );
 };
 
-export default asModal()withTranslation([ 'elements', 'dashboard' ])(DisableTwoFactorModal);
+export default asModal()(withTranslation([ 'elements', 'dashboard' ])(DisableTwoFactorModal));
