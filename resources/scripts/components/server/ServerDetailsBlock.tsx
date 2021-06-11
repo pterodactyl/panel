@@ -75,6 +75,7 @@ const ServerDetailsBlock = ({ t }: WithTranslation) => {
 
     const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : t('unlimited');
     const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : t('unlimited');
+    const cpuLimit = limits.cpu ? limits.cpu + '%' : t('unlimited');
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
@@ -97,6 +98,7 @@ const ServerDetailsBlock = ({ t }: WithTranslation) => {
             </CopyOnClick>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {stats.cpu.toFixed(2)}%
+                <span css={tw`text-neutral-500`}> / {cpuLimit}</span>
             </p>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faMemory} fixedWidth css={tw`mr-1`}/> {bytesToHuman(stats.memory)}

@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ITerminalOptions, Terminal } from 'xterm';
+import { Terminal, ITerminalOptions } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
 import { WebLinksAddon } from 'xterm-addon-web-links';
+import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import styled from 'styled-components/macro';
@@ -74,12 +75,13 @@ const Console = ({ t }: WithTranslation) => {
     const searchAddon = new SearchAddon();
     const searchBar = new SearchBarAddon({ searchAddon });
     const webLinksAddon = new WebLinksAddon();
+    const scrollDownHelperAddon = new ScrollDownHelperAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const [ canSendCommands ] = usePermissions([ 'control.console' ]);
+    const [canSendCommands] = usePermissions(['control.console']);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
-    const [ historyIndex, setHistoryIndex ] = useState(-1);
+    const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
+    const [historyIndex, setHistoryIndex] = useState(-1);
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -127,7 +129,7 @@ const Console = ({ t }: WithTranslation) => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
+            setHistory(prevHistory => [command, ...prevHistory!].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
@@ -141,6 +143,7 @@ const Console = ({ t }: WithTranslation) => {
             terminal.loadAddon(searchAddon);
             terminal.loadAddon(searchBar);
             terminal.loadAddon(webLinksAddon);
+            terminal.loadAddon(scrollDownHelperAddon);
 
             terminal.open(ref.current);
             fitAddon.fit();
@@ -160,7 +163,7 @@ const Console = ({ t }: WithTranslation) => {
                 return true;
             });
         }
-    }, [ terminal, connected ]);
+    }, [terminal, connected]);
 
     useEventListener('resize', debounce(() => {
         if (terminal.element) {
@@ -198,11 +201,11 @@ const Console = ({ t }: WithTranslation) => {
                 });
             }
         };
-    }, [ connected, instance ]);
+    }, [connected, instance]);
 
     return (
         <div css={tw`text-xs font-mono relative`}>
-            <SpinnerOverlay visible={!connected} size={'large'}/>
+            <SpinnerOverlay visible={!connected} size={'large'} />
             <div
                 css={[
                     tw`rounded-t p-2 bg-black w-full`,
@@ -210,21 +213,21 @@ const Console = ({ t }: WithTranslation) => {
                 ]}
                 style={{ minHeight: '16rem' }}
             >
-                <TerminalDiv id={'terminal'} ref={ref}/>
+                <TerminalDiv id={'terminal'} ref={ref} />
             </div>
             {canSendCommands &&
-            <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
-                <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
-                <div css={tw`w-full`}>
-                    <CommandInput
-                        type={'text'}
-                        placeholder={t('command_input')}
-                        aria-label={t('command_input_desc')}
-                        disabled={!instance || !connected}
-                        onKeyDown={handleCommandKeyDown}
-                    />
+                <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
+                    <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
+                    <div css={tw`w-full`}>
+                        <CommandInput
+                            type={'text'}
+                            placeholder={t('command_input')}
+                            aria-label={t('command_input_desc')}
+                            disabled={!instance || !connected}
+                            onKeyDown={handleCommandKeyDown}
+                        />
+                    </div>
                 </div>
-            </div>
             }
         </div>
     );

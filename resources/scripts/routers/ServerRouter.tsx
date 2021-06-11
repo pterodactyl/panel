@@ -9,7 +9,6 @@ import { ServerContext } from '@/state/server';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import { CSSTransition } from 'react-transition-group';
-import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
@@ -151,9 +150,9 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/files/:action(edit|new)`} exact>
-                                        <SuspenseSpinner>
+                                        <Spinner.Suspense>
                                             <FileEditContainer/>
-                                        </SuspenseSpinner>
+                                        </Spinner.Suspense>
                                     </Route>
                                     <Route path={`${match.path}/databases`} exact>
                                         <RequireServerPermission permissions={'database.*'}>
