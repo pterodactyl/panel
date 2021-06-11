@@ -10,18 +10,27 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
-import { useTranslation } from 'react-i18next';
 
 interface Values {
     databaseName: string;
     connectionsFrom: string;
 }
 
+const schema = object().shape({
+    databaseName: string()
+        .required('A database name must be provided.')
+        .min(3, 'Database name must be at least 3 characters.')
+        .max(48, 'Database name must not exceed 48 characters.')
+        .matches(/^[A-Za-z0-9_\-.]{3,48}$/, 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'),
+    connectionsFrom: string()
+        .required('A connection value must be provided.')
+        .matches(/^([0-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, 'A valid connection address must be provided.'),
+});
+
 export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
-    const { t } = useTranslation('server');
 
     const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
 
@@ -38,16 +47,7 @@ export default () => {
             });
     };
 
-    const schema = object().shape({
-        databaseName: string()
-            .required(t('required_database_name'))
-            .min(3, t('database_name_min_3_char'))
-            .max(48, t('database_name_max_48_char'))
-            .matches(/^[A-Za-z0-9_\-.]{3,48}$/, t('database_name_containments')),
-        connectionsFrom: string()
-            .required(t('database_connection_value_required'))
-            .matches(/^([0-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, t('database_connection_addres_required')),
-    });
+
 
     return (
         <>
@@ -68,22 +68,22 @@ export default () => {
                             }}
                         >
                             <FlashMessageRender byKey={'database:create'} css={tw`mb-6`}/>
-                            <h2 css={tw`text-2xl mb-6`}>{t('create_new_database')}</h2>
+                            <h2 css={tw`text-2xl mb-6`}>Create new database</h2>
                             <Form css={tw`m-0`}>
                                 <Field
                                     type={'string'}
                                     id={'database_name'}
                                     name={'databaseName'}
-                                    label={t('database_name')}
-                                    description={t('database_name_description')}
+                                    label={'Database Name'}
+                                    description={'A descriptive name for your database instance.'}
                                 />
                                 <div css={tw`mt-6`}>
                                     <Field
                                         type={'string'}
                                         id={'connections_from'}
                                         name={'connectionsFrom'}
-                                        label={t('connection_from')}
-                                        description={t('connection_from_description')}
+                                        label={'Connections From'}
+                                        description={'Where connections should be allowed from. Use % for wildcards.'}
                                     />
                                 </div>
                                 <div css={tw`flex flex-wrap justify-end mt-6`}>
@@ -93,10 +93,10 @@ export default () => {
                                         css={tw`w-full sm:w-auto sm:mr-2`}
                                         onClick={() => setVisible(false)}
                                     >
-                                        {t('cancel')}
+                                        Cancel
                                     </Button>
                                     <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
-                                        {t('create_database')}
+                                        Create Database
                                     </Button>
                                 </div>
                             </Form>
@@ -105,7 +105,7 @@ export default () => {
                 }
             </Formik>
             <Button onClick={() => setVisible(true)}>
-                {t('new_database')}
+                New Database
             </Button>
         </>
     );

@@ -15,7 +15,6 @@ import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import { WithTranslation, withTranslation } from 'react-i18next';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -66,9 +65,8 @@ const CommandInput = styled.input`
     }
 `;
 
-const Console = ({ t }: WithTranslation) => {
+export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
-    const TERMINAL_CONCLUDE = '\u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const fitAddon = new FitAddon();
@@ -77,11 +75,11 @@ const Console = ({ t }: WithTranslation) => {
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const [ canSendCommands ] = usePermissions([ 'control.console' ]);
+    const [canSendCommands] = usePermissions([ 'control.console' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
-    const [ historyIndex, setHistoryIndex ] = useState(-1);
+    const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
+    const [historyIndex, setHistoryIndex] = useState(-1);
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -91,21 +89,21 @@ const Console = ({ t }: WithTranslation) => {
         switch (status) {
             // Sent by either the source or target node if a failure occurs.
             case 'failure':
-                terminal.writeln(TERMINAL_PRELUDE + t('transfer_failed') + TERMINAL_CONCLUDE);
+                terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
                 return;
 
             // Sent by the source node whenever the server was archived successfully.
             case 'archive':
-                terminal.writeln(TERMINAL_PRELUDE + t('archive_successfully') + TERMINAL_CONCLUDE);
+                terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
         }
     };
 
     const handleDaemonErrorOutput = (line: string) => terminal.writeln(
-        TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + TERMINAL_CONCLUDE,
+        TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
 
     const handlePowerChangeEvent = (state: string) => terminal.writeln(
-        TERMINAL_PRELUDE + t('server_marked', { state }) + TERMINAL_CONCLUDE,
+        TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
     );
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -129,7 +127,7 @@ const Console = ({ t }: WithTranslation) => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
+            setHistory(prevHistory => [command, ...prevHistory!].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
@@ -163,7 +161,7 @@ const Console = ({ t }: WithTranslation) => {
                 return true;
             });
         }
-    }, [ terminal, connected ]);
+    }, [terminal, connected]);
 
     useEventListener('resize', debounce(() => {
         if (terminal.element) {
@@ -201,7 +199,7 @@ const Console = ({ t }: WithTranslation) => {
                 });
             }
         };
-    }, [ connected, instance ]);
+    }, [connected, instance]);
 
     return (
         <div css={tw`text-xs font-mono relative`}>
@@ -221,8 +219,8 @@ const Console = ({ t }: WithTranslation) => {
                     <div css={tw`w-full`}>
                         <CommandInput
                             type={'text'}
-                            placeholder={t('command_input')}
-                            aria-label={t('command_input_desc')}
+                            placeholder={'Type a command...'}
+                            aria-label={'Console command input.'}
                             disabled={!instance || !connected}
                             onKeyDown={handleCommandKeyDown}
                         />
@@ -232,5 +230,3 @@ const Console = ({ t }: WithTranslation) => {
         </div>
     );
 };
-
-export default withTranslation('server')(Console);

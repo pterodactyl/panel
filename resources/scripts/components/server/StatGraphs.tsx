@@ -8,7 +8,6 @@ import { faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
 import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import { WithTranslation, withTranslation } from 'react-i18next';
 
 const chartDefaults = (ticks?: Chart.TickOptions | undefined): ChartConfiguration => ({
     type: 'line',
@@ -70,7 +69,7 @@ const chartDefaults = (ticks?: Chart.TickOptions | undefined): ChartConfiguratio
     },
 });
 
-const StatGraphs = ({ t }: WithTranslation) => {
+export default () => {
     const status = ServerContext.useStoreState(state => state.status.value);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
 
@@ -132,28 +131,28 @@ const StatGraphs = ({ t }: WithTranslation) => {
     return (
         <div css={tw`flex flex-wrap mt-4`}>
             <div css={tw`w-full sm:w-1/2`}>
-                <TitledGreyBox title={t('memory_usage')} icon={faMemory} css={tw`mr-0 sm:mr-4`}>
+                <TitledGreyBox title={'Memory usage'} icon={faMemory} css={tw`mr-0 sm:mr-4`}>
                     {status !== 'offline' ?
                         <canvas
                             id={'memory_chart'}
                             ref={memoryRef}
-                            aria-label={t('memory_usage_graph')}
+                            aria-label={'Server Memory Usage Graph'}
                             role={'img'}
                         />
                         :
                         <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                            {t('server_offline')}
+                            Server is offline.
                         </p>
                     }
                 </TitledGreyBox>
             </div>
             <div css={tw`w-full sm:w-1/2 mt-4 sm:mt-0`}>
-                <TitledGreyBox title={t('cpu_usage')} icon={faMicrochip} css={tw`ml-0 sm:ml-4`}>
+                <TitledGreyBox title={'CPU usage'} icon={faMicrochip} css={tw`ml-0 sm:ml-4`}>
                     {status !== 'offline' ?
-                        <canvas id={'cpu_chart'} ref={cpuRef} aria-label={t('cpu_usage_graph')} role={'img'}/>
+                        <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
                         :
                         <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                            {t('server_offline')}
+                            Server is offline.
                         </p>
                     }
                 </TitledGreyBox>
@@ -161,5 +160,3 @@ const StatGraphs = ({ t }: WithTranslation) => {
         </div>
     );
 };
-
-export default withTranslation('server')(StatGraphs);

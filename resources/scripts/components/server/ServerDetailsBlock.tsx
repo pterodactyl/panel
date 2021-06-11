@@ -7,7 +7,6 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface Stats {
     memory: number;
@@ -30,7 +29,7 @@ function statusToColor (status: string|null, installing: boolean): TwStyle {
     }
 }
 
-const ServerDetailsBlock = ({ t }: WithTranslation) => {
+const ServerDetailsBlock = () => {
     const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
@@ -73,9 +72,9 @@ const ServerDetailsBlock = ({ t }: WithTranslation) => {
         allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
     )).toString();
 
-    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : t('unlimited');
-    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : t('unlimited');
-    const cpuLimit = limits.cpu ? limits.cpu + '%' : t('unlimited');
+    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
+    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
+    const cpuLimit = limits.cpu ? limits.cpu + '%' : 'Unlimited';
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
@@ -88,7 +87,7 @@ const ServerDetailsBlock = ({ t }: WithTranslation) => {
                         statusToColor(status, isInstalling || isTransferring),
                     ]}
                 />
-                &nbsp;{!status ? t('connecting') : (isInstalling ? t('installing') : (isTransferring) ? t('transferring') : status)}
+                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>
@@ -112,4 +111,4 @@ const ServerDetailsBlock = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation('server')(ServerDetailsBlock);
+export default ServerDetailsBlock;
