@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
+import { useStoreState } from 'easy-peasy';
+import { ApplicationStore } from '@/state';
+import SetupTwoFactorModal from '@/components/dashboard/forms/SetupTwoFactorModal';
 import DisableTwoFactorModal from '@/components/dashboard/forms/DisableTwoFactorModal';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import { withTranslation } from 'react-i18next';
-import { useStoreState } from '@/state/hooks';
-import SetupTwoFactorModal from '@/components/dashboard/forms/SetupTwoFactorModal';
 
 const ConfigureTwoFactorForm = () => {
     const [ visible, setVisible ] = useState(false);

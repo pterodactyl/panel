@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from '@/components/App';
 import { setConfig } from 'react-hot-loader';
-import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
+import SuspenseSpinner from '@/components/elements/Spinner';
 
 import '@/i18n';
 import 'tailwindcss/dist/base.min.css';
