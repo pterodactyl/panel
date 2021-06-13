@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from '@/components/App';
 import { setConfig } from 'react-hot-loader';
-import SuspenseSpinner from '@/components/elements/Spinner';
+import Spinner from '@/components/elements/Spinner';
 
 import '@/i18n';
 import 'tailwindcss/dist/base.min.css';
@@ -14,4 +14,4 @@ import 'tailwindcss/dist/base.min.css';
 // @see https://github.com/gaearon/react-hot-loader#hook-support
 setConfig({ reloadHooks: false });
 
-ReactDOM.render(<SuspenseSpinner><App/></SuspenseSpinner>, document.getElementById('app'));
+ReactDOM.render(<Spinner.Suspense><App/></Spinner.Suspense>, document.getElementById('app'));

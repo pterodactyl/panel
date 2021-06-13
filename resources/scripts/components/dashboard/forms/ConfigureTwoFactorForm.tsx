@@ -5,9 +5,9 @@ import SetupTwoFactorModal from '@/components/dashboard/forms/SetupTwoFactorModa
 import DisableTwoFactorModal from '@/components/dashboard/forms/DisableTwoFactorModal';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { withTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
-const ConfigureTwoFactorForm = () => {
+const ConfigureTwoFactorForm = ({ t }: WithTranslation) => {
     const [ visible, setVisible ] = useState(false);
     const isEnabled = useStoreState((state: ApplicationStore) => state.user.data!.useTotp);
 
@@ -20,11 +20,11 @@ const ConfigureTwoFactorForm = () => {
                     <SetupTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)}/>
             )}
             <p css={tw`text-sm`}>
-                {isEnabled ? 'dashboard:2fa.dashboard_desc_enabled' : 'dashboard:2fa.dashboard_desc_disabled'}
+                {isEnabled ? ('dashboard:2fa.dashboard_desc_enabled') : t('dashboard:2fa.dashboard_desc_disabled')}
             </p>
             <div css={tw`mt-6`}>
                 <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
-                    {isEnabled ? 'elements:disable' : 'elements:enable'}
+                    {isEnabled ? t('elements:disable') : t('elements:enable')}
                 </Button>
             </div>
         </div>
