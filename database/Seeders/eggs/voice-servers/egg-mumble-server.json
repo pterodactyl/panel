@@ -4,19 +4,19 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-06-05T16:41:02-04:00",
+    "exported_at": "2021-06-15T16:54:54-04:00",
     "name": "Mumble Server",
     "author": "support@pterodactyl.io",
     "description": "Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.",
     "features": null,
     "images": [
-        "ghcr.io\/pterodactyl\/yolks:java_8"
+        "ghcr.io\/pterodactyl\/yolks:alpine"
     ],
     "file_denylist": [],
     "startup": ".\/murmur.x86 -fg",
     "config": {
         "files": "{\r\n    \"murmur.ini\": {\r\n        \"parser\": \"ini\",\r\n        \"find\": {\r\n            \"logfile\": \"murmur.log\",\r\n            \"port\": \"{{server.build.default.port}}\",\r\n            \"host\": \"0.0.0.0\",\r\n            \"users\": \"{{server.build.env.MAX_USERS}}\"\r\n        }\r\n    }\r\n}",
-        "startup": "{\r\n    \"done\": \"Server listening on\",\r\n    \"userInteraction\": [\r\n        \"Generating new server certificate\"\r\n    ]\r\n}",
+        "startup": "{\r\n    \"done\": \"Server listening on\"\r\n}",
         "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/murmur.log\"\r\n}",
         "stop": "^C"
     },
@@ -44,7 +44,7 @@
             "default_value": "latest",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|regex:\/^([0-9_\\.-]{5,8})$\/"
+            "rules": "required|string"
         }
     ]
 }
