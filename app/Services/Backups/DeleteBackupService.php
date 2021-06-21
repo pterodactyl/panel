@@ -50,13 +50,20 @@ class DeleteBackupService
     }
 
     /**
-     * Deletes a backup from the system.
+     * Deletes a backup from the system. If the backup is stored in S3 a request
+     * will be made to delete that backup from the disk as well.
      *
      * @throws \Throwable
      */
     public function handle(Backup $backup)
     {
-        if ($backup->is_locked) {
+        // If the backup is marked as failed it can still be deleted, even if locked
+        // since the UI doesn't allow you to unlock a failed backup in the first place.
+        //
+        // I also don't really see any reason you'd have a locked, failed backup to keep
+        // around. The logic that updates the backup to the failed state will also remove
+        // the lock, so this condition should really never happen.
+        if ($backup->is_locked && ($backup->completed_at && $backup->is_successful)) {
             throw new BackupLockedException();
         }
 
