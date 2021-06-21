@@ -71,9 +71,9 @@ class TwoFactorSetupService
                 'otpauth://totp/%1$s:%2$s?secret=%3$s&issuer=%1$s',
                 rawurlencode($company),
                 rawurlencode($user->email),
-                rawurlencode($secret)
+                rawurlencode($secret),
             ),
-            'secret' => $secret
+            'secret' => $secret,
         ];
     }
 }

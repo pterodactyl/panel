@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
@@ -97,9 +97,9 @@ const SetupTwoFactorModal = () => {
                         </Button>
                     </div>
                 </>
-             :
+                :
                 <Form css={tw`mb-0`}>
-                    <FlashMessageRender css={tw`mb-6`} byKey={'account:two-factor'} />
+                    <FlashMessageRender css={tw`mb-6`} byKey={'account:two-factor'}/>
                     <div css={tw`flex flex-wrap`}>
                         <div css={tw`w-full md:flex-1`}>
                             <div css={tw`w-32 h-32 md:w-64 md:h-64 bg-neutral-600 p-2 rounded mx-auto`}>
@@ -128,21 +128,18 @@ const SetupTwoFactorModal = () => {
                                     title={'Code From Authenticator'}
                                     description={'Enter the code from your authenticator device after scanning the QR image.'}
                                 />
-                                {token && (
+                                {token &&
                                     <div css={tw`pt-4 text-neutral-400`}>
-                                        Alternatively, you can also enter this
-                                        token:
+                                        Alternatively, you can also enter this token:
                                         <CopyOnClick text={token.secret}>
-                                            <div
-                                                css={tw`text-sm bg-neutral-900 rounded mt-2 py-2 px-4 font-mono`}
-                                            >
+                                            <div css={tw`text-sm bg-neutral-900 rounded mt-2 py-2 px-4 font-mono`}>
                                                 <code css={tw`font-mono`}>
                                                     {token.secret}
                                                 </code>
                                             </div>
                                         </CopyOnClick>
                                     </div>
-                                )}
+                                }
                             </div>
                             <div css={tw`mt-6 md:mt-0 text-right`}>
                                 <Button>Setup</Button>
@@ -151,6 +148,7 @@ const SetupTwoFactorModal = () => {
                     </div>
                 </Form>
             }
+git
         </Formik>
     );
 };
