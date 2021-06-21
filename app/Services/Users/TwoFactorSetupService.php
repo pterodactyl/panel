@@ -66,11 +66,14 @@ class TwoFactorSetupService
 
         $company = urlencode(preg_replace('/\s/', '', $this->config->get('app.name')));
 
-        return sprintf(
-            'otpauth://totp/%1$s:%2$s?secret=%3$s&issuer=%1$s',
-            rawurlencode($company),
-            rawurlencode($user->email),
-            rawurlencode($secret)
-        );
+        return [
+            'image_url_data' => sprintf(
+                'otpauth://totp/%1$s:%2$s?secret=%3$s&issuer=%1$s',
+                rawurlencode($company),
+                rawurlencode($user->email),
+                rawurlencode($secret)
+            ),
+            'secret' => $secret
+        ];
     }
 }
