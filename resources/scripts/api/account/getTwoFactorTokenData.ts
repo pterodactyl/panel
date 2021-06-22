@@ -1,7 +1,7 @@
 import http from '@/api/http';
 
 export interface TwoFactorTokenData {
-    /* eslint-disable camelcase */
+    // eslint-disable-next-line camelcase
     image_url_data: string;
     secret: string;
 }
