@@ -12,17 +12,11 @@ use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
-use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 
 class BackupStatusController extends Controller
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
-     */
-    private $repository;
-
     /**
      * @var \Pterodactyl\Extensions\Backups\BackupManager
      */
@@ -31,9 +25,8 @@ class BackupStatusController extends Controller
     /**
      * BackupStatusController constructor.
      */
-    public function __construct(BackupRepository $repository, BackupManager $backupManager)
+    public function __construct(BackupManager $backupManager)
     {
-        $this->repository = $repository;
         $this->backupManager = $backupManager;
     }
 
@@ -64,6 +57,10 @@ class BackupStatusController extends Controller
             $successful = $request->input('successful') ? true : false;
             $model->fill([
                 'is_successful' => $successful,
+                // Change the lock state to unlocked if this was a failed backup so that it can be
+                // deleted easily. Also does not make sense to have a locked backup on the system
+                // that is failed.
+                'is_locked' => $successful ? $model->is_locked : false,
                 'checksum' => $successful ? ($request->input('checksum_type') . ':' . $request->input('checksum')) : null,
                 'bytes' => $successful ? $request->input('size') : 0,
                 'completed_at' => CarbonImmutable::now(),

@@ -75,11 +75,11 @@ export default () => {
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const [canSendCommands] = usePermissions(['control.console']);
+    const [ canSendCommands ] = usePermissions([ 'control.console' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
-    const [historyIndex, setHistoryIndex] = useState(-1);
+    const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
+    const [ historyIndex, setHistoryIndex ] = useState(-1);
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -127,7 +127,7 @@ export default () => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory(prevHistory => [command, ...prevHistory!].slice(0, 32));
+            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
@@ -161,7 +161,7 @@ export default () => {
                 return true;
             });
         }
-    }, [terminal, connected]);
+    }, [ terminal, connected ]);
 
     useEventListener('resize', debounce(() => {
         if (terminal.element) {
@@ -199,7 +199,7 @@ export default () => {
                 });
             }
         };
-    }, [connected, instance]);
+    }, [ connected, instance ]);
 
     return (
         <div css={tw`text-xs font-mono relative`}>
