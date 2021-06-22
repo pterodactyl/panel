@@ -23,10 +23,13 @@ const JavaVersionModalFeature = () => {
 
         const listener = (line: string) => {
             if (line.toLowerCase().indexOf('minecraft 1.17 requires running the server with java 16 or above') >= 0) {
-                // Paper error
+                // paper
                 setVisible(true);
             } else if (line.toLowerCase().indexOf('bad major version') >= 0) {
-                // vanilla error
+                // vanilla
+                setVisible(true);
+            } else if (line.toLowerCase().indexOf('unsupported major.minor version') >= 0) {
+                // forge
                 setVisible(true);
             }
         };
