@@ -30,18 +30,13 @@ const JavaVersionModalFeature = () => {
     useEffect(() => {
         if (!connected || !instance || status === 'running') return;
 
+        const errors = [ 'minecraft 1.17 requires running the server with java 16 or above',
+            'java.lang.unsupportedclassversionerror',
+            'unsupported major.minor version',
+            'has been compiled by a more recent version of the java runtime' ];
+
         const listener = (line: string) => {
-            if (line.toLowerCase().indexOf('minecraft 1.17 requires running the server with java 16 or above') >= 0) {
-                // Paper
-                setVisible(true);
-            } else if (line.toLowerCase().indexOf('java.lang.UnsupportedClassVersionError') >= 0) {
-                // Vanilla + many others
-                setVisible(true);
-            } else if (line.toLowerCase().indexOf('unsupported major.minor version') >= 0) {
-                // Forge
-                setVisible(true);
-            } else if (line.toLowerCase().indexOf('has been compiled by a more recent version of the java runtime') >= 0) {
-                // Everything else?
+            if (errors.some(p => line.toLowerCase().includes(p))) {
                 setVisible(true);
             }
         };
