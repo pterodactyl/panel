@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { StaticContext } from 'react-router';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { ActionCreator } from 'easy-peasy';
-import { StaticContext } from 'react-router';
 import { useFormikContext, withFormik } from 'formik';
 import useFlash from '@/plugins/useFlash';
 import { FlashStore } from '@/state/flashes';

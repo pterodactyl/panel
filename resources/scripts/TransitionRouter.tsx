@@ -7,7 +7,7 @@ import tw from 'twin.macro';
 
 const StyledSwitchTransition = styled(SwitchTransition)`
     ${tw`relative`};
-    
+
     & section {
         ${tw`absolute w-full top-0 left-0`};
     }
