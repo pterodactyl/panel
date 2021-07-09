@@ -1,38 +1,78 @@
+#------------------#
+# IDEs and Editors #
+#------------------#
+
+# Jetbrains
+/.idea
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+/.vscode
+
+# Sublime Text
+*.sublime-*
+
+#-------------------#
+#       Tools       #
+#-------------------#
+
+# Vagrant
+/.vagrant
+
+#-------------------#
+#     Languages     #
+#-------------------#
+
+# Node.js
+/.npm
+/node_modules
+npm-debug.log
+
+.cache
+.eslintcache
+
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+.yarn-integrity
+yarn-debug.log
+yarn-error.log
+
+# PHP
 /vendor
-*.DS_Store*
+.php_cs.cache
+
+#-------------------#
+# Operating Systems #
+#-------------------#
+
+# External Drives
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+
+# Mac OS
+/.DS_Store
+*.DS_Store
+
+# VIM
+.*.sw[a-p]
+
+#-------------------#
+#   Project Files   #
+#-------------------#
+
+# Environment Files
 !.env.ci
 !.env.dusk
 !.env.example
 .env*
-.vagrant/*
-.vscode/*
-storage/framework/*
-/.idea
-/nbproject
-
-node_modules
 *.log
-_ide_helper.php
-.phpstorm.meta.php
-.php_cs.cache
-public/assets/manifest.json
-
-# For local development with docker
-# Remove if we ever put the Dockerfile in the repo
-.dockerignore
-#Dockerfile
-docker-compose.yml
-
-# for image related files
-misc
-.phpstorm.meta.php
-.php_cs.cache
-
-coverage.xml
-
-# Vagrant
-*.log
-resources/lang/locales.js
-resources/assets/pterodactyl/scripts/helpers/ziggy.js
-resources/assets/scripts/helpers/ziggy.js
-.phpunit.result.cache
