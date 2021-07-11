@@ -51,7 +51,7 @@ jobs:
       - name: composer install
         run: composer install --prefer-dist --no-interaction --no-progress
       - name: Run cs-fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php_cs.dist
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php-cs-fixer.dist.php
         continue-on-error: true
       - name: Execute Unit Tests
         run: vendor/bin/phpunit --bootstrap bootstrap/app.php tests/Unit
