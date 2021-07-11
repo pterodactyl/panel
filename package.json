@@ -120,8 +120,7 @@
         "webpack-assets-manifest": "^4.0.6",
         "webpack-bundle-analyzer": "^4.4.2",
         "webpack-cli": "^3.3.12",
-        "webpack-dev-server": "^3.11.2",
-        "yarn-deduplicate": "^3.1.0"
+        "webpack-dev-server": "^3.11.2"
     },
     "engines": {
         "node": ">=12",

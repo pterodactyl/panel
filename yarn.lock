@@ -2437,13 +2437,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/lockfile@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@yarnpkg/lockfile@npm:1.1.0"
-  checksum: 76f3f2625334fb4d37881408643b61ae08e1cfcdeb5db3e3e92f626b3535f99e963df8bafe5c07d85aa1dd09a308939eb4d0667ed4a4e93e645417b6af6e9a2f
-  languageName: node
-  linkType: hard
-
 "abab@npm:^2.0.5":
   version: 2.0.5
   resolution: "abab@npm:2.0.5"
@@ -3799,7 +3792,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"commander@npm:^6.0.0, commander@npm:^6.1.0, commander@npm:^6.2.0":
+"commander@npm:^6.0.0, commander@npm:^6.2.0":
   version: 6.2.1
   resolution: "commander@npm:6.2.1"
   checksum: 47856aae6f194404122e359d8463e5e1a18f7cbab26722ce69f1379be8514bd49a160ef81a983d3d2091e3240022643354101d1276c797dcdd0b5bfc3c3f04a3
@@ -9316,7 +9309,6 @@ fsevents@^1.2.7:
     xterm-addon-search: ^0.8.0
     xterm-addon-search-bar: ^0.2.0
     xterm-addon-web-links: ^0.4.0
-    yarn-deduplicate: ^3.1.0
     yup: ^0.32.9
   languageName: unknown
   linkType: soft
@@ -12484,19 +12476,6 @@ typescript@^4.3.5:
     y18n: ^4.0.0
     yargs-parser: ^13.1.2
   checksum: 92c612cd14a9217d7421ae4f42bc7c460472633bfc2e45f7f86cd614a61a845670d3bac7c2228c39df7fcecce0b8c12b2af65c785b1f757de974dcf84b5074f9
-  languageName: node
-  linkType: hard
-
-"yarn-deduplicate@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "yarn-deduplicate@npm:3.1.0"
-  dependencies:
-    "@yarnpkg/lockfile": ^1.1.0
-    commander: ^6.1.0
-    semver: ^7.3.2
-  bin:
-    yarn-deduplicate: cli.js
-  checksum: 0c764f7c6d4aa9be8f0fb93dfc69dfc79bf94e3bbdb84fc3fa81370635584a2a2e751baacd08a16c9105b8e22714888a090a5f17fe6741143f708010b7f82afa
   languageName: node
   linkType: hard
 
