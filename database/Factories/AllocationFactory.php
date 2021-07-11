@@ -20,8 +20,8 @@ class AllocationFactory extends Factory
     public function definition(): array
     {
         return [
-            'ip' => $this->faker->ipv4,
-            'port' => $this->faker->randomNumber(5),
+            'ip' => $this->faker->unique()->ipv4,
+            'port' => $this->faker->unique()->randomNumber(5),
         ];
     }
 }

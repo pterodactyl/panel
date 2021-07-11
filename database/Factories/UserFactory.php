@@ -26,8 +26,8 @@ class UserFactory extends Factory
         return [
             'external_id' => $this->faker->unique()->isbn10,
             'uuid' => Uuid::uuid4()->toString(),
-            'username' => $this->faker->userName,
-            'email' => $this->faker->safeEmail,
+            'username' => $this->faker->unique()->userName,
+            'email' => $this->faker->unique()->safeEmail,
             'name_first' => $this->faker->firstName,
             'name_last' => $this->faker->lastName,
             'password' => $password ?: $password = bcrypt('password'),
