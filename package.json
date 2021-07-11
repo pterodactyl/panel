@@ -3,11 +3,11 @@
     "private": true,
     "scripts": {
         "clean": "cd public/assets && find . \\( -name \"*.js\" -o -name \"*.map\" \\) -type f -delete",
-        "lint": "eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
-        "watch": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
-        "build": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress",
-        "build:production": "$npm_execpath run clean && cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production",
-        "serve": "$npm_execpath run clean && cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
+        "lint": "$npm_execpath eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
+        "watch": "$npm_execpath cross-env NODE_ENV=development $npm_execpath webpack --watch --progress",
+        "build": "$npm_execpath cross-env NODE_ENV=development $npm_execpath webpack --progress",
+        "build:production": "$npm_execpath run clean && $npm_execpath cross-env NODE_ENV=production $npm_execpath webpack --mode production",
+        "serve": "$npm_execpath run clean && $npm_execpath cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development $npm_execpath webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
     },
     "dependencies": {
         "@": "link:./resources/scripts",
@@ -119,7 +119,7 @@
         "webpack": "^4.46.0",
         "webpack-assets-manifest": "^4.0.6",
         "webpack-bundle-analyzer": "^4.4.2",
-        "webpack-cli": "^4.7.2",
+        "webpack-cli": "^3.3.12",
         "webpack-dev-server": "^3.11.2",
         "yarn-deduplicate": "^3.1.0"
     },
