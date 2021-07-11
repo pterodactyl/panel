@@ -14,6 +14,7 @@
         "php": "^7.4 || ^8.0",
         "ext-json": "*",
         "ext-mbstring": "*",
+        "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
         "aws/aws-sdk-php": "^3.171",
