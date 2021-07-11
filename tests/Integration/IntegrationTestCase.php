@@ -5,12 +5,14 @@ namespace Pterodactyl\Tests\Integration;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class IntegrationTestCase extends TestCase
 {
     use CreatesTestModels;
+    use DatabaseTransactions;
 
     /**
      * Setup base integration test cases.
