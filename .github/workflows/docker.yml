@@ -8,7 +8,7 @@ on:
 jobs:
   push_to_registry:
     name: Push Image to GitHub Packages
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     # Always run against a tag, even if the commit into the tag has [docker skip]
     # within the commit message.
     if: "!contains(github.ref, 'develop') || (!contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip'))"

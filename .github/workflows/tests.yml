@@ -1,45 +1,36 @@
-name: run tests
+name: Run Tests
 on:
   push:
-    branches-ignore:
-      - master
-      - "release/**"
+    branches:
+      - 'develop'
   pull_request:
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
-    services:
-      mariadb:
-        image: mariadb:10.2
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: panel_test
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: panel_test
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
         php: [ 7.4, 8.0 ]
-        database: [ mysql, mariadb ]
-    name: "php-${{ matrix.php }} (engine: ${{ matrix.database }})"
+        database: [ 'mariadb:10.2', 'mariadb:10.5', 'mysql:8' ]
+    services:
+      database:
+        image: ${{ matrix.database }}
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: panel_test
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    name: "php-${{ matrix.php }} (${{ matrix.database }})"
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v2
-      - name: get cache directory
+      - name: Get cache directory
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - name: cache dependencies
+      - name: Cache
         uses: actions/cache@v2
         with:
           path: |
@@ -48,35 +39,28 @@ jobs:
           key: ${{ runner.os }}-cache-${{ matrix.php }}-${{ hashFiles('**.composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-cache-${{ matrix.php }}-
-      - name: setup
+      - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: cli, openssl, gd, mysql, pdo, mbstring, tokenizer, bcmath, xml, curl, zip
+          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
-      - name: configure
+      - name: Configure .env
         run: cp .env.ci .env
-      - name: install dependencies
+      - name: composer install
         run: composer install --prefer-dist --no-interaction --no-progress
-      - name: run cs-fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php_cs.dist
+      - name: Run cs-fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php-cs-fixer.dist.php
         continue-on-error: true
-      - name: execute unit tests
+      - name: Execute Unit Tests
         run: vendor/bin/phpunit --bootstrap bootstrap/app.php tests/Unit
         if: ${{ always() }}
         env:
           DB_CONNECTION: testing
           TESTING_DB_HOST: UNIT_NO_DB
-      - name: execute integration tests (mysql)
+      - name: Execute Integration Tests
         run: vendor/bin/phpunit tests/Integration
-        if: "${{ matrix.database }} == 'mysql'"
         env:
-          TESTING_DB_PORT: ${{ job.services.mysql.ports[3306] }}
-          TESTING_DB_USERNAME: root
-      - name: execute integration tests (mariadb)
-        run: vendor/bin/phpunit tests/Integration
-        if: "${{ matrix.database }} == 'mariadb'"
-        env:
-          TESTING_DB_PORT: ${{ job.services.mariadb.ports[3306] }}
+          TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
           TESTING_DB_USERNAME: root
