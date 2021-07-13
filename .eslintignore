@@ -2,4 +2,5 @@ public
 node_modules
 resources/views
 babel.config.js
+tailwind.config.js
 webpack.config.js

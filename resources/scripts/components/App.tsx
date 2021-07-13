@@ -11,10 +11,9 @@ import { SiteSettings } from '@/state/settings';
 import ProgressBar from '@/components/elements/ProgressBar';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import tw from 'twin.macro';
-import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 import { history } from '@/components/history';
 import { setupInterceptors } from '@/api/interceptors';
-import TailwindGlobalStyles from '@/components/GlobalStyles';
+import GlobalStyles from '@/components/GlobalStyles';
 
 const ChunkedAdminRouter = lazy(() => import(/* webpackChunkName: "admin" */'@/routers/AdminRouter'));
 
@@ -81,11 +80,9 @@ const App = () => {
 
     return (
         <>
-            <GlobalStylesheet/>
-            <TailwindGlobalStyles/>
+            <GlobalStyles/>
             <StoreProvider store={store}>
                 <ProgressBar/>
-
                 <div css={tw`mx-auto w-auto`}>
                     <Router history={history}>
                         <Suspense fallback={<div>Loading...</div>}>
