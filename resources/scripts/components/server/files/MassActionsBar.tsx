@@ -63,7 +63,7 @@ const MassActionsBar = () => {
 
     return (
         <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
-            <div css={tw`pointer-events-none fixed bottom-0 z-50 left-0 right-0 flex justify-center`}>
+            <div css={tw`pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center`}>
                 <SpinnerOverlay visible={loading} size={'large'} fixed>
                     {loadingMessage}
                 </SpinnerOverlay>
