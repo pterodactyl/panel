@@ -1637,7 +1637,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/autocomplete@npm:^0.18.5":
+"@codemirror/autocomplete@npm:^0.18.8":
   version: 0.18.8
   resolution: "@codemirror/autocomplete@npm:0.18.8"
   dependencies:
@@ -1664,7 +1664,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/commands@npm:^0.18.2":
+"@codemirror/commands@npm:^0.18.3":
   version: 0.18.3
   resolution: "@codemirror/commands@npm:0.18.3"
   dependencies:
@@ -1702,7 +1702,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/gutter@npm:^0.18.0, @codemirror/gutter@npm:^0.18.3":
+"@codemirror/gutter@npm:^0.18.0, @codemirror/gutter@npm:^0.18.4":
   version: 0.18.4
   resolution: "@codemirror/gutter@npm:0.18.4"
   dependencies:
@@ -1748,7 +1748,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/language@npm:^0.18.0, @codemirror/language@npm:^0.18.1":
+"@codemirror/language@npm:^0.18.0, @codemirror/language@npm:^0.18.2":
   version: 0.18.2
   resolution: "@codemirror/language@npm:0.18.2"
   dependencies:
@@ -1761,7 +1761,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/legacy-modes@npm:^0.18.0":
+"@codemirror/legacy-modes@npm:^0.18.1":
   version: 0.18.1
   resolution: "@codemirror/legacy-modes@npm:0.18.1"
   dependencies:
@@ -1770,7 +1770,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/lint@npm:^0.18.3":
+"@codemirror/lint@npm:^0.18.4":
   version: 0.18.4
   resolution: "@codemirror/lint@npm:0.18.4"
   dependencies:
@@ -1825,7 +1825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/search@npm:^0.18.3":
+"@codemirror/search@npm:^0.18.4":
   version: 0.18.4
   resolution: "@codemirror/search@npm:0.18.4"
   dependencies:
@@ -1890,7 +1890,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/view@npm:^0.18.0, @codemirror/view@npm:^0.18.12":
+"@codemirror/view@npm:^0.18.0, @codemirror/view@npm:^0.18.19":
   version: 0.18.19
   resolution: "@codemirror/view@npm:0.18.19"
   dependencies:
@@ -9643,25 +9643,25 @@ fsevents@^1.2.7:
     "@babel/preset-react": ^7.14.5
     "@babel/preset-typescript": ^7.14.5
     "@babel/runtime": ^7.14.5
-    "@codemirror/autocomplete": ^0.18.5
+    "@codemirror/autocomplete": ^0.18.8
     "@codemirror/closebrackets": ^0.18.0
-    "@codemirror/commands": ^0.18.2
+    "@codemirror/commands": ^0.18.3
     "@codemirror/comment": ^0.18.1
     "@codemirror/fold": ^0.18.1
-    "@codemirror/gutter": ^0.18.3
+    "@codemirror/gutter": ^0.18.4
     "@codemirror/highlight": ^0.18.4
     "@codemirror/history": ^0.18.1
     "@codemirror/lang-json": ^0.18.0
-    "@codemirror/language": ^0.18.1
-    "@codemirror/legacy-modes": ^0.18.0
-    "@codemirror/lint": ^0.18.3
+    "@codemirror/language": ^0.18.2
+    "@codemirror/legacy-modes": ^0.18.1
+    "@codemirror/lint": ^0.18.4
     "@codemirror/matchbrackets": ^0.18.0
     "@codemirror/rectangular-selection": ^0.18.0
-    "@codemirror/search": ^0.18.3
+    "@codemirror/search": ^0.18.4
     "@codemirror/state": ^0.18.7
     "@codemirror/stream-parser": ^0.18.2
     "@codemirror/theme-one-dark": ^0.18.1
-    "@codemirror/view": ^0.18.12
+    "@codemirror/view": ^0.18.19
     "@fortawesome/fontawesome-svg-core": ^1.2.35
     "@fortawesome/free-solid-svg-icons": ^5.15.3
     "@fortawesome/react-fontawesome": ^0.1.14
