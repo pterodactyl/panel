@@ -13,6 +13,7 @@ import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigati
 import NodeAboutContainer from '@/components/admin/nodes/NodeAboutContainer';
 import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
 import NodeConfigurationContainer from '@/components/admin/nodes/NodeConfigurationContainer';
+import NodeAllocationContainer from '@/components/admin/nodes/NodeAllocationContainer';
 
 interface ctx {
     node: Node | undefined;
@@ -118,7 +119,7 @@ const NodeRouter = () => {
                 </Route>
 
                 <Route path={`${match.path}/allocations`} exact>
-                    <p>Allocations</p>
+                    <NodeAllocationContainer/>
                 </Route>
 
                 <Route path={`${match.path}/servers`} exact>

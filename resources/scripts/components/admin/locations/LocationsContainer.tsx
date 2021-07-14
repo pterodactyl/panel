@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import getLocations, { Context as LocationsContext } from '@/api/admin/locations/getLocations';
+import getLocations, { Context as LocationsContext, Filters } from '@/api/admin/locations/getLocations';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { AdminContext } from '@/state/admin';
@@ -34,7 +34,7 @@ const RowCheckbox = ({ id }: { id: number}) => {
 const LocationsContainer = () => {
     const match = useRouteMatch();
 
-    const { page, setPage } = useContext(LocationsContext);
+    const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(LocationsContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: locations, error, isValidating } = getLocations();
 
@@ -54,6 +54,17 @@ const LocationsContainer = () => {
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedLocations(e.currentTarget.checked ? (locations?.items?.map(location => location.id) || []) : []);
+    };
+
+    const onSearch = (query: string): Promise<void> => {
+        return new Promise((resolve) => {
+            if (query.length < 2) {
+                setFilters(null);
+            } else {
+                setFilters({ short: query, long: query });
+            }
+            return resolve();
+        });
     };
 
     useEffect(() => {
@@ -85,14 +96,15 @@ const LocationsContainer = () => {
                         <ContentWrapper
                             checked={selectedLocationsLength === (length === 0 ? -1 : length)}
                             onSelectAllClick={onSelectAllClick}
+                            onSearch={onSearch}
                         >
                             <Pagination data={locations} onPageSelect={setPage}>
                                 <div css={tw`overflow-x-auto`}>
                                     <table css={tw`w-full table-auto`}>
                                         <TableHead>
-                                            <TableHeader name={'ID'}/>
-                                            <TableHeader name={'Short Name'}/>
-                                            <TableHeader name={'Long Name'}/>
+                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                            <TableHeader name={'Short Name'} direction={sort === 'short' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('short')}/>
+                                            <TableHeader name={'Long Name'} direction={sort === 'long' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('long')}/>
                                         </TableHead>
 
                                         <TableBody>
@@ -132,9 +144,21 @@ const LocationsContainer = () => {
 
 export default () => {
     const [ page, setPage ] = useState<number>(1);
+    const [ filters, setFilters ] = useState<Filters | null>(null);
+    const [ sort, setSortState ] = useState<string | null>(null);
+    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
+
+    const setSort = (newSort: string | null) => {
+        if (sort === newSort) {
+            setSortDirection(!sortDirection);
+        } else {
+            setSortState(newSort);
+            setSortDirection(false);
+        }
+    };
 
     return (
-        <LocationsContext.Provider value={{ page, setPage }}>
+        <LocationsContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
             <LocationsContainer/>
         </LocationsContext.Provider>
     );

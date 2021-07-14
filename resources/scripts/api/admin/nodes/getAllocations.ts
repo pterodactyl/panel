@@ -1,5 +1,4 @@
-import http from '@/api/http';
-import { rawDataToServerAllocation } from '@/api/transformers';
+import http, { FractalResponseData } from '@/api/http';
 
 export interface Allocation {
     id: number;
@@ -7,17 +6,22 @@ export interface Allocation {
     alias: string | null;
     port: number;
     notes: string | null;
-    isDefault: boolean;
+    assigned: boolean;
 }
 
-export default (uuid: string): Promise<[ Allocation, string[] ]> => {
+export const rawDataToAllocation = (data: FractalResponseData): Allocation => ({
+    id: data.attributes.id,
+    ip: data.attributes.ip,
+    alias: data.attributes.ip_alias,
+    port: data.attributes.port,
+    notes: data.attributes.notes,
+    assigned: data.attributes.assigned,
+});
+
+export default (uuid: string): Promise<Allocation[]> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/application/allocations/${uuid}`)
-            .then(({ data }) => resolve([
-                rawDataToServerAllocation(data),
-                // eslint-disable-next-line camelcase
-                data.meta?.is_allocation_owner ? [ '*' ] : (data.meta?.user_permissions || []),
-            ]))
+        http.get(`/api/application/nodes/${uuid}/allocations`)
+            .then(({ data }) => resolve((data.data || []).map(rawDataToAllocation)))
             .catch(reject);
     });
 };

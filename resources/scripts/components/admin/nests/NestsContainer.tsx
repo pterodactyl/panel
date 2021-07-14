@@ -1,6 +1,6 @@
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import React, { useContext, useEffect, useState } from 'react';
-import getNests, { Context as NestsContext } from '@/api/admin/nests/getNests';
+import getNests, { Context as NestsContext, Filters } from '@/api/admin/nests/getNests';
 import NewNestButton from '@/components/admin/nests/NewNestButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
@@ -34,7 +34,7 @@ const RowCheckbox = ({ id }: { id: number}) => {
 const NestsContainer = () => {
     const match = useRouteMatch();
 
-    const { page, setPage } = useContext(NestsContext);
+    const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(NestsContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: nests, error, isValidating } = getNests();
 
@@ -54,6 +54,17 @@ const NestsContainer = () => {
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedNests(e.currentTarget.checked ? (nests?.items?.map(nest => nest.id) || []) : []);
+    };
+
+    const onSearch = (query: string): Promise<void> => {
+        return new Promise((resolve) => {
+            if (query.length < 2) {
+                setFilters(null);
+            } else {
+                setFilters({ id: query });
+            }
+            return resolve();
+        });
     };
 
     useEffect(() => {
@@ -85,13 +96,14 @@ const NestsContainer = () => {
                         <ContentWrapper
                             checked={selectedNestsLength === (length === 0 ? -1 : length)}
                             onSelectAllClick={onSelectAllClick}
+                            onSearch={onSearch}
                         >
                             <Pagination data={nests} onPageSelect={setPage}>
                                 <div css={tw`overflow-x-auto`}>
                                     <table css={tw`w-full table-auto`}>
                                         <TableHead>
-                                            <TableHeader name={'ID'}/>
-                                            <TableHeader name={'Name'}/>
+                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                            <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
                                             <TableHeader name={'Description'}/>
                                         </TableHead>
 
@@ -132,9 +144,21 @@ const NestsContainer = () => {
 
 export default () => {
     const [ page, setPage ] = useState<number>(1);
+    const [ filters, setFilters ] = useState<Filters | null>(null);
+    const [ sort, setSortState ] = useState<string | null>(null);
+    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
+
+    const setSort = (newSort: string | null) => {
+        if (sort === newSort) {
+            setSortDirection(!sortDirection);
+        } else {
+            setSortState(newSort);
+            setSortDirection(false);
+        }
+    };
 
     return (
-        <NestsContext.Provider value={{ page, setPage }}>
+        <NestsContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
             <NestsContainer/>
         </NestsContext.Provider>
     );

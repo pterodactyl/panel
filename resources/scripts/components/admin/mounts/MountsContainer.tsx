@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import getMounts, { Context as MountsContext } from '@/api/admin/mounts/getMounts';
+import getMounts, { Context as MountsContext, Filters } from '@/api/admin/mounts/getMounts';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { AdminContext } from '@/state/admin';
@@ -34,7 +34,7 @@ const RowCheckbox = ({ id }: { id: number}) => {
 const MountsContainer = () => {
     const match = useRouteMatch();
 
-    const { page, setPage } = useContext(MountsContext);
+    const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(MountsContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: mounts, error, isValidating } = getMounts();
 
@@ -54,6 +54,17 @@ const MountsContainer = () => {
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedMounts(e.currentTarget.checked ? (mounts?.items?.map(mount => mount.id) || []) : []);
+    };
+
+    const onSearch = (query: string): Promise<void> => {
+        return new Promise((resolve) => {
+            if (query.length < 2) {
+                setFilters(null);
+            } else {
+                setFilters({ id: query });
+            }
+            return resolve();
+        });
     };
 
     useEffect(() => {
@@ -87,15 +98,16 @@ const MountsContainer = () => {
                         <ContentWrapper
                             checked={selectedMountsLength === (length === 0 ? -1 : length)}
                             onSelectAllClick={onSelectAllClick}
+                            onSearch={onSearch}
                         >
                             <Pagination data={mounts} onPageSelect={setPage}>
                                 <div css={tw`overflow-x-auto`}>
                                     <table css={tw`w-full table-auto`}>
                                         <TableHead>
-                                            <TableHeader name={'ID'}/>
-                                            <TableHeader name={'Name'}/>
-                                            <TableHeader name={'Source Path'}/>
-                                            <TableHeader name={'Target Path'}/>
+                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                            <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
+                                            <TableHeader name={'Source Path'} direction={sort === 'source' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('source')}/>
+                                            <TableHeader name={'Target Path'} direction={sort === 'target' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('target')}/>
                                             <th css={tw`px-6 py-2`}/>
                                             <th css={tw`px-6 py-2`}/>
                                         </TableHead>
@@ -171,9 +183,21 @@ const MountsContainer = () => {
 
 export default () => {
     const [ page, setPage ] = useState<number>(1);
+    const [ filters, setFilters ] = useState<Filters | null>(null);
+    const [ sort, setSortState ] = useState<string | null>(null);
+    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
+
+    const setSort = (newSort: string | null) => {
+        if (sort === newSort) {
+            setSortDirection(!sortDirection);
+        } else {
+            setSortState(newSort);
+            setSortDirection(false);
+        }
+    };
 
     return (
-        <MountsContext.Provider value={{ page, setPage }}>
+        <MountsContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
             <MountsContainer/>
         </MountsContext.Provider>
     );

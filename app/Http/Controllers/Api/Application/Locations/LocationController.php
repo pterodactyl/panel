@@ -9,7 +9,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Locations\LocationUpdateService;
 use Pterodactyl\Services\Locations\LocationCreationService;
 use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
@@ -24,7 +23,6 @@ class LocationController extends ApplicationApiController
     private LocationCreationService $creationService;
     private LocationDeletionService $deletionService;
     private LocationUpdateService $updateService;
-    private LocationRepositoryInterface $repository;
 
     /**
      * LocationController constructor.
@@ -32,15 +30,13 @@ class LocationController extends ApplicationApiController
     public function __construct(
         LocationCreationService $creationService,
         LocationDeletionService $deletionService,
-        LocationUpdateService $updateService,
-        LocationRepositoryInterface $repository
+        LocationUpdateService $updateService
     ) {
         parent::__construct();
 
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
         $this->updateService = $updateService;
-        $this->repository = $repository;
     }
 
     /**
@@ -57,7 +53,7 @@ class LocationController extends ApplicationApiController
 
         $locations = QueryBuilder::for(Location::query())
             ->allowedFilters(['short', 'long'])
-            ->allowedSorts(['id'])
+            ->allowedSorts(['id', 'short', 'long'])
             ->paginate($perPage);
 
         return $this->fractal->collection($locations)

@@ -19,7 +19,7 @@ use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
-class                       UserController extends ApplicationApiController
+class UserController extends ApplicationApiController
 {
     private UserRepositoryInterface $repository;
     private UserCreationService $creationService;
@@ -58,8 +58,8 @@ class                       UserController extends ApplicationApiController
         }
 
         $users = QueryBuilder::for(User::query())
-            ->allowedFilters(['email', 'uuid', 'username', 'external_id'])
-            ->allowedSorts(['id', 'uuid'])
+            ->allowedFilters(['id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'external_id'])
+            ->allowedSorts(['id', 'uuid', 'username', 'email', 'admin_role_id'])
             ->paginate($perPage);
 
         return $this->fractal->collection($users)

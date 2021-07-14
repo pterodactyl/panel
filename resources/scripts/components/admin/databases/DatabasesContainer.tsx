@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import getDatabases, { Context as DatabasesContext } from '@/api/admin/databases/getDatabases';
+import getDatabases, { Context as DatabasesContext, Filters } from '@/api/admin/databases/getDatabases';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { AdminContext } from '@/state/admin';
@@ -34,7 +34,7 @@ const RowCheckbox = ({ id }: { id: number}) => {
 const DatabasesContainer = () => {
     const match = useRouteMatch();
 
-    const { page, setPage } = useContext(DatabasesContext);
+    const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(DatabasesContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: databases, error, isValidating } = getDatabases();
 
@@ -54,6 +54,17 @@ const DatabasesContainer = () => {
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedDatabases(e.currentTarget.checked ? (databases?.items?.map(database => database.id) || []) : []);
+    };
+
+    const onSearch = (query: string): Promise<void> => {
+        return new Promise((resolve) => {
+            if (query.length < 2) {
+                setFilters(null);
+            } else {
+                setFilters({ id: query, name: query, host: query });
+            }
+            return resolve();
+        });
     };
 
     useEffect(() => {
@@ -89,15 +100,16 @@ const DatabasesContainer = () => {
                         <ContentWrapper
                             checked={selectedDatabasesLength === (length === 0 ? -1 : length)}
                             onSelectAllClick={onSelectAllClick}
+                            onSearch={onSearch}
                         >
                             <Pagination data={databases} onPageSelect={setPage}>
                                 <div css={tw`overflow-x-auto`}>
                                     <table css={tw`w-full table-auto`}>
                                         <TableHead>
-                                            <TableHeader name={'ID'}/>
-                                            <TableHeader name={'Name'}/>
+                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                            <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
                                             <TableHeader name={'Address'}/>
-                                            <TableHeader name={'Username'}/>
+                                            <TableHeader name={'Username'} direction={sort === 'username' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('username')}/>
                                         </TableHead>
 
                                         <TableBody>
@@ -143,9 +155,21 @@ const DatabasesContainer = () => {
 
 export default () => {
     const [ page, setPage ] = useState<number>(1);
+    const [ filters, setFilters ] = useState<Filters | null>(null);
+    const [ sort, setSortState ] = useState<string | null>(null);
+    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
+
+    const setSort = (newSort: string | null) => {
+        if (sort === newSort) {
+            setSortDirection(!sortDirection);
+        } else {
+            setSortState(newSort);
+            setSortDirection(false);
+        }
+    };
 
     return (
-        <DatabasesContext.Provider value={{ page, setPage }}>
+        <DatabasesContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
             <DatabasesContainer/>
         </DatabasesContext.Provider>
     );

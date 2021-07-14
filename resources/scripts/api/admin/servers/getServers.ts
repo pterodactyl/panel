@@ -100,6 +100,7 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
 });
 
 export interface Filters {
+    id?: string;
     uuid?: string;
     name?: string;
     image?: string;

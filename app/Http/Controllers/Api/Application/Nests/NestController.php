@@ -50,7 +50,7 @@ class NestController extends ApplicationApiController
      */
     public function index(GetNestsRequest $request): array
     {
-        $perPage = $request->query('per_page', 0);
+        $perPage = $request->query('per_page', 10);
         if ($perPage > 100) {
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }

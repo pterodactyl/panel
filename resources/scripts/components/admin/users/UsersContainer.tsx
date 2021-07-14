@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import getUsers, { Context as UsersContext } from '@/api/admin/users/getUsers';
+import getUsers, { Context as UsersContext, Filters } from '@/api/admin/users/getUsers';
 import AdminTable, { ContentWrapper, Loading, NoItems, Pagination, TableBody, TableHead, TableHeader } from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -34,7 +34,7 @@ const RowCheckbox = ({ id }: { id: number }) => {
 const UsersContainer = () => {
     const match = useRouteMatch();
 
-    const { page, setPage } = useContext(UsersContext);
+    const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(UsersContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: users, error, isValidating } = getUsers();
 
@@ -54,6 +54,17 @@ const UsersContainer = () => {
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedUsers(e.currentTarget.checked ? (users?.items?.map(user => user.id) || []) : []);
+    };
+
+    const onSearch = (query: string): Promise<void> => {
+        return new Promise((resolve) => {
+            if (query.length < 2) {
+                setFilters(null);
+            } else {
+                setFilters({ username: query });
+            }
+            return resolve();
+        });
     };
 
     useEffect(() => {
@@ -89,16 +100,17 @@ const UsersContainer = () => {
                         <ContentWrapper
                             checked={selectedUserLength === (length === 0 ? -1 : length)}
                             onSelectAllClick={onSelectAllClick}
+                            onSearch={onSearch}
                         >
                             <Pagination data={users} onPageSelect={setPage}>
                                 <div css={tw`overflow-x-auto`}>
                                     <table css={tw`w-full table-auto`}>
                                         <TableHead>
-                                            <TableHeader name={'ID'}/>
-                                            <TableHeader name={'Name'}/>
-                                            <TableHeader name={'Username'}/>
+                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                            <TableHeader name={'Name'} direction={sort === 'email' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('email')}/>
+                                            <TableHeader name={'Username'} direction={sort === 'username' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('username')}/>
                                             <TableHeader name={'Status'}/>
-                                            <TableHeader name={'Role'}/>
+                                            <TableHeader name={'Role'} direction={sort === 'admin_role_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('admin_role_id')}/>
                                         </TableHead>
 
                                         <TableBody>
@@ -160,9 +172,21 @@ const UsersContainer = () => {
 
 export default () => {
     const [ page, setPage ] = useState<number>(1);
+    const [ filters, setFilters ] = useState<Filters | null>(null);
+    const [ sort, setSortState ] = useState<string | null>(null);
+    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
+
+    const setSort = (newSort: string | null) => {
+        if (sort === newSort) {
+            setSortDirection(!sortDirection);
+        } else {
+            setSortState(newSort);
+            setSortDirection(false);
+        }
+    };
 
     return (
-        <UsersContext.Provider value={{ page, setPage }}>
+        <UsersContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
             <UsersContainer/>
         </UsersContext.Provider>
     );

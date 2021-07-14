@@ -38,12 +38,13 @@ class EggController extends ApplicationApiController
      */
     public function index(GetEggsRequest $request, Nest $nest): array
     {
-        $perPage = $request->query('per_page', 0);
+        $perPage = $request->query('per_page', 10);
         if ($perPage > 100) {
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
 
         $eggs = QueryBuilder::for(Egg::query())
+            ->where('nest_id', '=', $nest->id)
             ->allowedFilters(['id', 'name', 'author'])
             ->allowedSorts(['id', 'name', 'author']);
         if ($perPage > 0) {

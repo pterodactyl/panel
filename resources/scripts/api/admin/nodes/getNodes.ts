@@ -68,6 +68,7 @@ export const rawDataToNode = ({ attributes }: FractalResponseData): Node => ({
 });
 
 export interface Filters {
+    id?: string;
     uuid?: string;
     name?: string;
     image?: string;
