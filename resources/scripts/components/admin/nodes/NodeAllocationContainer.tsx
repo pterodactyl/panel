@@ -21,7 +21,7 @@ export default () => {
     const match = useRouteMatch<{ id: string }>();
 
     const [ ips, setIPs ] = useState<Option[]>([]);
-    const [ ports, setPorts ] = useState<Option[]>([]);
+    const [ ports ] = useState<Option[]>([]);
 
     useEffect(() => {
         getAllocations(match.params.id)

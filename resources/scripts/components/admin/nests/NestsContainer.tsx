@@ -61,7 +61,7 @@ const NestsContainer = () => {
             if (query.length < 2) {
                 setFilters(null);
             } else {
-                setFilters({ id: query });
+                setFilters({ name: query });
             }
             return resolve();
         });
@@ -87,56 +87,58 @@ const NestsContainer = () => {
             <FlashMessageRender byKey={'nests'} css={tw`mb-4`}/>
 
             <AdminTable>
-                { nests === undefined || (error && isValidating) ?
-                    <Loading/>
-                    :
-                    length < 1 ?
-                        <NoItems/>
-                        :
-                        <ContentWrapper
-                            checked={selectedNestsLength === (length === 0 ? -1 : length)}
-                            onSelectAllClick={onSelectAllClick}
-                            onSearch={onSearch}
-                        >
-                            <Pagination data={nests} onPageSelect={setPage}>
-                                <div css={tw`overflow-x-auto`}>
-                                    <table css={tw`w-full table-auto`}>
-                                        <TableHead>
-                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
-                                            <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
-                                            <TableHeader name={'Description'}/>
-                                        </TableHead>
+                <ContentWrapper
+                    checked={selectedNestsLength === (length === 0 ? -1 : length)}
+                    onSelectAllClick={onSelectAllClick}
+                    onSearch={onSearch}
+                >
+                    <Pagination data={nests} onPageSelect={setPage}>
+                        <div css={tw`overflow-x-auto`}>
+                            <table css={tw`w-full table-auto`}>
+                                <TableHead>
+                                    <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                    <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
+                                    <TableHeader name={'Description'}/>
+                                </TableHead>
 
-                                        <TableBody>
-                                            {
-                                                nests.items.map(nest => (
-                                                    <TableRow key={nest.id}>
-                                                        <td css={tw`pl-6`}>
-                                                            <RowCheckbox id={nest.id}/>
-                                                        </td>
+                                <TableBody>
+                                    { nests !== undefined && !error && !isValidating && length > 0 &&
+                                        nests.items.map(nest => (
+                                            <TableRow key={nest.id}>
+                                                <td css={tw`pl-6`}>
+                                                    <RowCheckbox id={nest.id}/>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={nest.id.toString()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{nest.id}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={nest.id.toString()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{nest.id}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <NavLink to={`${match.url}/${nest.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                                {nest.name}
-                                                            </NavLink>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <NavLink to={`${match.url}/${nest.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        {nest.name}
+                                                    </NavLink>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.description}</td>
-                                                    </TableRow>
-                                                ))
-                                            }
-                                        </TableBody>
-                                    </table>
-                                </div>
-                            </Pagination>
-                        </ContentWrapper>
-                }
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{nest.description}</td>
+                                            </TableRow>
+                                        ))
+                                    }
+                                </TableBody>
+                            </table>
+
+                            { nests === undefined || (error && isValidating) ?
+                                <Loading/>
+                                :
+                                length < 1 ?
+                                    <NoItems/>
+                                    :
+                                    null
+                            }
+                        </div>
+                    </Pagination>
+                </ContentWrapper>
             </AdminTable>
         </AdminContentBlock>
     );

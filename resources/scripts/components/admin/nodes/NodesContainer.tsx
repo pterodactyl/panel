@@ -93,100 +93,103 @@ const NodesContainer = () => {
             <FlashMessageRender byKey={'nodes'} css={tw`mb-4`}/>
 
             <AdminTable>
-                { nodes === undefined || (error && isValidating) ?
-                    <Loading/>
-                    :
-                    length < 1 ?
-                        <NoItems/>
-                        :
-                        <ContentWrapper
-                            checked={selectedNodesLength === (length === 0 ? -1 : length)}
-                            onSelectAllClick={onSelectAllClick}
-                            onSearch={onSearch}
-                        >
-                            <Pagination data={nodes} onPageSelect={setPage}>
-                                <div css={tw`overflow-x-auto`}>
-                                    <table css={tw`w-full table-auto`}>
-                                        <TableHead>
-                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
-                                            <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
-                                            <TableHeader name={'Location'} direction={sort === 'location_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('location_id')}/>
-                                            <TableHeader name={'FQDN'} direction={sort === 'fqdn' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('fqdn')}/>
-                                            <TableHeader name={'Total Memory'} direction={sort === 'memory' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('memory')}/>
-                                            <TableHeader name={'Total Disk'} direction={sort === 'disk' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('disk')}/>
-                                            <TableHeader/>
-                                            <TableHeader/>
-                                        </TableHead>
 
-                                        <TableBody>
-                                            {
-                                                nodes.items.map(node => (
-                                                    <TableRow key={node.id}>
-                                                        <td css={tw`pl-6`}>
-                                                            <RowCheckbox id={node.id}/>
-                                                        </td>
+                <ContentWrapper
+                    checked={selectedNodesLength === (length === 0 ? -1 : length)}
+                    onSelectAllClick={onSelectAllClick}
+                    onSearch={onSearch}
+                >
+                    <Pagination data={nodes} onPageSelect={setPage}>
+                        <div css={tw`overflow-x-auto`}>
+                            <table css={tw`w-full table-auto`}>
+                                <TableHead>
+                                    <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                    <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
+                                    <TableHeader name={'Location'} direction={sort === 'location_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('location_id')}/>
+                                    <TableHeader name={'FQDN'} direction={sort === 'fqdn' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('fqdn')}/>
+                                    <TableHeader name={'Total Memory'} direction={sort === 'memory' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('memory')}/>
+                                    <TableHeader name={'Total Disk'} direction={sort === 'disk' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('disk')}/>
+                                    <TableHeader/>
+                                    <TableHeader/>
+                                </TableHead>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={node.id.toString()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node.id}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                <TableBody>
+                                    { nodes !== undefined && !error && !isValidating && length > 0 &&
+                                        nodes.items.map(node => (
+                                            <TableRow key={node.id}>
+                                                <td css={tw`pl-6`}>
+                                                    <RowCheckbox id={node.id}/>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <NavLink to={`${match.url}/${node.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                                {node.name}
-                                                            </NavLink>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={node.id.toString()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node.id}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        {/* TODO: Have permission check for displaying location information. */}
-                                                        <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
-                                                            <NavLink to={`/admin/locations/${node.relations.location?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                                <div css={tw`text-sm text-neutral-200`}>
-                                                                    {node.relations.location?.short}
-                                                                </div>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <NavLink to={`${match.url}/${node.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        {node.name}
+                                                    </NavLink>
+                                                </td>
 
-                                                                <div css={tw`text-sm text-neutral-400`}>
-                                                                    {node.relations.location?.long}
-                                                                </div>
-                                                            </NavLink>
-                                                        </td>
+                                                {/* TODO: Have permission check for displaying location information. */}
+                                                <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
+                                                    <NavLink to={`/admin/locations/${node.relations.location?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        <div css={tw`text-sm text-neutral-200`}>
+                                                            {node.relations.location?.short}
+                                                        </div>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={node.fqdn}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node.fqdn}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                                        <div css={tw`text-sm text-neutral-400`}>
+                                                            {node.relations.location?.long}
+                                                        </div>
+                                                    </NavLink>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{bytesToHuman(megabytesToBytes(node.memory))}</td>
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{bytesToHuman(megabytesToBytes(node.disk))}</td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={node.fqdn}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node.fqdn}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 whitespace-nowrap`}>
-                                                            {node.scheme === 'https' ?
-                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
-                                                                    Secure
-                                                                </span>
-                                                                :
-                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-red-200 text-red-800`}>
-                                                                    Non-Secure
-                                                                </span>
-                                                            }
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{bytesToHuman(megabytesToBytes(node.memory))}</td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{bytesToHuman(megabytesToBytes(node.disk))}</td>
 
-                                                        <td css={tw`px-6 whitespace-nowrap`}>
-                                                            {/* TODO: Change color based off of online/offline status */}
-                                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={[ tw`h-5 w-5`, node.scheme === 'https' ? tw`text-green-200` : tw`text-red-300` ]}>
-                                                                <path clipRule="evenodd" fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-                                                            </svg>
-                                                        </td>
-                                                    </TableRow>
-                                                ))
-                                            }
-                                        </TableBody>
-                                    </table>
-                                </div>
-                            </Pagination>
-                        </ContentWrapper>
-                }
+                                                <td css={tw`px-6 whitespace-nowrap`}>
+                                                    {node.scheme === 'https' ?
+                                                        <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
+                                                            Secure
+                                                        </span>
+                                                        :
+                                                        <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-red-200 text-red-800`}>
+                                                            Non-Secure
+                                                        </span>
+                                                    }
+                                                </td>
+
+                                                <td css={tw`px-6 whitespace-nowrap`}>
+                                                    {/* TODO: Change color based off of online/offline status */}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" css={[ tw`h-5 w-5`, node.scheme === 'https' ? tw`text-green-200` : tw`text-red-300` ]}>
+                                                        <path clipRule="evenodd" fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                                                    </svg>
+                                                </td>
+                                            </TableRow>
+                                        ))
+                                    }
+                                </TableBody>
+                            </table>
+
+                            { nodes === undefined || (error && isValidating) ?
+                                <Loading/>
+                                :
+                                length < 1 ?
+                                    <NoItems/>
+                                    :
+                                    null
+                            }
+                        </div>
+                    </Pagination>
+                </ContentWrapper>
             </AdminTable>
         </AdminContentBlock>
     );

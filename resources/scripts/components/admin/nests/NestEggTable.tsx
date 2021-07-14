@@ -70,56 +70,58 @@ const EggsTable = () => {
 
     return (
         <AdminTable>
-            { eggs === undefined || (error && isValidating) ?
-                <Loading/>
-                :
-                length < 1 ?
-                    <NoItems/>
-                    :
-                    <ContentWrapper
-                        checked={selectedEggsLength === (length === 0 ? -1 : length)}
-                        onSelectAllClick={onSelectAllClick}
-                        onSearch={onSearch}
-                    >
-                        <Pagination data={eggs} onPageSelect={setPage}>
-                            <div css={tw`overflow-x-auto`}>
-                                <table css={tw`w-full table-auto`}>
-                                    <TableHead>
-                                        <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
-                                        <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
-                                        <TableHeader name={'Description'}/>
-                                    </TableHead>
+            <ContentWrapper
+                checked={selectedEggsLength === (length === 0 ? -1 : length)}
+                onSelectAllClick={onSelectAllClick}
+                onSearch={onSearch}
+            >
+                <Pagination data={eggs} onPageSelect={setPage}>
+                    <div css={tw`overflow-x-auto`}>
+                        <table css={tw`w-full table-auto`}>
+                            <TableHead>
+                                <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
+                                <TableHeader name={'Description'}/>
+                            </TableHead>
 
-                                    <TableBody>
-                                        {
-                                            eggs.items.map(egg => (
-                                                <TableRow key={egg.id}>
-                                                    <td css={tw`pl-6`}>
-                                                        <RowCheckbox id={egg.id}/>
-                                                    </td>
+                            <TableBody>
+                                { eggs !== undefined && !error && !isValidating && length > 0 &&
+                                    eggs.items.map(egg => (
+                                        <TableRow key={egg.id}>
+                                            <td css={tw`pl-6`}>
+                                                <RowCheckbox id={egg.id}/>
+                                            </td>
 
-                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                        <CopyOnClick text={egg.id.toString()}>
-                                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{egg.id}</code>
-                                                        </CopyOnClick>
-                                                    </td>
+                                            <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                <CopyOnClick text={egg.id.toString()}>
+                                                    <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{egg.id}</code>
+                                                </CopyOnClick>
+                                            </td>
 
-                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                        <NavLink to={`${match.url}/eggs/${egg.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                            {egg.name}
-                                                        </NavLink>
-                                                    </td>
+                                            <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                <NavLink to={`${match.url}/eggs/${egg.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                    {egg.name}
+                                                </NavLink>
+                                            </td>
 
-                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{egg.description}</td>
-                                                </TableRow>
-                                            ))
-                                        }
-                                    </TableBody>
-                                </table>
-                            </div>
-                        </Pagination>
-                    </ContentWrapper>
-            }
+                                            <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{egg.description}</td>
+                                        </TableRow>
+                                    ))
+                                }
+                            </TableBody>
+                        </table>
+
+                        { eggs === undefined || (error && isValidating) ?
+                            <Loading/>
+                            :
+                            length < 1 ?
+                                <NoItems/>
+                                :
+                                null
+                        }
+                    </div>
+                </Pagination>
+            </ContentWrapper>
         </AdminTable>
     );
 };

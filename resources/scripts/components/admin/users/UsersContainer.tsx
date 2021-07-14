@@ -91,80 +91,82 @@ const UsersContainer = () => {
             <FlashMessageRender byKey={'users'} css={tw`mb-4`}/>
 
             <AdminTable>
-                { users === undefined || (error && isValidating) ?
-                    <Loading/>
-                    :
-                    length < 1 ?
-                        <NoItems/>
-                        :
-                        <ContentWrapper
-                            checked={selectedUserLength === (length === 0 ? -1 : length)}
-                            onSelectAllClick={onSelectAllClick}
-                            onSearch={onSearch}
-                        >
-                            <Pagination data={users} onPageSelect={setPage}>
-                                <div css={tw`overflow-x-auto`}>
-                                    <table css={tw`w-full table-auto`}>
-                                        <TableHead>
-                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
-                                            <TableHeader name={'Name'} direction={sort === 'email' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('email')}/>
-                                            <TableHeader name={'Username'} direction={sort === 'username' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('username')}/>
-                                            <TableHeader name={'Status'}/>
-                                            <TableHeader name={'Role'} direction={sort === 'admin_role_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('admin_role_id')}/>
-                                        </TableHead>
+                <ContentWrapper
+                    checked={selectedUserLength === (length === 0 ? -1 : length)}
+                    onSelectAllClick={onSelectAllClick}
+                    onSearch={onSearch}
+                >
+                    <Pagination data={users} onPageSelect={setPage}>
+                        <div css={tw`overflow-x-auto`}>
+                            <table css={tw`w-full table-auto`}>
+                                <TableHead>
+                                    <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                    <TableHeader name={'Name'} direction={sort === 'email' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('email')}/>
+                                    <TableHeader name={'Username'} direction={sort === 'username' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('username')}/>
+                                    <TableHeader name={'Status'}/>
+                                    <TableHeader name={'Role'} direction={sort === 'admin_role_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('admin_role_id')}/>
+                                </TableHead>
 
-                                        <TableBody>
-                                            {
-                                                users.items.map(user => (
-                                                    <tr key={user.id} css={tw`h-14 hover:bg-neutral-600`}>
-                                                        <td css={tw`pl-6`}>
-                                                            <RowCheckbox id={user.id}/>
-                                                        </td>
+                                <TableBody>
+                                    { users !== undefined && !error && !isValidating && length > 0 &&
+                                        users.items.map(user => (
+                                            <tr key={user.id} css={tw`h-14 hover:bg-neutral-600`}>
+                                                <td css={tw`pl-6`}>
+                                                    <RowCheckbox id={user.id}/>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={user.id.toString()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{user.id}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={user.id.toString()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{user.id}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 whitespace-nowrap`}>
-                                                            <NavLink to={`${match.url}/${user.id}`}>
-                                                                <div css={tw`flex items-center`}>
-                                                                    <div css={tw`flex-shrink-0 h-10 w-10`}>
-                                                                        <img css={tw`h-10 w-10 rounded-full`} alt="" src={user.avatarURL + '?s=40'}/>
-                                                                    </div>
+                                                <td css={tw`px-6 whitespace-nowrap`}>
+                                                    <NavLink to={`${match.url}/${user.id}`}>
+                                                        <div css={tw`flex items-center`}>
+                                                            <div css={tw`flex-shrink-0 h-10 w-10`}>
+                                                                <img css={tw`h-10 w-10 rounded-full`} alt="" src={user.avatarURL + '?s=40'}/>
+                                                            </div>
 
-                                                                    <div css={tw`ml-4`}>
-                                                                        <div css={tw`text-sm text-neutral-200`}>
-                                                                            {user.firstName} {user.lastName}
-                                                                        </div>
-
-                                                                        <div css={tw`text-sm text-neutral-400`}>
-                                                                            {user.email}
-                                                                        </div>
-                                                                    </div>
+                                                            <div css={tw`ml-4`}>
+                                                                <div css={tw`text-sm text-neutral-200`}>
+                                                                    {user.firstName} {user.lastName}
                                                                 </div>
-                                                            </NavLink>
-                                                        </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{user.username}</td>
+                                                                <div css={tw`text-sm text-neutral-400`}>
+                                                                    {user.email}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </NavLink>
+                                                </td>
 
-                                                        <td css={tw`px-6 whitespace-nowrap`}>
-                                                            <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
-                                                                Active
-                                                            </span>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{user.username}</td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{user.roleName || 'None'}</td>
-                                                    </tr>
-                                                ))
-                                            }
-                                        </TableBody>
-                                    </table>
-                                </div>
-                            </Pagination>
-                        </ContentWrapper>
-                }
+                                                <td css={tw`px-6 whitespace-nowrap`}>
+                                                    <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
+                                                        Active
+                                                    </span>
+                                                </td>
+
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{user.roleName || 'None'}</td>
+                                            </tr>
+                                        ))
+                                    }
+                                </TableBody>
+                            </table>
+
+                            { users === undefined || (error && isValidating) ?
+                                <Loading/>
+                                :
+                                length < 1 ?
+                                    <NoItems/>
+                                    :
+                                    null
+                            }
+                        </div>
+                    </Pagination>
+                </ContentWrapper>
             </AdminTable>
         </AdminContentBlock>
     );

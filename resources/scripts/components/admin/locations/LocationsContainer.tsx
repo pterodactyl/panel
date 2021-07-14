@@ -61,7 +61,7 @@ const LocationsContainer = () => {
             if (query.length < 2) {
                 setFilters(null);
             } else {
-                setFilters({ short: query, long: query });
+                setFilters({ short: query });
             }
             return resolve();
         });
@@ -87,56 +87,58 @@ const LocationsContainer = () => {
             <FlashMessageRender byKey={'locations'} css={tw`mb-4`}/>
 
             <AdminTable>
-                { locations === undefined || (error && isValidating) ?
-                    <Loading/>
-                    :
-                    length < 1 ?
-                        <NoItems/>
-                        :
-                        <ContentWrapper
-                            checked={selectedLocationsLength === (length === 0 ? -1 : length)}
-                            onSelectAllClick={onSelectAllClick}
-                            onSearch={onSearch}
-                        >
-                            <Pagination data={locations} onPageSelect={setPage}>
-                                <div css={tw`overflow-x-auto`}>
-                                    <table css={tw`w-full table-auto`}>
-                                        <TableHead>
-                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
-                                            <TableHeader name={'Short Name'} direction={sort === 'short' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('short')}/>
-                                            <TableHeader name={'Long Name'} direction={sort === 'long' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('long')}/>
-                                        </TableHead>
+                <ContentWrapper
+                    checked={selectedLocationsLength === (length === 0 ? -1 : length)}
+                    onSelectAllClick={onSelectAllClick}
+                    onSearch={onSearch}
+                >
+                    <Pagination data={locations} onPageSelect={setPage}>
+                        <div css={tw`overflow-x-auto`}>
+                            <table css={tw`w-full table-auto`}>
+                                <TableHead>
+                                    <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                    <TableHeader name={'Short Name'} direction={sort === 'short' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('short')}/>
+                                    <TableHeader name={'Long Name'} direction={sort === 'long' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('long')}/>
+                                </TableHead>
 
-                                        <TableBody>
-                                            {
-                                                locations.items.map(location => (
-                                                    <TableRow key={location.id}>
-                                                        <td css={tw`pl-6`}>
-                                                            <RowCheckbox id={location.id}/>
-                                                        </td>
+                                <TableBody>
+                                    { locations !== undefined && !error && !isValidating && length > 0 &&
+                                        locations.items.map(location => (
+                                            <TableRow key={location.id}>
+                                                <td css={tw`pl-6`}>
+                                                    <RowCheckbox id={location.id}/>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={location.id.toString()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{location.id}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={location.id.toString()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{location.id}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <NavLink to={`${match.url}/${location.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                                {location.short}
-                                                            </NavLink>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <NavLink to={`${match.url}/${location.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        {location.short}
+                                                    </NavLink>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{location.long}</td>
-                                                    </TableRow>
-                                                ))
-                                            }
-                                        </TableBody>
-                                    </table>
-                                </div>
-                            </Pagination>
-                        </ContentWrapper>
-                }
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{location.long}</td>
+                                            </TableRow>
+                                        ))
+                                    }
+                                </TableBody>
+                            </table>
+
+                            { locations === undefined || (error && isValidating) ?
+                                <Loading/>
+                                :
+                                length < 1 ?
+                                    <NoItems/>
+                                    :
+                                    null
+                            }
+                        </div>
+                    </Pagination>
+                </ContentWrapper>
             </AdminTable>
         </AdminContentBlock>
     );

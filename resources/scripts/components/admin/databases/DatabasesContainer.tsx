@@ -61,7 +61,7 @@ const DatabasesContainer = () => {
             if (query.length < 2) {
                 setFilters(null);
             } else {
-                setFilters({ id: query, name: query, host: query });
+                setFilters({ name: query });
             }
             return resolve();
         });
@@ -91,63 +91,65 @@ const DatabasesContainer = () => {
             <FlashMessageRender byKey={'databases'} css={tw`mb-4`}/>
 
             <AdminTable>
-                { databases === undefined || (error && isValidating) ?
-                    <Loading/>
-                    :
-                    length < 1 ?
-                        <NoItems/>
-                        :
-                        <ContentWrapper
-                            checked={selectedDatabasesLength === (length === 0 ? -1 : length)}
-                            onSelectAllClick={onSelectAllClick}
-                            onSearch={onSearch}
-                        >
-                            <Pagination data={databases} onPageSelect={setPage}>
-                                <div css={tw`overflow-x-auto`}>
-                                    <table css={tw`w-full table-auto`}>
-                                        <TableHead>
-                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
-                                            <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
-                                            <TableHeader name={'Address'}/>
-                                            <TableHeader name={'Username'} direction={sort === 'username' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('username')}/>
-                                        </TableHead>
+                <ContentWrapper
+                    checked={selectedDatabasesLength === (length === 0 ? -1 : length)}
+                    onSelectAllClick={onSelectAllClick}
+                    onSearch={onSearch}
+                >
+                    <Pagination data={databases} onPageSelect={setPage}>
+                        <div css={tw`overflow-x-auto`}>
+                            <table css={tw`w-full table-auto`}>
+                                <TableHead>
+                                    <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                    <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
+                                    <TableHeader name={'Address'}/>
+                                    <TableHeader name={'Username'} direction={sort === 'username' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('username')}/>
+                                </TableHead>
 
-                                        <TableBody>
-                                            {
-                                                databases.items.map(database => (
-                                                    <TableRow key={database.id}>
-                                                        <td css={tw`pl-6`}>
-                                                            <RowCheckbox id={database.id}/>
-                                                        </td>
+                                <TableBody>
+                                    { databases !== undefined && !error && !isValidating && length > 0 &&
+                                        databases.items.map(database => (
+                                            <TableRow key={database.id}>
+                                                <td css={tw`pl-6`}>
+                                                    <RowCheckbox id={database.id}/>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={database.id.toString()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{database.id}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={database.id.toString()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{database.id}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <NavLink to={`${match.url}/${database.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                                {database.name}
-                                                            </NavLink>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <NavLink to={`${match.url}/${database.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        {database.name}
+                                                    </NavLink>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={database.getAddress()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{database.getAddress()}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={database.getAddress()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{database.getAddress()}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{database.username}</td>
-                                                    </TableRow>
-                                                ))
-                                            }
-                                        </TableBody>
-                                    </table>
-                                </div>
-                            </Pagination>
-                        </ContentWrapper>
-                }
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>{database.username}</td>
+                                            </TableRow>
+                                        ))
+                                    }
+                                </TableBody>
+                            </table>
+
+                            { databases === undefined || (error && isValidating) ?
+                                <Loading/>
+                                :
+                                length < 1 ?
+                                    <NoItems/>
+                                    :
+                                    null
+                            }
+                        </div>
+                    </Pagination>
+                </ContentWrapper>
             </AdminTable>
         </AdminContentBlock>
     );

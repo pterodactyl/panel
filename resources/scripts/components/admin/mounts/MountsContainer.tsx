@@ -61,7 +61,7 @@ const MountsContainer = () => {
             if (query.length < 2) {
                 setFilters(null);
             } else {
-                setFilters({ id: query });
+                setFilters({ name: query });
             }
             return resolve();
         });
@@ -89,93 +89,96 @@ const MountsContainer = () => {
             <FlashMessageRender byKey={'mounts'} css={tw`mb-4`}/>
 
             <AdminTable>
-                { mounts === undefined || (error && isValidating) ?
-                    <Loading/>
-                    :
-                    length < 1 ?
-                        <NoItems/>
-                        :
-                        <ContentWrapper
-                            checked={selectedMountsLength === (length === 0 ? -1 : length)}
-                            onSelectAllClick={onSelectAllClick}
-                            onSearch={onSearch}
-                        >
-                            <Pagination data={mounts} onPageSelect={setPage}>
-                                <div css={tw`overflow-x-auto`}>
-                                    <table css={tw`w-full table-auto`}>
-                                        <TableHead>
-                                            <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
-                                            <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
-                                            <TableHeader name={'Source Path'} direction={sort === 'source' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('source')}/>
-                                            <TableHeader name={'Target Path'} direction={sort === 'target' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('target')}/>
-                                            <th css={tw`px-6 py-2`}/>
-                                            <th css={tw`px-6 py-2`}/>
-                                        </TableHead>
 
-                                        <TableBody>
-                                            {
-                                                mounts.items.map(mount => (
-                                                    <TableRow key={mount.id}>
-                                                        <td css={tw`pl-6`}>
-                                                            <RowCheckbox id={mount.id}/>
-                                                        </td>
+                <ContentWrapper
+                    checked={selectedMountsLength === (length === 0 ? -1 : length)}
+                    onSelectAllClick={onSelectAllClick}
+                    onSearch={onSearch}
+                >
+                    <Pagination data={mounts} onPageSelect={setPage}>
+                        <div css={tw`overflow-x-auto`}>
+                            <table css={tw`w-full table-auto`}>
+                                <TableHead>
+                                    <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
+                                    <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
+                                    <TableHeader name={'Source Path'} direction={sort === 'source' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('source')}/>
+                                    <TableHeader name={'Target Path'} direction={sort === 'target' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('target')}/>
+                                    <th css={tw`px-6 py-2`}/>
+                                    <th css={tw`px-6 py-2`}/>
+                                </TableHead>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={mount.id.toString()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.id}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                <TableBody>
+                                    { mounts !== undefined && !error && !isValidating && length > 0 &&
+                                        mounts.items.map(mount => (
+                                            <TableRow key={mount.id}>
+                                                <td css={tw`pl-6`}>
+                                                    <RowCheckbox id={mount.id}/>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <NavLink to={`${match.url}/${mount.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                                {mount.name}
-                                                            </NavLink>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={mount.id.toString()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.id}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={mount.source.toString()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.source}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <NavLink to={`${match.url}/${mount.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        {mount.name}
+                                                    </NavLink>
+                                                </td>
 
-                                                        <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                            <CopyOnClick text={mount.target.toString()}>
-                                                                <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.target}</code>
-                                                            </CopyOnClick>
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={mount.source.toString()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.source}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 whitespace-nowrap`}>
-                                                            { mount.readOnly ?
-                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
-                                                                    Read Only
-                                                                </span>
-                                                                :
-                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
-                                                                    Writable
-                                                                </span>
-                                                            }
-                                                        </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={mount.target.toString()}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{mount.target}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                        <td css={tw`px-6 whitespace-nowrap`}>
-                                                            { mount.userMountable ?
-                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
-                                                                    Mountable
-                                                                </span>
-                                                                :
-                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
-                                                                    Admin Only
-                                                                </span>
-                                                            }
-                                                        </td>
-                                                    </TableRow>
-                                                ))
-                                            }
-                                        </TableBody>
-                                    </table>
-                                </div>
-                            </Pagination>
-                        </ContentWrapper>
-                }
+                                                <td css={tw`px-6 whitespace-nowrap`}>
+                                                    { mount.readOnly ?
+                                                        <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
+                                                            Read Only
+                                                        </span>
+                                                        :
+                                                        <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
+                                                            Writable
+                                                        </span>
+                                                    }
+                                                </td>
+
+                                                <td css={tw`px-6 whitespace-nowrap`}>
+                                                    { mount.userMountable ?
+                                                        <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
+                                                            Mountable
+                                                        </span>
+                                                        :
+                                                        <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
+                                                            Admin Only
+                                                        </span>
+                                                    }
+                                                </td>
+                                            </TableRow>
+                                        ))
+                                    }
+                                </TableBody>
+                            </table>
+
+                            { mounts === undefined || (error && isValidating) ?
+                                <Loading/>
+                                :
+                                length < 1 ?
+                                    <NoItems/>
+                                    :
+                                    null
+                            }
+                        </div>
+                    </Pagination>
+                </ContentWrapper>
             </AdminTable>
         </AdminContentBlock>
     );

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import getServers, { Context as ServersContext, Filters } from '@/api/admin/servers/getServers';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, { ContentWrapper, Loading, Pagination, TableBody, TableHead, TableHeader } from '@/components/admin/AdminTable';
+import AdminTable, { ContentWrapper, Loading, NoItems, Pagination, TableBody, TableHead, TableHeader } from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -36,7 +36,7 @@ const ServersContainer = () => {
 
     const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(ServersContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data: servers, error } = getServers([ 'node', 'user' ]);
+    const { data: servers, error, isValidating } = getServers([ 'node', 'user' ]);
 
     const length = servers?.items?.length || 0;
 
@@ -96,97 +96,99 @@ const ServersContainer = () => {
                     onSelectAllClick={onSelectAllClick}
                     onSearch={onSearch}
                 >
-                    {servers === undefined ?
-                        <Loading/>
-                        :
-                        // length < 1 ?
-                        //     <NoItems/>
-                        //     :
-                        <Pagination data={servers} onPageSelect={setPage}>
-                            <div css={tw`overflow-x-auto`}>
-                                <table css={tw`w-full table-auto`}>
-                                    <TableHead>
-                                        <TableHeader name={'Identifier'} direction={sort === 'uuidShort' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('uuidShort')}/>
-                                        <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
-                                        <TableHeader name={'Owner'} direction={sort === 'owner_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('owner_id')}/>
-                                        <TableHeader name={'Node'} direction={sort === 'node_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('node_id')}/>
-                                        <TableHeader name={'Status'} direction={sort === 'status' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('status')}/>
-                                    </TableHead>
+                    <Pagination data={servers} onPageSelect={setPage}>
+                        <div css={tw`overflow-x-auto`}>
+                            <table css={tw`w-full table-auto`}>
+                                <TableHead>
+                                    <TableHeader name={'Identifier'} direction={sort === 'uuidShort' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('uuidShort')}/>
+                                    <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
+                                    <TableHeader name={'Owner'} direction={sort === 'owner_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('owner_id')}/>
+                                    <TableHeader name={'Node'} direction={sort === 'node_id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('node_id')}/>
+                                    <TableHeader name={'Status'} direction={sort === 'status' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('status')}/>
+                                </TableHead>
 
-                                    <TableBody>
-                                        {
-                                            servers?.items.map(server => (
-                                                <tr key={server.id} css={tw`h-14 hover:bg-neutral-600`}>
-                                                    <td css={tw`pl-6`}>
-                                                        <RowCheckbox id={server.id}/>
-                                                    </td>
+                                <TableBody>
+                                    { servers !== undefined && !error && !isValidating && length > 0 &&
+                                        servers.items.map(server => (
+                                            <tr key={server.id} css={tw`h-14 hover:bg-neutral-600`}>
+                                                <td css={tw`pl-6`}>
+                                                    <RowCheckbox id={server.id}/>
+                                                </td>
 
-                                                    <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
-                                                        <CopyOnClick text={server.identifier}>
-                                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{server.identifier}</code>
-                                                        </CopyOnClick>
-                                                    </td>
+                                                <td css={tw`px-6 text-sm text-neutral-200 text-left whitespace-nowrap`}>
+                                                    <CopyOnClick text={server.identifier}>
+                                                        <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{server.identifier}</code>
+                                                    </CopyOnClick>
+                                                </td>
 
-                                                    <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
-                                                        <NavLink to={`${match.url}/${server.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                            {server.name}
-                                                        </NavLink>
-                                                    </td>
+                                                <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
+                                                    <NavLink to={`${match.url}/${server.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        {server.name}
+                                                    </NavLink>
+                                                </td>
 
-                                                    {/* TODO: Have permission check for displaying user information. */}
-                                                    <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
-                                                        <NavLink to={`/admin/users/${server.relations.user?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                            <div css={tw`text-sm text-neutral-200`}>
-                                                                {server.relations.user?.firstName} {server.relations.user?.lastName}
-                                                            </div>
+                                                {/* TODO: Have permission check for displaying user information. */}
+                                                <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
+                                                    <NavLink to={`/admin/users/${server.relations.user?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        <div css={tw`text-sm text-neutral-200`}>
+                                                            {server.relations.user?.firstName} {server.relations.user?.lastName}
+                                                        </div>
 
-                                                            <div css={tw`text-sm text-neutral-400`}>
-                                                                {server.relations.user?.email}
-                                                            </div>
-                                                        </NavLink>
-                                                    </td>
+                                                        <div css={tw`text-sm text-neutral-400`}>
+                                                            {server.relations.user?.email}
+                                                        </div>
+                                                    </NavLink>
+                                                </td>
 
-                                                    {/* TODO: Have permission check for displaying node information. */}
-                                                    <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
-                                                        <NavLink to={`/admin/nodes/${server.relations.node?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
-                                                            <div css={tw`text-sm text-neutral-200`}>
-                                                                {server.relations.node?.name}
-                                                            </div>
+                                                {/* TODO: Have permission check for displaying node information. */}
+                                                <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
+                                                    <NavLink to={`/admin/nodes/${server.relations.node?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                                        <div css={tw`text-sm text-neutral-200`}>
+                                                            {server.relations.node?.name}
+                                                        </div>
 
-                                                            <div css={tw`text-sm text-neutral-400`}>
-                                                                {server.relations.node?.fqdn}
-                                                            </div>
-                                                        </NavLink>
-                                                    </td>
+                                                        <div css={tw`text-sm text-neutral-400`}>
+                                                            {server.relations.node?.fqdn}
+                                                        </div>
+                                                    </NavLink>
+                                                </td>
 
-                                                    <td css={tw`px-6 whitespace-nowrap`}>
-                                                        {server.status === 'installing' ?
+                                                <td css={tw`px-6 whitespace-nowrap`}>
+                                                    {server.status === 'installing' ?
+                                                        <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
+                                                            Installing
+                                                        </span>
+                                                        :
+                                                        server.status === 'transferring' ?
                                                             <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
-                                                                Installing
+                                                                Transferring
                                                             </span>
-                                                            :
-                                                            server.status === 'transferring' ?
-                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-yellow-200 text-yellow-800`}>
-                                                                    Transferring
+                                                            : server.status === 'suspended' ?
+                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-red-200 text-red-800`}>
+                                                                    Suspended
                                                                 </span>
-                                                                : server.status === 'suspended' ?
-                                                                    <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-red-200 text-red-800`}>
-                                                                        Suspended
-                                                                    </span>
-                                                                    :
-                                                                    <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
-                                                                        Active
-                                                                    </span>
-                                                        }
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </TableBody>
-                                </table>
-                            </div>
-                        </Pagination>
-                    }
+                                                                :
+                                                                <span css={tw`px-2 inline-flex text-xs leading-5 font-medium rounded-full bg-green-100 text-green-800`}>
+                                                                    Active
+                                                                </span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        ))
+                                    }
+                                </TableBody>
+                            </table>
+
+                            { servers === undefined || (error && isValidating) ?
+                                <Loading/>
+                                :
+                                length < 1 ?
+                                    <NoItems/>
+                                    :
+                                    null
+                            }
+                        </div>
+                    </Pagination>
                 </ContentWrapper>
             </AdminTable>
         </AdminContentBlock>
