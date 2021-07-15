@@ -137,7 +137,7 @@ export function Pagination<T> ({ data, onPageSelect, children }: Props<T>) {
 
             <div css={tw`h-12 flex flex-row items-center w-full px-6 py-3 border-t border-neutral-500`}>
                 <p css={tw`text-sm leading-5 text-neutral-400`}>
-                    Showing <span css={tw`text-neutral-300`}>{((pagination.currentPage - 1) * pagination.perPage) + 1}</span> to <span css={tw`text-neutral-300`}>{((pagination.currentPage - 1) * pagination.perPage) + pagination.count}</span> of <span css={tw`text-neutral-300`}>{pagination.total}</span> results
+                    Showing <span css={tw`text-neutral-300`}>{((pagination.currentPage - 1) * pagination.perPage) + (pagination.total > 0 ? 1 : 0)}</span> to <span css={tw`text-neutral-300`}>{((pagination.currentPage - 1) * pagination.perPage) + pagination.count}</span> of <span css={tw`text-neutral-300`}>{pagination.total}</span> results
                 </p>
 
                 {isFirstPage && isLastPage ?
@@ -180,8 +180,8 @@ export const Loading = () => {
 
 export const NoItems = () => {
     return (
-        <div css={tw`w-full flex flex-col items-center justify-center pb-6 py-2 sm:py-8 md:py-10 px-8`}>
-            <div css={tw`h-64 flex`}>
+        <div css={tw`w-full flex flex-col items-center justify-center py-6 px-8`}>
+            <div css={tw`h-48 flex`}>
                 <img src={'/assets/svgs/not_found.svg'} alt={'No Items'} css={tw`h-full select-none`}/>
             </div>
 
