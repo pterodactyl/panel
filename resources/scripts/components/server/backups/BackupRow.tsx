@@ -81,7 +81,7 @@ export default ({ backup, className }: Props) => {
                 </p>
                 <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>Created</p>
             </div>
-            <Can action={'backup.download'}>
+            <Can matchAny action={[ 'backup.download', 'backup.restore', 'backup.delete' ]}>
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ?
                         <div css={tw`p-2 invisible`}>
