@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::post('/sftp/auth', 'SftpAuthenticationController');
+Route::put('/sftp/auth', 'SftpAuthenticationController@getSSHKeys');
 
 Route::get('/servers', 'Servers\ServerDetailsController@list');
 Route::post('/servers/reset', 'Servers\ServerDetailsController@resetState');

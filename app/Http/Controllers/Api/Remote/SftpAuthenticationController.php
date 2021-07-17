@@ -70,8 +70,14 @@ class SftpAuthenticationController extends Controller
             ['username', '=', $connection['username']],
         ]);
 
+        if ($request->input('type') === 'publicKey') {
+            $verified = true;
+        } else {
+            $verified = password_verify($request->input('password'), $user->password);
+        }
+
         $server = $this->serverRepository->getByUuid($connection['server'] ?? '');
-        if (!password_verify($request->input('password'), $user->password) || $server->node_id !== $node->id) {
+        if (!$verified || $server->node_id !== $node->id) {
             $this->incrementLoginAttempts($request);
 
             throw new HttpForbiddenException('Authorization credentials were not correct, please try again.');
@@ -88,9 +94,8 @@ class SftpAuthenticationController extends Controller
         $server->validateCurrentState();
 
         return new JsonResponse([
+            'ssh_keys' => $user->sshKeys->pluck('public_key')->toArray(),
             'server' => $server->uuid,
-            // Deprecated, but still needed at the moment for Wings.
-            'token' => '',
             'permissions' => $permissions ?? ['*'],
         ]);
     }
