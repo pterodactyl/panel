@@ -1,28 +1,37 @@
-name: 🐛 Bug Report
-description: For reporting code or design bugs with the software. DO NOT REPORT APACHE/NGINX/PHP CONFIGURATION ISSUES.
+name: Bug Report
+description: Something isn't working quite right in the software.
 body:
 - type: markdown
   attributes:
     value: |
-        DO NOT REPORT ISSUES CONFIGURING: SSL, PHP, APACHE, NGINX, YOUR MACHINE, SSH, SFTP, ETC. ON THIS GITHUB TRACKER. 
-        For assistance installing this software, as well as debugging issues with dependencies, please use our [Discord server](https://discord.gg/pterodactyl)
-        You MUST complete all of the below information when reporting a bug, failure to do so will result in the closure of your issue. PLEASE stop spamming our tracker with "bugs" that are not related to this project.
-        *To obtain logs for the panel and wings the below commands should help with the retrieval of them.*
-        * **Panel:** `tail -n 100 /var/www/pterodactyl/storage/logs/laravel-$(date +%F).log | nc bin.ptdl.co 99`
-        * **Wings:** `sudo wings diagnostics`
+      Bug reports should only be used for reporting issues with how the software works. For assistance installing this software, as well as debugging issues with dependencies, please use our [Discord server](https://discord.gg/pterodactyl).
 
-- type: markdown
+- type: checkboxes
   attributes:
-    value: |
-        **Background**"
-
-- type: dropdown
-  id: panel-or-wings
-  attributes:
-    label: Panel or Wings
+    label: Is there an existing issue for this?
+    description: Please [search here](https://github.com/pterodactyl/panel/issues) to see if an issue already exists for your problem.
     options:
-      - "Panel"
-      - "Wings"
+    - label: I have searched the existing issues before opening this issue.
+      required: true
+
+- type: textarea      
+  attributes:
+    label: Current Behavior
+    description: Please provide a clear & concise description of the issue.
+  validations:
+    required: true
+
+- type: textarea      
+  attributes:
+    label: Expected Behavior
+    description: Please describe what you expected to happen.
+  validations:
+    required: true
+
+- type: textarea      
+  attributes:
+    label: Steps to Reproduce
+    description: Please be as detailed as possible when providing steps to reproduce, failure to provide steps will likely result in this issue being closed.
   validations:
     required: true
 
@@ -31,7 +40,7 @@ body:
   attributes:
     label: Panel Version
     description: Version number of your Panel (latest is not a version)
-    placeholder: 1.x.x
+    placeholder: 1.4.0
   validations:
     required: true
 
@@ -40,102 +49,20 @@ body:
   attributes:
     label: Wings Version
     description: Version number of your Wings (latest is not a version)
-    placeholder: 1.x.x
+    placeholder: 1.4.2
   validations:
     required: true
 
-- type: input
+- type: textarea
   id: panel-logs
   attributes:
-    label: Panel Logs
-    placeholder: "https://bin.ptdl.co/"
-  validations:
-    required: true
-
-- type: input
-  id: wings-logs
-  attributes:
-    label: Wings Logs
-    placeholder: "https://ptero.co/"
-  validations:
-    required: true
-
-- type: input
-  id: server-os
-  attributes:
-    label: Server OS
-    placeholder: "Ubuntu 20.04"
-  validations:
-    required: true
-
-- type: input
-  id: computer-os
-  attributes:
-    label: Your Computer's OS
-    placeholder: "Windows"
-  validations:
-    required: true
-
-- type: input
-  id: browser
-  attributes:
-    label: Browser
-    placeholder: "Google Chrome"
-  validations:
-    required: true
-    
-- type: input
-  id: php-version
-  attributes:
-    label: PHP Version
-    placeholder: "8.0.5"
-  validations:
-    required: true
-
-- type: textarea
-  id: docker-info
-  attributes:
-    label: Information regarding docker
-    description: "The info returned from `docker info`"
+    label: Error Logs
+    description: |
+      Run the following command to collect logs on your system.
+      
+      Wings: `sudo wings diagnostics`
+      Panel: `tail -n 100 /var/www/pterodactyl/storage/logs/laravel-$(date +%F).log | nc bin.ptdl.co 99`
+    placeholder: "https://bin.ptdl.co/a1h6z"
     render: bash
   validations:
-    required: true
-
-- type: textarea
-  id: kernel-info
-  attributes:
-    label: Information regarding docker
-    description: "The info returned from `uname -a`"
-    render: bash
-  validations:
-    required: true
-
-- type: textarea      
-  id: actual-behavior
-  attributes:
-    label: Actual Behavior
-    description: What actually happened instead
-    placeholder: Server crashed with error X
-  validations:
-    required: true
-
-- type: textarea          
-  id: expected-behavior
-  attributes:
-    label: Expected Behavior
-    description: What did you expect to happen
-    placeholder: Install the server, start it, play
-  validations:
-    required: true
-
-- type: textarea       
-  id: reproduce-steps
-  attributes:
-    label: Steps To Reproduce
-    description: Step by step what to do to cause the issue
-    placeholder: |
-      Step 1 Set version to latest
-      Step 2 install
-      Step 3 Receive error X or Y
-  validations:
-    required: true
+    required: false

@@ -1,38 +1,31 @@
-name: 🚀 Feature Request
-description: Suggest an idea for this project
+name: Feature Request
+description: Suggest a new feature or improvement for the software.
 body:
-- type: textarea
-  id: feat-to-problem
+- type: checkboxes
   attributes:
-    label: Is your feature request related to a problem?
-    description: "A clear and concise description of what the problem is."
-    render: bash
+    label: Is there an existing feature request for this?
+    description: Please [search here](https://github.com/pterodactyl/panel/issues?q=is%3Aissue) to see if someone else has already suggested this.
+    options:
+    - label: I have searched the existing issues before opening this feature request.
+      required: true
+
+- type: textarea
+  attributes:
+    label: Describe the feature you would like to see.
+    description: "A clear & concise description of the feature you'd like to have added, and what issues it would solve."
   validations:
     required: true
 
 - type: textarea
-  id: solution
   attributes:
-    label: Describe the solution you'd like
-    description: "A clear and concise description of what you want to happen."
-    render: bash
+    label: Describe the solution you'd like.
+    description: "You must explain how you'd like to see this feature implemented. Technical implementation details are not necessary, rather an idea of how you'd like to see this feature used."
   validations:
     required: true
 
 - type: textarea
-  id: alternatives
   attributes:
-    label: Describe alternatives you've considered
-    description: "A clear and concise description of any alternative solutions or features you've considered."
-    render: bash
-  validations:
-    required: true
-
-- type: textarea
-  id: context
-  attributes:
-    label: Additional context
-    description: "Add any other context or screenshots about the feature request here."
-    render: bash
+    label: Additional context to this request.
+    description: "Add any other context or screenshots about the feature request."
   validations:
     required: false
