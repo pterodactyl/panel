@@ -32,7 +32,7 @@ class WebauthnController extends AbstractLoginController
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function auth(Request $request): JsonResponse
+    public function auth(Request $request)
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
