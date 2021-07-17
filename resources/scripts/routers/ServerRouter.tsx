@@ -127,7 +127,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                                 </Can>
                                 {rootAdmin &&
-                                <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
+                                <a href={'/admin/servers/' + serverId} rel="noreferrer" target={'_blank'}>
                                     <FontAwesomeIcon icon={faExternalLinkAlt}/>
                                 </a>
                                 }
