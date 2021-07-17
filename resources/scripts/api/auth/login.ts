@@ -1,9 +1,11 @@
 import http from '@/api/http';
 
 export interface LoginResponse {
+    methods?: string[];
     complete: boolean;
     intended?: string;
     confirmationToken?: string;
+    publicKey?: any;
 }
 
 export interface LoginData {
@@ -19,15 +21,18 @@ export default ({ username, password, recaptchaData }: LoginData): Promise<Login
             password,
             'g-recaptcha-response': recaptchaData,
         })
-            .then(response => {
-                if (!(response.data instanceof Object)) {
+            .then(({ data }) => {
+                if (!(data instanceof Object)) {
                     return reject(new Error('An error occurred while processing the login request.'));
                 }
 
                 return resolve({
-                    complete: response.data.data.complete,
-                    intended: response.data.data.intended || undefined,
-                    confirmationToken: response.data.data.confirmation_token || undefined,
+                    methods: data.methods,
+                    complete: data.complete,
+                    intended: data.intended || undefined,
+                    confirmationToken: data.confirmation_token || undefined,
+                    // eslint-disable-next-line camelcase
+                    publicKey: data.webauthn?.public_key || undefined,
                 });
             })
             .catch(reject);

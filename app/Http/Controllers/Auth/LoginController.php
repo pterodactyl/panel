@@ -17,10 +17,10 @@ use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class LoginController extends AbstractLoginController
 {
-    /**
-     * @var string
-     */
     private const SESSION_PUBLICKEY_REQUEST = 'webauthn.publicKeyRequest';
+
+    private const METHOD_TOTP = 'totp';
+    private const METHOD_WEBAUTHN = 'webauthn';
 
     private CacheRepository $cache;
     private UserRepositoryInterface $repository;
@@ -61,7 +61,7 @@ class LoginController extends AbstractLoginController
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function login(Request $request): JsonResponse
+    public function login(Request $request)
     {
         $username = $request->input('user');
         $useColumn = $this->getField($username);
@@ -99,9 +99,9 @@ class LoginController extends AbstractLoginController
             $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
             $request->session()->save();
 
-            $methods = ['webauthn'];
+            $methods = [ self::METHOD_WEBAUTHN ];
             if ($user->use_totp) {
-                $methods[] = 'totp';
+                $methods[] = self::METHOD_TOTP;
             }
 
             return new JsonResponse([
@@ -118,7 +118,7 @@ class LoginController extends AbstractLoginController
 
             return new JsonResponse([
                 'complete' => false,
-                'methods' => ['totp'],
+                'methods' => [ self::METHOD_TOTP ],
                 'confirmation_token' => $token,
             ]);
         }

@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Auth;
 
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -48,7 +47,7 @@ class LoginCheckpointController extends AbstractLoginController
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function __invoke(LoginCheckpointRequest $request): JsonResponse
+    public function __invoke(LoginCheckpointRequest $request)
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);

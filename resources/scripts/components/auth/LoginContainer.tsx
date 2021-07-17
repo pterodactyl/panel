@@ -39,19 +39,37 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
             });
-
             return;
         }
 
         login({ ...values, recaptchaData: token })
             .then(response => {
+                console.log('wow!');
+                console.log(response);
                 if (response.complete) {
+                    console.log(`Redirecting to: ${response.intended || '/'}`);
                     // @ts-ignore
                     window.location = response.intended || '/';
                     return;
                 }
 
-                history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
+                if (response.methods?.includes('webauthn')) {
+                    console.log('Redirecting to: /auth/login/key');
+                    history.replace('/auth/login/key', {
+                        token: response.confirmationToken,
+                        publicKey: response.publicKey,
+                        hasTotp: response.methods.includes('totp'),
+                    });
+                    return;
+                }
+
+                if (response.methods?.includes('totp')) {
+                    console.log('/auth/login/checkpoint');
+                    history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
+                    return;
+                }
+
+                console.log('huh?');
             })
             .catch(error => {
                 console.error(error);
