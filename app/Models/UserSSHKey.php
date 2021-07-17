@@ -2,15 +2,20 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
  * @property int $id
  * @property int $user_id
  * @property string $name
  * @property string $public_key
  * @property \Carbon\CarbonImmutable $created_at
+ * @property \Pterodactyl\Models\User $user
  */
 class UserSSHKey extends Model
 {
+    const UPDATED_AT = null;
+
     protected $table = 'user_ssh_keys';
     protected bool $immutableDates = true;
 
@@ -23,4 +28,9 @@ class UserSSHKey extends Model
         'name' => 'required|string',
         'public_key' => 'required|string',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

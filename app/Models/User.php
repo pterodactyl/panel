@@ -40,6 +40,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Pterodactyl\Models\AdminRole $adminRole
  * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property \Pterodactyl\Models\UserSSHKey|\Illuminate\Database\Eloquent\Collection $sshKeys
  * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
  * @property \LaravelWebauthn\Models\WebauthnKey[]|\Illuminate\Database\Eloquent\Collection $webauthnKeys
  */
@@ -245,6 +246,11 @@ class User extends Model implements
     public function servers(): HasMany
     {
         return $this->hasMany(Server::class, 'owner_id');
+    }
+
+    public function sshKeys(): HasMany
+    {
+        return $this->hasMany(UserSSHKey::class);
     }
 
     public function recoveryTokens(): HasMany

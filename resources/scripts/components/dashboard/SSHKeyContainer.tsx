@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { format } from 'date-fns';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Field as FormikField, Form, Formik, FormikHelpers } from 'formik';
 import tw from 'twin.macro';
 import { object, string } from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import deleteWebauthnKey from '@/api/account/webauthn/deleteWebauthnKey';
-import getWebauthnKeys, { WebauthnKey } from '@/api/account/webauthn/getWebauthnKeys';
-import registerWebauthnKey from '@/api/account/webauthn/registerWebauthnKey';
+import createSSHKey from '@/api/account/ssh/createSSHKey';
+import deleteSSHKey from '@/api/account/ssh/deleteSSHKey';
+import getSSHKeys, { SSHKey } from '@/api/account/ssh/getSSHKeys';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import ContentBox from '@/components/elements/ContentBox';
@@ -17,25 +16,28 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
+import { Textarea } from '@/components/elements/Input';
 
 interface Values {
     name: string;
+    publicKey: string;
 }
 
-const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: WebauthnKey) => void }) => {
+const AddSSHKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: SSHKey) => void }) => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
-    const submit = ({ name }: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
-        clearFlashes('security_keys');
+    const submit = ({ name, publicKey }: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
+        clearFlashes('ssh_keys');
 
-        registerWebauthnKey(name)
+        createSSHKey(name, publicKey)
             .then(key => {
                 resetForm();
                 onKeyAdded(key);
             })
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ key: 'security_keys', error });
+                clearAndAddHttpError({ key: 'ssh_keys', error });
             })
             .then(() => setSubmitting(false));
     };
@@ -43,9 +45,10 @@ const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: WebauthnKey) => 
     return (
         <Formik
             onSubmit={submit}
-            initialValues={{ name: '' }}
+            initialValues={{ name: '', publicKey: '' }}
             validationSchema={object().shape({
                 name: string().required(),
+                publicKey: string().required(),
             })}
         >
             {({ isSubmitting }) => (
@@ -56,8 +59,17 @@ const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: WebauthnKey) => 
                         id={'name'}
                         name={'name'}
                         label={'Name'}
-                        description={'A descriptive name for this security key.'}
+                        description={'A descriptive name for this SSH key.'}
                     />
+                    <div css={tw`mt-6`}>
+                        <FormikFieldWrapper
+                            name={'publicKey'}
+                            label={'Public Key'}
+                            description={'SSH Public Key starting with ssh-*'}
+                        >
+                            <FormikField as={Textarea} name={'publicKey'} rows={6}/>
+                        </FormikFieldWrapper>
+                    </div>
                     <div css={tw`flex justify-end mt-6`}>
                         <Button>Create</Button>
                     </div>
@@ -70,7 +82,7 @@ const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: WebauthnKey) => 
 export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
-    const [ keys, setKeys ] = useState<WebauthnKey[]>([]);
+    const [ keys, setKeys ] = useState<SSHKey[]>([]);
     const [ loading, setLoading ] = useState(true);
     const [ deleteId, setDeleteId ] = useState<number | null>(null);
 
@@ -79,35 +91,35 @@ export default () => {
             return;
         }
 
-        clearFlashes('security_keys');
+        clearFlashes('ssh_keys');
 
-        deleteWebauthnKey(id)
+        deleteSSHKey(id)
             .then(() => setKeys(s => ([
                 ...(s || []).filter(key => key.id !== id),
             ])))
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ key: 'security_keys', error });
+                clearAndAddHttpError({ key: 'ssh_keys', error });
             });
     };
 
     useEffect(() => {
-        clearFlashes('security_keys');
+        clearFlashes('ssh_keys');
 
-        getWebauthnKeys()
+        getSSHKeys()
             .then(keys => setKeys(keys))
             .then(() => setLoading(false))
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ key: 'security_keys', error });
+                clearAndAddHttpError({ key: 'ssh_keys', error });
             });
     }, []);
 
     return (
-        <PageContentBlock title={'Security Keys'}>
-            <FlashMessageRender byKey={'security_keys'}/>
+        <PageContentBlock title={'SSH Keys'}>
+            <FlashMessageRender byKey={'ssh_keys'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={'Security Keys'} css={tw`flex-1 md:mr-8`}>
+                <ContentBox title={'SSH Keys'} css={tw`flex-1 md:mr-8`}>
                     <SpinnerOverlay visible={loading}/>
                     <ConfirmationModal
                         visible={!!deleteId}
@@ -119,13 +131,12 @@ export default () => {
                         }}
                         onModalDismissed={() => setDeleteId(null)}
                     >
-                        Are you sure you wish to delete this security key?
-                        You will no longer be able to authenticate using this key.
+                        Are you sure you wish to delete this SSH key?
                     </ConfirmationModal>
                     {keys.length === 0 ?
                         !loading ?
                             <p css={tw`text-center text-sm`}>
-                                No security keys have been configured for this account.
+                                No SSH keys have been configured for this account.
                             </p>
                             : null
                         :
@@ -134,10 +145,6 @@ export default () => {
                                 <FontAwesomeIcon icon={faKey} css={tw`text-neutral-300`}/>
                                 <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                     <p css={tw`text-sm break-words`}>{key.name}</p>
-                                    <p css={tw`text-2xs text-neutral-300 uppercase`}>
-                                        Last used:&nbsp;
-                                        {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : 'Never'}
-                                    </p>
                                 </div>
                                 <button css={tw`ml-4 p-2 text-sm`} onClick={() => setDeleteId(key.id)}>
                                     <FontAwesomeIcon
@@ -150,8 +157,8 @@ export default () => {
                     }
                 </ContentBox>
 
-                <ContentBox title={'Add Security Key'} css={tw`flex-none w-full mt-8 md:mt-0 md:w-1/2`}>
-                    <AddSecurityKeyForm onKeyAdded={key => setKeys(s => ([ ...s!, key ]))}/>
+                <ContentBox title={'Add SSH Key'} css={tw`flex-none w-full mt-8 md:mt-0 md:w-1/2`}>
+                    <AddSSHKeyForm onKeyAdded={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
             </div>
         </PageContentBlock>

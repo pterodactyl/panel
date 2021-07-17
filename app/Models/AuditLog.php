@@ -45,7 +45,7 @@ class AuditLog extends Model
     /**
      * @var string[]
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'uuid' => 'required|uuid',
         'action' => 'required|string|max:191',
         'subaction' => 'nullable|string|max:191',

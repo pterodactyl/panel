@@ -33,6 +33,10 @@ Route::group(['prefix' => '/account'], function () {
     Route::get('/webauthn/register', 'WebauthnController@register')->withoutMiddleware(RequireTwoFactorAuthentication::class);
     Route::post('/webauthn/register', 'WebauthnController@create')->withoutMiddleware(RequireTwoFactorAuthentication::class);
     Route::delete('/webauthn/{id}', 'WebauthnController@deleteKey')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+
+    Route::get('/ssh', 'SSHKeyController@index');
+    Route::post('/ssh', 'SSHKeyController@store');
+    Route::delete('/ssh/{ssh_key}', 'SSHKeyController@delete');
 });
 
 /*

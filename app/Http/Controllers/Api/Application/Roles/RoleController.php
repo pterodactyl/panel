@@ -3,11 +3,9 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Roles;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Location;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\AdminRole;
 use Spatie\QueryBuilder\QueryBuilder;
-use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Transformers\Api\Application\AdminRoleTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Roles\GetRoleRequest;

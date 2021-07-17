@@ -70,7 +70,7 @@ class EggVariable extends Model
     /**
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'egg_id' => 'exists:eggs,id',
         'name' => 'required|string|between:1,191',
         'description' => 'string',
