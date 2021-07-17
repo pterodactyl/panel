@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
+use LaravelWebauthn\Facades\Webauthn;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -17,19 +18,13 @@ use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 class LoginController extends AbstractLoginController
 {
     /**
-     * @var \Illuminate\Contracts\View\Factory
+     * @var string
      */
-    private $view;
+    private const SESSION_PUBLICKEY_REQUEST = 'webauthn.publicKeyRequest';
 
-    /**
-     * @var \Illuminate\Contracts\Cache\Repository
-     */
-    private $cache;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
+    private CacheRepository $cache;
+    private UserRepositoryInterface $repository;
+    private ViewFactory $view;
 
     /**
      * LoginController constructor.
@@ -43,14 +38,14 @@ class LoginController extends AbstractLoginController
     ) {
         parent::__construct($auth, $config);
 
-        $this->view = $view;
         $this->cache = $cache;
         $this->repository = $repository;
+        $this->view = $view;
     }
 
     /**
      * Handle all incoming requests for the authentication routes and render the
-     * base authentication view component. Vuejs will take over at this point and
+     * base authentication view component.  React will take over at this point and
      * turn the login area into a SPA.
      */
     public function index(): View
@@ -74,31 +69,57 @@ class LoginController extends AbstractLoginController
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
             $this->sendLockoutResponse($request);
+            return;
         }
 
         try {
+            /** @var \Pterodactyl\Models\User $user */
             $user = $this->repository->findFirstWhere([[$useColumn, '=', $username]]);
         } catch (RecordNotFoundException $exception) {
-            return $this->sendFailedLoginResponse($request);
+            $this->sendFailedLoginResponse($request);
+            return;
         }
 
         // Ensure that the account is using a valid username and password before trying to
         // continue. Previously this was handled in the 2FA checkpoint, however that has
         // a flaw in which you can discover if an account exists simply by seeing if you
-        // can proceede to the next step in the login process.
+        // can proceed to the next step in the login process.
         if (!password_verify($request->input('password'), $user->password)) {
-            return $this->sendFailedLoginResponse($request, $user);
+            $this->sendFailedLoginResponse($request, $user);
+            return;
         }
 
-        if ($user->use_totp) {
+        $webauthnKeys = $user->webauthnKeys()->get();
+
+        if (sizeof($webauthnKeys) > 0) {
+            $token = Str::random(64);
+            $this->cache->put($token, $user->id, CarbonImmutable::now()->addMinutes(5));
+
+            $publicKey = Webauthn::getAuthenticateData($user);
+            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
+            $request->session()->save();
+
+            $methods = ['webauthn'];
+            if ($user->use_totp) {
+                $methods[] = 'totp';
+            }
+
+            return new JsonResponse([
+                'complete' => false,
+                'methods' => $methods,
+                'confirmation_token' => $token,
+                'webauthn' => [
+                    'public_key' => $publicKey,
+                ],
+            ]);
+        } else if ($user->use_totp) {
             $token = Str::random(64);
             $this->cache->put($token, $user->id, CarbonImmutable::now()->addMinutes(5));
 
             return new JsonResponse([
-                'data' => [
-                    'complete' => false,
-                    'confirmation_token' => $token,
-                ],
+                'complete' => false,
+                'methods' => ['totp'],
+                'confirmation_token' => $token,
             ]);
         }
 

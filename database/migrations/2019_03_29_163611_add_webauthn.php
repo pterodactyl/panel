@@ -18,18 +18,18 @@ class AddWebauthn extends Migration
             $table->unsignedInteger('user_id');
 
             $table->string('name')->default('key');
-            $table->string('credential_id', 255);
+            $table->string('credentialId', 255);
             $table->string('type', 255);
             $table->text('transports');
-            $table->string('attestation_type', 255);
-            $table->text('trust_path');
+            $table->string('attestationType', 255);
+            $table->text('trustPath');
             $table->text('aaguid');
-            $table->text('credential_public_key');
+            $table->text('credentialPublicKey');
             $table->integer('counter');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->index('credential_id');
+            $table->index('credentialId');
         });
     }
 

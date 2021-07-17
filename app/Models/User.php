@@ -4,13 +4,15 @@ namespace Pterodactyl\Models;
 
 use Pterodactyl\Rules\Username;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
+use LaravelWebauthn\Models\WebauthnKey;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -35,9 +37,11 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $name
+ * @property \Pterodactyl\Models\AdminRole $adminRole
  * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
+ * @property \LaravelWebauthn\Models\WebauthnKey[]|\Illuminate\Database\Eloquent\Collection $webauthnKeys
  */
 class User extends Model implements
     AuthenticatableContract,
@@ -227,50 +231,37 @@ class User extends Model implements
         return $role->name;
     }
 
-    /**
-     * Gets the admin role associated with a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function adminRole()
+    public function adminRole(): HasOne
     {
         return $this->hasOne(AdminRole::class, 'id', 'admin_role_id');
     }
 
-    /**
-     * Returns all servers that a user owns.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function servers()
-    {
-        return $this->hasMany(Server::class, 'owner_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function apiKeys()
+    public function apiKeys(): HasMany
     {
         return $this->hasMany(ApiKey::class)
             ->where('key_type', ApiKey::TYPE_ACCOUNT);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function recoveryTokens()
+    public function servers(): HasMany
+    {
+        return $this->hasMany(Server::class, 'owner_id');
+    }
+
+    public function recoveryTokens(): HasMany
     {
         return $this->hasMany(RecoveryToken::class);
+    }
+
+    public function webauthnKeys(): HasMany
+    {
+        return $this->hasMany(WebauthnKey::class);
     }
 
     /**
      * Returns all of the servers that a user can access by way of being the owner of the
      * server, or because they are assigned as a subuser for that server.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function accessibleServers()
+    public function accessibleServers(): Builder
     {
         return Server::query()
             ->select('servers.*')
