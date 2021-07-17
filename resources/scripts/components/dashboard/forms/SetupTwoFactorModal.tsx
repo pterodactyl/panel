@@ -148,7 +148,6 @@ const SetupTwoFactorModal = () => {
                     </div>
                 </Form>
             }
-git
         </Formik>
     );
 };
