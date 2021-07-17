@@ -24,7 +24,7 @@ class Setting extends Model
     /**
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'key' => 'required|string|between:1,191',
         'value' => 'string',
     ];

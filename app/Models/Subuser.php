@@ -52,7 +52,7 @@ class Subuser extends Model
     /**
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'user_id' => 'required|numeric|exists:users,id',
         'server_id' => 'required|numeric|exists:servers,id',
         'permissions' => 'nullable|array',

@@ -95,7 +95,7 @@ class Task extends Model
     /**
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'schedule_id' => 'required|numeric|exists:schedules,id',
         'sequence_id' => 'required|numeric|min:1',
         'action' => 'required|string',

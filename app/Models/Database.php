@@ -61,7 +61,7 @@ class Database extends Model
     /**
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'server_id' => 'required|numeric|exists:servers,id',
         'database_host_id' => 'required|exists:database_hosts,id',
         'database' => 'required|string|alpha_dash|between:3,48',

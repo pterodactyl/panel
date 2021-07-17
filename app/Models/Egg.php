@@ -111,7 +111,7 @@ class Egg extends Model
     /**
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'nest_id' => 'required|bail|numeric|exists:nests,id',
         'uuid' => 'required|string|size:36',
         'name' => 'required|string|max:191',

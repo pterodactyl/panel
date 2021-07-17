@@ -138,7 +138,7 @@ class User extends Model implements
      *
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'uuid' => 'required|string|size:36|unique:users,uuid',
         'email' => 'required|email|between:1,191|unique:users,email',
         'external_id' => 'sometimes|nullable|string|max:191|unique:users,external_id',

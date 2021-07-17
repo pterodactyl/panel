@@ -63,7 +63,7 @@ class AuditLog extends Model
     /**
      * @var bool
      */
-    protected $immutableDates = true;
+    protected bool $immutableDates = true;
 
     /**
      * @var string[]

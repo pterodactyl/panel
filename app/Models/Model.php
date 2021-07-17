@@ -20,7 +20,7 @@ abstract class Model extends IlluminateModel
      *
      * @var bool
      */
-    protected $immutableDates = false;
+    protected bool $immutableDates = false;
 
     /**
      * Determines if the model should undergo data validation before it is saved
@@ -45,7 +45,7 @@ abstract class Model extends IlluminateModel
     /**
      * @var array
      */
-    public static $validationRules = [];
+    public static array $validationRules = [];
 
     /**
      * Listen for the model saving event and fire off the validation

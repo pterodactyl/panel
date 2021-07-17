@@ -97,7 +97,7 @@ class ApiKey extends Model
      *
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'user_id' => 'required|exists:users,id',
         'key_type' => 'present|integer|min:0|max:4',
         'identifier' => 'required|string|size:16|unique:api_keys,identifier',

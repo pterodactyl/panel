@@ -100,10 +100,7 @@ class Node extends Model
         'description', 'maintenance_mode',
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'name' => 'required|regex:/^([\w .-]{1,100})$/',
         'description' => 'string|nullable',
         'location_id' => 'required|exists:locations,id',

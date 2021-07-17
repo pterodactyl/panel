@@ -53,7 +53,7 @@ class Allocation extends Model
     /**
      * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'node_id' => 'required|exists:nodes,id',
         'ip' => 'required|ip',
         'port' => 'required|numeric|between:1024,65535',
