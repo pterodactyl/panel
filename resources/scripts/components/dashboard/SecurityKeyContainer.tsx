@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { format } from 'date-fns';
 import { Form, Formik, FormikHelpers } from 'formik';
 import tw from 'twin.macro';
 import { object, string } from 'yup';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faKey, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import deleteWebauthnKey from '@/api/account/webauthn/deleteWebauthnKey';
 import getWebauthnKeys, { WebauthnKey } from '@/api/account/webauthn/getWebauthnKeys';
-import registerKey from '@/api/account/webauthn/registerKey';
+import registerWebauthnKey from '@/api/account/webauthn/registerWebauthnKey';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import ContentBox from '@/components/elements/ContentBox';
@@ -12,9 +16,7 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { format } from 'date-fns';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 interface Values {
     name: string;
@@ -26,17 +28,16 @@ const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: WebauthnKey) => 
     const submit = ({ name }: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes('security_keys');
 
-        registerKey(name)
+        registerWebauthnKey(name)
             .then(key => {
                 resetForm();
-                setSubmitting(false);
                 onKeyAdded(key);
             })
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'security_keys', error });
-                setSubmitting(false);
-            });
+            })
+            .then(() => setSubmitting(false));
     };
 
     return (
@@ -71,6 +72,24 @@ export default () => {
 
     const [ keys, setKeys ] = useState<WebauthnKey[]>([]);
     const [ loading, setLoading ] = useState(true);
+    const [ deleteId, setDeleteId ] = useState<number | null>(null);
+
+    const doDeletion = (id: number | null) => {
+        if (id === null) {
+            return;
+        }
+
+        clearFlashes('security_keys');
+
+        deleteWebauthnKey(id)
+            .then(() => setKeys(s => ([
+                ...(s || []).filter(key => key.id !== id),
+            ])))
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'security_keys', error });
+            });
+    };
 
     useEffect(() => {
         clearFlashes('security_keys');
@@ -90,6 +109,19 @@ export default () => {
             <div css={tw`md:flex flex-nowrap my-10`}>
                 <ContentBox title={'Security Keys'} css={tw`flex-1 md:mr-8`}>
                     <SpinnerOverlay visible={loading}/>
+                    <ConfirmationModal
+                        visible={!!deleteId}
+                        title={'Confirm key deletion'}
+                        buttonText={'Yes, delete key'}
+                        onConfirmed={() => {
+                            doDeletion(deleteId);
+                            setDeleteId(null);
+                        }}
+                        onModalDismissed={() => setDeleteId(null)}
+                    >
+                        Are you sure you wish to delete this API key? All requests using it will immediately be
+                        invalidated and will fail.
+                    </ConfirmationModal>
                     {keys.length === 0 ?
                         !loading ?
                             <p css={tw`text-center text-sm`}>
@@ -107,7 +139,7 @@ export default () => {
                                         {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : 'Never'}
                                     </p>
                                 </div>
-                                <button css={tw`ml-4 p-2 text-sm`}>
+                                <button css={tw`ml-4 p-2 text-sm`} onClick={() => setDeleteId(key.id)}>
                                     <FontAwesomeIcon
                                         icon={faTrashAlt}
                                         css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`}
