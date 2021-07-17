@@ -2501,6 +2501,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/webappsec-credential-management@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@types/webappsec-credential-management@npm:0.6.1"
+  checksum: 59718a0b716f5098eeb8a90c8ed3c28b4a0eaf4348acea6f13752c54dcbc38b0361c7652af1eb2e5b159fd5f34860c5cd5dba3dca573daa7d920f36f1999fdf6
+  languageName: node
+  linkType: hard
+
 "@types/webpack-env@npm:^1.16.2":
   version: 1.16.2
   resolution: "@types/webpack-env@npm:1.16.2"
@@ -9686,6 +9693,7 @@ fsevents@^1.2.7:
     "@types/react-transition-group": ^4.4.2
     "@types/styled-components": ^5.1.7
     "@types/uuid": ^3.4.5
+    "@types/webappsec-credential-management": ^0.6.1
     "@types/webpack-env": ^1.16.2
     "@types/yup": ^0.29.13
     "@typescript-eslint/eslint-plugin": ^4.28.2

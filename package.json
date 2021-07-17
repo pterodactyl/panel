@@ -110,6 +110,7 @@
         "@types/react-transition-group": "^4.4.2",
         "@types/styled-components": "^5.1.7",
         "@types/uuid": "^3.4.5",
+        "@types/webappsec-credential-management": "^0.6.1",
         "@types/webpack-env": "^1.16.2",
         "@types/yup": "^0.29.13",
         "@typescript-eslint/eslint-plugin": "^4.28.2",
