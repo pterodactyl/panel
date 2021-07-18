@@ -71,9 +71,8 @@ trait RequestMockHelpers
     /**
      * Set the active request object to be an instance of a mocked request.
      */
-    protected function buildRequestMock($uri = '/')
+    protected function buildRequestMock()
     {
-//        $this->request = Request::create($uri);
         $this->request = m::mock($this->requestMockClass);
         if (!$this->request instanceof Request) {
             throw new InvalidArgumentException('Request mock class must be an instance of ' . Request::class . ' when mocked.');
