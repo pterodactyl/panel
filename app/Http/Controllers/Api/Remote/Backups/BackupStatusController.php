@@ -42,7 +42,7 @@ class BackupStatusController extends Controller
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
 
-        if (!is_null($model->completed_at)) {
+        if ($model->is_successful) {
             throw new BadRequestHttpException('Cannot update the status of a backup that is already marked as completed.');
         }
 
@@ -54,7 +54,7 @@ class BackupStatusController extends Controller
             $audit->is_system = true;
             $audit->metadata = ['backup_uuid' => $model->uuid];
 
-            $successful = $request->input('successful') ? true : false;
+            $successful = $request->boolean('successful');
             $model->fill([
                 'is_successful' => $successful,
                 // Change the lock state to unlocked if this was a failed backup so that it can be

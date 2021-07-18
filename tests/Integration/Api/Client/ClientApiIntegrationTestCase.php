@@ -7,6 +7,7 @@ use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
+use InvalidArgumentException;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
@@ -60,8 +61,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function link($model, $append = null): string
     {
-        Assert::isInstanceOfAny($model, [Server::class, Schedule::class, Task::class, Allocation::class]);
-
         $link = '';
         switch (get_class($model)) {
             case Server::class:
@@ -76,6 +75,11 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
             case Allocation::class:
                 $link = "/api/client/servers/{$model->server->uuid}/network/allocations/{$model->id}";
                 break;
+            case Backup::class:
+                $link = "/api/client/servers/{$model->server->uuid}/backups/{$model->uuid}";
+                break;
+            default:
+                throw new InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
         }
 
         return $link . ($append ? '/' . ltrim($append, '/') : '');

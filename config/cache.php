@@ -10,7 +10,7 @@ return [
     | using this caching library. This connection is used when another is
     | not explicitly specified when executing a given caching function.
     |
-    | Supported: "apc", "array", "database", "file", "memcached", "redis"
+    | Supported: "apc", "array", "database", "file", "memcached", "redis", "octane"
     |
     */
 
@@ -34,12 +34,14 @@ return [
 
         'array' => [
             'driver' => 'array',
+            'serialize' => false,
         ],
 
         'database' => [
             'driver' => 'database',
             'table' => 'cache',
             'connection' => null,
+            'lock_connection' => null,
         ],
 
         'file' => [
@@ -69,12 +71,17 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
+            'lock_connection' => 'default',
         ],
 
         'sessions' => [
             'driver' => env('SESSION_DRIVER', 'database'),
             'table' => 'sessions',
             'connection' => env('SESSION_DRIVER') === 'redis' ? 'sessions' : null,
+        ],
+
+        'octane' => [
+            'driver' => 'octane',
         ],
     ],
 
