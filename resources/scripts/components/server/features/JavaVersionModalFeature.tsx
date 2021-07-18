@@ -82,7 +82,7 @@ const JavaVersionModalFeature = () => {
                 <FlashMessageRender key={'feature:javaversion'} css={tw`mb-4`}/>
                 <h2 css={tw`text-2xl mb-4 text-neutral-100`}>Invalid Java Version, Update Docker Image?</h2>
                 <p css={tw`mt-4`}>This server is unable to start due to the required java version not being met.</p>
-                <p css={tw`mt-4`}>By pressing {'"Update Docker Image"'} below you are acknowledging that the docker image this server uses will be changed to the default Java 16 image, that is provided by Pterodactyl.</p>
+                <p css={tw`mt-4`}>By pressing {'"Update Docker Image"'} below you are acknowledging that the docker image this server uses will be changed to a image below that has the Java version you are requesting.</p>
                 <div css={tw`sm:flex items-center mt-4`}>
                     <p>Please select a Java version from the list below.</p>
                     <Select
