@@ -43,6 +43,7 @@ trait RequestMockHelpers
      */
     public function generateRequestUserModel(array $args = []): User
     {
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->make($args);
         $this->setRequestUserModel($user);
 
@@ -70,8 +71,9 @@ trait RequestMockHelpers
     /**
      * Set the active request object to be an instance of a mocked request.
      */
-    protected function buildRequestMock()
+    protected function buildRequestMock($uri = '/')
     {
+//        $this->request = Request::create($uri);
         $this->request = m::mock($this->requestMockClass);
         if (!$this->request instanceof Request) {
             throw new InvalidArgumentException('Request mock class must be an instance of ' . Request::class . ' when mocked.');

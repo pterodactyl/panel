@@ -47,6 +47,7 @@ yarn-error.log
 # PHP
 /vendor
 .php_cs.cache
+.phpunit.result.cache
 
 #-------------------#
 # Operating Systems #

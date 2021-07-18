@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Transformers\Api\Client;
 
-use LaravelWebauthn\Models\WebauthnKey;
+use Pterodactyl\Models\WebauthnKey;
 
 class WebauthnKeyTransformer extends BaseClientTransformer
 {

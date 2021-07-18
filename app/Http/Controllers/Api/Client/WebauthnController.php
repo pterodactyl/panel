@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use LaravelWebauthn\Facades\Webauthn;
-use LaravelWebauthn\Models\WebauthnKey;
+use Pterodactyl\Models\WebauthnKey;
 use Webauthn\PublicKeyCredentialCreationOptions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Transformers\Api\Client\WebauthnKeyTransformer;

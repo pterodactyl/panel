@@ -5,7 +5,6 @@ namespace Pterodactyl\Models;
 use Pterodactyl\Rules\Username;
 use Illuminate\Support\Collection;
 use Illuminate\Auth\Authenticatable;
-use LaravelWebauthn\Models\WebauthnKey;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -42,7 +41,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\UserSSHKey|\Illuminate\Database\Eloquent\Collection $sshKeys
  * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
- * @property \LaravelWebauthn\Models\WebauthnKey[]|\Illuminate\Database\Eloquent\Collection $webauthnKeys
+ * @property \Pterodactyl\Models\WebauthnKey[]|\Illuminate\Database\Eloquent\Collection $webauthnKeys
  */
 class User extends Model implements
     AuthenticatableContract,
