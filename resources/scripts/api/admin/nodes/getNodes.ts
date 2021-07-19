@@ -1,7 +1,7 @@
 import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
 import { useContext } from 'react';
 import useSWR from 'swr';
-import { createContext } from '@/api/admin/admin';
+import { createContext } from '@/api/admin';
 import { Database, rawDataToDatabase } from '@/api/admin/databases/getDatabases';
 import { Location, rawDataToLocation } from '@/api/admin/locations/getLocations';
 

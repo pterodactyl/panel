@@ -2,7 +2,7 @@ import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
 import { useContext } from 'react';
 import useSWR from 'swr';
-import { createContext } from '@/api/admin/admin';
+import { createContext } from '@/api/admin';
 import { Node, rawDataToNode } from '@/api/admin/nodes/getNodes';
 import { User, rawDataToUser } from '@/api/admin/users/getUsers';
 
