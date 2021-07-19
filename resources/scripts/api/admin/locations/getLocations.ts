@@ -1,6 +1,7 @@
 import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
-import { createContext, useContext } from 'react';
+import { useContext } from 'react';
 import useSWR from 'swr';
+import { createContext } from '@/api/admin/admin';
 
 export interface Location {
     id: number;
@@ -24,33 +25,7 @@ export interface Filters {
     long?: string;
 }
 
-interface ctx {
-    page: number;
-    setPage: (value: number | ((s: number) => number)) => void;
-
-    filters: Filters | null;
-    setFilters: (filters: Filters | null) => void;
-
-    sort: string | null;
-    setSort: (sort: string | null) => void;
-
-    sortDirection: boolean;
-    setSortDirection: (direction: boolean) => void;
-}
-
-export const Context = createContext<ctx>({
-    page: 1,
-    setPage: () => 1,
-
-    filters: null,
-    setFilters: () => null,
-
-    sort: null,
-    setSort: () => null,
-
-    sortDirection: false,
-    setSortDirection: () => false,
-});
+export const Context = createContext<Filters>();
 
 export default (include: string[] = []) => {
     const { page, filters, sort, sortDirection } = useContext(Context);

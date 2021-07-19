@@ -1,7 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react';
 import getServers, { Context as ServersContext, Filters } from '@/api/admin/servers/getServers';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, { ContentWrapper, Loading, NoItems, Pagination, TableBody, TableHead, TableHeader } from '@/components/admin/AdminTable';
+import AdminTable, {
+    ContentWrapper,
+    Loading,
+    NoItems,
+    Pagination,
+    TableBody,
+    TableHead,
+    TableHeader,
+    useTableHooks
+} from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -196,22 +205,10 @@ const ServersContainer = () => {
 };
 
 export default () => {
-    const [ page, setPage ] = useState<number>(1);
-    const [ filters, setFilters ] = useState<Filters | null>(null);
-    const [ sort, setSortState ] = useState<string | null>(null);
-    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
-
-    const setSort = (newSort: string | null) => {
-        if (sort === newSort) {
-            setSortDirection(!sortDirection);
-        } else {
-            setSortState(newSort);
-            setSortDirection(false);
-        }
-    };
+    const hooks = useTableHooks<Filters>();
 
     return (
-        <ServersContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
+        <ServersContext.Provider value={hooks}>
             <ServersContainer/>
         </ServersContext.Provider>
     );

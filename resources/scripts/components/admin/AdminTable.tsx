@@ -8,6 +8,38 @@ import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 import { PaginatedResult, PaginationDataSet } from '@/api/http';
 
+interface Hooks<T> {
+    page: number;
+    setPage: (page: ((p: number) => number) | number) => void;
+
+    filters: T | null;
+    setFilters: (filters: ((f: T | null) => T | null) | T | null) => void;
+
+    sort: string | null;
+    setSort: (sort: string | null) => void;
+
+    sortDirection: boolean;
+    setSortDirection: (direction: ((p: boolean) => boolean) | boolean) => void;
+}
+
+export function useTableHooks<T> (): Hooks<T> {
+    const [ page, setPage ] = useState<number>(1);
+    const [ filters, setFilters ] = useState<T | null>(null);
+    const [ sort, setSortState ] = useState<string | null>(null);
+    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
+
+    const setSort = (newSort: string | null) => {
+        if (sort === newSort) {
+            setSortDirection(!sortDirection);
+        } else {
+            setSortState(newSort);
+            setSortDirection(false);
+        }
+    };
+
+    return { page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection };
+}
+
 export const TableHeader = ({ name, onClick, direction }: { name?: string, onClick?: (e: React.MouseEvent) => void, direction?: number | null }) => {
     if (!name) {
         return <th css={tw`px-6 py-2`}/>;

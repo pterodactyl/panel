@@ -7,7 +7,17 @@ import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper } from '@/components/admin/AdminTable';
+import AdminTable, {
+    TableBody,
+    TableHead,
+    TableHeader,
+    TableRow,
+    Pagination,
+    Loading,
+    NoItems,
+    ContentWrapper,
+    useTableHooks
+} from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 
@@ -156,22 +166,10 @@ const DatabasesContainer = () => {
 };
 
 export default () => {
-    const [ page, setPage ] = useState<number>(1);
-    const [ filters, setFilters ] = useState<Filters | null>(null);
-    const [ sort, setSortState ] = useState<string | null>(null);
-    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
-
-    const setSort = (newSort: string | null) => {
-        if (sort === newSort) {
-            setSortDirection(!sortDirection);
-        } else {
-            setSortState(newSort);
-            setSortDirection(false);
-        }
-    };
+    const hooks = useTableHooks<Filters>();
 
     return (
-        <DatabasesContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
+        <DatabasesContext.Provider value={hooks}>
             <DatabasesContainer/>
         </DatabasesContext.Provider>
     );

@@ -2,7 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import getUsers, { Context as UsersContext, Filters } from '@/api/admin/users/getUsers';
-import AdminTable, { ContentWrapper, Loading, NoItems, Pagination, TableBody, TableHead, TableHeader } from '@/components/admin/AdminTable';
+import AdminTable, {
+    ContentWrapper,
+    Loading,
+    NoItems,
+    Pagination,
+    TableBody,
+    TableHead,
+    TableHeader,
+    useTableHooks
+} from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
@@ -173,22 +182,10 @@ const UsersContainer = () => {
 };
 
 export default () => {
-    const [ page, setPage ] = useState<number>(1);
-    const [ filters, setFilters ] = useState<Filters | null>(null);
-    const [ sort, setSortState ] = useState<string | null>(null);
-    const [ sortDirection, setSortDirection ] = useState<boolean>(false);
-
-    const setSort = (newSort: string | null) => {
-        if (sort === newSort) {
-            setSortDirection(!sortDirection);
-        } else {
-            setSortState(newSort);
-            setSortDirection(false);
-        }
-    };
+    const hooks = useTableHooks<Filters>();
 
     return (
-        <UsersContext.Provider value={{ page, setPage, filters, setFilters, sort, setSort, sortDirection, setSortDirection }}>
+        <UsersContext.Provider value={hooks}>
             <UsersContainer/>
         </UsersContext.Provider>
     );
