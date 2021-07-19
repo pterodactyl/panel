@@ -44,6 +44,7 @@ class NestSeeder extends Seeder
         $this->createSourceEngineNest(array_get($items, 'Source Engine'));
         $this->createVoiceServersNest(array_get($items, 'Voice Servers'));
         $this->createRustNest(array_get($items, 'Rust'));
+        $this->createFivemNest(array_get($items, 'Fivem'));
     }
 
     /**
@@ -105,4 +106,19 @@ class NestSeeder extends Seeder
             ], 'support@pterodactyl.io');
         }
     }
+	
+    /**
+     * Create the Fivem nest to be used later on.
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     */
+    private function createFivemNest(array $nest = null)
+    {
+        if (is_null($nest)) {
+            $this->creationService->handle([
+                'name' => 'Fivem',
+                'description' => 'FiveM is a multiplayer modification framework for GTA V, allowing you to play on customized dedicated servers.',
+            ], 'support@pterodactyl.io');
+        }
+    }	
 }
