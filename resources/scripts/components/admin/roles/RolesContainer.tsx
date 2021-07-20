@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import getRoles, { Context as RolesContext, Filters } from '@/api/admin/roles/getRoles';
 import { AdminContext } from '@/state/admin';
 import NewRoleButton from '@/components/admin/roles/NewRoleButton';
@@ -8,17 +8,7 @@ import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, {
-    TableBody,
-    TableHead,
-    TableHeader,
-    TableRow,
-    Pagination,
-    Loading,
-    NoItems,
-    ContentWrapper,
-    useTableHooks
-} from '@/components/admin/AdminTable';
+import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper, useTableHooks } from '@/components/admin/AdminTable';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 
 const RowCheckbox = ({ id }: { id: number }) => {

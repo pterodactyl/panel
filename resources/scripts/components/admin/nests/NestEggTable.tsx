@@ -1,21 +1,11 @@
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import getEggs, { Context as EggsContext, Filters } from '@/api/admin/nests/getEggs';
 import useFlash from '@/plugins/useFlash';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, {
-    TableBody,
-    TableHead,
-    TableHeader,
-    TableRow,
-    Pagination,
-    Loading,
-    NoItems,
-    ContentWrapper,
-    useTableHooks
-} from '@/components/admin/AdminTable';
+import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper, useTableHooks } from '@/components/admin/AdminTable';
 import { Context } from '@/components/admin/nests/NestEditContainer';
 
 const RowCheckbox = ({ id }: { id: number}) => {

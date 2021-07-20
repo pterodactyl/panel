@@ -18,9 +18,9 @@ export const rawDataToAllocation = (data: FractalResponseData): Allocation => ({
     assigned: data.attributes.assigned,
 });
 
-export default (uuid: string): Promise<Allocation[]> => {
+export default (id: string | number): Promise<Allocation[]> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/application/nodes/${uuid}/allocations`)
+        http.get(`/api/application/nodes/${id}/allocations`)
             .then(({ data }) => resolve((data.data || []).map(rawDataToAllocation)))
             .catch(reject);
     });

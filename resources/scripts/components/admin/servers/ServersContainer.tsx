@@ -1,16 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import getServers, { Context as ServersContext, Filters } from '@/api/admin/servers/getServers';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, {
-    ContentWrapper,
-    Loading,
-    NoItems,
-    Pagination,
-    TableBody,
-    TableHead,
-    TableHeader,
-    useTableHooks
-} from '@/components/admin/AdminTable';
+import AdminTable, { TableBody, TableHead, TableHeader, Pagination, Loading, NoItems, ContentWrapper, useTableHooks } from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import FlashMessageRender from '@/components/FlashMessageRender';

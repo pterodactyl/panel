@@ -1,5 +1,5 @@
 import { Filters } from '@/api/admin/servers/getServers';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import getNodes, { Context as NodesContext } from '@/api/admin/nodes/getNodes';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
@@ -8,17 +8,7 @@ import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
-import AdminTable, {
-    TableBody,
-    TableHead,
-    TableHeader,
-    TableRow,
-    Pagination,
-    Loading,
-    NoItems,
-    ContentWrapper,
-    useTableHooks
-} from '@/components/admin/AdminTable';
+import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper, useTableHooks } from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { bytesToHuman, megabytesToBytes } from '@/helpers';
