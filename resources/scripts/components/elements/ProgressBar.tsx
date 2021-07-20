@@ -12,8 +12,8 @@ const BarFill = styled.div`
 `;
 
 export default () => {
-    const interval = useRef<number>(null);
-    const timeout = useRef<number>(null);
+    const interval = useRef<NodeJS.Timer>();
+    const timeout = useRef<NodeJS.Timer>();
     const [ visible, setVisible ] = useState(false);
     const progress = useStoreState(state => state.progress.progress);
     const continuous = useStoreState(state => state.progress.continuous);
@@ -30,7 +30,6 @@ export default () => {
         setVisible((progress || 0) > 0);
 
         if (progress === 100) {
-            // @ts-ignore
             timeout.current = setTimeout(() => setProgress(undefined), 500);
         }
     }, [ progress ]);
@@ -49,17 +48,17 @@ export default () => {
     useEffect(() => {
         if (continuous) {
             interval.current && clearInterval(interval.current);
-            if ((progress || 0) >= 90) {
+            const p = progress || 0;
+            if (p >= 90) {
                 setProgress(90);
             } else {
-                // @ts-ignore
-                interval.current = setTimeout(() => setProgress(progress + randomInt(1, 5)), 500);
+                interval.current = setTimeout(() => setProgress(p + randomInt(1, 5)), 500);
             }
         }
     }, [ progress, continuous ]);
 
     return (
-        <div css={tw`w-full fixed z-10`} style={{ height: '2px' }}>
+        <div css={tw`w-full h-[2px] fixed z-10`}>
             <CSSTransition
                 timeout={150}
                 appear

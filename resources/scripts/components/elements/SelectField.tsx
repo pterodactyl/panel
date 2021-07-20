@@ -1,15 +1,31 @@
 import { CSSObject } from '@emotion/serialize';
 import { Field as FormikField, FieldProps } from 'formik';
 import React, { forwardRef } from 'react';
-import Select, { ContainerProps, ControlProps, InputProps, MenuProps, MultiValueProps, OptionProps, PlaceholderProps, SingleValueProps, StylesConfig, ValueContainerProps } from 'react-select';
+import Select, { ContainerProps, ControlProps, GroupProps, IndicatorContainerProps, IndicatorProps, InputProps, MenuListComponentProps, MenuProps, MultiValueProps, OptionProps, PlaceholderProps, SingleValueProps, StylesConfig, ValueContainerProps } from 'react-select';
 import Creatable from 'react-select/creatable';
 import tw, { theme } from 'twin.macro';
 import Label from '@/components/elements/Label';
 import { ValueType } from 'react-select/src/types';
+import { GroupHeadingProps } from 'react-select/src/components/Group';
+import { MenuPortalProps, NoticeProps } from 'react-select/src/components/Menu';
+import { LoadingIndicatorProps } from 'react-select/src/components/indicators';
+import { MultiValueRemoveProps } from 'react-select/src/components/MultiValue';
 
 type T = any;
 
 export const SelectStyle: StylesConfig<T, any, any> = {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    clearIndicator: (base: CSSObject, props: IndicatorProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+            color: props.isFocused ? theme`colors.neutral.300` : theme`colors.neutral.400`,
+
+            ':hover': {
+                color: theme`colors.neutral.100`,
+            },
+        };
+    },
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     container: (base: CSSObject, props: ContainerProps<T, any, any>): CSSObject => {
         return {
@@ -30,6 +46,56 @@ export const SelectStyle: StylesConfig<T, any, any> = {
             borderColor: theme`colors.neutral.500`,
             borderWidth: '2px',
             color: theme`colors.neutral.200`,
+            cursor: 'pointer',
+            // boxShadow: props.isFocused ? '0 0 0 2px #2684ff' : undefined,
+
+            ':hover': {
+                borderColor: !props.isFocused ? theme`colors.neutral.400` : theme`colors.neutral.500`,
+            },
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    dropdownIndicator: (base: CSSObject, props: IndicatorProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+            color: props.isFocused ? theme`colors.neutral.300` : theme`colors.neutral.400`,
+            // TODO: find better alternative for `isFocused` so this only triggers when the dropdown is visible.
+            transform: props.isFocused ? 'rotate(180deg)' : undefined,
+
+            ':hover': {
+                color: theme`colors.neutral.300`,
+            },
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    group: (base: CSSObject, props: GroupProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    groupHeading: (base: CSSObject, props: GroupHeadingProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    indicatorsContainer: (base: CSSObject, props: IndicatorContainerProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    indicatorSeparator: (base: CSSObject, props: IndicatorProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+            // width: '0',
+            backgroundColor: theme`colors.neutral.500`,
         };
     },
 
@@ -43,11 +109,39 @@ export const SelectStyle: StylesConfig<T, any, any> = {
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    loadingIndicator: (base: CSSObject, props: LoadingIndicatorProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    loadingMessage: (base: CSSObject, props: NoticeProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     menu: (base: CSSObject, props: MenuProps<T, any, any>): CSSObject => {
         return {
             ...base,
             background: theme`colors.neutral.900`,
             color: theme`colors.neutral.200`,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    menuList: (base: CSSObject, props: MenuListComponentProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    menuPortal: (base: CSSObject, props: MenuPortalProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
         };
     },
 
@@ -69,10 +163,25 @@ export const SelectStyle: StylesConfig<T, any, any> = {
     },
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    multiValueRemove: (base: CSSObject, props: MultiValueRemoveProps<T, any>): CSSObject => {
+        return {
+            ...base,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    noOptionsMessage: (base: CSSObject, props: NoticeProps<T, any, any>): CSSObject => {
+        return {
+            ...base,
+        };
+    },
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     option: (base: CSSObject, props: OptionProps<T, any, any>): CSSObject => {
         return {
             ...base,
             background: theme`colors.neutral.900`,
+
             ':hover': {
                 background: theme`colors.neutral.700`,
                 cursor: 'pointer',
