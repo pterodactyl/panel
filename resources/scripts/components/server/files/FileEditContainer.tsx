@@ -1,26 +1,24 @@
-import React, { lazy, useEffect, useState } from 'react';
-import getFileContents from '@/api/server/files/getFileContents';
-import { httpErrorToHuman } from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import saveFileContents from '@/api/server/files/saveFileContents';
-import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router';
-import FileNameModal from '@/components/server/files/FileNameModal';
+import { dirname } from 'path';
+import tw from 'twin.macro';
+import { httpErrorToHuman } from '@/api/http';
+import getFileContents from '@/api/server/files/getFileContents';
+import saveFileContents from '@/api/server/files/saveFileContents';
 import Can from '@/components/elements/Can';
+import Editor, { modes } from '@/components/elements/Editor';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import Button from '@/components/elements/Button';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { ServerError } from '@/components/elements/ScreenBlock';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
 import Select from '@/components/elements/Select';
-import modes from '@/modes';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
+import FileNameModal from '@/components/server/files/FileNameModal';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
-import { dirname } from 'path';
-
-const LazyCodemirrorEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/CodemirrorEditor'));
 
 export default () => {
     const [ error, setError ] = useState('');
@@ -28,7 +26,7 @@ export default () => {
     const [ loading, setLoading ] = useState(action === 'edit');
     const [ content, setContent ] = useState('');
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [ mode, setMode ] = useState('text/plain');
+    const [ mode, setMode ] = useState<string>('text/plain');
 
     const history = useHistory();
     const { hash } = useLocation();
@@ -38,6 +36,7 @@ export default () => {
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const { addError, clearFlashes } = useFlash();
 
+    // eslint-disable-next-line prefer-const
     let fetchFileContent: null | (() => Promise<string>) = null;
 
     useEffect(() => {
@@ -116,11 +115,12 @@ export default () => {
             />
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading}/>
-                <LazyCodemirrorEditor
-                    mode={mode}
-                    filename={hash.replace(/^#/, '')}
-                    onModeChanged={setMode}
+                <Editor
+                    style={{ height: 'calc(100vh - 20rem)' }}
+                    overrides={tw`rounded h-full`}
                     initialContent={content}
+                    filename={hash.replace(/^#/, '')}
+                    onModeChanged={m => setMode(m.mime)}
                     fetchContent={value => {
                         fetchFileContent = value;
                     }}

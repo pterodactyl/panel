@@ -1,10 +1,10 @@
+import { shell } from '@codemirror/legacy-modes/mode/shell';
 import React from 'react';
 import tw from 'twin.macro';
 import AdminBox from '@/components/admin/AdminBox';
 import { Context } from '@/components/admin/nests/eggs/EggRouter';
-import Editor2 from '@/components/elements/Editor2';
-import { shell } from '@codemirror/legacy-modes/mode/shell';
 import Button from '@/components/elements/Button';
+import Editor from '@/components/elements/Editor';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -28,7 +28,7 @@ export default () => {
             <div css={tw`relative pb-4`}>
                 <SpinnerOverlay visible={false}/>
 
-                <Editor2 overrides={tw`h-96 mb-4`} mode={shell} initialContent={initialContent}/>
+                <Editor overrides={tw`h-96 mb-4`} initialContent={initialContent} mode={shell}/>
 
                 <div css={tw`mx-6 mb-4`}>
                     <div css={tw`grid grid-cols-3 gap-x-8 gap-y-6`}>
