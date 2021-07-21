@@ -4,8 +4,6 @@ import { base64Decode, bufferDecode, bufferEncode, decodeCredentials } from '@/a
 
 export default (token: string, publicKey: PublicKeyCredentialRequestOptions): Promise<LoginResponse> => {
     return new Promise((resolve, reject) => {
-        console.log(token);
-        console.log(publicKey);
         const publicKeyCredential = Object.assign({}, publicKey);
 
         publicKeyCredential.challenge = bufferDecode(base64Decode(publicKey.challenge.toString()));
@@ -38,7 +36,6 @@ export default (token: string, publicKey: PublicKeyCredentialRequestOptions): Pr
                     },
                 }),
             };
-            console.log(data);
 
             http.post('/auth/login/checkpoint/key', data).then(response => {
                 return resolve({

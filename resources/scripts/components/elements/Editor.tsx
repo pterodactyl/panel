@@ -264,9 +264,7 @@ export default ({ className, style, overrides, initialContent, extensions, mode,
             effects: languageConfig.reconfigure(findLanguageExtensionByMode(mode)),
         });
 
-        console.log(mode);
         if (onModeChanged !== undefined) {
-            console.log(mode);
             onModeChanged(mode);
         }
     }, [ filename ]);

@@ -13,8 +13,6 @@ export default (id: number, node: Partial<Node>, include: string[] = []): Promis
         data[key2] = node[key];
     });
 
-    console.log(data);
-
     return new Promise((resolve, reject) => {
         http.patch(`/api/application/nodes/${id}`, {
             ...data,
