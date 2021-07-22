@@ -190,7 +190,7 @@ export function Pagination<T> ({ data, onPageSelect, children }: Props<T>) {
 
 export const Loading = () => {
     return (
-        <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
+        <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '3rem' }}>
             <Spinner size={'base'}/>
         </div>
     );
