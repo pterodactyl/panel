@@ -5,9 +5,8 @@ import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddr
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { useLocation } from 'react-router-dom';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import { breakpoint } from '@/theme';
-import styled from 'styled-components/macro';
 import MessageBox from '@/components/MessageBox';
 
 const Container = styled.div`

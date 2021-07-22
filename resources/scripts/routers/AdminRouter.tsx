@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { State, useStoreState } from 'easy-peasy';
-import tw from 'twin.macro';
-import styled from 'styled-components/macro';
+import tw, { styled } from 'twin.macro';
 import { breakpoint } from '@/theme';
 import { ApplicationStore } from '@/state';
 import { AdminContext } from '@/state/admin';

@@ -4,8 +4,7 @@ import { debounce } from 'debounce';
 import React, { useCallback, useState } from 'react';
 import { TableCheckbox } from '@/components/admin/AdminCheckbox';
 import Spinner from '@/components/elements/Spinner';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import { PaginatedResult, PaginationDataSet } from '@/api/http';
 import { ListContext as TableHooks } from '@/api/admin';
 

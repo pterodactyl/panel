@@ -1,5 +1,4 @@
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import Checkbox from '@/components/elements/Checkbox';
 import React from 'react';
 import { useStoreState } from 'easy-peasy';
@@ -16,7 +15,7 @@ const Container = styled.label`
         ${tw`border-neutral-500 bg-neutral-800`};
       }
   }
-  
+
   &:not(:first-of-type) {
       ${tw`mt-4 sm:mt-2`};
   }

@@ -1,5 +1,4 @@
-import styled, { css } from 'styled-components/macro';
-import tw from 'twin.macro';
+import tw, { css, styled } from 'twin.macro';
 
 export interface Props {
     isLight?: boolean;

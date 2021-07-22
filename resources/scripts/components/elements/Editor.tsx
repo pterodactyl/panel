@@ -36,8 +36,7 @@ import { toml } from '@codemirror/legacy-modes/mode/toml';
 import { xmlLanguage } from '@codemirror/lang-xml';
 import { yaml } from '@codemirror/legacy-modes/mode/yaml';
 import React, { useCallback, useEffect, useState } from 'react';
-import styled from 'styled-components/macro';
-import tw, { TwStyle } from 'twin.macro';
+import tw, { styled, TwStyle } from 'twin.macro';
 import { ayuMirage } from '@/components/elements/EditorTheme';
 
 type EditorMode = LanguageSupport | LezerLanguage | StreamParser<any>;

@@ -1,7 +1,6 @@
 import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import { debounce } from 'debounce';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import InputSpinner from '@/components/elements/InputSpinner';

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components/macro';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import { randomInt } from '@/helpers';
 import { CSSTransition } from 'react-transition-group';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 
 const BarFill = styled.div`
     ${tw`h-full bg-cyan-400`};

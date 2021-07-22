@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 
 export const SubNavigation = styled.div`
     ${tw`flex flex-row items-center flex-shrink-0 h-12 mb-4 border-b border-neutral-700`};

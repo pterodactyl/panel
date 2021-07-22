@@ -1,9 +1,8 @@
 import axios from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import Button from '@/components/elements/Button';
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components/macro';
 import { ModalMask } from '@/components/elements/Modal';
 import Fade from '@/components/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
@@ -15,7 +14,7 @@ import { WithClassname } from '@/components/types';
 
 const InnerContainer = styled.div`
   max-width: 600px;
-  ${tw`bg-black w-full border-4 border-primary-500 border-dashed rounded p-10 mx-10`}
+  ${tw`bg-black w-full border-4 border-primary-500 border-dashed rounded p-10 mx-10`};
 `;
 
 export default ({ className }: WithClassname) => {

@@ -1,7 +1,6 @@
 import Input from '@/components/elements/Input';
 import React from 'react';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 
 export const TableCheckbox = styled(Input)`
     && {

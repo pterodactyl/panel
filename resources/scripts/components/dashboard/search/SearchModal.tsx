@@ -10,8 +10,7 @@ import getServers from '@/api/getServers';
 import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 import Input from '@/components/elements/Input';
 
 type Props = RequiredModalProps;

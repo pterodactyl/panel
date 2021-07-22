@@ -5,8 +5,7 @@ import { faCogs, faLayerGroup, faSignOutAlt, faUserCircle } from '@fortawesome/f
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
-import tw, { theme } from 'twin.macro';
-import styled from 'styled-components/macro';
+import tw, { styled, theme } from 'twin.macro';
 
 const Navigation = styled.div`
     ${tw`w-full bg-neutral-900 shadow-md overflow-x-auto`};

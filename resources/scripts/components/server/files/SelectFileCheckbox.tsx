@@ -1,13 +1,12 @@
 import React from 'react';
-import tw from 'twin.macro';
-import { ServerContext } from '@/state/server';
-import styled from 'styled-components/macro';
+import tw, { styled } from 'twin.macro';
 import Input from '@/components/elements/Input';
+import { ServerContext } from '@/state/server';
 
 export const FileActionCheckbox = styled(Input)`
     && {
         ${tw`border-neutral-500 bg-transparent`};
-        
+
         &:not(:checked) {
             ${tw`hover:border-neutral-300`};
         }
