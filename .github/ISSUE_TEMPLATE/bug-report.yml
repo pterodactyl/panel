@@ -1,6 +1,6 @@
 name: Bug Report
 description: Something isn't working quite right in the software.
-title: "[Bug]: "
+labels: [bug, not confirmed]
 body:
 - type: markdown
   attributes:

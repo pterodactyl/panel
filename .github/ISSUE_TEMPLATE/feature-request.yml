@@ -1,6 +1,6 @@
 name: Feature Request
 description: Suggest a new feature or improvement for the software.
-title: "[Feature Request]: "
+labels: [feature request]
 body:
 - type: checkboxes
   attributes:
