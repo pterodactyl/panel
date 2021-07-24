@@ -15,6 +15,7 @@ use Pterodactyl\Services\Schedules\ProcessScheduleService;
 use Pterodactyl\Transformers\Api\Client\ScheduleTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\ViewScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;

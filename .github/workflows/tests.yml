@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - 'develop'
+      - 'feature/react-admin'
   pull_request:
 jobs:
   tests:

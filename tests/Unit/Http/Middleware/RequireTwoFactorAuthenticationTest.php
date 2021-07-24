@@ -1,12 +1,11 @@
 <?php
 
-namespace Http\Middleware;
+namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\WebauthnKey;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
 
