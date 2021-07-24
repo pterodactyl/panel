@@ -180,8 +180,10 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}>{user?.roleName}</span>
                     </div>
 
-                    <NavLink to={'/auth/logout'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-red-400 hover:bg-neutral-800 rounded ml-auto transition-all duration-100`}>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" css={tw`h-6 w-6`}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+                    <NavLink to={'/'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-primary-400 hover:bg-neutral-800 rounded ml-auto transition-all duration-100`}>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" css={tw`h-6 w-6`}>
+                            <path strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                        </svg>
                     </NavLink>
                 </div>
             </Sidebar>
