@@ -58,8 +58,8 @@ jobs:
         run: php artisan test tests/Unit
         if: ${{ always() }}
         env:
-          DB_CONNECTION: testing
-          TESTING_DB_HOST: UNIT_NO_DB
+          TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
+          TESTING_DB_USERNAME: root
       - name: Execute Integration Tests
         run: php artisan test tests/Integration
         env:
