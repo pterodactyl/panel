@@ -9967,7 +9967,7 @@ fsevents@^1.2.7:
     styled-components-breakpoint: ^3.0.0-preview.20
     svg-url-loader: ^7.1.1
     swr: ^0.5.6
-    tailwindcss: ^2.2.6
+    tailwindcss: ^2.2.7
     terser-webpack-plugin: ^4.2.3
     twin.macro: ^2.6.2
     typescript: ^4.3.5
@@ -12028,9 +12028,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:^2.2.6":
-  version: 2.2.6
-  resolution: "tailwindcss@npm:2.2.6"
+"tailwindcss@npm:^2.2.7":
+  version: 2.2.7
+  resolution: "tailwindcss@npm:2.2.7"
   dependencies:
     arg: ^5.0.0
     bytes: ^3.0.0
@@ -12069,7 +12069,7 @@ resolve@^2.0.0-next.3:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 61bf4028f419e9c496e53521cd18bb727cb27c9bf932958a15c320041e5c4d5572e8adf44513bb9b11bd3015719784bc7ffca1995a9208dec6d4eb06a4c91961
+  checksum: 2ba3493c4642cc591f5dbb3f7cc8792bed009ba8f60f843e5694b6e3ceefec7ed457f855485fb192001c2fec1e28910307a8527dda9996fc55b6cb1067f7145b
   languageName: node
   linkType: hard
 
