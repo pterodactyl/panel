@@ -55,13 +55,13 @@ jobs:
         run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php-cs-fixer.dist.php
         continue-on-error: true
       - name: Execute Unit Tests
-        run: php artisan tests/Unit
+        run: php artisan test tests/Unit
         if: ${{ always() }}
         env:
           DB_CONNECTION: testing
           TESTING_DB_HOST: UNIT_NO_DB
       - name: Execute Integration Tests
-        run: php artisan tests/Integration
+        run: php artisan test tests/Integration
         env:
           TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
           TESTING_DB_USERNAME: root
