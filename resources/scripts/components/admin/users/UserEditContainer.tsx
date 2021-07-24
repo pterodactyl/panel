@@ -184,6 +184,7 @@ function EditInformationContainer () {
                 password: '',
             }}
             onSubmit={submit}
+            exists
         >
             <div css={tw`flex`}>
                 <UserDeleteButton
