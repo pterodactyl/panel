@@ -21,7 +21,8 @@ export interface ModalProps extends RequiredModalProps {
 }
 
 export const ModalMask = styled.div`
-    ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
+    ${tw`fixed overflow-auto flex w-full inset-0`};
+    z-index: 10000;
     background: rgba(0, 0, 0, 0.70);
 `;
 
