@@ -15,6 +15,7 @@ export interface User {
     rootAdmin: boolean;
     tfa: boolean;
     avatarURL: string;
+    roleId: number | null;
     roleName: string | null;
     createdAt: Date;
     updatedAt: Date;
@@ -32,6 +33,7 @@ export const rawDataToUser = ({ attributes }: FractalResponseData): User => ({
     rootAdmin: attributes.root_admin,
     tfa: attributes['2fa'],
     avatarURL: attributes.avatar_url,
+    roleId: attributes.role_id,
     roleName: attributes.role_name,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
