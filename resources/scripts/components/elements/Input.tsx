@@ -58,11 +58,9 @@ const inputStyle = css<Props>`
         ${tw`opacity-75`};
     }
 
-    &:not(.ignoreReadOnly):read-only {
+    ${props => props.isLight ? light : css`&:not(.ignoreReadOnly):read-only {
         ${tw`border-neutral-800 bg-neutral-900`};
-    }
-
-    ${props => props.isLight && light};
+    }`};
     ${props => props.hasError && tw`text-red-100 border-red-400 hover:border-red-300`};
 `;
 

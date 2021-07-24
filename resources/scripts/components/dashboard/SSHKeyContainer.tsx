@@ -18,6 +18,7 @@ import useFlash from '@/plugins/useFlash';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import { Textarea } from '@/components/elements/Input';
+import { format } from 'date-fns';
 
 interface Values {
     name: string;
@@ -145,6 +146,10 @@ export default () => {
                                 <FontAwesomeIcon icon={faKey} css={tw`text-neutral-300`}/>
                                 <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                     <p css={tw`text-sm break-words`}>{key.name}</p>
+                                    <p css={tw`text-2xs text-neutral-300 uppercase`}>
+                                        Added at:&nbsp;
+                                        {key.createdAt ? format(key.createdAt, 'MMM do, yyyy HH:mm') : 'Never'}
+                                    </p>
                                 </div>
                                 <button css={tw`ml-4 p-2 text-sm`} onClick={() => setDeleteId(key.id)}>
                                     <FontAwesomeIcon

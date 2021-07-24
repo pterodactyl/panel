@@ -18,10 +18,6 @@ interface Values {
     directoryName: string;
 }
 
-const schema = object().shape({
-    directoryName: string().required('A valid directory name must be provided.'),
-});
-
 const generateDirectoryData = (name: string): FileObject => ({
     key: `dir_${name.split('/', 1)[0] ?? name}`,
     name: name.replace(/^(\/*)/, '').split('/', 1)[0] ?? name,
@@ -42,7 +38,7 @@ export default ({ className }: WithClassname) => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
 
-    const { mutate } = useFileManagerSwr();
+    const { data, mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     useEffect(() => {
@@ -68,8 +64,16 @@ export default ({ className }: WithClassname) => {
         <>
             <Formik
                 onSubmit={submit}
-                validationSchema={schema}
                 initialValues={{ directoryName: '' }}
+                validationSchema={object().shape({
+                    directoryName: string()
+                        .required('A valid directory name must be provided.')
+                        .test('unique', 'Directory with that name already exists.', v => {
+                            return v !== undefined &&
+                                data !== undefined &&
+                                data.filter(f => f.name.toLowerCase() === v.toLowerCase()).length < 1;
+                        }),
+                })}
             >
                 {({ resetForm, isSubmitting, values }) => (
                     <Modal
