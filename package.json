@@ -8,16 +8,15 @@
         "axios": "^0.21.1",
         "chart.js": "^2.8.0",
         "codemirror": "^5.57.0",
+        "cross-os": "^1.4.0",
         "date-fns": "^2.16.1",
         "debounce": "^1.2.0",
         "deepmerge": "^4.2.2",
         "easy-peasy": "^4.0.1",
         "events": "^3.0.0",
         "formik": "^2.2.6",
-        "i18next": "^19.0.0",
-        "i18next-chained-backend": "^2.0.0",
-        "i18next-localstorage-backend": "^3.0.0",
-        "i18next-xhr-backend": "^3.2.2",
+        "i18next": "^20.2.2",
+        "i18next-webpack-backend": "^0.1.1",
         "qrcode.react": "^1.0.1",
         "query-string": "^6.7.0",
         "react": "^16.13.1",
@@ -27,7 +26,7 @@
         "react-ga": "^3.1.2",
         "react-google-recaptcha": "^2.0.1",
         "react-hot-loader": "^4.12.21",
-        "react-i18next": "^11.2.1",
+        "react-i18next": "^11.8.15",
         "react-router-dom": "^5.1.2",
         "react-transition-group": "^4.4.1",
         "reaptcha": "^1.7.2",
@@ -75,7 +74,7 @@
         "@types/react-transition-group": "^4.4.0",
         "@types/styled-components": "^5.1.7",
         "@types/uuid": "^3.4.5",
-        "@types/webpack-env": "^1.15.2",
+        "@types/webpack-env": "^1.16.0",
         "@types/yup": "^0.29.3",
         "@typescript-eslint/eslint-plugin": "^4.25.0",
         "@typescript-eslint/parser": "^4.25.0",
@@ -108,12 +107,19 @@
         "yarn-deduplicate": "^1.1.1"
     },
     "scripts": {
-        "clean": "cd public/assets && find . \\( -name \"*.js\" -o -name \"*.map\" \\) -type f -delete",
+        "clean": "cross-os clean-command",
         "lint": "eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
         "watch": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "yarn run clean && cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production",
-        "serve": "yarn run clean && cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
+        "serve": "yarn run clean && cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot --https --key ../../.data/certificates/pterodactyl.test-key.pem --cert ../../.data/certificates/pterodactyl.test.pem"
+    },
+    "cross-os": {
+        "clean-command": {
+            "darwin": "cd public/assets && find . \\( -name \"*.js\" -o -name \"*.map\" \\) -type f -delete",
+            "win32": "cd public/assets && del *.js && del *.map",
+            "linux": "cd public/assets && find . \\( -name \"*.js\" -o -name \"*.map\" \\) -type f -delete"
+        }
     },
     "browserslist": [
         "> 0.5%",
