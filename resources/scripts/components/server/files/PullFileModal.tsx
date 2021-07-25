@@ -33,6 +33,14 @@ const generateFileData = (name: string): FileObject => ({
     isEditable: () => false,
 });
 
+const parseURL = (url: string): string => {
+    try {
+        return new URL(url).pathname.split('/').pop() || '';
+    } catch (e) {
+        return '';
+    }
+};
+
 export default ({ className }: WithClassname) => {
     const [ visible, setVisible ] = useState(false);
 
@@ -53,7 +61,7 @@ export default ({ className }: WithClassname) => {
 
     const submit = ({ url }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         pullFile(uuid, directory, url)
-            .then(() => mutate(data => [ ...data!, generateFileData(new URL(url).pathname.split('/').pop() || '') ], false))
+            .then(() => mutate(data => [ ...data!, generateFileData(parseURL(url)) ], false))
             .then(() => setVisible(false))
             .catch(error => {
                 console.error(error);
@@ -101,7 +109,7 @@ export default ({ className }: WithClassname) => {
                                 <span css={tw`text-neutral-200`}>This file will be downloaded to</span>
                                 &nbsp;/home/container/
                                 <span css={tw`text-cyan-200`}>
-                                    {values.url !== '' ? join(directory, new URL(values.url).pathname.split('/').pop() || '').substr(1) : ''}
+                                    {values.url !== '' ? join(directory, parseURL(values.url)).substr(1) : ''}
                                 </span>
                             </p>
                             <div css={tw`flex justify-end`}>
