@@ -1,12 +1,11 @@
 import http from '@/api/http';
-import { Location, rawDataToLocation } from '@/api/admin/locations/getLocations';
+import { Role, rawDataToRole } from '@/api/admin/roles/getRoles';
 
 interface Filters {
-    short?: string;
-    long?: string;
+    name?: string;
 }
 
-export default (filters?: Filters): Promise<Location[]> => {
+export default (filters?: Filters): Promise<Role[]> => {
     const params = {};
     if (filters !== undefined) {
         Object.keys(filters).forEach(key => {
@@ -16,9 +15,9 @@ export default (filters?: Filters): Promise<Location[]> => {
     }
 
     return new Promise((resolve, reject) => {
-        http.get('/api/application/locations', { params })
+        http.get('/api/application/roles', { params })
             .then(response => resolve(
-                (response.data.data || []).map(rawDataToLocation)
+                (response.data.data || []).map(rawDataToRole)
             ))
             .catch(reject);
     });

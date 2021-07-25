@@ -37,7 +37,7 @@ export default () => {
 
             <FlashMessageRender byKey={'user:create'} css={tw`mb-4`}/>
 
-            <InformationContainer title={'Create User'} onSubmit={submit}/>
+            <InformationContainer title={'Create User'} onSubmit={submit} role={null}/>
         </AdminContentBlock>
     );
 };

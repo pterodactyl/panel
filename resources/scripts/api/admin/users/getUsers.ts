@@ -2,6 +2,8 @@ import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/
 import { useContext } from 'react';
 import useSWR from 'swr';
 import { createContext } from '@/api/admin';
+import { rawDataToDatabase } from '@/api/admin/databases/getDatabases';
+import { Role } from '@/api/admin/roles/getRoles';
 
 export interface User {
     id: number;
@@ -12,13 +14,17 @@ export interface User {
     firstName: string;
     lastName: string;
     language: string;
+    adminRoleId: number | null;
     rootAdmin: boolean;
     tfa: boolean;
     avatarURL: string;
-    roleId: number | null;
     roleName: string | null;
     createdAt: Date;
     updatedAt: Date;
+
+    relationships: {
+        role: Role | undefined;
+    };
 }
 
 export const rawDataToUser = ({ attributes }: FractalResponseData): User => ({
@@ -30,13 +36,17 @@ export const rawDataToUser = ({ attributes }: FractalResponseData): User => ({
     firstName: attributes.first_name,
     lastName: attributes.last_name,
     language: attributes.language,
+    adminRoleId: attributes.admin_role_id,
     rootAdmin: attributes.root_admin,
     tfa: attributes['2fa'],
     avatarURL: attributes.avatar_url,
-    roleId: attributes.role_id,
     roleName: attributes.role_name,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
+
+    relationships: {
+        role: attributes.relationships?.role !== undefined && attributes.relationships?.role.object !== 'null_resource' ? rawDataToDatabase(attributes.relationships.role as FractalResponseData) : undefined,
+    },
 });
 
 export interface Filters {

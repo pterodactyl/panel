@@ -12,7 +12,7 @@ class UserTransformer extends BaseTransformer
      *
      * @var array
      */
-    protected $availableIncludes = ['servers'];
+    protected $availableIncludes = ['role', 'servers'];
 
     /**
      * Return the resource name for the JSONAPI output.
@@ -39,10 +39,30 @@ class UserTransformer extends BaseTransformer
             'root_admin' => (bool) $model->root_admin,
             '2fa' => (bool) $model->use_totp,
             'avatar_url' => $model->avatarURL(),
+            'admin_role_id' => $model->admin_role_id,
             'role_name' => $model->adminRoleName(),
             'created_at' => $this->formatTimestamp($model->created_at),
             'updated_at' => $this->formatTimestamp($model->updated_at),
         ];
+    }
+
+    /**
+     * Return the role associated with this user.
+     *
+     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     */
+    public function includeRole(User $user)
+    {
+        if (!$this->authorize(AdminAcl::RESOURCE_ROLES)) {
+            return $this->null();
+        }
+
+        $user->loadMissing('adminRole');
+
+        return $this->item($user->getRelation('adminRole'), $this->makeTransformer(AdminRoleTransformer::class), 'admin_role');
     }
 
     /**

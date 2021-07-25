@@ -224,12 +224,14 @@ interface Props {
     name: string;
     label?: string;
     description?: string;
+    placeholder?: string;
     validate?: (value: any) => undefined | string | Promise<any>;
 
     options: Array<Option>;
 
     isMulti?: boolean;
     isSearchable?: boolean;
+
     isCreatable?: boolean;
     isValidNewOption?: ((
         inputValue: string,

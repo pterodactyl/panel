@@ -12,10 +12,12 @@ export default ({ selected }: { selected: Database | null }) => {
 
     const onSearch = (query: string): Promise<void> => {
         return new Promise((resolve, reject) => {
-            searchDatabases({ name: query }).then((databases) => {
-                setDatabases(databases);
-                return resolve();
-            }).catch(reject);
+            searchDatabases({ name: query })
+                .then(databases => {
+                    setDatabases(databases);
+                    return resolve();
+                })
+                .catch(reject);
         });
     };
 
@@ -24,14 +26,16 @@ export default ({ selected }: { selected: Database | null }) => {
         context.setFieldValue('databaseHostId', database?.id || null);
     };
 
-    const getSelectedText = (database: Database | null): string => {
-        return database?.name || '';
+    const getSelectedText = (database: Database | null): string | undefined => {
+        return database?.name;
     };
 
     return (
         <SearchableSelect
-            id="database"
-            name="Database"
+            id={'databaseId'}
+            name={'databaseId'}
+            label={'Database'}
+            placeholder={'Select a database...'}
             items={databases}
             selected={database}
             setSelected={setDatabase}
@@ -42,7 +46,7 @@ export default ({ selected }: { selected: Database | null }) => {
             nullable
         >
             {databases?.map(d => (
-                <Option key={d.id} selectId="database" id={d.id} item={d} active={d.id === database?.id}>
+                <Option key={d.id} selectId={'databaseId'} id={d.id} item={d} active={d.id === database?.id}>
                     {d.name}
                 </Option>
             ))}

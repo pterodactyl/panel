@@ -16,7 +16,7 @@ export default (filters?: Filters): Promise<Database[]> => {
     }
 
     return new Promise((resolve, reject) => {
-        http.get('/api/application/databases', { params: { ...params } })
+        http.get('/api/application/databases', { params })
             .then(response => resolve(
                 (response.data.data || []).map(rawDataToDatabase)
             ))

@@ -28,6 +28,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string $password
  * @property string|null $remember_token
  * @property string $language
+ * @property int $admin_role_id
  * @property bool $root_admin
  * @property bool $use_totp
  * @property string|null $totp_secret

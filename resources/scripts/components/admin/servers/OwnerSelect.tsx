@@ -30,8 +30,10 @@ export default ({ selected }: { selected: User | null }) => {
 
     return (
         <SearchableSelect
-            id="user"
-            name="Owner"
+            id={'ownerId'}
+            name={'ownerId'}
+            label={'Owner'}
+            placeholder={'Select a user...'}
             items={users}
             selected={user}
             setSelected={setUser}
@@ -42,7 +44,7 @@ export default ({ selected }: { selected: User | null }) => {
             nullable
         >
             {users?.map(d => (
-                <Option key={d.id} selectId="user" id={d.id} item={d} active={d.id === user?.id}>
+                <Option key={d.id} selectId={'ownerId'} id={d.id} item={d} active={d.id === user?.id}>
                     {d.username}
                 </Option>
             ))}

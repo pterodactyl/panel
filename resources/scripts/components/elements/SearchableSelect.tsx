@@ -1,9 +1,9 @@
-import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import { debounce } from 'debounce';
+import React, { createRef, ReactElement, useEffect, useState } from 'react';
 import tw, { styled } from 'twin.macro';
 import Input from '@/components/elements/Input';
-import Label from '@/components/elements/Label';
 import InputSpinner from '@/components/elements/InputSpinner';
+import Label from '@/components/elements/Label';
 
 const Dropdown = styled.div<{ expanded: boolean }>`
     ${tw`absolute z-10 w-full mt-1 rounded-md shadow-lg bg-neutral-900`};
@@ -69,7 +69,9 @@ export const Option = <T extends IdObj>({ selectId, id, item, active, isHighligh
 interface SearchableSelectProps<T> {
     id: string;
     name: string;
-    nullable: boolean;
+    label: string;
+    placeholder?: string;
+    nullable?: boolean;
 
     selected: T | null;
     setSelected: (item: T | null) => void;
@@ -80,12 +82,13 @@ interface SearchableSelectProps<T> {
     onSearch: (query: string) => Promise<void>;
     onSelect: (item: T | null) => void;
 
-    getSelectedText: (item: T | null) => string;
+    getSelectedText: (item: T | null) => string | undefined;
 
     children: React.ReactNode;
+    className?: string;
 }
 
-export const SearchableSelect = <T extends IdObj>({ id, name, selected, setSelected, items, setItems, onSearch, onSelect, getSelectedText, children }: SearchableSelectProps<T>) => {
+export const SearchableSelect = <T extends IdObj>({ id, name, label, placeholder, selected, setSelected, items, setItems, onSearch, onSelect, getSelectedText, children, className }: SearchableSelectProps<T>) => {
     const [ loading, setLoading ] = useState(false);
     const [ expanded, setExpanded ] = useState(false);
 
@@ -144,7 +147,7 @@ export const SearchableSelect = <T extends IdObj>({ id, name, selected, setSelec
                 return;
             }
 
-            const item = items.find((item) => item.id === highlighted);
+            const item = items.find(i => i.id === highlighted);
             if (!item) {
                 return;
             }
@@ -169,7 +172,7 @@ export const SearchableSelect = <T extends IdObj>({ id, name, selected, setSelec
         if (e.key === 'Enter') {
             e.preventDefault();
 
-            const item = items.find((item) => item.id === highlighted);
+            const item = items.find(i => i.id === highlighted);
             if (!item) {
                 return;
             }
@@ -210,10 +213,10 @@ export const SearchableSelect = <T extends IdObj>({ id, name, selected, setSelec
             onBlur();
         };
 
-        window.addEventListener('click', clickHandler);
+        window.addEventListener('mousedown', clickHandler);
         window.addEventListener('contextmenu', contextmenuHandler);
         return () => {
-            window.removeEventListener('click', clickHandler);
+            window.removeEventListener('mousedown', clickHandler);
             window.removeEventListener('contextmenu', contextmenuHandler);
         };
     }, [ expanded ]);
@@ -240,17 +243,16 @@ export const SearchableSelect = <T extends IdObj>({ id, name, selected, setSelec
     }));
 
     return (
-        <div>
-            <Label htmlFor={id + '-select-label'}>{name}</Label>
+        <div className={className}>
+            <Label htmlFor={id + '-select-label'}>{label}</Label>
 
             <div css={tw`relative mt-1`}>
                 <InputSpinner visible={loading}>
                     <Input
                         ref={searchInput}
-                        type="text"
-                        className="ignoreReadOnly"
+                        type={'search'}
                         id={id}
-                        name={id}
+                        name={name}
                         value={inputText}
                         readOnly={!expanded}
                         onFocus={onFocus}
@@ -259,17 +261,29 @@ export const SearchableSelect = <T extends IdObj>({ id, name, selected, setSelec
                             search(e.currentTarget.value);
                         }}
                         onKeyDown={handleInputKeydown}
+                        className={'ignoreReadOnly'}
+                        placeholder={placeholder}
                     />
                 </InputSpinner>
 
-                <div css={tw`absolute inset-y-0 right-0 flex items-center pr-2 ml-3 pointer-events-none`}>
-                    <svg css={tw`w-5 h-5 text-neutral-400`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <div css={[ tw`absolute inset-y-0 right-0 flex items-center pr-2 ml-3`, !expanded && tw`pointer-events-none` ]}>
+                    {inputText !== '' && expanded &&
+                    <svg css={tw`w-5 h-5 text-neutral-400 cursor-pointer`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                        onMouseDown={e => {
+                            e.preventDefault();
+                            setInputText('');
+                        }}
+                    >
+                        <path clipRule="evenodd" fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+                    </svg>
+                    }
+                    <svg css={tw`w-5 h-5 text-neutral-400 pointer-events-none`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/>
                     </svg>
                 </div>
 
                 <Dropdown ref={itemsList} expanded={expanded}>
-                    { items === null || items.length < 1 ?
+                    {items === null || items.length < 1 ?
                         items === null || inputText.length < 2 ?
                             <div css={tw`flex flex-row items-center h-10 px-3`}>
                                 <p css={tw`text-sm`}>Please type 2 or more characters.</p>

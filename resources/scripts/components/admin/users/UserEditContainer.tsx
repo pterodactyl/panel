@@ -12,9 +12,11 @@ import AdminBox from '@/components/admin/AdminBox';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
-import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
+import { Role } from '@/api/admin/roles/getRoles';
 import updateUser, { Values } from '@/api/admin/users/updateUser';
+import Button from '@/components/elements/Button';
+import Field from '@/components/elements/Field';
+import RoleSelect from '@/components/admin/users/RoleSelect';
 import UserDeleteButton from '@/components/admin/users/UserDeleteButton';
 
 interface ctx {
@@ -37,9 +39,11 @@ export interface Params {
 
     onSubmit: (values: Values, helpers: FormikHelpers<Values>) => void;
     exists?: boolean;
+
+    role: Role | null;
 }
 
-export function InformationContainer ({ title, initialValues, children, onSubmit, exists }: Params) {
+export function InformationContainer ({ title, initialValues, children, onSubmit, exists, role }: Params) {
     const submit = (values: Values, helpers: FormikHelpers<Values>) => {
         onSubmit(values, helpers);
     };
@@ -51,7 +55,7 @@ export function InformationContainer ({ title, initialValues, children, onSubmit
             firstName: '',
             lastName: '',
             password: '',
-            roleId: 0,
+            adminRoleId: 0,
         };
     }
 
@@ -126,7 +130,9 @@ export function InformationContainer ({ title, initialValues, children, onSubmit
                                         />
                                     </div>
 
-                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}/>
+                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
+                                        <RoleSelect selected={role}/>
+                                    </div>
                                 </div>
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>
@@ -180,10 +186,11 @@ function EditInformationContainer () {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
-                roleId: user.roleId,
+                adminRoleId: user.adminRoleId,
                 password: '',
             }}
             onSubmit={submit}
+            role={user?.relationships.role || null}
             exists
         >
             <div css={tw`flex`}>
@@ -208,7 +215,7 @@ function UserEditContainer () {
     useEffect(() => {
         clearFlashes('user');
 
-        getUser(Number(match.params?.id))
+        getUser(Number(match.params?.id), [ 'role' ])
             .then(user => setUser(user))
             .catch(error => {
                 console.error(error);

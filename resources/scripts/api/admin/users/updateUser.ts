@@ -7,7 +7,7 @@ export interface Values {
     firstName: string;
     lastName: string;
     password: string;
-    roleId: number | null;
+    adminRoleId: number | null;
 }
 
 export default (id: number, values: Partial<Values>, include: string[] = []): Promise<User> => {
