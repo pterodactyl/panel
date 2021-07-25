@@ -21,7 +21,7 @@ class StoreUserRequest extends ApplicationApiRequest
             'username',
             'password',
             'language',
-            'root_admin',
+            'admin_role_id',
         ])->toArray();
 
         $response['first_name'] = $rules['name_first'];

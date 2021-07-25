@@ -94,7 +94,7 @@ class User extends Model implements
         'use_totp',
         'totp_secret',
         'totp_authenticated_at',
-        'gravatar',
+        'admin_role_id',
         'root_admin',
     ];
 
@@ -147,6 +147,7 @@ class User extends Model implements
         'name_first' => 'required|string|between:1,191',
         'name_last' => 'required|string|between:1,191',
         'password' => 'sometimes|nullable|string',
+        'admin_role_id' => 'sometimes|nullable|exists:admin_roles,id',
         'root_admin' => 'boolean',
         'language' => 'string',
         'use_totp' => 'boolean',
