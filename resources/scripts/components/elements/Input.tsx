@@ -77,7 +77,13 @@ const Input = styled.input<Props>`
         }
     }
 `;
-const Textarea = styled.textarea<Props>`${inputStyle}`;
+const Textarea = styled.textarea<Props>`
+    ${inputStyle};
+
+    & + .input-help {
+        ${tw`mt-0`};
+    }
+`;
 
 export { Textarea };
 export default Input;

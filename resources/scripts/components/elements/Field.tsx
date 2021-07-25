@@ -2,6 +2,7 @@ import React, { forwardRef } from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
+import InputError from '@/components/elements/InputError';
 
 interface OwnProps {
     name: string;
@@ -28,13 +29,9 @@ const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, la
                         isLight={light}
                         hasError={!!(touched[field.name] && errors[field.name])}
                     />
-                    {touched[field.name] && errors[field.name] ?
-                        <p className={'input-help error'}>
-                            {(errors[field.name] as string).charAt(0).toUpperCase() + (errors[field.name] as string).slice(1)}
-                        </p>
-                        :
-                        description ? <p className={'input-help'}>{description}</p> : null
-                    }
+                    <InputError errors={errors} touched={touched} name={field.name}>
+                        {description || null}
+                    </InputError>
                 </div>
             )
         }

@@ -14,12 +14,14 @@ export const TableCheckbox = styled(Input)`
 
 export default ({ name, checked, onChange }: { name: string, checked: boolean, onChange(e: React.ChangeEvent<HTMLInputElement>): void }) => {
     return (
-        <TableCheckbox
-            type={'checkbox'}
-            name={'selectedItems'}
-            value={name}
-            checked={checked}
-            onChange={onChange}
-        />
+        <div css={tw`flex items-center`}>
+            <TableCheckbox
+                type={'checkbox'}
+                name={'selectedItems'}
+                value={name}
+                checked={checked}
+                onChange={onChange}
+            />
+        </div>
     );
 };

@@ -139,7 +139,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <DropdownMenu
                 ref={onClickRef}
                 renderToggle={onClick => (
-                    <div css={tw`p-3 hover:text-white`} onClick={onClick}>
+                    <div css={tw`flex items-center hover:text-white ml-4`} onClick={onClick}>
                         <FontAwesomeIcon icon={faEllipsisH}/>
                         {modal ?
                             modal === 'chmod' ?

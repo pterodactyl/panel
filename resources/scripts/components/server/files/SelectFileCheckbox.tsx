@@ -4,6 +4,8 @@ import Input from '@/components/elements/Input';
 import { ServerContext } from '@/state/server';
 
 export const FileActionCheckbox = styled(Input)`
+    ${tw`w-4 h-4 transition-all duration-75 border rounded-sm cursor-pointer border-neutral-500 hover:border-neutral-300 text-primary-400`};
+
     && {
         ${tw`border-neutral-500 bg-transparent`};
 
@@ -19,20 +21,18 @@ export default ({ name }: { name: string }) => {
     const removeSelectedFile = ServerContext.useStoreActions(actions => actions.files.removeSelectedFile);
 
     return (
-        <label css={tw`flex-none p-4 absolute self-center z-30 cursor-pointer`}>
-            <FileActionCheckbox
-                name={'selectedFiles'}
-                value={name}
-                checked={isChecked}
-                type={'checkbox'}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (e.currentTarget.checked) {
-                        appendSelectedFile(name);
-                    } else {
-                        removeSelectedFile(name);
-                    }
-                }}
-            />
-        </label>
+        <FileActionCheckbox
+            name={'selectedFiles'}
+            value={name}
+            checked={isChecked}
+            type={'checkbox'}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                if (e.currentTarget.checked) {
+                    appendSelectedFile(name);
+                } else {
+                    removeSelectedFile(name);
+                }
+            }}
+        />
     );
 };
