@@ -1,14 +1,14 @@
+import { Form, Formik, FormikHelpers } from 'formik';
 import React, { useState } from 'react';
+import tw from 'twin.macro';
+import { object, string } from 'yup';
 import createRole from '@/api/admin/roles/createRole';
-import { AdminContext } from '@/state/admin';
+import getRoles from '@/api/admin/roles/getRoles';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
 import Modal from '@/components/elements/Modal';
-import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
-import { Form, Formik, FormikHelpers } from 'formik';
-import tw from 'twin.macro';
-import { object, string } from 'yup';
 
 interface Values {
     name: string,
@@ -26,8 +26,7 @@ const schema = object().shape({
 export default () => {
     const [ visible, setVisible ] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-
-    const appendRole = AdminContext.useStoreActions(actions => actions.roles.appendRole);
+    const { mutate } = getRoles();
 
     const submit = ({ name, description }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('role:create');
@@ -35,7 +34,7 @@ export default () => {
 
         createRole(name, description)
             .then(role => {
-                appendRole(role);
+                mutate(data => ({ ...data!, items: data!.items.concat(role) }), false);
                 setVisible(false);
             })
             .catch(error => {
