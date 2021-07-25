@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import Modal from '@/components/elements/Modal';
-import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
-import { join } from 'path';
-import { object, string } from 'yup';
-import createDirectory from '@/api/server/files/createDirectory';
+import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import { FileObject } from '@/api/server/files/loadDirectory';
-import useFlash from '@/plugins/useFlash';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import { object, string } from 'yup';
+import pullFile from '@/api/server/files/pullFile';
 import { WithClassname } from '@/components/types';
+import Button from '@/components/elements/Button';
+import Field from '@/components/elements/Field';
+import Modal from '@/components/elements/Modal';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import useFlash from '@/plugins/useFlash';
+import { ServerContext } from '@/state/server';
+import { FileObject } from '@/api/server/files/loadDirectory';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import { join } from 'path';
 
 interface Values {
-    directoryName: string;
+    url: string;
 }
 
-const generateDirectoryData = (name: string): FileObject => ({
-    key: `dir_${name.split('/', 1)[0] ?? name}`,
-    name: name.replace(/^(\/*)/, '').split('/', 1)[0] ?? name,
-    mode: 'drwxr-xr-x',
-    modeBits: '0755',
+const generateFileData = (name: string): FileObject => ({
+    key: `file_${name.split('/', 1)[0] ?? name}`,
+    name: name,
+    mode: 'rw-rw-rw-',
+    modeBits: '0644',
     size: 0,
-    isFile: false,
+    isFile: true,
     isSymlink: false,
     mimetype: '',
     createdAt: new Date(),
@@ -34,29 +34,31 @@ const generateDirectoryData = (name: string): FileObject => ({
 });
 
 export default ({ className }: WithClassname) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
 
-    const { data, mutate } = useFileManagerSwr();
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const directory = ServerContext.useStoreState(state => state.files.directory);
+
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+
+    const { data, mutate } = useFileManagerSwr();
 
     useEffect(() => {
         if (!visible) return;
 
         return () => {
-            clearFlashes('files:directory-modal');
+            clearFlashes('files:pull-modal');
         };
     }, [ visible ]);
 
-    const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        createDirectory(uuid, directory, directoryName)
-            .then(() => mutate(data => [ ...data!, generateDirectoryData(directoryName) ], false))
+    const submit = ({ url }: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        pullFile(uuid, directory, url)
+            .then(() => mutate(data => [ ...data!, generateFileData(new URL(url).pathname.split('/').pop() || '') ], false))
             .then(() => setVisible(false))
             .catch(error => {
                 console.error(error);
                 setSubmitting(false);
-                clearAndAddHttpError({ key: 'files:directory-modal', error });
+                clearAndAddHttpError({ key: 'files:pull-modal', error });
             });
     };
 
@@ -64,10 +66,11 @@ export default ({ className }: WithClassname) => {
         <>
             <Formik
                 onSubmit={submit}
-                initialValues={{ directoryName: '' }}
+                initialValues={{ url: '' }}
                 validationSchema={object().shape({
-                    directoryName: string()
-                        .required('A valid directory name must be provided.')
+                    url: string()
+                        .required()
+                        .url()
                         .test('unique', 'File or directory with that name already exists.', v => {
                             return v !== undefined &&
                                 data !== undefined &&
@@ -85,32 +88,33 @@ export default ({ className }: WithClassname) => {
                             resetForm();
                         }}
                     >
-                        <FlashMessageRender key={'files:directory-modal'}/>
+                        <FlashMessageRender key={'files:pull-modal'}/>
                         <Form css={tw`m-0`}>
                             <Field
+                                type={'text'}
+                                id={'url'}
+                                name={'url'}
+                                label={'URL'}
                                 autoFocus
-                                id={'directoryName'}
-                                name={'directoryName'}
-                                label={'Directory Name'}
                             />
                             <p css={tw`text-xs mt-2 text-neutral-400 break-all`}>
-                                <span css={tw`text-neutral-200`}>This directory will be created as</span>
+                                <span css={tw`text-neutral-200`}>This file will be downloaded to</span>
                                 &nbsp;/home/container/
                                 <span css={tw`text-cyan-200`}>
-                                    {join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}
+                                    {values.url !== '' ? join(directory, new URL(values.url).pathname.split('/').pop() || '').substr(1) : ''}
                                 </span>
                             </p>
                             <div css={tw`flex justify-end`}>
-                                <Button css={tw`mt-8`}>
-                                    Create Directory
+                                <Button type={'submit'} css={tw`mt-8`}>
+                                    Pull File
                                 </Button>
                             </div>
                         </Form>
                     </Modal>
                 )}
             </Formik>
-            <Button isSecondary onClick={() => setVisible(true)} className={className}>
-                Create Directory
+            <Button onClick={() => setVisible(true)} className={className} isSecondary>
+                Pull Remote File
             </Button>
         </>
     );

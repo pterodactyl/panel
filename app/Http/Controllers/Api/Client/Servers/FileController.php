@@ -247,15 +247,19 @@ class FileController extends ClientApiController
     /**
      * Updates file permissions for file(s) in the given root directory.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Throwable
      */
     public function chmod(ChmodFilesRequest $request, Server $server): Response
     {
-        $this->fileRepository->setServer($server)
-            ->chmodFiles(
-                $request->input('root'),
-                $request->input('files')
-            );
+        $server->audit(AuditLog::SERVER__FILESYSTEM_CHMOD, function (AuditLog $audit, Server $server) use ($request) {
+            $audit->metadata = ['directory' => $request->input('root'), 'files' => $request->input('files')];
+
+            $this->fileRepository->setServer($server)
+                ->chmodFiles(
+                    $request->input('root'),
+                    $request->input('files'),
+                );
+        });
 
         return $this->returnNoContent();
     }
@@ -268,9 +272,13 @@ class FileController extends ClientApiController
     public function pull(PullFileRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_PULL, function (AuditLog $audit, Server $server) use ($request) {
-            $audit->metadata = ['directory' => $request->input('directory'), 'url' => $request->input('url')];
+            $audit->metadata = ['directory' => $request->input('root'), 'url' => $request->input('url')];
 
-            $this->fileRepository->setServer($server)->pull($request->input('url'), $request->input('directory'));
+            $this->fileRepository->setServer($server)
+                ->pull(
+                    $request->input('root'),
+                    $request->input('url'),
+                );
         });
 
         return $this->returnNoContent();

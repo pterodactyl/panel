@@ -19,8 +19,8 @@ class PullFileRequest extends ClientApiRequest implements ClientPermissionsReque
     public function rules(): array
     {
         return [
+            'root' => 'sometimes|nullable|string',
             'url' => 'required|string|url',
-            'directory' => 'sometimes|nullable|string',
         ];
     }
 }

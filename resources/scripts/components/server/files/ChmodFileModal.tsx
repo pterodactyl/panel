@@ -15,8 +15,8 @@ interface FormikValues {
 }
 
 interface File {
-    file: string,
-    mode: string,
+    file: string;
+    mode: string;
 }
 
 type OwnProps = RequiredModalProps & { files: File[] };

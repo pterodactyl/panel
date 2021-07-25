@@ -16,10 +16,13 @@ import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import UploadButton from '@/components/server/files/UploadButton';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import { useStoreActions } from '@/state/hooks';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import PullFileModal from '@/components/server/files/PullFileModal';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath } from '@/helpers';
+import { useStoreActions } from '@/state/hooks';
+import { useStoreState } from 'easy-peasy';
+import { ApplicationStore } from '@/state';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -27,15 +30,19 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
+    const pullFiles = useStoreState((state: ApplicationStore) => state.settings.data!.features.pullFiles);
+
     const id = ServerContext.useStoreState(state => state.server.data!.id);
-    const { hash } = useLocation();
-    const { data: files, error, mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState(state => state.files.directory);
-    const clearFlashes = useStoreActions(actions => actions.flashes.clearFlashes);
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
 
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState(state => state.files.selectedFiles.length);
+
+    const clearFlashes = useStoreActions(actions => actions.flashes.clearFlashes);
+
+    const { hash } = useLocation();
+    const { data: files, error, mutate } = useFileManagerSwr();
 
     useEffect(() => {
         clearFlashes('files');
@@ -75,6 +82,7 @@ export default () => {
                 <Can action={'file.create'}>
                     <ErrorBoundary>
                         <div css={tw`flex flex-shrink-0 flex-wrap-reverse md:flex-nowrap justify-end mb-4 md:mb-0 ml-0 md:ml-auto`}>
+                            {pullFiles && <PullFileModal css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`}/>}
                             <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`}/>
                             <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`}/>
                             <NavLink

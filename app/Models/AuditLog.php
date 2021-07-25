@@ -30,6 +30,7 @@ class AuditLog extends Model
     public const SERVER__FILESYSTEM_RENAME = 'server:filesystem.rename';
     public const SERVER__FILESYSTEM_COMPRESS = 'server:filesystem.compress';
     public const SERVER__FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
+    public const SERVER__FILESYSTEM_CHMOD = 'server:filesystem.chmod';
     public const SERVER__FILESYSTEM_PULL = 'server:filesystem.pull';
     public const SERVER__BACKUP_STARTED = 'server:backup.started';
     public const SERVER__BACKUP_FAILED = 'server:backup.failed';

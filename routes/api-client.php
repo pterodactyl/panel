@@ -5,6 +5,8 @@ use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 
+use Pterodactyl\Http\Controllers\Api\Client;
+
 /*
 |--------------------------------------------------------------------------
 | Client Control API
@@ -63,19 +65,19 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     });
 
     Route::group(['prefix' => '/files'], function () {
-        Route::get('/list', 'Servers\FileController@directory');
-        Route::get('/contents', 'Servers\FileController@contents');
-        Route::get('/download', 'Servers\FileController@download');
-        Route::put('/rename', 'Servers\FileController@rename');
-        Route::post('/copy', 'Servers\FileController@copy');
-        Route::post('/write', 'Servers\FileController@write');
-        Route::post('/compress', 'Servers\FileController@compress');
-        Route::post('/decompress', 'Servers\FileController@decompress');
-        Route::post('/delete', 'Servers\FileController@delete');
-        Route::post('/create-folder', 'Servers\FileController@create');
-        Route::post('/chmod', 'Servers\FileController@chmod');
-        Route::post('/pull', 'Servers\FileController@pull')->middleware(['throttle:10,5']);
-        Route::get('/upload', 'Servers\FileUploadController');
+        Route::get('/list', [Client\Servers\FileController::class, 'directory']);
+        Route::get('/contents', [Client\Servers\FileController::class, 'contents']);
+        Route::get('/download', [Client\Servers\FileController::class, 'download']);
+        Route::put('/rename', [Client\Servers\FileController::class, 'rename']);
+        Route::post('/copy', [Client\Servers\FileController::class, 'copy']);
+        Route::post('/write', [Client\Servers\FileController::class, 'write']);
+        Route::post('/compress', [Client\Servers\FileController::class, 'compress']);
+        Route::post('/decompress', [Client\Servers\FileController::class, 'decompress']);
+        Route::post('/delete', [Client\Servers\FileController::class, 'delete']);
+        Route::post('/create-folder', [Client\Servers\FileController::class, 'create']);
+        Route::post('/chmod', [Client\Servers\FileController::class, 'chmod']);
+        Route::post('/pull', [Client\Servers\FileController::class, 'pull'])->middleware(['throttle:pull']);
+        Route::get('/upload', [Client\Servers\FileUploadController::class]);
     });
 
     Route::group(['prefix' => '/schedules'], function () {
