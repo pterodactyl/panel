@@ -69,6 +69,7 @@ class AuditLog extends Model
      * @var string[]
      */
     protected $casts = [
+        'is_system' => 'bool',
         'device' => 'array',
         'metadata' => 'array',
     ];

@@ -56,7 +56,7 @@ class Allocation extends Model
     public static $validationRules = [
         'node_id' => 'required|exists:nodes,id',
         'ip' => 'required|ip',
-        'port' => 'required|numeric|between:1024,65553',
+        'port' => 'required|numeric|between:1024,65535',
         'ip_alias' => 'nullable|string',
         'server_id' => 'nullable|exists:servers,id',
         'notes' => 'nullable|string|max:256',
