@@ -4,7 +4,7 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-06-10T00:43:46+03:00",
+    "exported_at": "2021-07-27T14:14:20+03:00",
     "name": "Ark: Survival Evolved",
     "author": "dev@shepper.fr",
     "description": "As a man or woman stranded, naked, freezing, and starving on the unforgiving shores of a mysterious island called ARK, use your skill and cunning to kill or tame and ride the plethora of leviathan dinosaurs and other primeval creatures roaming the land. Hunt, harvest resources, craft items, grow crops, research technologies, and build shelters to withstand the elements and store valuables, all while teaming up with (or preying upon) hundreds of other players to survive, dominate... and escape! \u2014 Gamepedia: ARK",
@@ -13,11 +13,11 @@
         "quay.io\/parkervcp\/pterodactyl-images:debian_source"
     ],
     "file_denylist": [],
-    "startup": "rmv() { echo -e \"stopping server\"; rcon -t rcon -a 127.0.0.1:${RCON_PORT} -p ${ARK_ADMIN_PASSWORD} -c saveworld && rcon -a 127.0.0.1:${RCON_PORT} -p ${ARK_ADMIN_PASSWORD} -c DoExit; }; trap rmv 15; cd ShooterGame\/Binaries\/Linux && .\/ShooterGameServer {{SERVER_MAP}}?listen?SessionName=\"{{SESSION_NAME}}\"?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?RCONPort={{RCON_PORT}}?QueryPort={{QUERY_PORT}}?RCONEnabled={{ENABLE_RCON}}$( [ \"$BATTLE_EYE\" == \"0\" ] || printf %s '?-NoBattlEye' ) -server -log & until echo \"waiting for rcon connection...\"; rcon -t rcon -a 127.0.0.1:${RCON_PORT} -p ${ARK_ADMIN_PASSWORD}; do sleep 5; done",
+    "startup": "rmv() { echo -e \"stopping server\"; rcon -t rcon -a 127.0.0.1:${RCON_PORT} -p ${ARK_ADMIN_PASSWORD} -c saveworld && rcon -a 127.0.0.1:${RCON_PORT} -p ${ARK_ADMIN_PASSWORD} -c DoExit; }; trap rmv 15; cd ShooterGame\/Binaries\/Linux && .\/ShooterGameServer {{SERVER_MAP}}?listen?SessionName=\"{{SESSION_NAME}}\"?ServerPassword={{ARK_PASSWORD}}?ServerAdminPassword={{ARK_ADMIN_PASSWORD}}?Port={{SERVER_PORT}}?RCONPort={{RCON_PORT}}?QueryPort={{QUERY_PORT}}?RCONEnabled=True$( [ \"$BATTLE_EYE\" == \"0\" ] || printf %s '?-NoBattlEye' ) -server {{ARGS}} -log & until echo \"waiting for rcon connection...\"; rcon -t rcon -a 127.0.0.1:${RCON_PORT} -p ${ARK_ADMIN_PASSWORD}; do sleep 5; done",
     "config": {
         "files": "{}",
-        "startup": "{\r\n    \"done\": \"Waiting commands for 127.0.0.1:\",\r\n    \"userInteraction\": []\r\n}",
-        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/latest.log\"\r\n}",
+        "startup": "{\r\n    \"done\": \"Waiting commands for 127.0.0.1:\"\r\n}",
+        "logs": "{}",
         "stop": "^C"
     },
     "scripts": {
@@ -44,7 +44,7 @@
             "default_value": "PleaseChangeMe",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "nullable|alpha_dash|between:1,100"
+            "rules": "required|alpha_dash|between:1,100"
         },
         {
             "name": "Server Map",
@@ -56,15 +56,6 @@
             "rules": "required|string|max:20"
         },
         {
-            "name": "App ID",
-            "description": "ARK steam app id for auto updates. Leave blank to avoid auto update.",
-            "env_variable": "SRCDS_APPID",
-            "default_value": "376030",
-            "user_viewable": true,
-            "user_editable": false,
-            "rules": "nullable|numeric"
-        },
-        {
             "name": "Server Name",
             "description": "ARK server name",
             "env_variable": "SESSION_NAME",
@@ -72,15 +63,6 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|string|max:128"
-        },
-        {
-            "name": "Use Rcon",
-            "description": "Enable or disable rcon system. (true or false)\r\n\r\nDefault True for the console to work.",
-            "env_variable": "ENABLE_RCON",
-            "default_value": "True",
-            "user_viewable": true,
-            "user_editable": false,
-            "rules": "required|string|in:True,False"
         },
         {
             "name": "Rcon Port",
@@ -117,6 +99,24 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|boolean"
+        },
+        {
+            "name": "App ID",
+            "description": "ARK steam app id for auto updates. Leave blank to avoid auto update.",
+            "env_variable": "SRCDS_APPID",
+            "default_value": "376030",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "nullable|numeric"
+        },
+        {
+            "name": "Additional Arguments",
+            "description": "Specify additional launch parameters such as -crossplay. You must include a dash - and separate each parameter with space: -crossplay -exclusivejoin",
+            "env_variable": "ARGS",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string"
         }
     ]
 }
