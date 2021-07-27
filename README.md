@@ -29,6 +29,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**RoyaleHosting**](https://royalehosting.net/) |  Build your dreams and deploy them with RoyaleHosting’s reliable servers and network. Easy to use, provisioned in a couple of minutes. |
 | [**Spill Hosting**](https://spillhosting.no/) |  Spill Hosting is a Norwegian hosting service, which aims to cheap services on quality servers. Premium i9-9900K processors will run your game like a dream. |
 | [**DeinServerHost**](https://deinserverhost.de/) |  DeinServerHost offers Dedicated, vps and Gameservers for many popular Games like Minecraft and Rust in Germany since 2013. |
+| [**VibeGAMES**](https://vibegames.net/) | VibeGAMES is a game server provider that specializes in DDOS protection made for the games we offer. We have multiple locations in The US, Brazil, France, Germany, Singapore, Australia and South Africa.|
 
 ## Documentation
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
