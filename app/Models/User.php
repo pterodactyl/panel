@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Pterodactyl\Rules\Username;
+use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Collection;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,36 +13,12 @@ use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
-/**
- * @property int $id
- * @property string|null $external_id
- * @property string $uuid
- * @property string $username
- * @property string $email
- * @property string $password
- * @property string|null $remember_token
- * @property string $language
- * @property int $admin_role_id
- * @property bool $root_admin
- * @property bool $use_totp
- * @property string|null $totp_secret
- * @property \Carbon\Carbon|null $totp_authenticated_at
- * @property bool $gravatar
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $name
- * @property \Pterodactyl\Models\AdminRole $adminRole
- * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\UserSSHKey|\Illuminate\Database\Eloquent\Collection $sshKeys
- * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
- * @property \Pterodactyl\Models\WebauthnKey[]|\Illuminate\Database\Eloquent\Collection $webauthnKeys
- */
 class User extends Model implements
     AuthenticatableContract,
     AuthorizableContract,
@@ -51,6 +28,8 @@ class User extends Model implements
     use Authorizable;
     use AvailableLanguages;
     use CanResetPassword;
+    use HasApiTokens;
+    use HasFactory;
     use Notifiable;
 
     public const USER_LEVEL_USER = 0;

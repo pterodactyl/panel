@@ -59,7 +59,7 @@ abstract class ClientApiController extends ApplicationApiController
         ]);
 
         if ($transformer instanceof BaseClientTransformer) {
-            $transformer->setKey($this->request->attributes->get('api_key'));
+            // $transformer->setKey($this->request->attributes->get('api_key'));
             $transformer->setUser($this->request->user());
         }
 

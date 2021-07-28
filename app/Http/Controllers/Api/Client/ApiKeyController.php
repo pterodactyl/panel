@@ -12,11 +12,14 @@ use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
+use Pterodactyl\Transformers\Api\Client\PersonalAccessTokenTransformer;
 
 class ApiKeyController extends ClientApiController
 {
     private Encrypter $encrypter;
+
     private ApiKeyRepository $repository;
+
     private KeyCreationService $keyCreationService;
 
     /**
@@ -41,8 +44,8 @@ class ApiKeyController extends ClientApiController
      */
     public function index(ClientApiRequest $request): array
     {
-        return $this->fractal->collection($request->user()->apiKeys)
-            ->transformWith($this->getTransformer(ApiKeyTransformer::class))
+        return $this->fractal->collection($request->user()->tokens)
+            ->transformWith($this->getTransformer(PersonalAccessTokenTransformer::class))
             ->toArray();
     }
 
@@ -50,25 +53,22 @@ class ApiKeyController extends ClientApiController
      * Store a new API key for a user's account.
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreApiKeyRequest $request): array
     {
-        if ($request->user()->apiKeys->count() >= 5) {
+        if ($request->user()->tokens->count() >= 10) {
             throw new DisplayException('You have reached the account limit for number of API keys.');
         }
 
-        $key = $this->keyCreationService->setKeyType(ApiKey::TYPE_ACCOUNT)->handle([
-            'user_id' => $request->user()->id,
-            'memo' => $request->input('description'),
-            'allowed_ips' => $request->input('allowed_ips') ?? [],
-        ]);
+        // TODO: this should accept an array of different scopes to apply as permissions
+        //  for the token. Right now it allows any account level permission.
+        $token = $request->user()->createToken($request->input('description'));
 
-        return $this->fractal->item($key)
-            ->transformWith($this->getTransformer(ApiKeyTransformer::class))
+        return $this->fractal->item($token->accessToken)
+            ->transformWith($this->getTransformer(PersonalAccessTokenTransformer::class))
             ->addMeta([
-                'secret_token' => $this->encrypter->decrypt($key->token),
+                'secret_token' => $token->plainTextToken,
             ])
             ->toArray();
     }
@@ -78,15 +78,7 @@ class ApiKeyController extends ClientApiController
      */
     public function delete(ClientApiRequest $request, string $identifier): Response
     {
-        $response = $this->repository->deleteWhere([
-            'key_type' => ApiKey::TYPE_ACCOUNT,
-            'user_id' => $request->user()->id,
-            'identifier' => $identifier,
-        ]);
-
-        if (!$response) {
-            throw new NotFoundHttpException();
-        }
+        $request->user()->tokens()->where('id', $identifier)->delete();
 
         return $this->returnNoContent();
     }

@@ -38,7 +38,8 @@ class ServerTransformer extends BaseClientTransformer
         $service = Container::getInstance()->make(StartupCommandService::class);
 
         return [
-            'server_owner' => $this->getKey()->user_id === $server->owner_id,
+            'server_owner' => true,
+//            'server_owner' => $this->getKey()->user_id === $server->owner_id,
             'identifier' => $server->uuidShort,
             'internal_id' => $server->id,
             'uuid' => $server->uuid,

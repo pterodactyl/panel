@@ -123,8 +123,6 @@ class LoginController extends AbstractLoginController
             ]);
         }
 
-        $this->auth->guard()->login($user, true);
-
         return $this->sendLoginResponse($user, $request);
     }
 }

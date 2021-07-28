@@ -32,7 +32,9 @@ use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 
 class Kernel extends HttpKernel
@@ -43,12 +45,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        CheckForMaintenanceMode::class,
-        EncryptCookies::class,
+        TrustProxies::class,
+        PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-        TrustProxies::class,
     ];
 
     /**
@@ -58,6 +59,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             AuthenticateSession::class,
@@ -70,19 +72,23 @@ class Kernel extends HttpKernel
         'api' => [
             IsValidJson::class,
             ApiSubstituteBindings::class,
-            SetSessionDriver::class,
-            'api..key:' . ApiKey::TYPE_APPLICATION,
+            EnsureFrontendRequestsAreStateful::class,
+            // SetSessionDriver::class,
+            // 'api..key:' . ApiKey::TYPE_APPLICATION,
             AuthenticateApplicationUser::class,
-            AuthenticateIPAccess::class,
+            // AuthenticateIPAccess::class,
         ],
         'client-api' => [
-            StartSession::class,
-            SetSessionDriver::class,
-            AuthenticateSession::class,
+            // StartSession::class,
+            // SetSessionDriver::class,
+            // AuthenticateSession::class,
             IsValidJson::class,
+            EnsureFrontendRequestsAreStateful::class,
+            'auth:sanctum',
+            // 'throttle:api',
             SubstituteClientApiBindings::class,
-            'api..key:' . ApiKey::TYPE_ACCOUNT,
-            AuthenticateIPAccess::class,
+            // 'api..key:' . ApiKey::TYPE_ACCOUNT,
+            // AuthenticateIPAccess::class,
             // This is perhaps a little backwards with the Client API, but logically you'd be unable
             // to create/get an API key without first enabling 2FA on the account, so I suppose in the
             // end it makes sense.

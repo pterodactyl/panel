@@ -1,11 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Pterodactyl\Http\Controllers\Api\Client;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
-
-use Pterodactyl\Http\Controllers\Api\Client;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,9 +26,9 @@ Route::group(['prefix' => '/account'], function () {
     Route::put('/email', 'AccountController@updateEmail')->name('api:client.account.update-email');
     Route::put('/password', 'AccountController@updatePassword')->name('api:client.account.update-password');
 
-    Route::get('/api-keys', 'ApiKeyController@index');
-    Route::post('/api-keys', 'ApiKeyController@store');
-    Route::delete('/api-keys/{identifier}', 'ApiKeyController@delete');
+    Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
+    Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
+    Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);
 
     Route::get('/webauthn', 'WebauthnController@index')->withoutMiddleware(RequireTwoFactorAuthentication::class);
     Route::get('/webauthn/register', 'WebauthnController@register')->withoutMiddleware(RequireTwoFactorAuthentication::class);
@@ -49,7 +48,10 @@ Route::group(['prefix' => '/account'], function () {
 | Endpoint: /api/client/servers/{server}
 |
 */
-Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class, ResourceBelongsToServer::class]], function () {
+Route::group([
+    'prefix' => '/servers/{server}',
+    'middleware' => [AuthenticateServerAccess::class, ResourceBelongsToServer::class],
+], function () {
     Route::get('/', 'Servers\ServerController@index')->name('api:client:server.view');
     Route::get('/websocket', 'Servers\WebsocketController')->name('api:client:server.ws');
     Route::get('/resources', 'Servers\ResourceUtilizationController')->name('api:client:server.resources');

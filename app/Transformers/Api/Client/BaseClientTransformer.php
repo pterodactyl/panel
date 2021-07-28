@@ -58,7 +58,7 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
     {
         /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = Container::getInstance()->makeWith($abstract, $parameters);
-        $transformer->setKey($this->getKey());
+        // $transformer->setKey($this->getKey());
 
         if (!$transformer instanceof self) {
             throw new InvalidTransformerLevelException('Calls to ' . __METHOD__ . ' must return a transformer that is an instance of ' . __CLASS__);
