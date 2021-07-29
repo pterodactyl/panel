@@ -35,8 +35,8 @@ trait HasAccessTokens
         $token = $this->tokens()->create([
             'user_id' => $this->id,
             'description' => $description,
-            'token' => hash('sha256', $plain = Str::random(36)),
-            'token_id' => 'ptdl_' . Str::random(11),
+            'token' => hash('sha256', $plain = Str::random(PersonalAccessToken::TOKEN_LENGTH)),
+            'token_id' => PersonalAccessToken::generateTokenIdentifier(),
             'abilities' => $abilities,
         ]);
 

@@ -8,17 +8,15 @@ import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ApiKey } from '@/api/account/getApiKeys';
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import Input, { Textarea } from '@/components/elements/Input';
+import Input from '@/components/elements/Input';
 import ApiKeyModal from '@/components/dashboard/ApiKeyModal';
 
 interface Values {
     description: string;
     allowedIps: string;
 }
-
-const CustomTextarea = styled(Textarea)`${tw`h-32`}`;
 
 export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
     const [ apiKey, setApiKey ] = useState('');
@@ -52,7 +50,6 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                 onSubmit={submit}
                 initialValues={{ description: '', allowedIps: '' }}
                 validationSchema={object().shape({
-                    allowedIps: string(),
                     description: string().required().min(4),
                 })}
             >
@@ -62,17 +59,10 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                         <FormikFieldWrapper
                             label={'Description'}
                             name={'description'}
-                            description={'A description of this API key.'}
+                            description={'This API key will be able to act on your behalf against this Panel\'s API.'}
                             css={tw`mb-6`}
                         >
                             <Field name={'description'} as={Input}/>
-                        </FormikFieldWrapper>
-                        <FormikFieldWrapper
-                            label={'Allowed IPs'}
-                            name={'allowedIps'}
-                            description={'Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line.'}
-                        >
-                            <Field name={'allowedIps'} as={CustomTextarea}/>
                         </FormikFieldWrapper>
                         <div css={tw`flex justify-end mt-6`}>
                             <Button>Create</Button>

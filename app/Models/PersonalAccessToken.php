@@ -10,6 +10,11 @@ class PersonalAccessToken extends Model implements HasAbilities
     public const RESOURCE_NAME = 'personal_access_token';
 
     /**
+     * The length of the raw API token.
+     */
+    public const TOKEN_LENGTH = 32;
+
+    /**
      * @var string[]
      */
     protected $casts = [
@@ -26,6 +31,16 @@ class PersonalAccessToken extends Model implements HasAbilities
         'token',
         'token_id',
         'abilities',
+    ];
+
+    /**
+     * @var array
+     */
+    public static array $validationRules = [
+        'token' => 'required|string',
+        'token_id' => 'required|string|size:16',
+        'description' => 'required|nullable|string|max:500',
+        'last_used_at' => 'nullable|date',
     ];
 
     /**
@@ -86,5 +101,15 @@ class PersonalAccessToken extends Model implements HasAbilities
         $token = Str::substr($token, strlen($id));
 
         return static::where('token_id', $id)->where('token', hash('sha256', $token))->first();
+    }
+
+    /**
+     * Generates a new identifier for a personal access token.
+     *
+     * @return string
+     */
+    public static function generateTokenIdentifier(): string
+    {
+        return 'ptdl_' . Str::random(11);
     }
 }
