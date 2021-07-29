@@ -21,8 +21,8 @@ class PersonalAccessTokenTransformer extends BaseClientTransformer
     public function transform(PersonalAccessToken $model): array
     {
         return [
-            'id' => $model->tokenable_id,
-            'name' => $model->name,
+            'token_id' => $model->token_id,
+            'description' => $model->description,
             'abilities' => $model->abilities ?? [],
             'last_used_at' => $model->last_used_at ? $model->last_used_at->toIso8601String() : null,
             'created_at' => $model->created_at->toIso8601String(),

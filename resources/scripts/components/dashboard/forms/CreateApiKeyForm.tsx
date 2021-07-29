@@ -30,7 +30,7 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
             .then(({ secretToken, ...key }) => {
                 resetForm();
                 setSubmitting(false);
-                setApiKey(`${key.identifier}${secretToken}`);
+                setApiKey(secretToken);
                 onKeyCreated(key);
             })
             .catch(error => {

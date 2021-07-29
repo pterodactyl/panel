@@ -63,12 +63,12 @@ class ApiKeyController extends ClientApiController
 
         // TODO: this should accept an array of different scopes to apply as permissions
         //  for the token. Right now it allows any account level permission.
-        $token = $request->user()->createToken($request->input('description'));
+        [$token, $plaintext] = $request->user()->createToken($request->input('description'));
 
-        return $this->fractal->item($token->accessToken)
+        return $this->fractal->item($token)
             ->transformWith($this->getTransformer(PersonalAccessTokenTransformer::class))
             ->addMeta([
-                'secret_token' => $token->plainTextToken,
+                'secret_token' => $plaintext,
             ])
             ->toArray();
     }
@@ -76,9 +76,9 @@ class ApiKeyController extends ClientApiController
     /**
      * Deletes a given API key.
      */
-    public function delete(ClientApiRequest $request, string $identifier): Response
+    public function delete(ClientApiRequest $request, string $id): Response
     {
-        $request->user()->tokens()->where('id', $identifier)->delete();
+        $request->user()->tokens()->where('token_id', $id)->delete();
 
         return $this->returnNoContent();
     }

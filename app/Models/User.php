@@ -3,11 +3,11 @@
 namespace Pterodactyl\Models;
 
 use Pterodactyl\Rules\Username;
-use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Collection;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -28,7 +28,7 @@ class User extends Model implements
     use Authorizable;
     use AvailableLanguages;
     use CanResetPassword;
-    use HasApiTokens;
+    use HasAccessTokens;
     use HasFactory;
     use Notifiable;
 
