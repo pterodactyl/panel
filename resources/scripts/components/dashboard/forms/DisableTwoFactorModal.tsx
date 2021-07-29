@@ -43,7 +43,7 @@ const DisableTwoFactorModal = () => {
                 password: '',
             }}
             validationSchema={object().shape({
-                password: string().required('You must provider your current password in order to continue.'),
+                password: string().required('You must provide your current password in order to continue.'),
             })}
         >
             {({ isValid }) => (
