@@ -37,6 +37,17 @@ class PersonalAccessToken extends Model implements HasAbilities
     }
 
     /**
+     * Required for support with Laravel Sanctum.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @see \Laravel\Sanctum\Guard::supportsTokens()
+     */
+    public function tokenable()
+    {
+        return $this->user();
+    }
+
+    /**
      * Determine if the token has a given ability.
      *
      * @param string $ability
