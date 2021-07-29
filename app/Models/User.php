@@ -201,12 +201,6 @@ class User extends Model implements
         return $this->hasOne(AdminRole::class, 'id', 'admin_role_id');
     }
 
-    public function apiKeys(): HasMany
-    {
-        return $this->hasMany(ApiKey::class)
-            ->where('key_type', ApiKey::TYPE_ACCOUNT);
-    }
-
     public function servers(): HasMany
     {
         return $this->hasMany(Server::class, 'owner_id');

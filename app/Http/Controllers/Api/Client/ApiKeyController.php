@@ -3,40 +3,13 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Exceptions\DisplayException;
-use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 use Pterodactyl\Transformers\Api\Client\PersonalAccessTokenTransformer;
 
 class ApiKeyController extends ClientApiController
 {
-    private Encrypter $encrypter;
-
-    private ApiKeyRepository $repository;
-
-    private KeyCreationService $keyCreationService;
-
-    /**
-     * ApiKeyController constructor.
-     */
-    public function __construct(
-        Encrypter $encrypter,
-        ApiKeyRepository $repository,
-        KeyCreationService $keyCreationService
-    ) {
-        parent::__construct();
-
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
-        $this->keyCreationService = $keyCreationService;
-    }
-
     /**
      * Returns all of the API keys that exist for the given client.
      *
