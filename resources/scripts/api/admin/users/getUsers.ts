@@ -11,8 +11,6 @@ export interface User {
     uuid: string;
     username: string;
     email: string;
-    firstName: string;
-    lastName: string;
     language: string;
     adminRoleId: number | null;
     rootAdmin: boolean;
@@ -33,8 +31,6 @@ export const rawDataToUser = ({ attributes }: FractalResponseData): User => ({
     uuid: attributes.uuid,
     username: attributes.username,
     email: attributes.email,
-    firstName: attributes.first_name,
-    lastName: attributes.last_name,
     language: attributes.language,
     adminRoleId: attributes.admin_role_id,
     rootAdmin: attributes.root_admin,
@@ -54,8 +50,6 @@ export interface Filters {
     uuid?: string;
     username?: string;
     email?: string;
-    firstName?: string;
-    lastName?: string;
 }
 
 export const Context = createContext<Filters>();

@@ -24,30 +24,13 @@ class StoreUserRequest extends ApplicationApiRequest
             'admin_role_id',
         ])->toArray();
 
-        $response['first_name'] = $rules['name_first'];
-        $response['last_name'] = $rules['name_last'];
-
         return $response;
-    }
-
-    public function validated(): array
-    {
-        $data = parent::validated();
-
-        $data['name_first'] = $data['first_name'];
-        $data['name_last'] = $data['last_name'];
-
-        unset($data['first_name'], $data['last_name']);
-
-        return $data;
     }
 
     public function attributes(): array
     {
         return [
             'external_id' => 'Third Party Identifier',
-            'name_first' => 'First Name',
-            'name_last' => 'Last Name',
             'root_admin' => 'Root Administrator Status',
         ];
     }

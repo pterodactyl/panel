@@ -52,8 +52,6 @@ export function InformationContainer ({ title, initialValues, children, onSubmit
         initialValues = {
             username: '',
             email: '',
-            firstName: '',
-            lastName: '',
             password: '',
             adminRoleId: 0,
         };
@@ -66,8 +64,6 @@ export function InformationContainer ({ title, initialValues, children, onSubmit
             validationSchema={object().shape({
                 username: string().min(1).max(32),
                 email: string(),
-                firstName: string(),
-                lastName: string(),
                 password: exists ? string() : string().required(),
             })}
         >
@@ -94,26 +90,6 @@ export function InformationContainer ({ title, initialValues, children, onSubmit
                                             name={'email'}
                                             label={'Email Address'}
                                             type={'email'}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div css={tw`md:w-full md:flex md:flex-row mt-6`}>
-                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mt-6 md:mt-0`}>
-                                        <Field
-                                            id={'firstName'}
-                                            name={'firstName'}
-                                            label={'First Name'}
-                                            type={'text'}
-                                        />
-                                    </div>
-
-                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
-                                        <Field
-                                            id={'lastName'}
-                                            name={'lastName'}
-                                            label={'Last Name'}
-                                            type={'text'}
                                         />
                                     </div>
                                 </div>
@@ -184,8 +160,6 @@ function EditInformationContainer () {
             initialValues={{
                 username: user.username,
                 email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
                 adminRoleId: user.adminRoleId,
                 password: '',
             }}
@@ -240,8 +214,8 @@ function UserEditContainer () {
         <AdminContentBlock title={'User - ' + user.id}>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
                 <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
-                    <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{user.firstName} {user.lastName}</h2>
-                    <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>{user.email}</p>
+                    <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{user.email}</h2>
+                    <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>{user.uuid}</p>
                 </div>
             </div>
 

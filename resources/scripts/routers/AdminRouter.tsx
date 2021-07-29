@@ -20,7 +20,7 @@ import ServersContainer from '@/components/admin/servers/ServersContainer';
 import NewServerContainer from '@/components/admin/servers/NewServerContainer';
 import UsersContainer from '@/components/admin/users/UsersContainer';
 import NewUserContainer from '@/components/admin/users/NewUserContainer';
-import UserEditContainer from '@/components/admin/users/UserEditContainer';
+import UserRouter from '@/components/admin/users/UserRouter';
 import RolesContainer from '@/components/admin/roles/RolesContainer';
 import RoleEditContainer from '@/components/admin/roles/RoleEditContainer';
 import NestsContainer from '@/components/admin/nests/NestsContainer';
@@ -173,7 +173,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                     <img src={user !== undefined ? user.avatarURL + '?s=64' : ''} alt="Profile Picture" css={tw`h-10 w-10 rounded-full select-none`} />
 
                     <div css={tw`flex flex-col ml-4`}>
-                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}>{user?.firstName} {user?.lastName}</span>
+                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}>Silly User</span>
                         <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}>{user?.roleName}</span>
                     </div>
 
@@ -237,8 +237,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route path={`${match.path}/users/new`} component={NewUserContainer} exact/>
                         <Route
                             path={`${match.path}/users/:id`}
-                            component={UserEditContainer}
-                            exact
+                            component={UserRouter}
                         />
 
                         <Route path={`${match.path}/roles`} component={RolesContainer} exact/>

@@ -4,8 +4,6 @@ import { User, rawDataToUser } from '@/api/admin/users/getUsers';
 export interface Values {
     username: string;
     email: string;
-    firstName: string;
-    lastName: string;
     password: string;
     adminRoleId: number | null;
 }

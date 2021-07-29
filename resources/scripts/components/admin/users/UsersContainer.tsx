@@ -130,7 +130,7 @@ const UsersContainer = () => {
 
                                                             <div css={tw`ml-4`}>
                                                                 <div css={tw`text-sm text-neutral-200`}>
-                                                                    {user.firstName} {user.lastName}
+                                                                    Silly User
                                                                 </div>
 
                                                                 <div css={tw`text-sm text-neutral-400`}>

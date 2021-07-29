@@ -131,7 +131,7 @@ const ServersContainer = () => {
                                                 <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
                                                     <NavLink to={`/admin/users/${server.relations.user?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                         <div css={tw`text-sm text-neutral-200`}>
-                                                            {server.relations.user?.firstName} {server.relations.user?.lastName}
+                                                            Silly User
                                                         </div>
 
                                                         <div css={tw`text-sm text-neutral-400`}>

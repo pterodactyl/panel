@@ -33,8 +33,6 @@ class UserTransformer extends BaseTransformer
             'uuid' => $model->uuid,
             'username' => $model->username,
             'email' => $model->email,
-            'first_name' => $model->name_first,
-            'last_name' => $model->name_last,
             'language' => $model->language,
             'root_admin' => (bool) $model->root_admin,
             '2fa' => (bool) $model->use_totp,
