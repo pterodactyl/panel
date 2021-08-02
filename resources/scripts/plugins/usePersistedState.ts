@@ -6,7 +6,11 @@ export function usePersistedState<S = undefined> (key: string, defaultValue: S):
             try {
                 const item = localStorage.getItem(key);
 
-                return JSON.parse(item || (String(defaultValue)));
+                if (item === null) {
+                    return defaultValue;
+                }
+
+                return JSON.parse(item || String(defaultValue));
             } catch (e) {
                 console.warn('Failed to retrieve persisted value from store.', e);
 
