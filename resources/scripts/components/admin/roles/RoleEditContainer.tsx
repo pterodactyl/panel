@@ -1,21 +1,22 @@
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
+import { Form, Formik, FormikHelpers } from 'formik';
 import React, { useEffect, useState } from 'react';
-// import { useHistory } from 'react-router';
+import { useHistory } from 'react-router';
 import { useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import { object, string } from 'yup';
 import { Role } from '@/api/admin/roles/getRoles';
 import getRole from '@/api/admin/roles/getRole';
-import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import Spinner from '@/components/elements/Spinner';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import { ApplicationStore } from '@/state';
-import { Form, Formik, FormikHelpers } from 'formik';
 import updateRole from '@/api/admin/roles/updateRole';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import AdminBox from '@/components/admin/AdminBox';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import Field from '@/components/elements/Field';
+import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import RoleDeleteButton from '@/components/admin/roles/RoleDeleteButton';
 import Button from '@/components/elements/Button';
+import Field from '@/components/elements/Field';
+import Spinner from '@/components/elements/Spinner';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { ApplicationStore } from '@/state';
 
 interface ctx {
     role: Role | undefined;
@@ -36,7 +37,7 @@ interface Values {
 }
 
 const EditInformationContainer = () => {
-    // const history = useHistory();
+    const history = useHistory();
 
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -99,12 +100,12 @@ const EditInformationContainer = () => {
                                 </div>
 
                                 <div css={tw`w-full flex flex-row items-center mt-6`}>
-                                    {/* <div css={tw`flex`}> */}
-                                    {/*     <RoleDeleteButton */}
-                                    {/*         roleId={role.id} */}
-                                    {/*         onDeleted={() => history.push('/admin/roles')} */}
-                                    {/*     /> */}
-                                    {/* </div> */}
+                                    <div css={tw`flex`}>
+                                        <RoleDeleteButton
+                                            roleId={role.id}
+                                            onDeleted={() => history.push('/admin/roles')}
+                                        />
+                                    </div>
 
                                     <div css={tw`flex ml-auto`}>
                                         <Button type={'submit'} disabled={isSubmitting || !isValid}>

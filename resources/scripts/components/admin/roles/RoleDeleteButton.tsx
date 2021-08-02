@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
 import { Actions, useStoreActions } from 'easy-peasy';
+import React, { useState } from 'react';
 import tw from 'twin.macro';
-import deleteLocation from '@/api/admin/locations/deleteLocation';
+import deleteRole from '@/api/admin/roles/deleteRole';
 import Button from '@/components/elements/Button';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import { ApplicationStore } from '@/state';
 
 interface Props {
-    locationId: number;
+    roleId: number;
     onDeleted: () => void;
 }
 
-export default ({ locationId, onDeleted }: Props) => {
+export default ({ roleId, onDeleted }: Props) => {
     const [ visible, setVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
 
@@ -19,16 +19,16 @@ export default ({ locationId, onDeleted }: Props) => {
 
     const onDelete = () => {
         setLoading(true);
-        clearFlashes('location');
+        clearFlashes('role');
 
-        deleteLocation(locationId)
+        deleteRole(roleId)
             .then(() => {
                 setLoading(false);
                 onDeleted();
             })
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ key: 'location', error });
+                clearAndAddHttpError({ key: 'role', error });
 
                 setLoading(false);
                 setVisible(false);
@@ -39,13 +39,13 @@ export default ({ locationId, onDeleted }: Props) => {
         <>
             <ConfirmationModal
                 visible={visible}
-                title={'Delete location?'}
-                buttonText={'Yes, delete location'}
+                title={'Delete role?'}
+                buttonText={'Yes, delete role'}
                 onConfirmed={onDelete}
                 showSpinnerOverlay={loading}
                 onModalDismissed={() => setVisible(false)}
             >
-                Are you sure you want to delete this location?  You may only delete a location if no nodes are assigned to it.
+                Are you sure you want to delete this role?
             </ConfirmationModal>
 
             <Button type={'button'} size={'xsmall'} color={'red'} onClick={() => setVisible(true)}>
