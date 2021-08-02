@@ -20,7 +20,6 @@ const modes: Mode[] = [
     { name: 'Golang', mime: 'text/x-go', mode: 'go', ext: [ 'go' ] },
     { name: 'HTML', mime: 'text/html', mode: 'htmlmixed', ext: [ 'html', 'htm', 'handlebars', 'hbs' ], alias: [ 'xhtml' ] },
     { name: 'HTTP', mime: 'message/http', mode: 'http' },
-    {
     { name: 'JavaScript', mime: 'text/javascript', mimes: [ 'text/javascript', 'text/ecmascript', 'application/javascript', 'application/x-javascript', 'application/ecmascript' ], mode: 'javascript', ext: [ 'js' ], alias: [ 'ecmascript', 'js', 'node' ] },
     { name: 'JSON', mime: 'application/json', mimes: [ 'application/json', 'application/x-json' ], mode: 'javascript', ext: [ 'json', 'map' ], alias: [ 'json5' ] },
     { name: 'Lua', mime: 'text/x-lua', mode: 'lua', ext: [ 'lua' ] },
@@ -33,6 +32,7 @@ const modes: Mode[] = [
     { name: 'Plain Text', mime: 'text/plain', mode: 'null', ext: [ 'txt', 'text', 'conf', 'def', 'list', 'log' ] },
     { name: 'PostgreSQL', mime: 'text/x-pgsql', mode: 'sql' },
     { name: 'Properties', mime: 'text/x-properties', mode: 'properties', ext: [ 'properties', 'ini', 'in' ], alias: [ 'ini', 'properties' ] },
+    { name: 'Pug', mime: 'text/x-pug', mimes: [ 'text/x-pug', 'text/x-jade' ], mode: 'null', ext: [ 'pug' ] },
     { name: 'Python', mime: 'text/x-python', mode: 'python', ext: [ 'BUILD', 'bzl', 'py', 'pyw' ], file: /^(BUCK|BUILD)$/ },
     { name: 'Ruby', mime: 'text/x-ruby', mode: 'ruby', ext: [ 'rb' ], alias: [ 'jruby', 'macruby', 'rake', 'rb', 'rbx' ] },
     { name: 'Rust', mime: 'text/x-rustsrc', mode: 'rust', ext: [ 'rs' ] },
