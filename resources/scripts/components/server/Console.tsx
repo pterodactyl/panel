@@ -76,7 +76,7 @@ export default () => {
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
-    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
+    const serverId = ServerContext.useStoreState(state => state.server.data!.uuid);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [ historyIndex, setHistoryIndex ] = useState(-1);

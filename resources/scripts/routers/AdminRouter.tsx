@@ -1,5 +1,5 @@
 import { State, useStoreState } from 'easy-peasy';
-import React, { useState } from 'react';
+import React from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 import { ApplicationStore } from '@/state';
@@ -29,6 +29,7 @@ import MountEditContainer from '@/components/admin/mounts/MountEditContainer';
 import EggRouter from '@/components/admin/nests/eggs/EggRouter';
 import ServerRouter from '@/components/admin/servers/ServerRouter';
 import { NotFound } from '@/components/elements/ScreenBlock';
+import { usePersistedState } from '@/plugins/usePersistedState';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
     ${tw`fixed h-screen hidden md:flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
@@ -99,7 +100,8 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
     const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
     const applicationName = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
-    const [ collapsed, setCollapsed ] = useState<boolean>();
+    const uuid = useStoreState(state => state.user.data!.uuid);
+    const [ collapsed, setCollapsed ] = usePersistedState<boolean>(`${uuid}:admin_sidebar_collapsed`, false);
 
     return (
         <div css={tw`h-screen w-screen overflow-x-hidden flex flex-col md:flex-row`}>
