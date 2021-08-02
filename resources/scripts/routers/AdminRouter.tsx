@@ -80,6 +80,7 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
     & > div.user {
         ${tw`h-16 w-full flex items-center bg-neutral-700`};
         ${props => !props.collapsed && tw`mt-auto px-5`};
+        ${props => props.collapsed && tw`justify-center`};
 
         & > div, a {
             ${props => props.collapsed && tw`hidden`};
