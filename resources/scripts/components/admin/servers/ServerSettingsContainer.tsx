@@ -125,7 +125,7 @@ const ServerResourceContainer = () => {
                         <Field
                             id={'threads'}
                             name={'threads'}
-                            label={'CPU Pinnings'}
+                            label={'CPU Pinning'}
                             type={'string'}
                             description={'Advanced: Enter the specific CPU cores that this process can run on, or leave blank to allow all cores. This can be a single number, or a comma seperated list. Example: 0, 0-1,3, or 0,1,3,4.'}
                         />
@@ -285,7 +285,7 @@ export default () => {
                 disk: server.limits.disk,
                 io: server.limits.io,
                 cpu: server.limits.cpu,
-                threads: server.limits.threads,
+                threads: server.limits.threads || '',
 
                 databases: server.featureLimits.databases,
                 allocations: server.featureLimits.allocations,

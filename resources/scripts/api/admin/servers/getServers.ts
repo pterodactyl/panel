@@ -21,7 +21,7 @@ export interface Server {
         disk: number;
         io: number;
         cpu: number;
-        threads: string;
+        threads: string | null;
     }
 
     featureLimits: {
