@@ -8,9 +8,9 @@ import tw, { styled } from 'twin.macro';
 import { PaginatedResult, PaginationDataSet } from '@/api/http';
 import { ListContext as TableHooks } from '@/api/admin';
 
-export function useTableHooks<T> (): TableHooks<T> {
+export function useTableHooks<T> (initialState?: T | (() => T)): TableHooks<T> {
     const [ page, setPage ] = useState<number>(1);
-    const [ filters, setFilters ] = useState<T | null>(null);
+    const [ filters, setFilters ] = useState<T | null>(initialState || null);
     const [ sort, setSortState ] = useState<string | null>(null);
     const [ sortDirection, setSortDirection ] = useState<boolean>(false);
 

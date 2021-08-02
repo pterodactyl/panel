@@ -1,8 +1,8 @@
-import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
-import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
 import { useContext } from 'react';
 import useSWR from 'swr';
 import { createContext } from '@/api/admin';
+import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
+import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 import { Node, rawDataToNode } from '@/api/admin/nodes/getNodes';
 import { User, rawDataToUser } from '@/api/admin/users/getUsers';
 
@@ -104,8 +104,9 @@ export interface Filters {
     id?: string;
     uuid?: string;
     name?: string;
-    image?: string;
     /* eslint-disable camelcase */
+    owner_id?: string;
+    node_id?: string;
     external_id?: string;
     /* eslint-enable camelcase */
 }

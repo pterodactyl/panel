@@ -14,6 +14,7 @@ import NodeAboutContainer from '@/components/admin/nodes/NodeAboutContainer';
 import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
 import NodeConfigurationContainer from '@/components/admin/nodes/NodeConfigurationContainer';
 import NodeAllocationContainer from '@/components/admin/nodes/NodeAllocationContainer';
+import NodeServers from '@/components/admin/nodes/NodeServers';
 
 interface ctx {
     node: Node | undefined;
@@ -123,7 +124,7 @@ const NodeRouter = () => {
                 </Route>
 
                 <Route path={`${match.path}/servers`} exact>
-                    <p>Servers</p>
+                    <NodeServers/>
                 </Route>
             </Switch>
         </AdminContentBlock>

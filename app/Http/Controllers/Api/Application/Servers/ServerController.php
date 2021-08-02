@@ -47,7 +47,7 @@ class ServerController extends ApplicationApiController
         }
 
         $servers = QueryBuilder::for(Server::query())
-            ->allowedFilters(['uuid', 'uuidShort', 'name', 'image', 'external_id'])
+            ->allowedFilters(['id', 'uuid', 'uuidShort', 'name', 'owner_id', 'node_id', 'external_id'])
             ->allowedSorts(['id', 'uuid', 'uuidShort', 'name', 'owner_id', 'node_id', 'status'])
             ->paginate($perPage);
 

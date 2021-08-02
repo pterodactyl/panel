@@ -10,6 +10,7 @@ import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ApplicationStore } from '@/state';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
+import UserServers from '@/components/admin/users/UserServers';
 
 interface ctx {
     user: User | undefined;
@@ -89,7 +90,7 @@ const UserRouter = () => {
                 </Route>
 
                 <Route path={`${match.path}/servers`} exact>
-                    <p>Servers</p>
+                    <UserServers/>
                 </Route>
             </Switch>
         </AdminContentBlock>
