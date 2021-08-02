@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { NavLink, useRouteMatch } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import tw from 'twin.macro';
 import getServers, { Context as ServersContext, Filters } from '@/api/admin/servers/getServers';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
@@ -33,8 +33,6 @@ interface Props {
 }
 
 function ServersTable ({ filters }: Props) {
-    const match = useRouteMatch();
-
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(ServersContext);
@@ -106,7 +104,7 @@ function ServersTable ({ filters }: Props) {
                                         </td>
 
                                         <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
-                                            <NavLink to={`${match.url}/${server.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
+                                            <NavLink to={`/admin/servers/${server.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                 {server.name}
                                             </NavLink>
                                         </td>
@@ -115,11 +113,11 @@ function ServersTable ({ filters }: Props) {
                                         <td css={tw`px-6 text-sm text-left whitespace-nowrap`}>
                                             <NavLink to={`/admin/users/${server.relations.user?.id}`} css={tw`text-primary-400 hover:text-primary-300`}>
                                                 <div css={tw`text-sm text-neutral-200`}>
-                                                    Silly User
+                                                    {server.relations.user?.email}
                                                 </div>
 
                                                 <div css={tw`text-sm text-neutral-400`}>
-                                                    {server.relations.user?.email}
+                                                    {server.relations.user?.uuid.split('-')[0]}
                                                 </div>
                                             </NavLink>
                                         </td>

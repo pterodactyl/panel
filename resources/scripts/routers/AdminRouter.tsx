@@ -78,7 +78,7 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
     }
 
     & > div.user {
-        ${tw`h-16 w-full flex items-center justify-center bg-neutral-700`};
+        ${tw`h-16 w-full flex items-center bg-neutral-700`};
         ${props => !props.collapsed && tw`mt-auto px-5`};
 
         & > div, a {
@@ -172,16 +172,10 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                 <div className={'user'}>
                     <img src={user !== undefined ? user.avatarURL + '?s=64' : ''} alt="Profile Picture" css={tw`h-10 w-10 rounded-full select-none`} />
 
-                    <div css={tw`flex flex-col ml-4`}>
-                        <span css={tw`font-header font-medium text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}>Silly User</span>
+                    <div css={tw`flex flex-col ml-3`}>
+                        <span css={tw`font-sans font-normal text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}>{user?.email}</span>
                         <span css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}>{user?.roleName}</span>
                     </div>
-
-                    <NavLink to={'/'} css={tw`h-8 w-8 flex items-center justify-center text-neutral-300 hover:text-primary-400 hover:bg-neutral-800 rounded ml-auto transition-all duration-100`}>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" css={tw`h-6 w-6`}>
-                            <path strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
-                        </svg>
-                    </NavLink>
                 </div>
             </Sidebar>
 

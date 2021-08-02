@@ -130,11 +130,11 @@ const UsersContainer = () => {
 
                                                             <div css={tw`ml-4`}>
                                                                 <div css={tw`text-sm text-neutral-200`}>
-                                                                    Silly User
+                                                                    {user.email}
                                                                 </div>
 
                                                                 <div css={tw`text-sm text-neutral-400`}>
-                                                                    {user.email}
+                                                                    {user.uuid.split('-')[0]}
                                                                 </div>
                                                             </div>
                                                         </div>
