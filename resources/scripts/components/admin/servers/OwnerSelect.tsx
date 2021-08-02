@@ -12,10 +12,12 @@ export default ({ selected }: { selected: User | null }) => {
 
     const onSearch = (query: string): Promise<void> => {
         return new Promise((resolve, reject) => {
-            searchUsers({ username: query, email: query }).then((users) => {
-                setUsers(users);
-                return resolve();
-            }).catch(reject);
+            searchUsers({ username: query, email: query })
+                .then((users) => {
+                    setUsers(users);
+                    return resolve();
+                })
+                .catch(reject);
         });
     };
 

@@ -51,105 +51,103 @@ const NodeSettingsContainer = () => {
         <AdminBox title={'Settings'} css={tw`w-full relative`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
-            <Form css={tw`mb-0`}>
-                <div css={tw`mb-6`}>
-                    <Field
-                        id={'name'}
-                        name={'name'}
-                        label={'Name'}
-                        type={'text'}
-                    />
+            <div css={tw`mb-6`}>
+                <Field
+                    id={'name'}
+                    name={'name'}
+                    label={'Name'}
+                    type={'text'}
+                />
+            </div>
+
+            <div css={tw`mb-6`}>
+                <LocationSelect selected={node?.relations.location || null}/>
+            </div>
+
+            <div css={tw`mb-6`}>
+                <DatabaseSelect selected={node?.relations.databaseHost || null}/>
+            </div>
+
+            <div css={tw`mb-6`}>
+                <Field
+                    id={'fqdn'}
+                    name={'fqdn'}
+                    label={'FQDN'}
+                    type={'text'}
+                />
+            </div>
+
+            <div css={tw`mt-6`}>
+                <Label htmlFor={'scheme'}>SSL</Label>
+
+                <div>
+                    <label css={tw`inline-flex items-center mr-2`}>
+                        <FormikField
+                            name={'scheme'}
+                            type={'radio'}
+                            value={'https'}
+                        />
+                        <span css={tw`text-neutral-300 ml-2`}>Enabled</span>
+                    </label>
+
+                    <label css={tw`inline-flex items-center ml-2`}>
+                        <FormikField
+                            name={'scheme'}
+                            type={'radio'}
+                            value={'http'}
+                        />
+                        <span css={tw`text-neutral-300 ml-2`}>Disabled</span>
+                    </label>
                 </div>
+            </div>
 
-                <div css={tw`mb-6`}>
-                    <LocationSelect selected={node?.relations.location || null}/>
+            <div css={tw`mt-6`}>
+                <Label htmlFor={'behindProxy'}>Behind Proxy</Label>
+
+                <div>
+                    <label css={tw`inline-flex items-center mr-2`}>
+                        <FormikField
+                            name={'behindProxy'}
+                            type={'radio'}
+                            value={false}
+                        />
+                        <span css={tw`text-neutral-300 ml-2`}>No</span>
+                    </label>
+
+                    <label css={tw`inline-flex items-center ml-2`}>
+                        <FormikField
+                            name={'behindProxy'}
+                            type={'radio'}
+                            value
+                        />
+                        <span css={tw`text-neutral-300 ml-2`}>Yes</span>
+                    </label>
                 </div>
+            </div>
 
-                <div css={tw`mb-6`}>
-                    <DatabaseSelect selected={node?.relations.databaseHost || null}/>
+            <div css={tw`mt-6`}>
+                <Label htmlFor={'public'}>Automatic Allocation</Label>
+
+                <div>
+                    <label css={tw`inline-flex items-center mr-2`}>
+                        <FormikField
+                            name={'public'}
+                            type={'radio'}
+                            value={false}
+                        />
+                        <span css={tw`text-neutral-300 ml-2`}>Disabled</span>
+                    </label>
+
+                    <label css={tw`inline-flex items-center ml-2`}>
+                        <FormikField
+                            name={'public'}
+                            type={'radio'}
+                            value
+                        />
+                        <span css={tw`text-neutral-300 ml-2`}>Enabled</span>
+                    </label>
                 </div>
-
-                <div css={tw`mb-6`}>
-                    <Field
-                        id={'fqdn'}
-                        name={'fqdn'}
-                        label={'FQDN'}
-                        type={'text'}
-                    />
-                </div>
-
-                <div css={tw`mt-6`}>
-                    <Label htmlFor={'scheme'}>SSL</Label>
-
-                    <div>
-                        <label css={tw`inline-flex items-center mr-2`}>
-                            <FormikField
-                                name={'scheme'}
-                                type={'radio'}
-                                value={'https'}
-                            />
-                            <span css={tw`text-neutral-300 ml-2`}>Enabled</span>
-                        </label>
-
-                        <label css={tw`inline-flex items-center ml-2`}>
-                            <FormikField
-                                name={'scheme'}
-                                type={'radio'}
-                                value={'http'}
-                            />
-                            <span css={tw`text-neutral-300 ml-2`}>Disabled</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div css={tw`mt-6`}>
-                    <Label htmlFor={'behindProxy'}>Behind Proxy</Label>
-
-                    <div>
-                        <label css={tw`inline-flex items-center mr-2`}>
-                            <FormikField
-                                name={'behindProxy'}
-                                type={'radio'}
-                                value={false}
-                            />
-                            <span css={tw`text-neutral-300 ml-2`}>No</span>
-                        </label>
-
-                        <label css={tw`inline-flex items-center ml-2`}>
-                            <FormikField
-                                name={'behindProxy'}
-                                type={'radio'}
-                                value
-                            />
-                            <span css={tw`text-neutral-300 ml-2`}>Yes</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div css={tw`mt-6`}>
-                    <Label htmlFor={'public'}>Automatic Allocation</Label>
-
-                    <div>
-                        <label css={tw`inline-flex items-center mr-2`}>
-                            <FormikField
-                                name={'public'}
-                                type={'radio'}
-                                value={false}
-                            />
-                            <span css={tw`text-neutral-300 ml-2`}>Disabled</span>
-                        </label>
-
-                        <label css={tw`inline-flex items-center ml-2`}>
-                            <FormikField
-                                name={'public'}
-                                type={'radio'}
-                                value
-                            />
-                            <span css={tw`text-neutral-300 ml-2`}>Enabled</span>
-                        </label>
-                    </div>
-                </div>
-            </Form>
+            </div>
         </AdminBox>
     );
 };
@@ -167,6 +165,7 @@ export default () => {
     }
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        console.log('submit!');
         clearFlashes('node');
 
         updateNode(node.id, values)
@@ -216,29 +215,31 @@ export default () => {
         >
             {
                 ({ isSubmitting, isValid }) => (
-                    <div css={tw`flex flex-col lg:flex-row`}>
-                        <div css={tw`w-full lg:w-1/2 flex flex-col mr-0 lg:mr-2`}>
-                            <NodeSettingsContainer/>
-                        </div>
-
-                        <div css={tw`w-full lg:w-1/2 flex flex-col ml-0 lg:ml-2 mt-4 lg:mt-0`}>
-                            <div css={tw`flex w-full`}>
-                                <NodeListenContainer/>
+                    <Form>
+                        <div css={tw`flex flex-col lg:flex-row`}>
+                            <div css={tw`w-full lg:w-1/2 flex flex-col mr-0 lg:mr-2`}>
+                                <NodeSettingsContainer/>
                             </div>
 
-                            <div css={tw`flex w-full mt-4`}>
-                                <NodeLimitContainer/>
-                            </div>
+                            <div css={tw`w-full lg:w-1/2 flex flex-col ml-0 lg:ml-2 mt-4 lg:mt-0`}>
+                                <div css={tw`flex w-full`}>
+                                    <NodeListenContainer/>
+                                </div>
 
-                            <div css={tw`rounded shadow-md bg-neutral-700 mt-4 py-2 pr-6`}>
-                                <div css={tw`flex flex-row`}>
-                                    <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
-                                        Save Changes
-                                    </Button>
+                                <div css={tw`flex w-full mt-4`}>
+                                    <NodeLimitContainer/>
+                                </div>
+
+                                <div css={tw`rounded shadow-md bg-neutral-700 mt-4 py-2 pr-6`}>
+                                    <div css={tw`flex flex-row`}>
+                                        <Button type={'submit'} css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
+                                            Save Changes
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Form>
                 )
             }
         </Formik>

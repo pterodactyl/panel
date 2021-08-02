@@ -17,20 +17,24 @@ class StoreNodeRequest extends ApplicationApiRequest
     public function rules(array $rules = null): array
     {
         return collect($rules ?? Node::getRules())->only([
-            'public',
             'name',
             'location_id',
+            'database_host_id',
             'fqdn',
-            'listen_port_http',
-            'listen_port_sftp',
-            'public_port_http',
-            'public_port_sftp',
             'scheme',
             'behind_proxy',
+            'public',
+
+            'listen_port_http',
+            'public_port_http',
+            'listen_port_sftp',
+            'public_port_sftp',
+
             'memory',
             'memory_overallocate',
             'disk',
             'disk_overallocate',
+
             'upload_size',
             'daemon_base',
         ])->mapWithKeys(function ($value, $key) {
