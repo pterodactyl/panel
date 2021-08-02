@@ -1,11 +1,10 @@
+import { State, useStoreState } from 'easy-peasy';
 import React, { useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
-import { State, useStoreState } from 'easy-peasy';
 import tw, { styled } from 'twin.macro';
-import { breakpoint } from '@/theme';
 import { ApplicationStore } from '@/state';
 import { AdminContext } from '@/state/admin';
-import { NotFound } from '@/components/elements/ScreenBlock';
+import { breakpoint } from '@/theme';
 import OverviewContainer from '@/components/admin/overview/OverviewContainer';
 import SettingsContainer from '@/components/admin/settings/SettingsContainer';
 import DatabasesContainer from '@/components/admin/databases/DatabasesContainer';
@@ -29,6 +28,7 @@ import MountsContainer from '@/components/admin/mounts/MountsContainer';
 import MountEditContainer from '@/components/admin/mounts/MountEditContainer';
 import EggRouter from '@/components/admin/nests/eggs/EggRouter';
 import ServerRouter from '@/components/admin/servers/ServerRouter';
+import { NotFound } from '@/components/elements/ScreenBlock';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
     ${tw`fixed h-screen hidden md:flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
@@ -79,8 +79,7 @@ const Sidebar = styled.div<{ collapsed?: boolean }>`
 
     & > div.user {
         ${tw`h-16 w-full flex items-center bg-neutral-700`};
-        ${props => !props.collapsed && tw`mt-auto px-5`};
-        ${props => props.collapsed && tw`justify-center`};
+        ${props => props.collapsed ? tw`justify-center` : tw`mt-auto px-5`};
 
         & > div, a {
             ${props => props.collapsed && tw`hidden`};

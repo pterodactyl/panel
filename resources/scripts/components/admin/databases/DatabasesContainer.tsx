@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from 'react';
-import getDatabases, { Context as DatabasesContext, Filters } from '@/api/admin/databases/getDatabases';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
-import { AdminContext } from '@/state/admin';
 import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
-import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import getDatabases, { Context as DatabasesContext, Filters } from '@/api/admin/databases/getDatabases';
+import useFlash from '@/plugins/useFlash';
+import { AdminContext } from '@/state/admin';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
+import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminTable, { TableBody, TableHead, TableHeader, TableRow, Pagination, Loading, NoItems, ContentWrapper, useTableHooks } from '@/components/admin/AdminTable';
 import Button from '@/components/elements/Button';
 import CopyOnClick from '@/components/elements/CopyOnClick';
@@ -103,7 +103,7 @@ const DatabasesContainer = () => {
                                     <TableHeader name={'ID'} direction={sort === 'id' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('id')}/>
                                     <TableHeader name={'Name'} direction={sort === 'name' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('name')}/>
                                     <TableHeader name={'Address'}/>
-                                    <TableHeader name={'Username'} direction={sort === 'username' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('username')}/>
+                                    <TableHeader name={'Username'}/>
                                 </TableHead>
 
                                 <TableBody>
