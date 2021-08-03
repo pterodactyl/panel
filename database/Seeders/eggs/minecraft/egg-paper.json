@@ -9,7 +9,8 @@
     "author": "parker@pterodactyl.io",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
     "features": [
-        "eula"
+        "eula",
+        "javaversion"
     ],
     "images": [
         "ghcr.io\/pterodactyl\/yolks:java_8",
