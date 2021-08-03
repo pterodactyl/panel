@@ -44,7 +44,7 @@ export default ({ backup, className }: Props) => {
         <GreyRowBox css={tw`flex-wrap md:flex-nowrap items-center`} className={className}>
             <div css={tw`flex items-center truncate w-full md:flex-1`}>
                 <div css={tw`mr-4`}>
-                    {backup.completedAt ?
+                    {backup.completedAt !== null ?
                         backup.isLocked ?
                             <FontAwesomeIcon icon={faLock} css={tw`text-yellow-500`}/>
                             :
@@ -55,7 +55,7 @@ export default ({ backup, className }: Props) => {
                 </div>
                 <div css={tw`flex flex-col truncate`}>
                     <div css={tw`flex items-center text-sm mb-1`}>
-                        {!backup.isSuccessful &&
+                        {backup.completedAt !== null && !backup.isSuccessful &&
                         <span css={tw`bg-red-500 py-px px-2 rounded-full text-white text-xs uppercase border border-red-600 mr-2`}>
                             Failed
                         </span>
@@ -63,7 +63,7 @@ export default ({ backup, className }: Props) => {
                         <p css={tw`break-words truncate`}>
                             {backup.name}
                         </p>
-                        {(backup.completedAt && backup.isSuccessful) &&
+                        {(backup.completedAt !== null && backup.isSuccessful) &&
                         <span css={tw`ml-3 text-neutral-300 text-xs font-extralight hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
                         }
                     </div>

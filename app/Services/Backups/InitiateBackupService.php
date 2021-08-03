@@ -132,8 +132,9 @@ class InitiateBackupService
             }
         }
 
-        // Check if the server has reached or exceeded it's backup limit.
-        $successful = $server->backups()->where('is_successful', true);
+        // Check if the server has reached or exceeded its backup limit.
+        // completed_at == null will cover any ongoing backups, while is_successful == true will cover any completed backups.
+        $successful = $server->backups()->whereNull('completed_at')->orWhere('is_successful', true);
         if (!$server->backup_limit || $successful->count() >= $server->backup_limit) {
             // Do not allow the user to continue if this server is already at its limit and can't override.
             if (!$override || $server->backup_limit <= 0) {
