@@ -4,7 +4,7 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-07-04T19:19:11-04:00",
+    "exported_at": "2021-08-01T03:55:24+03:00",
     "name": "Sponge (SpongeVanilla)",
     "author": "support@pterodactyl.io",
     "description": "SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.",
@@ -21,7 +21,7 @@
     "config": {
         "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"enable-query\": \"true\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
-        "logs": "{\r\n    \"custom\": false,\r\n    \"location\": \"logs\/latest.log\"\r\n}",
+        "logs": "{}",
         "stop": "stop"
     },
     "scripts": {
@@ -38,7 +38,7 @@
             "env_variable": "SPONGE_VERSION",
             "default_value": "1.12.2-7.3.0",
             "user_viewable": true,
-            "user_editable": false,
+            "user_editable": true,
             "rules": "required|regex:\/^([a-zA-Z0-9.\\-_]+)$\/"
         },
         {
