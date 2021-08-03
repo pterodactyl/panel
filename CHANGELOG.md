@@ -3,6 +3,27 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.5.0
+### Fixed
+* Fixes deleting a locked backup that has also been marked as failed to allow deletion rather than returning an error about being locked.
+* Fixes server creation process not correctly sending `start_on_completion` to Wings instance.
+* Fixes `z-index` on file mass delete modal so it is displayed on top of all elements, rather than hidden under some.
+* Supports re-sending requests to the Panel API for backups that are currently marked as failed, allowing a previously failed backup to be marked as successful.
+* Minor updates to multiple default eggs for improved error handling and more accurate field-level validation.
+
+### Updated
+* Updates help text for CPU limiting when creating a new server to properly indicate virtual threads are included, rather than only physical threads.
+* Updates all of the default eggs shipped with the Panel to reference new [`ghcr.io` yolks repository](https://github.com/pterodactyl/yolks).
+* When adding 2FA to an account the key used to generate the token is now displayed to the user allowing them to manually input into their app if necessary.
+
+### Added
+* Adds SSL/TLS options for MySQL and Redis in line with most recent Laravel updates.
+* New users created for server MySQL instances will now have the correct permissions for creating foreign keys on tables.
+* Adds new automatic popup feature to allow users to quickly update their Minecraft servers to the latest Java® eggs as necessary if unsupported versions are detected.
+
+### Removed
+* Removes legacy `userInteraction` key from eggs which was unused.
+
 ## v1.4.2
 ### Fixed
 * Fixes logic to disallow creating a backup schedule if the server's backup limit is set to 0.
