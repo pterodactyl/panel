@@ -72,6 +72,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'username' => $user->username,
                     'email' => $user->email,
                     'language' => $user->language,
+                    'admin_role_id' => $user->admin_role_id,
                     'root_admin' => (bool) $user->root_admin,
                     '2fa' => (bool) $user->totp_enabled,
                     'avatar_url' => $user->avatarURL(),
@@ -106,6 +107,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                 'username' => $user->username,
                 'email' => $user->email,
                 'language' => $user->language,
+                'admin_role_id' => $user->admin_role_id,
                 'root_admin' => (bool) $user->root_admin,
                 '2fa' => (bool) $user->totp_enabled,
                 'created_at' => $this->formatTimestamp($user->created_at),
@@ -202,7 +204,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
     }
 
     /**
-     * Test that a users's existence is not exposed unless an API key has permission
+     * Test that a user's existence is not exposed unless an API key has permission
      * to access the resource.
      */
     public function testResourceIsNotExposedWithoutPermissions()
