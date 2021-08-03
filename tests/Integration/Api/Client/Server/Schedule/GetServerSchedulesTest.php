@@ -32,9 +32,9 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permissions);
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
         /** @var \Pterodactyl\Models\Task $task */
-        $task = factory(Task::class)->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'time_offset' => 0]);
+        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'time_offset' => 0]);
 
         $response = $this->actingAs($user)
             ->getJson(
@@ -45,7 +45,7 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
             ->assertOk();
 
         $prefix = $individual ? '' : 'data.0.';
-        if (! $individual) {
+        if (!$individual) {
             $response->assertJsonCount(1, 'data');
         }
 
@@ -66,7 +66,7 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
         [, $server2] = $this->generateTestAccount(['user_id' => $user->id]);
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server2->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
 
         $this->actingAs($user)
             ->getJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
@@ -84,16 +84,13 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
             ->getJson("/api/client/servers/{$server->uuid}/schedules")
             ->assertForbidden();
 
-        $schedule = factory(Schedule::class)->create(['server_id' => $server->id]);
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)
             ->getJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
             ->assertForbidden();
     }
 
-    /**
-     * @return array
-     */
     public function permissionsDataProvider(): array
     {
         return [

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Http\Middleware;
+namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Illuminate\Auth\AuthenticationException;
 use Pterodactyl\Http\Middleware\Authenticate;
@@ -31,8 +31,6 @@ class AuthenticateTest extends MiddlewareTestCase
 
     /**
      * Return an instance of the middleware using mocked dependencies.
-     *
-     * @return \Pterodactyl\Http\Middleware\Authenticate
      */
     private function getMiddleware(): Authenticate
     {

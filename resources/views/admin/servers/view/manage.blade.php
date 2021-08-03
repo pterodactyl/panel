@@ -31,7 +31,7 @@
                     <p>This will reinstall the server with the assigned service scripts. <strong>Danger!</strong> This could overwrite server data.</p>
                 </div>
                 <div class="box-footer">
-                    @if($server->installed === 1)
+                    @if($server->isInstalled())
                         <form action="{{ route('admin.servers.view.manage.reinstall', $server->id) }}" method="POST">
                             {!! csrf_field() !!}
                             <button type="submit" class="btn btn-danger">Reinstall Server</button>
@@ -58,7 +58,8 @@
                 </div>
             </div>
         </div>
-        @if(! $server->suspended)
+
+        @if(! $server->isSuspended())
             <div class="col-sm-4">
                 <div class="box box-warning">
                     <div class="box-header with-border">
@@ -71,7 +72,7 @@
                         <form action="{{ route('admin.servers.view.manage.suspension', $server->id) }}" method="POST">
                             {!! csrf_field() !!}
                             <input type="hidden" name="action" value="suspend" />
-                            <button type="submit" class="btn btn-warning">Suspend Server</button>
+                            <button type="submit" class="btn btn-warning @if(! is_null($server->transfer)) disabled @endif">Suspend Server</button>
                         </form>
                     </div>
                 </div>
@@ -96,7 +97,7 @@
             </div>
         @endif
 
-        @if($canTransfer)
+        @if(is_null($server->transfer))
             <div class="col-sm-4">
                 <div class="box box-success">
                     <div class="box-header with-border">
@@ -104,12 +105,36 @@
                     </div>
                     <div class="box-body">
                         <p>
-                            Hopefully, you will soon be able to move servers around without needing to do a bunch of confusing
-                            operations manually and it will work fluidly and with no problems.
+                            Transfer this server to another node connected to this panel.
+                            <strong>Warning!</strong> This feature has not been fully tested and may have bugs.
                         </p>
                     </div>
+
                     <div class="box-footer">
-                        <button class="btn btn-success" data-toggle="modal" data-target="#transferServerModal">Transfer Server</button>
+                        @if($canTransfer)
+                            <button class="btn btn-success" data-toggle="modal" data-target="#transferServerModal">Transfer Server</button>
+                        @else
+                            <button class="btn btn-success disabled">Transfer Server</button>
+                            <p style="padding-top: 1rem;">Transferring a server requires more than one node to be configured on your panel.</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @else
+            <div class="col-sm-4">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Transfer Server</h3>
+                    </div>
+                    <div class="box-body">
+                        <p>
+                            This server is currently being transferred to another node.
+                            Transfer was initiated at <strong>{{ $server->transfer->created_at }}</strong>
+                        </p>
+                    </div>
+
+                    <div class="box-footer">
+                        <button class="btn btn-success disabled">Transfer Server</button>
                     </div>
                 </div>
             </div>
@@ -119,7 +144,6 @@
     <div class="modal fade" id="transferServerModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <!-- TODO: Change route -->
                 <form action="{{ route('admin.servers.view.manage.transfer', $server->id) }}" method="POST">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

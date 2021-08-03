@@ -13,17 +13,11 @@ use Pterodactyl\Services\Databases\DatabaseManagementService;
 
 class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
-    /**
-     * @return string
-     */
     public function permission(): string
     {
         return Permission::ACTION_DATABASE_CREATE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         $server = $this->route()->parameter('server');

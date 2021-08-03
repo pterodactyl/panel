@@ -3,11 +3,13 @@
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
-use Exception;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\DisplayException;
-use GuzzleHttp\Exception\BadResponseException;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Servers\BuildModificationService;
@@ -39,7 +41,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $server2 = $this->createServerModel();
 
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocations = factory(Allocation::class)->times(4)->create(['node_id' => $server->node_id, 'notes' => 'Random notes']);
+        $allocations = Allocation::factory()->times(4)->create(['node_id' => $server->node_id, 'notes' => 'Random notes']);
 
         $initialAllocationId = $server->allocation_id;
         $allocations[0]->update(['server_id' => $server->id, 'notes' => 'Test notes']);
@@ -86,7 +88,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocations = factory(Allocation::class)->times(4)->create(['node_id' => $server->node_id]);
+        $allocations = Allocation::factory()->times(4)->create(['node_id' => $server->node_id]);
 
         $allocations[0]->update(['server_id' => $server->id]);
 
@@ -114,12 +116,14 @@ class BuildModificationServiceTest extends IntegrationTestCase
 
         $this->daemonServerRepository->expects('update')->with(Mockery::on(function ($data) {
             $this->assertEquals([
-                'memory_limit' => 256,
-                'swap' => 128,
-                'io_weight' => 600,
-                'cpu_limit' => 150,
-                'threads' => '1,2',
-                'disk_space' => 1024,
+                'build' => [
+                    'memory_limit' => 256,
+                    'swap' => 128,
+                    'io_weight' => 600,
+                    'cpu_limit' => 150,
+                    'threads' => '1,2',
+                    'disk_space' => 1024,
+                ],
             ], $data);
 
             return true;
@@ -151,13 +155,37 @@ class BuildModificationServiceTest extends IntegrationTestCase
     }
 
     /**
+     * Test that an exception when connecting to the Wings instance is properly ignored
+     * when making updates. This allows for a server to be modified even when the Wings
+     * node is offline.
+     */
+    public function testConnectionExceptionIsIgnoredWhenUpdatingServerSettings()
+    {
+        $server = $this->createServerModel();
+
+        $this->daemonServerRepository->expects('setServer->update')->andThrows(
+            new DaemonConnectionException(
+                new RequestException('Bad request', new Request('GET', '/test'), new Response())
+            )
+        );
+
+        $response = $this->getService()->handle($server, ['memory' => 256, 'disk' => 10240]);
+
+        $this->assertInstanceOf(Server::class, $response);
+        $this->assertSame(256, $response->memory);
+        $this->assertSame(10240, $response->disk);
+
+        $this->assertDatabaseHas('servers', ['id' => $response->id, 'memory' => 256, 'disk' => 10240]);
+    }
+
+    /**
      * Test that no exception is thrown if we are only removing an allocation.
      */
     public function testNoExceptionIsThrownIfOnlyRemovingAllocation()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        /** @var \Pterodactyl\Models\Allocation $allocation */
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
 
@@ -179,8 +207,8 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testAllocationInBothAddAndRemoveIsAdded()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id]);
+        /** @var \Pterodactyl\Models\Allocation $allocation */
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
 
@@ -198,9 +226,10 @@ class BuildModificationServiceTest extends IntegrationTestCase
     public function testUsingSameAllocationIdMultipleTimesDoesNotError()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
-        $allocation2 = factory(Allocation::class)->create(['node_id' => $server->node_id]);
+        /** @var \Pterodactyl\Models\Allocation $allocation */
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
+        /** @var \Pterodactyl\Models\Allocation $allocation2 */
+        $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
 
@@ -215,13 +244,15 @@ class BuildModificationServiceTest extends IntegrationTestCase
 
     /**
      * Test that any changes we made to the server or allocations are rolled back if there is an
-     * exception while performing any action.
+     * exception while performing any action. This is different than the connection exception
+     * test which should properly ignore connection issues. We want any other type of exception
+     * to properly be thrown back to the caller.
      */
     public function testThatUpdatesAreRolledBackIfExceptionIsEncountered()
     {
         $server = $this->createServerModel();
-        /** @var \Pterodactyl\Models\Allocation[] $allocations */
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id]);
+        /** @var \Pterodactyl\Models\Allocation $allocation */
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
 
         $this->daemonServerRepository->expects('setServer->update')->andThrows(new DisplayException('Test'));
 

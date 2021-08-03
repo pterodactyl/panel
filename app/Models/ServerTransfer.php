@@ -9,13 +9,15 @@ namespace Pterodactyl\Models;
  * @property int $new_node
  * @property int $old_allocation
  * @property int $new_allocation
- * @property string $old_additional_allocations
- * @property string $new_additional_allocations
- * @property bool $successful
+ * @property array|null $old_additional_allocations
+ * @property array|null $new_additional_allocations
+ * @property bool|null $successful
+ * @property bool $archived
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property \Pterodactyl\Models\Server $server
+ * @property \Pterodactyl\Models\Node $oldNode
+ * @property \Pterodactyl\Models\Node $newNode
  */
 class ServerTransfer extends Model
 {
@@ -23,7 +25,7 @@ class ServerTransfer extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'server_transfer';
+    public const RESOURCE_NAME = 'server_transfer';
 
     /**
      * The table associated with the model.
@@ -50,9 +52,10 @@ class ServerTransfer extends Model
         'new_node' => 'int',
         'old_allocation' => 'int',
         'new_allocation' => 'int',
-        'old_additional_allocations' => 'string',
-        'new_additional_allocations' => 'string',
+        'old_additional_allocations' => 'array',
+        'new_additional_allocations' => 'array',
         'successful' => 'bool',
+        'archived' => 'bool',
     ];
 
     /**
@@ -64,9 +67,11 @@ class ServerTransfer extends Model
         'new_node' => 'required|numeric',
         'old_allocation' => 'required|numeric',
         'new_allocation' => 'required|numeric',
-        'old_additional_allocations' => 'nullable',
-        'new_additional_allocations' => 'nullable',
-        'successful' => 'sometimes|boolean',
+        'old_additional_allocations' => 'nullable|array',
+        'old_additional_allocations.*' => 'numeric',
+        'new_additional_allocations' => 'nullable|array',
+        'new_additional_allocations.*' => 'numeric',
+        'successful' => 'sometimes|nullable|boolean',
     ];
 
     /**
@@ -77,5 +82,25 @@ class ServerTransfer extends Model
     public function server()
     {
         return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * Gets the source node associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function oldNode()
+    {
+        return $this->hasOne(Node::class, 'id', 'old_node');
+    }
+
+    /**
+     * Gets the target node associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function newNode()
+    {
+        return $this->hasOne(Node::class, 'id', 'new_node');
     }
 }

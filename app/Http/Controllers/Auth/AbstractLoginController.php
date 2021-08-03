@@ -50,9 +50,6 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * LoginController constructor.
-     *
-     * @param \Illuminate\Auth\AuthManager $auth
-     * @param \Illuminate\Contracts\Config\Repository $config
      */
     public function __construct(AuthManager $auth, Repository $config)
     {
@@ -66,10 +63,6 @@ abstract class AbstractLoginController extends Controller
     /**
      * Get the failed login response instance.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Illuminate\Contracts\Auth\Authenticatable|null $user
-     * @param string|null $message
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
     protected function sendFailedLoginResponse(Request $request, Authenticatable $user = null, string $message = null)
@@ -80,9 +73,7 @@ abstract class AbstractLoginController extends Controller
         ]);
 
         if ($request->route()->named('auth.login-checkpoint')) {
-            throw new DisplayException(
-                $message ?? trans('auth.two_factor.checkpoint_failed')
-            );
+            throw new DisplayException($message ?? trans('auth.two_factor.checkpoint_failed'));
         }
 
         throw new DisplayException(trans('auth.failed'));
@@ -90,10 +81,6 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Send the response after the user was authenticated.
-     *
-     * @param \Pterodactyl\Models\User $user
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
      */
     protected function sendLoginResponse(User $user, Request $request): JsonResponse
     {
@@ -115,7 +102,6 @@ abstract class AbstractLoginController extends Controller
      * Determine if the user is logging in using an email or username,.
      *
      * @param string $input
-     * @return string
      */
     protected function getField(string $input = null): string
     {
@@ -124,9 +110,6 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Fire a failed login event.
-     *
-     * @param \Illuminate\Contracts\Auth\Authenticatable|null $user
-     * @param array $credentials
      */
     protected function fireFailedLoginEvent(Authenticatable $user = null, array $credentials = [])
     {

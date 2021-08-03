@@ -12,29 +12,26 @@ class PruneOrphanedBackupsCommand extends Command
     /**
      * @var string
      */
-    protected $signature = 'p:maintenance:prune-backups {--since-minutes=30}';
+    protected $signature = 'p:maintenance:prune-backups {--prune-age=}';
 
     /**
      * @var string
      */
     protected $description = 'Marks all backups that have not completed in the last "n" minutes as being failed.';
 
-    /**
-     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
-     */
     public function handle(BackupRepository $repository)
     {
-        $since = $this->option('since-minutes');
-        if (! is_digit($since)) {
-            throw new InvalidArgumentException('The --since-minutes option must be a valid numeric digit.');
+        $since = $this->option('prune-age') ?? config('backups.prune_age', 360);
+        if (!$since || !is_digit($since)) {
+            throw new InvalidArgumentException('The "--prune-age" argument must be a value greater than 0.');
         }
 
         $query = $repository->getBuilder()
             ->whereNull('completed_at')
-            ->whereDate('created_at', '<=', CarbonImmutable::now()->subMinutes($since));
+            ->where('created_at', '<=', CarbonImmutable::now()->subMinutes($since)->toDateTimeString());
 
         $count = $query->count();
-        if (! $count) {
+        if (!$count) {
             $this->info('There are no orphaned backups to be marked as failed.');
 
             return;

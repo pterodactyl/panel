@@ -133,7 +133,7 @@
         <div class="box box-primary">
             <div class="box-body" style="padding-bottom: 0px;">
                 <div class="row">
-                    @if($server->suspended)
+                    @if($server->isSuspended())
                         <div class="col-sm-12">
                             <div class="small-box bg-yellow">
                                 <div class="inner">
@@ -142,11 +142,11 @@
                             </div>
                         </div>
                     @endif
-                    @if($server->installed !== 1)
+                    @if(!$server->isInstalled())
                         <div class="col-sm-12">
-                            <div class="small-box {{ (! $server->installed) ? 'bg-blue' : 'bg-maroon' }}">
+                            <div class="small-box {{ (! $server->isInstalled()) ? 'bg-blue' : 'bg-maroon' }}">
                                 <div class="inner">
-                                    <h3 class="no-margin">{{ (! $server->installed) ? 'Installing' : 'Install Failed' }}</h3>
+                                    <h3 class="no-margin">{{ (! $server->isInstalled()) ? 'Installing' : 'Install Failed' }}</h3>
                                 </div>
                             </div>
                         </div>

@@ -13,7 +13,7 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetRemoteUser()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $response = $this->getJson('/api/application/users/external/' . $user->external_id);
         $response->assertStatus(Response::HTTP_OK);
@@ -60,7 +60,7 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testErrorReturnedIfNoPermission()
     {
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
 
         $response = $this->getJson('/api/application/users/external/' . $user->external_id);

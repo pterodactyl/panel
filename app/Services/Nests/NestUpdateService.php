@@ -20,8 +20,6 @@ class NestUpdateService
 
     /**
      * NestUpdateService constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(NestRepositoryInterface $repository)
     {
@@ -31,14 +29,12 @@ class NestUpdateService
     /**
      * Update a nest and prevent changing the author once it is set.
      *
-     * @param int $nest
-     * @param array $data
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(int $nest, array $data)
     {
-        if (! is_null(array_get($data, 'author'))) {
+        if (!is_null(array_get($data, 'author'))) {
             unset($data['author']);
         }
 

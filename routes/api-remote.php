@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('/sftp/auth', 'SftpAuthenticationController');
 
 Route::get('/servers', 'Servers\ServerDetailsController@list');
+Route::post('/servers/reset', 'Servers\ServerDetailsController@resetState');
 
 Route::group(['prefix' => '/servers/{uuid}'], function () {
     Route::get('/', 'Servers\ServerDetailsController');
@@ -18,5 +19,7 @@ Route::group(['prefix' => '/servers/{uuid}'], function () {
 });
 
 Route::group(['prefix' => '/backups'], function () {
-    Route::post('/{backup}', 'Backups\BackupStatusController');
+    Route::get('/{backup}', 'Backups\BackupRemoteUploadController');
+    Route::post('/{backup}', 'Backups\BackupStatusController@index');
+    Route::post('/{backup}/restore', 'Backups\BackupStatusController@restore');
 });

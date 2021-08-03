@@ -10,17 +10,12 @@ class StoreTaskRequest extends ViewScheduleRequest
      * Determine if the user is allowed to create a new task for this schedule. We simply
      * check if they can modify a schedule to determine if they're able to do this. There
      * are no task specific permissions.
-     *
-     * @return string
      */
     public function permission(): string
     {
         return Permission::ACTION_SCHEDULE_UPDATE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [

@@ -82,20 +82,20 @@
                                 <p class="text-muted small">The author of this version of the Egg. Uploading a new Egg configuration from a different author will change this.</p>
                             </div>
                             <div class="form-group">
-                                <label for="pDockerImage" class="control-label">Docker Image <span class="field-required"></span></label>
-                                <input type="text" id="pDockerImage" name="docker_image" value="{{ $egg->docker_image }}" class="form-control" />
-                                <p class="text-muted small">The default docker image that should be used for new servers using this Egg. This can be changed per-server as needed.</p>
+                                <label for="pDockerImage" class="control-label">Docker Images <span class="field-required"></span></label>
+                                <textarea id="pDockerImages" name="docker_images" class="form-control" rows="4">{{ implode("\n", $egg->docker_images) }}</textarea>
+                                <p class="text-muted small">The docker images available to servers using this egg. Enter one per line. Users will be able to select from this list of images if more than one value is provided.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="pDescription" class="control-label">Description</label>
-                                <textarea id="pDescription" name="description" class="form-control" rows="6">{{ $egg->description }}</textarea>
+                                <textarea id="pDescription" name="description" class="form-control" rows="8">{{ $egg->description }}</textarea>
                                 <p class="text-muted small">A description of this Egg that will be displayed throughout the Panel as needed.</p>
                             </div>
                             <div class="form-group">
                                 <label for="pStartup" class="control-label">Startup Command <span class="field-required"></span></label>
-                                <textarea id="pStartup" name="startup" class="form-control" rows="6">{{ $egg->startup }}</textarea>
+                                <textarea id="pStartup" name="startup" class="form-control" rows="8">{{ $egg->startup }}</textarea>
                                 <p class="text-muted small">The default startup command that should be used for new servers using this Egg.</p>
                             </div>
                         </div>

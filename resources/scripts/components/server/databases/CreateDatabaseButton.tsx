@@ -3,7 +3,7 @@ import Modal from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { object, string } from 'yup';
-import createServerDatabase from '@/api/server/createServerDatabase';
+import createServerDatabase from '@/api/server/databases/createServerDatabase';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -24,7 +24,7 @@ const schema = object().shape({
         .matches(/^[A-Za-z0-9_\-.]{3,48}$/, 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'),
     connectionsFrom: string()
         .required('A connection value must be provided.')
-        .matches(/^([1-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, 'A valid connection address must be provided.'),
+        .matches(/^([0-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, 'A valid connection address must be provided.'),
 });
 
 export default () => {
@@ -42,7 +42,6 @@ export default () => {
                 setVisible(false);
             })
             .catch(error => {
-                console.log(error);
                 addError({ key: 'database:create', message: httpErrorToHuman(error) });
                 setSubmitting(false);
             });

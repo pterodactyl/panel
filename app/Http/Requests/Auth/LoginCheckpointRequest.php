@@ -9,8 +9,6 @@ class LoginCheckpointRequest extends FormRequest
 {
     /**
      * Determine if the request is authorized.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {
@@ -19,8 +17,6 @@ class LoginCheckpointRequest extends FormRequest
 
     /**
      * Rules to apply to the request.
-     *
-     * @return array
      */
     public function rules(): array
     {

@@ -6,11 +6,12 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class SuspensionService
 {
-    const ACTION_SUSPEND = 'suspend';
-    const ACTION_UNSUSPEND = 'unsuspend';
+    public const ACTION_SUSPEND = 'suspend';
+    public const ACTION_UNSUSPEND = 'unsuspend';
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -24,9 +25,6 @@ class SuspensionService
 
     /**
      * SuspensionService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -39,7 +37,6 @@ class SuspensionService
     /**
      * Suspends a server on the system.
      *
-     * @param \Pterodactyl\Models\Server $server
      * @param string $action
      *
      * @throws \Throwable
@@ -52,16 +49,24 @@ class SuspensionService
         // Nothing needs to happen if we're suspending the server and it is already
         // suspended in the database. Additionally, nothing needs to happen if the server
         // is not suspended and we try to un-suspend the instance.
-        if ($isSuspending === $server->suspended) {
+        if ($isSuspending === $server->isSuspended()) {
             return;
         }
 
-        $this->connection->transaction(function () use ($action, $server) {
+        // Check if the server is currently being transferred.
+        if (!is_null($server->transfer)) {
+            throw new ConflictHttpException('Cannot toggle suspension status on a server that is currently being transferred.');
+        }
+
+        $this->connection->transaction(function () use ($action, $server, $isSuspending) {
             $server->update([
-                'suspended' => $action === self::ACTION_SUSPEND,
+                'status' => $isSuspending ? Server::STATUS_SUSPENDED : null,
             ]);
 
-            $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
+            // Only send the suspension request to wings if the server is not currently being transferred.
+            if (is_null($server->transfer)) {
+                $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
+            }
         });
     }
 }

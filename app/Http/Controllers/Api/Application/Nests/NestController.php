@@ -17,8 +17,6 @@ class NestController extends ApplicationApiController
 
     /**
      * NestController constructor.
-     *
-     * @param \Pterodactyl\Contracts\Repository\NestRepositoryInterface $repository
      */
     public function __construct(NestRepositoryInterface $repository)
     {
@@ -29,13 +27,10 @@ class NestController extends ApplicationApiController
 
     /**
      * Return all Nests that exist on the Panel.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest $request
-     * @return array
      */
     public function index(GetNestsRequest $request): array
     {
-        $nests = $this->repository->paginated(50);
+        $nests = $this->repository->paginated($request->query('per_page') ?? 50);
 
         return $this->fractal->collection($nests)
             ->transformWith($this->getTransformer(NestTransformer::class))
@@ -44,9 +39,6 @@ class NestController extends ApplicationApiController
 
     /**
      * Return information about a single Nest model.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest $request
-     * @return array
      */
     public function view(GetNestsRequest $request): array
     {

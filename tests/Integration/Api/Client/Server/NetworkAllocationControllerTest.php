@@ -4,7 +4,6 @@ namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
@@ -17,7 +16,6 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     public function testServerAllocationsAreReturned()
     {
         [$user, $server] = $this->generateTestAccount();
-        $allocation = $this->getAllocation($server);
 
         $response = $this->actingAs($user)->getJson($this->link($server, '/network/allocations'));
 
@@ -25,7 +23,7 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('object', 'list');
         $response->assertJsonCount(1, 'data');
 
-        $this->assertJsonTransformedWith($response->json('data.0.attributes'), $allocation);
+        $this->assertJsonTransformedWith($response->json('data.0.attributes'), $server->allocation);
     }
 
     /**
@@ -34,7 +32,7 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     public function testServerAllocationsAreNotReturnedWithoutPermission()
     {
         [$user, $server] = $this->generateTestAccount();
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
 
         $server->owner_id = $user2->id;
         $server->save();
@@ -51,13 +49,12 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     /**
      * Tests that notes on an allocation can be set correctly.
      *
-     * @param array $permissions
      * @dataProvider updatePermissionsDataProvider
      */
     public function testAllocationNotesCanBeUpdated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
-        $allocation = $this->getAllocation($server);
+        $allocation = $server->allocation;
 
         $this->assertNull($allocation->notes);
 
@@ -87,29 +84,26 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     public function testAllocationNotesCannotBeUpdatedByInvalidUsers()
     {
         [$user, $server] = $this->generateTestAccount();
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
 
         $server->owner_id = $user2->id;
         $server->save();
 
-        $this->actingAs($user)->postJson($this->link($this->getAllocation($server)))
-            ->assertNotFound();
+        $this->actingAs($user)->postJson($this->link($server->allocation))->assertNotFound();
 
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_ALLOCATION_CREATE]);
 
-        $this->actingAs($user)->postJson($this->link($this->getAllocation($server)))
-            ->assertForbidden();
+        $this->actingAs($user)->postJson($this->link($server->allocation))->assertForbidden();
     }
 
     /**
-     * @param array $permissions
      * @dataProvider updatePermissionsDataProvider
      */
     public function testPrimaryAllocationCanBeModified(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
-        $allocation = $this->getAllocation($server);
-        $allocation2 = $this->getAllocation($server);
+        $allocation = $server->allocation;
+        $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
 
         $server->allocation_id = $allocation->id;
         $server->save();
@@ -125,66 +119,17 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     public function testPrimaryAllocationCannotBeModifiedByInvalidUser()
     {
         [$user, $server] = $this->generateTestAccount();
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
 
         $server->owner_id = $user2->id;
         $server->save();
 
-        $this->actingAs($user)->postJson($this->link($this->getAllocation($server), '/primary'))
+        $this->actingAs($user)->postJson($this->link($server->allocation, '/primary'))
             ->assertNotFound();
 
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_ALLOCATION_CREATE]);
 
-        $this->actingAs($user)->postJson($this->link($this->getAllocation($server), '/primary'))
-            ->assertForbidden();
-    }
-
-    /**
-     * @param array $permissions
-     * @dataProvider deletePermissionsDataProvider
-     */
-    public function testAllocationCanBeDeleted(array $permissions)
-    {
-        [$user, $server] = $this->generateTestAccount($permissions);
-        $allocation = $this->getAllocation($server);
-        $allocation2 = $this->getAllocation($server);
-
-        $allocation2->notes = 'Filled notes';
-        $allocation2->save();
-
-        $server->allocation_id = $allocation->id;
-        $server->save();
-
-        $this->actingAs($user)->deleteJson($this->link($allocation))
-            ->assertStatus(Response::HTTP_BAD_REQUEST)
-            ->assertJsonPath('errors.0.code', 'DisplayException')
-            ->assertJsonPath('errors.0.detail', 'Cannot delete the primary allocation for a server.');
-
-        $this->actingAs($user)->deleteJson($this->link($allocation2))
-            ->assertStatus(Response::HTTP_NO_CONTENT);
-
-        $server = $server->refresh();
-        $allocation2 = $allocation2->refresh();
-
-        $this->assertSame($allocation->id, $server->allocation_id);
-        $this->assertNull($allocation2->server_id);
-        $this->assertNull($allocation2->notes);
-    }
-
-    public function testAllocationCannotBeDeletedByInvalidUser()
-    {
-        [$user, $server] = $this->generateTestAccount();
-        $user2 = factory(User::class)->create();
-
-        $server->owner_id = $user2->id;
-        $server->save();
-
-        $this->actingAs($user)->deleteJson($this->link($this->getAllocation($server)))
-            ->assertNotFound();
-
-        [$user, $server] = $this->generateTestAccount([Permission::ACTION_ALLOCATION_CREATE]);
-
-        $this->actingAs($user)->deleteJson($this->link($this->getAllocation($server)))
+        $this->actingAs($user)->postJson($this->link($server->allocation, '/primary'))
             ->assertForbidden();
     }
 
@@ -196,17 +141,5 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     public function deletePermissionsDataProvider()
     {
         return [[[]], [[Permission::ACTION_ALLOCATION_DELETE]]];
-    }
-
-    /**
-     * @param \Pterodactyl\Models\Server $server
-     * @return \Pterodactyl\Models\Allocation
-     */
-    protected function getAllocation(Server $server): Allocation
-    {
-        return factory(Allocation::class)->create([
-            'server_id' => $server->id,
-            'node_id' => $server->node_id,
-        ]);
     }
 }

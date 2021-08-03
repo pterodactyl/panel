@@ -17,19 +17,16 @@ class Kernel extends ConsoleKernel
 
     /**
      * Define the application's command schedule.
-     *
-     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      */
     protected function schedule(Schedule $schedule)
     {
         // Execute scheduled commands for servers every minute, as if there was a normal cron running.
         $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping();
 
-        // Every 30 minutes, run the backup pruning command so that any abandoned backups can be removed
-        // from the UI view for the server.
-        $schedule->command('p:maintenance:prune-backups', [
-            '--since-minutes' => '30',
-        ])->everyThirtyMinutes();
+        if (config('backups.prune_age')) {
+            // Every 30 minutes, run the backup pruning command so that any abandoned backups can be deleted.
+            $schedule->command('p:maintenance:prune-backups')->everyThirtyMinutes();
+        }
 
         // Every day cleanup any internal backups of service files.
         $schedule->command('p:maintenance:clean-service-backups')->daily();

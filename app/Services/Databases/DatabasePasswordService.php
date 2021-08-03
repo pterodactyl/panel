@@ -33,11 +33,6 @@ class DatabasePasswordService
 
     /**
      * DatabasePasswordService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface $repository
-     * @param \Pterodactyl\Extensions\DynamicDatabaseConnection $dynamic
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -55,7 +50,6 @@ class DatabasePasswordService
      * Updates a password for a given database.
      *
      * @param \Pterodactyl\Models\Database|int $database
-     * @return string
      *
      * @throws \Throwable
      */

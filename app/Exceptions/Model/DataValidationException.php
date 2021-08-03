@@ -18,8 +18,6 @@ class DataValidationException extends PterodactylException implements HttpExcept
 
     /**
      * DataValidationException constructor.
-     *
-     * @param \Illuminate\Contracts\Validation\Validator $validator
      */
     public function __construct(Validator $validator)
     {

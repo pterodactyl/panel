@@ -15,13 +15,11 @@ class StoreBackupRequest extends ClientApiRequest
         return Permission::ACTION_BACKUP_CREATE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [
             'name' => 'nullable|string|max:191',
+            'is_locked' => 'nullable|boolean',
             'ignored' => 'nullable|string',
         ];
     }

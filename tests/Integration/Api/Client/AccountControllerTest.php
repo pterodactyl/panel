@@ -15,7 +15,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     public function testAccountDetailsAreReturned()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/api/client/account');
 
@@ -39,7 +39,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     public function testEmailIsUpdated()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/email', [
             'email' => 'hodor@example.com',
@@ -58,7 +58,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     public function testEmailIsNotUpdatedWhenPasswordIsInvalid()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/email', [
             'email' => 'hodor@example.com',
@@ -77,7 +77,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     public function testEmailIsNotUpdatedWhenNotValid()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/email', [
             'email' => '',
@@ -104,7 +104,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     public function testPasswordIsUpdated()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $mock = Mockery::mock(AuthManager::class);
         $mock->expects('logoutOtherDevices')->with('New_Password1');
@@ -127,7 +127,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     public function testPasswordIsNotUpdatedIfCurrentPasswordIsInvalid()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/password', [
             'current_password' => 'invalid',
@@ -141,13 +141,36 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
+     * Test that a validation error is returned to the user if no password is provided or if
+     * the password is below the minimum password length.
+     */
+    public function testErrorIsReturnedForInvalidRequestData()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->putJson('/api/client/account/password', [
+            'current_password' => 'password',
+        ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'required');
+
+        $this->actingAs($user)->putJson('/api/client/account/password', [
+            'current_password' => 'password',
+            'password' => 'pass',
+            'password_confirmation' => 'pass',
+        ])
+            ->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+            ->assertJsonPath('errors.0.meta.rule', 'min');
+    }
+
+    /**
      * Test that a validation error is returned if the password passed in the request
      * does not have a confirmation, or the confirmation is not the same as the password.
      */
     public function testErrorIsReturnedIfPasswordIsNotConfirmed()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/password', [
             'current_password' => 'password',

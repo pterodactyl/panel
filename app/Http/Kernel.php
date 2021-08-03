@@ -28,7 +28,6 @@ use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
 use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Pterodactyl\Http\Middleware\Server\AccessingValidServer;
 use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
@@ -84,6 +83,12 @@ class Kernel extends HttpKernel
             SubstituteClientApiBindings::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
             AuthenticateIPAccess::class,
+            // This is perhaps a little backwards with the Client API, but logically you'd be unable
+            // to create/get an API key without first enabling 2FA on the account, so I suppose in the
+            // end it makes sense.
+            //
+            // You just wouldn't be authenticating with the API by providing a 2FA token.
+            RequireTwoFactorAuthentication::class,
         ],
         'daemon' => [
             SubstituteBindings::class,
@@ -100,7 +105,6 @@ class Kernel extends HttpKernel
         'auth' => Authenticate::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'guest' => RedirectIfAuthenticated::class,
-        'server' => AccessingValidServer::class,
         'admin' => AdminAuthenticate::class,
         'csrf' => VerifyCsrfToken::class,
         'throttle' => ThrottleRequests::class,

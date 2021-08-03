@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { faArchive, faEllipsisH, faLock } from '@fortawesome/free-solid-svg-icons';
 import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/components/elements/Spinner';
 import { bytesToHuman } from '@/helpers';
@@ -11,6 +11,7 @@ import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
+import { SocketEvent } from '@/components/server/events';
 
 interface Props {
     backup: ServerBackup;
@@ -20,7 +21,7 @@ interface Props {
 export default ({ backup, className }: Props) => {
     const { mutate } = getServerBackups();
 
-    useWebsocketEvent(`backup completed:${backup.uuid}`, data => {
+    useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${backup.uuid}` as SocketEvent, data => {
         try {
             const parsed = JSON.parse(data);
 
@@ -29,7 +30,7 @@ export default ({ backup, className }: Props) => {
                 items: data.items.map(b => b.uuid !== backup.uuid ? b : ({
                     ...b,
                     isSuccessful: parsed.is_successful || true,
-                    checksum: parsed.checksum || '',
+                    checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),
                     bytes: parsed.file_size || 0,
                     completedAt: new Date(),
                 })),
@@ -40,11 +41,14 @@ export default ({ backup, className }: Props) => {
     });
 
     return (
-        <GreyRowBox css={tw`flex-wrap md:flex-no-wrap items-center`} className={className}>
+        <GreyRowBox css={tw`flex-wrap md:flex-nowrap items-center`} className={className}>
             <div css={tw`flex items-center truncate w-full md:flex-1`}>
                 <div css={tw`mr-4`}>
                     {backup.completedAt ?
-                        <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
+                        backup.isLocked ?
+                            <FontAwesomeIcon icon={faLock} css={tw`text-yellow-500`}/>
+                            :
+                            <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
                         :
                         <Spinner size={'small'}/>
                     }
@@ -60,11 +64,11 @@ export default ({ backup, className }: Props) => {
                             {backup.name}
                         </p>
                         {(backup.completedAt && backup.isSuccessful) &&
-                        <span css={tw`ml-3 text-neutral-300 text-xs font-thin hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
+                        <span css={tw`ml-3 text-neutral-300 text-xs font-extralight hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
                         }
                     </div>
                     <p css={tw`mt-1 md:mt-0 text-xs text-neutral-400 font-mono truncate`}>
-                        {backup.uuid}
+                        {backup.checksum}
                     </p>
                 </div>
             </div>
@@ -77,7 +81,7 @@ export default ({ backup, className }: Props) => {
                 </p>
                 <p css={tw`text-2xs text-neutral-500 uppercase mt-1`}>Created</p>
             </div>
-            <Can action={'backup.download'}>
+            <Can action={[ 'backup.download', 'backup.restore', 'backup.delete' ]} matchAny>
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ?
                         <div css={tw`p-2 invisible`}>

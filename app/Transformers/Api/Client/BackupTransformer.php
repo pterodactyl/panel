@@ -6,16 +6,12 @@ use Pterodactyl\Models\Backup;
 
 class BackupTransformer extends BaseClientTransformer
 {
-    /**
-     * @return string
-     */
     public function getResourceName(): string
     {
         return Backup::RESOURCE_NAME;
     }
 
     /**
-     * @param \Pterodactyl\Models\Backup $backup
      * @return array
      */
     public function transform(Backup $backup)
@@ -23,6 +19,7 @@ class BackupTransformer extends BaseClientTransformer
         return [
             'uuid' => $backup->uuid,
             'is_successful' => $backup->is_successful,
+            'is_locked' => $backup->is_locked,
             'name' => $backup->name,
             'ignored_files' => $backup->ignored_files,
             'checksum' => $backup->checksum,

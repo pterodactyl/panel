@@ -14,6 +14,7 @@ class StoreNodeTokensAsEncryptedValue extends Migration
      * Run the migrations.
      *
      * @return void
+     *
      * @throws \Exception
      */
     public function up()
@@ -32,19 +33,17 @@ class StoreNodeTokensAsEncryptedValue extends Migration
             $table->text('daemon_token')->change();
         });
 
-        DB::transaction(function () {
-            /** @var \Illuminate\Contracts\Encryption\Encrypter $encrypter */
-            $encrypter = Container::getInstance()->make(Encrypter::class);
+        /** @var \Illuminate\Contracts\Encryption\Encrypter $encrypter */
+        $encrypter = Container::getInstance()->make(Encrypter::class);
 
-            foreach (DB::select('SELECT id, daemon_token FROM nodes') as $datum) {
-                DB::update('UPDATE nodes SET uuid = ?, daemon_token_id = ?, daemon_token = ? WHERE id = ?', [
-                    Uuid::uuid4()->toString(),
-                    substr($datum->daemon_token, 0, 16),
-                    $encrypter->encrypt(substr($datum->daemon_token, 16)),
-                    $datum->id,
-                ]);
-            }
-        });
+        foreach (DB::select('SELECT id, daemon_token FROM nodes') as $datum) {
+            DB::update('UPDATE nodes SET uuid = ?, daemon_token_id = ?, daemon_token = ? WHERE id = ?', [
+                Uuid::uuid4()->toString(),
+                substr($datum->daemon_token, 0, 16),
+                $encrypter->encrypt(substr($datum->daemon_token, 16)),
+                $datum->id,
+            ]);
+        }
 
         Schema::table('nodes', function (Blueprint $table) {
             $table->unique(['uuid']);

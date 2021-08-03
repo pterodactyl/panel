@@ -1,7 +1,0 @@
-preset: laravel
-risky: false
-disabled:
-  - concat_without_spaces
-enabled:
-  - concat_with_spaces
-  - no_unused_imports

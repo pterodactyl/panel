@@ -9,8 +9,6 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 {
     /**
      * Return the rules to validate this request against.
-     *
-     * @return array
      */
     public function rules(): array
     {
@@ -67,7 +65,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
         unset($data['allocation'], $data['feature_limits']);
 
         // Adjust the limits field to match what is expected by the model.
-        if (! empty($data['limits'])) {
+        if (!empty($data['limits'])) {
             foreach ($data['limits'] as $key => $value) {
                 $data[$key] = $value;
             }
@@ -101,16 +99,13 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      * compatability with the old API endpoint while also supporting a more correct API
      * call.
      *
-     * @param string $field
-     * @param array $rules
-     * @param bool $limits
      * @return array
      *
      * @see https://github.com/pterodactyl/panel/issues/1500
      */
     protected function requiredToOptional(string $field, array $rules, bool $limits = false)
     {
-        if (! in_array('required', $rules)) {
+        if (!in_array('required', $rules)) {
             return $rules;
         }
 

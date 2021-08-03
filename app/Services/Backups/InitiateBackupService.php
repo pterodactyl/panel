@@ -7,7 +7,6 @@ use Carbon\CarbonImmutable;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
@@ -21,6 +20,11 @@ class InitiateBackupService
      * @var string[]|null
      */
     private $ignoredFiles;
+
+    /**
+     * @var bool
+     */
+    private $isLocked = false;
 
     /**
      * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
@@ -43,29 +47,51 @@ class InitiateBackupService
     private $backupManager;
 
     /**
+     * @var \Pterodactyl\Services\Backups\DeleteBackupService
+     */
+    private $deleteBackupService;
+
+    /**
      * InitiateBackupService constructor.
      *
      * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
      * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
+     * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
      * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
     public function __construct(
         BackupRepository $repository,
         ConnectionInterface $connection,
         DaemonBackupRepository $daemonBackupRepository,
+        DeleteBackupService $deleteBackupService,
         BackupManager $backupManager
     ) {
         $this->repository = $repository;
         $this->connection = $connection;
         $this->daemonBackupRepository = $daemonBackupRepository;
         $this->backupManager = $backupManager;
+        $this->deleteBackupService = $deleteBackupService;
+    }
+
+    /**
+     * Set if the backup should be locked once it is created which will prevent
+     * its deletion by users or automated system processes.
+     *
+     * @return $this
+     */
+    public function setIsLocked(bool $isLocked): self
+    {
+        $this->isLocked = $isLocked;
+
+        return $this;
     }
 
     /**
      * Sets the files to be ignored by this backup.
      *
      * @param string[]|null $ignored
+     *
      * @return $this
      */
     public function setIgnoredFiles(?array $ignored)
@@ -87,29 +113,43 @@ class InitiateBackupService
     }
 
     /**
-     * Initiates the backup process for a server on the daemon.
-     *
-     * @param \Pterodactyl\Models\Server $server
-     * @param string|null $name
-     * @return \Pterodactyl\Models\Backup
+     * Initiates the backup process for a server on Wings.
      *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException
      * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
      */
-    public function handle(Server $server, string $name = null): Backup
+    public function handle(Server $server, string $name = null, bool $override = false): Backup
     {
-        // Do not allow the user to continue if this server is already at its limit.
-        if (! $server->backup_limit || $server->backups()->where('is_successful', true)->count() >= $server->backup_limit) {
-            throw new TooManyBackupsException($server->backup_limit);
+        $limit = config('backups.throttles.limit');
+        $period = config('backups.throttles.period');
+        if ($period > 0) {
+            $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, $period);
+            if ($previous->count() >= $limit) {
+                $message = sprintf('Only %d backups may be generated within a %d second span of time.', $limit, $period);
+
+                throw new TooManyRequestsHttpException(CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addSeconds($period)), $message);
+            }
         }
 
-        $previous = $this->repository->getBackupsGeneratedDuringTimespan($server->id, 10);
-        if ($previous->count() >= 2) {
-            throw new TooManyRequestsHttpException(
-                CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addMinutes(10)),
-                'Only two backups may be generated within a 10 minute span of time.'
-            );
+        // Check if the server has reached or exceeded it's backup limit.
+        $successful = $server->backups()->where('is_successful', true);
+        if (!$server->backup_limit || $successful->count() >= $server->backup_limit) {
+            // Do not allow the user to continue if this server is already at its limit and can't override.
+            if (!$override || $server->backup_limit <= 0) {
+                throw new TooManyBackupsException($server->backup_limit);
+            }
+
+            // Get the oldest backup the server has that is not "locked" (indicating a backup that should
+            // never be automatically purged). If we find a backup we will delete it and then continue with
+            // this process. If no backup is found that can be used an exception is thrown.
+            /** @var \Pterodactyl\Models\Backup $oldest */
+            $oldest = $successful->where('is_locked', false)->orderBy('created_at')->first();
+            if (!$oldest) {
+                throw new TooManyBackupsException($server->backup_limit);
+            }
+
+            $this->deleteBackupService->handle($oldest);
         }
 
         return $this->connection->transaction(function () use ($server, $name) {
@@ -118,46 +158,16 @@ class InitiateBackupService
                 'server_id' => $server->id,
                 'uuid' => Uuid::uuid4()->toString(),
                 'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-                'ignored_files' => is_array($this->ignoredFiles) ? array_values($this->ignoredFiles) : [],
+                'ignored_files' => array_values($this->ignoredFiles ?? []),
                 'disk' => $this->backupManager->getDefaultAdapter(),
+                'is_locked' => $this->isLocked,
             ], true, true);
-
-            $url = $this->getS3PresignedUrl(sprintf('%s/%s.tar.gz', $server->uuid, $backup->uuid));
 
             $this->daemonBackupRepository->setServer($server)
                 ->setBackupAdapter($this->backupManager->getDefaultAdapter())
-                ->backup($backup, $url);
+                ->backup($backup);
 
             return $backup;
         });
-    }
-
-    /**
-     * Generates a presigned URL for the wings daemon to upload the completed archive
-     * to. We use a 30 minute expiration on these URLs to avoid issues with large backups
-     * that may take some time to complete.
-     *
-     * @param string $path
-     * @return string|null
-     */
-    protected function getS3PresignedUrl(string $path)
-    {
-        $adapter = $this->backupManager->adapter();
-        if (! $adapter instanceof AwsS3Adapter) {
-            return null;
-        }
-
-        $client = $adapter->getClient();
-
-        $request = $client->createPresignedRequest(
-            $client->getCommand('PutObject', [
-                'Bucket' => $adapter->getBucket(),
-                'Key' => $path,
-                'ContentType' => 'application/x-gzip',
-            ]),
-            CarbonImmutable::now()->addMinutes(30)
-        );
-
-        return $request->getUri()->__toString();
     }
 }

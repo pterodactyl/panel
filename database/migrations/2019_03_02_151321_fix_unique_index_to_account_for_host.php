@@ -30,6 +30,8 @@ class FixUniqueIndexToAccountForHost extends Migration
     public function down()
     {
         Schema::table('databases', function (Blueprint $table) {
+            $table->dropForeign(['database_host_id']);
+
             $table->dropUnique(['database_host_id', 'database']);
             $table->dropUnique(['database_host_id', 'username']);
 

@@ -1,17 +1,25 @@
-name: tests
+name: run tests
 on:
   push:
-    branch-ignore:
-      - 'master'
-      - 'release/**'
+    branches-ignore:
+      - master
+      - "release/**"
   pull_request:
 jobs:
-  integration_tests:
-    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, '[ci skip]')"
+  tests:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
     services:
+      mariadb:
+        image: mariadb:10.2
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: panel_test
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
       mysql:
-        image: mysql:5.7
+        image: mysql:8
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
           MYSQL_DATABASE: panel_test
@@ -19,10 +27,11 @@ jobs:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        php: [7.3, 7.4]
-    name: PHP ${{ matrix.php }}
+        php: [ 7.4, 8.0 ]
+        database: [ mysql, mariadb ]
+    name: "php-${{ matrix.php }} (engine: ${{ matrix.database }})"
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -44,14 +53,14 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: cli, openssl, gd, mysql, pdo, mbstring, tokenizer, bcmath, xml, curl, zip
-          tools: composer:v1
+          tools: composer:v2
           coverage: none
       - name: configure
         run: cp .env.ci .env
       - name: install dependencies
         run: composer install --prefer-dist --no-interaction --no-progress
       - name: run cs-fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php_cs.dist
         continue-on-error: true
       - name: execute unit tests
         run: vendor/bin/phpunit --bootstrap bootstrap/app.php tests/Unit
@@ -59,9 +68,15 @@ jobs:
         env:
           DB_CONNECTION: testing
           TESTING_DB_HOST: UNIT_NO_DB
-      - name: execute integration tests
+      - name: execute integration tests (mysql)
         run: vendor/bin/phpunit tests/Integration
-        if: ${{ always() }}
+        if: "${{ matrix.database }} == 'mysql'"
         env:
           TESTING_DB_PORT: ${{ job.services.mysql.ports[3306] }}
+          TESTING_DB_USERNAME: root
+      - name: execute integration tests (mariadb)
+        run: vendor/bin/phpunit tests/Integration
+        if: "${{ matrix.database }} == 'mariadb'"
+        env:
+          TESTING_DB_PORT: ${{ job.services.mariadb.ports[3306] }}
           TESTING_DB_USERNAME: root

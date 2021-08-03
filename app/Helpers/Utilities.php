@@ -13,9 +13,6 @@ class Utilities
     /**
      * Generates a random string and injects special characters into it, in addition to
      * the randomness of the alpha-numeric default response.
-     *
-     * @param int $length
-     * @return string
      */
     public static function randomStringWithSpecialCharacters(int $length = 16): string
     {
@@ -23,7 +20,7 @@ class Utilities
         // Given a random string of characters, randomly loop through the characters and replace some
         // with special characters to avoid issues with MySQL password requirements on some servers.
         try {
-            for ($i = 0; $i < random_int(2, 6); $i++) {
+            for ($i = 0; $i < random_int(2, 6); ++$i) {
                 $character = ['!', '@', '=', '.', '+', '^'][random_int(0, 5)];
 
                 $string = substr_replace($string, $character, random_int(0, $length - 1), 1);
@@ -39,20 +36,21 @@ class Utilities
     /**
      * Converts schedule cron data into a carbon object.
      *
-     * @param string $minute
-     * @param string $hour
-     * @param string $dayOfMonth
-     * @param string $dayOfWeek
      * @return \Carbon\Carbon
      */
-    public static function getScheduleNextRunDate(string $minute, string $hour, string $dayOfMonth, string $dayOfWeek)
+    public static function getScheduleNextRunDate(string $minute, string $hour, string $dayOfMonth, string $month, string $dayOfWeek)
     {
         return Carbon::instance(CronExpression::factory(
-            sprintf('%s %s %s * %s', $minute, $hour, $dayOfMonth, $dayOfWeek)
+            sprintf('%s %s %s %s %s', $minute, $hour, $dayOfMonth, $month, $dayOfWeek)
         )->getNextRunDate());
     }
 
-    public static function checked($name, $default)
+    /**
+     * @param mixed $default
+     *
+     * @return string
+     */
+    public static function checked(string $name, $default)
     {
         $errors = session('errors');
 

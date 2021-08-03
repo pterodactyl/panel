@@ -1,2 +1,4 @@
 public
+node_modules
 resources/views
+webpack.config.js

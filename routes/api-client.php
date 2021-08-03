@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Pterodactyl\Http\Middleware\Api\Client\Server\SubuserBelongsToServer;
+use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
+use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
-use Pterodactyl\Http\Middleware\Api\Client\Server\AllocationBelongsToServer;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,10 +17,10 @@ Route::get('/', 'ClientController@index')->name('api:client.index');
 Route::get('/permissions', 'ClientController@permissions');
 
 Route::group(['prefix' => '/account'], function () {
-    Route::get('/', 'AccountController@index')->name('api:client.account');
-    Route::get('/two-factor', 'TwoFactorController@index');
-    Route::post('/two-factor', 'TwoFactorController@store');
-    Route::delete('/two-factor', 'TwoFactorController@delete');
+    Route::get('/', 'AccountController@index')->name('api:client.account')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::get('/two-factor', 'TwoFactorController@index')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::post('/two-factor', 'TwoFactorController@store')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::delete('/two-factor', 'TwoFactorController@delete')->withoutMiddleware(RequireTwoFactorAuthentication::class);
 
     Route::put('/email', 'AccountController@updateEmail')->name('api:client.account.update-email');
     Route::put('/password', 'AccountController@updatePassword')->name('api:client.account.update-password');
@@ -38,7 +38,7 @@ Route::group(['prefix' => '/account'], function () {
 | Endpoint: /api/client/servers/{server}
 |
 */
-Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class]], function () {
+Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class, ResourceBelongsToServer::class]], function () {
     Route::get('/', 'Servers\ServerController@index')->name('api:client:server.view');
     Route::get('/websocket', 'Servers\WebsocketController')->name('api:client:server.ws');
     Route::get('/resources', 'Servers\ResourceUtilizationController')->name('api:client:server.resources');
@@ -64,6 +64,8 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::post('/decompress', 'Servers\FileController@decompress');
         Route::post('/delete', 'Servers\FileController@delete');
         Route::post('/create-folder', 'Servers\FileController@create');
+        Route::post('/chmod', 'Servers\FileController@chmod');
+        Route::post('/pull', 'Servers\FileController@pull')->middleware(['throttle:10,5']);
         Route::get('/upload', 'Servers\FileUploadController');
     });
 
@@ -80,14 +82,15 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::delete('/{schedule}/tasks/{task}', 'Servers\ScheduleTaskController@delete');
     });
 
-    Route::group(['prefix' => '/network', 'middleware' => [AllocationBelongsToServer::class]], function () {
+    Route::group(['prefix' => '/network'], function () {
         Route::get('/allocations', 'Servers\NetworkAllocationController@index');
+        Route::post('/allocations', 'Servers\NetworkAllocationController@store');
         Route::post('/allocations/{allocation}', 'Servers\NetworkAllocationController@update');
         Route::post('/allocations/{allocation}/primary', 'Servers\NetworkAllocationController@setPrimary');
         Route::delete('/allocations/{allocation}', 'Servers\NetworkAllocationController@delete');
     });
 
-    Route::group(['prefix' => '/users', 'middleware' => [SubuserBelongsToServer::class]], function () {
+    Route::group(['prefix' => '/users'], function () {
         Route::get('/', 'Servers\SubuserController@index');
         Route::post('/', 'Servers\SubuserController@store');
         Route::get('/{user}', 'Servers\SubuserController@view');
@@ -99,7 +102,9 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::get('/', 'Servers\BackupController@index');
         Route::post('/', 'Servers\BackupController@store');
         Route::get('/{backup}', 'Servers\BackupController@view');
-        Route::get('/{backup}/download', 'Servers\DownloadBackupController');
+        Route::get('/{backup}/download', 'Servers\BackupController@download');
+        Route::post('/{backup}/lock', 'Servers\BackupController@toggleLock');
+        Route::post('/{backup}/restore', 'Servers\BackupController@restore');
         Route::delete('/{backup}', 'Servers\BackupController@delete');
     });
 
@@ -111,5 +116,6 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
     Route::group(['prefix' => '/settings'], function () {
         Route::post('/rename', 'Servers\SettingsController@rename');
         Route::post('/reinstall', 'Servers\SettingsController@reinstall');
+        Route::put('/docker-image', 'Servers\SettingsController@dockerImage');
     });
 });

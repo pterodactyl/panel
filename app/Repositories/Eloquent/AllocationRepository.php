@@ -21,9 +21,6 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
     /**
      * Return all of the allocations that exist for a node that are not currently
      * allocated.
-     *
-     * @param int $node
-     * @return array
      */
     public function getUnassignedAllocationIds(int $node): array
     {
@@ -42,15 +39,12 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      *
      * If an array of nodes is passed the results will be limited to allocations
      * in those nodes.
-     *
-     * @param array $nodes
-     * @return array
      */
     protected function getDiscardableDedicatedAllocations(array $nodes = []): array
     {
         $query = Allocation::query()->selectRaw('CONCAT_WS("-", node_id, ip) as result');
 
-        if (! empty($nodes)) {
+        if (!empty($nodes)) {
             $query->whereIn('node_id', $nodes);
         }
 
@@ -64,20 +58,17 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
     /**
      * Return a single allocation from those meeting the requirements.
      *
-     * @param array $nodes
-     * @param array $ports
-     * @param bool $dedicated
      * @return \Pterodactyl\Models\Allocation|null
      */
     public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false)
     {
         $query = Allocation::query()->whereNull('server_id');
 
-        if (! empty($nodes)) {
+        if (!empty($nodes)) {
             $query->whereIn('node_id', $nodes);
         }
 
-        if (! empty($ports)) {
+        if (!empty($ports)) {
             $query->where(function (Builder $inner) use ($ports) {
                 $whereIn = [];
                 foreach ($ports as $port) {
@@ -89,7 +80,7 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
                     $whereIn[] = $port;
                 }
 
-                if (! empty($whereIn)) {
+                if (!empty($whereIn)) {
                     $inner->orWhereIn('port', $whereIn);
                 }
             });
@@ -100,9 +91,10 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
         if ($dedicated) {
             $discard = $this->getDiscardableDedicatedAllocations($nodes);
 
-            if (! empty($discard)) {
+            if (!empty($discard)) {
                 $query->whereNotIn(
-                    $this->getBuilder()->raw('CONCAT_WS("-", node_id, ip)'), $discard
+                    $this->getBuilder()->raw('CONCAT_WS("-", node_id, ip)'),
+                    $discard
                 );
             }
         }

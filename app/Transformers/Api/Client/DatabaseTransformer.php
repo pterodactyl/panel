@@ -3,7 +3,6 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Database;
-use League\Fractal\Resource\Item;
 use Pterodactyl\Models\Permission;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
@@ -24,9 +23,6 @@ class DatabaseTransformer extends BaseClientTransformer
 
     /**
      * Handle dependency injection.
-     *
-     * @param \Illuminate\Contracts\Encryption\Encrypter $encrypter
-     * @param \Pterodactyl\Contracts\Extensions\HashidsInterface $hashids
      */
     public function handle(Encrypter $encrypter, HashidsInterface $hashids)
     {
@@ -34,18 +30,11 @@ class DatabaseTransformer extends BaseClientTransformer
         $this->hashids = $hashids;
     }
 
-    /**
-     * @return string
-     */
     public function getResourceName(): string
     {
         return Database::RESOURCE_NAME;
     }
 
-    /**
-     * @param \Pterodactyl\Models\Database $model
-     * @return array
-     */
     public function transform(Database $model): array
     {
         $model->loadMissing('host');
@@ -66,10 +55,9 @@ class DatabaseTransformer extends BaseClientTransformer
     /**
      * Include the database password in the request.
      *
-     * @param \Pterodactyl\Models\Database $database
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
-    public function includePassword(Database $database): Item
+    public function includePassword(Database $database)
     {
         if (!$this->getUser()->can(Permission::ACTION_DATABASE_VIEW_PASSWORD, $database->server)) {
             return $this->null();

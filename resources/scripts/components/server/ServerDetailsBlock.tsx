@@ -1,15 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import tw from 'twin.macro';
-import { faCircle, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
+import tw, { TwStyle } from 'twin.macro';
+import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
+import CopyOnClick from '@/components/elements/CopyOnClick';
+import { SocketEvent, SocketRequest } from '@/components/server/events';
 
 interface Stats {
     memory: number;
     cpu: number;
     disk: number;
+}
+
+function statusToColor (status: string|null, installing: boolean): TwStyle {
+    if (installing) {
+        status = '';
+    }
+
+    switch (status) {
+        case 'offline':
+            return tw`text-red-500`;
+        case 'running':
+            return tw`text-green-500`;
+        default:
+            return tw`text-yellow-500`;
+    }
 }
 
 const ServerDetailsBlock = () => {
@@ -39,19 +56,25 @@ const ServerDetailsBlock = () => {
             return;
         }
 
-        instance.addListener('stats', statsListener);
-        instance.send('send stats');
+        instance.addListener(SocketEvent.STATS, statsListener);
+        instance.send(SocketRequest.SEND_STATS);
 
         return () => {
-            instance.removeListener('stats', statsListener);
+            instance.removeListener(SocketEvent.STATS, statsListener);
         };
     }, [ instance, connected ]);
 
     const name = ServerContext.useStoreState(state => state.server.data!.name);
+    const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
+    const primaryAllocation = ServerContext.useStoreState(state => state.server.data!.allocations.filter(alloc => alloc.isDefault).map(
+        allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
+    )).toString();
 
-    const disklimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
-    const memorylimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
+    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
+    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
+    const cpuLimit = limits.cpu ? limits.cpu + '%' : 'Unlimited';
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
@@ -61,21 +84,28 @@ const ServerDetailsBlock = () => {
                     fixedWidth
                     css={[
                         tw`mr-1`,
-                        status === 'offline' ? tw`text-red-500` : (status === 'running' ? tw`text-green-500` : tw`text-yellow-500`),
+                        statusToColor(status, isInstalling || isTransferring),
                     ]}
                 />
-                &nbsp;{!status ? 'Connecting...' : status}
+                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
             </p>
+            <CopyOnClick text={primaryAllocation}>
+                <p css={tw`text-xs mt-2`}>
+                    <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
+                    <code css={tw`ml-1`}>{primaryAllocation}</code>
+                </p>
+            </CopyOnClick>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {stats.cpu.toFixed(2)}%
+                <span css={tw`text-neutral-500`}> / {cpuLimit}</span>
             </p>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faMemory} fixedWidth css={tw`mr-1`}/> {bytesToHuman(stats.memory)}
-                <span css={tw`text-neutral-500`}> / {memorylimit}</span>
+                <span css={tw`text-neutral-500`}> / {memoryLimit}</span>
             </p>
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.disk)}
-                <span css={tw`text-neutral-500`}> / {disklimit}</span>
+                <span css={tw`text-neutral-500`}> / {diskLimit}</span>
             </p>
         </TitledGreyBox>
     );

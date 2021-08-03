@@ -18,27 +18,31 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
  */
 class ApiKey extends Model
 {
-    const RESOURCE_NAME = 'api_key';
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    public const RESOURCE_NAME = 'api_key';
 
     /**
      * Different API keys that can exist on the system.
      */
-    const TYPE_NONE = 0;
-    const TYPE_ACCOUNT = 1;
-    const TYPE_APPLICATION = 2;
-    const TYPE_DAEMON_USER = 3;
-    const TYPE_DAEMON_APPLICATION = 4;
+    public const TYPE_NONE = 0;
+    public const TYPE_ACCOUNT = 1;
+    public const TYPE_APPLICATION = 2;
+    public const TYPE_DAEMON_USER = 3;
+    public const TYPE_DAEMON_APPLICATION = 4;
 
     /**
      * The length of API key identifiers.
      */
-    const IDENTIFIER_LENGTH = 16;
+    public const IDENTIFIER_LENGTH = 16;
 
     /**
      * The length of the actual API key that is encrypted and stored
      * in the database.
      */
-    const KEY_LENGTH = 32;
+    public const KEY_LENGTH = 32;
 
     /**
      * The table associated with the model.

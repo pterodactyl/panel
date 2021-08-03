@@ -27,7 +27,6 @@ class StartupModificationService
     /**
      * StartupModificationService constructor.
      *
-     * @param \Illuminate\Database\ConnectionInterface $connection
      * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
      */
     public function __construct(ConnectionInterface $connection, VariableValidatorService $validatorService)
@@ -39,16 +38,12 @@ class StartupModificationService
     /**
      * Process startup modification for a server.
      *
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $data
-     * @return \Pterodactyl\Models\Server
-     *
      * @throws \Throwable
      */
     public function handle(Server $server, array $data): Server
     {
         return $this->connection->transaction(function () use ($server, $data) {
-            if (! empty($data['environment'])) {
+            if (!empty($data['environment'])) {
                 $egg = $this->isUserLevel(User::USER_LEVEL_ADMIN) ? ($data['egg_id'] ?? $server->egg_id) : $server->egg_id;
 
                 $results = $this->validatorService
@@ -83,15 +78,12 @@ class StartupModificationService
 
     /**
      * Update certain administrative settings for a server in the DB.
-     *
-     * @param array $data
-     * @param \Pterodactyl\Models\Server $server
      */
     protected function updateAdministrativeSettings(array $data, Server &$server)
     {
         $eggId = Arr::get($data, 'egg_id');
 
-        if (is_digit($eggId) && $server->egg_id !== (int)$eggId) {
+        if (is_digit($eggId) && $server->egg_id !== (int) $eggId) {
             /** @var \Pterodactyl\Models\Egg $egg */
             $egg = Egg::query()->findOrFail($data['egg_id']);
 

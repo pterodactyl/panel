@@ -6,9 +6,6 @@ use Illuminate\Support\Arr;
 
 class StatsTransformer extends BaseClientTransformer
 {
-    /**
-     * @return string
-     */
     public function getResourceName(): string
     {
         return 'stats';
@@ -18,20 +15,19 @@ class StatsTransformer extends BaseClientTransformer
      * Transform stats from the daemon into a result set that can be used in
      * the client API.
      *
-     * @param array $data
      * @return array
      */
     public function transform(array $data)
     {
         return [
             'current_state' => Arr::get($data, 'state', 'stopped'),
-            'is_suspended' => Arr::get($data, 'suspended', false),
+            'is_suspended' => Arr::get($data, 'is_suspended', false),
             'resources' => [
-                'memory_bytes' => Arr::get($data, 'memory_bytes', 0),
-                'cpu_absolute' => Arr::get($data, 'cpu_absolute', 0),
-                'disk_bytes' => Arr::get($data, 'disk_bytes', 0),
-                'network_rx_bytes' => Arr::get($data, 'network.rx_bytes', 0),
-                'network_tx_bytes' => Arr::get($data, 'network.tx_bytes', 0),
+                'memory_bytes' => Arr::get($data, 'utilization.memory_bytes', 0),
+                'cpu_absolute' => Arr::get($data, 'utilization.cpu_absolute', 0),
+                'disk_bytes' => Arr::get($data, 'utilization.disk_bytes', 0),
+                'network_rx_bytes' => Arr::get($data, 'utilization.network.rx_bytes', 0),
+                'network_tx_bytes' => Arr::get($data, 'utilization.network.tx_bytes', 0),
             ],
         ];
     }

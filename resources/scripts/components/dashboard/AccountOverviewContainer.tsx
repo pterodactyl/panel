@@ -7,9 +7,11 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
+import MessageBox from '@/components/MessageBox';
+import { useLocation } from 'react-router-dom';
 
 const Container = styled.div`
-    ${tw`flex flex-wrap my-10`};
+    ${tw`flex flex-wrap`};
 
     & > div {
         ${tw`w-full`};
@@ -25,9 +27,16 @@ const Container = styled.div`
 `;
 
 export default () => {
+    const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
+
     return (
         <PageContentBlock title={'Account Overview'}>
-            <Container>
+            {state?.twoFactorRedirect &&
+            <MessageBox title={'2-Factor Required'} type={'error'}>
+                Your account must have two-factor authentication enabled in order to continue.
+            </MessageBox>
+            }
+            <Container css={[ tw`mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm/>
                 </ContentBox>

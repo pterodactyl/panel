@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
@@ -6,11 +6,13 @@ import CreateBackupButton from '@/components/server/backups/CreateBackupButton';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import BackupRow from '@/components/server/backups/BackupRow';
 import tw from 'twin.macro';
-import getServerBackups from '@/api/swr/getServerBackups';
+import getServerBackups, { Context as ServerBackupContext } from '@/api/swr/getServerBackups';
 import { ServerContext } from '@/state/server';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import Pagination from '@/components/elements/Pagination';
 
-export default () => {
+const BackupContainer = () => {
+    const { page, setPage } = useContext(ServerBackupContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: backups, error, isValidating } = getServerBackups();
 
@@ -33,36 +35,55 @@ export default () => {
     return (
         <ServerContentBlock title={'Backups'}>
             <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
-            {!backups.items.length ?
-                <p css={tw`text-center text-sm text-neutral-400`}>
-                    There are no backups stored for this server.
-                </p>
-                :
-                <div>
-                    {backups.items.map((backup, index) => <BackupRow
-                        key={backup.uuid}
-                        backup={backup}
-                        css={index > 0 ? tw`mt-2` : undefined}
-                    />)}
-                </div>
-            }
+            <Pagination data={backups} onPageSelect={setPage}>
+                {({ items }) => (
+                    !items.length ?
+                        // Don't show any error messages if the server has no backups and the user cannot
+                        // create additional ones for the server.
+                        !backupLimit ?
+                            null
+                            :
+                            <p css={tw`text-center text-sm text-neutral-300`}>
+                                {page > 1 ?
+                                    'Looks like we\'ve run out of backups to show you, try going back a page.'
+                                    :
+                                    'It looks like there are no backups currently stored for this server.'
+                                }
+                            </p>
+                        :
+                        items.map((backup, index) => <BackupRow
+                            key={backup.uuid}
+                            backup={backup}
+                            css={index > 0 ? tw`mt-2` : undefined}
+                        />)
+                )}
+            </Pagination>
             {backupLimit === 0 &&
-            <p css={tw`text-center text-sm text-neutral-400`}>
-                Backups cannot be created for this server.
+            <p css={tw`text-center text-sm text-neutral-300`}>
+                Backups cannot be created for this server because the backup limit is set to 0.
             </p>
             }
             <Can action={'backup.create'}>
-                {(backupLimit > 0 && backups.items.length > 0) &&
-                <p css={tw`text-center text-xs text-neutral-400 mt-2`}>
-                    {backups.items.length} of {backupLimit} backups have been created for this server.
-                </p>
-                }
-                {backupLimit > 0 && backupLimit !== backups.items.length &&
-                <div css={tw`mt-6 flex justify-end`}>
-                    <CreateBackupButton/>
+                <div css={tw`mt-6 sm:flex items-center justify-end`}>
+                    {(backupLimit > 0 && backups.pagination.total > 0) &&
+                    <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
+                        {backups.pagination.total} of {backupLimit} backups have been created for this server.
+                    </p>
+                    }
+                    {backupLimit > 0 && backupLimit !== backups.pagination.total &&
+                    <CreateBackupButton css={tw`w-full sm:w-auto`}/>
+                    }
                 </div>
-                }
             </Can>
         </ServerContentBlock>
+    );
+};
+
+export default () => {
+    const [ page, setPage ] = useState<number>(1);
+    return (
+        <ServerBackupContext.Provider value={{ page, setPage }}>
+            <BackupContainer/>
+        </ServerBackupContext.Provider>
     );
 };

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Traits\Integration;
+namespace Pterodactyl\Tests\Traits\Integration;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
@@ -10,7 +10,6 @@ use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Allocation;
-use Illuminate\Database\Eloquent\Factory as EloquentFactory;
 
 trait CreatesTestModels
 {
@@ -21,67 +20,69 @@ trait CreatesTestModels
      *
      * The returned server model will have all of the relationships loaded onto it.
      *
-     * @param array $attributes
      * @return \Pterodactyl\Models\Server
      */
-    public function createServerModel(array $attributes = []): Server
+    public function createServerModel(array $attributes = [])
     {
-        /** @var \Illuminate\Database\Eloquent\Factory $factory */
-        $factory = $this->app->make(EloquentFactory::class);
-
         if (isset($attributes['user_id'])) {
             $attributes['owner_id'] = $attributes['user_id'];
         }
 
-        if (! isset($attributes['owner_id'])) {
-            $user = $factory->of(User::class)->create();
+        if (!isset($attributes['owner_id'])) {
+            /** @var \Pterodactyl\Models\User $user */
+            $user = User::factory()->create();
             $attributes['owner_id'] = $user->id;
         }
 
-        if (! isset($attributes['node_id'])) {
-            if (! isset($attributes['location_id'])) {
-                $location = $factory->of(Location::class)->create();
+        if (!isset($attributes['node_id'])) {
+            if (!isset($attributes['location_id'])) {
+                /** @var \Pterodactyl\Models\Location $location */
+                $location = Location::factory()->create();
                 $attributes['location_id'] = $location->id;
             }
 
-            $node = $factory->of(Node::class)->create(['location_id' => $attributes['location_id']]);
+            /** @var \Pterodactyl\Models\Node $node */
+            $node = Node::factory()->create(['location_id' => $attributes['location_id']]);
             $attributes['node_id'] = $node->id;
         }
 
-        if (! isset($attributes['allocation_id'])) {
-            $allocation = $factory->of(Allocation::class)->create(['node_id' => $attributes['node_id']]);
+        if (!isset($attributes['allocation_id'])) {
+            /** @var \Pterodactyl\Models\Allocation $allocation */
+            $allocation = Allocation::factory()->create(['node_id' => $attributes['node_id']]);
             $attributes['allocation_id'] = $allocation->id;
         }
 
-        if (! isset($attributes['nest_id'])) {
+        if (!isset($attributes['nest_id'])) {
+            /** @var \Pterodactyl\Models\Nest $nest */
             $nest = Nest::with('eggs')->first();
             $attributes['nest_id'] = $nest->id;
 
-            if (! isset($attributes['egg_id'])) {
+            if (!isset($attributes['egg_id'])) {
                 $attributes['egg_id'] = $nest->getRelation('eggs')->first()->id;
             }
         }
 
-        if (! isset($attributes['egg_id'])) {
+        if (!isset($attributes['egg_id'])) {
+            /** @var \Pterodactyl\Models\Egg $egg */
             $egg = Egg::where('nest_id', $attributes['nest_id'])->first();
             $attributes['egg_id'] = $egg->id;
         }
 
         unset($attributes['user_id'], $attributes['location_id']);
 
-        $server = $factory->of(Server::class)->create($attributes);
+        /** @var \Pterodactyl\Models\Server $server */
+        $server = Server::factory()->create($attributes);
 
-        return Server::with([
+        Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);
+
+        return $server->fresh([
             'location', 'user', 'node', 'allocation', 'nest', 'egg',
-        ])->findOrFail($server->id);
+        ]);
     }
 
     /**
      * Clones a given egg allowing us to make modifications that don't affect other
      * tests that rely on the egg existing in the correct state.
-     *
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Pterodactyl\Models\Egg
      */
     protected function cloneEggAndVariables(Egg $egg): Egg
     {

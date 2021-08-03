@@ -19,7 +19,6 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Sets the backup adapter for this execution instance.
      *
-     * @param string $adapter
      * @return $this
      */
     public function setBackupAdapter(string $adapter)
@@ -32,13 +31,9 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Tells the remote Daemon to begin generating a backup for the server.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @param string|null $presignedUrl
-     * @return \Psr\Http\Message\ResponseInterface
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function backup(Backup $backup, string $presignedUrl = null): ResponseInterface
+    public function backup(Backup $backup): ResponseInterface
     {
         Assert::isInstanceOf($this->server, Server::class);
 
@@ -49,8 +44,32 @@ class DaemonBackupRepository extends DaemonRepository
                     'json' => [
                         'adapter' => $this->adapter ?? config('backups.default'),
                         'uuid' => $backup->uuid,
-                        'ignored_files' => $backup->ignored_files,
-                        'presigned_url' => $presignedUrl,
+                        'ignore' => implode("\n", $backup->ignored_files),
+                    ],
+                ]
+            );
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+    }
+
+    /**
+     * Sends a request to Wings to begin restoring a backup for a server.
+     *
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function restore(Backup $backup, string $url = null, bool $truncate = false): ResponseInterface
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            return $this->getHttpClient()->post(
+                sprintf('/api/servers/%s/backup/%s/restore', $this->server->uuid, $backup->uuid),
+                [
+                    'json' => [
+                        'adapter' => $backup->disk,
+                        'truncate_directory' => $truncate,
+                        'download_url' => $url ?? '',
                     ],
                 ]
             );
@@ -62,8 +81,6 @@ class DaemonBackupRepository extends DaemonRepository
     /**
      * Deletes a backup from the daemon.
      *
-     * @param \Pterodactyl\Models\Backup $backup
-     * @return \Psr\Http\Message\ResponseInterface
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function delete(Backup $backup): ResponseInterface

@@ -26,10 +26,6 @@ class DeployServerDatabaseService
     }
 
     /**
-     * @param \Pterodactyl\Models\Server $server
-     * @param array $data
-     * @return \Pterodactyl\Models\Database
-     *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
      * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
@@ -41,12 +37,12 @@ class DeployServerDatabaseService
 
         $hosts = DatabaseHost::query()->get()->toBase();
         if ($hosts->isEmpty()) {
-            throw new NoSuitableDatabaseHostException;
+            throw new NoSuitableDatabaseHostException();
         } else {
             $nodeHosts = $hosts->where('node_id', $server->node_id)->toBase();
 
-            if ($nodeHosts->isEmpty() && ! config('pterodactyl.client_features.databases.allow_random')) {
-                throw new NoSuitableDatabaseHostException;
+            if ($nodeHosts->isEmpty() && !config('pterodactyl.client_features.databases.allow_random')) {
+                throw new NoSuitableDatabaseHostException();
             }
         }
 

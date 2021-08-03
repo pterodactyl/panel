@@ -2,7 +2,9 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Carbon\Carbon;
 use Pterodactyl\Models\Server;
+use Illuminate\Cache\Repository;
 use Pterodactyl\Transformers\Api\Client\StatsTransformer;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -13,32 +15,37 @@ class ResourceUtilizationController extends ClientApiController
     /**
      * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
-    private $repository;
+    private DaemonServerRepository $repository;
+
+    /**
+     * @var \Illuminate\Cache\Repository
+     */
+    private Repository $cache;
 
     /**
      * ResourceUtilizationController constructor.
-     *
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $repository
      */
-    public function __construct(DaemonServerRepository $repository)
+    public function __construct(Repository $cache, DaemonServerRepository $repository)
     {
         parent::__construct();
 
+        $this->cache = $cache;
         $this->repository = $repository;
     }
 
     /**
-     * Return the current resource utilization for a server.
-     *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest $request
-     * @param \Pterodactyl\Models\Server $server
-     * @return array
+     * Return the current resource utilization for a server. This value is cached for up to
+     * 20 seconds at a time to ensure that repeated requests to this endpoint do not cause
+     * a flood of unnecessary API calls.
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
     public function __invoke(GetServerRequest $request, Server $server): array
     {
-        $stats = $this->repository->setServer($server)->getDetails();
+        $key = "resources:{$server->uuid}";
+        $stats = $this->cache->remember($key, Carbon::now()->addSeconds(20), function () use ($server) {
+            return $this->repository->setServer($server)->getDetails();
+        });
 
         return $this->fractal->item($stats)
             ->transformWith($this->getTransformer(StatsTransformer::class))

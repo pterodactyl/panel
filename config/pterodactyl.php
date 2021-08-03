@@ -10,7 +10,7 @@ return [
     | setup on the panel. When set to true, configurations stored in the
     | database will not be applied.
     */
-    'load_environment_only' => (bool)env('APP_ENVIRONMENT_ONLY', false),
+    'load_environment_only' => (bool) env('APP_ENVIRONMENT_ONLY', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -142,6 +142,12 @@ return [
         'schedules' => [
             // The total number of tasks that can exist for any given schedule at once.
             'per_schedule_task_limit' => 10,
+        ],
+
+        'allocations' => [
+            'enabled' => env('PTERODACTYL_CLIENT_ALLOCATIONS_ENABLED', false),
+            'range_start' => env('PTERODACTYL_CLIENT_ALLOCATIONS_RANGE_START'),
+            'range_end' => env('PTERODACTYL_CLIENT_ALLOCATIONS_RANGE_END'),
         ],
     ],
 

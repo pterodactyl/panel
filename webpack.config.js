@@ -28,9 +28,6 @@ module.exports = {
                 test: /\.tsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
-                options: {
-                    cacheDirectory: !isProduction,
-                },
             },
             {
                 test: /\.css$/,
@@ -63,6 +60,7 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
             '@': path.join(__dirname, '/resources/scripts'),
+            '@feature': path.join(__dirname, '/resources/scripts/components/server/features'),
         },
         symlinks: false,
     },
@@ -73,10 +71,17 @@ module.exports = {
     },
     plugins: [
         new AssetsManifestPlugin({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
-        new ForkTsCheckerWebpackPlugin(isProduction ? {} : {
-            eslint: {
-                files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
+        new ForkTsCheckerWebpackPlugin({
+            typescript: {
+                mode: 'write-references',
+                diagnosticOptions: {
+                    semantic: true,
+                    syntactic: true,
+                },
             },
+            eslint: isProduction ? undefined : {
+                files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
+            }
         }),
         process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin({
             analyzerHost: '0.0.0.0',
@@ -91,7 +96,7 @@ module.exports = {
         minimize: isProduction,
         minimizer: [
             new TerserPlugin({
-                cache: true,
+                cache: isProduction,
                 parallel: true,
                 extractComments: false,
                 terserOptions: {

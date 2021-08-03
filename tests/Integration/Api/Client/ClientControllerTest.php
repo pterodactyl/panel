@@ -5,8 +5,8 @@ namespace Pterodactyl\Tests\Integration\Api\Client;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Permission;
 
 class ClientControllerTest extends ClientApiIntegrationTestCase
 {
@@ -19,7 +19,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     public function testOnlyLoggedInUsersServersAreReturned()
     {
         /** @var \Pterodactyl\Models\User[] $users */
-        $users = factory(User::class)->times(3)->create();
+        $users = User::factory()->times(3)->create();
 
         /** @var \Pterodactyl\Models\Server[] $servers */
         $servers = [
@@ -46,7 +46,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     public function testServersAreFilteredUsingNameAndUuidInformation()
     {
         /** @var \Pterodactyl\Models\User[] $users */
-        $users = factory(User::class)->times(2)->create();
+        $users = User::factory()->times(2)->create();
         $users[0]->update(['root_admin' => true]);
 
         /** @var \Pterodactyl\Models\Server[] $servers */
@@ -106,8 +106,8 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
         $server2 = $this->createServerModel(['user_id' => $user->id, 'node_id' => $server->node_id]);
 
-        $allocation = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server->id, 'ip' => '192.168.1.1', 'port' => 25565]);
-        $allocation2 = factory(Allocation::class)->create(['node_id' => $server->node_id, 'server_id' => $server2->id, 'ip' => '192.168.1.1', 'port' => 25570]);
+        $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id, 'ip' => '192.168.1.1', 'port' => 25565]);
+        $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server2->id, 'ip' => '192.168.1.1', 'port' => 25570]);
 
         $server->update(['allocation_id' => $allocation->id]);
         $server2->update(['allocation_id' => $allocation2->id]);
@@ -144,7 +144,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     public function testServersUserIsASubuserOfAreReturned()
     {
         /** @var \Pterodactyl\Models\User[] $users */
-        $users = factory(User::class)->times(3)->create();
+        $users = User::factory()->times(3)->create();
         $servers = [
             $this->createServerModel(['user_id' => $users[0]->id]),
             $this->createServerModel(['user_id' => $users[1]->id]),
@@ -175,7 +175,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     public function testFilterOnlyOwnerServers()
     {
         /** @var \Pterodactyl\Models\User[] $users */
-        $users = factory(User::class)->times(3)->create();
+        $users = User::factory()->times(3)->create();
         $servers = [
             $this->createServerModel(['user_id' => $users[0]->id]),
             $this->createServerModel(['user_id' => $users[1]->id]),
@@ -204,7 +204,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     public function testPermissionsAreReturned()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $this->actingAs($user)
             ->getJson('/api/client/permissions')
@@ -224,7 +224,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     public function testOnlyAdminLevelServersAreReturned()
     {
         /** @var \Pterodactyl\Models\User[] $users */
-        $users = factory(User::class)->times(4)->create();
+        $users = User::factory()->times(4)->create();
         $users[0]->update(['root_admin' => true]);
 
         $servers = [
@@ -259,7 +259,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     public function testAllServersAreReturnedToAdmin()
     {
         /** @var \Pterodactyl\Models\User[] $users */
-        $users = factory(User::class)->times(4)->create();
+        $users = User::factory()->times(4)->create();
         $users[0]->update(['root_admin' => true]);
 
         $servers = [
@@ -292,7 +292,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     public function testNoServersAreReturnedIfAdminFilterIsPassedByRegularUser($type)
     {
         /** @var \Pterodactyl\Models\User[] $users */
-        $users = factory(User::class)->times(3)->create();
+        $users = User::factory()->times(3)->create();
 
         $this->createServerModel(['user_id' => $users[0]->id]);
         $this->createServerModel(['user_id' => $users[1]->id]);
@@ -302,6 +302,34 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
 
         $response->assertOk();
         $response->assertJsonCount(0, 'data');
+    }
+
+    /**
+     * Test that a subuser without the allocation.read permission is only able to see the primary
+     * allocation for the server.
+     */
+    public function testOnlyPrimaryAllocationIsReturnedToSubuser()
+    {
+        /** @var \Pterodactyl\Models\Server $server */
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
+        $server->allocation->notes = 'Test notes';
+        $server->allocation->save();
+
+        Allocation::factory()->times(2)->create([
+            'node_id' => $server->node_id,
+            'server_id' => $server->id,
+        ]);
+
+        $server->refresh();
+        $response = $this->actingAs($user)->getJson('/api/client');
+
+        $response->assertOk();
+        $response->assertJsonCount(1, 'data');
+        $response->assertJsonPath('data.0.attributes.server_owner', false);
+        $response->assertJsonPath('data.0.attributes.uuid', $server->uuid);
+        $response->assertJsonCount(1, 'data.0.attributes.relationships.allocations.data');
+        $response->assertJsonPath('data.0.attributes.relationships.allocations.data.0.attributes.id', $server->allocation->id);
+        $response->assertJsonPath('data.0.attributes.relationships.allocations.data.0.attributes.notes', null);
     }
 
     /**

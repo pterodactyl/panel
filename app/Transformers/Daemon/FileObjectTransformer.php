@@ -17,7 +17,6 @@ class FileObjectTransformer extends BaseDaemonTransformer
     /**
      * Transform a file object response from the daemon into a standardized response.
      *
-     * @param array $item
      * @return array
      */
     public function transform(array $item)
@@ -25,6 +24,7 @@ class FileObjectTransformer extends BaseDaemonTransformer
         return [
             'name' => Arr::get($item, 'name'),
             'mode' => Arr::get($item, 'mode'),
+            'mode_bits' => Arr::get($item, 'mode_bits'),
             'size' => Arr::get($item, 'size'),
             'is_file' => Arr::get($item, 'file', true),
             'is_symlink' => Arr::get($item, 'symlink', false),
@@ -34,9 +34,6 @@ class FileObjectTransformer extends BaseDaemonTransformer
         ];
     }
 
-    /**
-     * @return string
-     */
     public function getResourceName(): string
     {
         return 'file_object';

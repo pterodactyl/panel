@@ -82,7 +82,14 @@ $('#pEggId').on('change', function (event) {
     let parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
     let objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
 
-    $('#pDefaultContainer').val(_.get(objectChain, 'docker_image', 'not defined!'));
+    const images = _.get(objectChain, 'docker_images', [])
+    $('#pDefaultContainer').html('');
+    for (let i = 0; i < images.length; i++) {
+        let opt = document.createElement('option');
+        opt.value = images[i];
+        opt.innerHTML = images[i];
+        $('#pDefaultContainer').append(opt);
+    }
 
     if (!_.get(objectChain, 'startup', false)) {
         $('#pStartup').val(_.get(parentChain, 'startup', 'ERROR: Startup Not Defined!'));

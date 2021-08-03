@@ -33,11 +33,6 @@ class UserCreationService
 
     /**
      * CreationService constructor.
-     *
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Illuminate\Contracts\Hashing\Hasher $hasher
-     * @param \Illuminate\Contracts\Auth\PasswordBroker $passwordBroker
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
      */
     public function __construct(
         ConnectionInterface $connection,
@@ -54,7 +49,6 @@ class UserCreationService
     /**
      * Create a new user on the system.
      *
-     * @param array $data
      * @return \Pterodactyl\Models\User
      *
      * @throws \Exception
@@ -62,12 +56,12 @@ class UserCreationService
      */
     public function handle(array $data)
     {
-        if (array_key_exists('password', $data) && ! empty($data['password'])) {
+        if (array_key_exists('password', $data) && !empty($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);
         }
 
         $this->connection->beginTransaction();
-        if (! isset($data['password']) || empty($data['password'])) {
+        if (!isset($data['password']) || empty($data['password'])) {
             $generateResetToken = true;
             $data['password'] = $this->hasher->make(str_random(30));
         }

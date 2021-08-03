@@ -3,6 +3,234 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.4.2
+### Fixed
+* Fixes logic to disallow creating a backup schedule if the server's backup limit is set to 0.
+* Fixes bug preventing a database host from being updated if the linked node is set to "none".
+* Fixes files and menus under the "Mass Actions Bar" being unclickable when it is visible.
+* Fixes issues with the Teamspeak and Mumble eggs causing installs to fail.
+* Fixes automated query to avoid pruning backups that are still running unintentionally.
+* Fixes "Delete Server" confirmation modal on the admin screen to actually show up when deleting rather than immediately deleting the server.
+
+### Added
+* Adds support for locking individual server backups to prevent deletion by users or automated backup processes.
+* List of files to be deleted is now shown on the delete file confirmation modal.
+* Adds support for using `IF` statements in database queries when a database user is created through the Panel.
+* Adds support for using a custom mailgun API endpoint rather than only the US based endpoint.
+* Adds CPU limit display next to the current CPU usage to match disk and memory usage reporting.
+* Adds a "Scroll to Bottom" helper element to the server console when not scrolled to the bottom currently.
+* Adds support for querying the API for servers by using the `uuidShort` field rather than only the `uuid` field.
+
+### Changed
+* Updates codebase to use TypeScript 4.
+* **[security]**: removes the external dependency for loading QRCode images. They're now generated directly on the frontend using JavaScript.
+
+## v1.4.1
+### Added
+* Adds support for only running a schedule if the server is currently in an online state.
+* Adds support for ignoring errors during task execution and continuing on to the next item in the sequence. For example, continuing to a server restart even if sending a command beforehand failed.
+* Adds the ability to specify the group to use for file permissions when using the `p:upgrade` command.
+* Adds the ability to manually run a schedule even if it is currently disabled.
+
+## v1.4.0
+### Fixed
+* Removes the use of tagging when storing server resource usage in the cache. This addresses errors encountered when using the `file` driver.
+* Fixes Wings response handling if Wings returns an error response with a 200-level status code that would improperly be passed back to the client as a successful request.
+* Fixes use of JSON specific functions in SQL queries to better support MariaDB users.
+* Fixes a migration that could fail on some MySQL/MariaDB setups when trying to encrypt node token values.
+
+### Changed
+* Increases the maximum length allowed for a server name using the Rust egg.
+* Updated server resource utilization API call to Wings to use new API response format used by `Wings@1.4.0`.
+
+## v1.3.2
+### Fixed
+* Fixes self-upgrade incorrectly executing the command to un-tar downloaded archives.
+* Fixes the checkbox to delete all files when restoring a backup not actually passing that along in the API call. Files will now properly be deleted when restoring if selected.
+* Fixes some keybindings not working correctly in the server console on Windows machines.
+* Fixes mobile UI incorrectly squishing the Docker image selector on the server settings page.
+* Fixes recovery tokens not having a `created_at` value set on them properly when they are created.
+* Fixes flawed migration that would not correctly set the month value into schedule crons.
+* Fixes incorrect mounting for Docker compose file that would cause error logs to be missing.
+
+### Changed
+* Server resource lookups are now cached on the Panel for 20 seconds at a time to reduce the load from multiple clients requesting the same server's stats.
+* Bungeecord egg no longer force-enables the query listener.
+* Adds page to the dashboard URL to allow easy loading of a specific pagination page rather than resetting back to the first page when refreshing.
+* All application API endpoints now correctly support the `?per_page=N` query parameter to specify how many resources to return at once.
+
+## v1.3.1
+### Fixed
+* Fixes the Rust egg not properly seeding during the upgrade & installation process.
+* Fixes backups not being downloadable via the frontend.
+* Fixes backup listing showing the wrong number of existing backups based on the current page you're on.
+
+## v1.3.0
+### Fixed
+* Fixes administrator "Other Servers" toggle being persisted wrongly when signing out and signing into a non-administrator account on the server dashboard.
+* Fixes composer failing to run properly in local environments where there is no database connection available once configured.
+* Fixes SQL exception caused by the Panel attempting to store null values in the database.
+* Fixes validation errors caused by improper defaults when trying to edit system settings in the admin area.
+* Fixes console overflow when using smaller-than-default font sizes in Firefox.
+* Fixes console text input field having a white background when manually building new assets from the release build due to a missing `babel-macros` definition file.
+* Fixes database improperly using a signed `smallint` field rather than an unsigned field which restricted SFTP ports to 32767 or less.
+* Fixes server console resize handler to no longer encounter an exception at random that breaks the entire UI.
+* Fixes unhandled error caused by entering an invalid IP address or FQDN when creating a new node allocation.
+* Fixes unhandled error when Wings would fetch a server configuration from the Panel that uses an Egg with invalid JSON data for the configuration fields.
+* Fixes email not being sent to a user when their server is done installing.
+
+### Added
+* Adds support for automatically copying SFTP connection details when clicking into the text field.
+* Messaging about a node not having any allocations available for deployment has been adjusted to be more understandable by users.
+* Adds automated self-upgrade process for Pterodactyl Panel once this version is installed on servers. This allows users to update by using a single command.
+* Adds support for specifying a month when creating or modifying a server schedule.
+* Adds support for restoring backups (including those in S3 buckets) to a server and optionally deleting all existing files when doing so.
+* Adds underlying support for audit logging on servers. Currently this is only used by some internal functionality but will be slowly expanded as time permits to allow more robust logging.
+* Adds logic to automatically reset failed server states when Wings is rebooted. This will kick servers out of "installing" and "restoring from backup" states automatically.
+
+### Changed
+* Updated to `Laravel 8` and bumped minimum PHP version from `7.3` to `7.4` with PHP `8.0` being the recommended.
+* Server state is now stored in a single `status` column within the database rather than multiple different `tinyint` columns.
+
+## v1.2.2
+### Fixed
+* **[security]** Fixes authentication bypass allowing a user to take control of specific server actions such as executing schedules, rotating database passwords, and viewing or deleting a backup.
+
+## v1.2.1
+### Fixed
+* Fixes URL-encoding of filenames when working in the filemanager to fix issues when moving, renaming, or deleting files.
+* Fixes URL-encoding of email addresses when requesting a password reset.
+
+### Added
+* Adds the ability for users to select a base Java Docker image for most Minecraft specific eggs shipped as defaults.
+
+## v1.2.0
+### Fixed
+* Fixes newest backup being deleted when creating a new one using the schedule tasks, rather than the oldest backup.
+* Fixes multiple encoding issues when handling file names in the manager.
+* Fixes database password not properly being copied to the clipboard when clicked.
+* Fixes failed transfers unintentionally locking a server into a failed state and not properly releasing allocations that were reserved.
+* Fixes error box on server pages having an oval refresh button rather than a perfect circle.
+* Fixes a bunch of errors and usage issues relating to backups especially when uploading to S3-based systems.
+* Fixes HMR breaking navigation in development modes on the frontend.
+
+### Changed
+* Updated Paper egg to default to Java 11 as the base docker image.
+* Removes the file mode display from the File Manager row listing.
+* Updated input UI elements to have thicker borders and more consistent highlighting when active.
+* Changed searchbar toggle from `"k"` to `Cmd/Ctrl + "/"` to avoid accidental toggles and be more consistent with other sites.
+* Upgrades TailwindCSS to `v2`.
+
+### Added
+* Adds support for eggs to define multiple Docker images that can be selected by users (e.g. Java 8 & 11 images for a single egg).
+* Adds support for configuring the default interval for failed backups to be pruned from the system to avoid long running backups being incorrectly cleared.
+* Adds server transfer output logging to the server console allowing admins to see how a transfer is progressing directly in the UI.
+* Adds client API endpoint to download a file from a remote souce. This functionality is not currently expressed in the UI.
+
+## v1.1.3
+### Fixed
+* Server bulk power actions command will no longer attempt to run commands against installing or suspended servers.
+* Fixes the application API throwing an error when attempting to return variables for a server.
+* Fixes an error when attempting to install Panel dependencies without specifying an `.env` file due to an unset default timezone.
+* Fixes a null value flip in the database migrations.
+* Fixes password change endpoint for users allowing a blank value to be provided (even if nothing actually happened).
+* Fixes database IP addresses not allowing a `0` in the first octet field.
+* Fixes node information being impossible to update if there was a network error during the process. Any errors encountered communicating with Wings are now reported but will not block the actual saving of the changes.
+* **[Security]** When 2FA is required on an account the client API endpoints will now properly return an error and the UI will redirect the user to setup 2FA.
+* **[Security]** When changing the owner of a server the old owner's JWT is now properly invalidated on Wings.
+* Fixes a server error when requesting database information for a server as a subuser and the account is not granted `view_password` permissions.
+
+### Added
+* Adds support for basic backup rotation on a server when creating scheduled backup tasks.
+* Makes URLs present in the console clickable.
+* Adds `chmod` support to the file manager so that users can manually make modifications to file permissions as they need.
+
+### Changed
+* UI will no longer show a delete button to users when they're editing themselves.
+* Updated logic for bulk power actions to no longer run actions against suspended or installing servers.
+
+## v1.1.2
+### Fixed
+* Fixes an exception thrown while trying to validate IP access for the client API.
+* Fixes command history scrolling not putting the cursor at the end of the line.
+* Fixes file manager rows triggering a 404 when middle-clicked to open in a new tab.
+
+## v1.1.1
+### Fixed
+* Fixes allocation permissions checking on the frontend checking the wrong permission therefore leading to the item never showing up.
+* Fixes allocations not updating correctly when added or deleted and switching between pages.
+
+## v1.1.0
+This release **requires** `Wings@1.1.0` in order to work properly due to breaking internal API changes.
+
+### Fixed
+* Fixes subuser creation/edit modal not submitting correctly when attemping to make modifications.
+* Fixes a few remaining issues with multiple egg install scripts.
+* Removes the ability for a schedule to have a null name and replaces any existing null names with a randomly generated name.
+* Fixes schedules aborting the entire run process if a single schedule encountered an exception. This resolves batches of schedules never running correctly if they occur after a broken schedule.
+* Fixes schedules not properly resetting themselves if an exception was encountered during the run.
+* Fixes numerous N+1 query run-aways when loading multiple servers via the API.
+* Fixes numerous issues with displaying directory and file names in the file manager if they included special characters that could not be decoded properly.
+* Fixes CPU pinning not being properly passed along to Wings when updated (this also fixes memory/CPU/disk not passing along correctly as well).
+* Fixes spinner not displaying properly when displayed over a modal.
+
+### Added
+* Adds ability for users to generate their own additional server allocations via the frontend if enabled.
+* Adds the ability for a user to remove un-needed allocations from their server (as long as it is not the primary allocation).
+* Adds support for tracking the last 32 sent console commands for a server. Access the history by using the arrow keys when the command field is active.
+* Adds S3 specific environment variables allowing for backups to use any S3 compatiable system, not just AWS.
+* Adds support for copying a server allocation address to the clipboard when clicked.
+* Adds information about the next schedule run time when viewing an individual schedule.
+* Adds link to view a server in the admin control panel to the frontend server view when logged in as a root admin.
+* Adds support for egg-specific frontend/backend functionality. This is a beta feature meant for internal features at this time.
+* Adds back the EULA warning popup when starting a Minecraft server without an accepted EULA.
+* Adds missing descriptions for some user permissions on the frontend UI.
+
+### Changed
+* Adds Save/Invite button to top of subuser edit/creation modal to reduce the need for scrolling.
+* Updated language for server transfers and mounts to be less confusing.
+* Wings API endpoint for fetching all servers on a node is now properly paginated to reduce system load when returning hundreds or thousands of servers at once.
+* Removes unnecessary Wings API calls when adding/editing/deleting mounts.
+* Primary allocation for a server is now always returned, even if the subuser does not have permission to view all of the server allocations.
+* Google Analytics frontend code is now only loaded when a valid key is provided.
+
+## v1.0.3
+### Fixed
+* Fixes bug causing subusers to not be creatable or editable via the frontend for servers.
+* Fixes system timezone not being passed along properly to the MySQL connection causing scheduled tasks to run every minute when the MySQL instance and Panel timezone did not line up.
+* Fixes listing servers owned by a user in the admin area to actually list their servers.
+
+### Changed
+* Adds SameSite `lax` attribute for cookies generated by the Panel.
+* Adds better filtering for searching servers in the admin area to better key off name, uuid, or owner username/email.
+
+## v1.0.2
+### Added
+* Adds support for searching inside the file editor.
+* Adds support for manually executing a schedule regardless of if it is currently queued or not.
+* Adds an indicator to the schedule UI to show when a schedule is currently processing.
+* Adds support for setting the `backup_limit` of a server via the API.
+* **[Security]** Adds login throttling to the 2FA verification endpoint.
+
+### Fixed
+* Fixes subuser page title missing server name.
+* Fixes schedule task `sequence_id` not properly being reset when a schedule's task is deleted.
+* Fixes misc. UI bugs throughout the frontend when long text overflows its bounds.
+* Fixes user deletion command to properly handle email & ID searching.
+* Fixes color issues in the terminal causing certain text & background combinations to be illegible.
+* Fixes reCAPTCHA not properly resetting on login failure.
+* Fixes error messages not properly resetting between login screens.
+* Fixes a UI crash when attempting to create or view a directory or file that contained the `%` somewhere in the name.
+
+### Changed
+* Updated the search modal to close itself when the ESC key is pressed.
+* Updates the schedule view and editing UI to better display information to users.
+* Changed logic powering server searching on the frontend to return more accurate results and return all servers when executing the query as an admin.
+* Admin CP link no longer opens in a new tab.
+* Mounts will no longer allow a user to mount certain directory combinations. This blocks mounting one server's files into another server, and blocks using the server data directory as a mount destination.
+* Cleaned up assorted server build modification code.
+* Updates default eggs to have improved install scripts and more consistent container usage.
+
 ## v1.0.1
 ### Fixed
 * Fixes 500 error when mounting a mount to a server, and other related errors when handling mounts.

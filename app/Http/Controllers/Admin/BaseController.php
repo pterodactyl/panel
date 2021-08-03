@@ -15,8 +15,6 @@ class BaseController extends Controller
 
     /**
      * BaseController constructor.
-     *
-     * @param \Pterodactyl\Services\Helpers\SoftwareVersionService $version
      */
     public function __construct(SoftwareVersionService $version)
     {
@@ -25,8 +23,6 @@ class BaseController extends Controller
 
     /**
      * Return the admin index view.
-     *
-     * @return \Illuminate\View\View
      */
     public function index(): View
     {

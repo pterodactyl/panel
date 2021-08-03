@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
+use Illuminate\Foundation\Application;
 use League\Flysystem\AdapterInterface;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Memory\MemoryAdapter;
@@ -41,10 +42,8 @@ class BackupManager
 
     /**
      * BackupManager constructor.
-     *
-     * @param \Illuminate\Foundation\Application $app
      */
-    public function __construct($app)
+    public function __construct(Application $app)
     {
         $this->app = $app;
         $this->config = $app->make(Repository::class);
@@ -53,7 +52,6 @@ class BackupManager
     /**
      * Returns a backup adapter instance.
      *
-     * @param string|null $name
      * @return \League\Flysystem\AdapterInterface
      */
     public function adapter(string $name = null)
@@ -64,8 +62,8 @@ class BackupManager
     /**
      * Set the given backup adapter instance.
      *
-     * @param string $name
      * @param \League\Flysystem\AdapterInterface $disk
+     *
      * @return $this
      */
     public function set(string $name, $disk)
@@ -78,7 +76,6 @@ class BackupManager
     /**
      * Gets a backup adapter.
      *
-     * @param string $name
      * @return \League\Flysystem\AdapterInterface
      */
     protected function get(string $name)
@@ -89,7 +86,6 @@ class BackupManager
     /**
      * Resolve the given backup disk.
      *
-     * @param string $name
      * @return \League\Flysystem\AdapterInterface
      */
     protected function resolve(string $name)
@@ -97,9 +93,7 @@ class BackupManager
         $config = $this->getConfig($name);
 
         if (empty($config['adapter'])) {
-            throw new InvalidArgumentException(
-                "Backup disk [{$name}] does not have a configured adapter."
-            );
+            throw new InvalidArgumentException("Backup disk [{$name}] does not have a configured adapter.");
         }
 
         $adapter = $config['adapter'];
@@ -123,7 +117,6 @@ class BackupManager
     /**
      * Calls a custom creator for a given adapter type.
      *
-     * @param array $config
      * @return \League\Flysystem\AdapterInterface
      */
     protected function callCustomCreator(array $config)
@@ -138,7 +131,6 @@ class BackupManager
     /**
      * Creates a new wings adapter.
      *
-     * @param array $config
      * @return \League\Flysystem\AdapterInterface
      */
     public function createWingsAdapter(array $config)
@@ -149,14 +141,13 @@ class BackupManager
     /**
      * Creates a new S3 adapter.
      *
-     * @param array $config
      * @return \League\Flysystem\AdapterInterface
      */
     public function createS3Adapter(array $config)
     {
         $config['version'] = 'latest';
 
-        if (! empty($config['key']) && ! empty($config['secret'])) {
+        if (!empty($config['key']) && !empty($config['secret'])) {
             $config['credentials'] = Arr::only($config, ['key', 'secret', 'token']);
         }
 
@@ -168,7 +159,6 @@ class BackupManager
     /**
      * Returns the configuration associated with a given backup type.
      *
-     * @param string $name
      * @return array
      */
     protected function getConfig(string $name)
@@ -188,8 +178,6 @@ class BackupManager
 
     /**
      * Set the default session driver name.
-     *
-     * @param string $name
      */
     public function setDefaultAdapter(string $name)
     {
@@ -200,6 +188,7 @@ class BackupManager
      * Unset the given adapter instances.
      *
      * @param string|string[] $adapter
+     *
      * @return $this
      */
     public function forget($adapter)
@@ -214,8 +203,6 @@ class BackupManager
     /**
      * Register a custom adapter creator closure.
      *
-     * @param string $adapter
-     * @param \Closure $callback
      * @return $this
      */
     public function extend(string $adapter, Closure $callback)

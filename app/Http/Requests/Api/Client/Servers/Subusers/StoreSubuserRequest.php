@@ -14,9 +14,6 @@ class StoreSubuserRequest extends SubuserRequest
         return Permission::ACTION_USER_CREATE;
     }
 
-    /**
-     * @return array
-     */
     public function rules(): array
     {
         return [

@@ -30,10 +30,6 @@ class EggScriptController extends Controller
 
     /**
      * EggScriptController constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
-     * @param \Pterodactyl\Contracts\Repository\EggRepositoryInterface $repository
-     * @param \Pterodactyl\Services\Eggs\Scripts\InstallScriptService $installScriptService
      */
     public function __construct(
         AlertsMessageBag $alert,
@@ -47,9 +43,6 @@ class EggScriptController extends Controller
 
     /**
      * Handle requests to render installation script for an Egg.
-     *
-     * @param int $egg
-     * @return \Illuminate\View\View
      */
     public function index(int $egg): View
     {
@@ -73,10 +66,6 @@ class EggScriptController extends Controller
 
     /**
      * Handle a request to update the installation script for an Egg.
-     *
-     * @param \Pterodactyl\Http\Requests\Admin\Egg\EggScriptFormRequest $request
-     * @param \Pterodactyl\Models\Egg $egg
-     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException

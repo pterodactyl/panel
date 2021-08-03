@@ -20,8 +20,6 @@ class DeleteLocationRequest extends ApplicationApiRequest
 
     /**
      * Determine if the requested location exists on the Panel.
-     *
-     * @return bool
      */
     public function resourceExists(): bool
     {

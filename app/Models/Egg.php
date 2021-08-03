@@ -9,7 +9,11 @@ namespace Pterodactyl\Models;
  * @property string $author
  * @property string $name
  * @property string|null $description
- * @property string $docker_image
+ * @property array|null $features
+ * @property string $docker_image -- deprecated, use $docker_images
+ * @property string $update_url
+ * @property array $docker_images
+ * @property array|null $file_denylist
  * @property string|null $config_files
  * @property string|null $config_startup
  * @property string|null $config_logs
@@ -23,7 +27,6 @@ namespace Pterodactyl\Models;
  * @property int|null $copy_script_from
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- *
  * @property string|null $copy_script_install
  * @property string $copy_script_entry
  * @property string $copy_script_container
@@ -31,7 +34,8 @@ namespace Pterodactyl\Models;
  * @property string|null $inherit_config_startup
  * @property string|null $inherit_config_logs
  * @property string|null $inherit_config_stop
- *
+ * @property string $inherit_file_denylist
+ * @property array|null $inherit_features
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\EggVariable[] $variables
@@ -44,7 +48,19 @@ class Egg extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'egg';
+    public const RESOURCE_NAME = 'egg';
+
+    /**
+     * Different features that can be enabled on any given egg. These are used internally
+     * to determine which types of frontend functionality should be shown to the user. Eggs
+     * will automatically inherit features from a parent egg if they are already configured
+     * to copy configuration values from said egg.
+     *
+     * To skip copying the features, an empty array value should be passed in ("[]") rather
+     * than leaving it null.
+     */
+    public const FEATURE_EULA_POPUP = 'eula';
+    public const FEATURE_FASTDL = 'fastdl';
 
     /**
      * The table associated with the model.
@@ -61,7 +77,9 @@ class Egg extends Model
     protected $fillable = [
         'name',
         'description',
-        'docker_image',
+        'features',
+        'docker_images',
+        'file_denylist',
         'config_files',
         'config_startup',
         'config_logs',
@@ -85,6 +103,9 @@ class Egg extends Model
         'config_from' => 'integer',
         'script_is_privileged' => 'boolean',
         'copy_script_from' => 'integer',
+        'features' => 'array',
+        'docker_images' => 'array',
+        'file_denylist' => 'array',
     ];
 
     /**
@@ -95,24 +116,32 @@ class Egg extends Model
         'uuid' => 'required|string|size:36',
         'name' => 'required|string|max:191',
         'description' => 'string|nullable',
+        'features' => 'array|nullable',
         'author' => 'required|string|email',
-        'docker_image' => 'required|string|max:191',
+        'file_denylist' => 'array|nullable',
+        'file_denylist.*' => 'string',
+        'docker_images' => 'required|array|min:1',
+        'docker_images.*' => 'required|string',
         'startup' => 'required|nullable|string',
         'config_from' => 'sometimes|bail|nullable|numeric|exists:eggs,id',
         'config_stop' => 'required_without:config_from|nullable|string|max:191',
         'config_startup' => 'required_without:config_from|nullable|json',
         'config_logs' => 'required_without:config_from|nullable|json',
         'config_files' => 'required_without:config_from|nullable|json',
+        'update_url' => 'sometimes|nullable|string',
     ];
 
     /**
      * @var array
      */
     protected $attributes = [
+        'features' => null,
+        'file_denylist' => null,
         'config_stop' => null,
         'config_startup' => null,
         'config_logs' => null,
         'config_files' => null,
+        'update_url' => null,
     ];
 
     /**
@@ -123,7 +152,7 @@ class Egg extends Model
      */
     public function getCopyScriptInstallAttribute()
     {
-        if (! is_null($this->script_install) || is_null($this->copy_script_from)) {
+        if (!is_null($this->script_install) || is_null($this->copy_script_from)) {
             return $this->script_install;
         }
 
@@ -138,7 +167,7 @@ class Egg extends Model
      */
     public function getCopyScriptEntryAttribute()
     {
-        if (! is_null($this->script_entry) || is_null($this->copy_script_from)) {
+        if (!is_null($this->script_entry) || is_null($this->copy_script_from)) {
             return $this->script_entry;
         }
 
@@ -153,7 +182,7 @@ class Egg extends Model
      */
     public function getCopyScriptContainerAttribute()
     {
-        if (! is_null($this->script_container) || is_null($this->copy_script_from)) {
+        if (!is_null($this->script_container) || is_null($this->copy_script_from)) {
             return $this->script_container;
         }
 
@@ -167,7 +196,7 @@ class Egg extends Model
      */
     public function getInheritConfigFilesAttribute()
     {
-        if (! is_null($this->config_files) || is_null($this->config_from)) {
+        if (!is_null($this->config_files) || is_null($this->config_from)) {
             return $this->config_files;
         }
 
@@ -181,7 +210,7 @@ class Egg extends Model
      */
     public function getInheritConfigStartupAttribute()
     {
-        if (! is_null($this->config_startup) || is_null($this->config_from)) {
+        if (!is_null($this->config_startup) || is_null($this->config_from)) {
             return $this->config_startup;
         }
 
@@ -195,7 +224,7 @@ class Egg extends Model
      */
     public function getInheritConfigLogsAttribute()
     {
-        if (! is_null($this->config_logs) || is_null($this->config_from)) {
+        if (!is_null($this->config_logs) || is_null($this->config_from)) {
             return $this->config_logs;
         }
 
@@ -209,11 +238,41 @@ class Egg extends Model
      */
     public function getInheritConfigStopAttribute()
     {
-        if (! is_null($this->config_stop) || is_null($this->config_from)) {
+        if (!is_null($this->config_stop) || is_null($this->config_from)) {
             return $this->config_stop;
         }
 
         return $this->configFrom->config_stop;
+    }
+
+    /**
+     * Returns the features available to this egg from the parent configuration if there are
+     * no features defined for this egg specifically and there is a parent egg configured.
+     *
+     * @return array|null
+     */
+    public function getInheritFeaturesAttribute()
+    {
+        if (!is_null($this->features) || is_null($this->config_from)) {
+            return $this->features;
+        }
+
+        return $this->configFrom->features;
+    }
+
+    /**
+     * Returns the features available to this egg from the parent configuration if there are
+     * no features defined for this egg specifically and there is a parent egg configured.
+     *
+     * @return string[]|null
+     */
+    public function getInheritFileDenylistAttribute()
+    {
+        if (is_null($this->config_from)) {
+            return $this->file_denylist;
+        }
+
+        return $this->configFrom->file_denylist;
     }
 
     /**

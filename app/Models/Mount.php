@@ -13,7 +13,6 @@ use Illuminate\Validation\Rules\NotIn;
  * @property string $target
  * @property bool $read_only
  * @property bool $user_mountable
- *
  * @property \Pterodactyl\Models\Egg[]|\Illuminate\Database\Eloquent\Collection $eggs
  * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
@@ -24,7 +23,7 @@ class Mount extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'mount';
+    public const RESOURCE_NAME = 'mount';
 
     /**
      * The table associated with the model.
@@ -87,7 +86,7 @@ class Mount extends Model
     public $timestamps = false;
 
     /**
-     * Blacklisted source paths
+     * Blacklisted source paths.
      *
      * @var string[]
      */
@@ -98,7 +97,7 @@ class Mount extends Model
     ];
 
     /**
-     * Blacklisted target paths
+     * Blacklisted target paths.
      *
      * @var string[]
      */

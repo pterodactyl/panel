@@ -13,8 +13,6 @@ class ClientApiRequest extends ApplicationApiRequest
 {
     /**
      * Determine if the current user is authorized to perform the requested action against the API.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {

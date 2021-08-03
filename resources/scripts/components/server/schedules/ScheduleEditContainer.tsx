@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { useHistory, useLocation, useParams } from 'react-router-dom';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import getServerSchedule from '@/api/server/schedules/getServerSchedule';
 import Spinner from '@/components/elements/Spinner';
@@ -28,9 +28,9 @@ interface State {
 }
 
 const CronBox = ({ title, value }: { title: string; value: string }) => (
-    <div css={tw`bg-neutral-700 rounded p-4`}>
+    <div css={tw`bg-neutral-700 rounded p-3`}>
         <p css={tw`text-neutral-300 text-sm`}>{title}</p>
-        <p css={tw`text-2xl font-medium text-neutral-100`}>{value}</p>
+        <p css={tw`text-xl font-medium text-neutral-100`}>{value}</p>
     </div>
 );
 
@@ -45,7 +45,11 @@ const ActivePill = ({ active }: { active: boolean }) => (
     </span>
 );
 
-export default ({ match, history, location: { state } }: RouteComponentProps<Params, Record<string, unknown>, State>) => {
+export default () => {
+    const history = useHistory();
+    const { state } = useLocation<State>();
+    const { id: scheduleId } = useParams<Params>();
+
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
@@ -53,45 +57,37 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
     const [ isLoading, setIsLoading ] = useState(true);
     const [ showEditModal, setShowEditModal ] = useState(false);
 
-    // @ts-ignore
-    const schedule: Schedule | undefined = ServerContext.useStoreState(st => st.schedules.data.find(s => s.id === state.schedule?.id), isEqual);
+    const schedule = ServerContext.useStoreState(st => st.schedules.data.find(s => s.id === state.schedule?.id), isEqual);
     const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 
     useEffect(() => {
-        if (schedule?.id === Number(match.params.id)) {
+        if (schedule?.id === Number(scheduleId)) {
             setIsLoading(false);
             return;
         }
 
         clearFlashes('schedules');
-        getServerSchedule(uuid, Number(match.params.id))
+        getServerSchedule(uuid, Number(scheduleId))
             .then(schedule => appendSchedule(schedule))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ error, key: 'schedules' });
             })
             .then(() => setIsLoading(false));
-    }, [ match ]);
+    }, [ scheduleId ]);
 
     const toggleEditModal = useCallback(() => {
         setShowEditModal(s => !s);
     }, []);
 
     return (
-        <PageContentBlock>
+        <PageContentBlock title={'Schedules'}>
             <FlashMessageRender byKey={'schedules'} css={tw`mb-4`}/>
             {!schedule || isLoading ?
                 <Spinner size={'large'} centered/>
                 :
                 <>
                     <ScheduleCronRow cron={schedule.cron} css={tw`sm:hidden bg-neutral-700 rounded mb-4 p-3`}/>
-                    <div css={tw`hidden sm:grid grid-cols-5 md:grid-cols-7 gap-4 mb-6`}>
-                        <CronBox title={'Minute'} value={schedule.cron.minute}/>
-                        <CronBox title={'Hour'} value={schedule.cron.hour}/>
-                        <CronBox title={'Day (Month)'} value={schedule.cron.dayOfMonth}/>
-                        <CronBox title={'Month'} value={'*'}/>
-                        <CronBox title={'Day (Week)'} value={schedule.cron.dayOfWeek}/>
-                    </div>
                     <div css={tw`rounded shadow`}>
                         <div css={tw`sm:flex items-center bg-neutral-900 p-3 sm:p-6 border-b-4 border-neutral-600 rounded-t`}>
                             <div css={tw`flex-1`}>
@@ -108,9 +104,21 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                                         <ActivePill active={schedule.isActive}/>
                                     }
                                 </h3>
-                                <p css={tw`mt-1 text-sm text-neutral-300`}>
+                                <p css={tw`mt-1 text-sm text-neutral-200`}>
                                     Last run at:&nbsp;
-                                    {schedule.lastRunAt ? format(schedule.lastRunAt, 'MMM do \'at\' h:mma') : 'never'}
+                                    {schedule.lastRunAt ?
+                                        format(schedule.lastRunAt, 'MMM do \'at\' h:mma')
+                                        :
+                                        <span css={tw`text-neutral-300`}>n/a</span>
+                                    }
+                                    <span css={tw`ml-4 pl-4 border-l-4 border-neutral-600 py-px`}>
+                                        Next run at:&nbsp;
+                                        {schedule.nextRunAt ?
+                                            format(schedule.nextRunAt, 'MMM do \'at\' h:mma')
+                                            :
+                                            <span css={tw`text-neutral-300`}>n/a</span>
+                                        }
+                                    </span>
                                 </p>
                             </div>
                             <div css={tw`flex sm:block mt-3 sm:mt-0`}>
@@ -128,6 +136,13 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                                 </Can>
                             </div>
                         </div>
+                        <div css={tw`hidden sm:grid grid-cols-5 md:grid-cols-5 gap-4 mb-4 mt-4`}>
+                            <CronBox title={'Minute'} value={schedule.cron.minute}/>
+                            <CronBox title={'Hour'} value={schedule.cron.hour}/>
+                            <CronBox title={'Day (Month)'} value={schedule.cron.dayOfMonth}/>
+                            <CronBox title={'Month'} value={schedule.cron.month}/>
+                            <CronBox title={'Day (Week)'} value={schedule.cron.dayOfWeek}/>
+                        </div>
                         <div css={tw`bg-neutral-700 rounded-b`}>
                             {schedule.tasks.length > 0 ?
                                 schedule.tasks.map(task => (
@@ -138,7 +153,7 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                             }
                         </div>
                     </div>
-                    <EditScheduleModal visible={showEditModal} schedule={schedule} onDismissed={toggleEditModal}/>
+                    <EditScheduleModal visible={showEditModal} schedule={schedule} onModalDismissed={toggleEditModal}/>
                     <div css={tw`mt-6 flex sm:justify-end`}>
                         <Can action={'schedule.delete'}>
                             <DeleteScheduleButton
@@ -146,7 +161,7 @@ export default ({ match, history, location: { state } }: RouteComponentProps<Par
                                 onDeleted={() => history.push(`/server/${id}/schedules`)}
                             />
                         </Can>
-                        {schedule.isActive && schedule.tasks.length > 0 &&
+                        {schedule.tasks.length > 0 &&
                         <Can action={'schedule.update'}>
                             <RunScheduleButton schedule={schedule}/>
                         </Can>

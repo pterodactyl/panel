@@ -2,13 +2,14 @@
 
 namespace Pterodactyl\Services\Nodes;
 
-use DateTimeInterface;
-use Lcobucci\JWT\Builder;
+use DateTimeImmutable;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
-use Lcobucci\JWT\Signer\Key;
 use Pterodactyl\Models\Node;
+use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
+use Lcobucci\JWT\Signer\Key\InMemory;
+use Pterodactyl\Extensions\Lcobucci\JWT\Encoding\TimestampDates;
 
 class NodeJWTService
 {
@@ -18,14 +19,18 @@ class NodeJWTService
     private $claims = [];
 
     /**
-     * @var int|null
+     * @var \DateTimeImmutable|null
      */
     private $expiresAt;
 
     /**
+     * @var string|null
+     */
+    private $subject;
+
+    /**
      * Set the claims to include in this JWT.
      *
-     * @param array $claims
      * @return $this
      */
     public function setClaims(array $claims)
@@ -35,9 +40,22 @@ class NodeJWTService
         return $this;
     }
 
-    public function setExpiresAt(DateTimeInterface $date)
+    /**
+     * @return $this
+     */
+    public function setExpiresAt(DateTimeImmutable $date)
     {
-        $this->expiresAt = $date->getTimestamp();
+        $this->expiresAt = $date;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setSubject(string $subject)
+    {
+        $this->subject = $subject;
 
         return $this;
     }
@@ -45,22 +63,29 @@ class NodeJWTService
     /**
      * Generate a new JWT for a given node.
      *
-     * @param \Pterodactyl\Models\Node $node
      * @param string|null $identifiedBy
-     * @return \Lcobucci\JWT\Token
+     *
+     * @return \Lcobucci\JWT\Token\Plain
      */
-    public function handle(Node $node, string $identifiedBy)
+    public function handle(Node $node, string $identifiedBy, string $algo = 'md5')
     {
-        $signer = new Sha256;
+        $identifier = hash($algo, $identifiedBy);
+        $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($node->getDecryptedKey()));
 
-        $builder = (new Builder)->issuedBy(config('app.url'))
+        $builder = $config->builder(new TimestampDates())
+            ->issuedBy(config('app.url'))
             ->permittedFor($node->getConnectionAddress())
-            ->identifiedBy(hash('sha256', $identifiedBy), true)
-            ->issuedAt(CarbonImmutable::now()->getTimestamp())
-            ->canOnlyBeUsedAfter(CarbonImmutable::now()->subMinutes(5)->getTimestamp());
+            ->identifiedBy($identifier)
+            ->withHeader('jti', $identifier)
+            ->issuedAt(CarbonImmutable::now())
+            ->canOnlyBeUsedAfter(CarbonImmutable::now()->subMinutes(5));
 
         if ($this->expiresAt) {
             $builder = $builder->expiresAt($this->expiresAt);
+        }
+
+        if (!empty($this->subject)) {
+            $builder = $builder->relatedTo($this->subject)->withHeader('sub', $this->subject);
         }
 
         foreach ($this->claims as $key => $value) {
@@ -69,6 +94,6 @@ class NodeJWTService
 
         return $builder
             ->withClaim('unique_id', Str::random(16))
-            ->getToken($signer, new Key($node->getDecryptedKey()));
+            ->getToken($config->signer(), $config->signingKey());
     }
 }

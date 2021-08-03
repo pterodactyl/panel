@@ -22,9 +22,6 @@ class EggInstallController extends Controller
 
     /**
      * EggInstallController constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\EnvironmentService $environment
-     * @param \Pterodactyl\Contracts\Repository\ServerRepositoryInterface $repository
      */
     public function __construct(EnvironmentService $environment, ServerRepositoryInterface $repository)
     {
@@ -35,10 +32,6 @@ class EggInstallController extends Controller
     /**
      * Handle request to get script and installation information for a server
      * that is being created on the node.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param string $uuid
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -57,7 +50,7 @@ class EggInstallController extends Controller
 
         return response()->json([
             'scripts' => [
-                'install' => ! $egg->copy_script_install ? null : str_replace(["\r\n", "\n", "\r"], "\n", $egg->copy_script_install),
+                'install' => !$egg->copy_script_install ? null : str_replace(["\r\n", "\n", "\r"], "\n", $egg->copy_script_install),
                 'privileged' => $egg->script_is_privileged,
             ],
             'config' => [

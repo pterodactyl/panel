@@ -24,9 +24,9 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     public function testApiKeysAreReturned()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = factory(ApiKey::class)->create([
+        $key = ApiKey::factory()->create([
             'user_id' => $user->id,
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
@@ -59,13 +59,13 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     public function testApiKeyCanBeCreatedForAccount()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         // Small sub-test to ensure we're always comparing the  number of keys to the
         // specific logged in account, and not just the total number of keys stored in
         // the database.
-        factory(ApiKey::class)->times(10)->create([
-            'user_id' => factory(User::class)->create()->id,
+        ApiKey::factory()->times(10)->create([
+            'user_id' => User::factory()->create()->id,
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
 
@@ -103,8 +103,8 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     public function testNoMoreThanFiveApiKeysCanBeCreatedForAnAccount()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
-        factory(ApiKey::class)->times(5)->create([
+        $user = User::factory()->create();
+        ApiKey::factory()->times(5)->create([
             'user_id' => $user->id,
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
@@ -127,7 +127,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     public function testValidationErrorIsReturnedForBadRequests()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
             'description' => '',
@@ -154,9 +154,9 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     public function testApiKeyCanBeDeleted()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = factory(ApiKey::class)->create([
+        $key = ApiKey::factory()->create([
             'user_id' => $user->id,
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
@@ -173,9 +173,9 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     public function testNonExistentApiKeyDeletionReturns404Error()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = factory(ApiKey::class)->create([
+        $key = ApiKey::factory()->create([
             'user_id' => $user->id,
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
@@ -193,11 +193,11 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     public function testApiKeyBelongingToAnotherUserCannotBeDeleted()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         /** @var \Pterodactyl\Models\User $user2 */
-        $user2 = factory(User::class)->create();
+        $user2 = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = factory(ApiKey::class)->create([
+        $key = ApiKey::factory()->create([
             'user_id' => $user2->id,
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
@@ -215,9 +215,9 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     public function testApplicationApiKeyCannotBeDeleted()
     {
         /** @var \Pterodactyl\Models\User $user */
-        $user = factory(User::class)->create();
+        $user = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = factory(ApiKey::class)->create([
+        $key = ApiKey::factory()->create([
             'user_id' => $user->id,
             'key_type' => ApiKey::TYPE_APPLICATION,
         ]);

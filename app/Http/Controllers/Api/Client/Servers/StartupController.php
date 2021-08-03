@@ -31,10 +31,6 @@ class StartupController extends ClientApiController
 
     /**
      * StartupController constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\VariableValidatorService $service
-     * @param \Pterodactyl\Services\Servers\StartupCommandService $startupCommandService
-     * @param \Pterodactyl\Repositories\Eloquent\ServerVariableRepository $repository
      */
     public function __construct(VariableValidatorService $service, StartupCommandService $startupCommandService, ServerVariableRepository $repository)
     {
@@ -48,8 +44,6 @@ class StartupController extends ClientApiController
     /**
      * Returns the startup information for the server including all of the variables.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Startup\GetStartupRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      */
     public function index(GetStartupRequest $request, Server $server)
@@ -62,6 +56,7 @@ class StartupController extends ClientApiController
             ->transformWith($this->getTransformer(EggVariableTransformer::class))
             ->addMeta([
                 'startup_command' => $startup,
+                'docker_images' => $server->egg->docker_images,
                 'raw_startup_command' => $server->startup,
             ])
             ->toArray();
@@ -70,8 +65,6 @@ class StartupController extends ClientApiController
     /**
      * Updates a single variable for a server.
      *
-     * @param \Pterodactyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRequest $request
-     * @param \Pterodactyl\Models\Server $server
      * @return array
      *
      * @throws \Illuminate\Validation\ValidationException
@@ -83,14 +76,10 @@ class StartupController extends ClientApiController
         /** @var \Pterodactyl\Models\EggVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
 
-        if (is_null($variable) || ! $variable->user_viewable) {
-            throw new BadRequestHttpException(
-                "The environment variable you are trying to edit does not exist."
-            );
-        } else if (! $variable->user_editable) {
-            throw new BadRequestHttpException(
-                "The environment variable you are trying to edit is read-only."
-            );
+        if (is_null($variable) || !$variable->user_viewable) {
+            throw new BadRequestHttpException('The environment variable you are trying to edit does not exist.');
+        } elseif (!$variable->user_editable) {
+            throw new BadRequestHttpException('The environment variable you are trying to edit is read-only.');
         }
 
         // Revalidate the variable value using the egg variable specific validation rules for it.

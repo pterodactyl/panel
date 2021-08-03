@@ -18,6 +18,7 @@ interface HashidsInterface extends VendorHashidsInterface
      *
      * @param string $encoded
      * @param null $default
+     *
      * @return mixed
      *
      * @throws \InvalidArgumentException

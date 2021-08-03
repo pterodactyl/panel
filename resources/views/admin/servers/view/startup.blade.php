@@ -89,13 +89,14 @@
             </div>
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Docker Container Configuration</h3>
+                    <h3 class="box-title">Docker Image Configuration</h3>
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="pDockerImage" class="control-label">Image</label>
-                        <input type="text" name="docker_image" id="pDockerImage" value="{{ $server->image }}" class="form-control" />
-                        <p class="text-muted small">The Docker image to use for this server. The default image for the selected egg is <code id="setDefaultImage"></code>.</p>
+                        <label for="pDockerImage">Image</label>
+                        <select id="pDockerImage" name="docker_image" class="form-control"></select>
+                        <input id="pDockerImageCustom" name="custom_docker_image" value="{{ old('custom_docker_image') }}" class="form-control" placeholder="Or enter a custom image..." style="margin-top:1rem"/>
+                        <p class="small text-muted no-margin">This is the Docker image that will be used to run this server. Select an image from the dropdown or enter a custom image in the text field above.</p>
                     </div>
                 </div>
             </div>
@@ -117,10 +118,26 @@
             var parentChain = _.get(Pterodactyl.nests, $("#pNestId").val());
             var objectChain = _.get(parentChain, 'eggs.' + selectedEgg);
 
-            $('#setDefaultImage').html(_.get(objectChain, 'docker_image', 'undefined'));
-            $('#pDockerImage').val(_.get(objectChain, 'docker_image', 'undefined'));
+            $('#setDefaultImage').html(_.get(objectChain, 'docker_images.0', 'undefined'));
+            const images = _.get(objectChain, 'docker_images', [])
+            $('#pDockerImage').html('');
+            for (let i = 0; i < images.length; i++) {
+                let opt = document.createElement('option');
+                opt.value = images[i];
+                opt.innerHTML = images[i];
+                if (objectChain.id === parseInt(Pterodactyl.server.egg_id) && Pterodactyl.server.image == opt.value) {
+                    opt.checked = true
+                }
+                $('#pDockerImage').append(opt);
+            }
+            $('#pDockerImage').on('change', function () {
+                $('#pDockerImageCustom').val('');
+            })
+
             if (objectChain.id === parseInt(Pterodactyl.server.egg_id)) {
-                $('#pDockerImage').val(Pterodactyl.server.image);
+                if ($('#pDockerImage').val() != Pterodactyl.server.image) {
+                    $('#pDockerImageCustom').val(Pterodactyl.server.image);
+                }
             }
 
             if (!_.get(objectChain, 'startup', false)) {

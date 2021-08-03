@@ -9,8 +9,6 @@ class EggVariableTransformer extends BaseTransformer
 {
     /**
      * Return the resource name for the JSONAPI output.
-     *
-     * @return string
      */
     public function getResourceName(): string
     {

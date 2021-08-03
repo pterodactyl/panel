@@ -25,7 +25,8 @@ const schema = object().shape({
 const generateDirectoryData = (name: string): FileObject => ({
     key: `dir_${name.split('/', 1)[0] ?? name}`,
     name: name.replace(/^(\/*)/, '').split('/', 1)[0] ?? name,
-    mode: '0644',
+    mode: 'drwxr-xr-x',
+    modeBits: '0755',
     size: 0,
     isFile: false,
     isSymlink: false,
@@ -92,9 +93,7 @@ export default ({ className }: WithClassname) => {
                                 <span css={tw`text-neutral-200`}>This directory will be created as</span>
                                 &nbsp;/home/container/
                                 <span css={tw`text-cyan-200`}>
-                                    {decodeURIComponent(
-                                        join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, ''),
-                                    )}
+                                    {join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}
                                 </span>
                             </p>
                             <div css={tw`flex justify-end`}>

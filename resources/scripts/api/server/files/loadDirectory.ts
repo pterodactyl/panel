@@ -5,6 +5,7 @@ export interface FileObject {
     key: string;
     name: string;
     mode: string;
+    modeBits: string,
     size: number;
     isFile: boolean;
     isSymlink: boolean;
@@ -17,7 +18,7 @@ export interface FileObject {
 
 export default async (uuid: string, directory?: string): Promise<FileObject[]> => {
     const { data } = await http.get(`/api/client/servers/${uuid}/files/list`, {
-        params: { directory },
+        params: { directory: directory ?? '/' },
     });
 
     return (data.data || []).map(rawDataToFileObject);

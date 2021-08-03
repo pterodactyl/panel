@@ -73,7 +73,7 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
-        $this->assertSame(Server::STATUS_INSTALLED, $server->installed);
+        $this->assertTrue($server->isInstalled());
 
         $service = Mockery::mock(DaemonServerRepository::class);
         $this->app->instance(DaemonServerRepository::class, $service);
@@ -91,7 +91,7 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
             ->assertStatus(Response::HTTP_ACCEPTED);
 
         $server = $server->refresh();
-        $this->assertSame(Server::STATUS_INSTALLING, $server->installed);
+        $this->assertSame(Server::STATUS_INSTALLING, $server->status);
     }
 
     /**
@@ -107,20 +107,14 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
             ->assertStatus(Response::HTTP_FORBIDDEN);
 
         $server = $server->refresh();
-        $this->assertSame(Server::STATUS_INSTALLED, $server->installed);
+        $this->assertTrue($server->isInstalled());
     }
 
-    /**
-     * @return array
-     */
     public function renamePermissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SETTINGS_RENAME]]];
     }
 
-    /**
-     * @return array
-     */
     public function reinstallPermissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SETTINGS_REINSTALL]]];

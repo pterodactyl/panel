@@ -32,8 +32,9 @@ const VariableBox = ({ variable }: Props) => {
 
         updateStartupVariable(uuid, variable.envVariable, value)
             .then(([ response, invocation ]) => mutate(data => ({
+                ...data,
                 invocation,
-                variables: data.variables.map(v => v.envVariable === response.envVariable ? response : v),
+                variables: (data.variables || []).map(v => v.envVariable === response.envVariable ? response : v),
             }), false))
             .catch(error => {
                 console.error(error);
@@ -67,7 +68,7 @@ const VariableBox = ({ variable }: Props) => {
                     placeholder={variable.defaultValue}
                 />
             </InputSpinner>
-            <p css={tw`mt-1 text-xs text-neutral-400`}>
+            <p css={tw`mt-1 text-xs text-neutral-300`}>
                 {variable.description}
             </p>
         </TitledGreyBox>

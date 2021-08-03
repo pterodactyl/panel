@@ -14,6 +14,7 @@ export default () => {
             focusThrottleInterval: 30000,
             revalidateOnMount: false,
             refreshInterval: 0,
+            errorRetryCount: 2,
         },
     );
 };

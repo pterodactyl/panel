@@ -10,57 +10,58 @@ class Permission extends Model
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    const RESOURCE_NAME = 'subuser_permission';
+    public const RESOURCE_NAME = 'subuser_permission';
 
     /**
      * Constants defining different permissions available.
      */
-    const ACTION_WEBSOCKET_CONNECT = 'websocket.connect';
-    const ACTION_CONTROL_CONSOLE = 'control.console';
-    const ACTION_CONTROL_START = 'control.start';
-    const ACTION_CONTROL_STOP = 'control.stop';
-    const ACTION_CONTROL_RESTART = 'control.restart';
+    public const ACTION_WEBSOCKET_CONNECT = 'websocket.connect';
+    public const ACTION_CONTROL_CONSOLE = 'control.console';
+    public const ACTION_CONTROL_START = 'control.start';
+    public const ACTION_CONTROL_STOP = 'control.stop';
+    public const ACTION_CONTROL_RESTART = 'control.restart';
 
-    const ACTION_DATABASE_READ = 'database.read';
-    const ACTION_DATABASE_CREATE = 'database.create';
-    const ACTION_DATABASE_UPDATE = 'database.update';
-    const ACTION_DATABASE_DELETE = 'database.delete';
-    const ACTION_DATABASE_VIEW_PASSWORD = 'database.view_password';
+    public const ACTION_DATABASE_READ = 'database.read';
+    public const ACTION_DATABASE_CREATE = 'database.create';
+    public const ACTION_DATABASE_UPDATE = 'database.update';
+    public const ACTION_DATABASE_DELETE = 'database.delete';
+    public const ACTION_DATABASE_VIEW_PASSWORD = 'database.view_password';
 
-    const ACTION_SCHEDULE_READ = 'schedule.read';
-    const ACTION_SCHEDULE_CREATE = 'schedule.create';
-    const ACTION_SCHEDULE_UPDATE = 'schedule.update';
-    const ACTION_SCHEDULE_DELETE = 'schedule.delete';
+    public const ACTION_SCHEDULE_READ = 'schedule.read';
+    public const ACTION_SCHEDULE_CREATE = 'schedule.create';
+    public const ACTION_SCHEDULE_UPDATE = 'schedule.update';
+    public const ACTION_SCHEDULE_DELETE = 'schedule.delete';
 
-    const ACTION_USER_READ = 'user.read';
-    const ACTION_USER_CREATE = 'user.create';
-    const ACTION_USER_UPDATE = 'user.update';
-    const ACTION_USER_DELETE = 'user.delete';
+    public const ACTION_USER_READ = 'user.read';
+    public const ACTION_USER_CREATE = 'user.create';
+    public const ACTION_USER_UPDATE = 'user.update';
+    public const ACTION_USER_DELETE = 'user.delete';
 
-    const ACTION_BACKUP_READ = 'backup.read';
-    const ACTION_BACKUP_CREATE = 'backup.create';
-    const ACTION_BACKUP_UPDATE = 'backup.update';
-    const ACTION_BACKUP_DELETE = 'backup.delete';
-    const ACTION_BACKUP_DOWNLOAD = 'backup.download';
+    public const ACTION_BACKUP_READ = 'backup.read';
+    public const ACTION_BACKUP_CREATE = 'backup.create';
+    public const ACTION_BACKUP_DELETE = 'backup.delete';
+    public const ACTION_BACKUP_DOWNLOAD = 'backup.download';
+    public const ACTION_BACKUP_RESTORE = 'backup.restore';
 
-    const ACTION_ALLOCATION_READ = 'allocation.read';
-    const ACTION_ALLOCATION_CREATE = 'allocation.create';
-    const ACTION_ALLOCATION_UPDATE = 'allocation.update';
-    const ACTION_ALLOCATION_DELETE = 'allocation.delete';
+    public const ACTION_ALLOCATION_READ = 'allocation.read';
+    public const ACTION_ALLOCATION_CREATE = 'allocation.create';
+    public const ACTION_ALLOCATION_UPDATE = 'allocation.update';
+    public const ACTION_ALLOCATION_DELETE = 'allocation.delete';
 
-    const ACTION_FILE_READ = 'file.read';
-    const ACTION_FILE_READ_CONTENT = 'file.read-content';
-    const ACTION_FILE_CREATE = 'file.create';
-    const ACTION_FILE_UPDATE = 'file.update';
-    const ACTION_FILE_DELETE = 'file.delete';
-    const ACTION_FILE_ARCHIVE = 'file.archive';
-    const ACTION_FILE_SFTP = 'file.sftp';
+    public const ACTION_FILE_READ = 'file.read';
+    public const ACTION_FILE_READ_CONTENT = 'file.read-content';
+    public const ACTION_FILE_CREATE = 'file.create';
+    public const ACTION_FILE_UPDATE = 'file.update';
+    public const ACTION_FILE_DELETE = 'file.delete';
+    public const ACTION_FILE_ARCHIVE = 'file.archive';
+    public const ACTION_FILE_SFTP = 'file.sftp';
 
-    const ACTION_STARTUP_READ = 'startup.read';
-    const ACTION_STARTUP_UPDATE = 'startup.update';
+    public const ACTION_STARTUP_READ = 'startup.read';
+    public const ACTION_STARTUP_UPDATE = 'startup.update';
+    public const ACTION_STARTUP_DOCKER_IMAGE = 'startup.docker-image';
 
-    const ACTION_SETTINGS_RENAME = 'settings.rename';
-    const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
+    public const ACTION_SETTINGS_RENAME = 'settings.rename';
+    public const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
 
     /**
      * Should timestamps be used on this model.
@@ -105,6 +106,7 @@ class Permission extends Model
      * to retrieve them, and not directly access this array as it is subject to change.
      *
      * @var array
+     *
      * @see \Pterodactyl\Models\Permission::permissions()
      */
     protected static $permissions = [
@@ -153,9 +155,9 @@ class Permission extends Model
             'keys' => [
                 'create' => 'Allows a user to create new backups for this server.',
                 'read' => 'Allows a user to view all backups that exist for this server.',
-                'update' => '',
                 'delete' => 'Allows a user to remove backups from the system.',
-                'download' => 'Allows a user to download backups.',
+                'download' => 'Allows a user to download a backup for the server. Danger: this allows a user to access all files for the server in the backup.',
+                'restore' => 'Allows a user to restore a backup for the server. Danger: this allows the user to delete all of the server files in the process.',
             ],
         ],
 
@@ -163,7 +165,7 @@ class Permission extends Model
         'allocation' => [
             'description' => 'Permissions that control a user\'s ability to modify the port allocations for this server.',
             'keys' => [
-                'read' => 'Allows a user to view the allocations assigned to this server.',
+                'read' => 'Allows a user to view all allocations currently assigned to this server. Users with any level of access to this server can always view the primary allocation.',
                 'create' => 'Allows a user to assign additional allocations to the server.',
                 'update' => 'Allows a user to change the primary server allocation and attach notes to each allocation.',
                 'delete' => 'Allows a user to delete an allocation from the server.',
@@ -176,6 +178,7 @@ class Permission extends Model
             'keys' => [
                 'read' => 'Allows a user to view the startup variables for a server.',
                 'update' => 'Allows a user to modify the startup variables for the server.',
+                'docker-image' => 'Allows a user to modify the Docker image used when running the server.',
             ],
         ],
 
@@ -193,18 +196,18 @@ class Permission extends Model
         'schedule' => [
             'description' => 'Permissions that control a user\'s access to the schedule management for this server.',
             'keys' => [
-                'create' => '', // task.create-schedule
-                'read' => '', // task.view-schedule, task.list-schedules
-                'update' => '', // task.edit-schedule, task.queue-schedule, task.toggle-schedule
-                'delete' => '', // task.delete-schedule
+                'create' => 'Allows a user to create new schedules for this server.', // task.create-schedule
+                'read' => 'Allows a user to view schedules and the tasks associated with them for this server.', // task.view-schedule, task.list-schedules
+                'update' => 'Allows a user to update schedules and schedule tasks for this server.', // task.edit-schedule, task.queue-schedule, task.toggle-schedule
+                'delete' => 'Allows a user to delete schedules for this server.', // task.delete-schedule
             ],
         ],
 
         'settings' => [
             'description' => 'Permissions that control a user\'s access to the settings for this server.',
             'keys' => [
-                'rename' => '',
-                'reinstall' => '',
+                'rename' => 'Allows a user to rename this server.',
+                'reinstall' => 'Allows a user to trigger a reinstall of this server.',
             ],
         ],
     ];

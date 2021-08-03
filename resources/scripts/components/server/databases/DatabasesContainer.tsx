@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import getServerDatabases from '@/api/server/getServerDatabases';
+import getServerDatabases from '@/api/server/databases/getServerDatabases';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -53,7 +53,7 @@ export default () => {
                                 />
                             ))
                             :
-                            <p css={tw`text-center text-sm text-neutral-400`}>
+                            <p css={tw`text-center text-sm text-neutral-300`}>
                                 {databaseLimit > 0 ?
                                     'It looks like you have no databases.'
                                     :
@@ -62,17 +62,17 @@ export default () => {
                             </p>
                         }
                         <Can action={'database.create'}>
-                            {(databaseLimit > 0 && databases.length > 0) &&
-                            <p css={tw`text-center text-xs text-neutral-400 mt-2`}>
-                                {databases.length} of {databaseLimit} databases have been allocated to this
-                                server.
-                            </p>
-                            }
-                            {databaseLimit > 0 && databaseLimit !== databases.length &&
-                            <div css={tw`mt-6 flex justify-end`}>
-                                <CreateDatabaseButton/>
+                            <div css={tw`mt-6 flex items-center justify-end`}>
+                                {(databaseLimit > 0 && databases.length > 0) &&
+                                <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
+                                    {databases.length} of {databaseLimit} databases have been allocated to this
+                                    server.
+                                </p>
+                                }
+                                {databaseLimit > 0 && databaseLimit !== databases.length &&
+                                    <CreateDatabaseButton css={tw`flex justify-end mt-6`}/>
+                                }
                             </div>
-                            }
                         </Can>
                     </>
                 </Fade>
