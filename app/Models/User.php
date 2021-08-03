@@ -23,8 +23,6 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string $uuid
  * @property string $username
  * @property string $email
- * @property string|null $name_first
- * @property string|null $name_last
  * @property string $password
  * @property string|null $remember_token
  * @property string $language
@@ -195,17 +193,7 @@ class User extends Model implements
     }
 
     /**
-     * Return a concatenated result for the accounts full name.
-     *
-     * @return string
-     */
-    public function getNameAttribute()
-    {
-        return trim($this->name_first . ' ' . $this->name_last);
-    }
-
-    /**
-     * Get's the avatar url for the user.
+     * Gets the avatar url for the user.
      *
      * @return string
      */
@@ -215,7 +203,7 @@ class User extends Model implements
     }
 
     /**
-     * Get's the name of the role assigned to a user.
+     * Gets the name of the role assigned to a user.
      *
      * @return string|null
      */

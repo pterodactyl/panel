@@ -58,7 +58,7 @@ class UserController extends ApplicationApiController
         }
 
         $users = QueryBuilder::for(User::query())
-            ->allowedFilters(['id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'external_id'])
+            ->allowedFilters(['id', 'uuid', 'username', 'email', 'external_id'])
             ->allowedSorts(['id', 'uuid', 'username', 'email', 'admin_role_id'])
             ->paginate($perPage);
 
