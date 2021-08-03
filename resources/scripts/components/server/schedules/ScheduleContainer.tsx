@@ -58,7 +58,7 @@ export default () => {
                                     css={tw`cursor-pointer mb-2 flex-wrap`}
                                     onClick={(e: any) => {
                                         e.preventDefault();
-                                        history.push(`${match.url}/${schedule.id}`, { schedule });
+                                        history.push(`${match.url}/${schedule.id}`);
                                     }}
                                 >
                                     <ScheduleRow schedule={schedule}/>
