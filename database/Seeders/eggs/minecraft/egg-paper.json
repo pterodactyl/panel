@@ -4,7 +4,7 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-07-24T11:38:02+03:00",
+    "exported_at": "2021-08-01T03:54:45+03:00",
     "name": "Paper",
     "author": "parker@pterodactyl.io",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -38,7 +38,7 @@
             "env_variable": "MINECRAFT_VERSION",
             "default_value": "latest",
             "user_viewable": true,
-            "user_editable": false,
+            "user_editable": true,
             "rules": "nullable|string|max:20"
         },
         {
@@ -65,7 +65,7 @@
             "env_variable": "BUILD_NUMBER",
             "default_value": "latest",
             "user_viewable": true,
-            "user_editable": false,
+            "user_editable": true,
             "rules": "required|string|max:20"
         }
     ]
