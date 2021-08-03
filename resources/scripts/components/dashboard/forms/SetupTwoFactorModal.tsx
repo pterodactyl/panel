@@ -103,20 +103,18 @@ const SetupTwoFactorModal = () => {
                     <div css={tw`flex flex-wrap`}>
                         <div css={tw`w-full md:flex-1`}>
                             <div css={tw`w-32 h-32 md:w-64 md:h-64 bg-neutral-600 p-2 rounded mx-auto`}>
-                                {!token ? (
+                                {!token ?
                                     <img
-                                        src={
-                                            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
-                                        }
+                                        src={'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='}
                                         css={tw`w-64 h-64 rounded`}
                                     />
-                                ) : (
+                                    :
                                     <QRCode
                                         renderAs={'svg'}
                                         value={token.image_url_data}
                                         css={tw`w-full h-full shadow-none rounded-none`}
                                     />
-                                )}
+                                }
                             </div>
                         </div>
                         <div css={tw`w-full mt-6 md:mt-0 md:flex-1 md:flex md:flex-col`}>
@@ -129,16 +127,16 @@ const SetupTwoFactorModal = () => {
                                     description={'Enter the code from your authenticator device after scanning the QR image.'}
                                 />
                                 {token &&
-                                    <div css={tw`pt-4 text-neutral-400`}>
-                                        Alternatively, you can also enter this token:
-                                        <CopyOnClick text={token.secret}>
-                                            <div css={tw`text-sm bg-neutral-900 rounded mt-2 py-2 px-4 font-mono`}>
-                                                <code css={tw`font-mono`}>
-                                                    {token.secret}
-                                                </code>
-                                            </div>
-                                        </CopyOnClick>
-                                    </div>
+                                <div css={tw`mt-4 pt-4 border-t border-neutral-500 text-neutral-200`}>
+                                    Alternatively, enter the following token into your authenticator application:
+                                    <CopyOnClick text={token.secret}>
+                                        <div css={tw`text-sm bg-neutral-900 rounded mt-2 py-2 px-4 font-mono`}>
+                                            <code css={tw`font-mono`}>
+                                                {token.secret}
+                                            </code>
+                                        </div>
+                                    </CopyOnClick>
+                                </div>
                                 }
                             </div>
                             <div css={tw`mt-6 md:mt-0 text-right`}>

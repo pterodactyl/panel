@@ -49,7 +49,7 @@ class TwoFactorSetupService
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle(User $user): string
+    public function handle(User $user): array
     {
         $secret = '';
         try {
