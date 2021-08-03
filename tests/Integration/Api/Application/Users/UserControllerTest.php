@@ -24,8 +24,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonStructure([
             'object',
             'data' => [
-                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at']],
-                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at']],
+                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at']],
+                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at']],
             ],
             'meta' => ['pagination' => ['total', 'count', 'per_page', 'current_page', 'total_pages', 'links']],
         ]);
@@ -54,6 +54,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'username' => $this->getApiUser()->username,
                     'email' => $this->getApiUser()->email,
                     'language' => $this->getApiUser()->language,
+                    'admin_role_id' => $this->getApiUser()->admin_role_id,
                     'root_admin' => (bool) $this->getApiUser()->root_admin,
                     '2fa' => (bool) $this->getApiUser()->totp_enabled,
                     'avatar_url' => $this->getApiUser()->avatarURL(),
@@ -93,7 +94,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonCount(2);
         $response->assertJsonStructure([
             'object',
-            'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'root_admin', '2fa', 'created_at', 'updated_at'],
+            'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'created_at', 'updated_at'],
         ]);
 
         $response->assertJson([
@@ -127,7 +128,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonStructure([
             'object',
             'attributes' => [
-                'id', 'external_id', 'uuid', 'username', 'email', 'language', 'root_admin', '2fa', 'created_at', 'updated_at',
+                'id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'created_at', 'updated_at',
                 'relationships' => ['servers' => ['object', 'data' => [['object', 'attributes' => []]]]],
             ],
         ]);
@@ -226,7 +227,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonCount(3);
         $response->assertJsonStructure([
             'object',
-            'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'root_admin', '2fa', 'created_at', 'updated_at'],
+            'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'created_at', 'updated_at'],
             'meta' => ['resource'],
         ]);
 
@@ -257,7 +258,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonCount(2);
         $response->assertJsonStructure([
             'object',
-            'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'root_admin', '2fa', 'created_at', 'updated_at'],
+            'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'created_at', 'updated_at'],
         ]);
 
         $this->assertDatabaseHas('users', ['username' => 'new.test.name', 'email' => 'new@emailtest.com']);
