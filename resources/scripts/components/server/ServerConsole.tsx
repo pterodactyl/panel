@@ -57,12 +57,10 @@ const ServerConsole = () => {
                     </ErrorBoundary>
                     <ChunkedStatGraphs/>
                 </Spinner.Suspense>
-                {eggFeatures.includes('eula') &&
                 <React.Suspense fallback={null}>
-                    <EulaModalFeature/>
-                    <JavaVersionModalFeature/>
+                    {eggFeatures.includes('eula') && <EulaModalFeature/>}
+                    {eggFeatures.includes('java_version') && <JavaVersionModalFeature/>}
                 </React.Suspense>
-                }
             </div>
         </ServerContentBlock>
     );

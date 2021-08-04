@@ -10,7 +10,7 @@
     "description": "SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.",
     "features": [
         "eula",
-        "javaversion"
+        "java_version"
     ],
     "images": [
         "ghcr.io\/pterodactyl\/yolks:java_8",
