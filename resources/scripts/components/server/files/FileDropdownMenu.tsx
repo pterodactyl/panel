@@ -1,17 +1,6 @@
 import React, { memo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faBoxOpen,
-    faCopy,
-    faEllipsisH,
-    faFileArchive,
-    faFileCode,
-    faFileDownload,
-    faLevelUpAlt,
-    faPencilAlt,
-    faTrashAlt,
-    IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faCopy, faEllipsisH, faFileArchive, faFileCode, faFileDownload, faLevelUpAlt, faPencilAlt, faTrashAlt, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
 import { join } from 'path';
@@ -115,7 +104,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             .then(() => setShowSpinner(false));
     };
 
-    const doUnarchive = () => {
+    const doExtraction = () => {
         setShowSpinner(true);
         clearFlashes('files');
 
@@ -175,7 +164,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 }
                 {file.isArchiveType() ?
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                        <Row onClick={doExtraction} icon={faBoxOpen} title={'Extract'}/>
                     </Can>
                     :
                     <Can action={'file.archive'}>

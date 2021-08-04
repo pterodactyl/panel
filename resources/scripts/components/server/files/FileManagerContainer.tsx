@@ -13,6 +13,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import FileManagerStatus from '@/components/server/files/FileManagerStatus';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import UploadButton from '@/components/server/files/UploadButton';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
@@ -123,6 +124,7 @@ export default () => {
                                         ))
                                     }
                                     <MassActionsBar/>
+                                    <FileManagerStatus/>
                                 </div>
                             </CSSTransition>
                         }

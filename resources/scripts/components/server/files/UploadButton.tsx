@@ -6,32 +6,56 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ModalMask } from '@/components/elements/Modal';
 import Fade from '@/components/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
 
 const InnerContainer = styled.div`
-  max-width: 600px;
-  ${tw`bg-black w-full border-4 border-primary-500 border-dashed rounded p-10 mx-10`};
+    max-width: 600px;
+    ${tw`bg-black w-full border-4 border-primary-500 border-dashed rounded p-10 mx-10`};
 `;
+
+function isFileOrDirectory (event: DragEvent): boolean {
+    if (!event.dataTransfer?.types) {
+        return false;
+    }
+
+    for (let i = 0; i < event.dataTransfer.types.length; i++) {
+        // Check if the item being dragged is not a file.
+        if (event.dataTransfer.types[i] !== 'Files') {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 export default ({ className }: WithClassname) => {
     const fileUploadInput = useRef<HTMLInputElement>(null);
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+
+    const [ timeouts, setTimeouts ] = useState<NodeJS.Timeout[]>([]);
     const [ visible, setVisible ] = useState(false);
-    const [ loading, setLoading ] = useState(false);
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
+
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const directory = ServerContext.useStoreState(state => state.files.directory);
+    const appendFileUpload = ServerContext.useStoreActions(actions => actions.files.appendFileUpload);
+    const removeFileUpload = ServerContext.useStoreActions(actions => actions.files.removeFileUpload);
 
     useEventListener('dragenter', e => {
+        if (!isFileOrDirectory(e)) {
+            return;
+        }
         e.stopPropagation();
         setVisible(true);
     }, true);
 
     useEventListener('dragexit', e => {
+        if (!isFileOrDirectory(e)) {
+            return;
+        }
         e.stopPropagation();
         setVisible(false);
     }, true);
@@ -47,25 +71,47 @@ export default ({ className }: WithClassname) => {
         };
     }, [ visible ]);
 
-    const onFileSubmission = (files: FileList) => {
-        const form = new FormData();
-        Array.from(files).forEach(file => form.append('files', file));
+    useEffect(() => {
+        return () => timeouts.forEach(clearTimeout);
+    }, []);
 
-        setLoading(true);
+    const onFileSubmission = (files: FileList) => {
+        const formData: FormData[] = [];
+        Array.from(files).forEach(file => {
+            const form = new FormData();
+            form.append('files', file);
+            formData.push(form);
+        });
+
         clearFlashes('files');
-        getFileUploadUrl(uuid)
-            .then(url => axios.post(`${url}&directory=${directory}`, form, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }))
+
+        Promise.all(
+            Array.from(formData).map(f => getFileUploadUrl(uuid)
+                .then(url => axios.post(`${url}&directory=${directory}`, f, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                    onUploadProgress: (data: ProgressEvent) => {
+                        // @ts-ignore
+                        const name = f.getAll('files')[0].name;
+
+                        appendFileUpload({
+                            name: name,
+                            loaded: data.loaded,
+                            total: data.total,
+                        });
+
+                        if (data.loaded === data.total) {
+                            const timeout = setTimeout(() => removeFileUpload(name), 5000);
+                            setTimeouts(t => [ ...t, timeout ]);
+                        }
+                    },
+                }))
+            )
+        )
             .then(() => mutate())
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ error, key: 'files' });
-            })
-            .then(() => setVisible(false))
-            .then(() => setLoading(false));
+            });
     };
 
     return (
@@ -90,7 +136,7 @@ export default ({ className }: WithClassname) => {
                         onFileSubmission(e.dataTransfer.files);
                     }}
                 >
-                    <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
+                    <div css={tw`w-full flex items-center justify-center pointer-events-none`}>
                         <InnerContainer>
                             <p css={tw`text-lg text-neutral-200 text-center`}>
                                 Drag and drop files to upload.
@@ -99,14 +145,12 @@ export default ({ className }: WithClassname) => {
                     </div>
                 </ModalMask>
             </Fade>
-            <SpinnerOverlay visible={loading} size={'large'} fixed/>
             <input
                 type={'file'}
                 ref={fileUploadInput}
                 css={tw`hidden`}
                 onChange={e => {
                     if (!e.currentTarget.files) return;
-
                     onFileSubmission(e.currentTarget.files);
                     if (fileUploadInput.current) {
                         fileUploadInput.current.files = null;
@@ -115,11 +159,7 @@ export default ({ className }: WithClassname) => {
             />
             <Button
                 className={className}
-                onClick={() => {
-                    fileUploadInput.current
-                        ? fileUploadInput.current.click()
-                        : setVisible(true);
-                }}
+                onClick={() => fileUploadInput.current && fileUploadInput.current.click()}
             >
                 Upload
             </Button>
