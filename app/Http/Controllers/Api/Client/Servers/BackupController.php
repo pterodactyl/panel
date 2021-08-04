@@ -44,7 +44,7 @@ class BackupController extends ClientApiController
     }
 
     /**
-     * Returns all of the backups for a given server instance in a paginated
+     * Returns all the backups for a given server instance in a paginated
      * result set.
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
@@ -60,6 +60,9 @@ class BackupController extends ClientApiController
 
         return $this->fractal->collection($server->backups()->paginate($limit))
             ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->addMeta([
+                'used_backup_count' => $this->initiateBackupService->getNonFailedBackups($server)->count(),
+            ])
             ->toArray();
     }
 
