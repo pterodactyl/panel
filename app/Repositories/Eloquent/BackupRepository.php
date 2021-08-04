@@ -25,7 +25,10 @@ class BackupRepository extends EloquentRepository
         return $this->getBuilder()
             ->withTrashed()
             ->where('server_id', $server)
-            ->where('is_successful', true)
+            ->where(function ($query) {
+                $query->whereNull('completed_at')
+                    ->orWhere('is_successful', '=', true);
+            })
             ->where('created_at', '>=', Carbon::now()->subSeconds($seconds)->toDateTimeString())
             ->get()
             ->toBase();

@@ -64,7 +64,7 @@ class Backup extends Model
      * @var array
      */
     protected $attributes = [
-        'is_successful' => true,
+        'is_successful' => false,
         'is_locked' => false,
         'checksum' => null,
         'bytes' => 0,
