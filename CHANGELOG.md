@@ -3,6 +3,14 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.5.1
+### Fixed
+* Fixes Docker image 404ing instead of being able to access the Panel.
+* Fixes Java version feature being only loaded when the `eula` feature is specified.
+* Fixes `php artisan p:upgrade` not forcing and seeding while running migrations.
+* Fixes spinner overlays overlapping on the server console page.
+* Fixes Wings being unable to update backup statuses.
+
 ## v1.5.0
 ### Fixed
 * Fixes deleting a locked backup that has also been marked as failed to allow deletion rather than returning an error about being locked.
