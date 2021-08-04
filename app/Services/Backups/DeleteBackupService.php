@@ -63,7 +63,7 @@ class DeleteBackupService
         // I also don't really see any reason you'd have a locked, failed backup to keep
         // around. The logic that updates the backup to the failed state will also remove
         // the lock, so this condition should really never happen.
-        if ($backup->is_locked && ($backup->completed_at && $backup->is_successful)) {
+        if ($backup->is_locked && ($backup->is_successful && !is_null($backup->completed_at))) {
             throw new BackupLockedException();
         }
 
