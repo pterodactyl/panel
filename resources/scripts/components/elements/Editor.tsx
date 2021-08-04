@@ -199,14 +199,16 @@ export interface Props {
     onContentSaved?: () => void;
 }
 
-export default ({ className, style, overrides, initialContent, extensions, mode, filename, onModeChanged }: Props) => {
+export default ({ className, style, overrides, initialContent, extensions, mode, filename, onModeChanged, fetchContent, onContentSaved }: Props) => {
     const [ languageConfig ] = useState<Compartment>(new Compartment());
+    const [ keybinds ] = useState<Compartment>(new Compartment());
     const [ state ] = useState<EditorState>(EditorState.create({
         doc: initialContent,
         extensions: [
             ...defaultExtensions,
             ...(extensions !== undefined ? extensions : []),
             languageConfig.of(mode !== undefined ? modeToExtension(mode) : findLanguageExtensionByMode(findModeByFilename(filename || ''))),
+            keybinds.of([]),
         ],
     }));
     const [ view, setView ] = useState<EditorView>();
@@ -277,6 +279,33 @@ export default ({ className, style, overrides, initialContent, extensions, mode,
             changes: { from: 0, insert: initialContent },
         });
     }, [ initialContent ]);
+
+    useEffect(() => {
+        if (fetchContent === undefined) {
+            return;
+        }
+
+        if (!view) {
+            fetchContent(() => Promise.reject(new Error('no editor session has been configured')));
+            return;
+        }
+
+        if (onContentSaved !== undefined) {
+            view.dispatch({
+                effects: keybinds.reconfigure(keymap.of([
+                    {
+                        key: 'Mod-s',
+                        run: () => {
+                            onContentSaved();
+                            return true;
+                        },
+                    },
+                ])),
+            });
+        }
+
+        fetchContent(() => Promise.resolve(view.state.doc.toString()));
+    }, [ view, fetchContent, onContentSaved ]);
 
     return (
         <EditorContainer className={className} style={style} overrides={overrides} ref={ref}/>
