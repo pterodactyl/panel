@@ -7,6 +7,6 @@ import { lazy } from 'react';
  * on the feature and the egg).
  */
 const EulaModalFeature = lazy(() => import(/* webpackChunkName: "feature.eula" */'@feature/eula/EulaModalFeature'));
-const JavaVersionModalFeature = lazy(() => import(/* webpackChunkName: "feature.javaVersion" */'@feature/JavaVersionModalFeature'));
+const JavaVersionModalFeature = lazy(() => import(/* webpackChunkName: "feature.java_version" */'@feature/JavaVersionModalFeature'));
 
 export { EulaModalFeature, JavaVersionModalFeature };
