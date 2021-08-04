@@ -68,7 +68,7 @@ class UpgradeCommand extends Command
                     );
                 }
             }
-            
+
             if (is_null($this->option('group'))) {
                 $groupDetails = posix_getgrgid(filegroup('public'));
                 $group = $groupDetails['name'] ?? 'www-data';
@@ -150,8 +150,8 @@ class UpgradeCommand extends Command
         });
 
         $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan migrate --seed --force');
-            $this->call('migrate', ['--seed' => '', '--force' => '']);
+            $this->line('$upgrader> php artisan migrate --force --seed');
+            $this->call('migrate', ['--force' => true, '--seed' => true]);
         });
 
         $this->withProgress($bar, function () use ($user, $group) {
