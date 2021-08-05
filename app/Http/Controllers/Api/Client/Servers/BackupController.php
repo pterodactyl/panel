@@ -12,6 +12,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Pterodactyl\Services\Backups\DeleteBackupService;
 use Pterodactyl\Services\Backups\DownloadLinkService;
 use Pterodactyl\Services\Backups\InitiateBackupService;
+use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -20,34 +21,21 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
 
 class BackupController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Backups\InitiateBackupService
-     */
-    private $initiateBackupService;
-
-    /**
-     * @var \Pterodactyl\Services\Backups\DeleteBackupService
-     */
-    private $deleteBackupService;
-
-    /**
-     * @var \Pterodactyl\Services\Backups\DownloadLinkService
-     */
-    private $downloadLinkService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonBackupRepository
-     */
-    private $repository;
+    private InitiateBackupService $initiateBackupService;
+    private DeleteBackupService $deleteBackupService;
+    private DownloadLinkService $downloadLinkService;
+    private DaemonBackupRepository $daemonRepository;
+    private BackupRepository $repository;
 
     /**
      * BackupController constructor.
      */
     public function __construct(
-        DaemonBackupRepository $repository,
+        DaemonBackupRepository $daemonRepository,
         DeleteBackupService $deleteBackupService,
         InitiateBackupService $initiateBackupService,
-        DownloadLinkService $downloadLinkService
+        DownloadLinkService $downloadLinkService,
+        BackupRepository $repository
     ) {
         parent::__construct();
 
@@ -55,6 +43,7 @@ class BackupController extends ClientApiController
         $this->initiateBackupService = $initiateBackupService;
         $this->deleteBackupService = $deleteBackupService;
         $this->downloadLinkService = $downloadLinkService;
+        $this->daemonRepository = $daemonRepository;
     }
 
     /**
@@ -74,7 +63,7 @@ class BackupController extends ClientApiController
         return $this->fractal->collection($server->backups()->paginate($limit))
             ->transformWith($this->getTransformer(BackupTransformer::class))
             ->addMeta([
-                'used_backup_count' => $this->initiateBackupService->getNonFailedBackups($server)->count(),
+                'backup_count' => $this->repository->getNonFailedBackups($server)->count(),
             ])
             ->toArray();
     }
@@ -245,7 +234,7 @@ class BackupController extends ClientApiController
             // actions against it via the Panel API.
             $server->update(['status' => Server::STATUS_RESTORING_BACKUP]);
 
-            $this->repository->setServer($server)->restore($backup, $url ?? null, $request->input('truncate'));
+            $this->daemonRepository->setServer($server)->restore($backup, $url ?? null, $request->input('truncate'));
         });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
