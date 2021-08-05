@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client;
 
-abstract class AccountApiRequest extends ClientApiRequest
+class AccountApiRequest extends ClientApiRequest
 {
     public function permission(): string
     {

@@ -15,6 +15,7 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Exceptions\Service\ServiceLimitExceededException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\UpdateScheduleRequest;
 
 class ScheduleTaskController extends ClientApiController
 {
@@ -101,16 +102,16 @@ class ScheduleTaskController extends ClientApiController
      * Delete a given task for a schedule. If there are subsequent tasks stored in the database
      * for this schedule their sequence IDs are decremented properly.
      *
+     * This uses the UpdateScheduleRequest intentionally -- there is no permission specific
+     * to deleting a given task on a schedule, so we'll assume if you have permission to edit
+     * a schedule that you can then remove a task from said schedule.
+     *
      * @throws \Exception
      */
-    public function delete(ClientApiRequest $request, Server $server, Schedule $schedule, Task $task): Response
+    public function delete(UpdateScheduleRequest $request, Server $server, Schedule $schedule, Task $task): Response
     {
         if ($task->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {
             throw new NotFoundHttpException();
-        }
-
-        if (!$request->user()->can(Permission::ACTION_SCHEDULE_UPDATE, $server)) {
-            throw new HttpForbiddenException('You do not have permission to perform this action.');
         }
 
         $schedule->tasks()->where('sequence_id', '>', $task->sequence_id)->update([

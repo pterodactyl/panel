@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 use Illuminate\Http\Response;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Http\Requests\Api\Client\AccountApiRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 use Pterodactyl\Transformers\Api\Client\PersonalAccessTokenTransformer;
 
@@ -15,7 +16,7 @@ class ApiKeyController extends ClientApiController
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function index(ClientApiRequest $request): array
+    public function index(AccountApiRequest $request): array
     {
         return $this->fractal->collection($request->user()->tokens)
             ->transformWith($this->getTransformer(PersonalAccessTokenTransformer::class))
@@ -49,7 +50,7 @@ class ApiKeyController extends ClientApiController
     /**
      * Deletes a given API key.
      */
-    public function delete(ClientApiRequest $request, string $id): Response
+    public function delete(AccountApiRequest $request, string $id): Response
     {
         $request->user()->tokens()->where('token_id', $id)->delete();
 
