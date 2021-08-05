@@ -19,7 +19,6 @@ interface Values {
     uuid: string;
     identifier: string;
     name: string;
-    description: string;
 
     memory: number;
     swap: number;
@@ -54,42 +53,37 @@ const ServerFeatureContainer = () => {
         <AdminBox title={'Feature Limits'} css={tw`relative w-full`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
-            <Form css={tw`mb-0`}>
-                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                        <Field
-                            id={'databases'}
-                            name={'databases'}
-                            label={'Database Limit'}
-                            type={'number'}
-                            description={'The total number of databases a user is allowed to create for this server.'}
-                        />
-                    </div>
-
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                        <Field
-                            id={'allocations'}
-                            name={'allocations'}
-                            label={'Allocation Limit'}
-                            type={'number'}
-                            description={'The total number of allocations a user is allowed to create for this server.'}
-                        />
-                    </div>
+            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
+                    <Field
+                        id={'databases'}
+                        name={'databases'}
+                        label={'Database Limit'}
+                        type={'number'}
+                        description={'The total number of databases a user is allowed to create for this server.'}
+                    />
                 </div>
 
-                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mb-0`}>
-                        <Field
-                            id={'backups'}
-                            name={'backup'}
-                            label={'Backup Limit'}
-                            type={'number'}
-                            description={'The total number of backups that can be created for this server.'}
-                        />
-                    </div>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mx-4 md:mb-0`}>
+                    <Field
+                        id={'allocations'}
+                        name={'allocations'}
+                        label={'Allocation Limit'}
+                        type={'number'}
+                        description={'The total number of allocations a user is allowed to create for this server.'}
+                    />
                 </div>
 
-            </Form>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
+                    <Field
+                        id={'backups'}
+                        name={'backup'}
+                        label={'Backup Limit'}
+                        type={'number'}
+                        description={'The total number of backups that can be created for this server.'}
+                    />
+                </div>
+            </div>
         </AdminBox>
     );
 };
@@ -109,83 +103,80 @@ const ServerResourceContainer = () => {
         <AdminBox title={'Resource Management'} css={tw`relative w-full`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
-            <Form css={tw`mb-0`}>
-                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                        <Field
-                            id={'cpu'}
-                            name={'cpu'}
-                            label={'CPU Limit'}
-                            type={'string'}
-                            description={'Each physical core on the system is considered to be 100%. Setting this value to 0 will allow a server to use CPU time without restrictions.'}
-                        />
-                    </div>
-
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                        <Field
-                            id={'threads'}
-                            name={'threads'}
-                            label={'CPU Pinning'}
-                            type={'string'}
-                            description={'Advanced: Enter the specific CPU cores that this process can run on, or leave blank to allow all cores. This can be a single number, or a comma seperated list. Example: 0, 0-1,3, or 0,1,3,4.'}
-                        />
-                    </div>
+            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
+                    <Field
+                        id={'cpu'}
+                        name={'cpu'}
+                        label={'CPU Limit'}
+                        type={'string'}
+                        description={'Each physical core on the system is considered to be 100%. Setting this value to 0 will allow a server to use CPU time without restrictions.'}
+                    />
                 </div>
 
-                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                        <Field
-                            id={'memory'}
-                            name={'memory'}
-                            label={'Memory Limit'}
-                            type={'number'}
-                            description={'The maximum amount of memory allowed for this container. Setting this to 0 will allow unlimited memory in a container.'}
-                        />
-                    </div>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
+                    <Field
+                        id={'threads'}
+                        name={'threads'}
+                        label={'CPU Pinning'}
+                        type={'string'}
+                        description={'Advanced: Enter the specific CPU cores that this process can run on, or leave blank to allow all cores. This can be a single number, or a comma seperated list. Example: 0, 0-1,3, or 0,1,3,4.'}
+                    />
+                </div>
+            </div>
 
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                        <Field
-                            id={'swap'}
-                            name={'swap'}
-                            label={'Swap Limit'}
-                            type={'number'}
-                        />
-                    </div>
+            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
+                    <Field
+                        id={'memory'}
+                        name={'memory'}
+                        label={'Memory Limit'}
+                        type={'number'}
+                        description={'The maximum amount of memory allowed for this container. Setting this to 0 will allow unlimited memory in a container.'}
+                    />
                 </div>
 
-                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                        <Field
-                            id={'disk'}
-                            name={'disk'}
-                            label={'Disk Limit'}
-                            type={'number'}
-                            description={'This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Set to 0 to allow unlimited disk usage.'}
-                        />
-                    </div>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
+                    <Field
+                        id={'swap'}
+                        name={'swap'}
+                        label={'Swap Limit'}
+                        type={'number'}
+                    />
+                </div>
+            </div>
 
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                        <Field
-                            id={'io'}
-                            name={'io'}
-                            label={'Block IO Proportion'}
-                            type={'number'}
-                            description={'Advanced: The IO performance of this server relative to other running containers on the system. Value should be between 10 and 1000.'}
-                        />
-                    </div>
+            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
+                    <Field
+                        id={'disk'}
+                        name={'disk'}
+                        label={'Disk Limit'}
+                        type={'number'}
+                        description={'This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Set to 0 to allow unlimited disk usage.'}
+                    />
                 </div>
 
-                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                        <FormikSwitch
-                            name={'oom'}
-                            label={'Out of Memory Killer'}
-                            description={'Enabling OOM killer may cause server processes to exit unexpectedly. '}
-                        />
-                    </div>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
+                    <Field
+                        id={'io'}
+                        name={'io'}
+                        label={'Block IO Proportion'}
+                        type={'number'}
+                        description={'Advanced: The IO performance of this server relative to other running containers on the system. Value should be between 10 and 1000.'}
+                    />
                 </div>
+            </div>
 
-            </Form>
+            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                <div css={tw`mt-6 bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
+                    <FormikSwitch
+                        name={'oom'}
+                        label={'Out of Memory Killer'}
+                        description={'Enabling OOM killer may cause server processes to exit unexpectedly. '}
+                    />
+                </div>
+            </div>
         </AdminBox>
     );
 };
@@ -205,42 +196,31 @@ const ServerSettingsContainer = () => {
         <AdminBox title={'Settings'} css={tw`relative w-full`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
-            <Form css={tw`mb-0`}>
-                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                        <Field
-                            id={'name'}
-                            name={'name'}
-                            label={'Server Name'}
-                            type={'string'}
-                        />
-                    </div>
-
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                        <Field
-                            id={'externalId'}
-                            name={'externalId'}
-                            label={'External Identifier'}
-                            type={'number'}
-                        />
-                    </div>
+            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
+                    <Field
+                        id={'name'}
+                        name={'name'}
+                        label={'Server Name'}
+                        type={'string'}
+                    />
                 </div>
 
-                <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                        <OwnerSelect selected={null}/>
-                    </div>
-
-                    <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                        <Field
-                            id={'description'}
-                            name={'description'}
-                            label={'Server Description'}
-                            type={'string'}
-                        />
-                    </div>
+                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
+                    <Field
+                        id={'externalId'}
+                        name={'externalId'}
+                        label={'External Identifier'}
+                        type={'number'}
+                    />
                 </div>
-            </Form>
+            </div>
+
+            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+                <div css={tw`mb-6 w-full md:w-1/2 md:flex md:flex-col md:pr-4 md:mb-0`}>
+                    <OwnerSelect selected={null}/>
+                </div>
+            </div>
         </AdminBox>
     );
 };
@@ -278,7 +258,6 @@ export default () => {
                 uuid: server.uuid,
                 identifier: server.identifier,
                 name: server.name,
-                description: server.description,
 
                 memory: server.limits.memory,
                 swap: server.limits.swap,
@@ -302,28 +281,30 @@ export default () => {
         >
             {
                 ({ isSubmitting, isValid }) => (
-                    <div css={tw`flex flex-col lg:flex-row`}>
-                        <div css={tw`flex flex-col w-full mt-4 ml-0 lg:w-1/2 lg:ml-2 lg:mt-0`}>
-                            <div css={tw`flex flex-col w-full mr-0 lg:mr-2`}>
-                                <ServerSettingsContainer/>
+                    <Form>
+                        <div css={tw`flex flex-col lg:flex-row`}>
+                            <div css={tw`flex flex-col w-full mt-4 ml-0 lg:w-1/2 lg:ml-2 lg:mt-0`}>
+                                <div css={tw`flex flex-col w-full mr-0 lg:mr-2`}>
+                                    <ServerSettingsContainer/>
+                                </div>
+                                <div css={tw`flex flex-col w-full mt-4 mr-0 lg:mr-2`}>
+                                    <ServerFeatureContainer/>
+                                </div>
                             </div>
-                            <div css={tw`flex flex-col w-full mt-4 mr-0 lg:mr-2`}>
-                                <ServerFeatureContainer/>
-                            </div>
-                        </div>
-                        <div css={tw`flex flex-col w-full mt-4 ml-0 lg:w-1/2 lg:ml-2 lg:mt-0`}>
-                            <div css={tw`flex flex-col w-full mr-0 lg:mr-2`}>
-                                <ServerResourceContainer/>
-                            </div>
-                            <div css={tw`py-2 pr-6 mt-4 rounded shadow-md bg-neutral-700`}>
-                                <div css={tw`flex flex-row`}>
-                                    <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
-                                        Save Changes
-                                    </Button>
+                            <div css={tw`flex flex-col w-full mt-4 ml-0 lg:w-1/2 lg:ml-2 lg:mt-0`}>
+                                <div css={tw`flex flex-col w-full mr-0 lg:mr-2`}>
+                                    <ServerResourceContainer/>
+                                </div>
+                                <div css={tw`py-2 pr-6 mt-4 rounded shadow-md bg-neutral-700`}>
+                                    <div css={tw`flex flex-row`}>
+                                        <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
+                                            Save Changes
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </Form>
                 )
             }
         </Formik>

@@ -27,7 +27,7 @@ export default ({ selected }: { selected: User | null }) => {
     };
 
     const getSelectedText = (user: User | null): string => {
-        return user?.username || '';
+        return user?.email || '';
     };
 
     return (
@@ -47,7 +47,7 @@ export default ({ selected }: { selected: User | null }) => {
         >
             {users?.map(d => (
                 <Option key={d.id} selectId={'ownerId'} id={d.id} item={d} active={d.id === user?.id}>
-                    {d.username}
+                    {d.email}
                 </Option>
             ))}
         </SearchableSelect>

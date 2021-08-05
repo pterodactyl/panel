@@ -87,11 +87,13 @@ const ServerServiceContainer = () => {
                         Nest/Egg Selector HERE
                     </div>
                     <div css={tw`pb-4 mb-6 md:w-full md:flex md:flex-col md:mb-0`}>
-                        <FormikSwitch
-                            name={'oom'}
-                            label={'Skip Egg Install Script'}
-                            description={'If the selected Egg has an install script attached to it, the script will run during install. If you would like to skip this step, check this box.'}
-                        />
+                        <div css={tw`mt-6 bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
+                            <FormikSwitch
+                                name={'skip_install_script'}
+                                label={'Skip Egg Install Script'}
+                                description={'If the selected Egg has an install script attached to it, the script will run during install. If you would like to skip this step, check this box.'}
+                            />
+                        </div>
                     </div>
                 </div>
             </Form>
