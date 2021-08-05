@@ -3,11 +3,17 @@
 namespace Pterodactyl\Http\Requests\Api\Client;
 
 use Pterodactyl\Models\Server;
-use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Pterodactyl\Http\Requests\Api\ApiRequest;
 
-abstract class ClientApiRequest extends ApplicationApiRequest implements ClientPermissionsRequest
+abstract class ClientApiRequest extends ApiRequest
 {
+    /**
+     * Returns the permissions string indicating which permission should be used to
+     * validate that the authenticated user has permission to perform this action aganist
+     * the given resource (server).
+     */
+    abstract public function permission(): string;
+
     /**
      * Determine if the current user is authorized to perform the requested action
      * against the API.

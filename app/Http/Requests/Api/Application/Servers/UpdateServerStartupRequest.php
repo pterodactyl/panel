@@ -3,14 +3,10 @@
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class UpdateServerStartupRequest extends ApplicationApiRequest
 {
-    protected string $resource = AdminAcl::RESOURCE_SERVERS;
-    protected int $permission = AdminAcl::WRITE;
-
     public function rules(): array
     {
         $data = Server::getRulesForUpdate($this->route()->parameter('server')->id);

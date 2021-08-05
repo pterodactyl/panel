@@ -74,14 +74,4 @@ class ApiSubstituteBindings extends SubstituteBindings
 
         return $next($request);
     }
-
-    /**
-     * Return the registered mappings.
-     *
-     * @return array
-     */
-    public static function getMappings()
-    {
-        return self::$mappings;
-    }
 }

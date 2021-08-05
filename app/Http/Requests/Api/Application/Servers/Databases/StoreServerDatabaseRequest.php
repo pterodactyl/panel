@@ -6,15 +6,11 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Query\Builder;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerDatabaseRequest extends ApplicationApiRequest
 {
-    protected string $resource = AdminAcl::RESOURCE_SERVER_DATABASES;
-    protected int $permission = AdminAcl::WRITE;
-
     public function rules(): array
     {
         $server = $this->route()->parameter('server');
