@@ -3,9 +3,7 @@
 namespace Pterodactyl\Http\Requests\Api\Application;
 
 use Pterodactyl\Models\ApiKey;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Foundation\Http\FormRequest;
-use Pterodactyl\Exceptions\PterodactylException;
 use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
@@ -19,38 +17,12 @@ abstract class ApplicationApiRequest extends FormRequest
     private bool $hasValidated = false;
 
     /**
-     * The resource that should be checked when performing the authorization
-     * function for this request.
-     *
-     * @var string|null
-     */
-    protected string $resource;
-
-    /**
-     * The permission level that a given API key should have for accessing
-     * the defined $resource during the request cycle.
-     *
-     * @var int
-     */
-    protected int $permission = AdminAcl::NONE;
-
-    /**
-     * Determine if the current user is authorized to perform
-     * the requested action against the API.
-     *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * Determine if the current user is authorized to perform the requested
+     * action against the API.
      */
     public function authorize(): bool
     {
-        if (is_null($this->resource)) {
-            throw new PterodactylException('An ACL resource must be defined on API requests.');
-        }
-
-        if ($this->key()->key_type === ApiKey::TYPE_ACCOUNT) {
-            return $this->user()->root_admin;
-        }
-
-        return AdminAcl::check($this->key(), $this->resource, $this->permission);
+        return false;
     }
 
     /**

@@ -7,10 +7,7 @@ use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class GetStartupRequest extends ClientApiRequest
 {
-    /**
-     * @return string
-     */
-    public function permission()
+    public function permission(): string
     {
         return Permission::ACTION_STARTUP_READ;
     }

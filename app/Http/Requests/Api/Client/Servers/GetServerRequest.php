@@ -2,17 +2,8 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers;
 
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Http\Requests\Api\Client\AccountApiRequest;
 
-class GetServerRequest extends ClientApiRequest
+class GetServerRequest extends AccountApiRequest
 {
-    /**
-     * Determine if a client has permission to view this server on the API. This
-     * should never be false since this would be checking the same permission as
-     * resourceExists().
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
 }

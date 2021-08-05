@@ -3,9 +3,9 @@
 namespace Pterodactyl\Http\Requests\Api\Client\Account;
 
 use Pterodactyl\Models\PersonalAccessToken;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Http\Requests\Api\Client\AccountApiRequest;
 
-class StoreApiKeyRequest extends ClientApiRequest
+class StoreApiKeyRequest extends AccountApiRequest
 {
     public function rules(): array
     {
