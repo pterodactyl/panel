@@ -21,6 +21,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Pterodactyl\Http\Middleware\Api\PreventUnboundModels;
 use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -76,6 +77,7 @@ class Kernel extends HttpKernel
             EnsureFrontendRequestsAreStateful::class,
             'auth:sanctum',
             SubstituteClientApiBindings::class,
+            PreventUnboundModels::class,
             // This is perhaps a little backwards with the Client API, but logically you'd be unable
             // to create/get an API key without first enabling 2FA on the account, so I suppose in the
             // end it makes sense.
