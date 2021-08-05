@@ -30,6 +30,7 @@ import EggRouter from '@/components/admin/nests/eggs/EggRouter';
 import ServerRouter from '@/components/admin/servers/ServerRouter';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import { usePersistedState } from '@/plugins/usePersistedState';
+import NewMountContainer from '@/components/admin/mounts/NewMountContainer';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
     ${tw`fixed h-screen hidden md:flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
@@ -255,6 +256,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         />
 
                         <Route path={`${match.path}/mounts`} component={MountsContainer} exact/>
+                        <Route path={`${match.path}/mounts/new`} component={NewMountContainer} exact/>
                         <Route
                             path={`${match.path}/mounts/:id`}
                             component={MountEditContainer}

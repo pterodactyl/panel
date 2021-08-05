@@ -80,9 +80,11 @@ const MountsContainer = () => {
                 </div>
 
                 <div css={tw`flex ml-auto pl-4`}>
-                    <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
-                        New Mount
-                    </Button>
+                    <NavLink to={`${match.url}/new`}>
+                        <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
+                            New Mount
+                        </Button>
+                    </NavLink>
                 </div>
             </div>
 
