@@ -4,6 +4,8 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Carbon\Carbon;
 use Pterodactyl\Models\Backup;
+use Pterodactyl\Models\Server;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BackupRepository extends EloquentRepository
 {
@@ -32,5 +34,18 @@ class BackupRepository extends EloquentRepository
             ->where('created_at', '>=', Carbon::now()->subSeconds($seconds)->toDateTimeString())
             ->get()
             ->toBase();
+    }
+
+    /**
+     * Returns a query filtering only non-failed backups for a specific server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function getNonFailedBackups(Server $server): HasMany
+    {
+        return $server->backups()->where(function ($query) {
+            $query->whereNull('completed_at')
+                ->orWhere('is_successful', true);
+        });
     }
 }
