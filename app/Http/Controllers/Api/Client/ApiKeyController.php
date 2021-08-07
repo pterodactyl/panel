@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Http\Requests\Api\Client\AccountApiRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 use Pterodactyl\Transformers\Api\Client\PersonalAccessTokenTransformer;

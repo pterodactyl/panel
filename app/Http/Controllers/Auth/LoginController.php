@@ -69,6 +69,7 @@ class LoginController extends AbstractLoginController
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
             $this->sendLockoutResponse($request);
+
             return;
         }
 
@@ -77,6 +78,7 @@ class LoginController extends AbstractLoginController
             $user = $this->repository->findFirstWhere([[$useColumn, '=', $username]]);
         } catch (RecordNotFoundException $exception) {
             $this->sendFailedLoginResponse($request);
+
             return;
         }
 
@@ -86,12 +88,13 @@ class LoginController extends AbstractLoginController
         // can proceed to the next step in the login process.
         if (!password_verify($request->input('password'), $user->password)) {
             $this->sendFailedLoginResponse($request, $user);
+
             return;
         }
 
         $webauthnKeys = $user->webauthnKeys()->get();
 
-        if (sizeof($webauthnKeys) > 0) {
+        if (count($webauthnKeys) > 0) {
             $token = Str::random(64);
             $this->cache->put($token, $user->id, CarbonImmutable::now()->addMinutes(5));
 
@@ -99,7 +102,7 @@ class LoginController extends AbstractLoginController
             $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
             $request->session()->save();
 
-            $methods = [ self::METHOD_WEBAUTHN ];
+            $methods = [self::METHOD_WEBAUTHN];
             if ($user->use_totp) {
                 $methods[] = self::METHOD_TOTP;
             }
@@ -112,13 +115,13 @@ class LoginController extends AbstractLoginController
                     'public_key' => $publicKey,
                 ],
             ]);
-        } else if ($user->use_totp) {
+        } elseif ($user->use_totp) {
             $token = Str::random(64);
             $this->cache->put($token, $user->id, CarbonImmutable::now()->addMinutes(5));
 
             return new JsonResponse([
                 'complete' => false,
-                'methods' => [ self::METHOD_TOTP ],
+                'methods' => [self::METHOD_TOTP],
                 'confirmation_token' => $token,
             ]);
         }

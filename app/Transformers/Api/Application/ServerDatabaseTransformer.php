@@ -3,7 +3,6 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Transformers\Api\Transformer;
 use Illuminate\Contracts\Encryption\Encrypter;

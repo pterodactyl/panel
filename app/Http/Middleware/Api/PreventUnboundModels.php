@@ -17,7 +17,7 @@ class PreventUnboundModels
      * added but not properly defined in the substitution middleware.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     *
      * @return mixed
      *
      * @throws \Exception
@@ -36,9 +36,7 @@ class PreventUnboundModels
             }
 
             if (!$parameters[$signature->getName()] instanceof Model) {
-                throw new Exception(
-                    sprintf('No parameter binding has been defined for model [%s] using route parameter key "%s".', $class, $signature->getName())
-                );
+                throw new Exception(sprintf('No parameter binding has been defined for model [%s] using route parameter key "%s".', $class, $signature->getName()));
             }
         }
 

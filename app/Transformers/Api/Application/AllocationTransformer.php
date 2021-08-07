@@ -35,8 +35,6 @@ class AllocationTransformer extends Transformer
     /**
      * Load the node relationship onto a given transformation.
      *
-     * @param \Pterodactyl\Models\Allocation $allocation
-     *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */
     public function includeNode(Allocation $allocation)
@@ -50,8 +48,6 @@ class AllocationTransformer extends Transformer
 
     /**
      * Load the server relationship onto a given transformation.
-     *
-     * @param \Pterodactyl\Models\Allocation $allocation
      *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
      */

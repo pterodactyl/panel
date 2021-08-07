@@ -37,9 +37,6 @@ class EggVariable extends Model
      */
     public const RESERVED_ENV_NAMES = 'SERVER_MEMORY,SERVER_IP,SERVER_PORT,ENV,HOME,USER,STARTUP,SERVER_UUID,UUID';
 
-    /**
-     * @var bool
-     */
     protected bool $immutableDates = true;
 
     /**
@@ -67,9 +64,6 @@ class EggVariable extends Model
         'user_editable' => 'bool',
     ];
 
-    /**
-     * @var array
-     */
     public static array $validationRules = [
         'egg_id' => 'exists:eggs,id',
         'name' => 'required|string|between:1,191',

@@ -41,8 +41,6 @@ abstract class Transformer extends TransformerAbstract
 
     /**
      * Returns the authorized user for the request.
-     *
-     * @return \Pterodactyl\Models\User
      */
     protected function user(): User
     {
@@ -62,10 +60,12 @@ abstract class Transformer extends TransformerAbstract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param mixed $data
      * @param callable|\League\Fractal\TransformerAbstract $transformer
      * @param null $resourceKey
+     *
      * @return \League\Fractal\Resource\Item
      */
     protected function item($data, $transformer, $resourceKey = null)
@@ -84,10 +84,12 @@ abstract class Transformer extends TransformerAbstract
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     *
      * @param mixed $data
      * @param callable|\League\Fractal\TransformerAbstract $transformer
      * @param null $resourceKey
+     *
      * @return \League\Fractal\Resource\Collection
      */
     protected function collection($data, $transformer, $resourceKey = null)
@@ -138,7 +140,7 @@ abstract class Transformer extends TransformerAbstract
      *
      * If no time is provided a null value is returned.
      *
-     * @param null|string|\DateTimeInterface $timestamp
+     * @param string|\DateTimeInterface|null $timestamp
      */
     protected static function formatTimestamp($timestamp, string $tz = null): ?string
     {

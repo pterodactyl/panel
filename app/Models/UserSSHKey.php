@@ -20,7 +20,7 @@ class UserSSHKey extends Model
      */
     public const RESOURCE_NAME = 'user_ssh_key';
 
-    const UPDATED_AT = null;
+    public const UPDATED_AT = null;
 
     protected $table = 'user_ssh_keys';
     protected bool $immutableDates = true;

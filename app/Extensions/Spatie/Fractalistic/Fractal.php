@@ -33,7 +33,7 @@ class Fractal extends SpatieFractal
 
         // If the resource name is not set attempt to pull it off the transformer
         // itself and set it automatically.
-        $class = is_string($this->transformer) ? new $this->transformer : $this->transformer;
+        $class = is_string($this->transformer) ? new $this->transformer() : $this->transformer;
         if (is_null($this->resourceName) && $class instanceof Transformer) {
             $this->resourceName = $class->getResourceName();
         }

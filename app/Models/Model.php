@@ -17,8 +17,6 @@ abstract class Model extends IlluminateModel
 
     /**
      * Set to true to return immutable Carbon date instances from the model.
-     *
-     * @var bool
      */
     protected bool $immutableDates = false;
 
@@ -42,9 +40,6 @@ abstract class Model extends IlluminateModel
      */
     protected static $validatorFactory;
 
-    /**
-     * @var array
-     */
     public static array $validationRules = [];
 
     /**
@@ -82,8 +77,6 @@ abstract class Model extends IlluminateModel
 
     /**
      * Returns the validator instance used by this model.
-     *
-     * @return \Illuminate\Validation\Validator
      */
     public function getValidator(): Validator
     {

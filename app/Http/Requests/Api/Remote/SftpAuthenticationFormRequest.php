@@ -26,7 +26,7 @@ class SftpAuthenticationFormRequest extends FormRequest
         return [
             'username' => 'required|string',
             'password' => 'required|string',
-            'type' => 'required|in:password,publicKey'
+            'type' => 'required|in:password,publicKey',
         ];
     }
 

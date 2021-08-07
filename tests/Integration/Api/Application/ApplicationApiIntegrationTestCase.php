@@ -41,9 +41,6 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
         $this->createNewAccessToken();
     }
 
-    /**
-     * @return \Pterodactyl\Models\User
-     */
     public function getApiUser(): User
     {
         return $this->user;

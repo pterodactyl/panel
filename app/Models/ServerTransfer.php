@@ -58,9 +58,6 @@ class ServerTransfer extends Model
         'archived' => 'bool',
     ];
 
-    /**
-     * @var array
-     */
     public static array $validationRules = [
         'server_id' => 'required|numeric|exists:servers,id',
         'old_node' => 'required|numeric',

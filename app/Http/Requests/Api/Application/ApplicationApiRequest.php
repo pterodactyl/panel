@@ -9,8 +9,6 @@ abstract class ApplicationApiRequest extends ApiRequest
     /**
      * This will eventually be replaced with per-request permissions checking
      * on the API key and for the user.
-     *
-     * @return bool
      */
     public function authorize(): bool
     {

@@ -26,7 +26,6 @@ class SSHKeyController extends ClientApiController
     /**
      * ?
      *
-     * @return JsonResponse
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\DisplayException
      */

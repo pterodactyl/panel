@@ -9,8 +9,6 @@ class BaseController extends Controller
 {
     /**
      * Return the admin index view.
-     *
-     * @return \Illuminate\View\View
      */
     public function index(): View
     {

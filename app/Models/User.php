@@ -9,10 +9,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\Access\Authorizable;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -111,8 +111,6 @@ class User extends Model implements
 
     /**
      * Rules verifying that the data being stored matches the expectations of the database.
-     *
-     * @var array
      */
     public static array $validationRules = [
         'uuid' => 'required|string|size:36|unique:users,uuid',
@@ -173,8 +171,6 @@ class User extends Model implements
 
     /**
      * Gets the avatar url for the user.
-     *
-     * @return string
      */
     public function avatarURL(): string
     {
@@ -183,10 +179,8 @@ class User extends Model implements
 
     /**
      * Gets the name of the role assigned to a user.
-     *
-     * @return string|null
      */
-    public function adminRoleName():? string
+    public function adminRoleName(): ?string
     {
         $role = $this->adminRole;
         if (is_null($role)) {

@@ -36,9 +36,6 @@ class PersonalAccessToken extends Model implements HasAbilities
         'abilities',
     ];
 
-    /**
-     * @var array
-     */
     public static array $validationRules = [
         'token' => 'required|string',
         'token_id' => 'required|string|size:16',
@@ -58,6 +55,7 @@ class PersonalAccessToken extends Model implements HasAbilities
      * Required for support with Laravel Sanctum.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     *
      * @see \Laravel\Sanctum\Guard::supportsTokens()
      */
     public function tokenable()
@@ -69,6 +67,7 @@ class PersonalAccessToken extends Model implements HasAbilities
      * Determine if the token has a given ability.
      *
      * @param string $ability
+     *
      * @return bool
      */
     public function can($ability)
@@ -81,6 +80,7 @@ class PersonalAccessToken extends Model implements HasAbilities
      * Determine if the token is missing a given ability.
      *
      * @param string $ability
+     *
      * @return bool
      */
     public function cant($ability)
@@ -92,6 +92,7 @@ class PersonalAccessToken extends Model implements HasAbilities
      * Find the token instance matching the given token.
      *
      * @param string $token
+     *
      * @return \Pterodactyl\Models\PersonalAccessToken|null
      */
     public static function findToken($token)
@@ -108,8 +109,6 @@ class PersonalAccessToken extends Model implements HasAbilities
 
     /**
      * Generates a new identifier for a personal access token.
-     *
-     * @return string
      */
     public static function generateTokenIdentifier(): string
     {

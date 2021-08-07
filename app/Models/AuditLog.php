@@ -61,9 +61,6 @@ class AuditLog extends Model
      */
     protected $table = 'audit_logs';
 
-    /**
-     * @var bool
-     */
     protected bool $immutableDates = true;
 
     /**

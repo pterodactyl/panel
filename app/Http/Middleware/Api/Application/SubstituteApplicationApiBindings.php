@@ -20,8 +20,6 @@ class SubstituteApplicationApiBindings
 
     /**
      * Mappings to automatically assign route parameters to a model.
-     *
-     * @var array
      */
     protected static array $mappings = [
         'allocation' => Allocation::class,

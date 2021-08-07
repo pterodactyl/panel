@@ -21,9 +21,6 @@ class DatabaseHost extends Model
      */
     public const RESOURCE_NAME = 'database_host';
 
-    /**
-     * @var bool
-     */
     protected bool $immutableDates = true;
 
     /**
@@ -61,8 +58,6 @@ class DatabaseHost extends Model
 
     /**
      * Validation rules to assign to this model.
-     *
-     * @var array
      */
     public static array $validationRules = [
         'name' => 'required|string|max:191',

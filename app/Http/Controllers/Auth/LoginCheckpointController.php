@@ -17,7 +17,6 @@ class LoginCheckpointController extends AbstractLoginController
     private Encrypter $encrypter;
     private Google2FA $google2FA;
 
-
     /**
      * LoginCheckpointController constructor.
      */
@@ -51,6 +50,7 @@ class LoginCheckpointController extends AbstractLoginController
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
+
             return;
         }
 
@@ -66,6 +66,7 @@ class LoginCheckpointController extends AbstractLoginController
                 null,
                 'The authentication token provided has expired, please refresh the page and try again.'
             );
+
             return;
         }
 

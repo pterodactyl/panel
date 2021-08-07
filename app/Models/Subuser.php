@@ -39,9 +39,6 @@ class Subuser extends Model
         'permissions' => 'array',
     ];
 
-    /**
-     * @var array
-     */
     public static array $validationRules = [
         'user_id' => 'required|numeric|exists:users,id',
         'server_id' => 'required|numeric|exists:servers,id',

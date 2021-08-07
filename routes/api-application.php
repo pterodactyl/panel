@@ -132,7 +132,6 @@ Route::group(['prefix' => '/nodes'], function () {
     });
 });
 
-
 /*
 |--------------------------------------------------------------------------
 | Role Controller Routes
@@ -151,7 +150,6 @@ Route::group(['prefix' => '/roles'], function () {
 
     Route::delete('/{role}', 'Roles\RoleController@delete');
 });
-
 
 /*
 |--------------------------------------------------------------------------

@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Providers;
 
-use Pterodactyl\Models\User;
 use Laravel\Sanctum\Sanctum;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Support\Facades\Schema;
@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Server::observe(ServerObserver::class);
         Subuser::observe(SubuserObserver::class);
 
-        /**
+        /*
          * @see https://laravel.com/docs/8.x/sanctum#overriding-default-models
          */
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Only load the settings service provider if the environment
         // is configured to allow it.
-        if (! config('pterodactyl.load_environment_only', false) && $this->app->environment() !== 'testing') {
+        if (!config('pterodactyl.load_environment_only', false) && $this->app->environment() !== 'testing') {
             $this->app->register(SettingsServiceProvider::class);
         }
     }

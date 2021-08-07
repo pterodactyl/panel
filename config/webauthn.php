@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | LaravelWebauthn Master Switch
@@ -208,7 +207,6 @@ return [
     */
 
     'authenticator_selection_criteria' => [
-
         /*
         | See https://www.w3.org/TR/webauthn/#attachment
         */
@@ -221,5 +219,4 @@ return [
         */
         'user_verification' => \Webauthn\AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_PREFERRED,
     ],
-
 ];

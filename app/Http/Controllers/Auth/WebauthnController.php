@@ -3,8 +3,8 @@
 namespace Pterodactyl\Http\Controllers\Auth;
 
 use Exception;
-use Pterodactyl\Models\User;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use LaravelWebauthn\Facades\Webauthn;
@@ -36,6 +36,7 @@ class WebauthnController extends AbstractLoginController
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
+
             return;
         }
 
@@ -51,6 +52,7 @@ class WebauthnController extends AbstractLoginController
                 null,
                 'The authentication token provided has expired, please refresh the page and try again.'
             );
+
             return;
         }
         $this->auth->guard()->onceUsingId($user->id);

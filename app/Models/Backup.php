@@ -37,9 +37,6 @@ class Backup extends Model
      */
     protected $table = 'backups';
 
-    /**
-     * @var bool
-     */
     protected bool $immutableDates = true;
 
     /**
@@ -76,9 +73,6 @@ class Backup extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 
-    /**
-     * @var array
-     */
     public static array $validationRules = [
         'server_id' => 'bail|required|numeric|exists:servers,id',
         'uuid' => 'required|uuid',
@@ -107,6 +101,6 @@ class Backup extends Model
     {
         return $this->hasMany(AuditLog::class, 'metadata->backup_uuid', 'uuid')
             ->where('action', 'LIKE', 'server:backup.%');
-            // ->where('metadata->backup_uuid', $this->uuid);
+        // ->where('metadata->backup_uuid', $this->uuid);
     }
 }
