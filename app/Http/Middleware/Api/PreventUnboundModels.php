@@ -3,10 +3,10 @@
 namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
+use Exception;
 use Illuminate\Support\Reflector;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Routing\UrlRoutable;
-use Illuminate\Contracts\Container\BindingResolutionException;
 
 class PreventUnboundModels
 {
@@ -19,27 +19,25 @@ class PreventUnboundModels
      * @param \Illuminate\Http\Request $request
      * @param \Closure $next
      * @return mixed
+     *
+     * @throws \Exception
      */
     public function handle($request, Closure $next)
     {
         $route = $request->route();
+        $parameters = $route->parameters() ?? [];
 
-        $parameters = $route->signatureParameters(UrlRoutable::class);
-        for ($i = 0; $i < count($route->parameters()); $i++) {
-            $class = Reflector::getParameterClassName($parameters[$i + 1]);
-
-            // Skip anything that isn't explicitly requested as a model.
+        /** @var \ReflectionParameter[] $signatures */
+        $signatures = $route->signatureParameters(UrlRoutable::class);
+        foreach ($signatures as $signature) {
+            $class = Reflector::getParameterClassName($signature);
             if (is_null($class) || !is_subclass_of($class, Model::class)) {
                 continue;
             }
 
-            if (!array_values($route->parameters())[$i] instanceof $class) {
-                throw new BindingResolutionException(
-                    sprintf(
-                        'No parameter binding has been defined for model [%s] using route parameter key "%s".',
-                        $class,
-                        array_keys($route->parameters())[$i]
-                    )
+            if (!$parameters[$signature->getName()] instanceof Model) {
+                throw new Exception(
+                    sprintf('No parameter binding has been defined for model [%s] using route parameter key "%s".', $class, $signature->getName())
                 );
             }
         }
