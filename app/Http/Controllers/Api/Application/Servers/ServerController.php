@@ -52,7 +52,7 @@ class ServerController extends ApplicationApiController
             ->paginate($perPage);
 
         return $this->fractal->collection($servers)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith(ServerTransformer::class)
             ->toArray();
     }
 
@@ -71,7 +71,7 @@ class ServerController extends ApplicationApiController
         $server = $this->creationService->handle($request->validated(), $request->getDeploymentObject());
 
         return $this->fractal->item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith(ServerTransformer::class)
             ->respond(Response::HTTP_CREATED);
     }
 
@@ -83,7 +83,7 @@ class ServerController extends ApplicationApiController
     public function view(GetServerRequest $request, Server $server): array
     {
         return $this->fractal->item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith(ServerTransformer::class)
             ->toArray();
     }
 

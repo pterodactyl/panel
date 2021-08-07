@@ -2,13 +2,11 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Mount;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class MountTransformer extends BaseTransformer
+class MountTransformer extends Transformer
 {
     /**
      * List of resources that can be included.
@@ -17,22 +15,11 @@ class MountTransformer extends BaseTransformer
      */
     protected $availableIncludes = ['eggs', 'nodes', 'servers'];
 
-    /**
-     * Return the resource name for the JSONAPI output.
-     *
-     * @return string
-     */
     public function getResourceName(): string
     {
         return Mount::RESOURCE_NAME;
     }
 
-    /**
-     * Return a transformed Mount model that can be consumed by external services.
-     *
-     * @param \Pterodactyl\Models\Mount $model
-     * @return array
-     */
     public function transform(Mount $model): array
     {
         return [
@@ -50,72 +37,42 @@ class MountTransformer extends BaseTransformer
     /**
      * Return the eggs associated with this mount.
      *
-     * @param \Pterodactyl\Models\Mount $mount
-     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeEggs(Mount $mount)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_EGGS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_EGGS)) {
             return $this->null();
         }
 
-        $mount->loadMissing('eggs');
-
-        return $this->collection(
-            $mount->getRelation('eggs'),
-            $this->makeTransformer(EggTransformer::class),
-            Egg::RESOURCE_NAME
-        );
+        return $this->collection($mount->eggs, new EggTransformer());
     }
 
     /**
      * Return the nodes associated with this mount.
      *
-     * @param \Pterodactyl\Models\Mount $mount
-     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeNodes(Mount $mount)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_NODES)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
             return $this->null();
         }
 
-        $mount->loadMissing('nodes');
-
-        return $this->collection(
-            $mount->getRelation('nodes'),
-            $this->makeTransformer(NodeTransformer::class),
-            Node::RESOURCE_NAME
-        );
+        return $this->collection($mount->nodes, new NodeTransformer());
     }
 
     /**
      * Return the servers associated with this mount.
      *
-     * @param \Pterodactyl\Models\Mount $mount
-     *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function includeServers(Mount $mount)
     {
-        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();
         }
 
-        $mount->loadMissing('servers');
-
-        return $this->collection(
-            $mount->getRelation('servers'),
-            $this->makeTransformer(ServerTransformer::class),
-            Server::RESOURCE_NAME
-        );
+        return $this->collection($mount->servers, new ServerTransformer());
     }
 }

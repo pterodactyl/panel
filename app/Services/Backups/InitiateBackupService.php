@@ -55,11 +55,7 @@ class InitiateBackupService
     /**
      * InitiateBackupService constructor.
      *
-     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
      * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
-     * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
     public function __construct(
         BackupRepository $repository,

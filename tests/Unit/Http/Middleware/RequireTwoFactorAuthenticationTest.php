@@ -6,8 +6,8 @@ use Mockery as m;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\WebauthnKey;
 use Prologue\Alerts\AlertsMessageBag;
-use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
+use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 
 class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
 {
@@ -23,7 +23,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->alerts = m::mock(AlertsMessageBag::class);
     }
 
-    public function testNoRequirement__userWithout_2fa()
+    public function testNoRequirementUserWithout2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_NONE);
@@ -41,7 +41,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testNoRequirement__userWithTotp_2fa()
+    public function testNoRequirementUserWithTotp2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_NONE);
@@ -59,7 +59,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testNoRequirement__userWithWebauthn_2fa()
+    public function testNoRequirementUserWithWebauthn2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_NONE);
@@ -82,7 +82,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testNoRequirement__guestUser()
+    public function testNoRequirementGuestUser()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_NONE);
@@ -96,7 +96,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAllRequirement__userWithout_2fa()
+    public function testAllRequirementUserWithout2fa()
     {
         $this->expectException(TwoFactorAuthRequiredException::class);
 
@@ -116,7 +116,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAllRequirement__userWithTotp_2fa()
+    public function testAllRequirementUserWithTotp2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ALL);
@@ -134,7 +134,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAllRequirement__ruserWithWebauthn_2fa()
+    public function testAllRequirementRuserWithWebauthn2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ALL);
@@ -157,7 +157,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAllRequirement__guestUser()
+    public function testAllRequirementGuestUser()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ALL);
@@ -171,7 +171,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAdminRequirement__userWithout_2fa()
+    public function testAdminRequirementUserWithout2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
@@ -190,7 +190,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAdminRequirement__adminUserWithout_2fa()
+    public function testAdminRequirementAdminUserWithout2fa()
     {
         $this->expectException(TwoFactorAuthRequiredException::class);
 
@@ -211,7 +211,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAdminRequirement__userWithTotp_2fa()
+    public function testAdminRequirementUserWithTotp2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
@@ -230,7 +230,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAdminRequirement__adminUserWithTotp_2fa()
+    public function testAdminRequirementAdminUserWithTotp2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
@@ -249,7 +249,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAdminRequirement__userWithWebauthn_2fa()
+    public function testAdminRequirementUserWithWebauthn2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
@@ -271,7 +271,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAdminRequirement__adminUserWithWebauthn_2fa()
+    public function testAdminRequirementAdminUserWithWebauthn2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
@@ -295,7 +295,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAdminRequirement__guestUser()
+    public function testAdminRequirementGuestUser()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);

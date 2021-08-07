@@ -3,17 +3,16 @@
 namespace Pterodactyl\Http\Controllers\Api\Application;
 
 use Illuminate\Http\Request;
-use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class ApplicationApiController extends Controller
 {
     protected Request $request;
+
     protected Fractal $fractal;
 
     /**
@@ -43,25 +42,6 @@ abstract class ApplicationApiController extends Controller
     {
         $this->fractal = $fractal;
         $this->request = $request;
-    }
-
-    /**
-     * Return an instance of an application transformer.
-     *
-     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
-    public function getTransformer(string $abstract)
-    {
-        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
-        $transformer = Container::getInstance()->make($abstract);
-        $transformer->setRootAdmin($this->request->user()->root_admin);
-        $transformer->setKey($this->request->attributes->get('api_key'));
-
-        Assert::isInstanceOf($transformer, BaseTransformer::class);
-
-        return $transformer;
     }
 
     /**

@@ -6,8 +6,8 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\AdminRole;
 use Spatie\QueryBuilder\QueryBuilder;
-use Pterodactyl\Transformers\Api\Application\AdminRoleTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
+use Pterodactyl\Transformers\Api\Application\AdminRoleTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Roles\GetRoleRequest;
 use Pterodactyl\Http\Requests\Api\Application\Roles\GetRolesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Roles\StoreRoleRequest;
@@ -43,7 +43,7 @@ class RoleController extends ApplicationApiController
             ->paginate($perPage);
 
         return $this->fractal->collection($roles)
-            ->transformWith($this->getTransformer(AdminRoleTransformer::class))
+            ->transformWith(AdminRoleTransformer::class)
             ->toArray();
     }
 
@@ -55,7 +55,7 @@ class RoleController extends ApplicationApiController
     public function view(GetRoleRequest $request, AdminRole $role): array
     {
         return $this->fractal->item($role)
-            ->transformWith($this->getTransformer(AdminRoleTransformer::class))
+            ->transformWith(AdminRoleTransformer::class)
             ->toArray();
     }
 
@@ -72,7 +72,7 @@ class RoleController extends ApplicationApiController
         $role = AdminRole::query()->create($data);
 
         return $this->fractal->item($role)
-            ->transformWith($this->getTransformer(AdminRoleTransformer::class))
+            ->transformWith(AdminRoleTransformer::class)
             ->respond(JsonResponse::HTTP_CREATED);
     }
 
@@ -86,7 +86,7 @@ class RoleController extends ApplicationApiController
         $role->update($request->validated());
 
         return $this->fractal->item($role)
-            ->transformWith($this->getTransformer(AdminRoleTransformer::class))
+            ->transformWith(AdminRoleTransformer::class)
             ->toArray();
     }
 

@@ -4,16 +4,12 @@ namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Contracts\Validation\Validator;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerRequest extends ApplicationApiRequest
 {
-    protected string $resource = AdminAcl::RESOURCE_SERVERS;
-    protected int $permission = AdminAcl::WRITE;
-
     public function rules(): array
     {
         $rules = Server::getRules();
@@ -93,7 +89,9 @@ class StoreServerRequest extends ApplicationApiRequest
     public function withValidator(Validator $validator)
     {
         $validator->sometimes('allocation.default', [
-            'required', 'integer', 'bail',
+            'required',
+            'integer',
+            'bail',
             Rule::exists('allocations', 'id')->where(function ($query) {
                 $query->whereNull('server_id');
             }),

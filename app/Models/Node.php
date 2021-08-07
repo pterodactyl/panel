@@ -152,6 +152,7 @@ class Node extends Model
      * Returns the configuration as an array.
      *
      * @return array
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getConfiguration()
@@ -186,6 +187,7 @@ class Node extends Model
      * Returns the configuration in Yaml format.
      *
      * @return string
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getYamlConfiguration()
@@ -197,6 +199,7 @@ class Node extends Model
      * Returns the configuration in JSON format.
      *
      * @return string
+     *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getJsonConfiguration(bool $pretty = false)

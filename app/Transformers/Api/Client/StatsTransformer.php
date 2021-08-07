@@ -3,21 +3,16 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Illuminate\Support\Arr;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class StatsTransformer extends BaseClientTransformer
+class StatsTransformer extends Transformer
 {
     public function getResourceName(): string
     {
         return 'stats';
     }
 
-    /**
-     * Transform stats from the daemon into a result set that can be used in
-     * the client API.
-     *
-     * @return array
-     */
-    public function transform(array $data)
+    public function transform(array $data): array
     {
         return [
             'current_state' => Arr::get($data, 'state', 'stopped'),

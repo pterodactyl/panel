@@ -45,9 +45,6 @@ class AdminRole extends Model
         'permissions' => 'array',
     ];
 
-    /**
-     * @var array
-     */
     public static array $validationRules = [
         'name' => 'required|string|max:64',
         'description' => 'nullable|string|max:255',

@@ -14,7 +14,6 @@ use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
 use Pterodactyl\Transformers\Api\Client\ScheduleTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\ViewScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreScheduleRequest;
@@ -49,7 +48,7 @@ class ScheduleController extends ClientApiController
         $schedules->loadMissing('tasks');
 
         return $this->fractal->collection($schedules)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -77,7 +76,7 @@ class ScheduleController extends ClientApiController
         ]);
 
         return $this->fractal->item($model)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -88,14 +87,10 @@ class ScheduleController extends ClientApiController
      */
     public function view(ViewScheduleRequest $request, Server $server, Schedule $schedule): array
     {
-        if ($schedule->server_id !== $server->id) {
-            throw new NotFoundHttpException();
-        }
-
         $schedule->loadMissing('tasks');
 
         return $this->fractal->item($schedule)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -134,7 +129,7 @@ class ScheduleController extends ClientApiController
         $this->repository->update($schedule->id, $data);
 
         return $this->fractal->item($schedule->refresh())
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 

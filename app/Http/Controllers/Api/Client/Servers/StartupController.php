@@ -42,7 +42,7 @@ class StartupController extends ClientApiController
         return $this->fractal->collection(
             $server->variables()->where('user_viewable', true)->get()
         )
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
+            ->transformWith(EggVariableTransformer::class)
             ->addMeta([
                 'startup_command' => $startup,
                 'docker_images' => $server->egg->docker_images,
@@ -86,7 +86,7 @@ class StartupController extends ClientApiController
         $startup = $this->startupCommandService->handle($server, false);
 
         return $this->fractal->item($variable)
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
+            ->transformWith(EggVariableTransformer::class)
             ->addMeta([
                 'startup_command' => $startup,
                 'raw_startup_command' => $server->startup,

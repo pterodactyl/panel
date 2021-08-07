@@ -3,15 +3,16 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\WebauthnKey;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class WebauthnKeyTransformer extends BaseClientTransformer
+class WebauthnKeyTransformer extends Transformer
 {
     /**
      * Return the resource name for the JSONAPI output.
      */
     public function getResourceName(): string
     {
-        return 'webauthn_key';
+        return WebauthnKey::RESOURCE_NAME;
     }
 
     /**
@@ -22,8 +23,7 @@ class WebauthnKeyTransformer extends BaseClientTransformer
         return [
             'id' => $model->id,
             'name' => $model->name,
-            'created_at' => $model->created_at->toIso8601String(),
-            'last_used_at' => now()->toIso8601String(),
+            'created_at' => self::formatTimestamp($model->created_at),
         ];
     }
 }

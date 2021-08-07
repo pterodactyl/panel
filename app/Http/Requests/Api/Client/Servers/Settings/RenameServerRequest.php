@@ -4,10 +4,9 @@ namespace Pterodactyl\Http\Requests\Api\Client\Servers\Settings;
 
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class RenameServerRequest extends ClientApiRequest implements ClientPermissionsRequest
+class RenameServerRequest extends ClientApiRequest
 {
     /**
      * Returns the permissions string indicating which permission should be used to

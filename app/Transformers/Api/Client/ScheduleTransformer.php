@@ -2,11 +2,10 @@
 
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\Task;
 use Pterodactyl\Models\Schedule;
-use Illuminate\Database\Eloquent\Model;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class ScheduleTransformer extends BaseClientTransformer
+class ScheduleTransformer extends Transformer
 {
     /**
      * @var array
@@ -18,20 +17,12 @@ class ScheduleTransformer extends BaseClientTransformer
      */
     protected $defaultIncludes = ['tasks'];
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResourceName(): string
     {
         return Schedule::RESOURCE_NAME;
     }
 
-    /**
-     * Returns a transformed schedule model such that a client can view the information.
-     *
-     * @return array
-     */
-    public function transform(Schedule $model)
+    public function transform(Schedule $model): array
     {
         return [
             'id' => $model->id,
@@ -46,10 +37,10 @@ class ScheduleTransformer extends BaseClientTransformer
             'is_active' => $model->is_active,
             'is_processing' => $model->is_processing,
             'only_when_online' => $model->only_when_online,
-            'last_run_at' => $model->last_run_at ? $model->last_run_at->toIso8601String() : null,
-            'next_run_at' => $model->next_run_at ? $model->next_run_at->toIso8601String() : null,
-            'created_at' => $model->created_at->toIso8601String(),
-            'updated_at' => $model->updated_at->toIso8601String(),
+            'last_run_at' => self::formatTimestamp($model->last_run_at),
+            'next_run_at' => self::formatTimestamp($model->next_run_at),
+            'created_at' => self::formatTimestamp($model->created_at),
+            'updated_at' => self::formatTimestamp($model->updated_at),
         ];
     }
 
@@ -57,15 +48,9 @@ class ScheduleTransformer extends BaseClientTransformer
      * Allows attaching the tasks specific to the schedule in the response.
      *
      * @return \League\Fractal\Resource\Collection
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeTasks(Schedule $model)
     {
-        return $this->collection(
-            $model->tasks,
-            $this->makeTransformer(TaskTransformer::class),
-            Task::RESOURCE_NAME
-        );
+        return $this->collection($model->tasks, new TaskTransformer());
     }
 }

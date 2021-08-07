@@ -12,8 +12,8 @@ use Pterodactyl\Models\Permission;
 use Illuminate\Auth\Access\AuthorizationException;
 use Pterodactyl\Services\Backups\DeleteBackupService;
 use Pterodactyl\Services\Backups\DownloadLinkService;
-use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
+use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -63,7 +63,7 @@ class BackupController extends ClientApiController
         $limit = min($request->query('per_page') ?? 20, 50);
 
         return $this->fractal->collection($server->backups()->paginate($limit))
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->addMeta([
                 'backup_count' => $this->repository->getNonFailedBackups($server)->count(),
             ])
@@ -100,7 +100,7 @@ class BackupController extends ClientApiController
         });
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 
@@ -126,7 +126,7 @@ class BackupController extends ClientApiController
         $backup->refresh();
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 
@@ -142,7 +142,7 @@ class BackupController extends ClientApiController
         }
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 

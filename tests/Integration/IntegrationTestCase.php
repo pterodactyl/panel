@@ -6,7 +6,6 @@ use Carbon\CarbonImmutable;
 use Pterodactyl\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class IntegrationTestCase extends TestCase
 {
@@ -40,7 +39,7 @@ abstract class IntegrationTestCase extends TestCase
     protected function formatTimestamp(string $timestamp): string
     {
         return CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $timestamp)
-            ->setTimezone(BaseTransformer::RESPONSE_TIMEZONE)
+            ->setTimezone('UTC')
             ->toIso8601String();
     }
 }

@@ -3,27 +3,25 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\UserSSHKey;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class UserSSHKeyTransformer extends BaseClientTransformer
+class UserSSHKeyTransformer extends Transformer
 {
     /**
      * Return the resource name for the JSONAPI output.
      */
     public function getResourceName(): string
     {
-        return 'user_ssh_key';
+        return UserSSHKey::RESOURCE_NAME;
     }
 
-    /**
-     * Return basic information about the currently logged in user.
-     */
     public function transform(UserSSHKey $model): array
     {
         return [
             'id' => $model->id,
             'name' => $model->name,
             'public_key' => $model->public_key,
-            'created_at' => $model->created_at->toIso8601String(),
+            'created_at' => self::formatTimestamp($model->created_at),
         ];
     }
 }

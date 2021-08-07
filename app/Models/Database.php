@@ -58,9 +58,6 @@ class Database extends Model
         'max_connections' => 'integer',
     ];
 
-    /**
-     * @var array
-     */
     public static array $validationRules = [
         'server_id' => 'required|numeric|exists:servers,id',
         'database_host_id' => 'required|exists:database_hosts,id',

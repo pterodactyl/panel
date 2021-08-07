@@ -63,7 +63,7 @@ class NestController extends ApplicationApiController
         }
 
         return $this->fractal->collection($nests)
-            ->transformWith($this->getTransformer(NestTransformer::class))
+            ->transformWith(NestTransformer::class)
             ->toArray();
     }
 
@@ -75,7 +75,7 @@ class NestController extends ApplicationApiController
     public function view(GetNestRequest $request, Nest $nest): array
     {
         return $this->fractal->item($nest)
-            ->transformWith($this->getTransformer(NestTransformer::class))
+            ->transformWith(NestTransformer::class)
             ->toArray();
     }
 
@@ -90,7 +90,7 @@ class NestController extends ApplicationApiController
         $nest = $this->nestCreationService->handle($request->validated());
 
         return $this->fractal->item($nest)
-            ->transformWith($this->getTransformer(NestTransformer::class))
+            ->transformWith(NestTransformer::class)
             ->toArray();
     }
 
@@ -106,7 +106,7 @@ class NestController extends ApplicationApiController
         $this->nestUpdateService->handle($nest->id, $request->validated());
 
         return $this->fractal->item($nest)
-            ->transformWith($this->getTransformer(NestTransformer::class))
+            ->transformWith(NestTransformer::class)
             ->toArray();
     }
 

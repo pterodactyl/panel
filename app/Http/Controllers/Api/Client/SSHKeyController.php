@@ -20,13 +20,12 @@ class SSHKeyController extends ClientApiController
     public function index(Request $request): \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal
     {
         return $this->fractal->collection(UserSSHKey::query()->where('user_id', '=', $request->user()->id)->get())
-            ->transformWith($this->getTransformer(UserSSHKeyTransformer::class));
+            ->transformWith(UserSSHKeyTransformer::class);
     }
 
     /**
      * ?
      *
-     * @return JsonResponse
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
@@ -42,7 +41,7 @@ class SSHKeyController extends ClientApiController
         $key = UserSSHKey::query()->create($data);
 
         return $this->fractal->item($key)
-            ->transformWith($this->getTransformer(UserSSHKeyTransformer::class))
+            ->transformWith(UserSSHKeyTransformer::class)
             ->respond(JsonResponse::HTTP_CREATED);
     }
 

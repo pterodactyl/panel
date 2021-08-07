@@ -41,7 +41,7 @@ class ServerDetailsController extends ApplicationApiController
         );
 
         return $this->fractal->item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith(ServerTransformer::class)
             ->toArray();
     }
 
@@ -55,7 +55,7 @@ class ServerDetailsController extends ApplicationApiController
         $server = $this->buildModificationService->handle($server, $request->validated());
 
         return $this->fractal->item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith(ServerTransformer::class)
             ->toArray();
     }
 }

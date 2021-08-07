@@ -48,7 +48,7 @@ class DatabaseController extends ClientApiController
     public function index(GetDatabasesRequest $request, Server $server): array
     {
         return $this->fractal->collection($server->databases)
-            ->transformWith($this->getTransformer(DatabaseTransformer::class))
+            ->transformWith(DatabaseTransformer::class)
             ->toArray();
     }
 
@@ -65,7 +65,7 @@ class DatabaseController extends ClientApiController
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
-            ->transformWith($this->getTransformer(DatabaseTransformer::class))
+            ->transformWith(DatabaseTransformer::class)
             ->toArray();
     }
 
@@ -82,7 +82,7 @@ class DatabaseController extends ClientApiController
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
-            ->transformWith($this->getTransformer(DatabaseTransformer::class))
+            ->transformWith(DatabaseTransformer::class)
             ->toArray();
     }
 

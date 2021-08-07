@@ -7,11 +7,10 @@ use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
 use Pterodactyl\Models\Permission;
 use Illuminate\Database\Query\Builder;
-use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 
-class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissionsRequest
+class StoreDatabaseRequest extends ClientApiRequest
 {
     public function permission(): string
     {

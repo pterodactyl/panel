@@ -4,8 +4,9 @@ namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class UserTransformer extends BaseTransformer
+class UserTransformer extends Transformer
 {
     /**
      * List of resources that can be included.
@@ -14,17 +15,11 @@ class UserTransformer extends BaseTransformer
      */
     protected $availableIncludes = ['role', 'servers'];
 
-    /**
-     * Return the resource name for the JSONAPI output.
-     */
     public function getResourceName(): string
     {
         return User::RESOURCE_NAME;
     }
 
-    /**
-     * Return a transformed User model that can be consumed by external services.
-     */
     public function transform(User $model): array
     {
         return [
@@ -39,8 +34,8 @@ class UserTransformer extends BaseTransformer
             'avatar_url' => $model->avatarURL(),
             'admin_role_id' => $model->admin_role_id,
             'role_name' => $model->adminRoleName(),
-            'created_at' => $this->formatTimestamp($model->created_at),
-            'updated_at' => $this->formatTimestamp($model->updated_at),
+            'created_at' => self::formatTimestamp($model->created_at),
+            'updated_at' => self::formatTimestamp($model->updated_at),
         ];
     }
 
@@ -48,9 +43,6 @@ class UserTransformer extends BaseTransformer
      * Return the role associated with this user.
      *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeRole(User $user)
     {
@@ -58,18 +50,13 @@ class UserTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $user->loadMissing('adminRole');
-
-        return $this->item($user->getRelation('adminRole'), $this->makeTransformer(AdminRoleTransformer::class), 'admin_role');
+        return $this->item($user->adminRole, new AdminRoleTransformer());
     }
 
     /**
      * Return the servers associated with this user.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(User $user)
     {
@@ -77,8 +64,6 @@ class UserTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $user->loadMissing('servers');
-
-        return $this->collection($user->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), 'server');
+        return $this->collection($user->servers, new ServerTransformer());
     }
 }

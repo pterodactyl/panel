@@ -33,7 +33,7 @@ abstract class BrowserTestCase extends TestCase
      * test. In most cases you probably wont need to do this, or can modify the test slightly to
      * avoid the need to do so.
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 

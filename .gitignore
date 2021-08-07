@@ -46,7 +46,7 @@ yarn-error.log
 
 # PHP
 /vendor
-.php_cs.cache
+.php-cs-fixer.cache
 .phpunit.result.cache
 _ide_helper.php
 _ide_helper_models.php
@@ -80,3 +80,6 @@ _ide_helper_models.php
 !.env.example
 .env*
 *.log
+_ide_helper_models.php
+_ide_helper.php
+.phpstorm.meta.php

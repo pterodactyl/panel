@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http;
 
-use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
 use Pterodactyl\Http\Middleware\TrimStrings;
@@ -16,24 +15,23 @@ use Pterodactyl\Http\Middleware\AdminAuthenticate;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Pterodactyl\Http\Middleware\Api\AuthenticateKey;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Pterodactyl\Http\Middleware\Api\SetSessionDriver;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
-use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
+use Pterodactyl\Http\Middleware\Api\PreventUnboundModels;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
-use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
+use Pterodactyl\Http\Middleware\Api\Application\SubstituteApplicationApiBindings;
 
 class Kernel extends HttpKernel
 {
@@ -43,12 +41,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        CheckForMaintenanceMode::class,
-        EncryptCookies::class,
+        TrustProxies::class,
+        PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-        TrustProxies::class,
     ];
 
     /**
@@ -58,6 +55,7 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             AuthenticateSession::class,
@@ -69,20 +67,19 @@ class Kernel extends HttpKernel
         ],
         'api' => [
             IsValidJson::class,
-            ApiSubstituteBindings::class,
-            SetSessionDriver::class,
-            'api..key:' . ApiKey::TYPE_APPLICATION,
+            EnsureFrontendRequestsAreStateful::class,
+            'auth:sanctum',
+            SubstituteApplicationApiBindings::class,
+            PreventUnboundModels::class,
             AuthenticateApplicationUser::class,
-            AuthenticateIPAccess::class,
+            RequireTwoFactorAuthentication::class,
         ],
         'client-api' => [
-            StartSession::class,
-            SetSessionDriver::class,
-            AuthenticateSession::class,
             IsValidJson::class,
+            EnsureFrontendRequestsAreStateful::class,
+            'auth:sanctum',
             SubstituteClientApiBindings::class,
-            'api..key:' . ApiKey::TYPE_ACCOUNT,
-            AuthenticateIPAccess::class,
+            PreventUnboundModels::class,
             // This is perhaps a little backwards with the Client API, but logically you'd be unable
             // to create/get an API key without first enabling 2FA on the account, so I suppose in the
             // end it makes sense.
@@ -112,8 +109,5 @@ class Kernel extends HttpKernel
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
         'node.maintenance' => MaintenanceMiddleware::class,
-
-        // API Specific Middleware
-        'api..key' => AuthenticateKey::class,
     ];
 }

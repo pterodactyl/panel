@@ -63,7 +63,7 @@ class UserController extends ApplicationApiController
             ->paginate($perPage);
 
         return $this->fractal->collection($users)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith(UserTransformer::class)
             ->toArray();
     }
 
@@ -76,7 +76,7 @@ class UserController extends ApplicationApiController
     public function view(GetUserRequest $request, User $user): array
     {
         return $this->fractal->item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith(UserTransformer::class)
             ->toArray();
     }
 
@@ -98,7 +98,7 @@ class UserController extends ApplicationApiController
         $user = $this->updateService->handle($user, $request->validated());
 
         return $this->fractal->item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith(UserTransformer::class)
             ->toArray();
     }
 
@@ -114,7 +114,7 @@ class UserController extends ApplicationApiController
         $user = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($user)
-            ->transformWith($this->getTransformer(UserTransformer::class))
+            ->transformWith(UserTransformer::class)
             ->addMeta([
                 'resource' => route('api.application.users.view', [
                     'user' => $user->id,

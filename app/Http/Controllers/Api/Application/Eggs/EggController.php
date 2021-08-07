@@ -52,7 +52,7 @@ class EggController extends ApplicationApiController
         }
 
         return $this->fractal->collection($eggs)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith(EggTransformer::class)
             ->toArray();
     }
 
@@ -64,7 +64,7 @@ class EggController extends ApplicationApiController
     public function view(GetEggRequest $request, Egg $egg): array
     {
         return $this->fractal->item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith(EggTransformer::class)
             ->toArray();
     }
 
@@ -78,7 +78,7 @@ class EggController extends ApplicationApiController
         $egg = Egg::query()->create($request->validated());
 
         return $this->fractal->item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith(EggTransformer::class)
             ->respond(JsonResponse::HTTP_CREATED);
     }
 
@@ -92,7 +92,7 @@ class EggController extends ApplicationApiController
         $egg->update($request->validated());
 
         return $this->fractal->item($egg)
-            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->transformWith(EggTransformer::class)
             ->toArray();
     }
 

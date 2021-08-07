@@ -5,11 +5,10 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
+use Pterodactyl\Http\Requests\Api\Client\WebsocketTokenRequest;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 
 class WebsocketController extends ClientApiController
@@ -36,14 +35,9 @@ class WebsocketController extends ClientApiController
      * allows us to continually renew this token and avoid users maintaining sessions wrongly,
      * as well as ensure that user's only perform actions they're allowed to.
      */
-    public function __invoke(ClientApiRequest $request, Server $server): JsonResponse
+    public function __invoke(WebsocketTokenRequest $request, Server $server): JsonResponse
     {
-        $user = $request->user();
-        if ($user->cannot(Permission::ACTION_WEBSOCKET_CONNECT, $server)) {
-            throw new HttpForbiddenException('You do not have permission to connect to this server\'s websocket.');
-        }
-
-        $permissions = $this->permissionsService->handle($server, $user);
+        $permissions = $this->permissionsService->handle($server, $request->user());
 
         $node = $server->node;
         if (!is_null($server->transfer)) {
@@ -65,7 +59,7 @@ class WebsocketController extends ClientApiController
                 'server_uuid' => $server->uuid,
                 'permissions' => $permissions,
             ])
-            ->handle($node, $user->id . $server->uuid);
+            ->handle($node, $request->user()->id . $server->uuid);
 
         $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $node->getConnectionAddress());
 

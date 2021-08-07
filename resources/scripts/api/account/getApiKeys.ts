@@ -3,15 +3,13 @@ import http from '@/api/http';
 export interface ApiKey {
     identifier: string;
     description: string;
-    allowedIps: string[];
     createdAt: Date | null;
     lastUsedAt: Date | null;
 }
 
 export const rawDataToApiKey = (data: any): ApiKey => ({
-    identifier: data.identifier,
+    identifier: data.token_id,
     description: data.description,
-    allowedIps: data.allowed_ips,
     createdAt: data.created_at ? new Date(data.created_at) : null,
     lastUsedAt: data.last_used_at ? new Date(data.last_used_at) : null,
 });

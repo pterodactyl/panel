@@ -34,11 +34,10 @@ class ClientController extends ClientApiController
     public function index(GetServersRequest $request): array
     {
         $user = $request->user();
-        $transformer = $this->getTransformer(ServerTransformer::class);
 
         // Start the query builder and ensure we eager load any requested relationships from the request.
         $builder = QueryBuilder::for(
-            Server::query()->with($this->getIncludesForTransformer($transformer, ['node']))
+            Server::query()->with($this->getIncludesForTransformer(new ServerTransformer(), ['node']))
         )->allowedFilters([
             'uuid',
             'name',
@@ -69,7 +68,7 @@ class ClientController extends ClientApiController
 
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
 
-        return $this->fractal->transformWith($transformer)->collection($servers)->toArray();
+        return $this->fractal->transformWith(new ServerTransformer())->collection($servers)->toArray();
     }
 
     /**

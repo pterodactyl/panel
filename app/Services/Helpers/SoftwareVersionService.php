@@ -43,8 +43,6 @@ class SoftwareVersionService
 
     /**
      * Gets the current version of the panel that is being used.
-     *
-     * @return string
      */
     public function getVersion(): string
     {
@@ -53,8 +51,6 @@ class SoftwareVersionService
 
     /**
      * Get the latest version of the panel from the CDN servers.
-     *
-     * @return string
      */
     public function getLatestPanel(): string
     {
@@ -63,8 +59,6 @@ class SoftwareVersionService
 
     /**
      * Get the latest version of wings from the CDN servers.
-     *
-     * @return string
      */
     public function getLatestWings(): string
     {
@@ -88,8 +82,6 @@ class SoftwareVersionService
 
     /**
      * Determine if a passed wings version is the latest.
-     *
-     * @param string $version
      *
      * @return bool
      */
@@ -127,8 +119,6 @@ class SoftwareVersionService
 
     /**
      * Return version information for the footer.
-     *
-     * @return array
      */
     protected function versionData(): array
     {
@@ -159,8 +149,6 @@ class SoftwareVersionService
 
     /**
      * ?
-     *
-     * @return array
      */
     public function getVersionData(): array
     {

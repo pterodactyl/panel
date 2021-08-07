@@ -3,60 +3,102 @@
 namespace Pterodactyl\Http\Middleware\Api\Client;
 
 use Closure;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Database;
+use Illuminate\Support\Str;
+use Pterodactyl\Models\Task;
+use Illuminate\Routing\Route;
+use Pterodactyl\Models\Server;
 use Illuminate\Container\Container;
+use Illuminate\Database\Query\JoinClause;
+use Illuminate\Contracts\Routing\Registrar;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class SubstituteClientApiBindings extends ApiSubstituteBindings
+class SubstituteClientApiBindings
 {
+    protected Registrar $router;
+
+    public function __construct(Registrar $router)
+    {
+        $this->router = $router;
+    }
+
     /**
-     * Perform substitution of route parameters without triggering
-     * a 404 error if a model is not found.
+     * Perform substitution of route parameters for the Client API.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request
      *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        // Override default behavior of the model binding to use a specific table
-        // column rather than the default 'id'.
-        $this->router->bind('server', function ($value) use ($request) {
-            try {
-                $column = 'uuidShort';
-                if (preg_match('/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i', $value)) {
-                    $column = 'uuid';
-                }
-
-                return Container::getInstance()->make(ServerRepositoryInterface::class)->findFirstWhere([
-                    [$column, '=', $value],
-                ]);
-            } catch (RecordNotFoundException $ex) {
-                $request->attributes->set('is_missing_model', true);
-
-                return null;
-            }
+        $this->router->bind('server', function ($value) {
+            return Server::query()->where(Str::length($value) === 8 ? 'uuidShort' : 'uuid', $value)->firstOrFail();
         });
 
-        $this->router->bind('database', function ($value) {
+        $this->router->bind('allocation', function ($value, $route) {
+            return $this->server($route)->allocations()->findOrFail($value);
+        });
+
+        $this->router->bind('schedule', function ($value, $route) {
+            return $this->server($route)->schedule()->findOrFail($value);
+        });
+
+        $this->router->bind('task', function ($value, $route) {
+            return Task::query()
+                ->select('tasks.*')
+                ->join('schedules', function (JoinClause $join) use ($route) {
+                    $join->on('schedules.id', 'tasks.schedule_id')
+                        ->where('schedules.server_id', $route->parameter('server')->id);
+                })
+                ->where('schedules.id', $route->parameter('schedule')->id)
+                ->findOrFail($value);
+        });
+
+        $this->router->bind('database', function ($value, $route) {
             $id = Container::getInstance()->make(HashidsInterface::class)->decodeFirst($value);
 
-            return Database::query()->where('id', $id)->firstOrFail();
+            return $this->server($route)->databases()->findOrFail($id);
         });
 
-        $this->router->bind('backup', function ($value) {
-            return Backup::query()->where('uuid', $value)->firstOrFail();
+        $this->router->bind('backup', function ($value, $route) {
+            return $this->server($route)->backups()->where('uuid', $value)->firstOrFail();
         });
 
-        $this->router->bind('user', function ($value) {
-            return User::query()->where('uuid', $value)->firstOrFail();
+        $this->router->bind('subuser', function ($value, $route) {
+            return $this->server($route)->subusers()
+                ->select('subusers.*')
+                ->join('users', 'subusers.user_id', '=', 'users.id')
+                ->where('users.uuid', $value)
+                ->firstOrFail();
         });
 
-        return parent::handle($request, $next);
+        try {
+            /* @var \Illuminate\Routing\Route $route */
+            $this->router->substituteBindings($route = $request->route());
+        } catch (ModelNotFoundException $exception) {
+            if (isset($route) && $route->getMissing()) {
+                $route->getMissing()($request);
+            }
+
+            throw $exception;
+        }
+
+        return $next($request);
+    }
+
+    /**
+     * Plucks the server model off the route. If no server model is present a
+     * ModelNotFound exception will be thrown.
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    private function server(Route $route): Server
+    {
+        $server = $route->parameter('server');
+        if (!$server instanceof Server) {
+            throw (new ModelNotFoundException())->setModel(Server::class, [$route->parameter('server')]);
+        }
+
+        return $server;
     }
 }
