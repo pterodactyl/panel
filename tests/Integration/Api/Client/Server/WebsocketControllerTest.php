@@ -3,7 +3,6 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 
 use Carbon\CarbonImmutable;
-use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Lcobucci\JWT\Configuration;
 use Pterodactyl\Models\Permission;
@@ -33,7 +32,7 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
      */
     public function testUserWithoutPermissionForServerReceivesError()
     {
-        [,$server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
+        [, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
         [$user,] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
 
         $this->actingAs($user)->getJson("/api/client/servers/{$server->uuid}/websocket")
