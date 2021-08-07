@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 
 use Carbon\CarbonImmutable;
+use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Lcobucci\JWT\Configuration;
 use Pterodactyl\Models\Permission;
@@ -25,6 +26,18 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
             ->assertStatus(Response::HTTP_FORBIDDEN)
             ->assertJsonPath('errors.0.code', 'HttpForbiddenException')
             ->assertJsonPath('errors.0.detail', 'You do not have permission to connect to this server\'s websocket.');
+    }
+
+    /**
+     * Confirm users cannot access the websocket for another user's server.
+     */
+    public function testUserWithoutPermissionForServerReceivesError()
+    {
+        [,$server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
+        [$user,] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
+
+        $this->actingAs($user)->getJson("/api/client/servers/{$server->uuid}/websocket")
+            ->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
     /**
