@@ -3,12 +3,10 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class EggTransformer extends BaseTransformer
+class EggTransformer extends Transformer
 {
     /**
      * Relationships that can be loaded onto this transformation.
@@ -23,21 +21,12 @@ class EggTransformer extends BaseTransformer
         'variables',
     ];
 
-    /**
-     * Return the resource name for the JSONAPI output.
-     */
     public function getResourceName(): string
     {
         return Egg::RESOURCE_NAME;
     }
 
-    /**
-     * Transform an Egg model into a representation that can be consumed by
-     * the application api.
-     *
-     * @return array
-     */
-    public function transform(Egg $model)
+    public function transform(Egg $model): array
     {
         return [
             'id' => $model->id,
@@ -67,8 +56,8 @@ class EggTransformer extends BaseTransformer
                 'container' => $model->script_container,
                 'extends' => $model->copy_script_from,
             ],
-            $model->getCreatedAtColumn() => $this->formatTimestamp($model->created_at),
-            $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),
+            'created_at' => self::formatTimestamp($model->created_at),
+            'updated_at' => self::formatTimestamp($model->updated_at),
         ];
     }
 
@@ -76,8 +65,6 @@ class EggTransformer extends BaseTransformer
      * Include the Nest relationship for the given Egg in the transformation.
      *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNest(Egg $model)
     {
@@ -85,17 +72,13 @@ class EggTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $model->loadMissing('nest');
-
-        return $this->item($model->getRelation('nest'), $this->makeTransformer(NestTransformer::class), Nest::RESOURCE_NAME);
+        return $this->item($model->nest, new NestTransformer());
     }
 
     /**
      * Include the Servers relationship for the given Egg in the transformation.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Egg $model)
     {
@@ -103,9 +86,7 @@ class EggTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $model->loadMissing('servers');
-
-        return $this->collection($model->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), Server::RESOURCE_NAME);
+        return $this->collection($model->servers, new ServerTransformer());
     }
 
     /**
@@ -119,8 +100,6 @@ class EggTransformer extends BaseTransformer
         if (is_null($model->config_from)) {
             return $this->null();
         }
-
-        $model->loadMissing('configFrom');
 
         return $this->item($model, function (Egg $model) {
             return [
@@ -144,8 +123,6 @@ class EggTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $model->loadMissing('scriptFrom');
-
         return $this->item($model, function (Egg $model) {
             return [
                 'privileged' => $model->script_is_privileged,
@@ -160,8 +137,6 @@ class EggTransformer extends BaseTransformer
      * Include the variables that are defined for this Egg.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeVariables(Egg $model)
     {
@@ -169,12 +144,6 @@ class EggTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $model->loadMissing('variables');
-
-        return $this->collection(
-            $model->getRelation('variables'),
-            $this->makeTransformer(EggVariableTransformer::class),
-            EggVariable::RESOURCE_NAME
-        );
+        return $this->collection($model->variables, new EggVariableTransformer());
     }
 }

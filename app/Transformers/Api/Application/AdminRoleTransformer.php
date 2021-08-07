@@ -3,25 +3,15 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\AdminRole;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class AdminRoleTransformer extends BaseTransformer
+class AdminRoleTransformer extends Transformer
 {
-    /**
-     * Return the resource name for the JSONAPI output.
-     *
-     * @return string
-     */
     public function getResourceName(): string
     {
         return AdminRole::RESOURCE_NAME;
     }
 
-    /**
-     * Return a transformed AdminRole model that can be consumed by external services.
-     *
-     * @param \Pterodactyl\Models\AdminRole $model
-     * @return array
-     */
     public function transform(AdminRole $model): array
     {
         return [

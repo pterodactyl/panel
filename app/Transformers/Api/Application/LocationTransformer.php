@@ -4,8 +4,9 @@ namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class LocationTransformer extends BaseTransformer
+class LocationTransformer extends Transformer
 {
     /**
      * List of resources that can be included.
@@ -14,17 +15,11 @@ class LocationTransformer extends BaseTransformer
      */
     protected $availableIncludes = ['nodes', 'servers'];
 
-    /**
-     * Return the resource name for the JSONAPI output.
-     */
     public function getResourceName(): string
     {
         return Location::RESOURCE_NAME;
     }
 
-    /**
-     * Return a generic transformed location array.
-     */
     public function transform(Location $model): array
     {
         return [
@@ -40,9 +35,6 @@ class LocationTransformer extends BaseTransformer
      * Return the servers associated with this location.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Location $location)
     {
@@ -50,18 +42,13 @@ class LocationTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $location->loadMissing('servers');
-
-        return $this->collection($location->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), 'server');
+        return $this->collection($location->servers, new ServerTransformer());
     }
 
     /**
      * Return the nodes associated with this location.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNodes(Location $location)
     {
@@ -69,8 +56,6 @@ class LocationTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $location->loadMissing('nodes');
-
-        return $this->collection($location->getRelation('nodes'), $this->makeTransformer(NodeTransformer::class), 'node');
+        return $this->collection($location->nodes, new NodeTransformer());
     }
 }
