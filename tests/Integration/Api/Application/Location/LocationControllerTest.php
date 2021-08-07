@@ -142,7 +142,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testKeyWithoutPermissionCannotLoadRelationship()
     {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_nodes' => 0]);
+        $this->createNewAccessToken(['r_nodes' => 0]);
 
         $location = Location::factory()->create();
         Node::factory()->create(['location_id' => $location->id]);
@@ -189,7 +189,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
     public function testErrorReturnedIfNoPermission()
     {
         $location = Location::factory()->create();
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
+        $this->createNewAccessToken(['r_locations' => 0]);
 
         $response = $this->getJson('/api/application/locations/' . $location->id);
         $this->assertAccessDeniedJson($response);
@@ -201,7 +201,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testResourceIsNotExposedWithoutPermissions()
     {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
+        $this->createNewAccessToken(['r_locations' => 0]);
 
         $response = $this->getJson('/api/application/locations/nil');
         $this->assertAccessDeniedJson($response);

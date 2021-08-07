@@ -59,7 +59,7 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
     public function testErrorReturnedIfNoPermission()
     {
         $user = User::factory()->create();
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
+        $this->createNewAccessToken(['r_users' => 0]);
 
         $response = $this->getJson('/api/application/users/external/' . $user->external_id);
         $this->assertAccessDeniedJson($response);
@@ -71,7 +71,7 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testResourceIsNotExposedWithoutPermissions()
     {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
+        $this->createNewAccessToken(['r_users' => 0]);
 
         $response = $this->getJson('/api/application/users/external/nil');
         $this->assertAccessDeniedJson($response);

@@ -16,7 +16,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetUsers()
     {
-        $user = User::factory()->create();
+        $user = $this->getApiUser();
+        $created = User::factory()->create();
 
         $response = $this->getJson('/api/application/users');
         $response->assertStatus(Response::HTTP_OK);
@@ -48,24 +49,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
             ->assertJsonFragment([
                 'object' => 'user',
                 'attributes' => [
-                    'id' => $this->getApiUser()->id,
-                    'external_id' => $this->getApiUser()->external_id,
-                    'uuid' => $this->getApiUser()->uuid,
-                    'username' => $this->getApiUser()->username,
-                    'email' => $this->getApiUser()->email,
-                    'language' => $this->getApiUser()->language,
-                    'admin_role_id' => $this->getApiUser()->admin_role_id,
-                    'root_admin' => (bool) $this->getApiUser()->root_admin,
-                    '2fa' => (bool) $this->getApiUser()->totp_enabled,
-                    'avatar_url' => $this->getApiUser()->avatarURL(),
-                    'role_name' => $this->getApiUser()->adminRoleName(),
-                    'created_at' => $this->formatTimestamp($this->getApiUser()->created_at),
-                    'updated_at' => $this->formatTimestamp($this->getApiUser()->updated_at),
-                ],
-            ])
-            ->assertJsonFragment([
-                'object' => 'user',
-                'attributes' => [
                     'id' => $user->id,
                     'external_id' => $user->external_id,
                     'uuid' => $user->uuid,
@@ -79,6 +62,24 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'role_name' => $user->adminRoleName(),
                     'created_at' => $this->formatTimestamp($user->created_at),
                     'updated_at' => $this->formatTimestamp($user->updated_at),
+                ],
+            ])
+            ->assertJsonFragment([
+                'object' => 'user',
+                'attributes' => [
+                    'id' => $created->id,
+                    'external_id' => $created->external_id,
+                    'uuid' => $created->uuid,
+                    'username' => $created->username,
+                    'email' => $created->email,
+                    'language' => $created->language,
+                    'admin_role_id' => $created->admin_role_id,
+                    'root_admin' => (bool) $created->root_admin,
+                    '2fa' => (bool) $created->totp_enabled,
+                    'avatar_url' => $created->avatarURL(),
+                    'role_name' => $created->adminRoleName(),
+                    'created_at' => $this->formatTimestamp($created->created_at),
+                    'updated_at' => $this->formatTimestamp($created->updated_at),
                 ],
             ]);
     }
@@ -152,7 +153,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testKeyWithoutPermissionCannotLoadRelationship()
     {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_servers' => 0]);
+        $this->createNewAccessToken(['r_servers' => 0]);
 
         $user = User::factory()->create();
         $this->createServerModel(['user_id' => $user->id]);
@@ -197,7 +198,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
     public function testErrorReturnedIfNoPermission()
     {
         $user = User::factory()->create();
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
+        $this->createNewAccessToken(['r_users' => 0]);
 
         $response = $this->getJson('/api/application/users/' . $user->id);
         $this->assertAccessDeniedJson($response);
@@ -209,7 +210,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testResourceIsNotExposedWithoutPermissions()
     {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
+        $this->createNewAccessToken(['r_users' => 0]);
 
         $response = $this->getJson('/api/application/users/nil');
         $this->assertAccessDeniedJson($response);
@@ -294,7 +295,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testApiKeyWithoutWritePermissions(string $method, string $url)
     {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => AdminAcl::READ]);
+        $this->createNewAccessToken(['r_users' => AdminAcl::READ]);
 
         if (str_contains($url, '{id}')) {
             $user = User::factory()->create();

@@ -123,7 +123,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
     public function testErrorReturnedIfNoPermission()
     {
         $nest = $this->repository->find(1);
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_nests' => 0]);
+        $this->createNewAccessToken(['r_nests' => 0]);
 
         $response = $this->getJson('/api/application/nests/' . $nest->id);
         $this->assertAccessDeniedJson($response);
@@ -136,7 +136,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
     public function testResourceIsNotExposedWithoutPermissions()
     {
         $nest = $this->repository->find(1);
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_nests' => 0]);
+        $this->createNewAccessToken(['r_nests' => 0]);
 
         $response = $this->getJson('/api/application/nests/' . $nest->id);
         $this->assertAccessDeniedJson($response);
