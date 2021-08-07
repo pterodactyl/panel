@@ -22,7 +22,6 @@ use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\Api\PreventUnboundModels;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
@@ -32,6 +31,7 @@ use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
+use Pterodactyl\Http\Middleware\Api\Application\SubstituteApplicationApiBindings;
 
 class Kernel extends HttpKernel
 {
@@ -69,8 +69,10 @@ class Kernel extends HttpKernel
             IsValidJson::class,
             EnsureFrontendRequestsAreStateful::class,
             'auth:sanctum',
-            ApiSubstituteBindings::class,
+            SubstituteApplicationApiBindings::class,
+            PreventUnboundModels::class,
             AuthenticateApplicationUser::class,
+            RequireTwoFactorAuthentication::class,
         ],
         'client-api' => [
             IsValidJson::class,

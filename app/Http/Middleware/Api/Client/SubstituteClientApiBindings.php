@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SubstituteClientApiBindings
 {
-    private Registrar $router;
+    protected Registrar $router;
 
     public function __construct(Registrar $router)
     {
