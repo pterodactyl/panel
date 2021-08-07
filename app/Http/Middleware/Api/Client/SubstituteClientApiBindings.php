@@ -4,9 +4,11 @@ namespace Pterodactyl\Http\Middleware\Api\Client;
 
 use Closure;
 use Illuminate\Support\Str;
+use Pterodactyl\Models\Task;
 use Illuminate\Routing\Route;
 use Pterodactyl\Models\Server;
 use Illuminate\Container\Container;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Contracts\Routing\Registrar;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -39,6 +41,18 @@ class SubstituteClientApiBindings
 
         $this->router->bind('schedule', function ($value, $route) {
             return $this->server($route)->schedule()->where('id', $value)->firstOrFail();
+        });
+
+        $this->router->bind('task', function ($value, $route) {
+            return Task::query()
+                ->select('tasks.*')
+                ->join('schedules', function (JoinClause $join) use ($route) {
+                    $join->on('schedules.id', 'tasks.schedule_id')
+                        ->where('schedules.server_id', $route->parameter('server')->id);
+                })
+                ->where('schedules.id', $route->parameter('schedule')->id)
+                ->where('tasks.id', $value)
+                ->firstOrFail();
         });
 
         $this->router->bind('database', function ($value, $route) {

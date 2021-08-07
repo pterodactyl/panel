@@ -6,16 +6,15 @@ use Pterodactyl\Models\Task;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Transformers\Api\Client\TaskTransformer;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Exceptions\Service\ServiceLimitExceededException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\UpdateScheduleRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;
 
 class ScheduleTaskController extends ClientApiController
 {
@@ -108,12 +107,8 @@ class ScheduleTaskController extends ClientApiController
      *
      * @throws \Exception
      */
-    public function delete(UpdateScheduleRequest $request, Server $server, Schedule $schedule, Task $task): Response
+    public function delete(DeleteScheduleRequest $request, Server $server, Schedule $schedule, Task $task): Response
     {
-        if ($task->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {
-            throw new NotFoundHttpException();
-        }
-
         $schedule->tasks()->where('sequence_id', '>', $task->sequence_id)->update([
             'sequence_id' => $schedule->tasks()->getConnection()->raw('(sequence_id - 1)'),
         ]);
