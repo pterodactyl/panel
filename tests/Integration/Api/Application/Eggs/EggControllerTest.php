@@ -56,7 +56,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
             $egg = $eggs->where('id', '=', $datum['attributes']['id'])->first();
 
             $expected = json_encode(Arr::sortRecursive($datum['attributes']));
-            $actual = json_encode(Arr::sortRecursive($this->getTransformer(EggTransformer::class)->transform($egg)));
+            $actual = json_encode(Arr::sortRecursive((new EggTransformer())->transform($egg)));
 
             $this->assertSame(
                 $expected,
@@ -84,7 +84,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
 
         $response->assertJson([
             'object' => 'egg',
-            'attributes' => $this->getTransformer(EggTransformer::class)->transform($egg),
+            'attributes' => (new EggTransformer())->transform($egg),
         ], true);
     }
 

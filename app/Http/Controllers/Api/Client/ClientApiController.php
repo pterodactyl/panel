@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
-use Webmozart\Assert\Assert;
 use Pterodactyl\Transformers\Api\Transformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
@@ -38,21 +37,5 @@ abstract class ClientApiController extends ApplicationApiController
         return array_map(function ($item) {
             return trim($item);
         }, explode(',', $includes));
-    }
-
-    /**
-     * Return an instance of an application transformer.
-     *
-     * @return \Pterodactyl\Transformers\Api\Transformer
-     *
-     * @deprecated
-     */
-    public function getTransformer(string $class)
-    {
-        $transformer = new $class;
-
-        Assert::same(substr($class, 0, strlen(class_basename($class)) * -1), '\Pterodactyl\Transformers\Api\Client\\');
-
-        return $transformer;
     }
 }

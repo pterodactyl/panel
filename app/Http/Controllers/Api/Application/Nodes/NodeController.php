@@ -61,7 +61,7 @@ class NodeController extends ApplicationApiController
             ->paginate($perPage);
 
         return $this->fractal->collection($nodes)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith(NodeTransformer::class)
             ->toArray();
     }
 
@@ -73,7 +73,7 @@ class NodeController extends ApplicationApiController
     public function view(GetNodeRequest $request, Node $node): array
     {
         return $this->fractal->item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith(NodeTransformer::class)
             ->toArray();
     }
 
@@ -89,7 +89,7 @@ class NodeController extends ApplicationApiController
         $node = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith(NodeTransformer::class)
             ->addMeta([
                 'resource' => route('api.application.nodes.view', [
                     'node' => $node->id,
@@ -112,7 +112,7 @@ class NodeController extends ApplicationApiController
         );
 
         return $this->fractal->item($node)
-            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->transformWith(NodeTransformer::class)
             ->toArray();
     }
 

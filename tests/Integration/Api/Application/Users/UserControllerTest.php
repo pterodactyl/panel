@@ -140,7 +140,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
             'data' => [
                 [
                     'object' => 'server',
-                    'attributes' => $this->getTransformer(ServerTransformer::class)->transform($server),
+                    'attributes' => (new ServerTransformer())->transform($server),
                 ],
             ],
         ]);
@@ -238,7 +238,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $user = User::where('username', 'testuser')->first();
         $response->assertJson([
             'object' => 'user',
-            'attributes' => $this->getTransformer(UserTransformer::class)->transform($user),
+            'attributes' => (new UserTransformer())->transform($user),
             'meta' => [
                 'resource' => route('api.application.users.view', $user->id),
             ],
@@ -268,7 +268,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
 
         $response->assertJson([
             'object' => 'user',
-            'attributes' => $this->getTransformer(UserTransformer::class)->transform($user),
+            'attributes' => (new UserTransformer())->transform($user),
         ]);
     }
 

@@ -51,7 +51,7 @@ class DatabaseController extends ApplicationApiController
             ->paginate($perPage);
 
         return $this->fractal->collection($databases)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith(DatabaseHostTransformer::class)
             ->toArray();
     }
 
@@ -63,7 +63,7 @@ class DatabaseController extends ApplicationApiController
     public function view(GetDatabaseRequest $request, DatabaseHost $databaseHost): array
     {
         return $this->fractal->item($databaseHost)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith(DatabaseHostTransformer::class)
             ->toArray();
     }
 
@@ -77,7 +77,7 @@ class DatabaseController extends ApplicationApiController
         $databaseHost = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($databaseHost)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith(DatabaseHostTransformer::class)
             ->respond(JsonResponse::HTTP_CREATED);
     }
 
@@ -91,7 +91,7 @@ class DatabaseController extends ApplicationApiController
         $databaseHost = $this->updateService->handle($databaseHost->id, $request->validated());
 
         return $this->fractal->item($databaseHost)
-            ->transformWith($this->getTransformer(DatabaseHostTransformer::class))
+            ->transformWith(DatabaseHostTransformer::class)
             ->toArray();
     }
 

@@ -34,7 +34,7 @@ class ClientController extends ClientApiController
     public function index(GetServersRequest $request): array
     {
         $user = $request->user();
-        $transformer = $this->getTransformer(ServerTransformer::class);
+        $transformer = ServerTransformer::class;
 
         // Start the query builder and ensure we eager load any requested relationships from the request.
         $builder = QueryBuilder::for(

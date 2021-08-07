@@ -49,7 +49,7 @@ class ScheduleController extends ClientApiController
         $schedules->loadMissing('tasks');
 
         return $this->fractal->collection($schedules)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -77,7 +77,7 @@ class ScheduleController extends ClientApiController
         ]);
 
         return $this->fractal->item($model)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -91,7 +91,7 @@ class ScheduleController extends ClientApiController
         $schedule->loadMissing('tasks');
 
         return $this->fractal->item($schedule)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -130,7 +130,7 @@ class ScheduleController extends ClientApiController
         $this->repository->update($schedule->id, $data);
 
         return $this->fractal->item($schedule->refresh())
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 

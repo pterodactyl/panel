@@ -45,7 +45,7 @@ class MountController extends ApplicationApiController
             ->paginate($perPage);
 
         return $this->fractal->collection($mounts)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith(MountTransformer::class)
             ->toArray();
     }
 
@@ -57,7 +57,7 @@ class MountController extends ApplicationApiController
     public function view(GetMountRequest $request, Mount $mount): array
     {
         return $this->fractal->item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith(MountTransformer::class)
             ->toArray();
     }
 
@@ -71,7 +71,7 @@ class MountController extends ApplicationApiController
         $mount = Mount::query()->create($request->validated());
 
         return $this->fractal->item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith(MountTransformer::class)
             ->respond(JsonResponse::HTTP_CREATED);
     }
 
@@ -85,7 +85,7 @@ class MountController extends ApplicationApiController
         $mount->update($request->validated());
 
         return $this->fractal->item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith(MountTransformer::class)
             ->toArray();
     }
 
@@ -116,7 +116,7 @@ class MountController extends ApplicationApiController
         }
 
         return $this->fractal->item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith(MountTransformer::class)
             ->toArray();
     }
 
@@ -135,7 +135,7 @@ class MountController extends ApplicationApiController
         }
 
         return $this->fractal->item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith(MountTransformer::class)
             ->toArray();
     }
 
@@ -154,7 +154,7 @@ class MountController extends ApplicationApiController
         }
 
         return $this->fractal->item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith(MountTransformer::class)
             ->toArray();
     }
 
@@ -173,7 +173,7 @@ class MountController extends ApplicationApiController
         }
 
         return $this->fractal->item($mount)
-            ->transformWith($this->getTransformer(MountTransformer::class))
+            ->transformWith(MountTransformer::class)
             ->toArray();
     }
 }

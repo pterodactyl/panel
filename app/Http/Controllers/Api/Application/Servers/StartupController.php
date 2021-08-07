@@ -35,7 +35,7 @@ class StartupController extends ApplicationApiController
             ->handle($server, $request->validated());
 
         return $this->fractal->item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
+            ->transformWith(ServerTransformer::class)
             ->toArray();
     }
 }

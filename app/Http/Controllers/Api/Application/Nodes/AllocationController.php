@@ -47,7 +47,7 @@ class AllocationController extends ApplicationApiController
         $allocations = $node->allocations()->paginate($perPage);
 
         return $this->fractal->collection($allocations)
-            ->transformWith($this->getTransformer(AllocationTransformer::class))
+            ->transformWith(AllocationTransformer::class)
             ->toArray();
     }
 

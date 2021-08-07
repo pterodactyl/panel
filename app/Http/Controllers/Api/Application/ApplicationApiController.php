@@ -45,20 +45,6 @@ abstract class ApplicationApiController extends Controller
     }
 
     /**
-     * Return an instance of an application transformer.
-     *
-     * @return \Pterodactyl\Transformers\Api\Transformer
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     *
-     * @deprecated
-     */
-    public function getTransformer(string $abstract)
-    {
-        return new $abstract;
-    }
-
-    /**
      * Return a HTTP/201 response for the API.
      */
     protected function returnAccepted(): Response

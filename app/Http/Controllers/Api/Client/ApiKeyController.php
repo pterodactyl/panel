@@ -19,7 +19,7 @@ class ApiKeyController extends ClientApiController
     public function index(AccountApiRequest $request): array
     {
         return $this->fractal->collection($request->user()->tokens)
-            ->transformWith($this->getTransformer(PersonalAccessTokenTransformer::class))
+            ->transformWith(PersonalAccessTokenTransformer::class)
             ->toArray();
     }
 
@@ -40,7 +40,7 @@ class ApiKeyController extends ClientApiController
         [$token, $plaintext] = $request->user()->createToken($request->input('description'));
 
         return $this->fractal->item($token)
-            ->transformWith($this->getTransformer(PersonalAccessTokenTransformer::class))
+            ->transformWith(PersonalAccessTokenTransformer::class)
             ->addMeta([
                 'secret_token' => $plaintext,
             ])

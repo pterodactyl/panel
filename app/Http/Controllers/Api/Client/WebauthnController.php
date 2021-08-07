@@ -24,7 +24,7 @@ class WebauthnController extends ClientApiController
     public function index(Request $request): array
     {
         return $this->fractal->collection(WebauthnKey::query()->where('user_id', '=', $request->user()->id)->get())
-            ->transformWith($this->getTransformer(WebauthnKeyTransformer::class))
+            ->transformWith(WebauthnKeyTransformer::class)
             ->toArray();
     }
 
@@ -88,7 +88,7 @@ class WebauthnController extends ClientApiController
             );
 
             return $this->fractal->item($webauthnKey)
-                ->transformWith($this->getTransformer(WebauthnKeyTransformer::class))
+                ->transformWith(WebauthnKeyTransformer::class)
                 ->toArray();
         } catch (Exception $e) {
             return new JsonResponse([

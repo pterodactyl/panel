@@ -46,7 +46,7 @@ class DatabaseController extends ApplicationApiController
     public function index(GetServerDatabasesRequest $request, Server $server): array
     {
         return $this->fractal->collection($server->databases)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
+            ->transformWith(ServerDatabaseTransformer::class)
             ->toArray();
     }
 
@@ -58,7 +58,7 @@ class DatabaseController extends ApplicationApiController
     public function view(GetServerDatabaseRequest $request, Server $server, Database $database): array
     {
         return $this->fractal->item($database)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
+            ->transformWith(ServerDatabaseTransformer::class)
             ->toArray();
     }
 
@@ -86,7 +86,7 @@ class DatabaseController extends ApplicationApiController
         ]));
 
         return $this->fractal->item($database)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
+            ->transformWith(ServerDatabaseTransformer::class)
             ->addMeta([
                 'resource' => route('api.application.servers.databases.view', [
                     'server' => $server->id,

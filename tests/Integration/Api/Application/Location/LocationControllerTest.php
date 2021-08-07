@@ -118,7 +118,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
                         'data' => [
                             [
                                 'object' => 'node',
-                                'attributes' => $this->getTransformer(NodeTransformer::class)->transform($server->getRelation('node')),
+                                'attributes' => (new NodeTransformer())->transform($server->getRelation('node')),
                             ],
                         ],
                     ],
@@ -127,7 +127,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
                         'data' => [
                             [
                                 'object' => 'server',
-                                'attributes' => $this->getTransformer(ServerTransformer::class)->transform($server),
+                                'attributes' => (new ServerTransformer())->transform($server),
                             ],
                         ],
                     ],

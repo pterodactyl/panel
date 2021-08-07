@@ -57,7 +57,7 @@ class LocationController extends ApplicationApiController
             ->paginate($perPage);
 
         return $this->fractal->collection($locations)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith(LocationTransformer::class)
             ->toArray();
     }
 
@@ -69,7 +69,7 @@ class LocationController extends ApplicationApiController
     public function view(GetLocationRequest $request, Location $location): array
     {
         return $this->fractal->item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith(LocationTransformer::class)
             ->toArray();
     }
 
@@ -85,7 +85,7 @@ class LocationController extends ApplicationApiController
         $location = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith(LocationTransformer::class)
             ->addMeta([
                 'resource' => route('api.application.locations.view', [
                     'location' => $location->id,
@@ -106,7 +106,7 @@ class LocationController extends ApplicationApiController
         $location = $this->updateService->handle($location, $request->validated());
 
         return $this->fractal->item($location)
-            ->transformWith($this->getTransformer(LocationTransformer::class))
+            ->transformWith(LocationTransformer::class)
             ->toArray();
     }
 
