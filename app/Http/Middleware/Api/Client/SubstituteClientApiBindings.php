@@ -36,11 +36,11 @@ class SubstituteClientApiBindings
         });
 
         $this->router->bind('allocation', function ($value, $route) {
-            return $this->server($route)->allocations()->where('id', $value)->firstOrFail();
+            return $this->server($route)->allocations()->findOrFail($value);
         });
 
         $this->router->bind('schedule', function ($value, $route) {
-            return $this->server($route)->schedule()->where('id', $value)->firstOrFail();
+            return $this->server($route)->schedule()->findOrFail($value);
         });
 
         $this->router->bind('task', function ($value, $route) {
@@ -51,14 +51,13 @@ class SubstituteClientApiBindings
                         ->where('schedules.server_id', $route->parameter('server')->id);
                 })
                 ->where('schedules.id', $route->parameter('schedule')->id)
-                ->where('tasks.id', $value)
-                ->firstOrFail();
+                ->findOrFail($value);
         });
 
         $this->router->bind('database', function ($value, $route) {
             $id = Container::getInstance()->make(HashidsInterface::class)->decodeFirst($value);
 
-            return $this->server($route)->where('id', $id)->firstOrFail();
+            return $this->server($route)->databases()->findOrFail($id);
         });
 
         $this->router->bind('backup', function ($value, $route) {
