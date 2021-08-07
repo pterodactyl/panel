@@ -28,6 +28,18 @@ class WebsocketControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
+     * Confirm users cannot access the websocket for another user's server.
+     */
+    public function testUserWithoutPermissionForServerReceivesError()
+    {
+        [, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
+        [$user,] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
+
+        $this->actingAs($user)->getJson("/api/client/servers/{$server->uuid}/websocket")
+            ->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    /**
      * Test that the expected permissions are returned for the server owner and that the JWT is
      * configured correctly.
      */
