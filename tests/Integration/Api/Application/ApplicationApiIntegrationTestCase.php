@@ -34,7 +34,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->user = $this->createApiUser();
+        $this->user = User::factory()->create(['root_admin' => true]);
         $this->key = $this->createApiKey($this->user);
 
         $this->withHeader('Accept', 'application/vnd.pterodactyl.v1+json');
@@ -83,18 +83,6 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     protected function refreshHeaders(ApiKey $key)
     {
         $this->withHeader('Authorization', 'Bearer ' . $key->identifier . decrypt($key->token));
-    }
-
-    /**
-     * Create an administrative user.
-     *
-     * @return \Pterodactyl\Models\User
-     */
-    protected function createApiUser(): User
-    {
-        return User::factory()->create([
-            'root_admin' => true,
-        ]);
     }
 
     /**

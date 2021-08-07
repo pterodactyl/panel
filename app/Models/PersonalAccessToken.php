@@ -4,9 +4,12 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Support\Str;
 use Laravel\Sanctum\Contracts\HasAbilities;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PersonalAccessToken extends Model implements HasAbilities
 {
+    use HasFactory;
+
     public const RESOURCE_NAME = 'personal_access_token';
 
     /**

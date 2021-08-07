@@ -6,7 +6,6 @@ use ReflectionClass;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
-use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
@@ -60,7 +59,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function link($model, $append = null): string
     {
-        $link = '';
         switch (get_class($model)) {
             case Server::class:
                 $link = "/api/client/servers/{$model->uuid}";
@@ -99,7 +97,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
             return [$user, $this->createServerModel(['user_id' => $user->id])];
         }
 
-        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->createServerModel();
 
         Subuser::query()->create([
