@@ -107,7 +107,10 @@ export default () => {
         <PageContentBlock title={'Security Keys'}>
             <FlashMessageRender byKey={'security_keys'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={'Security Keys'} css={tw`flex-1 md:mr-8`}>
+                <ContentBox title={'Add Security Key'} css={tw`flex-1 md:mr-8`}>
+                    <AddSecurityKeyForm onKeyAdded={key => setKeys(s => ([ ...s!, key ]))}/>
+                </ContentBox>
+                <ContentBox title={'Security Keys'} css={tw`flex-none w-full mt-8 md:mt-0 md:w-1/2`}>
                     <SpinnerOverlay visible={loading}/>
                     <ConfirmationModal
                         visible={!!deleteId}
@@ -148,10 +151,6 @@ export default () => {
                             </GreyRowBox>
                         ))
                     }
-                </ContentBox>
-
-                <ContentBox title={'Add Security Key'} css={tw`flex-none w-full mt-8 md:mt-0 md:w-1/2`}>
-                    <AddSecurityKeyForm onKeyAdded={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
             </div>
         </PageContentBlock>

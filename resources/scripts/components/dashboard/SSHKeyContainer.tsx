@@ -120,7 +120,10 @@ export default () => {
         <PageContentBlock title={'SSH Keys'}>
             <FlashMessageRender byKey={'ssh_keys'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={'SSH Keys'} css={tw`flex-1 md:mr-8`}>
+                <ContentBox title={'Add SSH Key'} css={tw`flex-1 md:mr-8`}>
+                    <AddSSHKeyForm onKeyAdded={key => setKeys(s => ([ ...s!, key ]))}/>
+                </ContentBox>
+                <ContentBox title={'SSH Keys'} css={tw`flex-none w-full mt-8 md:mt-0 md:w-1/2`}>
                     <SpinnerOverlay visible={loading}/>
                     <ConfirmationModal
                         visible={!!deleteId}
@@ -160,10 +163,6 @@ export default () => {
                             </GreyRowBox>
                         ))
                     }
-                </ContentBox>
-
-                <ContentBox title={'Add SSH Key'} css={tw`flex-none w-full mt-8 md:mt-0 md:w-1/2`}>
-                    <AddSSHKeyForm onKeyAdded={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
             </div>
         </PageContentBlock>
