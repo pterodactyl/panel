@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use Illuminate\Routing\Route;
 use Pterodactyl\Models\Server;
 use Illuminate\Container\Container;
-use Illuminate\Database\Query\JoinClause;
 use Illuminate\Contracts\Routing\Registrar;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -52,13 +51,10 @@ class SubstituteClientApiBindings
             return $this->server($route)->backups()->where('uuid', $value)->firstOrFail();
         });
 
-        $this->router->bind('user', function ($value, $route) {
-            // TODO: is this actually a valid binding for users on the server?
+        $this->router->bind('subuser', function ($value, $route) {
             return $this->server($route)->subusers()
-                ->join('users', function (JoinClause $join) {
-                    $join->on('subusers.user_id', 'users.id')
-                        ->where('subusers.server_id', 'servers.id');
-                })
+                ->select('subusers.*')
+                ->join('users', 'subusers.user_id', '=', 'users.id')
                 ->where('users.uuid', $value)
                 ->firstOrFail();
         });

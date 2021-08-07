@@ -106,9 +106,9 @@ Route::group([
     Route::group(['prefix' => '/users'], function () {
         Route::get('/', 'Servers\SubuserController@index');
         Route::post('/', 'Servers\SubuserController@store');
-        Route::get('/{user}', 'Servers\SubuserController@view');
-        Route::post('/{user}', 'Servers\SubuserController@update');
-        Route::delete('/{user}', 'Servers\SubuserController@delete');
+        Route::get('/{subuser}', [Client\Servers\SubuserController::class, 'view']);
+        Route::post('/{subuser}', [Client\Servers\SubuserController::class, 'update']);
+        Route::delete('/{subuser}', [Client\Servers\SubuserController::class, 'delete']);
     });
 
     Route::group(['prefix' => '/backups'], function () {

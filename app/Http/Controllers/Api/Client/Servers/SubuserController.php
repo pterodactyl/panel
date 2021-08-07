@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Permission;
 use Illuminate\Support\Facades\Log;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
@@ -56,10 +57,8 @@ class SubuserController extends ClientApiController
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function view(GetSubuserRequest $request): array
+    public function view(GetSubuserRequest $request, Server $server, Subuser $subuser): array
     {
-        $subuser = $request->attributes->get('subuser');
-
         return $this->fractal->item($subuser)
             ->transformWith($this->getTransformer(SubuserTransformer::class))
             ->toArray();
@@ -93,11 +92,8 @@ class SubuserController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function update(UpdateSubuserRequest $request, Server $server): array
+    public function update(UpdateSubuserRequest $request, Server $server, Subuser $subuser): array
     {
-        /** @var \Pterodactyl\Models\Subuser $subuser */
-        $subuser = $request->attributes->get('subuser');
-
         $permissions = $this->getDefaultPermissions($request);
         $current = $subuser->permissions;
 
@@ -128,11 +124,8 @@ class SubuserController extends ClientApiController
     /**
      * Removes a subusers from a server's assignment.
      */
-    public function delete(DeleteSubuserRequest $request, Server $server): Response
+    public function delete(DeleteSubuserRequest $request, Server $server, Subuser $subuser): Response
     {
-        /** @var \Pterodactyl\Models\Subuser $subuser */
-        $subuser = $request->attributes->get('subuser');
-
         $this->repository->delete($subuser->id);
 
         try {
