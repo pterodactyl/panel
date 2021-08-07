@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Transformers\Api;
 
+use Closure;
 use DateTimeInterface;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -69,7 +70,9 @@ abstract class Transformer extends TransformerAbstract
      */
     protected function item($data, $transformer, $resourceKey = null)
     {
-        self::assertSameNamespace($transformer);
+        if (!$transformer instanceof Closure) {
+            self::assertSameNamespace($transformer);
+        }
 
         $item = parent::item($data, $transformer, $resourceKey);
 
@@ -89,7 +92,9 @@ abstract class Transformer extends TransformerAbstract
      */
     protected function collection($data, $transformer, $resourceKey = null)
     {
-        self::assertSameNamespace($transformer);
+        if (!$transformer instanceof Closure) {
+            self::assertSameNamespace($transformer);
+        }
 
         $collection = parent::collection($data, $transformer, $resourceKey);
 
