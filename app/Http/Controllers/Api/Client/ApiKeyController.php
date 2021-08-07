@@ -37,12 +37,12 @@ class ApiKeyController extends ClientApiController
 
         // TODO: this should accept an array of different scopes to apply as permissions
         //  for the token. Right now it allows any account level permission.
-        [$token, $plaintext] = $request->user()->createToken($request->input('description'));
+        $token = $request->user()->createToken($request->input('description'));
 
-        return $this->fractal->item($token)
+        return $this->fractal->item($token->accessToken)
             ->transformWith(PersonalAccessTokenTransformer::class)
             ->addMeta([
-                'secret_token' => $plaintext,
+                'secret_token' => $token->plainTextToken,
             ])
             ->toArray();
     }

@@ -5,6 +5,7 @@ namespace Pterodactyl\Models\Traits;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Pterodactyl\Models\PersonalAccessToken;
+use Pterodactyl\Extensions\Laravel\Sanctum\NewAccessToken;
 
 /**
  * @mixin \Pterodactyl\Models\Model
@@ -24,12 +25,8 @@ trait HasAccessTokens
     /**
      * Creates a new personal access token for the user. The token will be returned
      * as the first element of the array, and the plain-text token will be the second.
-     *
-     * @param string $description
-     * @param string[] $abilities
-     * @return array
      */
-    public function createToken(string $description, array $abilities = ['*']): array
+    public function createToken(string $description, array $abilities = ['*']): NewAccessToken
     {
         /** @var \Pterodactyl\Models\PersonalAccessToken $token */
         $token = $this->tokens()->create([
@@ -40,6 +37,6 @@ trait HasAccessTokens
             'abilities' => $abilities,
         ]);
 
-        return [$token, $token->token_id . $plain];
+        return new NewAccessToken($token, $token->token_id . $plain);
     }
 }
