@@ -3,9 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Webmozart\Assert\Assert;
-use Illuminate\Container\Container;
-use Pterodactyl\Transformers\Daemon\BaseDaemonTransformer;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use Pterodactyl\Transformers\Api\Transformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 abstract class ClientApiController extends ApplicationApiController
@@ -15,7 +13,7 @@ abstract class ClientApiController extends ApplicationApiController
      *
      * @return string[]
      */
-    protected function getIncludesForTransformer(BaseClientTransformer $transformer, array $merge = []): array
+    protected function getIncludesForTransformer(Transformer $transformer, array $merge = []): array
     {
         $filtered = array_filter($this->parseIncludes(), function ($datum) use ($transformer) {
             return in_array($datum, $transformer->getAvailableIncludes());
@@ -45,23 +43,15 @@ abstract class ClientApiController extends ApplicationApiController
     /**
      * Return an instance of an application transformer.
      *
-     * @return \Pterodactyl\Transformers\Api\Client\BaseClientTransformer
+     * @return \Pterodactyl\Transformers\Api\Transformer
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @deprecated
      */
-    public function getTransformer(string $abstract)
+    public function getTransformer(string $class)
     {
-        /** @var \Pterodactyl\Transformers\Api\Client\BaseClientTransformer $transformer */
-        $transformer = Container::getInstance()->make($abstract);
-        Assert::isInstanceOfAny($transformer, [
-            BaseClientTransformer::class,
-            BaseDaemonTransformer::class,
-        ]);
+        $transformer = new $class;
 
-        if ($transformer instanceof BaseClientTransformer) {
-            // $transformer->setKey($this->request->attributes->get('api_key'));
-            $transformer->setUser($this->request->user());
-        }
+        Assert::same(substr($class, 0, strlen(class_basename($class)) * -1), '\Pterodactyl\Transformers\Api\Client\\');
 
         return $transformer;
     }

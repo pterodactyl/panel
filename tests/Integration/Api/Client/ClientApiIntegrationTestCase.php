@@ -19,7 +19,6 @@ use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Tests\Integration\TestResponse;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
 abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 {
@@ -124,7 +123,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
         $transformer = sprintf('\\Pterodactyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
 
         $transformer = new $transformer();
-        $this->assertInstanceOf(BaseClientTransformer::class, $transformer);
 
         $this->assertSame(
             $transformer->transform($model),

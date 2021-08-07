@@ -4,26 +4,18 @@ namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Permission;
+use Pterodactyl\Transformers\Api\Transformer;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
-class DatabaseTransformer extends BaseClientTransformer
+class DatabaseTransformer extends Transformer
 {
     protected $availableIncludes = ['password'];
 
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
+    protected Encrypter $encrypter;
 
-    /**
-     * @var \Pterodactyl\Contracts\Extensions\HashidsInterface
-     */
-    private $hashids;
+    protected HashidsInterface $hashids;
 
-    /**
-     * Handle dependency injection.
-     */
     public function handle(Encrypter $encrypter, HashidsInterface $hashids)
     {
         $this->encrypter = $encrypter;
@@ -37,13 +29,11 @@ class DatabaseTransformer extends BaseClientTransformer
 
     public function transform(Database $model): array
     {
-        $model->loadMissing('host');
-
         return [
             'id' => $this->hashids->encode($model->id),
             'host' => [
-                'address' => $model->getRelation('host')->host,
-                'port' => $model->getRelation('host')->port,
+                'address' => $model->host->host,
+                'port' => $model->host->port,
             ],
             'name' => $model->database,
             'username' => $model->username,
@@ -59,7 +49,7 @@ class DatabaseTransformer extends BaseClientTransformer
      */
     public function includePassword(Database $database)
     {
-        if (!$this->getUser()->can(Permission::ACTION_DATABASE_VIEW_PASSWORD, $database->server)) {
+        if ($this->user()->cannot(Permission::ACTION_DATABASE_VIEW_PASSWORD, $database->server)) {
             return $this->null();
         }
 

@@ -10,7 +10,6 @@ use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
@@ -137,10 +136,8 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     {
         /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
         $transformer = $this->app->make($abstract);
-        $transformer->setKey($this->getApiKey());
 
         Assert::assertInstanceOf(BaseTransformer::class, $transformer);
-        Assert::assertNotInstanceOf(BaseClientTransformer::class, $transformer);
 
         return $transformer;
     }

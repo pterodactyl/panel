@@ -14,6 +14,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserSSHKey extends Model
 {
+    /**
+     * The resource name for this model when it is transformed into an
+     * API representation using fractal.
+     */
+    public const RESOURCE_NAME = 'user_ssh_key';
+
     const UPDATED_AT = null;
 
     protected $table = 'user_ssh_keys';
