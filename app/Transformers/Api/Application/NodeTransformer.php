@@ -24,8 +24,8 @@ class NodeTransformer extends Transformer
     {
         $response = $model->toArray();
 
-        $response[$model->getUpdatedAtColumn()] = $this->formatTimestamp($model->updated_at);
-        $response[$model->getCreatedAtColumn()] = $this->formatTimestamp($model->created_at);
+        $response[$model->getUpdatedAtColumn()] = self::formatTimestamp($model->updated_at);
+        $response[$model->getCreatedAtColumn()] = self::formatTimestamp($model->created_at);
 
         $resources = $model->servers()->select(['memory', 'disk'])->get();
 

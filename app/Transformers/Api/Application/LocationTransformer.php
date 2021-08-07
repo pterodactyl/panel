@@ -26,8 +26,8 @@ class LocationTransformer extends Transformer
             'id' => $model->id,
             'short' => $model->short,
             'long' => $model->long,
-            $model->getUpdatedAtColumn() => $this->formatTimestamp($model->updated_at),
-            $model->getCreatedAtColumn() => $this->formatTimestamp($model->created_at),
+            $model->getUpdatedAtColumn() => self::formatTimestamp($model->updated_at),
+            $model->getCreatedAtColumn() => self::formatTimestamp($model->created_at),
         ];
     }
 
