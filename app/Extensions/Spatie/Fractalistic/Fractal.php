@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Extensions\Spatie\Fractalistic;
 
-use League\Fractal\TransformerAbstract;
 use Spatie\Fractal\Fractal as SpatieFractal;
+use Pterodactyl\Transformers\Api\Transformer;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use Pterodactyl\Extensions\League\Fractal\Serializers\PterodactylSerializer;
@@ -33,12 +33,9 @@ class Fractal extends SpatieFractal
 
         // If the resource name is not set attempt to pull it off the transformer
         // itself and set it automatically.
-        if (
-            is_null($this->resourceName)
-            && $this->transformer instanceof TransformerAbstract
-            && method_exists($this->transformer, 'getResourceName')
-        ) {
-            $this->resourceName = $this->transformer->getResourceName();
+        $class = is_string($this->transformer) ? new $this->transformer : $this->transformer;
+        if (is_null($this->resourceName) && $class instanceof Transformer) {
+            $this->resourceName = $class->getResourceName();
         }
 
         return parent::createData();
