@@ -210,9 +210,9 @@ class User extends Model implements
         return $this->hasMany(RecoveryToken::class);
     }
 
-    public function webauthnKeys(): HasMany
+    public function hardwareSecurityKeys(): HasMany
     {
-        return $this->hasMany(WebauthnKey::class);
+        return $this->hasMany(HardwareSecurityKey::class);
     }
 
     /**

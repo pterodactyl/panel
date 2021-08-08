@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use Pterodactyl\Models\WebauthnKey;
+use Pterodactyl\Models\HardwareSecurityKey;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class WebauthnKeyFactory extends Factory
@@ -10,7 +10,7 @@ class WebauthnKeyFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      */
-    protected $model = WebauthnKey::class;
+    protected $model = HardwareSecurityKey::class;
 
     /**
      * Define the model's default state.

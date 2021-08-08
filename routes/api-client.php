@@ -30,10 +30,10 @@ Route::group(['prefix' => '/account'], function () {
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
     Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);
 
-    Route::get('/webauthn', 'WebauthnController@index')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::get('/webauthn/register', 'WebauthnController@register')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::post('/webauthn/register', 'WebauthnController@create')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::delete('/webauthn/{id}', 'WebauthnController@deleteKey')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::get('/webauthn', [Client\HardwareTokenController::class, 'index'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::get('/webauthn/register', [Client\HardwareTokenController::class, 'create'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::post('/webauthn/register', [Client\HardwareTokenController::class, 'store'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::delete('/webauthn/{id}', [Client\HardwareTokenController::class, 'delete'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
 
     Route::get('/ssh', 'SSHKeyController@index');
     Route::post('/ssh', 'SSHKeyController@store');

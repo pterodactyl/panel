@@ -17,8 +17,7 @@
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
-        "asbiin/laravel-webauthn": "^1.1",
-        "aws/aws-sdk-php": "^3.192",
+        "aws/aws-sdk-php": "^3.186",
         "doctrine/dbal": "^3.1",
         "fideloper/proxy": "^4.4",
         "guzzlehttp/guzzle": "^7.3",
@@ -42,6 +41,7 @@
         "spatie/laravel-query-builder": "^3.5",
         "staudenmeir/belongs-to-through": "^2.11",
         "symfony/yaml": "^5.3",
+        "web-auth/webauthn-lib": "^3.3",
         "webmozart/assert": "^1.10"
     },
     "require-dev": {
