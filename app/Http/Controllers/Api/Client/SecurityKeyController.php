@@ -12,9 +12,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Webauthn\PublicKeyCredentialCreationOptions;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
+use Pterodactyl\Transformers\Api\Client\SecurityKeyTransformer;
 use Pterodactyl\Repositories\SecurityKeys\WebauthnServerRepository;
+use Pterodactyl\Services\Users\SecurityKeys\StoreSecurityKeyService;
 use Pterodactyl\Http\Requests\Api\Client\Account\RegisterWebauthnTokenRequest;
-use Pterodactyl\Repositories\SecurityKeys\PublicKeyCredentialSourceRepository;
 use Pterodactyl\Services\Users\SecurityKeys\CreatePublicKeyCredentialsService;
 
 class SecurityKeyController extends ClientApiController
@@ -25,9 +26,12 @@ class SecurityKeyController extends ClientApiController
 
     protected WebauthnServerRepository $webauthnServerRepository;
 
+    protected StoreSecurityKeyService $storeSecurityKeyService;
+
     public function __construct(
         Repository $cache,
         WebauthnServerRepository $webauthnServerRepository,
+        StoreSecurityKeyService $storeSecurityKeyService,
         CreatePublicKeyCredentialsService $createPublicKeyCredentials
     ) {
         parent::__construct();
@@ -35,6 +39,7 @@ class SecurityKeyController extends ClientApiController
         $this->cache = $cache;
         $this->webauthnServerRepository = $webauthnServerRepository;
         $this->createPublicKeyCredentials = $createPublicKeyCredentials;
+        $this->storeSecurityKeyService = $storeSecurityKeyService;
     }
 
     /**
@@ -42,7 +47,9 @@ class SecurityKeyController extends ClientApiController
      */
     public function index(Request $request): array
     {
-        return [];
+        return $this->fractal->collection($request->user()->securityKeys)
+            ->transformWith(SecurityKeyTransformer::class)
+            ->toArray();
     }
 
     /**
@@ -74,7 +81,7 @@ class SecurityKeyController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Throwable
      */
-    public function store(RegisterWebauthnTokenRequest $request): JsonResponse
+    public function store(RegisterWebauthnTokenRequest $request): array
     {
         $credentials = unserialize(
             $this->cache->pull("register-security-key:{$request->input('token_id')}", serialize(null))
@@ -88,35 +95,24 @@ class SecurityKeyController extends ClientApiController
             throw new DisplayException('Could not register security key: invalid data present in session, please try again.');
         }
 
-        $source = $this->webauthnServerRepository->getServer($request->user())
-            ->loadAndCheckAttestationResponse(
-                json_encode($request->input('registration')),
-                $credentials,
-                $this->getServerRequest($request),
-            );
+        $key = $this->storeSecurityKeyService
+            ->setRequest($this->getServerRequest($request))
+            ->setKeyName($request->input('name'))
+            ->handle($request->user(), $request->input('registration'), $credentials);
 
-        // Unfortunately this repository interface doesn't define a response — it is explicitly
-        // void — so we need to just query the database immediately after this to pull the information
-        // we just stored to return to the caller.
-        PublicKeyCredentialSourceRepository::factory($request->user())->saveCredentialSource($source);
-
-        $created = $request->user()->securityKeys()
-            ->where('public_key_id', base64_encode($source->getPublicKeyCredentialId()))
-            ->first();
-
-        $created->update(['name' => $request->input('name')]);
-
-        return new JsonResponse([
-            'data' => [],
-        ]);
+        return $this->fractal->item($key)
+            ->transformWith(SecurityKeyTransformer::class)
+            ->toArray();
     }
 
     /**
      * Removes a WebAuthn key from a user's account.
      */
-    public function delete(Request $request, int $webauthnKeyId): JsonResponse
+    public function delete(Request $request, string $securityKey): JsonResponse
     {
-        return new JsonResponse([]);
+        $request->user()->securityKeys()->where('uuid', $securityKey)->delete();
+
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     protected function getServerRequest(Request $request): ServerRequestInterface

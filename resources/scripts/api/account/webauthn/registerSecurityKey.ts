@@ -1,4 +1,5 @@
 import http from '@/api/http';
+import { rawDataToSecurityKey, SecurityKey } from '@/api/account/webauthn/getSecurityKeys';
 
 export const base64Decode = (input: string): string => {
     input = input.replace(/-/g, '+').replace(/_/g, '/');
@@ -27,7 +28,7 @@ export const decodeCredentials = (credentials: PublicKeyCredentialDescriptor[]) 
     });
 };
 
-const registerCredentialForAccount = async (name: string, tokenId: string, credential: PublicKeyCredential) => {
+const registerCredentialForAccount = async (name: string, tokenId: string, credential: PublicKeyCredential): Promise<SecurityKey> => {
     const { data } = await http.post('/api/client/account/security-keys/register', {
         name,
         token_id: tokenId,
@@ -42,10 +43,10 @@ const registerCredentialForAccount = async (name: string, tokenId: string, crede
         },
     });
 
-    console.log(data.data);
+    return rawDataToSecurityKey(data.attributes);
 };
 
-export const register = async (name: string): Promise<void> => {
+export default async (name: string): Promise<SecurityKey> => {
     const { data } = await http.get('/api/client/account/security-keys/register');
 
     const publicKey = data.data.credentials;
@@ -62,5 +63,5 @@ export const register = async (name: string): Promise<void> => {
         throw new Error(`Unexpected type returned by navigator.credentials.create(): expected "public-key", got "${credentials?.type}"`);
     }
 
-    await registerCredentialForAccount(name, data.data.token_id, credentials);
+    return await registerCredentialForAccount(name, data.data.token_id, credentials);
 };

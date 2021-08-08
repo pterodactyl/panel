@@ -4,10 +4,10 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import tw from 'twin.macro';
 import { object, string } from 'yup';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import deleteWebauthnKey from '@/api/account/webauthn/deleteWebauthnKey';
-import getWebauthnKeys, { WebauthnKey } from '@/api/account/webauthn/getWebauthnKeys';
-import { register } from '@/api/account/webauthn/registerWebauthnKey';
+import { faFingerprint, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import deleteWebauthnKey from '@/api/account/webauthn/deleteSecurityKey';
+import getWebauthnKeys, { SecurityKey } from '@/api/account/webauthn/getSecurityKeys';
+import registerSecurityKey from '@/api/account/webauthn/registerSecurityKey';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import ContentBox from '@/components/elements/ContentBox';
@@ -22,15 +22,16 @@ interface Values {
     name: string;
 }
 
-const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: WebauthnKey) => void }) => {
+const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: SecurityKey) => void }) => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const submit = ({ name }: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes('security_keys');
 
-        register(name)
-            .then(() => {
+        registerSecurityKey(name)
+            .then(key => {
                 resetForm();
+                onKeyAdded(key);
             })
             .catch(err => {
                 console.error(err);
@@ -69,20 +70,20 @@ const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: WebauthnKey) => 
 export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
-    const [ keys, setKeys ] = useState<WebauthnKey[]>([]);
+    const [ keys, setKeys ] = useState<SecurityKey[]>([]);
     const [ loading, setLoading ] = useState(true);
-    const [ deleteId, setDeleteId ] = useState<number | null>(null);
+    const [ deleteId, setDeleteId ] = useState<string | null>(null);
 
-    const doDeletion = (id: number | null) => {
-        if (id === null) {
+    const doDeletion = (uuid: string | null) => {
+        if (uuid === null) {
             return;
         }
 
         clearFlashes('security_keys');
 
-        deleteWebauthnKey(id)
+        deleteWebauthnKey(uuid)
             .then(() => setKeys(s => ([
-                ...(s || []).filter(key => key.id !== id),
+                ...(s || []).filter(key => key.uuid !== uuid),
             ])))
             .catch(error => {
                 console.error(error);
@@ -132,16 +133,19 @@ export default () => {
                             : null
                         :
                         keys.map((key, index) => (
-                            <GreyRowBox key={index} css={[ tw`bg-neutral-600 flex items-center`, index > 0 && tw`mt-2` ]}>
-                                <FontAwesomeIcon icon={faKey} css={tw`text-neutral-300`}/>
+                            <GreyRowBox
+                                key={index}
+                                css={[ tw`bg-neutral-600 flex items-center`, index > 0 && tw`mt-2` ]}
+                            >
+                                <FontAwesomeIcon icon={faFingerprint} css={tw`text-neutral-300`}/>
                                 <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                     <p css={tw`text-sm break-words`}>{key.name}</p>
                                     <p css={tw`text-2xs text-neutral-300 uppercase`}>
-                                        Last used:&nbsp;
-                                        {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : 'Never'}
+                                        Created at:&nbsp;
+                                        {key.createdAt ? format(key.createdAt, 'MMM do, yyyy HH:mm') : 'Never'}
                                     </p>
                                 </div>
-                                <button css={tw`ml-4 p-2 text-sm`} onClick={() => setDeleteId(key.id)}>
+                                <button css={tw`ml-4 p-2 text-sm`} onClick={() => setDeleteId(key.uuid)}>
                                     <FontAwesomeIcon
                                         icon={faTrashAlt}
                                         css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`}
