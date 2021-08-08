@@ -4,6 +4,7 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeRepository extends EloquentRepository implements NodeRepositoryInterface
@@ -23,11 +24,19 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getUsageStats(Node $node): array
     {
-        $stats = $this->getBuilder()
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->join('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('node_id', '=', $node->id)
-            ->first();
+        if (DB::getDriverName() === 'pgsql') {
+            $stats = $this->getBuilder()
+                ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
+                ->join('servers', 'servers.node_id', '=', 'nodes.id')
+                ->where('node_id', '=', $node->id)
+                ->first();
+        } else {
+            $stats = $this->getBuilder()
+                ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+                ->join('servers', 'servers.node_id', '=', 'nodes.id')
+                ->where('node_id', '=', $node->id)
+                ->first();
+        }
 
         return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
             ->mapWithKeys(function ($value, $key) use ($node) {
@@ -55,9 +64,15 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getUsageStatsRaw(Node $node): array
     {
-        $stats = $this->getBuilder()->select(
-            $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-        )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
+        if (DB::getDriverName() === 'pgsql') {
+            $stats = $this->getBuilder()->select(
+                $this->getBuilder()->raw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
+            )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
+        } else {
+            $stats = $this->getBuilder()->select(
+                $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
+        }
 
         return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($node) {
             $maxUsage = $node->{$key};
@@ -104,7 +119,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
             'allocations',
             $node->allocations()
                 ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
-                ->orderByRaw('INET_ATON(ip) ASC')
+                ->orderByRaw(DB::getDriverName() === 'pgsql' ? 'ip ASC' : 'INET_ATON(ip) ASC')
                 ->orderBy('port', 'asc')
                 ->with('server:id,name')
                 ->paginate(50)
@@ -143,11 +158,20 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodeWithResourceUsage(int $node_id): Node
     {
-        $instance = $this->getBuilder()
-            ->select(['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('nodes.id', $node_id);
+        if (DB::getDriverName() === 'pgsql') {
+            $instance = $this->getBuilder()
+                ->select(['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
+                ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
+                ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
+                ->where('nodes.id', $node_id);
+        } else {
+            $instance = $this->getBuilder()
+                ->select(['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
+                ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+                ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
+                ->where('nodes.id', $node_id);
+        }
+
 
         return $instance->first();
     }

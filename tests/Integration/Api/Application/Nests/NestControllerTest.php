@@ -111,7 +111,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingNest()
     {
-        $response = $this->getJson('/api/application/nests/nil');
+        $response = $this->getJson('/api/application/nests/-1');
         $this->assertNotFoundJson($response);
     }
 

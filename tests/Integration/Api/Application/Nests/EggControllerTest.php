@@ -119,7 +119,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
     {
         $egg = $this->repository->find(1);
 
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/nil');
+        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/-1');
         $this->assertNotFoundJson($response);
     }
 
@@ -145,7 +145,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
         $egg = $this->repository->find(1);
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_eggs' => 0]);
 
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/nil');
+        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/-1');
         $this->assertAccessDeniedJson($response);
     }
 }

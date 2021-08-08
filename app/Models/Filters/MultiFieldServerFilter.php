@@ -4,6 +4,7 @@ namespace Pterodactyl\Models\Filters;
 
 use BadMethodCallException;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -64,7 +65,7 @@ class MultiFieldServerFilter implements Filter
                     ->orWhere('servers.uuid', 'LIKE', "$value%")
                     ->orWhere('servers.uuidShort', $value)
                     ->orWhere('servers.external_id', $value)
-                    ->orWhereRaw('LOWER(servers.name) LIKE ?', ["%$value%"]);
+                    ->orWhereRaw(DB::getDriverName() === 'pgsql' ? 'servers.name ILIKE ?' : 'LOWER(servers.name) LIKE ?', ["%$value%"]);
             });
     }
 }

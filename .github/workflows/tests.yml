@@ -26,11 +26,19 @@ jobs:
         ports:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      postgres:
+        image: postgres:13.2
+        env:
+          POSTGRES_USER: root
+          POSTGRES_DB: panel_test
+          POSTGRES_HOST_AUTH_METHOD: trust
+        ports:
+          - 5432
     strategy:
       fail-fast: false
       matrix:
         php: [ 7.4, 8.0 ]
-        database: [ mysql, mariadb ]
+        database: [ mysql, mariadb, postgres ]
     name: "php-${{ matrix.php }} (engine: ${{ matrix.database }})"
     steps:
       - name: checkout
@@ -70,13 +78,19 @@ jobs:
           TESTING_DB_HOST: UNIT_NO_DB
       - name: execute integration tests (mysql)
         run: vendor/bin/phpunit tests/Integration
-        if: "${{ matrix.database }} == 'mysql'"
+        if: ${{ matrix.database == 'mysql' }}
         env:
           TESTING_DB_PORT: ${{ job.services.mysql.ports[3306] }}
           TESTING_DB_USERNAME: root
       - name: execute integration tests (mariadb)
         run: vendor/bin/phpunit tests/Integration
-        if: "${{ matrix.database }} == 'mariadb'"
+        if: ${{ matrix.database == 'mariadb' }}
         env:
           TESTING_DB_PORT: ${{ job.services.mariadb.ports[3306] }}
+          TESTING_DB_USERNAME: root
+      - name: execute integration tests (postgres)
+        run: vendor/bin/phpunit --configuration ./phpunit.pgsql.xml tests/Integration
+        if: ${{ matrix.database == 'postgres' }}
+        env:
+          TESTING_DB_PORT: ${{ job.services.postgres.ports[5432] }}
           TESTING_DB_USERNAME: root

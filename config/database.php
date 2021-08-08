@@ -57,6 +57,20 @@ return [
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', true),
             ]) : [],
         ],
+        'pgsql' => [
+            'driver' => 'pgsql',
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'unix_socket' => env('DB_SOCKET'),
+            'port' => env('DB_PORT', '5432'),
+            'database' => env('DB_DATABASE', 'panel'),
+            'username' => env('DB_USERNAME', 'pterodactyl'),
+            'password' => env('DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'en_US.UTF-8',
+            'prefix' => env('DB_PREFIX', ''),
+            'strict' => env('DB_STRICT_MODE', false),
+            'timezone' => env('DB_TIMEZONE', env('APP_TIMEZONE', 'UTC')),
+        ],
 
         /*
         | -------------------------------------------------------------------------
@@ -79,6 +93,19 @@ return [
             'prefix' => '',
             'strict' => false,
             'timezone' => env('DB_TIMEZONE', Time::getMySQLTimezoneOffset(env('APP_TIMEZONE', 'UTC'))),
+        ],
+        'testing-pgsql' => [
+            'driver' => 'pgsql',
+            'host' => env('TESTING_DB_HOST', '127.0.0.1'),
+            'port' => env('TESTING_DB_PORT', '5432'),
+            'database' => env('TESTING_DB_DATABASE', 'panel_test'),
+            'username' => env('TESTING_DB_USERNAME', 'pterodactyl_test'),
+            'password' => env('TESTING_DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'en_US.UTF-8',
+            'prefix' => '',
+            'strict' => false,
+            'timezone' => env('DB_TIMEZONE', (env('APP_TIMEZONE', 'UTC'))),
         ],
     ],
 

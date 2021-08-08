@@ -9,11 +9,13 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Observers\UserObserver;
 use Pterodactyl\Extensions\Themes\Theme;
 use Pterodactyl\Observers\ServerObserver;
 use Pterodactyl\Observers\SubuserObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+
+        $driver = DB::getDriverName();
+        $this->loadMigrationsFrom(database_path("migrations/$driver"));
 
         User::observe(UserObserver::class);
         Server::observe(ServerObserver::class);

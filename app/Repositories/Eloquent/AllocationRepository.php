@@ -4,6 +4,7 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Allocation;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class AllocationRepository extends EloquentRepository implements AllocationRepositoryInterface
@@ -42,14 +43,18 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
      */
     protected function getDiscardableDedicatedAllocations(array $nodes = []): array
     {
-        $query = Allocation::query()->selectRaw('CONCAT_WS("-", node_id, ip) as result');
+        if (DB::getDriverName() === 'pgsql') {
+            $query = Allocation::query()->selectRaw('CONCAT_WS(\'-\', node_id, ip) as result');
+        } else {
+            $query = Allocation::query()->selectRaw('CONCAT_WS("-", node_id, ip) as result');
+        }
 
         if (!empty($nodes)) {
             $query->whereIn('node_id', $nodes);
         }
 
         return $query->whereNotNull('server_id')
-            ->groupByRaw('CONCAT(node_id, ip)')
+            ->groupByRaw(DB::getDriverName() === 'pgsql' ? 'node_id, ip' : 'CONCAT(node_id, ip)')
             ->get()
             ->pluck('result')
             ->toArray();

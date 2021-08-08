@@ -84,6 +84,8 @@ class Server extends Model
     protected $attributes = [
         'status' => self::STATUS_INSTALLING,
         'oom_disabled' => true,
+        'startup' => '',
+        'image' => ''
     ];
 
     /**

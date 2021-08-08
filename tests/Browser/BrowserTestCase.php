@@ -53,7 +53,7 @@ abstract class BrowserTestCase extends TestCase
     {
         // Don't accidentally run the migrations aganist the non-testing database. Ask me
         // how many times I've accidentally dropped my database...
-        if (env('DB_CONNECTION') !== 'testing') {
+        if (str_starts_with(env('DB_CONNECTION'), 'testing')) {
             throw new BadMethodCallException('Cannot call browser tests using the non-testing database connection.');
         }
 
