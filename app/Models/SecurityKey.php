@@ -6,17 +6,22 @@ use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialDescriptor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class HardwareSecurityKey extends Model
+class SecurityKey extends Model
 {
     use HasFactory;
 
-    public const RESOURCE_NAME = 'hardware_security_key';
+    public const RESOURCE_NAME = 'security_key';
 
-    protected $attributes = [
+    protected $casts = [
         'user_id' => 'int',
         'transports' => 'array',
         'trust_path' => 'array',
         'other_ui' => 'array',
+    ];
+
+    protected $guarded = [
+        'uuid',
+        'user_id',
     ];
 
     public function user()

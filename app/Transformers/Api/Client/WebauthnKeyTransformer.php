@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\HardwareSecurityKey;
+use Pterodactyl\Models\SecurityKey;
 use Pterodactyl\Transformers\Api\Transformer;
 
 class WebauthnKeyTransformer extends Transformer
@@ -12,13 +12,13 @@ class WebauthnKeyTransformer extends Transformer
      */
     public function getResourceName(): string
     {
-        return HardwareSecurityKey::RESOURCE_NAME;
+        return SecurityKey::RESOURCE_NAME;
     }
 
     /**
      * Return basic information about the currently logged in user.
      */
-    public function transform(HardwareSecurityKey $model): array
+    public function transform(SecurityKey $model): array
     {
         return [
             'id' => $model->id,

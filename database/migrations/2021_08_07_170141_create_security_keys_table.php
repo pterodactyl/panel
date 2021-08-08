@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHardwareSecurityKeysTable extends Migration
+class CreateSecurityKeysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateHardwareSecurityKeysTable extends Migration
      */
     public function up()
     {
-        Schema::create('hardware_security_keys', function (Blueprint $table) {
+        Schema::create('security_keys', function (Blueprint $table) {
             $table->id();
-            $table->char('uuid', 36);
-            $table->unsignedInteger('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->char('uuid', 36)->unique();
+            $table->unsignedInteger('user_id');
+            $table->string('name');
             $table->text('public_key_id');
             $table->text('public_key');
             $table->char('aaguid', 36);
@@ -26,8 +27,10 @@ class CreateHardwareSecurityKeysTable extends Migration
             $table->json('trust_path');
             $table->text('user_handle');
             $table->unsignedInteger('counter');
-            $table->json('other_ui');
+            $table->json('other_ui')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -38,6 +41,6 @@ class CreateHardwareSecurityKeysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hardware_security_keys');
+        Schema::dropIfExists('security_keys');
     }
 }

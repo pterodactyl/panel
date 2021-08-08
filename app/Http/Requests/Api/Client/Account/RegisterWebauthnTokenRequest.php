@@ -10,8 +10,12 @@ class RegisterWebauthnTokenRequest extends AccountApiRequest
     {
         return [
             'name' => ['string', 'required'],
-            'register' => ['string', 'required'],
-            'public_key' => ['string', 'required'],
+            'token_id' => ['required', 'string'],
+            'registration' => ['required', 'array'],
+            'registration.id' => ['required', 'string'],
+            'registration.type' => ['required', 'in:public-key'],
+            'registration.response.attestationObject' => ['required', 'string'],
+            'registration.response.clientDataJSON' => ['required', 'string'],
         ];
     }
 }

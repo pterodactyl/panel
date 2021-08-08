@@ -16,7 +16,7 @@ export const rawDataToWebauthnKey = (data: any): WebauthnKey => ({
 
 export default (): Promise<WebauthnKey[]> => {
     return new Promise((resolve, reject) => {
-        http.get('/api/client/account/webauthn')
+        http.get('/api/client/account/security-keys')
             .then(({ data }) => resolve((data.data || []).map((d: any) => rawDataToWebauthnKey(d.attributes))))
             .catch(reject);
     });

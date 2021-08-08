@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faKey, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import deleteWebauthnKey from '@/api/account/webauthn/deleteWebauthnKey';
 import getWebauthnKeys, { WebauthnKey } from '@/api/account/webauthn/getWebauthnKeys';
-import registerWebauthnKey from '@/api/account/webauthn/registerWebauthnKey';
+import { register } from '@/api/account/webauthn/registerWebauthnKey';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import ContentBox from '@/components/elements/ContentBox';
@@ -28,14 +28,13 @@ const AddSecurityKeyForm = ({ onKeyAdded }: { onKeyAdded: (key: WebauthnKey) => 
     const submit = ({ name }: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes('security_keys');
 
-        registerWebauthnKey(name)
-            .then(key => {
+        register(name)
+            .then(() => {
                 resetForm();
-                onKeyAdded(key);
             })
-            .catch(error => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'security_keys', error });
+            .catch(err => {
+                console.error(err);
+                clearAndAddHttpError({ key: 'security_keys', error: err });
             })
             .then(() => setSubmitting(false));
     };

@@ -32,6 +32,7 @@
         "league/flysystem-aws-s3-v3": "^1.0",
         "league/flysystem-memory": "^1.0",
         "matriphe/iso-639": "^1.2",
+        "nyholm/psr7": "^1.4",
         "pragmarx/google2fa": "^8.0",
         "predis/predis": "^1.1",
         "prologue/alerts": "^0.4",
@@ -40,6 +41,7 @@
         "spatie/laravel-fractal": "^5.8",
         "spatie/laravel-query-builder": "^3.5",
         "staudenmeir/belongs-to-through": "^2.11",
+        "symfony/psr-http-message-bridge": "^2.1",
         "symfony/yaml": "^5.3",
         "web-auth/webauthn-lib": "^3.3",
         "webmozart/assert": "^1.10"

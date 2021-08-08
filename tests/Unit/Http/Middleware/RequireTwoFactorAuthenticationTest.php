@@ -4,7 +4,7 @@ namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\HardwareSecurityKey;
+use Pterodactyl\Models\SecurityKey;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
@@ -66,7 +66,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
 
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()
-            ->has(HardwareSecurityKey::factory()->count(1))
+            ->has(SecurityKey::factory()->count(1))
             ->create(['use_totp' => false]);
         $this->setRequestUserModel($user);
 
@@ -141,7 +141,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
 
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()
-            ->has(HardwareSecurityKey::factory()->count(1))
+            ->has(SecurityKey::factory()->count(1))
             ->create(['use_totp' => false]);
         $this->setRequestUserModel($user);
 
@@ -255,7 +255,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
 
         /** @var \Pterodactyl\Models\User $user */
-        $user = User::factory()->has(HardwareSecurityKey::factory()->count(1))->create(['use_totp' => false]);
+        $user = User::factory()->has(SecurityKey::factory()->count(1))->create(['use_totp' => false]);
         $this->setRequestUserModel($user);
 
         $this->assertFalse($user->use_totp);
@@ -278,7 +278,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
 
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()
-            ->has(HardwareSecurityKey::factory()->count(1))
+            ->has(SecurityKey::factory()->count(1))
             ->create(['use_totp' => false, 'root_admin' => true]);
         $this->setRequestUserModel($user);
 

@@ -1,12 +1,13 @@
 <?php
 
-namespace Pterodactyl\Repositories\Webauthn;
+namespace Pterodactyl\Repositories\SecurityKeys;
 
+use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
 use Illuminate\Container\Container;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
-use Pterodactyl\Models\HardwareSecurityKey;
+use Pterodactyl\Models\SecurityKey;
 use Webauthn\PublicKeyCredentialSourceRepository as PublicKeyRepositoryInterface;
 
 class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterface
@@ -23,8 +24,8 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
      */
     public function findOneByCredentialId(string $id): ?PublicKeyCredentialSource
     {
-        /** @var \Pterodactyl\Models\HardwareSecurityKey $key */
-        $key = $this->user->hardwareSecurityKeys()
+        /** @var \Pterodactyl\Models\SecurityKey $key */
+        $key = $this->user->securityKeys()
             ->where('public_key_id', $id)
             ->first();
 
@@ -37,21 +38,36 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
      */
     public function findAllForUserEntity(PublicKeyCredentialUserEntity $entity): array
     {
-        $results = $this->user->hardwareSecurityKeys()
+        $results = $this->user->securityKeys()
             ->where('user_handle', $entity->getId())
             ->get();
 
-        return $results->map(function (HardwareSecurityKey $key) {
+        return $results->map(function (SecurityKey $key) {
             return $key->toCredentialSource();
         })->values()->toArray();
     }
 
     /**
      * Save a credential to the database and link it with the user.
+     *
+     * @throws \Throwable
      */
     public function saveCredentialSource(PublicKeyCredentialSource $source): void
     {
-        // todo: implement
+        $this->user->securityKeys()->forceCreate([
+            'uuid' => Uuid::uuid4()->toString(),
+            'user_id' => $this->user->id,
+            'public_key_id' => base64_encode($source->getPublicKeyCredentialId()),
+            'public_key' => base64_encode($source->getCredentialPublicKey()),
+            'aaguid' => $source->getAaguid()->toString(),
+            'type' => $source->getType(),
+            'transports' => $source->getTransports(),
+            'attestation_type' => $source->getAttestationType(),
+            'trust_path' => $source->getTrustPath()->jsonSerialize(),
+            'user_handle' => $source->getUserHandle(),
+            'counter' => $source->getCounter(),
+            'other_ui' => $source->getOtherUI(),
+        ]);
     }
 
     /**

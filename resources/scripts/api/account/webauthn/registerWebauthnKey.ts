@@ -1,5 +1,4 @@
 import http from '@/api/http';
-import { rawDataToWebauthnKey, WebauthnKey } from '@/api/account/webauthn/getWebauthnKeys';
 
 export const base64Decode = (input: string): string => {
     input = input.replace(/-/g, '+').replace(/_/g, '/');
@@ -13,14 +12,10 @@ export const base64Decode = (input: string): string => {
     return input;
 };
 
-export const bufferDecode = (value: string): ArrayBuffer => {
-    return Uint8Array.from(window.atob(value), c => c.charCodeAt(0));
-};
+export const bufferDecode = (value: string): ArrayBuffer => Uint8Array.from(window.atob(value), c => c.charCodeAt(0));
 
-export const bufferEncode = (value: ArrayBuffer): string => {
-    // @ts-ignore
-    return window.btoa(String.fromCharCode.apply(null, new Uint8Array(value)));
-};
+// @ts-ignore
+export const bufferEncode = (value: ArrayBuffer): string => window.btoa(String.fromCharCode.apply(null, new Uint8Array(value)));
 
 export const decodeCredentials = (credentials: PublicKeyCredentialDescriptor[]) => {
     return credentials.map(c => {
@@ -32,42 +27,44 @@ export const decodeCredentials = (credentials: PublicKeyCredentialDescriptor[]) 
     });
 };
 
-export default (name: string): Promise<WebauthnKey> => {
-    return new Promise((resolve, reject) => {
-        http.get('/api/client/account/webauthn/register').then((res) => {
-            const publicKey = res.data.public_key;
-            const publicKeyCredential = Object.assign({}, publicKey);
-
-            publicKeyCredential.user.id = bufferDecode(publicKey.user.id);
-            publicKeyCredential.challenge = bufferDecode(base64Decode(publicKey.challenge));
-            if (publicKey.excludeCredentials) {
-                publicKeyCredential.excludeCredentials = decodeCredentials(publicKey.excludeCredentials);
-            }
-
-            return navigator.credentials.create({
-                publicKey: publicKeyCredential,
-            });
-        }).then((c) => {
-            if (c === null) {
-                return;
-            }
-            const credential = c as PublicKeyCredential;
-            const response = credential.response as AuthenticatorAttestationResponse;
-
-            http.post('/api/client/account/webauthn/register', {
-                name: name,
-
-                register: JSON.stringify({
-                    id: credential.id,
-                    type: credential.type,
-                    rawId: bufferEncode(credential.rawId),
-
-                    response: {
-                        attestationObject: bufferEncode(response.attestationObject),
-                        clientDataJSON: bufferEncode(response.clientDataJSON),
-                    },
-                }),
-            }).then(({ data }) => resolve(rawDataToWebauthnKey(data.attributes))).catch(reject);
-        }).catch(reject);
+const registerCredentialForAccount = async (name: string, tokenId: string, credential: PublicKeyCredential) => {
+    const { data } = await http.post('/api/client/account/security-keys/register', {
+        name,
+        token_id: tokenId,
+        registration: {
+            id: credential.id,
+            type: credential.type,
+            rawId: bufferEncode(credential.rawId),
+            response: {
+                attestationObject: bufferEncode((credential.response as AuthenticatorAttestationResponse).attestationObject),
+                clientDataJSON: bufferEncode(credential.response.clientDataJSON),
+            },
+        },
     });
+
+    console.log(data.data);
+};
+
+export const register = async (name: string): Promise<void> => {
+    const { data } = await http.get('/api/client/account/security-keys/register', {
+        params: {
+            display_name: name,
+        },
+    });
+
+    const publicKey = data.data.credentials;
+    publicKey.challenge = bufferDecode(base64Decode(publicKey.challenge));
+    publicKey.user.id = bufferDecode(publicKey.user.id);
+
+    if (publicKey.excludeCredentials) {
+        publicKey.excludeCredentials = decodeCredentials(publicKey.excludeCredentials);
+    }
+
+    const credentials = await navigator.credentials.create({ publicKey });
+
+    if (!credentials || credentials.type !== 'public-key') {
+        throw new Error(`Unexpected type returned by navigator.credentials.create(): expected "public-key", got "${credentials?.type}"`);
+    }
+
+    await registerCredentialForAccount(name, data.data.token_id, credentials);
 };
