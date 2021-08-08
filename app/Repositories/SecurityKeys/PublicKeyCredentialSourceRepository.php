@@ -29,7 +29,7 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
             ->where('public_key_id', $id)
             ->first();
 
-        return $key ? $key->toCredentialSource() : null;
+        return $key ? $key->public_key_credential_source : null;
     }
 
     /**
@@ -43,7 +43,7 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
             ->get();
 
         return $results->map(function (SecurityKey $key) {
-            return $key->toCredentialSource();
+            return $key->public_key_credential_source;
         })->values()->toArray();
     }
 
@@ -54,20 +54,24 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
      */
     public function saveCredentialSource(PublicKeyCredentialSource $source): void
     {
-        $this->user->securityKeys()->forceCreate([
-            'uuid' => Uuid::uuid4()->toString(),
+        $key = $this->user->securityKeys()->make();
+
+        $key->forceFill([
+            'uuid' => Uuid::uuid4(),
             'user_id' => $this->user->id,
-            'public_key_id' => base64_encode($source->getPublicKeyCredentialId()),
-            'public_key' => base64_encode($source->getCredentialPublicKey()),
-            'aaguid' => $source->getAaguid()->toString(),
+            'public_key_id' => $source->getPublicKeyCredentialId(),
+            'public_key' => $source->getCredentialPublicKey(),
+            'aaguid' => $source->getAaguid(),
             'type' => $source->getType(),
             'transports' => $source->getTransports(),
             'attestation_type' => $source->getAttestationType(),
-            'trust_path' => $source->getTrustPath()->jsonSerialize(),
+            'trust_path' => $source->getTrustPath(),
             'user_handle' => $source->getUserHandle(),
             'counter' => $source->getCounter(),
             'other_ui' => $source->getOtherUI(),
         ]);
+
+        $key->saveOrFail();
     }
 
     /**

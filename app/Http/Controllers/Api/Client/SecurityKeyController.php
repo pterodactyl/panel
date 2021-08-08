@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
-use Exception;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -53,7 +52,7 @@ class SecurityKeyController extends ClientApiController
     public function create(Request $request): JsonResponse
     {
         $tokenId = Str::random(64);
-        $credentials = $this->createPublicKeyCredentials->handle($request->user(), $request->get('display_name'));
+        $credentials = $this->createPublicKeyCredentials->handle($request->user());
 
         $this->cache->put(
             "register-security-key:$tokenId",
@@ -72,29 +71,29 @@ class SecurityKeyController extends ClientApiController
     /**
      * Stores a new key for a user account.
      *
-     * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Throwable
      */
     public function store(RegisterWebauthnTokenRequest $request): JsonResponse
     {
-        $stored = $this->cache->pull("register-security-key:{$request->input('token_id')}");
-
-        if (!$stored) {
-            throw new DisplayException('Could not register security key: no data present in session, please try your request again.');
-        }
-
-        $credentials = unserialize($stored);
-        if (!$credentials instanceof PublicKeyCredentialCreationOptions) {
-            throw new Exception(sprintf('Unexpected security key data pulled from cache: expected "%s" but got "%s".', PublicKeyCredentialCreationOptions::class, get_class($credentials)));
-        }
-
-        $server = $this->webauthnServerRepository->getServer($request->user());
-
-        $source = $server->loadAndCheckAttestationResponse(
-            json_encode($request->input('registration')),
-            $credentials,
-            $this->getServerRequest($request),
+        $credentials = unserialize(
+            $this->cache->pull("register-security-key:{$request->input('token_id')}", serialize(null))
         );
+
+        if (
+            !is_object($credentials) ||
+            !$credentials instanceof PublicKeyCredentialCreationOptions ||
+            $credentials->getUser()->getId() !== $request->user()->uuid
+        ) {
+            throw new DisplayException('Could not register security key: invalid data present in session, please try again.');
+        }
+
+        $source = $this->webauthnServerRepository->getServer($request->user())
+            ->loadAndCheckAttestationResponse(
+                json_encode($request->input('registration')),
+                $credentials,
+                $this->getServerRequest($request),
+            );
 
         // Unfortunately this repository interface doesn't define a response — it is explicitly
         // void — so we need to just query the database immediately after this to pull the information
@@ -108,7 +107,7 @@ class SecurityKeyController extends ClientApiController
         $created->update(['name' => $request->input('name')]);
 
         return new JsonResponse([
-            'data' => $created->toArray(),
+            'data' => [],
         ]);
     }
 

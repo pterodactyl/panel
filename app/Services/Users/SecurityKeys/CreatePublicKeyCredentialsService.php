@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Services\Users\SecurityKeys;
 
-use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\SecurityKey;
 use Webauthn\PublicKeyCredentialUserEntity;
@@ -18,14 +17,12 @@ class CreatePublicKeyCredentialsService
         $this->webauthnServerRepository = $webauthnServerRepository;
     }
 
-    public function handle(User $user, ?string $displayName): PublicKeyCredentialCreationOptions
+    public function handle(User $user): PublicKeyCredentialCreationOptions
     {
-        $id = Uuid::uuid4()->toString();
-
-        $entity = new PublicKeyCredentialUserEntity($user->uuid, $id, $name ?? $user->email);
+        $entity = new PublicKeyCredentialUserEntity($user->username, $user->uuid, $user->email, null);
 
         $excluded = $user->securityKeys->map(function (SecurityKey $key) {
-            return $key->toCredentialsDescriptor();
+            return $key->public_key_credentials_descriptor;
         })->values()->toArray();
 
         $server = $this->webauthnServerRepository->getServer($user);

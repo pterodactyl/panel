@@ -20,7 +20,7 @@ class CreateSecurityKeysTable extends Migration
             $table->string('name');
             $table->text('public_key_id');
             $table->text('public_key');
-            $table->char('aaguid', 36);
+            $table->char('aaguid', 36)->nullable();
             $table->string('type');
             $table->json('transports');
             $table->string('attestation_type');

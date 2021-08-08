@@ -46,11 +46,7 @@ const registerCredentialForAccount = async (name: string, tokenId: string, crede
 };
 
 export const register = async (name: string): Promise<void> => {
-    const { data } = await http.get('/api/client/account/security-keys/register', {
-        params: {
-            display_name: name,
-        },
-    });
+    const { data } = await http.get('/api/client/account/security-keys/register');
 
     const publicKey = data.data.credentials;
     publicKey.challenge = bufferDecode(base64Decode(publicKey.challenge));
