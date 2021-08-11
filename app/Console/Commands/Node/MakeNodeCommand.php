@@ -46,57 +46,43 @@ class MakeNodeCommand extends Command
      */
     protected $description = 'Creates a new node on the system via the CLI.';
 
-    /**
-     * Create a new command instance.
-     */
-    public function __construct(NodeCreationService $creationService)
-    {
-        parent::__construct();
-
-        $this->creationService = $creationService;
-    }
 
     /**
      * Handle the command execution process.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle()
+    public function handle(NodeCreationService $creationService)
     {
-        $name = $this->option('name') ?? $this->ask(trans('command/messages.node.ask_name'));
-        $description = $this->option('description') ?? $this->ask(trans('command/messages.node.ask_description'));
-        $location_id = $this->option('locationId') ?? $this->ask(trans('command/messages.node.ask_location_id'));
-        $fqdn = $this->option('fqdn') ?? $this->ask(trans('command/messages.node.ask_fqdn'));
-        if (!filter_var(gethostbyname($fqdn), FILTER_VALIDATE_IP)) {
-            $this->error(trans('admin/node.validation.fqdn_not_resolvable'));
-            return;
-        }
-        $public = $this->option('public') ?? $this->ask(trans('command/messages.node.ask_public'));
-        $scheme = $this->option('scheme') ?? $this->ask(trans('command/messages.node.ask_scheme'));
-        if ($scheme !== 'https' && $scheme !== 'http') {
-            $this->error(trans('command/messages.node.no_valid_scheme'));
-            return;
-        }
-        if (filter_var($fqdn, FILTER_VALIDATE_IP) && $scheme === 'https') {
-            $this->error(trans('admin/node.validation.fqdn_required_for_ssl'));
-            return;
-        }
-        $behind_proxy = $this->option('proxy') ?? $this->ask(trans('command/messages.node.ask_behind_proxy'));
-        $maintenance_mode = $this->option('maintenance') ?? $this->ask(trans('command/messages.node.ask_maintenance_mode'));
-        $memory = $this->option('maxMemory') ?? $this->ask(trans('command/messages.node.ask_memory'));
-        $memory_overallocate = $this->option('overallocateMemory') ?? $this->ask(trans('command/messages.node.ask_memory_overallocate'));
-        $disk = $this->option('maxDisk') ?? $this->ask(trans('command/messages.node.ask_disk'));
-        $disk_overallocate = $this->option('overallocateDisk') ?? $this->ask(trans('command/messages.node.ask_disk_overallocate'));
-        $upload_size = $this->option('uploadSize') ?? $this->ask(trans('command/messages.node.ask_upload_size'));
-        $daemonListen = $this->option('daemonListeningPort') ?? $this->ask(trans('command/messages.node.ask_daemonListen'));
-        $daemonSFTP = $this->option('daemonSFTPPort') ?? $this->ask(trans('command/messages.node.ask_daemonSFTP'));
-        $daemonBase = $this->option('daemonBase') ?? $this->ask(trans('command/messages.node.ask_daemonBase'));
+        $this->creationService = $creationService;
 
-        $node = $this->creationService->handle(compact('name', 'description', 'location_id', 'fqdn', 'public', 'scheme', 'behind_proxy', 'maintenance_mode', 'memory', 'memory_overallocate', 'disk', 'disk_overallocate', 'upload_size', 'daemonListen', 'daemonSFTP', 'daemonBase'));
-        $this->line(trans('command/messages.node.created', [
-            'location' => $node->location_id,
-            'name' => $node->name,
-            'id' => $node->id,
-        ]));
+        $data['name'] = $this->option('name') ?? $this->ask('Enter a short identifier used to distinguish this node from others');
+        $data['description'] = $this->option('description') ?? $this->ask('Enter a description to identify the node');
+        $data['location_id'] = $this->option('locationId') ?? $this->ask('Enter a valid location id');
+        $data['fqdn'] = $this->option('fqdn') ?? $this->ask('Enter a domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node');
+        if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
+            $this->error('The FQDN or IP address provided does not resolve to a valid IP address.');
+            return;
+        }
+        $data['public'] = $this->option('public') ?? $this->confirm('Should this node be public? As a note, setting a node to private you will be denying the ability to auto-deploy to this node.', true);
+        $data['scheme'] = $this->option('scheme') ?? $this->anticipate('Please either enter https for SSL or http for a non-ssl connection', 
+        ["https","http",],"https");
+        if (filter_var($data['fqdn'], FILTER_VALIDATE_IP) && $data['scheme'] === 'https') {
+            $this->error('A fully qualified domain name that resolves to a public IP address is required in order to use SSL for this node.');
+            return;
+        }
+        $data['behind_proxy'] = $this->option('proxy') ?? $this->confirm('Is your FQDN behind a proxy?');
+        $data['maintenance_mode'] = $this->option('maintenance') ?? $this->confirm('Should maintenance mode be enabled?');
+        $data['memory'] = $this->option('maxMemory') ?? $this->ask('Enter the maximum amount of memory');
+        $data['memory_overallocate'] = $this->option('overallocateMemory') ?? $this->ask('Enter the amount of memory to over allocate by, -1 will disable checking and 0 will prevent creating new servers');
+        $data['disk'] = $this->option('maxDisk') ?? $this->ask('Enter the maximum amount of disk space');
+        $data['disk_overallocate'] = $this->option('overallocateDisk') ?? $this->ask('Enter the amount of memory to over allocate by, -1 will disable checking and 0 will prevent creating new server');
+        $data['upload_size'] = $this->option('uploadSize') ?? $this->ask('Enter the maximum filesize upload', '100');
+        $data['daemonListen'] = $this->option('daemonListeningPort') ?? $this->ask('Enter the wings listening port', '8080');
+        $data['daemonSFTP'] = $this->option('daemonSFTPPort') ?? $this->ask('Enter the wings SFTP listening port', '2022');
+        $data['daemonBase'] = $this->option('daemonBase') ?? $this->ask('Enter the base folder', '/var/lib/pterodactyl/volumes');
+
+        $node = $this->creationService->handle($data);
+        $this->line('Successfully created a new node on the location ' . $data['location_id'] . ' with the name ' . $data['name'] . ' and has an id of ' . $node->id . '.');
     }
 }
