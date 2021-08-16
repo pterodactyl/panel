@@ -2,10 +2,9 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
-use Mockery;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
-use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Facades\Hash;
 
 class AccountControllerTest extends ClientApiIntegrationTestCase
 {
@@ -106,16 +105,19 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
-        $mock = Mockery::mock(AuthManager::class);
-        $mock->expects('logoutOtherDevices')->with('New_Password1');
-
-        $this->app->instance(AuthManager::class, $mock);
+        $initialHash = $user->password;
 
         $response = $this->actingAs($user)->putJson('/api/client/account/password', [
             'current_password' => 'password',
             'password' => 'New_Password1',
             'password_confirmation' => 'New_Password1',
         ]);
+
+        $user = $user->refresh();
+
+        $this->assertNotEquals($user->password, $initialHash);
+        $this->assertTrue(Hash::check('New_Password1', $user->password));
+        $this->assertFalse(Hash::check('password', $user->password));
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
