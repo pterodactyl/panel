@@ -36,6 +36,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**ByteAnia**](https://byteania.com/?utm_source=pterodactyl) | ByteAnia offers the best performing and most affordable **Ryzen 5000 Series hosting** on the market for *unbeatable prices*! |
 | [**Aussie Server Hosts**](https://aussieserverhosts.com/) | No frills Australian Owned and operated High Performance Server hosting for some of the most demanding games serving Australia and New Zealand. |
 | [**VibeGAMES**](https://vibegames.net/) | VibeGAMES is a game server provider that specializes in DDOS protection for the games we offer. We have multiple locations in the US, Brazil, France, Germany, Singapore, Australia and South Africa.|
+| [**RocketNode**](https://rocketnode.net) | RocketNode is a VPS and Game Server provider that offers the best performing VPS and Game hosting Solutions at affordable prices! |
 
 ## Documentation
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
