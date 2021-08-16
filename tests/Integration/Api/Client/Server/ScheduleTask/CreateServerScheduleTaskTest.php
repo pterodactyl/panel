@@ -89,7 +89,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that backups can not be tasked when the backup limit is 0
+     * Test that backups can not be tasked when the backup limit is 0.
      */
     public function testBackupsCanNotBeTaskedIfLimit0()
     {

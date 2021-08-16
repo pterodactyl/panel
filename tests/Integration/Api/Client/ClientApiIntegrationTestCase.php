@@ -6,7 +6,6 @@ use ReflectionClass;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
-use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;

@@ -107,6 +107,6 @@ class Backup extends Model
     {
         return $this->hasMany(AuditLog::class, 'metadata->backup_uuid', 'uuid')
             ->where('action', 'LIKE', 'server:backup.%');
-            // ->where('metadata->backup_uuid', $this->uuid);
+        // ->where('metadata->backup_uuid', $this->uuid);
     }
 }

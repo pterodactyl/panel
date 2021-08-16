@@ -93,7 +93,6 @@ class ServerDetailsController extends Controller
      * do not get incorrectly stuck in installing/restoring from backup states since
      * a Wings reboot would completely stop those processes.
      *
-     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable

@@ -8,7 +8,6 @@ use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;

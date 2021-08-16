@@ -9,7 +9,6 @@ use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Extensions\Backups\BackupManager;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
@@ -55,11 +54,7 @@ class InitiateBackupService
     /**
      * InitiateBackupService constructor.
      *
-     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
      * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
-     * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
     public function __construct(
         BackupRepository $repository,
