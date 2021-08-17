@@ -21,7 +21,7 @@ class EggVariableFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->firstName,
+            'name' => $this->faker->unique()->firstName,
             'description' => $this->faker->sentence(),
             'env_variable' => Str::upper(Str::replaceArray(' ', ['_'], $this->faker->words(2, true))),
             'default_value' => $this->faker->colorName,

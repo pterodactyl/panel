@@ -12,14 +12,8 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 
 class ResourceUtilizationController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
     private DaemonServerRepository $repository;
 
-    /**
-     * @var \Illuminate\Cache\Repository
-     */
     private Repository $cache;
 
     /**

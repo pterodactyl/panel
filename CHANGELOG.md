@@ -3,6 +3,57 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.5.1
+### Fixed
+* Fixes Docker image 404ing instead of being able to access the Panel.
+* Fixes Java version feature being only loaded when the `eula` feature is specified.
+* Fixes `php artisan p:upgrade` not forcing and seeding while running migrations.
+* Fixes spinner overlays overlapping on the server console page.
+* Fixes Wings being unable to update backup statuses.
+
+## v1.5.0
+### Fixed
+* Fixes deleting a locked backup that has also been marked as failed to allow deletion rather than returning an error about being locked.
+* Fixes server creation process not correctly sending `start_on_completion` to Wings instance.
+* Fixes `z-index` on file mass delete modal so it is displayed on top of all elements, rather than hidden under some.
+* Supports re-sending requests to the Panel API for backups that are currently marked as failed, allowing a previously failed backup to be marked as successful.
+* Minor updates to multiple default eggs for improved error handling and more accurate field-level validation.
+
+### Updated
+* Updates help text for CPU limiting when creating a new server to properly indicate virtual threads are included, rather than only physical threads.
+* Updates all of the default eggs shipped with the Panel to reference new [`ghcr.io` yolks repository](https://github.com/pterodactyl/yolks).
+* When adding 2FA to an account the key used to generate the token is now displayed to the user allowing them to manually input into their app if necessary.
+
+### Added
+* Adds SSL/TLS options for MySQL and Redis in line with most recent Laravel updates.
+* New users created for server MySQL instances will now have the correct permissions for creating foreign keys on tables.
+* Adds new automatic popup feature to allow users to quickly update their Minecraft servers to the latest Java® eggs as necessary if unsupported versions are detected.
+
+### Removed
+* Removes legacy `userInteraction` key from eggs which was unused.
+
+## v1.4.2
+### Fixed
+* Fixes logic to disallow creating a backup schedule if the server's backup limit is set to 0.
+* Fixes bug preventing a database host from being updated if the linked node is set to "none".
+* Fixes files and menus under the "Mass Actions Bar" being unclickable when it is visible.
+* Fixes issues with the Teamspeak and Mumble eggs causing installs to fail.
+* Fixes automated query to avoid pruning backups that are still running unintentionally.
+* Fixes "Delete Server" confirmation modal on the admin screen to actually show up when deleting rather than immediately deleting the server.
+
+### Added
+* Adds support for locking individual server backups to prevent deletion by users or automated backup processes.
+* List of files to be deleted is now shown on the delete file confirmation modal.
+* Adds support for using `IF` statements in database queries when a database user is created through the Panel.
+* Adds support for using a custom mailgun API endpoint rather than only the US based endpoint.
+* Adds CPU limit display next to the current CPU usage to match disk and memory usage reporting.
+* Adds a "Scroll to Bottom" helper element to the server console when not scrolled to the bottom currently.
+* Adds support for querying the API for servers by using the `uuidShort` field rather than only the `uuid` field.
+
+### Changed
+* Updates codebase to use TypeScript 4.
+* **[security]**: removes the external dependency for loading QRCode images. They're now generated directly on the frontend using JavaScript.
+
 ## v1.4.1
 ### Added
 * Adds support for only running a schedule if the server is currently in an online state.

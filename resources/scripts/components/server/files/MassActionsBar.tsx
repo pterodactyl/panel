@@ -63,7 +63,7 @@ const MassActionsBar = () => {
 
     return (
         <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
-            <div css={tw`fixed bottom-0 z-50 left-0 right-0 flex justify-center`}>
+            <div css={tw`pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center`}>
                 <SpinnerOverlay visible={loading} size={'large'} fixed>
                     {loadingMessage}
                 </SpinnerOverlay>
@@ -74,7 +74,18 @@ const MassActionsBar = () => {
                     onConfirmed={onClickConfirmDeletion}
                     onModalDismissed={() => setShowConfirm(false)}
                 >
-                    Deleting files is a permanent operation, you cannot undo this action.
+                    Are you sure you want to delete {selectedFiles.length} file(s)?
+                    <br/>
+                    Deleting the file(s) listed below is a permanent operation, you cannot undo this action.
+                    <br/>
+                    <code>
+                        { selectedFiles.slice(0, 15).map(file => (
+                            <li key={file}>{file}<br/></li>))
+                        }
+                        { selectedFiles.length > 15 &&
+                                    <li> + {selectedFiles.length - 15} other(s) </li>
+                        }
+                    </code>
                 </ConfirmationModal>
                 {showMove &&
                 <RenameFileModal
@@ -85,7 +96,7 @@ const MassActionsBar = () => {
                     onDismissed={() => setShowMove(false)}
                 />
                 }
-                <div css={tw`rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
+                <div css={tw`pointer-events-auto rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
                     <Button size={'xsmall'} css={tw`mr-4`} onClick={() => setShowMove(true)}>
                         <FontAwesomeIcon icon={faLevelUpAlt} css={tw`mr-2`}/> Move
                     </Button>

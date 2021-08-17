@@ -61,9 +61,7 @@ class TwoFactorController extends ClientApiController
         }
 
         return new JsonResponse([
-            'data' => [
-                'image_url_data' => $this->setupService->handle($request->user()),
-            ],
+            'data' => $this->setupService->handle($request->user()),
         ]);
     }
 
