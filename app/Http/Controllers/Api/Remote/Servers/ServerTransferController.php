@@ -146,17 +146,14 @@ class ServerTransferController extends Controller
      *
      * @throws \Throwable
      */
-    public function success(string $uuid)
+    public function success(string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
 
         /** @var \Pterodactyl\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $transfer) {
-            $allocations = [$transfer->old_allocation];
-            if (!empty($transfer->old_additional_allocations)) {
-                array_push($allocations, $transfer->old_additional_allocations);
-            }
+            $allocations = array_merge([$transfer->old_allocation], $transfer->old_additional_allocations);
 
             // Remove the old allocations for the server and re-assign the server to the new
             // primary allocation and node.
@@ -173,7 +170,7 @@ class ServerTransferController extends Controller
         });
 
         // Delete the server from the old node making sure to point it to the old node so
-        // that we do not delete it from the new node the server was transfered to.
+        // that we do not delete it from the new node the server was transferred to.
         try {
             $this->daemonServerRepository
                 ->setServer($server)
@@ -199,11 +196,7 @@ class ServerTransferController extends Controller
         $this->connection->transaction(function () use (&$transfer) {
             $transfer->forceFill(['successful' => false])->saveOrFail();
 
-            $allocations = [$transfer->new_allocation];
-            if (!empty($transfer->new_additional_allocations)) {
-                array_push($allocations, $transfer->new_additional_allocations);
-            }
-
+            $allocations = array_merge([$transfer->new_allocation], $transfer->new_additional_allocations);
             Allocation::query()->whereIn('id', $allocations)->update(['server_id' => null]);
         });
 
