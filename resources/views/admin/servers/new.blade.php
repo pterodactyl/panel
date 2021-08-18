@@ -38,6 +38,7 @@
                         <div class="form-group">
                             <label for="pUserId">Server Owner</label>
                             <select id="pUserId" name="owner_id" class="form-control" style="padding-left:0;"></select>
+                            <p class="small text-muted no-margin">Email address of the Server Owner.</p>
                         </div>
                     </div>
 
@@ -164,7 +165,7 @@
                             <input type="text" id="pThreads" name="threads" class="form-control" value="{{ old('threads') }}" />
                         </div>
 
-                        <p class="text-muted small"><strong>Advanced:</strong> Enter the specific CPU cores that this process can run on, or leave blank to allow all cores. This can be a single number, or a comma seperated list. Example: <code>0</code>, <code>0-1,3</code>, or <code>0,1,3,4</code>.</p>
+                        <p class="text-muted small"><strong>Advanced:</strong> Enter the specific CPU threads that this process can run on, or leave blank to allow all threads. This can be a single number, or a comma separated list. Example: <code>0</code>, <code>0-1,3</code>, or <code>0,1,3,4</code>.</p>
                     </div>
                 </div>
 
@@ -187,6 +188,7 @@
                             <input type="text" id="pSwap" name="swap" class="form-control" value="{{ old('swap', 0) }}" />
                             <span class="input-group-addon">MB</span>
                         </div>
+
                         <p class="text-muted small">Setting this to <code>0</code> will disable swap space on this server. Setting to <code>-1</code> will allow unlimited swap.</p>
                     </div>
                 </div>
@@ -194,10 +196,12 @@
                 <div class="box-body row">
                     <div class="form-group col-xs-6">
                         <label for="pDisk">Disk Space</label>
+
                         <div class="input-group">
                             <input type="text" id="pDisk" name="disk" class="form-control" value="{{ old('disk') }}" />
                             <span class="input-group-addon">MB</span>
                         </div>
+
                         <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Set to <code>0</code> to allow unlimited disk usage.</p>
                     </div>
 
@@ -209,6 +213,14 @@
                         </div>
 
                         <p class="text-muted small"><strong>Advanced</strong>: The IO performance of this server relative to other <em>running</em> containers on the system. Value should be between <code>10</code> and <code>1000</code>. Please see <a href="https://docs.docker.com/engine/reference/run/#/block-io-bandwidth-blkio-constraint" target="_blank">this documentation</a> for more information about it.</p>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <div class="checkbox checkbox-primary no-margin-bottom">
+                            <input type="checkbox" id="pOomDisabled" name="oom_disabled" value="0" {{ \Pterodactyl\Helpers\Utilities::checked('oom_disabled', 0) }} />
+                            <label for="pOomDisabled" class="strong">Enable OOM Killer</label>
+                        </div>
+
+                        <p class="small text-muted no-margin">Terminates the server if it breaches the memory limits. Enabling OOM killer may cause server processes to exit unexpectedly.</p>
                     </div>
                 </div>
             </div>
