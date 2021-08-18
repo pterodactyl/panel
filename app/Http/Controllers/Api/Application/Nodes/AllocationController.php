@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
 use Pterodactyl\Models\Node;
 use Illuminate\Http\JsonResponse;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
@@ -43,7 +44,9 @@ class AllocationController extends ApplicationApiController
      */
     public function index(GetAllocationsRequest $request, Node $node): array
     {
-        $allocations = $node->allocations()->paginate($request->query('per_page') ?? 50);
+        $allocations = QueryBuilder::for($node->allocations())
+            ->allowedFilters(['assigned_to'])
+            ->paginate($request->query('per_page') ?? 50);
 
         return $this->fractal->collection($allocations)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
