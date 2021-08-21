@@ -3,7 +3,15 @@
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
 
-$finder = (new Finder())->in(__DIR__)->exclude(['vendor', 'node_modules', 'storage', 'bootstrap/cache']);
+$finder = (new Finder())
+    ->in(__DIR__)
+    ->exclude([
+        'vendor',
+        'node_modules',
+        'storage',
+        'bootstrap/cache',
+    ])
+    ->notName(['_ide_helper*']);
 
 return (new Config())
     ->setRiskyAllowed(true)

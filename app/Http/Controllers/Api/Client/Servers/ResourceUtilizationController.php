@@ -32,7 +32,6 @@ class ResourceUtilizationController extends ClientApiController
      * a flood of unnecessary API calls.
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function __invoke(GetServerRequest $request, Server $server): array
     {

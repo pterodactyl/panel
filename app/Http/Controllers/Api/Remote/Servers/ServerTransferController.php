@@ -123,12 +123,7 @@ class ServerTransferController extends Controller
 
         /** @var \Pterodactyl\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $transfer) {
-            $allocations = [$transfer->old_allocation];
-            if (!empty($transfer->old_additional_allocations)) {
-                foreach ($transfer->old_additional_allocations as $allocation) {
-                    $allocations[] = $allocation;
-                }
-            }
+            $allocations = array_merge([$transfer->old_allocation], $transfer->old_additional_allocations);
 
             // Remove the old allocations for the server and re-assign the server to the new
             // primary allocation and node.
@@ -169,13 +164,7 @@ class ServerTransferController extends Controller
         $this->connection->transaction(function () use (&$transfer) {
             $transfer->forceFill(['successful' => false])->saveOrFail();
 
-            $allocations = [$transfer->new_allocation];
-            if (!empty($transfer->new_additional_allocations)) {
-                foreach ($transfer->new_additional_allocations as $allocation) {
-                    $allocations[] = $allocation;
-                }
-            }
-
+            $allocations = array_merge([$transfer->new_allocation], $transfer->new_additional_allocations);
             Allocation::query()->whereIn('id', $allocations)->update(['server_id' => null]);
         });
 
