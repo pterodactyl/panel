@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Auth\AuthManager;
+use Illuminate\Auth\SessionGuard;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -12,22 +12,22 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 
 class AccountController extends ClientApiController
 {
-    private AuthManager $authManager;
+    private SessionGuard $sessionGuard;
     private UserUpdateService $updateService;
 
     /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $authManager, UserUpdateService $updateService)
+    public function __construct(SessionGuard $sessionGuard, UserUpdateService $updateService)
     {
         parent::__construct();
 
-        $this->authManager = $authManager;
+        $this->sessionGuard = $sessionGuard;
         $this->updateService = $updateService;
     }
 
     /**
-     * Get's information about the currently authenticated user.
+     * Gets information about the currently authenticated user.
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
@@ -67,7 +67,7 @@ class AccountController extends ClientApiController
         // other devices functionality to work.
         $this->sessionGuard->setUser($user);
 
-        $this->authManager->logoutOtherDevices($request->input('password'));
+        $this->sessionGuard->logoutOtherDevices($request->input('password'));
 
         return $this->returnNoContent();
     }
