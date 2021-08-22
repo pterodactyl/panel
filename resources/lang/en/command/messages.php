@@ -109,5 +109,9 @@ return [
         'ask_daemonListen' => 'Daemon listen',
         'ask_daemonSFTP' => 'Daemon SFTP',
         'created' => 'Successfully created a new node (:name) with an ID of :id.',
+        'ask_admin_user_name' => 'Administrator username',
+        'select_search_user' => 'ID of user to choice (Enter \'0\' to re-search)',
+        'no_node_found' => 'No node with this name was found.',
+        'search_users' => 'Enter a Email Address'
     ],
 ];
