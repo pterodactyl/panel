@@ -30,7 +30,7 @@ class MakeNodeCommand extends Command
                             {--fqdn= : The domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.}
                             {--public= : Should the node be public or private? (public=1 / private=0).}
                             {--scheme= : Which scheme should be used? (Enable SSL=https / Disable SSL=http).}
-                            {--proxy= : Is the daemon behind the cloudflare proxy? (Yes=1 / No=0).}
+                            {--proxy= : Is the daemon behind a proxy? (Yes=1 / No=0).}
                             {--maintenance= : Should maintenance mode be enabled? (Enable Maintenance mode=1 / Disable Maintenance mode=0).}
                             {--maxMemory= : Set the max memory amount.}
                             {--overallocateMemory= : Enter the amount of ram to overallocate (% or -1 to overallocate the maximum).}
