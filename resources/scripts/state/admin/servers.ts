@@ -8,7 +8,7 @@ export interface AdminServerStore {
     removeSelectedServer: Action<AdminServerStore, number>;
 }
 
-const roles: AdminServerStore = {
+const servers: AdminServerStore = {
     selectedServers: [],
 
     setSelectedServers: action((state, payload) => {
@@ -24,4 +24,4 @@ const roles: AdminServerStore = {
     }),
 };
 
-export default roles;
+export default servers;
