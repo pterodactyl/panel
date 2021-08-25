@@ -8,7 +8,7 @@ export interface AdminUserStore {
     removeSelectedUser: Action<AdminUserStore, number>;
 }
 
-const roles: AdminUserStore = {
+const users: AdminUserStore = {
     selectedUsers: [],
 
     setSelectedUsers: action((state, payload) => {
@@ -24,4 +24,4 @@ const roles: AdminUserStore = {
     }),
 };
 
-export default roles;
+export default users;
