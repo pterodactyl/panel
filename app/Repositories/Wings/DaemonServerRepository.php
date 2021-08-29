@@ -35,18 +35,18 @@ class DaemonServerRepository extends DaemonRepository
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function create(array $data): void
+    public function create(bool $startOnCompletion = true): void
     {
         Assert::isInstanceOf($this->server, Server::class);
 
         try {
-            $this->getHttpClient()->post(
-                '/api/servers',
-                [
-                    'json' => $data,
-                ]
-            );
-        } catch (TransferException $exception) {
+            $this->getHttpClient()->post('/api/servers', [
+                'json' => [
+                    'uuid' => $this->server->uuid,
+                    'start_on_completion' => $startOnCompletion,
+                ],
+            ]);
+        } catch (GuzzleException $exception) {
             throw new DaemonConnectionException($exception);
         }
     }
