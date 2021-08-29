@@ -91,9 +91,7 @@ class BuildModificationService
         // if it fails we can just continue on as normal.
         if (!empty($updateData['build'])) {
             try {
-                $this->daemonServerRepository->setServer($server)->update([
-                    'build' => $updateData['build'],
-                ]);
+                $this->daemonServerRepository->setServer($server)->sync();
             } catch (DaemonConnectionException $exception) {
                 Log::warning($exception, ['server_id' => $server->id]);
             }
