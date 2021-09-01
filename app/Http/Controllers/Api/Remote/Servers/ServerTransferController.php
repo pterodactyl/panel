@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
@@ -61,20 +60,7 @@ class ServerTransferController extends Controller
             return $this->processFailedTransfer($server->transfer);
         }
 
-        // We want to generate a new configuration using the new node_id value from the
-        // transfer, and not the old node value.
-        $data = $this->configurationStructureService->handle($server, [
-            'node_id' => $server->transfer->new_node,
-        ]);
-
-        $allocations = $server->getAllocationMappings();
-        $primary = array_key_first($allocations);
-        Arr::set($data, 'allocations.default.ip', $primary);
-        Arr::set($data, 'allocations.default.port', $allocations[$primary][0]);
-        Arr::set($data, 'service.skip_scripts', true);
-        Arr::set($data, 'suspended', false);
-
-        $this->connection->transaction(function () use ($data, $server) {
+        $this->connection->transaction(function () use ($server) {
             // This token is used by the new node the server is being transferred to. It allows
             // that node to communicate with the old node during the process to initiate the
             // actual file transfer.
@@ -93,7 +79,7 @@ class ServerTransferController extends Controller
             $this->daemonTransferRepository
                 ->setServer($server)
                 ->setNode($server->transfer->newNode)
-                ->notify($server, $data, $server->node, $token->toString());
+                ->notify($server, $token);
         });
 
         return new Response('', Response::HTTP_NO_CONTENT);

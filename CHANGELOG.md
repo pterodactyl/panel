@@ -3,6 +3,23 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.0
+### Fixed
+* Fixes array merging logic for server transfers that would cause a 500 error to occur in some scenarios.
+* Fixes user password updates not correctly logging the user out and returning a failure message even upon successful update.
+* Fixes the count of used backups when browsing a paginated backup list for a server.
+
+### Added
+* Adds foreign key relationship on the `mount_node`, `mount_server` and `egg_mount` tables.
+* Adds environment variable `PER_SCHEDULE_TASK_LIMIT` to allow manual overrides for the number of tasks that can exist on a single schedule. This is currently defaulted to `10`.
+* OOM killer can now be configured at the time of server creation.
+
+### Changed
+* Server updates are not dependent on a successful call to Wings occurring — if the API call fails internally the error will be logged but the server update will still be persisted.
+
+### Removed
+* Removed `WingsServerRepository::update()` function — if you were previously using this to modify server elements on Wings please replace calls to it with `::sync()` after updating Wings.
+
 ## v1.5.1
 ### Fixed
 * Fixes Docker image 404ing instead of being able to access the Panel.
