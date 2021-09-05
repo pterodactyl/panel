@@ -94,6 +94,23 @@
                         </div>
                         <p class="text-muted small">In most cases you should select to use a SSL connection. If using an IP Address or you do not wish to use SSL at all, select a HTTP connection.</p>
                     </div>
+					
+					<div class="form-group col-xs-12">
+                        <label for="sslcert" class="control-label">SSL Certificate Path</label>
+                        <div>
+                            <input type="text" autocomplete="off" name="sslcert" class="form-control" value="{{ old('sslcert', $node->sslcert) }}" />
+                        </div>
+                        <p class="text-muted"><small>SSL Certificate Path (e.g <code>/etc/letsencrypt/live/{{$node->fqdn}}/fullchain.pem</code>)</small></p>
+                    </div>
+					
+					<div class="form-group col-xs-12">
+                        <label for="sslkey" class="control-label">SSL Certificate Key Path</label>
+                        <div>
+                            <input type="text" autocomplete="off" name="sslkey" class="form-control" value="{{ old('sslkey', $node->sslkey) }}" />
+                        </div>
+                        <p class="text-muted"><small>SSL Certificate Key Path (e.g <code>/etc/letsencrypt/live/{{$node->fqdn}}/privkey.pem</code>)</small></p>
+                    </div>
+					
                     <div class="form-group col-xs-12">
                         <label class="form-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Behind Proxy</label>
                         <div>

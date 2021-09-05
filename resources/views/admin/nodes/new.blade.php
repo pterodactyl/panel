@@ -82,6 +82,23 @@
                             <p class="text-muted small">In most cases you should select to use a SSL connection. If using an IP Address or you do not wish to use SSL at all, select a HTTP connection.</p>
                         @endif
                     </div>
+					
+					<div class="form-group">
+                        <label for="sslcert" class="control-label">SSL Certificate Path</label>
+                        <div>
+                            <input type="text" autocomplete="off" name="sslcert" class="form-control" value="/etc/letsencrypt/live/example.com/fullchain.pem" />
+                        </div>
+                        <p class="text-muted"><small>SSL Certificate Path (e.g <code>/etc/letsencrypt/live/example.com/fullchain.pem</code>)</small></p>
+                    </div>
+					
+					<div class="form-group">
+                        <label for="sslkey" class="control-label">SSL Certificate Key Path</label>
+                        <div>
+                            <input type="text" autocomplete="off" name="sslkey" class="form-control" value="/etc/letsencrypt/live/example.com/privkey.pem" />
+                        </div>
+                        <p class="text-muted"><small>SSL Certificate Key Path (e.g <code>/etc/letsencrypt/live/example.com/privkey.pem</code>)</small></p>
+                    </div>
+					
                     <div class="form-group">
                         <label class="form-label">Behind Proxy</label>
                         <div>

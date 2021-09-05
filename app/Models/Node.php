@@ -16,6 +16,8 @@ use Illuminate\Contracts\Encryption\Encrypter;
  * @property int $location_id
  * @property string $fqdn
  * @property string $scheme
+ * @property string $sslcert
+ * @property string $sslkey
  * @property bool $behind_proxy
  * @property bool $maintenance_mode
  * @property int $memory
@@ -85,7 +87,7 @@ class Node extends Model
      */
     protected $fillable = [
         'public', 'name', 'location_id',
-        'fqdn', 'scheme', 'behind_proxy',
+        'fqdn', 'scheme', 'sslcert', 'sslkey', 'behind_proxy',
         'memory', 'memory_overallocate', 'disk',
         'disk_overallocate', 'upload_size', 'daemonBase',
         'daemonSFTP', 'daemonListen',
@@ -102,6 +104,8 @@ class Node extends Model
         'public' => 'boolean',
         'fqdn' => 'required|string',
         'scheme' => 'required',
+		'sslcert' => 'required|string',
+		'sslkey' => 'required|string',
         'behind_proxy' => 'boolean',
         'memory' => 'required|numeric|min:1',
         'memory_overallocate' => 'required|numeric|min:-1',
@@ -155,8 +159,8 @@ class Node extends Model
                 'port' => $this->daemonListen,
                 'ssl' => [
                     'enabled' => (!$this->behind_proxy && $this->scheme === 'https'),
-                    'cert' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
-                    'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
+                    'cert' => $this->sslcert,
+                    'key' => $this->sslkey,
                 ],
                 'upload_limit' => $this->upload_size,
             ],

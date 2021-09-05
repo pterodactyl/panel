@@ -29,6 +29,8 @@ class NodeFactory extends Factory
             'fqdn' => $this->faker->unique()->ipv4,
             'scheme' => 'http',
             'behind_proxy' => false,
+			'sslcert'  => '/etc/letsencrypt/live/example.com/fullchain.pem',
+			'sslkey'  => '/etc/letsencrypt/live/example.com/privkey.pem',
             'memory' => 1024,
             'memory_overallocate' => 0,
             'disk' => 10240,
