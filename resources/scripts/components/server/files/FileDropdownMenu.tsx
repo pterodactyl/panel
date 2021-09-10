@@ -58,15 +58,15 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         }
     });
 
-    const doDeletion = () => {
+    const doDeletion = async () => {
         clearFlashes('files');
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        mutate(files => files!.filter(f => f.key !== file.key), false);
+        await mutate(files => files!.filter(f => f.key !== file.key), false);
 
-        deleteFiles(uuid, directory, [ file.name ]).catch(error => {
-            mutate();
+        deleteFiles(uuid, directory, [ file.name ]).catch(async (error) => {
+            await mutate();
             clearAndAddHttpError({ key: 'files', error });
         });
     };
@@ -76,7 +76,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         clearFlashes('files');
 
         copyFile(uuid, join(directory, file.name))
-            .then(() => mutate())
+            .then(async () => await mutate())
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
@@ -99,7 +99,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         clearFlashes('files');
 
         compressFiles(uuid, directory, [ file.name ])
-            .then(() => mutate())
+            .then(async () => await mutate())
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
@@ -109,7 +109,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         clearFlashes('files');
 
         decompressFiles(uuid, directory, file.name)
-            .then(() => mutate())
+            .then(async () => await mutate())
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };

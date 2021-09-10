@@ -33,8 +33,8 @@ export default () => {
         setSubmitting(true);
 
         createNest(name, description)
-            .then(nest => {
-                mutate(data => ({ ...data!, items: data!.items.concat(nest) }), false);
+            .then(async (nest) => {
+                await mutate(data => ({ ...data!, items: data!.items.concat(nest) }), false);
                 setVisible(false);
             })
             .catch(error => {

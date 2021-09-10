@@ -9,8 +9,8 @@ const InstallListener = () => {
     const { mutate } = useFileManagerSwr();
     const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
 
-    useWebsocketEvent(SocketEvent.BACKUP_RESTORE_COMPLETED, () => {
-        mutate(undefined);
+    useWebsocketEvent(SocketEvent.BACKUP_RESTORE_COMPLETED, async () => {
+        await mutate(undefined);
         setServerFromState(s => ({ ...s, status: null }));
     });
 

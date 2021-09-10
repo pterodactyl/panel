@@ -28,18 +28,18 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
     const directory = ServerContext.useStoreState(state => state.files.directory);
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
-    const submit = ({ mode }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
+    const submit = async ({ mode }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
         clearFlashes('files');
 
-        mutate(data => data!.map(f => f.name === files[0].file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f), false);
+        await mutate(data => data!.map(f => f.name === files[0].file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f), false);
 
         const data = files.map(f => ({ file: f.file, mode: mode }));
 
         chmodFiles(uuid, directory, data)
-            .then((): Promise<any> => files.length > 0 ? mutate() : Promise.resolve())
+            .then(async (): Promise<any> => files.length > 0 ? await mutate() : Promise.resolve())
             .then(() => setSelectedFiles([]))
-            .catch(error => {
-                mutate();
+            .catch(async (error) => {
+                await mutate();
                 setSubmitting(false);
                 clearAndAddHttpError({ key: 'files', error });
             })

@@ -33,8 +33,8 @@ export default () => {
         setSubmitting(true);
 
         createLocation(short, long)
-            .then(location => {
-                mutate(data => ({ ...data!, items: data!.items.concat(location) }), false);
+            .then(async (location) => {
+                await mutate(data => ({ ...data!, items: data!.items.concat(location) }), false);
                 setVisible(false);
             })
             .catch(error => {

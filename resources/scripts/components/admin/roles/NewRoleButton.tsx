@@ -33,8 +33,8 @@ export default () => {
         setSubmitting(true);
 
         createRole(name, description)
-            .then(role => {
-                mutate(data => ({ ...data!, items: data!.items.concat(role) }), false);
+            .then(async (role) => {
+                await mutate(data => ({ ...data!, items: data!.items.concat(role) }), false);
                 setVisible(false);
             })
             .catch(error => {

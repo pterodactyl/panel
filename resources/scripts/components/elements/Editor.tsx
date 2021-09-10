@@ -1,12 +1,12 @@
 import { autocompletion, completionKeymap } from '@codemirror/autocomplete';
 import { closeBrackets, closeBracketsKeymap } from '@codemirror/closebrackets';
-import { defaultKeymap, defaultTabBinding } from '@codemirror/commands';
+import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 import { commentKeymap } from '@codemirror/comment';
 import { foldGutter, foldKeymap } from '@codemirror/fold';
 import { lineNumbers, highlightActiveLineGutter } from '@codemirror/gutter';
 import { defaultHighlightStyle } from '@codemirror/highlight';
 import { history, historyKeymap } from '@codemirror/history';
-import { indentOnInput, LanguageSupport, LezerLanguage } from '@codemirror/language';
+import { indentOnInput, LanguageSupport, LRLanguage } from '@codemirror/language';
 import { lintKeymap } from '@codemirror/lint';
 import { bracketMatching } from '@codemirror/matchbrackets';
 import { rectangularSelection } from '@codemirror/rectangular-selection';
@@ -39,7 +39,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import tw, { styled, TwStyle } from 'twin.macro';
 import { ayuMirage } from '@/components/elements/EditorTheme';
 
-type EditorMode = LanguageSupport | LezerLanguage | StreamParser<any>;
+type EditorMode = LanguageSupport | LRLanguage | StreamParser<any>;
 
 export interface Mode {
     name: string,
@@ -92,7 +92,7 @@ export const modeToExtension = (m: EditorMode): Extension => {
         return m;
     }
 
-    if (m instanceof LezerLanguage) {
+    if (m instanceof LRLanguage) {
         return m;
     }
 
@@ -165,7 +165,7 @@ const defaultExtensions: Extension = [
         ...commentKeymap,
         ...completionKeymap,
         ...lintKeymap,
-        defaultTabBinding,
+        indentWithTab,
     ]),
 
     EditorState.tabSize.of(4),
