@@ -162,15 +162,10 @@ class ServerCreationService
 
         try {
             $this->daemonServerRepository->setServer($server)->create(
-                array_merge(
-                    $this->configurationStructureService->handle($server),
-                    [
-                        'start_on_completion' => Arr::get($data, 'start_on_completion', false),
-                    ],
-                ),
+                Arr::get($data, 'start_on_completion', false) ?? false
             );
         } catch (DaemonConnectionException $exception) {
-            $this->serverDeletionService->withForce(true)->handle($server);
+            $this->serverDeletionService->withForce()->handle($server);
 
             throw $exception;
         }
