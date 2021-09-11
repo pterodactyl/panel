@@ -29,20 +29,15 @@ class SuspensionServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        $this->repository->expects('setServer')->twice()->andReturnSelf();
-        $this->repository->expects('suspend')->with(false)->andReturnUndefined();
+        $this->repository->expects('setServer->sync')->twice()->andReturnSelf();
 
         $this->getService()->toggle($server, SuspensionService::ACTION_SUSPEND);
 
-        $server->refresh();
-        $this->assertTrue($server->isSuspended());
-
-        $this->repository->expects('suspend')->with(true)->andReturnUndefined();
+        $this->assertTrue($server->refresh()->isSuspended());
 
         $this->getService()->toggle($server, SuspensionService::ACTION_UNSUSPEND);
 
-        $server->refresh();
-        $this->assertFalse($server->isSuspended());
+        $this->assertFalse($server->refresh()->isSuspended());
     }
 
     public function testNoActionIsTakenIfSuspensionStatusIsUnchanged()
