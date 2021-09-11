@@ -26,8 +26,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->daemonServerRepository = Mockery::mock(DaemonServerRepository::class);
-        $this->swap(DaemonServerRepository::class, $this->daemonServerRepository);
+        $this->daemonServerRepository = $this->mock(DaemonServerRepository::class);
     }
 
     /**
@@ -50,7 +49,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $allocations[2]->update(['server_id' => $server2->id]);
         $allocations[3]->update(['server_id' => $server2->id]);
 
-        $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
+        $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
 
         $response = $this->getService()->handle($server, [
             // Attempt to add one new allocation, and an allocation assigned to another server. The
@@ -113,20 +112,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
             return $s->id === $server->id;
         }))->andReturnSelf();
 
-        $this->daemonServerRepository->expects('update')->with(Mockery::on(function ($data) {
-            $this->assertEquals([
-                'build' => [
-                    'memory_limit' => 256,
-                    'swap' => 128,
-                    'io_weight' => 600,
-                    'cpu_limit' => 150,
-                    'threads' => '1,2',
-                    'disk_space' => 1024,
-                ],
-            ], $data);
-
-            return true;
-        }))->andReturnUndefined();
+        $this->daemonServerRepository->expects('sync')->withNoArgs()->andReturnUndefined();
 
         $response = $this->getService()->handle($server, [
             'oom_disabled' => false,
@@ -162,7 +148,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        $this->daemonServerRepository->expects('setServer->update')->andThrows(
+        $this->daemonServerRepository->expects('setServer->sync')->andThrows(
             new DaemonConnectionException(
                 new RequestException('Bad request', new Request('GET', '/test'), new Response())
             )
@@ -186,7 +172,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'server_id' => $server->id]);
 
-        $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
+        $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
 
         $this->getService()->handle($server, [
             'remove_allocations' => [$allocation->id],
@@ -209,7 +195,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
 
-        $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
+        $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
 
         $this->getService()->handle($server, [
             'add_allocations' => [$allocation->id],
@@ -230,7 +216,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\Allocation $allocation2 */
         $allocation2 = Allocation::factory()->create(['node_id' => $server->node_id]);
 
-        $this->daemonServerRepository->expects('setServer->update')->andReturnUndefined();
+        $this->daemonServerRepository->expects('setServer->sync')->andReturnUndefined();
 
         $this->getService()->handle($server, [
             'add_allocations' => [$allocation2->id, $allocation2->id],
@@ -253,7 +239,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create(['node_id' => $server->node_id]);
 
-        $this->daemonServerRepository->expects('setServer->update')->andThrows(new DisplayException('Test'));
+        $this->daemonServerRepository->expects('setServer->sync')->andThrows(new DisplayException('Test'));
 
         $this->expectException(DisplayException::class);
 
