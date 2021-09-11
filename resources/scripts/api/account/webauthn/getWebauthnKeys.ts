@@ -4,14 +4,14 @@ export interface WebauthnKey {
     id: number;
     name: string;
     createdAt: Date;
-    lastUsedAt: Date;
+    lastUsedAt: Date | undefined;
 }
 
 export const rawDataToWebauthnKey = (data: any): WebauthnKey => ({
     id: data.id,
     name: data.name,
     createdAt: new Date(data.created_at),
-    lastUsedAt: new Date(data.last_used_at) || new Date(),
+    lastUsedAt: data.last_used_at ? new Date(data.last_used_at) : undefined,
 });
 
 export default (): Promise<WebauthnKey[]> => {
