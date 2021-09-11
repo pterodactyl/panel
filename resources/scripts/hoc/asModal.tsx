@@ -13,7 +13,6 @@ export type SettableModalProps = Omit<ModalProps, 'appear' | 'visible' | 'onDism
 interface State {
     render: boolean;
     visible: boolean;
-    showSpinnerOverlay?: boolean;
     propOverrides: Partial<SettableModalProps>;
 }
 
@@ -31,7 +30,6 @@ function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) =>
                 this.state = {
                     render: props.visible,
                     visible: props.visible,
-                    showSpinnerOverlay: undefined,
                     propOverrides: {},
                 };
             }
@@ -39,7 +37,6 @@ function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) =>
             get computedModalProps (): Readonly<SettableModalProps & { visible: boolean }> {
                 return {
                     ...(typeof modalProps === 'function' ? modalProps(this.props) : modalProps),
-                    showSpinnerOverlay: this.state.showSpinnerOverlay,
                     ...this.state.propOverrides,
                     visible: this.state.visible,
                 };
@@ -50,7 +47,7 @@ function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) =>
              */
             componentDidUpdate (prevProps: Readonly<P & AsModalProps>, prevState: Readonly<State>) {
                 if (prevProps.visible && !this.props.visible) {
-                    this.setState({ visible: false, showSpinnerOverlay: false });
+                    this.setState({ visible: false, propOverrides: {} });
                 } else if (!prevProps.visible && this.props.visible) {
                     this.setState({ render: true, visible: true });
                 }
