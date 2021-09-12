@@ -8,6 +8,9 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes array merging logic for server transfers that would cause a 500 error to occur in some scenarios.
 * Fixes user password updates not correctly logging the user out and returning a failure message even upon successful update.
 * Fixes the count of used backups when browsing a paginated backup list for a server.
+* Fixes an error being triggered when API endpoints are called with no `User-Agent` header and an audit log is generated for the action.
+* Fixes state management on the frontend not properly resetting the loading indicator when adding subusers to a server.
+* Fixes extraneous API calls being made to Wings for the server file listing when not on a file manager screen.
 
 ### Added
 * Adds foreign key relationship on the `mount_node`, `mount_server` and `egg_mount` tables.
