@@ -1,3 +1,4 @@
+import FormikSwitch from '@/components/elements/FormikSwitch';
 import React from 'react';
 import tw from 'twin.macro';
 import { action, Action, createContextStore } from 'easy-peasy';
@@ -5,7 +6,7 @@ import { User } from '@/api/admin/users/getUsers';
 import AdminBox from '@/components/admin/AdminBox';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
+import { bool, object, string } from 'yup';
 import { Role } from '@/api/admin/roles/getRoles';
 import { Values } from '@/api/admin/users/updateUser';
 import Button from '@/components/elements/Button';
@@ -47,6 +48,7 @@ export default function UserForm ({ title, initialValues, children, onSubmit, ex
             email: '',
             password: '',
             adminRoleId: 0,
+            rootAdmin: false,
         };
     }
 
@@ -58,6 +60,7 @@ export default function UserForm ({ title, initialValues, children, onSubmit, ex
                 username: string().min(1).max(32),
                 email: string(),
                 password: exists ? string() : string().required(),
+                rootAdmin: bool().required(),
             })}
         >
             {
@@ -101,6 +104,16 @@ export default function UserForm ({ title, initialValues, children, onSubmit, ex
 
                                     <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
                                         <RoleSelect selected={role}/>
+                                    </div>
+                                </div>
+
+                                <div css={tw`w-full flex flex-row mb-6`}>
+                                    <div css={tw`w-full bg-neutral-800 border border-neutral-900 shadow-inner mt-6 p-4 rounded`}>
+                                        <FormikSwitch
+                                            name={'rootAdmin'}
+                                            label={'Root Admin'}
+                                            description={'Should this user be a root administrator?'}
+                                        />
                                     </div>
                                 </div>
 

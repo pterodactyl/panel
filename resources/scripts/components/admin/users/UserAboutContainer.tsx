@@ -43,6 +43,7 @@ const UserAboutContainer = () => {
                 email: user.email,
                 adminRoleId: user.adminRoleId,
                 password: '',
+                rootAdmin: user.rootAdmin,
             }}
             onSubmit={submit}
             role={user?.relationships.role || null}
