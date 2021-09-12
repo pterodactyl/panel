@@ -3,6 +3,7 @@ import { ServerContext } from '@/state/server';
 import { PowerAction } from '@/components/server/ServerConsole';
 import Button from '@/components/elements/Button';
 import isEqual from 'react-fast-compare';
+import tw from 'twin.macro';
 
 const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void }) => {
     const [ clicked, setClicked ] = useState(false);
@@ -16,6 +17,7 @@ const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void 
         <Button
             color={'red'}
             size={'xsmall'}
+            css={tw`uppercase`}
             disabled={!status || status === 'offline'}
             onClick={e => {
                 e.preventDefault();
