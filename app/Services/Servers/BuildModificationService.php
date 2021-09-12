@@ -56,8 +56,6 @@ class BuildModificationService
      */
     public function handle(Server $server, array $data)
     {
-        $this->connection->beginTransaction();
-
         /** @var \Pterodactyl\Models\Server $server */
         $server = $this->connection->transaction(function() use ($server, $data) {
             $this->processAllocations($server, $data);
@@ -87,7 +85,7 @@ class BuildModificationService
 
         // Because Wings always fetches an updated configuration from the Panel when booting
         // a server this type of exception can be safely "ignored" and just written to the logs.
-        // Ideally this request succeedes so we can apply resource modifications on the fly, but
+        // Ideally this request succeeds, so we can apply resource modifications on the fly, but
         // if it fails we can just continue on as normal.
         if (!empty($updateData['build'])) {
             try {
