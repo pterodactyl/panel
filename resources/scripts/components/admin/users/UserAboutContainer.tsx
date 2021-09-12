@@ -47,7 +47,6 @@ const UserAboutContainer = () => {
             }}
             onSubmit={submit}
             role={user?.relationships.role || null}
-            exists
         >
             <div css={tw`flex`}>
                 <UserDeleteButton

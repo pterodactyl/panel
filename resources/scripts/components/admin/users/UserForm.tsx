@@ -32,12 +32,11 @@ export interface Params {
     children?: React.ReactNode;
 
     onSubmit: (values: Values, helpers: FormikHelpers<Values>) => void;
-    exists?: boolean;
 
     role: Role | null;
 }
 
-export default function UserForm ({ title, initialValues, children, onSubmit, exists, role }: Params) {
+export default function UserForm ({ title, initialValues, children, onSubmit, role }: Params) {
     const submit = (values: Values, helpers: FormikHelpers<Values>) => {
         onSubmit(values, helpers);
     };
@@ -59,7 +58,6 @@ export default function UserForm ({ title, initialValues, children, onSubmit, ex
             validationSchema={object().shape({
                 username: string().min(1).max(32),
                 email: string(),
-                password: exists ? string() : string().required(),
                 rootAdmin: bool().required(),
             })}
         >
