@@ -1,23 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import tw from 'twin.macro';
-import { useHistory, useRouteMatch } from 'react-router-dom';
-import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
+import { action, Action, createContextStore } from 'easy-peasy';
 import { User } from '@/api/admin/users/getUsers';
-import getUser from '@/api/admin/users/getUser';
-import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import Spinner from '@/components/elements/Spinner';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import { ApplicationStore } from '@/state';
 import AdminBox from '@/components/admin/AdminBox';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import { Role } from '@/api/admin/roles/getRoles';
-import updateUser, { Values } from '@/api/admin/users/updateUser';
+import { Values } from '@/api/admin/users/updateUser';
 import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
 import RoleSelect from '@/components/admin/users/RoleSelect';
-import UserDeleteButton from '@/components/admin/users/UserDeleteButton';
 
 interface ctx {
     user: User | undefined;
@@ -43,7 +36,7 @@ export interface Params {
     role: Role | null;
 }
 
-export function InformationContainer ({ title, initialValues, children, onSubmit, exists, role }: Params) {
+export default function UserForm ({ title, initialValues, children, onSubmit, exists, role }: Params) {
     const submit = (values: Values, helpers: FormikHelpers<Values>) => {
         onSubmit(values, helpers);
     };
@@ -127,109 +120,3 @@ export function InformationContainer ({ title, initialValues, children, onSubmit
         </Formik>
     );
 }
-
-function EditInformationContainer () {
-    const history = useHistory();
-
-    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-
-    const user = Context.useStoreState(state => state.user);
-    const setUser = Context.useStoreActions(actions => actions.setUser);
-
-    if (user === undefined) {
-        return (
-            <></>
-        );
-    }
-
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('user');
-
-        updateUser(user.id, values)
-            .then(() => setUser({ ...user, ...values }))
-            .catch(error => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'user', error });
-            })
-            .then(() => setSubmitting(false));
-    };
-
-    return (
-        <InformationContainer
-            title={'Edit User'}
-            initialValues={{
-                username: user.username,
-                email: user.email,
-                adminRoleId: user.adminRoleId,
-                password: '',
-            }}
-            onSubmit={submit}
-            role={user?.relationships.role || null}
-            exists
-        >
-            <div css={tw`flex`}>
-                <UserDeleteButton
-                    userId={user.id}
-                    onDeleted={() => history.push('/admin/users')}
-                />
-            </div>
-        </InformationContainer>
-    );
-}
-
-function UserEditContainer () {
-    const match = useRouteMatch<{ id?: string }>();
-
-    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const [ loading, setLoading ] = useState(true);
-
-    const user = Context.useStoreState(state => state.user);
-    const setUser = Context.useStoreActions(actions => actions.setUser);
-
-    useEffect(() => {
-        clearFlashes('user');
-
-        getUser(Number(match.params?.id), [ 'role' ])
-            .then(user => setUser(user))
-            .catch(error => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'user', error });
-            })
-            .then(() => setLoading(false));
-    }, []);
-
-    if (loading || user === undefined) {
-        return (
-            <AdminContentBlock>
-                <FlashMessageRender byKey={'user'} css={tw`mb-4`}/>
-
-                <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
-                    <Spinner size={'base'}/>
-                </div>
-            </AdminContentBlock>
-        );
-    }
-
-    return (
-        <AdminContentBlock title={'User - ' + user.id}>
-            <div css={tw`w-full flex flex-row items-center mb-8`}>
-                <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
-                    <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{user.email}</h2>
-                    <p css={tw`text-base text-neutral-400 whitespace-nowrap overflow-ellipsis overflow-hidden`}>{user.uuid}</p>
-                </div>
-            </div>
-
-            <FlashMessageRender byKey={'user'} css={tw`mb-4`}/>
-
-            <EditInformationContainer/>
-        </AdminContentBlock>
-    );
-}
-
-export default () => {
-    return (
-        <Context.Provider>
-            <UserEditContainer/>
-        </Context.Provider>
-    );
-};

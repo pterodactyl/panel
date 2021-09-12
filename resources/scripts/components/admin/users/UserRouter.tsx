@@ -1,3 +1,4 @@
+import UserAboutContainer from '@/components/admin/users/UserAboutContainer';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import tw from 'twin.macro';
@@ -38,7 +39,7 @@ const UserRouter = () => {
     useEffect(() => {
         clearFlashes('user');
 
-        getUser(Number(match.params?.id), [ 'database_host', 'location' ])
+        getUser(Number(match.params?.id), [ 'role' ])
             .then(user => setUser(user))
             .catch(error => {
                 console.error(error);
@@ -86,7 +87,7 @@ const UserRouter = () => {
 
             <Switch location={location}>
                 <Route path={`${match.path}`} exact>
-                    <p>About</p>
+                    <UserAboutContainer/>
                 </Route>
 
                 <Route path={`${match.path}/servers`} exact>

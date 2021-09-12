@@ -6,7 +6,7 @@ function UserServers () {
     const user = Context.useStoreState(state => state.user);
 
     return (
-        <ServersTable filters={{ owner_id: user?.id?.toString() }}/>
+        <ServersTable filters={{ owner_id: user?.id?.toString?.() }}/>
     );
 }
 

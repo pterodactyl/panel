@@ -2,7 +2,7 @@ import React from 'react';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { InformationContainer } from '@/components/admin/users/UserEditContainer';
+import UserForm from '@/components/admin/users/UserForm';
 import { useHistory } from 'react-router-dom';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
@@ -37,7 +37,7 @@ export default () => {
 
             <FlashMessageRender byKey={'user:create'} css={tw`mb-4`}/>
 
-            <InformationContainer title={'Create User'} onSubmit={submit} role={null}/>
+            <UserForm title={'Create User'} onSubmit={submit} role={null}/>
         </AdminContentBlock>
     );
 };
