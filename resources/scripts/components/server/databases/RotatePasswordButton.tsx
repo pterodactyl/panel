@@ -22,7 +22,7 @@ export default ({ databaseId, onUpdate }: {
 
     const rotate = () => {
         setLoading(true);
-        clearFlashes();
+        clearFlashes(undefined);
 
         rotateDatabasePassword(server.uuid, databaseId)
             .then(database => onUpdate(database))

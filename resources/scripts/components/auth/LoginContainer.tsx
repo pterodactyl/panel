@@ -17,18 +17,18 @@ interface Values {
 }
 
 const LoginContainer = ({ history }: RouteComponentProps) => {
-    const ref = useRef<Reaptcha>(null);
+    const ref = useRef<Reaptcha | null>(null);
     const [ token, setToken ] = useState('');
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
 
     useEffect(() => {
-        clearFlashes();
+        clearFlashes(undefined);
     }, []);
 
     const onSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes();
+        clearFlashes(undefined);
 
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
@@ -54,7 +54,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     history.replace('/auth/login/key', {
                         token: response.confirmationToken,
                         publicKey: response.publicKey,
-                        hasTotp: response.methods.includes('totp'),
+                        hasTotp: response.methods?.includes('totp'),
                     });
                     return;
                 }
@@ -63,11 +63,11 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
                 }
             })
-            .catch(error => {
+            .catch(async (error) => {
                 console.error(error);
 
                 setToken('');
-                if (ref.current) ref.current.reset();
+                if (ref.current) await ref.current?.reset();
 
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
@@ -111,9 +111,9 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         ref={ref}
                         size={'invisible'}
                         sitekey={siteKey || '_invalid_key'}
-                        onVerify={response => {
+                        onVerify={async (response) => {
                             setToken(response);
-                            submitForm();
+                            await submitForm();
                         }}
                         onExpire={() => {
                             setSubmitting(false);
