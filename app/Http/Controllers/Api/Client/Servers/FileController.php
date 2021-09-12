@@ -197,7 +197,7 @@ class FileController extends ClientApiController
             return $this->fileRepository->setServer($server)
                 ->compressFiles(
                     $request->input('root'),
-                    $request->input('files')
+                    $request->input('files'),
                 );
         });
 
@@ -211,7 +211,7 @@ class FileController extends ClientApiController
      */
     public function decompress(DecompressFilesRequest $request, Server $server): Response
     {
-        $file = $server->audit(AuditLog::SERVER__FILESYSTEM_DECOMPRESS, function (AuditLog $audit, Server $server) use ($request) {
+        $server->audit(AuditLog::SERVER__FILESYSTEM_DECOMPRESS, function (AuditLog $audit, Server $server) use ($request) {
             // Allow up to five minutes for this request to process before timing out.
             set_time_limit(300);
 
@@ -252,7 +252,7 @@ class FileController extends ClientApiController
     public function chmod(ChmodFilesRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_CHMOD, function (AuditLog $audit, Server $server) use ($request) {
-            $audit->metadata = ['directory' => $request->input('root'), 'files' => $request->input('files')];
+            $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
 
             $this->fileRepository->setServer($server)
                 ->chmodFiles(
@@ -272,7 +272,7 @@ class FileController extends ClientApiController
     public function pull(PullFileRequest $request, Server $server): Response
     {
         $server->audit(AuditLog::SERVER__FILESYSTEM_PULL, function (AuditLog $audit, Server $server) use ($request) {
-            $audit->metadata = ['directory' => $request->input('root'), 'url' => $request->input('url')];
+            $audit->metadata = ['root' => $request->input('root'), 'url' => $request->input('url')];
 
             $this->fileRepository->setServer($server)
                 ->pull(
