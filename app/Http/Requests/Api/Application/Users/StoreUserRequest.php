@@ -11,23 +11,13 @@ class StoreUserRequest extends ApplicationApiRequest
     {
         $rules = $rules ?? User::getRules();
 
-        $response = collect($rules)->only([
+        return collect($rules)->only([
             'external_id',
             'email',
             'username',
             'password',
-            'language',
             'admin_role_id',
+            'root_admin',
         ])->toArray();
-
-        return $response;
-    }
-
-    public function attributes(): array
-    {
-        return [
-            'external_id' => 'Third Party Identifier',
-            'root_admin' => 'Root Administrator Status',
-        ];
     }
 }
