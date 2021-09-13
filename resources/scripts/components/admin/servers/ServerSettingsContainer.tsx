@@ -135,7 +135,7 @@ export function ServerResourceContainer () {
                     <FormikSwitch
                         name={'oomKiller'}
                         label={'Out of Memory Killer'}
-                        description={'Enabling OOM killer may cause server processes to exit unexpectedly. '}
+                        description={'Enabling OOM killer may cause server processes to exit unexpectedly.'}
                     />
                 </div>
             </div>
