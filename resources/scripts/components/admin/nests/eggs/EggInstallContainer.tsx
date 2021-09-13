@@ -9,11 +9,6 @@ import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
-const initialContent = `#!/bin/ash
-
-curl -s https://cdn.pterodactyl.io/releases/latest.json | jq
-`;
-
 export default () => {
     const egg = Context.useStoreState(state => state.egg);
 
@@ -28,19 +23,19 @@ export default () => {
             <div css={tw`relative pb-4`}>
                 <SpinnerOverlay visible={false}/>
 
-                <Editor overrides={tw`h-96 mb-4`} initialContent={initialContent} mode={shell}/>
+                <Editor overrides={tw`h-96 mb-4`} initialContent={egg.scriptInstall || ''} mode={shell}/>
 
                 <div css={tw`mx-6 mb-4`}>
                     <div css={tw`grid grid-cols-3 gap-x-8 gap-y-6`}>
                         <div>
                             <Label>Install Container</Label>
-                            <Input type="text" defaultValue={'ghcr.io/pterodactyl/installers:alpine'}/>
+                            <Input type="text" defaultValue={egg.scriptContainer}/>
                             <p className={'input-help'}>The Docker image to use for running this installation script.</p>
                         </div>
 
                         <div>
                             <Label>Install Entrypoint</Label>
-                            <Input type="text" defaultValue={'/bin/ash'}/>
+                            <Input type="text" defaultValue={egg.scriptEntry}/>
                             <p className={'input-help'}>The command that should be used to run this script inside of the installation container.</p>
                         </div>
                     </div>
