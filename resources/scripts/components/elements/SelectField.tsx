@@ -37,7 +37,7 @@ export const SelectStyle: StylesConfig<T, any, any> = {
     control: (base: CSSObject, props: ControlProps<T, any, any>): CSSObject => {
         return {
             ...base,
-            height: '2.75rem',
+            height: '3rem',
             /* paddingTop: '0.75rem',
             paddingBottom: '0.75rem',
             paddingLeft: '4rem',

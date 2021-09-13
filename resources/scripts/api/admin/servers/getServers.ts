@@ -47,9 +47,9 @@ export interface Server {
     updatedAt: Date;
 
     relations: {
-        egg: Egg | undefined;
-        node: Node | undefined;
-        user: User | undefined;
+        egg?: Egg;
+        node?: Node;
+        user?: User;
     }
 }
 
@@ -94,11 +94,11 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
     updatedAt: new Date(attributes.updated_at),
 
     relations: {
-        egg: attributes.relationships?.egg !== undefined ? rawDataToEgg(attributes.relationships.egg as FractalResponseData) : undefined,
-        node: attributes.relationships?.node !== undefined ? rawDataToNode(attributes.relationships.node as FractalResponseData) : undefined,
-        user: attributes.relationships?.user !== undefined ? rawDataToUser(attributes.relationships.user as FractalResponseData) : undefined,
+        egg: attributes.relationships?.egg?.object === 'egg' ? rawDataToEgg(attributes.relationships.egg as FractalResponseData) : undefined,
+        node: attributes.relationships?.node?.object === 'node' ? rawDataToNode(attributes.relationships.node as FractalResponseData) : undefined,
+        user: attributes.relationships?.user?.object === 'user' ? rawDataToUser(attributes.relationships.user as FractalResponseData) : undefined,
     },
-});
+}) as Server;
 
 export interface Filters {
     id?: string;

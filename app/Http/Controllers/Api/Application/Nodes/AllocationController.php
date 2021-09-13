@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
+use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
@@ -44,7 +45,10 @@ class AllocationController extends ApplicationApiController
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
 
-        $allocations = $node->allocations()->paginate($perPage);
+        $allocations = QueryBuilder::for(Allocation::query()->where('node_id', '=', $node->id))
+            ->allowedFilters(['id', 'ip', 'port', 'alias', 'server_id'])
+            ->allowedSorts(['id', 'ip', 'port', 'server_id'])
+            ->paginate($perPage);
 
         return $this->fractal->collection($allocations)
             ->transformWith(AllocationTransformer::class)

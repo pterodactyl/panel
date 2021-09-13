@@ -28,6 +28,7 @@ class AllocationTransformer extends Transformer
             'alias' => $model->ip_alias,
             'port' => $model->port,
             'notes' => $model->notes,
+            'server_id' => $model->server_id,
             'assigned' => !is_null($model->server_id),
         ];
     }

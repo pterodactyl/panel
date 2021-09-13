@@ -13,14 +13,14 @@ Route::get('/version', 'VersionController');
 |
 */
 Route::group(['prefix' => '/databases'], function () {
-    Route::get('/', 'Databases\DatabaseController@index');
-    Route::get('/{databaseHost}', 'Databases\DatabaseController@view');
+    Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Databases\DatabaseController::class, 'index']);
+    Route::get('/{databaseHost}', [\Pterodactyl\Http\Controllers\Api\Application\Databases\DatabaseController::class, 'view']);
 
-    Route::post('/', 'Databases\DatabaseController@store');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Databases\DatabaseController::class, 'store']);
 
-    Route::patch('/{databaseHost}', 'Databases\DatabaseController@update');
+    Route::patch('/{databaseHost}', [\Pterodactyl\Http\Controllers\Api\Application\Databases\DatabaseController::class, 'update']);
 
-    Route::delete('/{databaseHost}', 'Databases\DatabaseController@delete');
+    Route::delete('/{databaseHost}', [\Pterodactyl\Http\Controllers\Api\Application\Databases\DatabaseController::class, 'delete']);
 });
 
 /*
@@ -32,13 +32,13 @@ Route::group(['prefix' => '/databases'], function () {
 |
 */
 Route::group(['prefix' => '/eggs'], function () {
-    Route::get('/{egg}', 'Eggs\EggController@view');
+    Route::get('/{egg}', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'view']);
 
-    Route::post('/', 'Eggs\EggController@store');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'store']);
 
-    Route::patch('/{egg}', 'Eggs\EggController@update');
+    Route::patch('/{egg}', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'update']);
 
-    Route::delete('/{egg}', 'Eggs\EggController@delete');
+    Route::delete('/{egg}', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'delete']);
 });
 
 /*
@@ -50,14 +50,14 @@ Route::group(['prefix' => '/eggs'], function () {
 |
 */
 Route::group(['prefix' => '/locations'], function () {
-    Route::get('/', 'Locations\LocationController@index')->name('api.applications.locations');
-    Route::get('/{location}', 'Locations\LocationController@view')->name('api.application.locations.view');
+    Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Locations\LocationController::class, 'index']);
+    Route::get('/{location}', [\Pterodactyl\Http\Controllers\Api\Application\Locations\LocationController::class, 'view']);
 
-    Route::post('/', 'Locations\LocationController@store');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Locations\LocationController::class, 'store']);
 
-    Route::patch('/{location}', 'Locations\LocationController@update');
+    Route::patch('/{location}', [\Pterodactyl\Http\Controllers\Api\Application\Locations\LocationController::class, 'update']);
 
-    Route::delete('/{location}', 'Locations\LocationController@delete');
+    Route::delete('/{location}', [\Pterodactyl\Http\Controllers\Api\Application\Locations\LocationController::class, 'delete']);
 });
 
 /*
@@ -69,19 +69,19 @@ Route::group(['prefix' => '/locations'], function () {
 |
 */
 Route::group(['prefix' => '/mounts'], function () {
-    Route::get('/', 'Mounts\MountController@index');
-    Route::get('/{mount}', 'Mounts\MountController@view');
+    Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'index']);
+    Route::get('/{mount}', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'view']);
 
-    Route::post('/', 'Mounts\MountController@store');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'store']);
 
-    Route::put('/{mount}/eggs', 'Mounts\MountController@addEggs');
-    Route::put('/{mount}/nodes', 'Mounts\MountController@addNodes');
+    Route::put('/{mount}/eggs', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'addEggs']);
+    Route::put('/{mount}/nodes', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'addNodes']);
 
-    Route::patch('/{mount}', 'Mounts\MountController@update');
+    Route::patch('/{mount}', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'update']);
 
-    Route::delete('/{mount}', 'Mounts\MountController@delete');
-    Route::delete('/{mount}/eggs', 'Mounts\MountController@deleteEggs');
-    Route::delete('/{mount}/nodes', 'Mounts\MountController@deleteNodes');
+    Route::delete('/{mount}', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'delete']);
+    Route::delete('/{mount}/eggs', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'deleteEggs']);
+    Route::delete('/{mount}/nodes', [\Pterodactyl\Http\Controllers\Api\Application\Mounts\MountController::class, 'deleteNodes']);
 });
 
 /*
@@ -93,15 +93,15 @@ Route::group(['prefix' => '/mounts'], function () {
 |
 */
 Route::group(['prefix' => '/nests'], function () {
-    Route::get('/', 'Nests\NestController@index')->name('api.application.nests');
-    Route::get('/{nest}', 'Nests\NestController@view')->name('api.application.nests.view');
-    Route::get('/{nest}/eggs', 'Eggs\EggController@index');
+    Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Nests\NestController::class, 'index']);
+    Route::get('/{nest}', [\Pterodactyl\Http\Controllers\Api\Application\Nests\NestController::class, 'view']);
+    Route::get('/{nest}/eggs', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'index']);
 
-    Route::post('/', 'Nests\NestController@store');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Nests\NestController::class, 'store']);
 
-    Route::patch('/{nest}', 'Nests\NestController@update');
+    Route::patch('/{nest}', [\Pterodactyl\Http\Controllers\Api\Application\Nests\NestController::class, 'update']);
 
-    Route::delete('/{nest}', 'Nests\NestController@delete');
+    Route::delete('/{nest}', [\Pterodactyl\Http\Controllers\Api\Application\Nests\NestController::class, 'delete']);
 });
 
 /*
@@ -113,22 +113,22 @@ Route::group(['prefix' => '/nests'], function () {
 |
 */
 Route::group(['prefix' => '/nodes'], function () {
-    Route::get('/', 'Nodes\NodeController@index')->name('api.application.nodes');
-    Route::get('/deployable', 'Nodes\NodeDeploymentController');
-    Route::get('/{node}', 'Nodes\NodeController@view')->name('api.application.nodes.view');
-    Route::get('/{node}/configuration', 'Nodes\NodeConfigurationController');
-    Route::get('/{node}/information', 'Nodes\NodeInformationController');
+    Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\NodeController::class, 'index']);
+    Route::get('/deployable', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\NodeDeploymentController::class, '__invoke']);
+    Route::get('/{node}', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\NodeController::class, 'view']);
+    Route::get('/{node}/configuration', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\NodeConfigurationController::class, '__invoke']);
+    Route::get('/{node}/information', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\NodeInformationController::class, '__invoke']);
 
-    Route::post('/', 'Nodes\NodeController@store');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\NodeController::class, 'store']);
 
-    Route::patch('/{node}', 'Nodes\NodeController@update');
+    Route::patch('/{node}', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\NodeController::class, 'update']);
 
-    Route::delete('/{node}', 'Nodes\NodeController@delete');
+    Route::delete('/{node}', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\NodeController::class, 'delete']);
 
     Route::group(['prefix' => '/{node}/allocations'], function () {
-        Route::get('/', 'Nodes\AllocationController@index')->name('api.application.allocations');
-        Route::post('/', 'Nodes\AllocationController@store');
-        Route::delete('/{allocation}', 'Nodes\AllocationController@delete')->name('api.application.allocations.view');
+        Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\AllocationController::class, 'index']);
+        Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\AllocationController::class, 'store']);
+        Route::delete('/{allocation}', [\Pterodactyl\Http\Controllers\Api\Application\Nodes\AllocationController::class, 'delete']);
     });
 });
 
@@ -141,14 +141,14 @@ Route::group(['prefix' => '/nodes'], function () {
 |
 */
 Route::group(['prefix' => '/roles'], function () {
-    Route::get('/', 'Roles\RoleController@index');
-    Route::get('/{role}', 'Roles\RoleController@view');
+    Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Roles\RoleController::class, 'index']);
+    Route::get('/{role}', [\Pterodactyl\Http\Controllers\Api\Application\Roles\RoleController::class, 'view']);
 
-    Route::post('/', 'Roles\RoleController@store');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Roles\RoleController::class, 'store']);
 
-    Route::patch('/{role}', 'Roles\RoleController@update');
+    Route::patch('/{role}', [\Pterodactyl\Http\Controllers\Api\Application\Roles\RoleController::class, 'update']);
 
-    Route::delete('/{role}', 'Roles\RoleController@delete');
+    Route::delete('/{role}', [\Pterodactyl\Http\Controllers\Api\Application\Roles\RoleController::class, 'delete']);
 });
 
 /*
@@ -160,31 +160,31 @@ Route::group(['prefix' => '/roles'], function () {
 |
 */
 Route::group(['prefix' => '/servers'], function () {
-    Route::get('/', 'Servers\ServerController@index')->name('api.application.servers');
-    Route::get('/{server}', 'Servers\ServerController@view')->name('api.application.servers.view');
-    Route::get('/external/{external_id}', 'Servers\ExternalServerController@index')->name('api.application.servers.external');
+    Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerController::class, 'index']);
+    Route::get('/{server}', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerController::class, 'view']);
+    Route::get('/external/{external_id}', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ExternalServerController::class, 'index']);
 
-    Route::patch('/{server}/details', 'Servers\ServerDetailsController@details')->name('api.application.servers.details');
-    Route::patch('/{server}/build', 'Servers\ServerDetailsController@build')->name('api.application.servers.build');
-    Route::patch('/{server}/startup', 'Servers\StartupController@index')->name('api.application.servers.startup');
+    Route::patch('/{server}/details', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerDetailsController::class, 'details']);
+    Route::patch('/{server}/build', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerDetailsController::class, 'build']);
+    Route::patch('/{server}/startup', [\Pterodactyl\Http\Controllers\Api\Application\Servers\StartupController::class, 'index']);
 
-    Route::post('/', 'Servers\ServerController@store');
-    Route::post('/{server}/suspend', 'Servers\ServerManagementController@suspend')->name('api.application.servers.suspend');
-    Route::post('/{server}/unsuspend', 'Servers\ServerManagementController@unsuspend')->name('api.application.servers.unsuspend');
-    Route::post('/{server}/reinstall', 'Servers\ServerManagementController@reinstall')->name('api.application.servers.reinstall');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerController::class, 'store']);
+    Route::post('/{server}/suspend', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerManagementController::class, 'suspend']);
+    Route::post('/{server}/unsuspend', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerManagementController::class, 'unsuspend']);
+    Route::post('/{server}/reinstall', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerManagementController::class, 'reinstall']);
 
-    Route::delete('/{server}', 'Servers\ServerController@delete');
-    Route::delete('/{server}/{force?}', 'Servers\ServerController@delete');
+    Route::delete('/{server}', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerController::class, 'delete']);
+    Route::delete('/{server}/{force?}', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerController::class, 'delete']);
 
     // Database Management Endpoint
     Route::group(['prefix' => '/{server}/databases'], function () {
-        Route::get('/', 'Servers\DatabaseController@index')->name('api.application.servers.databases');
-        Route::get('/{database}', 'Servers\DatabaseController@view')->name('api.application.servers.databases.view');
+        Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Servers\DatabaseController::class, 'index']);
+        Route::get('/{database}', [\Pterodactyl\Http\Controllers\Api\Application\Servers\DatabaseController::class, 'view']);
 
-        Route::post('/', 'Servers\DatabaseController@store');
-        Route::post('/{database}/reset-password', 'Servers\DatabaseController@resetPassword');
+        Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Servers\DatabaseController::class, 'store']);
+        Route::post('/{database}/reset-password', [\Pterodactyl\Http\Controllers\Api\Application\Servers\DatabaseController::class, 'resetPassword']);
 
-        Route::delete('/{database}', 'Servers\DatabaseController@delete');
+        Route::delete('/{database}', [\Pterodactyl\Http\Controllers\Api\Application\Servers\DatabaseController::class, 'delete']);
     });
 });
 
@@ -197,13 +197,13 @@ Route::group(['prefix' => '/servers'], function () {
 |
 */
 Route::group(['prefix' => '/users'], function () {
-    Route::get('/', 'Users\UserController@index')->name('api.application.users');
-    Route::get('/{user}', 'Users\UserController@view')->name('api.application.users.view');
-    Route::get('/external/{external_id}', 'Users\ExternalUserController@index')->name('api.application.users.external');
+    Route::get('/', [\Pterodactyl\Http\Controllers\Api\Application\Users\UserController::class, 'index']);
+    Route::get('/{user}', [\Pterodactyl\Http\Controllers\Api\Application\Users\UserController::class, 'view']);
+    Route::get('/external/{external_id}', [\Pterodactyl\Http\Controllers\Api\Application\Users\ExternalUserController::class, 'index']);
 
-    Route::post('/', 'Users\UserController@store');
+    Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Users\UserController::class, 'store']);
 
-    Route::patch('/{user}', 'Users\UserController@update');
+    Route::patch('/{user}', [\Pterodactyl\Http\Controllers\Api\Application\Users\UserController::class, 'update']);
 
-    Route::delete('/{user}', 'Users\UserController@delete');
+    Route::delete('/{user}', [\Pterodactyl\Http\Controllers\Api\Application\Users\UserController::class, 'delete']);
 });

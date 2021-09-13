@@ -75,7 +75,7 @@
         "sockette": "^2.0.6",
         "styled-components": "^5.3.1",
         "styled-components-breakpoint": "^3.0.0-preview.20",
-        "swr": "^1.0.0",
+        "swr": "^1.0.1",
         "uuid": "^3.4.0",
         "xterm": "^4.13.0",
         "xterm-addon-attach": "^0.6.0",

@@ -1,6 +1,7 @@
 import { createContextStore } from 'easy-peasy';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
+import allocations, { AdminAllocationStore } from '@/state/admin/allocations';
 import databases, { AdminDatabaseStore } from '@/state/admin/databases';
 import locations, { AdminLocationStore } from '@/state/admin/locations';
 import mounts, { AdminMountStore } from '@/state/admin/mounts';
@@ -11,6 +12,7 @@ import servers, { AdminServerStore } from '@/state/admin/servers';
 import users, { AdminUserStore } from '@/state/admin/users';
 
 interface AdminStore {
+    allocations: AdminAllocationStore;
     databases: AdminDatabaseStore;
     locations: AdminLocationStore;
     mounts: AdminMountStore;
@@ -22,6 +24,7 @@ interface AdminStore {
 }
 
 export const AdminContext = createContextStore<AdminStore>({
+    allocations,
     databases,
     locations,
     mounts,
