@@ -34,8 +34,8 @@ export default ({ selected }: { selected: Database | null }) => {
         <SearchableSelect
             id={'databaseId'}
             name={'databaseId'}
-            label={'Database'}
-            placeholder={'Select a database...'}
+            label={'Database Host'}
+            placeholder={'Select a database host...'}
             items={databases}
             selected={database}
             setSelected={setDatabase}

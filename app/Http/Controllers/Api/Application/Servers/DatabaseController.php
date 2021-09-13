@@ -87,12 +87,6 @@ class DatabaseController extends ApplicationApiController
 
         return $this->fractal->item($database)
             ->transformWith(ServerDatabaseTransformer::class)
-            ->addMeta([
-                'resource' => route('api.application.servers.databases.view', [
-                    'server' => $server->id,
-                    'database' => $database->id,
-                ]),
-            ])
             ->respond(Response::HTTP_CREATED);
     }
 

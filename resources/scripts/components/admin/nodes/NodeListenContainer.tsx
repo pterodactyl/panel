@@ -1,3 +1,4 @@
+import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
@@ -9,7 +10,7 @@ export default () => {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox title={'Listen'} css={tw`w-full relative`}>
+        <AdminBox icon={faNetworkWired} title={'Listen'} css={tw`w-full relative`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>

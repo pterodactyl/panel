@@ -1,3 +1,4 @@
+import NodeEditContainer from '@/components/admin/nodes/NodeEditContainer';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import tw from 'twin.macro';
@@ -11,7 +12,6 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import { ApplicationStore } from '@/state';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
 import NodeAboutContainer from '@/components/admin/nodes/NodeAboutContainer';
-import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
 import NodeConfigurationContainer from '@/components/admin/nodes/NodeConfigurationContainer';
 import NodeAllocationContainer from '@/components/admin/nodes/NodeAllocationContainer';
 import NodeServers from '@/components/admin/nodes/NodeServers';
@@ -112,7 +112,7 @@ const NodeRouter = () => {
                 </Route>
 
                 <Route path={`${match.path}/settings`} exact>
-                    <NodeSettingsContainer/>
+                    <NodeEditContainer/>
                 </Route>
 
                 <Route path={`${match.path}/configuration`} exact>

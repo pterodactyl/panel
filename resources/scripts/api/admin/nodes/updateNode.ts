@@ -14,9 +14,7 @@ export default (id: number, node: Partial<Node>, include: string[] = []): Promis
     });
 
     return new Promise((resolve, reject) => {
-        http.patch(`/api/application/nodes/${id}`, {
-            ...data,
-        }, { params: { include: include.join(',') } })
+        http.patch(`/api/application/nodes/${id}`, data, { params: { include: include.join(',') } })
             .then(({ data }) => resolve(rawDataToNode(data)))
             .catch(reject);
     });

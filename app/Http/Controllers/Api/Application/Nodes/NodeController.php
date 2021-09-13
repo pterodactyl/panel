@@ -90,11 +90,6 @@ class NodeController extends ApplicationApiController
 
         return $this->fractal->item($node)
             ->transformWith(NodeTransformer::class)
-            ->addMeta([
-                'resource' => route('api.application.nodes.view', [
-                    'node' => $node->id,
-                ]),
-            ])
             ->respond(201);
     }
 

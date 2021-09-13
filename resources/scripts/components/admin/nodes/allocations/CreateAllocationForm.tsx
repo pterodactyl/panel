@@ -35,7 +35,7 @@ function CreateAllocationForm ({ nodeId }: { nodeId: string | number }) {
     }, [ nodeId ]);
 
     const isValidIP = (inputValue: string): boolean => {
-        // TODO: Better way of checking for a valid ip (and CIDR).
+        // TODO: Better way of checking for a valid ip (and CIDR)
         return inputValue.match(/^([0-9a-f.:/]+)$/) !== null;
     };
 
@@ -44,11 +44,11 @@ function CreateAllocationForm ({ nodeId }: { nodeId: string | number }) {
         return inputValue.match(/^([0-9-]+)$/) !== null;
     };
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const submit = ({ ips, ports, alias }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         setSubmitting(false);
 
-        values.ips.forEach(async (ip) => {
-            const allocations = await createAllocation(nodeId, { ip, ports: values.ports, alias: values.alias }, [ 'server' ]);
+        ips.forEach(async (ip) => {
+            const allocations = await createAllocation(nodeId, { ip, ports, alias }, [ 'server' ]);
             await mutate(data => ({ ...data!, items: { ...data!.items!, ...allocations } }));
         });
     };

@@ -1,3 +1,4 @@
+import { faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
@@ -9,7 +10,7 @@ export default () => {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox title={'Limits'} css={tw`w-full relative`}>
+        <AdminBox icon={faMicrochip} title={'Limits'} css={tw`w-full relative`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <div css={tw`md:w-full md:flex md:flex-row mb-6`}>

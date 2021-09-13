@@ -86,11 +86,6 @@ class LocationController extends ApplicationApiController
 
         return $this->fractal->item($location)
             ->transformWith(LocationTransformer::class)
-            ->addMeta([
-                'resource' => route('api.application.locations.view', [
-                    'location' => $location->id,
-                ]),
-            ])
             ->respond(201);
     }
 
