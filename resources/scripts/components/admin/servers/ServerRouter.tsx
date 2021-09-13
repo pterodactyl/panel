@@ -40,7 +40,7 @@ const ServerRouter = () => {
     useEffect(() => {
         clearFlashes('server');
 
-        getServer(Number(match.params?.id), [ 'egg' ])
+        getServer(Number(match.params?.id), [ 'user' ])
             .then(server => setServer(server))
             .catch(error => {
                 console.error(error);
@@ -52,7 +52,7 @@ const ServerRouter = () => {
     if (loading || server === undefined) {
         return (
             <AdminContentBlock>
-                <FlashMessageRender byKey={'node'} css={tw`mb-4`}/>
+                <FlashMessageRender byKey={'server'} css={tw`mb-4`}/>
 
                 <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
                     <Spinner size={'base'}/>
@@ -62,7 +62,7 @@ const ServerRouter = () => {
     }
 
     return (
-        <AdminContentBlock title={'Node - ' + server.name}>
+        <AdminContentBlock title={'Server - ' + server.name}>
             <div css={tw`w-full flex flex-row items-center mb-4`}>
                 <div css={tw`flex flex-col flex-shrink`} style={{ minWidth: '0' }}>
                     <h2 css={tw`text-2xl text-neutral-50 font-header font-medium`}>{server.name}</h2>
@@ -70,7 +70,7 @@ const ServerRouter = () => {
                 </div>
             </div>
 
-            <FlashMessageRender byKey={'node'} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={'server'} css={tw`mb-4`}/>
 
             <SubNavigation>
                 <SubNavigationLink to={`${match.url}`} name={'Settings'}>

@@ -1,8 +1,11 @@
+import { Server } from '@/api/admin/servers/getServers';
+import ServerDeleteButton from '@/components/admin/servers/ServerDeleteButton';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
+import { useHistory } from 'react-router-dom';
 import tw from 'twin.macro';
 import { object } from 'yup';
-import updateServer from '@/api/admin/servers/updateServer';
+import updateServer, { Values } from '@/api/admin/servers/updateServer';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
@@ -13,41 +16,8 @@ import OwnerSelect from '@/components/admin/servers/OwnerSelect';
 import Button from '@/components/elements/Button';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 
-interface Values {
-    id: number;
-    externalId: string;
-    uuid: string;
-    identifier: string;
-    name: string;
-
-    memory: number;
-    swap: number;
-    disk: number;
-    io: number;
-    cpu: number;
-    threads: string;
-
-    databases: number;
-    allocations: number;
-    backups: number;
-
-    ownerId: number;
-    nodeId: number;
-    allocationId: number;
-    nestId: number;
-    eggId: number;
-}
-
-const ServerFeatureContainer = () => {
+export function ServerFeatureContainer () {
     const { isSubmitting } = useFormikContext();
-
-    const server = Context.useStoreState(state => state.server);
-
-    if (server === undefined) {
-        return (
-            <></>
-        );
-    }
 
     return (
         <AdminBox title={'Feature Limits'} css={tw`relative w-full`}>
@@ -77,7 +47,7 @@ const ServerFeatureContainer = () => {
                 <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
                     <Field
                         id={'backups'}
-                        name={'backup'}
+                        name={'backups'}
                         label={'Backup Limit'}
                         type={'number'}
                         description={'The total number of backups that can be created for this server.'}
@@ -86,18 +56,10 @@ const ServerFeatureContainer = () => {
             </div>
         </AdminBox>
     );
-};
+}
 
-const ServerResourceContainer = () => {
+export function ServerResourceContainer () {
     const { isSubmitting } = useFormikContext();
-
-    const server = Context.useStoreState(state => state.server);
-
-    if (server === undefined) {
-        return (
-            <></>
-        );
-    }
 
     return (
         <AdminBox title={'Resource Management'} css={tw`relative w-full`}>
@@ -171,7 +133,7 @@ const ServerResourceContainer = () => {
             <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
                 <div css={tw`mt-6 bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
                     <FormikSwitch
-                        name={'oom'}
+                        name={'oomKiller'}
                         label={'Out of Memory Killer'}
                         description={'Enabling OOM killer may cause server processes to exit unexpectedly. '}
                     />
@@ -179,18 +141,10 @@ const ServerResourceContainer = () => {
             </div>
         </AdminBox>
     );
-};
+}
 
-const ServerSettingsContainer = () => {
+export function ServerSettingsContainer ({ server }: { server?: Server }) {
     const { isSubmitting } = useFormikContext();
-
-    const server = Context.useStoreState(state => state.server);
-
-    if (server === undefined) {
-        return (
-            <></>
-        );
-    }
 
     return (
         <AdminBox title={'Settings'} css={tw`relative w-full`}>
@@ -218,14 +172,16 @@ const ServerSettingsContainer = () => {
 
             <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
                 <div css={tw`mb-6 w-full md:w-1/2 md:flex md:flex-col md:pr-4 md:mb-0`}>
-                    <OwnerSelect selected={null}/>
+                    <OwnerSelect selected={server?.relations.user || null}/>
                 </div>
             </div>
         </AdminBox>
     );
-};
+}
 
-export default () => {
+export default function ServerSettingsContainer2 () {
+    const history = useHistory();
+
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const server = Context.useStoreState(state => state.server);
@@ -239,6 +195,7 @@ export default () => {
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('server');
+        console.log(values);
 
         updateServer(server.id, values)
             .then(() => setServer({ ...server, ...values }))
@@ -253,11 +210,10 @@ export default () => {
         <Formik
             onSubmit={submit}
             initialValues={{
-                id: server.id,
                 externalId: server.externalId || '',
-                uuid: server.uuid,
-                identifier: server.identifier,
                 name: server.name,
+                ownerId: server.ownerId,
+                oomKiller: server.oomKiller,
 
                 memory: server.limits.memory,
                 swap: server.limits.swap,
@@ -269,12 +225,6 @@ export default () => {
                 databases: server.featureLimits.databases,
                 allocations: server.featureLimits.allocations,
                 backups: server.featureLimits.backups,
-
-                ownerId: server.ownerId,
-                nodeId: server.nodeId,
-                allocationId: server.allocationId,
-                nestId: server.nestId,
-                eggId: server.eggId,
             }}
             validationSchema={object().shape({
             })}
@@ -285,7 +235,7 @@ export default () => {
                         <div css={tw`flex flex-col lg:flex-row`}>
                             <div css={tw`flex flex-col w-full mt-4 ml-0 lg:w-1/2 lg:ml-2 lg:mt-0`}>
                                 <div css={tw`flex flex-col w-full mr-0 lg:mr-2`}>
-                                    <ServerSettingsContainer/>
+                                    <ServerSettingsContainer server={server}/>
                                 </div>
                                 <div css={tw`flex flex-col w-full mt-4 mr-0 lg:mr-2`}>
                                     <ServerFeatureContainer/>
@@ -295,8 +245,12 @@ export default () => {
                                 <div css={tw`flex flex-col w-full mr-0 lg:mr-2`}>
                                     <ServerResourceContainer/>
                                 </div>
-                                <div css={tw`py-2 pr-6 mt-4 rounded shadow-md bg-neutral-700`}>
+                                <div css={tw`rounded shadow-md bg-neutral-700 mt-4 py-2 px-6`}>
                                     <div css={tw`flex flex-row`}>
+                                        <ServerDeleteButton
+                                            serverId={server?.id}
+                                            onDeleted={() => history.push('/admin/servers')}
+                                        />
                                         <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
                                             Save Changes
                                         </Button>
@@ -309,4 +263,4 @@ export default () => {
             }
         </Formik>
     );
-};
+}

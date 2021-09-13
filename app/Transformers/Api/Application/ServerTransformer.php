@@ -72,6 +72,7 @@ class ServerTransformer extends Transformer
                 'image' => $model->image,
                 'environment' => $this->environmentService->handle($model),
             ],
+            'oom_killer' => !$model->oom_disabled,
             'updated_at' => self::formatTimestamp($model->updated_at),
             'created_at' => self::formatTimestamp($model->created_at),
         ];

@@ -8,6 +8,8 @@ use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
+use Pterodactyl\Services\Servers\BuildModificationService;
+use Pterodactyl\Services\Servers\DetailsModificationService;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
@@ -15,23 +17,32 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\StoreServerRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerRequest;
 
 class ServerController extends ApplicationApiController
 {
     private ServerCreationService $creationService;
     private ServerDeletionService $deletionService;
 
+    private BuildModificationService $buildModificationService;
+    private DetailsModificationService $detailsModificationService;
+
     /**
      * ServerController constructor.
      */
     public function __construct(
         ServerCreationService $creationService,
-        ServerDeletionService $deletionService
+        ServerDeletionService $deletionService,
+        BuildModificationService $buildModificationService,
+        DetailsModificationService $detailsModificationService
     ) {
         parent::__construct();
 
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
+
+        $this->buildModificationService = $buildModificationService;
+        $this->detailsModificationService = $detailsModificationService;
     }
 
     /**
@@ -98,5 +109,25 @@ class ServerController extends ApplicationApiController
         $this->deletionService->withForce($force === 'force')->handle($server);
 
         return $this->returnNoContent();
+    }
+
+    /**
+     * Update a server.
+     *
+     * @throws \Throwable
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     */
+    public function update(UpdateServerRequest $request, Server $server): array
+    {
+        $server = $this->buildModificationService->handle($server, $request->validated());
+        $server = $this->detailsModificationService->returnUpdatedModel()->handle($server, $request->validated());
+
+        return $this->fractal->item($server)
+            ->transformWith(ServerTransformer::class)
+            ->toArray();
     }
 }

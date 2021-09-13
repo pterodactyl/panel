@@ -26,7 +26,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'limits.threads' => $this->requiredToOptional('threads', $rules['threads'], true),
             'limits.disk' => $this->requiredToOptional('disk', $rules['disk'], true),
 
-            // Legacy rules to maintain backwards compatable API support without requiring
+            // Legacy rules to maintain backwards compatible API support without requiring
             // a major version bump.
             //
             // @see https://github.com/pterodactyl/panel/issues/1500

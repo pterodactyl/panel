@@ -43,6 +43,8 @@ export interface Server {
         environment: Map<string, string>;
     }
 
+    oomKiller: boolean;
+
     createdAt: Date;
     updatedAt: Date;
 
@@ -89,6 +91,8 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
         image: attributes.container.image,
         environment: attributes.container.environment,
     },
+
+    oomKiller: attributes.oom_killer,
 
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),

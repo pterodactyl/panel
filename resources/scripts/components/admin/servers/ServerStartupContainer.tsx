@@ -158,13 +158,13 @@ export default () => {
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('server');
 
-        updateServer(server.id, values)
-            .then(() => setServer({ ...server, ...values }))
-            .catch(error => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'server', error });
-            })
-            .then(() => setSubmitting(false));
+        // updateServer(server.id, values)
+        //     .then(() => setServer({ ...server, ...values }))
+        //     .catch(error => {
+        //         console.error(error);
+        //         clearAndAddHttpError({ key: 'server', error });
+        //     })
+        //     .then(() => setSubmitting(false));
     };
 
     return (
