@@ -87,6 +87,8 @@ class WebauthnController extends ClientApiController
                 $request->input('name'),
             );
 
+
+
             return $this->fractal->item($webauthnKey)
                 ->transformWith(WebauthnKeyTransformer::class)
                 ->toArray();

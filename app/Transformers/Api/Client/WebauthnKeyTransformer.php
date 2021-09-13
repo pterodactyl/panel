@@ -17,8 +17,10 @@ class WebauthnKeyTransformer extends Transformer
 
     /**
      * Return basic information about the currently logged in user.
+     *
+     * @param \Pterodactyl\Models\WebauthnKey|\LaravelWebauthn\Models\WebauthnKey $model
      */
-    public function transform(WebauthnKey $model): array
+    public function transform($model): array
     {
         return [
             'id' => $model->id,
