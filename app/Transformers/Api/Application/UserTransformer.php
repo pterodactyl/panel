@@ -46,7 +46,7 @@ class UserTransformer extends Transformer
      */
     public function includeRole(User $user)
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_ROLES)) {
+        if (!$this->authorize(AdminAcl::RESOURCE_ROLES) || is_null($user->adminRole)) {
             return $this->null();
         }
 
