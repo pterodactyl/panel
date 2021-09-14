@@ -6,7 +6,8 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ## v1.6.1
 ### Fixed
 * Fixes server build modifications not being properly persisted to the database when edited.
-
+* Correctly exposes the `oom_disabled` field in the `build` limits block for a server build so that Wings can pick it up.
+* 
 ## v1.6.0
 ### Fixed
 * Fixes array merging logic for server transfers that would cause a 500 error to occur in some scenarios.
