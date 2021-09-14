@@ -46,7 +46,7 @@ export default function UserForm ({ title, initialValues, children, onSubmit, ro
             username: '',
             email: '',
             password: '',
-            adminRoleId: 0,
+            adminRoleId: null,
             rootAdmin: false,
         };
     }
