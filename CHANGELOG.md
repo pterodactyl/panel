@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.1
+### Fixed
+* Fixes server build modifications not being properly persisted to the database when edited.
+
 ## v1.6.0
 ### Fixed
 * Fixes array merging logic for server transfers that would cause a 500 error to occur in some scenarios.
