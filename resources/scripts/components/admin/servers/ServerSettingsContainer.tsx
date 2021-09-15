@@ -1,5 +1,6 @@
 import { Server } from '@/api/admin/servers/getServers';
 import ServerDeleteButton from '@/components/admin/servers/ServerDeleteButton';
+import { faBalanceScale, faCogs, faConciergeBell, faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import { useHistory } from 'react-router-dom';
@@ -20,7 +21,7 @@ export function ServerFeatureContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox title={'Feature Limits'} css={tw`relative w-full`}>
+        <AdminBox icon={faConciergeBell} title={'Feature Limits'} css={tw`relative w-full`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
@@ -62,7 +63,7 @@ export function ServerResourceContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox title={'Resource Management'} css={tw`relative w-full`}>
+        <AdminBox icon={faBalanceScale} title={'Resource Management'} css={tw`relative w-full`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
@@ -147,7 +148,7 @@ export function ServerSettingsContainer ({ server }: { server?: Server }) {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox title={'Settings'} css={tw`relative w-full`}>
+        <AdminBox icon={faCogs} title={'Settings'} css={tw`relative w-full`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
@@ -179,6 +180,18 @@ export function ServerSettingsContainer ({ server }: { server?: Server }) {
     );
 }
 
+export function ServerAllocationsContainer () {
+    const { isSubmitting } = useFormikContext();
+
+    return (
+        <AdminBox icon={faNetworkWired} title={'Allocations'} css={tw`relative w-full`}>
+            <SpinnerOverlay visible={isSubmitting}/>
+        </AdminBox>
+    );
+}
+
+type Values2 = Omit<Values, 'oomDisabled'> & { oomKiller: boolean };
+
 export default function ServerSettingsContainer2 () {
     const history = useHistory();
 
@@ -193,11 +206,10 @@ export default function ServerSettingsContainer2 () {
         );
     }
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const submit = (values: Values2, { setSubmitting }: FormikHelpers<Values2>) => {
         clearFlashes('server');
-        console.log(values);
 
-        updateServer(server.id, values)
+        updateServer(server.id, { ...values, oomDisabled: !values.oomKiller })
             .then(() => setServer({ ...server, ...values }))
             .catch(error => {
                 console.error(error);
@@ -213,7 +225,6 @@ export default function ServerSettingsContainer2 () {
                 externalId: server.externalId || '',
                 name: server.name,
                 ownerId: server.ownerId,
-                oomKiller: server.oomKiller,
 
                 memory: server.limits.memory,
                 swap: server.limits.swap,
@@ -221,6 +232,9 @@ export default function ServerSettingsContainer2 () {
                 io: server.limits.io,
                 cpu: server.limits.cpu,
                 threads: server.limits.threads || '',
+                // Yes, this is named differently on purpose. Naming it like this makes the toggle switch
+                // be in an ON state when the oom killer is enabled, instead of when its disabled.
+                oomKiller: !server.limits.oomDisabled,
 
                 databases: server.featureLimits.databases,
                 allocations: server.featureLimits.allocations,
@@ -229,38 +243,43 @@ export default function ServerSettingsContainer2 () {
             validationSchema={object().shape({
             })}
         >
-            {
-                ({ isSubmitting, isValid }) => (
-                    <Form>
-                        <div css={tw`flex flex-col lg:flex-row`}>
-                            <div css={tw`flex flex-col w-full mt-4 ml-0 lg:w-1/2 lg:ml-2 lg:mt-0`}>
-                                <div css={tw`flex flex-col w-full mr-0 lg:mr-2`}>
-                                    <ServerSettingsContainer server={server}/>
-                                </div>
-                                <div css={tw`flex flex-col w-full mt-4 mr-0 lg:mr-2`}>
-                                    <ServerFeatureContainer/>
-                                </div>
+            {({ isSubmitting, isValid }) => (
+                <Form>
+                    <div css={tw`grid grid-cols-2 gap-x-8`}>
+                        <div css={tw`flex flex-col`}>
+                            <div css={tw`flex mb-6`}>
+                                <ServerSettingsContainer server={server}/>
                             </div>
-                            <div css={tw`flex flex-col w-full mt-4 ml-0 lg:w-1/2 lg:ml-2 lg:mt-0`}>
-                                <div css={tw`flex flex-col w-full mr-0 lg:mr-2`}>
-                                    <ServerResourceContainer/>
-                                </div>
-                                <div css={tw`rounded shadow-md bg-neutral-700 mt-4 py-2 px-6`}>
-                                    <div css={tw`flex flex-row`}>
-                                        <ServerDeleteButton
-                                            serverId={server?.id}
-                                            onDeleted={() => history.push('/admin/servers')}
-                                        />
-                                        <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
-                                            Save Changes
-                                        </Button>
-                                    </div>
+
+                            <div css={tw`flex mb-6`}>
+                                <ServerFeatureContainer/>
+                            </div>
+
+                            <div css={tw`flex mb-6`}>
+                                <ServerAllocationsContainer/>
+                            </div>
+
+                            <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6`}>
+                                <div css={tw`flex flex-row`}>
+                                    <ServerDeleteButton
+                                        serverId={server?.id}
+                                        onDeleted={() => history.push('/admin/servers')}
+                                    />
+                                    <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
+                                        Save Changes
+                                    </Button>
                                 </div>
                             </div>
                         </div>
-                    </Form>
-                )
-            }
+
+                        <div css={tw`flex flex-col`}>
+                            <div css={tw`flex mb-8`}>
+                                <ServerResourceContainer/>
+                            </div>
+                        </div>
+                    </div>
+                </Form>
+            )}
         </Formik>
     );
 }

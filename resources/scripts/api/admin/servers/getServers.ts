@@ -22,6 +22,7 @@ export interface Server {
         io: number;
         cpu: number;
         threads: string | null;
+        oomDisabled: boolean;
     }
 
     featureLimits: {
@@ -42,8 +43,6 @@ export interface Server {
         image: string;
         environment: Map<string, string>;
     }
-
-    oomKiller: boolean;
 
     createdAt: Date;
     updatedAt: Date;
@@ -71,6 +70,7 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
         io: attributes.limits.io,
         cpu: attributes.limits.cpu,
         threads: attributes.limits.threads,
+        oomDisabled: attributes.limits.oom_disabled,
     },
 
     featureLimits: {
@@ -91,8 +91,6 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
         image: attributes.container.image,
         environment: attributes.container.environment,
     },
-
-    oomKiller: attributes.oom_killer,
 
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),

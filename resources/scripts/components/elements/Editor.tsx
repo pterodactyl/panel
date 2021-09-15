@@ -39,7 +39,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import tw, { styled, TwStyle } from 'twin.macro';
 import { ayuMirage } from '@/components/elements/EditorTheme';
 
-type EditorMode = LanguageSupport | LRLanguage | StreamParser<any>;
+type EditorMode = LanguageSupport | LRLanguage | StreamParser<unknown>;
 
 export interface Mode {
     name: string,

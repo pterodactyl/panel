@@ -2503,10 +2503,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.7.10":
-  version: 16.7.10
-  resolution: "@types/node@npm:16.7.10"
-  checksum: 0518803caa1a14f4070e770a280eda1c4b4581a425cbda481cdd54b1f34a7ea497ff067fd23b90e3d4f4fdcfba15c1316182875e9cf9f5b2e880de1e595de053
+"@types/node@npm:^16.9.1":
+  version: 16.9.1
+  resolution: "@types/node@npm:16.9.1"
+  checksum: 41afcf183a22d59323a0199dd7e0f46591247f45fc08a4434edb26d56dc279ae4fdb80f37989ddd7a0f45e3857c4933e6e82057ede09c5a829f77e373e680375
   languageName: node
   linkType: hard
 
@@ -3556,12 +3556,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.21.3":
-  version: 0.21.3
-  resolution: "axios@npm:0.21.3"
+"axios@npm:^0.21.4":
+  version: 0.21.4
+  resolution: "axios@npm:0.21.4"
   dependencies:
     follow-redirects: ^1.14.0
-  checksum: fdcac33adb0330e127ab0e58f8d9fb7470b49dbfb0aba251ff54f146f2fc7d9362e3300581b6c98d2ea3b8db958ed099c831c3c7832ae79b14f517d5947a029a
+  checksum: 44245f24ac971e7458f3120c92f9d66d1fc695e8b97019139de5b0cc65d9b8104647db01e5f46917728edfc0cfd88eb30fc4c55e6053eef4ace76768ce95ff3c
   languageName: node
   linkType: hard
 
@@ -7051,12 +7051,12 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"i18next@npm:^20.6.0":
-  version: 20.6.0
-  resolution: "i18next@npm:20.6.0"
+"i18next@npm:^20.6.1":
+  version: 20.6.1
+  resolution: "i18next@npm:20.6.1"
   dependencies:
     "@babel/runtime": ^7.12.0
-  checksum: 71ba3b871e6161ddd54055440cbc1cb3da4c5ff22991e8f80b7c2ddd23c49a9fe72a254f3dc39245311043a93ef2978255f0aada39500f049bd7d59fda71b2a5
+  checksum: 313cd4b17f9092eaf8ca92a02bb74d099f4a8b26de6e38018f438ce6f706220e5f72d865e1f50d815e13504ec38bc77e0f6341f670ca5162689f8d11a859e564
   languageName: node
   linkType: hard
 
@@ -9931,7 +9931,7 @@ fsevents@^1.2.7:
     "@types/debounce": ^1.2.0
     "@types/events": ^3.0.0
     "@types/history": ^4.7.9
-    "@types/node": ^16.7.10
+    "@types/node": ^16.9.1
     "@types/qrcode.react": ^1.0.2
     "@types/query-string": ^6.3.0
     "@types/react": ^16.14.15
@@ -9950,7 +9950,7 @@ fsevents@^1.2.7:
     "@typescript-eslint/eslint-plugin": ^4.30.0
     "@typescript-eslint/parser": ^4.30.0
     autoprefixer: ^10.3.4
-    axios: ^0.21.3
+    axios: ^0.21.4
     babel-loader: ^8.2.2
     babel-plugin-macros: ^3.1.0
     babel-plugin-styled-components: ^1.13.2
@@ -9974,7 +9974,7 @@ fsevents@^1.2.7:
     fork-ts-checker-webpack-plugin: ^6.3.3
     formik: ^2.2.9
     history: ^4.10.1
-    i18next: ^20.6.0
+    i18next: ^20.6.1
     i18next-chained-backend: ^3.0.2
     i18next-localstorage-backend: ^3.1.3
     i18next-xhr-backend: ^3.2.2
@@ -10005,17 +10005,17 @@ fsevents@^1.2.7:
     tailwindcss: ^2.2.7
     terser-webpack-plugin: ^4.2.3
     twin.macro: ^2.7.0
-    typescript: ^4.3.5
+    typescript: ^4.4.3
     uuid: ^3.4.0
     webpack: ^4.46.0
     webpack-assets-manifest: ^4.0.6
     webpack-bundle-analyzer: ^4.4.2
     webpack-cli: ^3.3.12
     webpack-dev-server: ^3.11.2
-    xterm: ^4.13.0
+    xterm: ^4.14.1
     xterm-addon-attach: ^0.6.0
     xterm-addon-fit: ^0.5.0
-    xterm-addon-search: ^0.8.0
+    xterm-addon-search: ^0.8.1
     xterm-addon-search-bar: ^0.2.0
     xterm-addon-web-links: ^0.4.0
     yup: ^0.32.9
@@ -12436,23 +12436,23 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-typescript@^4.3.5:
-  version: 4.3.5
-  resolution: "typescript@npm:4.3.5"
+typescript@^4.4.3:
+  version: 4.4.3
+  resolution: "typescript@npm:4.4.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: bab033b5e2b0790dd35b77fd005df976ef80b8d84fd2c6e63cc31808151875beae9216e5a315fe7068e8499905c3c354248fe83272cdfc13b7705635f0c66c97
+  checksum: 05823f21796d450531a7e4ab299715d38fd9ded0e4ce7400876053f4b5166ca3dde7a68cecfe72d9086039f03c0b6edba36516fb10ed83c5837d9600532ea4c2
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.3.5#~builtin<compat/typescript>":
-  version: 4.3.5
-  resolution: "typescript@patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=32657b"
+"typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>":
+  version: 4.4.3
+  resolution: "typescript@patch:typescript@npm%3A4.4.3#~builtin<compat/typescript>::version=4.4.3&hash=32657b"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 4e2edec3c9b7b9a22ad9cbf9371339d9e13bfe44731f0e2d6a5287f991c3b0e3e0ac0c0ebbf9bf6fc2051e30559c789bfc9cf572cd6b836a0222ae141fac1dba
+  checksum: 28ab98313afab46788ff41014fdb5932430ada6e03cf9e92ac47f406526a2cac1ae2894834e7da61e46b7429318e9c47f45ba8de323332f0cb9af99b72ebae74
   languageName: node
   linkType: hard
 
@@ -13151,12 +13151,12 @@ typescript@^4.3.5:
   languageName: node
   linkType: hard
 
-"xterm-addon-search@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "xterm-addon-search@npm:0.8.0"
+"xterm-addon-search@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "xterm-addon-search@npm:0.8.1"
   peerDependencies:
     xterm: ^4.0.0
-  checksum: dedca29de6a764530a2def6e3ace561487b9750d1bfccafbb7547284da2384776eb943ee65709ea23a3d0441a76909be911219d66922f72a92fac3c2e2d6ad57
+  checksum: 1ddea94543542e135449b56cbdb4546a996e232e127171c0c08c0d94090ca3bfcf70e6315f70e84c32090d44ebc84807cc33689688f69fc615a9a5a3fffa3b86
   languageName: node
   linkType: hard
 
@@ -13169,10 +13169,10 @@ typescript@^4.3.5:
   languageName: node
   linkType: hard
 
-"xterm@npm:^4.13.0":
-  version: 4.13.0
-  resolution: "xterm@npm:4.13.0"
-  checksum: 4b9103d88c8e5afe193e1f425f5f59c2e47f8064c3b6760409b7a099ae997202e0fdcbc8c52067884d06279a88b47c62cc63ca1cc6ce38f13303bdb34192319e
+"xterm@npm:^4.14.1":
+  version: 4.14.1
+  resolution: "xterm@npm:4.14.1"
+  checksum: 49e26b1de3f6772ea980adb1f630b3e065eea921b91d9126acce1b09050575c7773358ece6cdf5bd2ae9f5daab85ab45ce8b1c5caada850cd5b293b9132a97a5
   languageName: node
   linkType: hard
 

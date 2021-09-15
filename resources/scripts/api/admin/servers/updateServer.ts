@@ -5,7 +5,6 @@ export interface Values {
     externalId: string;
     name: string;
     ownerId: number;
-    oomKiller: boolean;
 
     memory: number;
     swap: number;
@@ -13,6 +12,7 @@ export interface Values {
     io: number;
     cpu: number;
     threads: string;
+    oomDisabled: boolean;
 
     databases: number;
     allocations: number;
