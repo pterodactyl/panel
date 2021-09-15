@@ -54,7 +54,7 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
                         <div css={tw`flex flex-wrap items-end`}>
                             <div css={tw`w-full sm:flex-1 sm:mr-4`}>
                                 <Field
-                                    type={'string'}
+                                    type={'text'}
                                     id={'file_mode'}
                                     name={'mode'}
                                     label={'File Mode'}

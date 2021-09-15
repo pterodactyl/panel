@@ -67,7 +67,7 @@ export default () => {
 
                             <Form css={tw`m-0`}>
                                 <Field
-                                    type={'string'}
+                                    type={'text'}
                                     id={'short'}
                                     name={'short'}
                                     label={'Short'}
@@ -77,7 +77,7 @@ export default () => {
 
                                 <div css={tw`mt-6`}>
                                     <Field
-                                        type={'string'}
+                                        type={'text'}
                                         id={'long'}
                                         name={'long'}
                                         label={'Long'}

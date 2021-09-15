@@ -65,7 +65,7 @@ export default () => {
                             <h2 css={tw`mb-6 text-2xl text-neutral-100`}>New Role</h2>
                             <Form css={tw`m-0`}>
                                 <Field
-                                    type={'string'}
+                                    type={'text'}
                                     id={'name'}
                                     name={'name'}
                                     label={'Name'}
@@ -75,7 +75,7 @@ export default () => {
 
                                 <div css={tw`mt-6`}>
                                     <Field
-                                        type={'string'}
+                                        type={'text'}
                                         id={'description'}
                                         name={'description'}
                                         label={'Description'}

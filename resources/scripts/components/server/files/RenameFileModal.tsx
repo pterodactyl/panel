@@ -68,7 +68,7 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                         >
                             <div css={tw`w-full sm:flex-1 sm:mr-4`}>
                                 <Field
-                                    type={'string'}
+                                    type={'text'}
                                     id={'file_name'}
                                     name={'name'}
                                     label={'File Name'}
