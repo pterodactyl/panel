@@ -1,5 +1,9 @@
+import getAllocations from '@/api/admin/nodes/getAllocations';
 import { Server } from '@/api/admin/servers/getServers';
 import ServerDeleteButton from '@/components/admin/servers/ServerDeleteButton';
+import Label from '@/components/elements/Label';
+import Select from '@/components/elements/Select';
+import SelectField, { AsyncSelectField, Option } from '@/components/elements/SelectField';
 import { faBalanceScale, faCogs, faConciergeBell, faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
@@ -63,7 +67,7 @@ export function ServerResourceContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox icon={faBalanceScale} title={'Resource Management'} css={tw`relative w-full`}>
+        <AdminBox icon={faBalanceScale} title={'Resources'} css={tw`relative w-full`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
@@ -72,8 +76,8 @@ export function ServerResourceContainer () {
                         id={'cpu'}
                         name={'cpu'}
                         label={'CPU Limit'}
-                        type={'string'}
-                        description={'Each physical core on the system is considered to be 100%. Setting this value to 0 will allow a server to use CPU time without restrictions.'}
+                        type={'text'}
+                        description={'Each thread on the system is considered to be 100%. Setting this value to 0 will allow the server to use CPU time without restriction.'}
                     />
                 </div>
 
@@ -82,8 +86,8 @@ export function ServerResourceContainer () {
                         id={'threads'}
                         name={'threads'}
                         label={'CPU Pinning'}
-                        type={'string'}
-                        description={'Advanced: Enter the specific CPU cores that this process can run on, or leave blank to allow all cores. This can be a single number, or a comma seperated list. Example: 0, 0-1,3, or 0,1,3,4.'}
+                        type={'text'}
+                        description={'Advanced: Enter the specific CPU cores that this server can run on, or leave blank to allow all cores. This can be a single number, and or a comma seperated list, and or a dashed range. Example: 0, 0-1,3, or 0,1,3,4.  It is recommended to leave this value blank and let the CPU handle balancing the load.'}
                     />
                 </div>
             </div>
@@ -132,11 +136,11 @@ export function ServerResourceContainer () {
             </div>
 
             <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                <div css={tw`mt-6 bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
+                <div css={tw`bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
                     <FormikSwitch
                         name={'oomKiller'}
                         label={'Out of Memory Killer'}
-                        description={'Enabling OOM killer may cause server processes to exit unexpectedly.'}
+                        description={'Enabling the Out of Memory Killer may cause server processes to exit unexpectedly.'}
                     />
                 </div>
             </div>
@@ -157,7 +161,7 @@ export function ServerSettingsContainer ({ server }: { server?: Server }) {
                         id={'name'}
                         name={'name'}
                         label={'Server Name'}
-                        type={'string'}
+                        type={'text'}
                     />
                 </div>
 
@@ -166,7 +170,7 @@ export function ServerSettingsContainer ({ server }: { server?: Server }) {
                         id={'externalId'}
                         name={'externalId'}
                         label={'External Identifier'}
-                        type={'number'}
+                        type={'text'}
                     />
                 </div>
             </div>
@@ -180,12 +184,52 @@ export function ServerSettingsContainer ({ server }: { server?: Server }) {
     );
 }
 
-export function ServerAllocationsContainer () {
+export function ServerAllocationsContainer ({ server }: { server: Server }) {
     const { isSubmitting } = useFormikContext();
 
+    const loadOptions = async (inputValue: string, callback: (options: Option[]) => void) => {
+        const allocations = await getAllocations(server.nodeId, { ip: inputValue, server_id: '0' });
+        callback(allocations.map(a => {
+            return { value: a.id.toString(), label: a.ip + ':' + a.port };
+        }));
+    };
+
     return (
-        <AdminBox icon={faNetworkWired} title={'Allocations'} css={tw`relative w-full`}>
+        <AdminBox icon={faNetworkWired} title={'Networking'} css={tw`relative w-full`}>
             <SpinnerOverlay visible={isSubmitting}/>
+
+            <div css={tw`mb-6`}>
+                <Label>Primary Allocation</Label>
+                <Select
+                    id={'allocationId'}
+                    name={'allocationId'}
+                >
+                    {server.relations?.allocations?.map(a => (
+                        <option key={a.id} value={a.id}>{a.ip}:{a.port}</option>
+                    ))}
+                </Select>
+            </div>
+
+            <AsyncSelectField
+                id={'addAllocations'}
+                name={'addAllocations'}
+                label={'Add Allocations'}
+                loadOptions={loadOptions}
+                isMulti
+                css={tw`mb-6`}
+            />
+
+            <SelectField
+                id={'removeAllocations'}
+                name={'removeAllocations'}
+                label={'Remove Allocations'}
+                options={server.relations?.allocations?.map(a => {
+                    return { value: a.id.toString(), label: a.ip + ':' + a.port };
+                }) || []}
+                isMulti
+                isSearchable
+                css={tw`mb-2`}
+            />
         </AdminBox>
     );
 }
@@ -206,11 +250,17 @@ export default function ServerSettingsContainer2 () {
         );
     }
 
-    const submit = (values: Values2, { setSubmitting }: FormikHelpers<Values2>) => {
+    const submit = (values: Values2, { setSubmitting, setFieldValue }: FormikHelpers<Values2>) => {
         clearFlashes('server');
 
-        updateServer(server.id, { ...values, oomDisabled: !values.oomKiller })
-            .then(() => setServer({ ...server, ...values }))
+        updateServer(server.id, { ...values, oomDisabled: !values.oomKiller }, [ 'allocations', 'user' ])
+            .then(s => {
+                setServer({ ...server, ...s });
+
+                // TODO: Figure out how to properly clear react-selects for allocations.
+                setFieldValue('addAllocations', []);
+                setFieldValue('removeAllocations', []);
+            })
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'server', error });
@@ -239,6 +289,10 @@ export default function ServerSettingsContainer2 () {
                 databases: server.featureLimits.databases,
                 allocations: server.featureLimits.allocations,
                 backups: server.featureLimits.backups,
+
+                allocationId: server.allocationId,
+                addAllocations: [] as number[],
+                removeAllocations: [] as number[],
             }}
             validationSchema={object().shape({
             })}
@@ -256,7 +310,7 @@ export default function ServerSettingsContainer2 () {
                             </div>
 
                             <div css={tw`flex mb-6`}>
-                                <ServerAllocationsContainer/>
+                                <ServerAllocationsContainer server={server}/>
                             </div>
 
                             <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6`}>

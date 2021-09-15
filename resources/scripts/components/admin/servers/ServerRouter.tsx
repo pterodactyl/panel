@@ -40,7 +40,7 @@ const ServerRouter = () => {
     useEffect(() => {
         clearFlashes('server');
 
-        getServer(Number(match.params?.id), [ 'user' ])
+        getServer(Number(match.params?.id), [ 'allocations', 'user' ])
             .then(server => setServer(server))
             .catch(error => {
                 console.error(error);

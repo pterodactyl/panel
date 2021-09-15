@@ -6,6 +6,8 @@ use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
@@ -46,7 +48,16 @@ class AllocationController extends ApplicationApiController
         }
 
         $allocations = QueryBuilder::for(Allocation::query()->where('node_id', '=', $node->id))
-            ->allowedFilters(['id', 'ip', 'port', 'alias', 'server_id'])
+            ->allowedFilters([
+                'id', 'ip', 'port', 'alias',
+                AllowedFilter::callback('server_id', function (Builder $query, $value) {
+                    if ($value === '0') {
+                        $query->whereNull('server_id');
+                    } else {
+                        $query->where('server_id', '=', $value);
+                    }
+                }),
+            ])
             ->allowedSorts(['id', 'ip', 'port', 'server_id'])
             ->paginate($perPage);
 

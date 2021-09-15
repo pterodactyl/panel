@@ -28,6 +28,12 @@ class UpdateServerRequest extends ApplicationApiRequest
             'databases' => $rules['database_limit'],
             'allocations' => $rules['allocation_limit'],
             'backups' => $rules['backup_limit'],
+
+            'allocation_id' => 'bail|exists:allocations,id',
+            'add_allocations' => 'bail|array',
+            'add_allocations.*' => 'integer',
+            'remove_allocations' => 'bail|array',
+            'remove_allocations.*' => 'integer',
         ];
     }
 
@@ -52,6 +58,10 @@ class UpdateServerRequest extends ApplicationApiRequest
             'database_limit' => array_get($data, 'databases'),
             'allocation_limit' => array_get($data, 'allocations'),
             'backup_limit' => array_get($data, 'backups'),
+
+            'allocation_id' => array_get($data, 'allocation_id'),
+            'add_allocations' => array_get($data, 'add_allocations'),
+            'remove_allocations' => array_get($data, 'remove_allocations'),
         ];
     }
 }

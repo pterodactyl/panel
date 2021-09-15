@@ -1,7 +1,8 @@
+import { Allocation, rawDataToAllocation } from '@/api/admin/nodes/getAllocations';
 import { useContext } from 'react';
 import useSWR from 'swr';
 import { createContext } from '@/api/admin';
-import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
+import http, { FractalResponseData, FractalResponseList, getPaginationSet, PaginatedResult } from '@/api/http';
 import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 import { Node, rawDataToNode } from '@/api/admin/nodes/getNodes';
 import { User, rawDataToUser } from '@/api/admin/users/getUsers';
@@ -48,6 +49,7 @@ export interface Server {
     updatedAt: Date;
 
     relations: {
+        allocations?: Allocation[];
         egg?: Egg;
         node?: Node;
         user?: User;
@@ -96,6 +98,7 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
     updatedAt: new Date(attributes.updated_at),
 
     relations: {
+        allocations: ((attributes.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(rawDataToAllocation),
         egg: attributes.relationships?.egg?.object === 'egg' ? rawDataToEgg(attributes.relationships.egg as FractalResponseData) : undefined,
         node: attributes.relationships?.node?.object === 'node' ? rawDataToNode(attributes.relationships.node as FractalResponseData) : undefined,
         user: attributes.relationships?.user?.object === 'user' ? rawDataToUser(attributes.relationships.user as FractalResponseData) : undefined,

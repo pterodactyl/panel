@@ -1,5 +1,5 @@
 import http from '@/api/http';
-import { Allocation, rawDataToAllocation } from '@/api/admin/nodes/allocations/getAllocations';
+import { Allocation, rawDataToAllocation } from '@/api/admin/nodes/getAllocations';
 
 export interface Values {
     ip: string;

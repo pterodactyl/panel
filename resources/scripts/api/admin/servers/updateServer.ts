@@ -17,6 +17,10 @@ export interface Values {
     databases: number;
     allocations: number;
     backups: number;
+
+    allocationId: number;
+    addAllocations: number[];
+    removeAllocations: number[];
 }
 
 export default (id: number, server: Partial<Values>, include: string[] = []): Promise<Server> => {

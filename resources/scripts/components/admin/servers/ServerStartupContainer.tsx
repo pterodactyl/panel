@@ -1,4 +1,3 @@
-import { Egg } from '@/api/admin/eggs/getEgg';
 import EggSelect from '@/components/admin/servers/EggSelect';
 import NestSelect from '@/components/admin/servers/NestSelect';
 import FormikSwitch from '@/components/elements/FormikSwitch';
@@ -107,7 +106,7 @@ function ServerImageContainer () {
 export default function ServerStartupContainer () {
     const { clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    const [ egg, setEgg ] = useState<Egg | null>(null);
+    // const [ egg, setEgg ] = useState<Egg | null>(null);
 
     const server = Context.useStoreState(state => state.server);
 

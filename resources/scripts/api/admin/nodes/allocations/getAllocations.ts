@@ -1,34 +1,8 @@
-import { Server, rawDataToServer } from '@/api/admin/servers/getServers';
-import http, { FractalResponseData, getPaginationSet, PaginatedResult } from '@/api/http';
+import { Allocation, rawDataToAllocation } from '@/api/admin/nodes/getAllocations';
+import http, { getPaginationSet, PaginatedResult } from '@/api/http';
 import { useContext } from 'react';
 import useSWR from 'swr';
 import { createContext } from '@/api/admin';
-
-export interface Allocation {
-    id: number;
-    ip: string;
-    port: number;
-    alias: string | null;
-    serverId: number | null;
-    assigned: boolean;
-
-    relations: {
-        server?: Server;
-    }
-}
-
-export const rawDataToAllocation = ({ attributes }: FractalResponseData): Allocation => ({
-    id: attributes.id,
-    ip: attributes.ip,
-    port: attributes.port,
-    alias: attributes.ip_alias || null,
-    serverId: attributes.server_id,
-    assigned: attributes.assigned,
-
-    relations: {
-        server: attributes.relationships?.server?.object === 'server' ? rawDataToServer(attributes.relationships.server as FractalResponseData) : undefined,
-    },
-});
 
 export interface Filters {
     id?: string;
