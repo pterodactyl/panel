@@ -56,6 +56,7 @@ class ServerTransformer extends Transformer
                 'io' => $model->io,
                 'cpu' => $model->cpu,
                 'threads' => $model->threads,
+                'oom_disabled' => $model->oom_disabled,
             ],
             'feature_limits' => [
                 'databases' => $model->database_limit,
@@ -72,7 +73,6 @@ class ServerTransformer extends Transformer
                 'image' => $model->image,
                 'environment' => $this->environmentService->handle($model),
             ],
-            'oom_killer' => !$model->oom_disabled,
             'updated_at' => self::formatTimestamp($model->updated_at),
             'created_at' => self::formatTimestamp($model->created_at),
         ];

@@ -51,6 +51,8 @@ class ServerTransformer extends Transformer
                 'disk' => $server->disk,
                 'io' => $server->io,
                 'cpu' => $server->cpu,
+                'threads' => $server->threads,
+                'oom_disabled' => $server->oom_disabled,
             ],
             'invocation' => $this->service->handle($server, $this->user()->cannot(Permission::ACTION_STARTUP_READ, $server)),
             'docker_image' => $server->image,
