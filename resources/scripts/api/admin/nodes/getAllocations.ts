@@ -12,18 +12,28 @@ export interface Allocation {
     relations: {
         server?: Server;
     }
+
+    getDisplayText (): string;
 }
 
 export const rawDataToAllocation = ({ attributes }: FractalResponseData): Allocation => ({
     id: attributes.id,
     ip: attributes.ip,
     port: attributes.port,
-    alias: attributes.ip_alias || null,
+    alias: attributes.alias || null,
     serverId: attributes.server_id,
     assigned: attributes.assigned,
 
     relations: {
         server: attributes.relationships?.server?.object === 'server' ? rawDataToServer(attributes.relationships.server as FractalResponseData) : undefined,
+    },
+
+    // TODO: If IP is an IPv6, wrap IP in [].
+    getDisplayText (): string {
+        if (attributes.alias !== null) {
+            return `${attributes.ip}:${attributes.port} (${attributes.alias})`;
+        }
+        return `${attributes.ip}:${attributes.port}`;
     },
 });
 

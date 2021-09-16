@@ -99,7 +99,7 @@ export function ServerAllocationsContainer ({ server }: { server: Server }) {
     const loadOptions = async (inputValue: string, callback: (options: Option[]) => void) => {
         const allocations = await getAllocations(server.nodeId, { ip: inputValue, server_id: '0' });
         callback(allocations.map(a => {
-            return { value: a.id.toString(), label: a.ip + ':' + a.port };
+            return { value: a.id.toString(), label: a.getDisplayText() };
         }));
     };
 
@@ -114,7 +114,7 @@ export function ServerAllocationsContainer ({ server }: { server: Server }) {
                     name={'allocationId'}
                 >
                     {server.relations?.allocations?.map(a => (
-                        <option key={a.id} value={a.id}>{a.ip}:{a.port}</option>
+                        <option key={a.id} value={a.id}>{a.getDisplayText()}</option>
                     ))}
                 </Select>
             </div>
@@ -133,7 +133,7 @@ export function ServerAllocationsContainer ({ server }: { server: Server }) {
                 name={'removeAllocations'}
                 label={'Remove Allocations'}
                 options={server.relations?.allocations?.map(a => {
-                    return { value: a.id.toString(), label: a.ip + ':' + a.port };
+                    return { value: a.id.toString(), label: a.getDisplayText() };
                 }) || []}
                 isMulti
                 isSearchable
