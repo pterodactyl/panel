@@ -99,10 +99,6 @@ function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVar
 
     useEffect(() => {
         setFieldValue(key, defaultValue);
-
-        // return () => {
-        //     setFieldValue(key, undefined);
-        // };
     }, [ variable, defaultValue ]);
 
     return (

@@ -165,7 +165,6 @@ Route::group(['prefix' => '/servers'], function () {
     Route::get('/external/{external_id}', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ExternalServerController::class, 'index']);
 
     Route::patch('/{server}', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerController::class, 'update']);
-//    Route::patch('/{server}/build', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerDetailsController::class, 'build']);
     Route::patch('/{server}/startup', [\Pterodactyl\Http\Controllers\Api\Application\Servers\StartupController::class, 'index']);
 
     Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Servers\ServerController::class, 'store']);
