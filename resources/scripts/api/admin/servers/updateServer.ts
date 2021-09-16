@@ -6,17 +6,21 @@ export interface Values {
     name: string;
     ownerId: number;
 
-    memory: number;
-    swap: number;
-    disk: number;
-    io: number;
-    cpu: number;
-    threads: string;
-    oomDisabled: boolean;
+    limits: {
+        memory: number;
+        swap: number;
+        disk: number;
+        io: number;
+        cpu: number;
+        threads: string;
+        oomDisabled: boolean;
+    }
 
-    databases: number;
-    allocations: number;
-    backups: number;
+    featureLimits: {
+        allocations: number;
+        backups: number;
+        databases: number;
+    }
 
     allocationId: number;
     addAllocations: number[];
@@ -24,16 +28,36 @@ export interface Values {
 }
 
 export default (id: number, server: Partial<Values>, include: string[] = []): Promise<Server> => {
-    const data = {};
-
-    Object.keys(server).forEach((key) => {
-        const key2 = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-        // @ts-ignore
-        data[key2] = server[key];
-    });
-
     return new Promise((resolve, reject) => {
-        http.patch(`/api/application/servers/${id}`, data, { params: { include: include.join(',') } })
+        http.patch(
+            `/api/application/servers/${id}`,
+            {
+                external_id: server.externalId,
+                name: server.name,
+                owner_id: server.ownerId,
+
+                limits: {
+                    memory: server.limits?.memory,
+                    swap: server.limits?.swap,
+                    disk: server.limits?.disk,
+                    io: server.limits?.io,
+                    cpu: server.limits?.cpu,
+                    threads: server.limits?.threads,
+                    oom_disabled: server.limits?.oomDisabled,
+                },
+
+                feature_limits: {
+                    allocations: server.featureLimits?.allocations,
+                    backups: server.featureLimits?.backups,
+                    databases: server.featureLimits?.databases,
+                },
+
+                allocation_id: server.allocationId,
+                add_allocations: server.addAllocations,
+                remove_allocations: server.removeAllocations,
+            },
+            { params: { include: include.join(',') } }
+        )
             .then(({ data }) => resolve(rawDataToServer(data)))
             .catch(reject);
     });

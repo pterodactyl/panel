@@ -69,7 +69,7 @@ class ServerTransformer extends Transformer
             'nest_id' => $model->nest_id,
             'egg_id' => $model->egg_id,
             'container' => [
-                'startup_command' => $model->startup,
+                'startup' => $model->startup,
                 'image' => $model->image,
                 'environment' => $this->environmentService->handle($model),
             ],

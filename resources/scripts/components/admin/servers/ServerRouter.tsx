@@ -14,6 +14,8 @@ import { ApplicationStore } from '@/state';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
 import ServerSettingsContainer from '@/components/admin/servers/ServerSettingsContainer';
 
+export const ServerIncludes = [ 'allocations', 'user', 'variables' ];
+
 interface ctx {
     server: Server | undefined;
     setServer: Action<ctx, Server | undefined>;
@@ -40,7 +42,7 @@ const ServerRouter = () => {
     useEffect(() => {
         clearFlashes('server');
 
-        getServer(Number(match.params?.id), [ 'allocations', 'user', 'variables' ])
+        getServer(Number(match.params?.id), ServerIncludes)
             .then(server => setServer(server))
             .catch(error => {
                 console.error(error);

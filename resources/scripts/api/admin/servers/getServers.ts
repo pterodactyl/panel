@@ -71,8 +71,7 @@ export interface Server {
     eggId: number;
 
     container: {
-        startupCommand: string;
-        defaultStartup: string;
+        startup: string;
         image: string;
         environment: Map<string, string>;
     }
@@ -121,8 +120,7 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
     eggId: attributes.egg_id,
 
     container: {
-        startupCommand: attributes.container.startup_command,
-        defaultStartup: '',
+        startup: attributes.container.startup,
         image: attributes.container.image,
         environment: attributes.container.environment,
     },
