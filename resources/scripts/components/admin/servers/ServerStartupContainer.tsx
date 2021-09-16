@@ -18,8 +18,18 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import Label from '@/components/elements/Label';
 import { object } from 'yup';
 
-function ServerStartupLineContainer ({ egg }: { egg: Egg }) {
-    const { isSubmitting } = useFormikContext();
+function ServerStartupLineContainer ({ egg, server }: { egg: Egg; server: Server }) {
+    const { isSubmitting, setFieldValue } = useFormikContext();
+
+    useEffect(() => {
+        if (server.eggId === egg.id) {
+            setFieldValue('startup', server.container.startup);
+            return;
+        }
+
+        // Whenever the egg is changed, set the server's startup command to the egg's default.
+        setFieldValue('startup', egg.startup);
+    }, [ egg ]);
 
     return (
         <AdminBox title={'Startup Command'} css={tw`relative w-full`}>
@@ -43,7 +53,7 @@ function ServerStartupLineContainer ({ egg }: { egg: Egg }) {
     );
 }
 
-function ServerServiceContainer ({ server, egg, setEgg }: { server: Server, egg: Egg | null, setEgg: (value: Egg | null) => void }) {
+function ServerServiceContainer ({ egg, setEgg, server }: { egg: Egg | null, setEgg: (value: Egg | null) => void, server: Server }) {
     const { isSubmitting } = useFormikContext();
 
     const [ nestId, setNestId ] = useState<number | null>(server.nestId);
@@ -116,40 +126,25 @@ function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVar
     );
 }
 
-function ServerStartupForm ({ server }: { server: Server }) {
-    const { isSubmitting, isValid, setFieldValue } = useFormikContext();
-
-    const [ egg, setEgg ] = useState<Egg | null>(null);
-
-    useEffect(() => {
-        getEgg(server.eggId, [ 'variables' ])
-            .then(egg => {
-                if (egg.relations.variables === undefined) {
-                    return;
-                }
-                egg.relations.variables?.forEach(v => setFieldValue('environment.' + v.envVariable, ''));
-                setEgg(egg);
-            })
-            .catch(error => console.error(error));
-    }, []);
-
-    if (egg === null) {
-        return (<></>);
-    }
+function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg, setEgg: (value: Egg | null) => void; server: Server }) {
+    const { isSubmitting, isValid } = useFormikContext();
 
     return (
         <Form>
             <div css={tw`flex flex-col`}>
                 <div css={tw`flex flex-row mb-6`}>
-                    <ServerStartupLineContainer egg={egg}/>
+                    <ServerStartupLineContainer
+                        egg={egg}
+                        server={server}
+                    />
                 </div>
 
                 <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6`}>
                     <div css={tw`flex`}>
                         <ServerServiceContainer
-                            server={server}
                             egg={egg}
                             setEgg={setEgg}
+                            server={server}
                         />
                     </div>
 
@@ -163,7 +158,7 @@ function ServerStartupForm ({ server }: { server: Server }) {
                         <ServerVariableContainer
                             key={i}
                             variable={v}
-                            defaultValue={server.relations?.variables.find(v2 => v.eggId === v2.eggId && v.envVariable === v2.envVariable)?.serverValue || ''}
+                            defaultValue={server.relations?.variables.find(v2 => v.eggId === v2.eggId && v.envVariable === v2.envVariable)?.serverValue || v.defaultValue}
                         />
                     ))}
                 </div>
@@ -225,7 +220,11 @@ export default function ServerStartupContainer ({ server }: { server: Server }) 
             validationSchema={object().shape({
             })}
         >
-            <ServerStartupForm server={server}/>
+            <ServerStartupForm
+                egg={egg}
+                setEgg={setEgg}
+                server={server}
+            />
         </Formik>
     );
 }
