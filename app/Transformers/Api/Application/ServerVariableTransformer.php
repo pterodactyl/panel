@@ -24,9 +24,9 @@ class ServerVariableTransformer extends Transformer
         return ServerVariable::RESOURCE_NAME;
     }
 
-    public function transform(EggVariable $variable): array
+    public function transform(EggVariable $model): array
     {
-        return $variable->toArray();
+        return $model->toArray();
     }
 
     /**

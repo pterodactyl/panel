@@ -40,7 +40,7 @@ const ServerRouter = () => {
     useEffect(() => {
         clearFlashes('server');
 
-        getServer(Number(match.params?.id), [ 'allocations', 'user' ])
+        getServer(Number(match.params?.id), [ 'allocations', 'user', 'variables' ])
             .then(server => setServer(server))
             .catch(error => {
                 console.error(error);
@@ -108,10 +108,10 @@ const ServerRouter = () => {
 
             <Switch location={location}>
                 <Route path={`${match.path}`} exact>
-                    <ServerSettingsContainer/>
+                    <ServerSettingsContainer server={server}/>
                 </Route>
                 <Route path={`${match.path}/startup`} exact>
-                    <ServerStartupContainer/>
+                    <ServerStartupContainer server={server}/>
                 </Route>
                 <Route path={`${match.path}/manage`} exact>
                     <ServerManageContainer/>

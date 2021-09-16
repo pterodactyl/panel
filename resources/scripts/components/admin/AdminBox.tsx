@@ -19,7 +19,7 @@ const AdminBox = ({ icon, title, className, padding, children }: Props) => {
 
     return (
         <div css={tw`rounded shadow-md bg-neutral-700`} className={className}>
-            <div css={tw`bg-neutral-900 rounded-t px-6 py-3 border-b border-black`}>
+            <div css={tw`bg-neutral-900 rounded-t px-4 py-3 border-b border-black`}>
                 {typeof title === 'string' ?
                     <p css={tw`text-sm uppercase`}>
                         {icon && <FontAwesomeIcon icon={icon} css={tw`mr-2 text-neutral-300`}/>}{title}
@@ -28,7 +28,7 @@ const AdminBox = ({ icon, title, className, padding, children }: Props) => {
                     title
                 }
             </div>
-            <div css={padding ? tw`px-6 py-4` : undefined}>
+            <div css={padding ? tw`px-4 py-3` : undefined}>
                 {children}
             </div>
         </div>

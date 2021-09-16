@@ -196,7 +196,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
             </Sidebar>
 
             <Container collapsed={collapsed}>
-                <div css={tw`md:min-h-screen w-full flex flex-col px-6 md:px-16 py-6 md:py-12`} style={{ maxWidth: '86rem' }}>
+                <div css={tw`md:min-h-screen w-full flex flex-col px-6 md:px-16 pt-6 md:pt-12`} style={{ maxWidth: '86rem' }}>
                     {/* <TransitionRouter> */}
                     <Switch location={location}>
                         <Route path={`${match.path}`} component={OverviewContainer} exact/>

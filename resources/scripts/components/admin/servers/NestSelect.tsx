@@ -8,8 +8,6 @@ export default ({ nestId, setNestId }: { nestId: number | null; setNestId: (valu
     const [ nests, setNests ] = useState<Nest[] | null>(null);
 
     useEffect(() => {
-        console.log(nestId || undefined);
-
         searchNests({})
             .then(nests => setNests(nests))
             .catch(error => console.error(error));

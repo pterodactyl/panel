@@ -7,6 +7,38 @@ import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 import { Node, rawDataToNode } from '@/api/admin/nodes/getNodes';
 import { User, rawDataToUser } from '@/api/admin/users/getUsers';
 
+export interface ServerVariable {
+    id: number;
+    eggId: number;
+    name: string;
+    description: string;
+    envVariable: string;
+    defaultValue: string;
+    userViewable: boolean;
+    userEditable: boolean;
+    rules: string;
+    required: boolean;
+    serverValue: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+const rawDataToServerVariable = ({ attributes }: FractalResponseData): ServerVariable => ({
+    id: attributes.id,
+    eggId: attributes.egg_id,
+    name: attributes.name,
+    description: attributes.description,
+    envVariable: attributes.env_variable,
+    defaultValue: attributes.default_value,
+    userViewable: attributes.user_viewable,
+    userEditable: attributes.user_editable,
+    rules: attributes.rules,
+    required: attributes.required,
+    serverValue: attributes.server_value,
+    createdAt: new Date(attributes.created_at),
+    updatedAt: new Date(attributes.updated_at),
+});
+
 export interface Server {
     id: number;
     externalId: string | null
@@ -53,6 +85,7 @@ export interface Server {
         egg?: Egg;
         node?: Node;
         user?: User;
+        variables: ServerVariable[];
     }
 }
 
@@ -102,6 +135,7 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
         egg: attributes.relationships?.egg?.object === 'egg' ? rawDataToEgg(attributes.relationships.egg as FractalResponseData) : undefined,
         node: attributes.relationships?.node?.object === 'node' ? rawDataToNode(attributes.relationships.node as FractalResponseData) : undefined,
         user: attributes.relationships?.user?.object === 'user' ? rawDataToUser(attributes.relationships.user as FractalResponseData) : undefined,
+        variables: ((attributes.relationships?.variables as FractalResponseList | undefined)?.data || []).map(rawDataToServerVariable),
     },
 }) as Server;
 

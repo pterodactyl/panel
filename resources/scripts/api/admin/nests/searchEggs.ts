@@ -5,7 +5,7 @@ interface Filters {
     name?: string;
 }
 
-export default (nestId: number, filters?: Filters): Promise<Egg[]> => {
+export default (nestId: number, filters?: Filters, include: string[] = []): Promise<Egg[]> => {
     const params = {};
     if (filters !== undefined) {
         Object.keys(filters).forEach(key => {
@@ -15,7 +15,7 @@ export default (nestId: number, filters?: Filters): Promise<Egg[]> => {
     }
 
     return new Promise((resolve, reject) => {
-        http.get(`/api/application/nests/${nestId}/eggs`, { params: { ...params } })
+        http.get(`/api/application/nests/${nestId}/eggs`, { params: { include: include.join(','), ...params } })
             .then(response => resolve(
                 (response.data.data || []).map(rawDataToEgg)
             ))

@@ -236,19 +236,12 @@ export function ServerAllocationsContainer ({ server }: { server: Server }) {
 
 type Values2 = Omit<Values, 'oomDisabled'> & { oomKiller: boolean };
 
-export default function ServerSettingsContainer2 () {
+export default function ServerSettingsContainer2 ({ server }: { server: Server }) {
     const history = useHistory();
 
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    const server = Context.useStoreState(state => state.server);
     const setServer = Context.useStoreActions(actions => actions.setServer);
-
-    if (server === undefined) {
-        return (
-            <></>
-        );
-    }
 
     const submit = (values: Values2, { setSubmitting, setFieldValue }: FormikHelpers<Values2>) => {
         clearFlashes('server');
@@ -299,7 +292,7 @@ export default function ServerSettingsContainer2 () {
         >
             {({ isSubmitting, isValid }) => (
                 <Form>
-                    <div css={tw`grid grid-cols-2 gap-x-8`}>
+                    <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8`}>
                         <div css={tw`flex flex-col`}>
                             <div css={tw`flex mb-6`}>
                                 <ServerSettingsContainer server={server}/>
@@ -309,8 +302,14 @@ export default function ServerSettingsContainer2 () {
                                 <ServerFeatureContainer/>
                             </div>
 
-                            <div css={tw`flex mb-6`}>
+                            <div css={tw`flex`}>
                                 <ServerAllocationsContainer server={server}/>
+                            </div>
+                        </div>
+
+                        <div css={tw`flex flex-col`}>
+                            <div css={tw`flex mb-6`}>
+                                <ServerResourceContainer/>
                             </div>
 
                             <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6`}>
@@ -323,12 +322,6 @@ export default function ServerSettingsContainer2 () {
                                         Save Changes
                                     </Button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div css={tw`flex flex-col`}>
-                            <div css={tw`flex mb-8`}>
-                                <ServerResourceContainer/>
                             </div>
                         </div>
                     </div>

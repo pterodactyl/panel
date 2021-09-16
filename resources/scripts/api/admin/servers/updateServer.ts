@@ -31,7 +31,6 @@ export default (id: number, server: Partial<Values>, include: string[] = []): Pr
         // @ts-ignore
         data[key2] = server[key];
     });
-    console.log(data);
 
     return new Promise((resolve, reject) => {
         http.patch(`/api/application/servers/${id}`, data, { params: { include: include.join(',') } })
