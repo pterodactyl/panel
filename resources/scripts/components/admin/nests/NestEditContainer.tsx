@@ -104,24 +104,21 @@ const EditInformationContainer = () => {
                     <AdminBox title={'Edit Nest'} css={tw`flex-1 self-start w-full relative mb-8 lg:mb-0 mr-0 lg:mr-4`}>
                         <SpinnerOverlay visible={isSubmitting}/>
 
-                        <Form css={tw`mb-0`}>
-                            <div>
-                                <Field
-                                    id={'name'}
-                                    name={'name'}
-                                    label={'Name'}
-                                    type={'text'}
-                                />
-                            </div>
+                        <Form>
+                            <Field
+                                id={'name'}
+                                name={'name'}
+                                label={'Name'}
+                                type={'text'}
+                                css={tw`mb-6`}
+                            />
 
-                            <div css={tw`mt-6`}>
-                                <Field
-                                    id={'description'}
-                                    name={'description'}
-                                    label={'Description'}
-                                    type={'text'}
-                                />
-                            </div>
+                            <Field
+                                id={'description'}
+                                name={'description'}
+                                label={'Description'}
+                                type={'text'}
+                            />
 
                             <div css={tw`w-full flex flex-row items-center mt-6`}>
                                 <div css={tw`flex`}>

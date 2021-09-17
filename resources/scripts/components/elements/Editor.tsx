@@ -6,7 +6,7 @@ import { foldGutter, foldKeymap } from '@codemirror/fold';
 import { lineNumbers, highlightActiveLineGutter } from '@codemirror/gutter';
 import { defaultHighlightStyle } from '@codemirror/highlight';
 import { history, historyKeymap } from '@codemirror/history';
-import { indentOnInput, LanguageSupport, LRLanguage } from '@codemirror/language';
+import { indentOnInput, LanguageSupport, LRLanguage, indentUnit } from '@codemirror/language';
 import { lintKeymap } from '@codemirror/lint';
 import { bracketMatching } from '@codemirror/matchbrackets';
 import { rectangularSelection } from '@codemirror/rectangular-selection';
@@ -167,12 +167,13 @@ const defaultExtensions: Extension = [
         ...lintKeymap,
         indentWithTab,
     ]),
-
     EditorState.tabSize.of(4),
+    // This is gonna piss people off, but that isn't my problem.
+    indentUnit.of('\t'),
 ];
 
 const EditorContainer = styled.div<{ overrides?: TwStyle }>`
-    min-height: 12rem;
+    //min-height: 12rem;
     ${tw`relative`};
 
     & > div {
@@ -207,6 +208,7 @@ export default ({ className, style, overrides, initialContent, extensions, mode,
         extensions: [
             ...defaultExtensions,
             ...(extensions !== undefined ? extensions : []),
+
             languageConfig.of(mode !== undefined ? modeToExtension(mode) : findLanguageExtensionByMode(findModeByFilename(filename || ''))),
             keybinds.of([]),
         ],

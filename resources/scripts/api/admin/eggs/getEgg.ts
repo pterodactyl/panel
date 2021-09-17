@@ -41,8 +41,8 @@ export interface Egg {
     description: string | null;
     features: string[] | null;
     dockerImages: string[];
-    configFiles: string | null;
-    configStartup: string | null;
+    configFiles: Record<string, any> | null;
+    configStartup: Record<string, any> | null;
     configStop: string | null;
     configFrom: number | null;
     startup: string;

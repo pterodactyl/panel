@@ -1,19 +1,11 @@
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
-import { Context } from '@/components/admin/nests/eggs/EggRouter';
+import { Egg } from '@/api/admin/eggs/getEgg';
 
-export default () => {
-    const egg = Context.useStoreState(state => state.egg);
-
-    if (egg === undefined) {
-        return (
-            <></>
-        );
-    }
-
+export default ({ egg }: { egg: Egg }) => {
     return (
         <AdminBox title={'Variables'}>
-
+            {egg.name}
         </AdminBox>
     );
 };

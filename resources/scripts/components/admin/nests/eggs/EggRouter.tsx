@@ -93,11 +93,11 @@ const EggRouter = () => {
 
             <Switch location={location}>
                 <Route path={`${match.path}`} exact>
-                    <EggSettingsContainer/>
+                    <EggSettingsContainer egg={egg}/>
                 </Route>
 
                 <Route path={`${match.path}/variables`} exact>
-                    <EggVariablesContainer/>
+                    <EggVariablesContainer egg={egg}/>
                 </Route>
 
                 <Route path={`${match.path}/install`} exact>
