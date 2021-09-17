@@ -8,11 +8,13 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Nests\NestUpdateService;
 use Pterodactyl\Services\Nests\NestCreationService;
 use Pterodactyl\Services\Nests\NestDeletionService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Services\Eggs\Sharing\EggImporterService;
+use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Transformers\Api\Application\NestTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest;
+use Pterodactyl\Http\Requests\Api\Application\Eggs\ImportEggRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\StoreNestRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\DeleteNestRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\UpdateNestRequest;
@@ -20,27 +22,26 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class NestController extends ApplicationApiController
 {
-    private NestRepositoryInterface $repository;
-    protected NestCreationService $nestCreationService;
-    protected NestDeletionService $nestDeletionService;
-    protected NestUpdateService $nestUpdateService;
+    private NestCreationService $nestCreationService;
+    private NestDeletionService $nestDeletionService;
+    private NestUpdateService $nestUpdateService;
+    private EggImporterService $eggImporterService;
 
     /**
      * NestController constructor.
      */
     public function __construct(
-        NestRepositoryInterface $repository,
         NestCreationService $nestCreationService,
         NestDeletionService $nestDeletionService,
-        NestUpdateService $nestUpdateService
+        NestUpdateService $nestUpdateService,
+        EggImporterService $eggImporterService
     ) {
         parent::__construct();
-
-        $this->repository = $repository;
 
         $this->nestCreationService = $nestCreationService;
         $this->nestDeletionService = $nestDeletionService;
         $this->nestUpdateService = $nestUpdateService;
+        $this->eggImporterService = $eggImporterService;
     }
 
     /**
@@ -95,9 +96,24 @@ class NestController extends ApplicationApiController
     }
 
     /**
+     * Imports an egg.
+     */
+    public function import(ImportEggRequest $request, Nest $nest): array
+    {
+        $egg = $this->eggImporterService->handleContent(
+            $nest->id,
+            $request->getContent(),
+            $request->headers->get('Content-Type'),
+        );
+
+        return $this->fractal->item($egg)
+            ->transformWith(EggTransformer::class)
+            ->toArray();
+    }
+
+    /**
      * Updates an existing nest.
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

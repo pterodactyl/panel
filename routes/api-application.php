@@ -98,6 +98,7 @@ Route::group(['prefix' => '/nests'], function () {
     Route::get('/{nest}/eggs', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'index']);
 
     Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Nests\NestController::class, 'store']);
+    Route::post('/{nest}/import', [\Pterodactyl\Http\Controllers\Api\Application\Nests\NestController::class, 'import']);
 
     Route::patch('/{nest}', [\Pterodactyl\Http\Controllers\Api\Application\Nests\NestController::class, 'update']);
 
