@@ -1,52 +1,98 @@
+import { Egg } from '@/api/admin/eggs/getEgg';
+import updateEgg from '@/api/admin/eggs/updateEgg';
+import Field from '@/components/elements/Field';
+import useFlash from '@/plugins/useFlash';
 import { shell } from '@codemirror/legacy-modes/mode/shell';
+import { faScroll } from '@fortawesome/free-solid-svg-icons';
+import { Form, Formik, FormikHelpers } from 'formik';
 import React from 'react';
 import tw from 'twin.macro';
 import AdminBox from '@/components/admin/AdminBox';
-import { Context } from '@/components/admin/nests/eggs/EggRouter';
 import Button from '@/components/elements/Button';
 import Editor from '@/components/elements/Editor';
-import Input from '@/components/elements/Input';
-import Label from '@/components/elements/Label';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
-export default () => {
-    const egg = Context.useStoreState(state => state.egg);
+interface Values {
+    scriptContainer: string;
+    scriptEntry: string;
+    scriptInstall: string;
+}
 
-    if (egg === undefined) {
-        return (
-            <></>
-        );
-    }
+export default function EggInstallContainer ({ egg }: { egg: Egg }) {
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+
+    let fetchFileContent: null | (() => Promise<string>) = null;
+
+    const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        if (fetchFileContent === null) {
+            return;
+        }
+
+        values.scriptInstall = await fetchFileContent();
+
+        clearFlashes('egg');
+
+        updateEgg(egg.id, values)
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'egg', error });
+            })
+            .then(() => setSubmitting(false));
+    };
 
     return (
-        <AdminBox title={'Install Script'} padding={false}>
-            <div css={tw`relative pb-4`}>
-                <SpinnerOverlay visible={false}/>
+        <Formik
+            onSubmit={submit}
+            initialValues={{
+                scriptContainer: egg.scriptContainer,
+                scriptEntry: egg.scriptEntry,
+                scriptInstall: '',
+            }}
+        >
+            {({ isSubmitting, isValid }) => (
+                <AdminBox icon={faScroll} title={'Install Script'} padding={false}>
+                    <div css={tw`relative pb-4`}>
+                        <SpinnerOverlay visible={isSubmitting}/>
 
-                <Editor overrides={tw`h-96 mb-4`} initialContent={egg.scriptInstall || ''} mode={shell}/>
+                        <Form>
+                            <Editor
+                                overrides={tw`h-96 mb-4`}
+                                initialContent={egg.scriptInstall || ''}
+                                mode={shell}
+                                fetchContent={value => {
+                                    fetchFileContent = value;
+                                }}
+                            />
 
-                <div css={tw`mx-6 mb-4`}>
-                    <div css={tw`grid grid-cols-3 gap-x-8 gap-y-6`}>
-                        <div>
-                            <Label>Install Container</Label>
-                            <Input type="text" defaultValue={egg.scriptContainer}/>
-                            <p className={'input-help'}>The Docker image to use for running this installation script.</p>
-                        </div>
+                            <div css={tw`mx-6 mb-4`}>
+                                <div css={tw`grid grid-cols-3 gap-x-8 gap-y-6`}>
+                                    <Field
+                                        id={'scriptContainer'}
+                                        name={'scriptContainer'}
+                                        label={'Install Container'}
+                                        type={'text'}
+                                        description={'The Docker image to use for running this installation script.'}
+                                    />
 
-                        <div>
-                            <Label>Install Entrypoint</Label>
-                            <Input type="text" defaultValue={egg.scriptEntry}/>
-                            <p className={'input-help'}>The command that should be used to run this script inside of the installation container.</p>
-                        </div>
+                                    <Field
+                                        id={'scriptEntry'}
+                                        name={'scriptEntry'}
+                                        label={'Install Entrypoint'}
+                                        type={'text'}
+                                        description={'The command that should be used to run this script inside of the installation container.'}
+                                    />
+                                </div>
+                            </div>
+
+                            <div css={tw`flex flex-row border-t border-neutral-600`}>
+                                <Button type={'submit'} size={'small'} css={tw`ml-auto mr-6 mt-4`} disabled={isSubmitting || !isValid}>
+                                    Save Changes
+                                </Button>
+                            </div>
+                        </Form>
                     </div>
-                </div>
-
-                <div css={tw`flex flex-row border-t border-neutral-600`}>
-                    <Button type={'button'} size={'small'} css={tw`ml-auto mr-6 mt-4`}>
-                        Save Changes
-                    </Button>
-                </div>
-            </div>
-        </AdminBox>
+                </AdminBox>
+            )}
+        </Formik>
     );
-};
+}

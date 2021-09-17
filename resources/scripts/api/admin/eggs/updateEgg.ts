@@ -1,10 +1,10 @@
 import http from '@/api/http';
 import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 
-export default (egg: Partial<Egg>): Promise<Egg> => {
+export default (id: number, egg: Partial<Egg>): Promise<Egg> => {
     return new Promise((resolve, reject) => {
-        http.post(
-            '/api/application/eggs/',
+        http.patch(
+            `/api/application/eggs/${id}`,
             {
                 nest_id: egg.nestId,
                 name: egg.name,

@@ -43,7 +43,6 @@ export interface Egg {
     dockerImages: string[];
     configFiles: string | null;
     configStartup: string | null;
-    configLogs: string | null;
     configStop: string | null;
     configFrom: number | null;
     startup: string;
@@ -71,11 +70,10 @@ export const rawDataToEgg = ({ attributes }: FractalResponseData): Egg => ({
     description: attributes.description,
     features: attributes.features,
     dockerImages: attributes.docker_images,
-    configFiles: attributes.config_files,
-    configStartup: attributes.config_startup,
-    configLogs: attributes.config_logs,
-    configStop: attributes.config_stop,
-    configFrom: attributes.config_from,
+    configFiles: attributes.config?.files,
+    configStartup: attributes.config?.startup,
+    configStop: attributes.config?.stop,
+    configFrom: attributes.config?.extends,
     startup: attributes.startup,
     copyScriptFrom: attributes.copy_script_from,
     scriptContainer: attributes.script?.container,

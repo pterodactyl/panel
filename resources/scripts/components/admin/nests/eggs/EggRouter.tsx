@@ -101,7 +101,7 @@ const EggRouter = () => {
                 </Route>
 
                 <Route path={`${match.path}/install`} exact>
-                    <EggInstallContainer/>
+                    <EggInstallContainer egg={egg}/>
                 </Route>
             </Switch>
         </AdminContentBlock>

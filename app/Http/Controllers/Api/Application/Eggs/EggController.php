@@ -7,7 +7,6 @@ use Pterodactyl\Models\Nest;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggRequest;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
@@ -19,22 +18,8 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class EggController extends ApplicationApiController
 {
-    private EggRepositoryInterface $repository;
-
-    /**
-     * EggController constructor.
-     */
-    public function __construct(EggRepositoryInterface $repository)
-    {
-        parent::__construct();
-
-        $this->repository = $repository;
-    }
-
     /**
      * Return an array of all eggs on a given nest.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetEggsRequest $request, Nest $nest): array
     {
@@ -58,8 +43,6 @@ class EggController extends ApplicationApiController
 
     /**
      * Returns a single egg.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetEggRequest $request, Egg $egg): array
     {
@@ -70,8 +53,6 @@ class EggController extends ApplicationApiController
 
     /**
      * Creates a new egg.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreEggRequest $request): JsonResponse
     {
@@ -84,8 +65,6 @@ class EggController extends ApplicationApiController
 
     /**
      * Updates an egg.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function update(UpdateEggRequest $request, Egg $egg): array
     {

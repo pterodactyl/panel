@@ -2,12 +2,27 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Eggs;
 
-use Pterodactyl\Models\Egg;
-
 class UpdateEggRequest extends StoreEggRequest
 {
     public function rules(array $rules = null): array
     {
-        return $rules ?? Egg::getRulesForUpdate($this->route()->parameter('egg')->id);
+        return [
+            'nest_id' => 'sometimes|numeric|exists:nests,id',
+            'name' => 'sometimes|string|max:191',
+            'description' => 'sometimes|string|nullable',
+            'features' => 'sometimes|array|nullable',
+            'docker_images' => 'sometimes|required|array|min:1',
+            'docker_images.*' => 'sometimes|string',
+            'file_denylist' => 'sometimes|array|nullable',
+            'file_denylist.*' => 'sometimes|string',
+            'config_files' => 'sometimes|nullable|json',
+            'config_startup' => 'sometimes|nullable|json',
+            'config_stop' => 'sometimes|nullable|string|max:191',
+            'config_from' => 'sometimes|nullable|numeric|exists:eggs,id',
+            'startup' => 'sometimes|nullable|string',
+            'script_container' => 'sometimes|string',
+            'script_entry' => 'sometimes|string',
+            'script_install' => 'sometimes|string',
+        ];
     }
 }
