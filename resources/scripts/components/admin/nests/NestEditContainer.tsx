@@ -1,6 +1,7 @@
+import ImportEggButton from '@/components/admin/nests/ImportEggButton';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import { useRouteMatch } from 'react-router-dom';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
@@ -245,10 +246,14 @@ const NestEditContainer = () => {
                     }
                 </div>
 
-                <div css={tw`flex ml-auto pl-4`}>
-                    <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
-                        New Egg
-                    </Button>
+                <div css={tw`flex flex-row ml-auto pl-4`}>
+                    <ImportEggButton css={tw`mr-4`}/>
+
+                    <NavLink to={`${match.url}/new`}>
+                        <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
+                            New Egg
+                        </Button>
+                    </NavLink>
                 </div>
             </div>
 

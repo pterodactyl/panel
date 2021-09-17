@@ -2,9 +2,6 @@ import { State, useStoreState } from 'easy-peasy';
 import React from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
-import { ApplicationStore } from '@/state';
-import { AdminContext } from '@/state/admin';
-import { breakpoint } from '@/theme';
 import OverviewContainer from '@/components/admin/overview/OverviewContainer';
 import SettingsContainer from '@/components/admin/settings/SettingsContainer';
 import DatabasesContainer from '@/components/admin/databases/DatabasesContainer';
@@ -17,6 +14,7 @@ import LocationsContainer from '@/components/admin/locations/LocationsContainer'
 import LocationEditContainer from '@/components/admin/locations/LocationEditContainer';
 import ServersContainer from '@/components/admin/servers/ServersContainer';
 import NewServerContainer from '@/components/admin/servers/NewServerContainer';
+import ServerRouter from '@/components/admin/servers/ServerRouter';
 import UsersContainer from '@/components/admin/users/UsersContainer';
 import NewUserContainer from '@/components/admin/users/NewUserContainer';
 import UserRouter from '@/components/admin/users/UserRouter';
@@ -24,13 +22,16 @@ import RolesContainer from '@/components/admin/roles/RolesContainer';
 import RoleEditContainer from '@/components/admin/roles/RoleEditContainer';
 import NestsContainer from '@/components/admin/nests/NestsContainer';
 import NestEditContainer from '@/components/admin/nests/NestEditContainer';
+import NewEggContainer from '@/components/admin/nests/NewEggContainer';
+import EggRouter from '@/components/admin/nests/eggs/EggRouter';
 import MountsContainer from '@/components/admin/mounts/MountsContainer';
 import NewMountContainer from '@/components/admin/mounts/NewMountContainer';
 import MountEditContainer from '@/components/admin/mounts/MountEditContainer';
-import EggRouter from '@/components/admin/nests/eggs/EggRouter';
-import ServerRouter from '@/components/admin/servers/ServerRouter';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import { usePersistedState } from '@/plugins/usePersistedState';
+import { ApplicationStore } from '@/state';
+import { AdminContext } from '@/state/admin';
+import { breakpoint } from '@/theme';
 
 const Sidebar = styled.div<{ collapsed?: boolean }>`
     ${tw`fixed h-screen hidden md:flex flex-col items-center flex-shrink-0 bg-neutral-900 overflow-x-hidden transition-all duration-250 ease-linear`};
@@ -251,6 +252,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                             component={NestEditContainer}
                             exact
                         />
+                        <Route path={`${match.path}/nests/:nestId/new`} component={NewEggContainer} exact/>
                         <Route
                             path={`${match.path}/nests/:nestId/eggs/:id`}
                             component={EggRouter}
