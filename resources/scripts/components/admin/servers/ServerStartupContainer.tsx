@@ -18,10 +18,14 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import Label from '@/components/elements/Label';
 import { object } from 'yup';
 
-function ServerStartupLineContainer ({ egg, server }: { egg: Egg; server: Server }) {
+function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server: Server }) {
     const { isSubmitting, setFieldValue } = useFormikContext();
 
     useEffect(() => {
+        if (egg === null) {
+            return;
+        }
+
         if (server.eggId === egg.id) {
             setFieldValue('startup', server.container.startup);
             return;
@@ -47,7 +51,7 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg; server: Server
 
             <div>
                 <Label>Default Startup Command</Label>
-                <Input value={egg.startup} readOnly/>
+                <Input value={egg?.startup || ''} readOnly/>
             </div>
         </AdminBox>
     );
@@ -126,7 +130,7 @@ function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVar
     );
 }
 
-function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg, setEgg: (value: Egg | null) => void; server: Server }) {
+function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: (value: Egg | null) => void; server: Server }) {
     const { isSubmitting, isValid } = useFormikContext();
 
     return (
@@ -154,7 +158,7 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg, setEgg: (value:
                 </div>
 
                 <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8`}>
-                    {egg.relations.variables?.map((v, i) => (
+                    {egg?.relations.variables?.map((v, i) => (
                         <ServerVariableContainer
                             key={i}
                             variable={v}
@@ -188,10 +192,6 @@ export default function ServerStartupContainer ({ server }: { server: Server }) 
             .catch(error => console.error(error));
     }, []);
 
-    if (egg === null) {
-        return (<></>);
-    }
-
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('server');
 
@@ -212,7 +212,7 @@ export default function ServerStartupContainer ({ server }: { server: Server }) 
             initialValues={{
                 startup: server.container.startup,
                 // Don't ask.
-                environment: Object.fromEntries(egg.relations.variables?.map(v => [ v.envVariable, '' ]) || []),
+                environment: Object.fromEntries(egg?.relations.variables?.map(v => [ v.envVariable, '' ]) || []),
                 image: server.container.image,
                 eggId: server.eggId,
                 skipScripts: false,
