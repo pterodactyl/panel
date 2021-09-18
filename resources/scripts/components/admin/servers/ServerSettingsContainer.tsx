@@ -215,7 +215,7 @@ export function ServerResourceContainer () {
                 </div>
             </div>
 
-            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
+            <div css={tw`mb-2 md:w-full md:flex md:flex-row`}>
                 <div css={tw`bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
                     <FormikSwitch
                         name={'limits.oomDisabled'}
@@ -292,7 +292,7 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
         >
             {({ isSubmitting, isValid }) => (
                 <Form>
-                    <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8`}>
+                    <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 mb-16`}>
                         <div css={tw`flex flex-col`}>
                             <div css={tw`flex mb-6`}>
                                 <ServerSettingsContainer server={server}/>
