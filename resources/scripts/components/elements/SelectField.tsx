@@ -15,7 +15,6 @@ import { MultiValueRemoveProps } from 'react-select/src/components/MultiValue';
 type T = any;
 
 export const SelectStyle: StylesConfig<T, any, any> = {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     clearIndicator: (base: CSSObject, props: IndicatorProps<T, any, any>): CSSObject => {
         return {
             ...base,
@@ -34,34 +33,30 @@ export const SelectStyle: StylesConfig<T, any, any> = {
         };
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     control: (base: CSSObject, props: ControlProps<T, any, any>): CSSObject => {
         return {
             ...base,
             height: '3rem',
-            /* paddingTop: '0.75rem',
-            paddingBottom: '0.75rem',
-            paddingLeft: '4rem',
-            paddingRight: '4rem', */
             background: theme`colors.neutral.600`,
-            borderColor: theme`colors.neutral.500`,
+            borderColor: !props.isFocused ? theme`colors.neutral.500` : theme`colors.primary.300`,
             borderWidth: '2px',
             color: theme`colors.neutral.200`,
             cursor: 'pointer',
-            // boxShadow: props.isFocused ? '0 0 0 2px #2684ff' : undefined,
+            boxShadow: props.isFocused ?
+                'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(36, 135, 235, 0.5) 0px 0px 0px 2px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px'
+                :
+                undefined,
 
             ':hover': {
-                borderColor: !props.isFocused ? theme`colors.neutral.400` : theme`colors.neutral.500`,
+                borderColor: !props.isFocused ? theme`colors.neutral.400` : theme`colors.primary.300`,
             },
         };
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     dropdownIndicator: (base: CSSObject, props: IndicatorProps<T, any, any>): CSSObject => {
         return {
             ...base,
             color: props.isFocused ? theme`colors.neutral.300` : theme`colors.neutral.400`,
-            // TODO: find better alternative for `isFocused` so this only triggers when the dropdown is visible.
             transform: props.isFocused ? 'rotate(180deg)' : undefined,
 
             ':hover': {
@@ -95,7 +90,6 @@ export const SelectStyle: StylesConfig<T, any, any> = {
     indicatorSeparator: (base: CSSObject, props: IndicatorProps<T, any, any>): CSSObject => {
         return {
             ...base,
-            // width: '0',
             backgroundColor: theme`colors.neutral.500`,
         };
     },
