@@ -12,8 +12,8 @@
 @section('content-header')
     <h1>{{ $user->name_first }} {{ $user->name_last}}<small>{{ $user->username }}</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.users') }}">Users</a></li>
+        <li><a href="{{ route('admin.index') }}">Админ</a></li>
+        <li><a href="{{ route('admin.users') }}">Пользователи</a></li>
         <li class="active">{{ $user->username }}</li>
     </ol>
 @endsection
@@ -28,38 +28,38 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="email" class="control-label">Email</label>
+                        <label for="email" class="control-label">Почта</label>
                         <div>
                             <input type="email" name="email" value="{{ $user->email }}" class="form-control form-autocomplete-stop">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="registered" class="control-label">Username</label>
+                        <label for="registered" class="control-label">Имя пользователя</label>
                         <div>
                             <input type="text" name="username" value="{{ $user->username }}" class="form-control form-autocomplete-stop">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="registered" class="control-label">Client First Name</label>
+                        <label for="registered" class="control-label">Имя клиента</label>
                         <div>
                             <input type="text" name="name_first" value="{{ $user->name_first }}" class="form-control form-autocomplete-stop">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="registered" class="control-label">Client Last Name</label>
+                        <label for="registered" class="control-label">Фамилия клиента</label>
                         <div>
                             <input type="text" name="name_last" value="{{ $user->name_last }}" class="form-control form-autocomplete-stop">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="control-label">Default Language</label>
+                        <label class="control-label">Язык</label>
                         <div>
                             <select name="language" class="form-control">
                                 @foreach($languages as $key => $value)
                                     <option value="{{ $key }}" @if($user->language === $key) selected @endif>{{ $value }}</option>
                                 @endforeach
                             </select>
-                            <p class="text-muted"><small>The default language to use when rendering the Panel for this user.</small></p>
+                            <p class="text-muted"><small>Язык по умолчанию.</small></p>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
         <div class="col-md-6">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Password</h3>
+                    <h3 class="box-title">Пароль</h3>
                 </div>
                 <div class="box-body">
                     <div class="alert alert-success" style="display:none;margin-bottom:10px;" id="gen_pass"></div>
@@ -81,7 +81,7 @@
                         <label for="password" class="control-label">Password <span class="field-optional"></span></label>
                         <div>
                             <input type="password" id="password" name="password" class="form-control form-autocomplete-stop">
-                            <p class="text-muted small">Leave blank to keep this user's password the same. User will not receive any notification if password is changed.</p>
+                            <p class="text-muted small">Не указывайте ничего, чтобы сохранить пароль этого пользователя одинаково. Пользователь не будет получать уведомления, если пароль изменен.</p>
                         </div>
                     </div>
                 </div>
