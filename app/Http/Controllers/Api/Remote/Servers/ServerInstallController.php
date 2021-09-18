@@ -8,9 +8,9 @@ use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
 use Pterodactyl\Events\Server\Installed as ServerInstalled;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
 
 class ServerInstallController extends Controller
 {

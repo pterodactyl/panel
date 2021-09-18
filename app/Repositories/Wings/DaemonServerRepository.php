@@ -4,6 +4,7 @@ namespace Pterodactyl\Repositories\Wings;
 
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
+use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
@@ -34,34 +35,34 @@ class DaemonServerRepository extends DaemonRepository
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function create(array $data): void
+    public function create(bool $startOnCompletion = true): void
     {
         Assert::isInstanceOf($this->server, Server::class);
 
         try {
-            $this->getHttpClient()->post(
-                '/api/servers',
-                [
-                    'json' => $data,
-                ]
-            );
-        } catch (TransferException $exception) {
+            $this->getHttpClient()->post('/api/servers', [
+                'json' => [
+                    'uuid' => $this->server->uuid,
+                    'start_on_completion' => $startOnCompletion,
+                ],
+            ]);
+        } catch (GuzzleException $exception) {
             throw new DaemonConnectionException($exception);
         }
     }
 
     /**
-     * Updates details about a server on the Daemon.
+     * Triggers a server sync on Wings.
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function update(array $data): void
+    public function sync(): void
     {
         Assert::isInstanceOf($this->server, Server::class);
 
         try {
-            $this->getHttpClient()->patch('/api/servers/' . $this->server->uuid, ['json' => $data]);
-        } catch (TransferException $exception) {
+            $this->getHttpClient()->post("/api/servers/{$this->server->uuid}/sync");
+        } catch (GuzzleException $exception) {
             throw new DaemonConnectionException($exception);
         }
     }
@@ -96,26 +97,6 @@ class DaemonServerRepository extends DaemonRepository
                 '/api/servers/%s/reinstall',
                 $this->server->uuid
             ));
-        } catch (TransferException $exception) {
-            throw new DaemonConnectionException($exception);
-        }
-    }
-
-    /**
-     * By default this function will suspend a server instance on the daemon. However, passing
-     * "true" as the first argument will unsuspend the server.
-     *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     */
-    public function suspend(bool $unsuspend = false): void
-    {
-        Assert::isInstanceOf($this->server, Server::class);
-
-        try {
-            $this->getHttpClient()->patch(
-                '/api/servers/' . $this->server->uuid,
-                ['json' => ['suspended' => !$unsuspend]]
-            );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }

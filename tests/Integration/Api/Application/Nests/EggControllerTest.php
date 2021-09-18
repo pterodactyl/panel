@@ -45,7 +45,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
                         'script' => ['privileged', 'install', 'entry', 'container', 'extends'],
                         'config' => [
                             'files' => [],
-                            'startup' => ['done', 'userInteraction' => []],
+                            'startup' => ['done'],
                             'stop',
                             'logs' => ['custom', 'location'],
                             'extends',

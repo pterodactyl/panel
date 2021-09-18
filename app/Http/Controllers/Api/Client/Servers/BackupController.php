@@ -11,6 +11,7 @@ use Pterodactyl\Models\Permission;
 use Illuminate\Auth\Access\AuthorizationException;
 use Pterodactyl\Services\Backups\DeleteBackupService;
 use Pterodactyl\Services\Backups\DownloadLinkService;
+use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
@@ -20,34 +21,21 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
 
 class BackupController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Backups\InitiateBackupService
-     */
-    private $initiateBackupService;
-
-    /**
-     * @var \Pterodactyl\Services\Backups\DeleteBackupService
-     */
-    private $deleteBackupService;
-
-    /**
-     * @var \Pterodactyl\Services\Backups\DownloadLinkService
-     */
-    private $downloadLinkService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonBackupRepository
-     */
-    private $repository;
+    private InitiateBackupService $initiateBackupService;
+    private DeleteBackupService $deleteBackupService;
+    private DownloadLinkService $downloadLinkService;
+    private DaemonBackupRepository $daemonRepository;
+    private BackupRepository $repository;
 
     /**
      * BackupController constructor.
      */
     public function __construct(
-        DaemonBackupRepository $repository,
+        DaemonBackupRepository $daemonRepository,
         DeleteBackupService $deleteBackupService,
         InitiateBackupService $initiateBackupService,
-        DownloadLinkService $downloadLinkService
+        DownloadLinkService $downloadLinkService,
+        BackupRepository $repository
     ) {
         parent::__construct();
 
@@ -55,14 +43,13 @@ class BackupController extends ClientApiController
         $this->initiateBackupService = $initiateBackupService;
         $this->deleteBackupService = $deleteBackupService;
         $this->downloadLinkService = $downloadLinkService;
+        $this->daemonRepository = $daemonRepository;
     }
 
     /**
-     * Returns all of the backups for a given server instance in a paginated
+     * Returns all the backups for a given server instance in a paginated
      * result set.
      *
-     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
-     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function index(Request $request, Server $server): array
@@ -75,6 +62,9 @@ class BackupController extends ClientApiController
 
         return $this->fractal->collection($server->backups()->paginate($limit))
             ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->addMeta([
+                'backup_count' => $this->repository->getNonFailedBackups($server)->count(),
+            ])
             ->toArray();
     }
 
@@ -89,11 +79,18 @@ class BackupController extends ClientApiController
     {
         /** @var \Pterodactyl\Models\Backup $backup */
         $backup = $server->audit(AuditLog::SERVER__BACKUP_STARTED, function (AuditLog $model, Server $server) use ($request) {
-            $backup = $this->initiateBackupService
-                ->setIgnoredFiles(
-                    explode(PHP_EOL, $request->input('ignored') ?? '')
-                )
-                ->handle($server, $request->input('name'));
+            $action = $this->initiateBackupService
+                ->setIgnoredFiles(explode(PHP_EOL, $request->input('ignored') ?? ''));
+
+            // Only set the lock status if the user even has permission to delete backups,
+            // otherwise ignore this status. This gets a little funky since it isn't clear
+            // how best to allow a user to create a backup that is locked without also preventing
+            // them from just filling up a server with backups that can never be deleted?
+            if ($request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
+                $action->setIsLocked((bool) $request->input('is_locked'));
+            }
+
+            $backup = $action->handle($server, $request->input('name'));
 
             $model->metadata = ['backup_uuid' => $backup->uuid];
 
@@ -106,10 +103,34 @@ class BackupController extends ClientApiController
     }
 
     /**
+     * Toggles the lock status of a given backup for a server.
+     *
+     * @throws \Throwable
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function toggleLock(Request $request, Server $server, Backup $backup): array
+    {
+        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
+            throw new AuthorizationException();
+        }
+
+        $action = $backup->is_locked ? AuditLog::SERVER__BACKUP_UNLOCKED : AuditLog::SERVER__BACKUP_LOCKED;
+        $server->audit($action, function (AuditLog $audit) use ($backup) {
+            $audit->metadata = ['backup_uuid' => $backup->uuid];
+
+            $backup->update(['is_locked' => !$backup->is_locked]);
+        });
+
+        $backup->refresh();
+
+        return $this->fractal->item($backup)
+            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->toArray();
+    }
+
+    /**
      * Returns information about a single backup.
      *
-     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
-     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function view(Request $request, Server $server, Backup $backup): array
@@ -196,7 +217,7 @@ class BackupController extends ClientApiController
             throw new BadRequestHttpException('This server is not currently in a state that allows for a backup to be restored.');
         }
 
-        if (!$backup->is_successful && !$backup->completed_at) {
+        if (!$backup->is_successful && is_null($backup->completed_at)) {
             throw new BadRequestHttpException('This backup cannot be restored at this time: not completed or failed.');
         }
 
@@ -213,7 +234,7 @@ class BackupController extends ClientApiController
             // actions against it via the Panel API.
             $server->update(['status' => Server::STATUS_RESTORING_BACKUP]);
 
-            $this->repository->setServer($server)->restore($backup, $url ?? null, $request->input('truncate'));
+            $this->daemonRepository->setServer($server)->restore($backup, $url ?? null, $request->input('truncate'));
         });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);

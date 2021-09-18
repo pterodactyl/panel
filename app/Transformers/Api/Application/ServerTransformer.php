@@ -69,6 +69,7 @@ class ServerTransformer extends BaseTransformer
                 'io' => $server->io,
                 'cpu' => $server->cpu,
                 'threads' => $server->threads,
+                'oom_disabled' => $server->oom_disabled,
             ],
             'feature_limits' => [
                 'databases' => $server->database_limit,

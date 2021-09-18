@@ -1,24 +1,25 @@
 import React from 'react';
-import Modal, { ModalProps } from '@/components/elements/Modal';
-import ModalContext from '@/context/ModalContext';
+import PortaledModal, { ModalProps } from '@/components/elements/Modal';
+import ModalContext, { ModalContextValues } from '@/context/ModalContext';
+import isEqual from 'react-fast-compare';
 
 export interface AsModalProps {
     visible: boolean;
     onModalDismissed?: () => void;
 }
 
-type ExtendedModalProps = Omit<ModalProps, 'appear' | 'visible' | 'onDismissed'>;
+export type SettableModalProps = Omit<ModalProps, 'appear' | 'visible' | 'onDismissed'>;
 
 interface State {
     render: boolean;
     visible: boolean;
-    showSpinnerOverlay?: boolean;
+    propOverrides: Partial<SettableModalProps>;
 }
 
 type ExtendedComponentType<T> = (C: React.ComponentType<T>) => React.ComponentType<T & AsModalProps>;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-function asModal<P extends object> (modalProps?: ExtendedModalProps | ((props: P) => ExtendedModalProps)): ExtendedComponentType<P> {
+function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) => SettableModalProps)): ExtendedComponentType<P> {
     return function (Component) {
         return class extends React.PureComponent <P & AsModalProps, State> {
             static displayName = `asModal(${Component.displayName})`;
@@ -29,55 +30,63 @@ function asModal<P extends object> (modalProps?: ExtendedModalProps | ((props: P
                 this.state = {
                     render: props.visible,
                     visible: props.visible,
-                    showSpinnerOverlay: undefined,
+                    propOverrides: {},
                 };
             }
 
-            get modalProps () {
+            get computedModalProps (): Readonly<SettableModalProps & { visible: boolean }> {
                 return {
                     ...(typeof modalProps === 'function' ? modalProps(this.props) : modalProps),
-                    showSpinnerOverlay: this.state.showSpinnerOverlay,
+                    ...this.state.propOverrides,
+                    visible: this.state.visible,
                 };
             }
 
-            componentDidUpdate (prevProps: Readonly<P & AsModalProps>) {
+            /**
+             * @this {React.PureComponent<P & AsModalProps, State>}
+             */
+            componentDidUpdate (prevProps: Readonly<P & AsModalProps>, prevState: Readonly<State>) {
                 if (prevProps.visible && !this.props.visible) {
-                    // noinspection JSPotentiallyInvalidUsageOfThis
-                    this.setState({ visible: false, showSpinnerOverlay: false });
+                    this.setState({ visible: false, propOverrides: {} });
                 } else if (!prevProps.visible && this.props.visible) {
-                    // noinspection JSPotentiallyInvalidUsageOfThis
                     this.setState({ render: true, visible: true });
+                }
+                if (!this.state.render && !isEqual(prevState.propOverrides, this.state.propOverrides)) {
+                    this.setState({ propOverrides: {} });
                 }
             }
 
             dismiss = () => this.setState({ visible: false });
 
-            toggleSpinner = (value?: boolean) => this.setState({ showSpinnerOverlay: value });
+            setPropOverrides: ModalContextValues['setPropOverrides'] = value => this.setState(state => ({
+                propOverrides: !value ? {} : (typeof value === 'function' ? value(state.propOverrides) : value),
+            }));
 
+            /**
+             * @this {React.PureComponent<P & AsModalProps, State>}
+             */
             render () {
+                if (!this.state.render) return null;
+
                 return (
-                    this.state.render ?
-                        <Modal
-                            appear
-                            visible={this.state.visible}
-                            onDismissed={() => this.setState({ render: false }, () => {
-                                if (typeof this.props.onModalDismissed === 'function') {
-                                    this.props.onModalDismissed();
-                                }
-                            })}
-                            {...this.modalProps}
+                    <PortaledModal
+                        appear
+                        onDismissed={() => this.setState({ render: false }, () => {
+                            if (typeof this.props.onModalDismissed === 'function') {
+                                this.props.onModalDismissed();
+                            }
+                        })}
+                        {...this.computedModalProps}
+                    >
+                        <ModalContext.Provider
+                            value={{
+                                dismiss: this.dismiss.bind(this),
+                                setPropOverrides: this.setPropOverrides.bind(this),
+                            }}
                         >
-                            <ModalContext.Provider
-                                value={{
-                                    dismiss: this.dismiss.bind(this),
-                                    toggleSpinner: this.toggleSpinner.bind(this),
-                                }}
-                            >
-                                <Component {...this.props}/>
-                            </ModalContext.Provider>
-                        </Modal>
-                        :
-                        null
+                            <Component {...this.props}/>
+                        </ModalContext.Provider>
+                    </PortaledModal>
                 );
             }
         };

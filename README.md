@@ -34,6 +34,9 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**HostBend**](https://hostbend.com/) | HostBend offers a variety of solutions for developers, students, and others who have a tight budget but don't want to compromise quality and support. |
 | [**Capitol Hosting Solutions**](https://capitolsolutions.cloud/) | CHS is *the* budget friendly hosting company for Australian and American gamers, offering a variety of plans from Web Hosting to Game Servers; Custom Solutions too! |
 | [**ByteAnia**](https://byteania.com/?utm_source=pterodactyl) | ByteAnia offers the best performing and most affordable **Ryzen 5000 Series hosting** on the market for *unbeatable prices*! |
+| [**Aussie Server Hosts**](https://aussieserverhosts.com/) | No frills Australian Owned and operated High Performance Server hosting for some of the most demanding games serving Australia and New Zealand. |
+| [**VibeGAMES**](https://vibegames.net/) | VibeGAMES is a game server provider that specializes in DDOS protection for the games we offer. We have multiple locations in the US, Brazil, France, Germany, Singapore, Australia and South Africa.|
+| [**RocketNode**](https://rocketnode.net) | RocketNode is a VPS and Game Server provider that offers the best performing VPS and Game hosting Solutions at affordable prices! |
 
 ## Documentation
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
@@ -64,7 +67,6 @@ and there are plenty more games available provided by the community. Some of the
 * San Andreas: MP
 * Pocketmine MP
 * Squad
-* FiveM
 * Xonotic
 * Starmade
 * Discord ATLBot, and most other Node.js/Python discord bots

@@ -63,9 +63,9 @@ class SuspensionService
                 'status' => $isSuspending ? Server::STATUS_SUSPENDED : null,
             ]);
 
-            // Only send the suspension request to wings if the server is not currently being transferred.
+            // Only trigger a Wings server sync if it is not currently being transferred.
             if (is_null($server->transfer)) {
-                $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
+                $this->daemonServerRepository->setServer($server)->sync();
             }
         });
     }

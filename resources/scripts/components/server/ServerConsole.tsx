@@ -1,6 +1,5 @@
 import React, { lazy, memo } from 'react';
 import { ServerContext } from '@/state/server';
-import SuspenseSpinner from '@/components/elements/SuspenseSpinner';
 import Can from '@/components/elements/Can';
 import ContentContainer from '@/components/elements/ContentContainer';
 import tw from 'twin.macro';
@@ -8,8 +7,9 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
 import PowerControls from '@/components/server/PowerControls';
-import { EulaModalFeature } from '@feature/index';
+import { EulaModalFeature, JavaVersionModalFeature } from '@feature/index';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import Spinner from '@/components/elements/Spinner';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -51,17 +51,16 @@ const ServerConsole = () => {
                 }
             </div>
             <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
-                <SuspenseSpinner>
+                <Spinner.Suspense>
                     <ErrorBoundary>
                         <ChunkedConsole/>
                     </ErrorBoundary>
                     <ChunkedStatGraphs/>
-                </SuspenseSpinner>
-                {eggFeatures.includes('eula') &&
+                </Spinner.Suspense>
                 <React.Suspense fallback={null}>
-                    <EulaModalFeature/>
+                    {eggFeatures.includes('eula') && <EulaModalFeature/>}
+                    {eggFeatures.includes('java_version') && <JavaVersionModalFeature/>}
                 </React.Suspense>
-                }
             </div>
         </ServerContentBlock>
     );

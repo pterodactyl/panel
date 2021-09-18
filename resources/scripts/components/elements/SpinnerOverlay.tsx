@@ -14,10 +14,10 @@ const SpinnerOverlay: React.FC<Props> = ({ size, fixed, visible, backgroundOpaci
     <Fade timeout={150} in={visible} unmountOnExit>
         <div
             css={[
-                tw`top-0 left-0 flex items-center justify-center w-full h-full rounded flex-col`,
+                tw`top-0 left-0 flex items-center justify-center w-full h-full rounded flex-col z-40`,
                 !fixed ? tw`absolute` : tw`fixed`,
             ]}
-            style={{ zIndex: 9999, background: `rgba(0, 0, 0, ${backgroundOpacity || 0.45})` }}
+            style={{ background: `rgba(0, 0, 0, ${backgroundOpacity || 0.45})` }}
         >
             <Spinner size={size}/>
             {children && (typeof children === 'string' ? <p css={tw`mt-4 text-neutral-400`}>{children}</p> : children)}

@@ -53,7 +53,7 @@ export default () => {
                                 />
                             ))
                             :
-                            <p css={tw`text-center text-sm text-neutral-400`}>
+                            <p css={tw`text-center text-sm text-neutral-300`}>
                                 {databaseLimit > 0 ?
                                     'It looks like you have no databases.'
                                     :
@@ -62,7 +62,7 @@ export default () => {
                             </p>
                         }
                         <Can action={'database.create'}>
-                            <div css={tw`mt-6 sm:flex items-center justify-end`}>
+                            <div css={tw`mt-6 flex items-center justify-end`}>
                                 {(databaseLimit > 0 && databases.length > 0) &&
                                 <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
                                     {databases.length} of {databaseLimit} databases have been allocated to this
@@ -70,7 +70,7 @@ export default () => {
                                 </p>
                                 }
                                 {databaseLimit > 0 && databaseLimit !== databases.length &&
-                                    <CreateDatabaseButton css={tw`w-full sm:w-auto`}/>
+                                    <CreateDatabaseButton css={tw`flex justify-end mt-6`}/>
                                 }
                             </div>
                         </Can>

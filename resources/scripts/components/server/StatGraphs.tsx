@@ -96,7 +96,7 @@ export default () => {
 
         setCpu(
             new Chart(node.getContext('2d')!, chartDefaults({
-                callback: (value) => `${value}%`,
+                callback: (value) => `${value}%  `,
             })),
         );
     }, []);

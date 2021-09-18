@@ -3,12 +3,11 @@
 namespace Pterodactyl\Tests\Integration\Jobs\Schedule;
 
 use Mockery;
-use Exception;
 use Carbon\CarbonImmutable;
-use Pterodactyl\Models\Task;
 use GuzzleHttp\Psr7\Request;
-use InvalidArgumentException;
+use Pterodactyl\Models\Task;
 use GuzzleHttp\Psr7\Response;
+use InvalidArgumentException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Bus;
