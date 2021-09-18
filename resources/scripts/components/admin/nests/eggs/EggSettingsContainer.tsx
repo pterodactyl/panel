@@ -260,7 +260,7 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
                         <div css={tw`flex flex-row`}>
                             <EggDeleteButton
                                 eggId={egg.id}
-                                onDeleted={() => history.push('/admin/eggs')}
+                                onDeleted={() => history.push('/admin/nests')}
                             />
                             <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
                                 Save Changes
