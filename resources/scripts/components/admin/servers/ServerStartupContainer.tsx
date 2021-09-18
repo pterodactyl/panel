@@ -135,7 +135,7 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
 
     return (
         <Form>
-            <div css={tw`flex flex-col`}>
+            <div css={tw`flex flex-col mb-16`}>
                 <div css={tw`flex flex-row mb-6`}>
                     <ServerStartupLineContainer
                         egg={egg}
