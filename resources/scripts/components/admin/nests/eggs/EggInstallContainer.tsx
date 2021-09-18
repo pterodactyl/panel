@@ -21,7 +21,7 @@ interface Values {
 export default function EggInstallContainer ({ egg }: { egg: Egg }) {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
-    let fetchFileContent: null | (() => Promise<string>) = null;
+    let fetchFileContent: (() => Promise<string>) | null = null;
 
     const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         if (fetchFileContent === null) {

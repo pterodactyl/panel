@@ -36,8 +36,7 @@ export default () => {
     const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const { addError, clearFlashes } = useFlash();
 
-    // eslint-disable-next-line prefer-const
-    let fetchFileContent: null | (() => Promise<string>) = null;
+    let fetchFileContent: (() => Promise<string>) | null = null;
 
     useEffect(() => {
         if (action === 'new') return;

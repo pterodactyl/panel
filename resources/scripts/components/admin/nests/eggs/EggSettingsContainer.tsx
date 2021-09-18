@@ -8,8 +8,9 @@ import Label from '@/components/elements/Label';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
 import { jsonLanguage } from '@codemirror/lang-json';
-import { faEgg, faTerminal } from '@fortawesome/free-solid-svg-icons';
-import React from 'react';
+import { faDocker } from '@fortawesome/free-brands-svg-icons';
+import { faEgg, faFireAlt, faMicrochip, faTerminal } from '@fortawesome/free-solid-svg-icons';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import { Egg } from '@/api/admin/eggs/getEgg';
 import { useHistory } from 'react-router-dom';
@@ -93,7 +94,7 @@ function EggImageContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox icon={undefined} title={'Image'} css={tw`relative`}>
+        <AdminBox icon={faDocker} title={'Docker'} css={tw`relative`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <TextareaField
@@ -106,11 +107,11 @@ function EggImageContainer () {
     );
 }
 
-function EggStopContainer () {
+function EggLifecycleContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox icon={undefined} title={'Stop'} css={tw`relative`}>
+        <AdminBox icon={faFireAlt} title={'Lifecycle'} css={tw`relative`}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <Field
@@ -124,33 +125,70 @@ function EggStopContainer () {
     );
 }
 
-function EggProcessContainer ({ className, egg }: { className?: string, egg: Egg }) {
-    const { isSubmitting } = useFormikContext();
-
-    return (
-        <AdminBox title={'Process Configuration'} css={tw`relative`} className={className}>
-            <SpinnerOverlay visible={isSubmitting}/>
-
-            <div css={tw`mb-6`}>
-                <Label>Startup Configuration</Label>
-                <Editor
-                    mode={jsonLanguage}
-                    initialContent={JSON.stringify(egg.configStartup, null, '\t') || ''}
-                    overrides={tw`h-32 rounded`}
-                />
-            </div>
-
-            <div css={tw`mb-1`}>
-                <Label>Configuration Files</Label>
-                <Editor
-                    mode={jsonLanguage}
-                    initialContent={JSON.stringify(egg.configFiles, null, '\t') || ''}
-                    overrides={tw`h-48 rounded`}
-                />
-            </div>
-        </AdminBox>
-    );
+interface EggProcessContainerProps {
+    className?: string;
+    egg: Egg;
 }
+
+interface EggProcessContainerRef {
+    getStartupConfiguration: () => Promise<string | null>;
+    getFilesConfiguration: () => Promise<string | null>;
+}
+
+const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(
+    function EggProcessContainer ({ className, egg }, ref) {
+        const { isSubmitting } = useFormikContext();
+
+        let fetchStartupConfiguration: (() => Promise<string>) | null = null;
+        let fetchFilesConfiguration: (() => Promise<string>) | null = null;
+
+        useImperativeHandle<EggProcessContainerRef, EggProcessContainerRef>(ref, () => ({
+            getStartupConfiguration: async () => {
+                if (fetchStartupConfiguration === null) {
+                    return new Promise<null>(resolve => resolve(null));
+                }
+                return await fetchStartupConfiguration();
+            },
+
+            getFilesConfiguration: async () => {
+                if (fetchFilesConfiguration === null) {
+                    return new Promise<null>(resolve => resolve(null));
+                }
+                return await fetchFilesConfiguration();
+            },
+        }));
+
+        return (
+            <AdminBox icon={faMicrochip} title={'Process Configuration'} css={tw`relative`} className={className}>
+                <SpinnerOverlay visible={isSubmitting}/>
+
+                <div css={tw`mb-6`}>
+                    <Label>Startup Configuration</Label>
+                    <Editor
+                        mode={jsonLanguage}
+                        initialContent={JSON.stringify(egg.configStartup, null, '\t') || ''}
+                        overrides={tw`h-32 rounded`}
+                        fetchContent={value => {
+                            fetchStartupConfiguration = value;
+                        }}
+                    />
+                </div>
+
+                <div css={tw`mb-1`}>
+                    <Label>Configuration Files</Label>
+                    <Editor
+                        mode={jsonLanguage}
+                        initialContent={JSON.stringify(egg.configFiles, null, '\t') || ''}
+                        overrides={tw`h-48 rounded`}
+                        fetchContent={value => {
+                            fetchFilesConfiguration = value;
+                        }}
+                    />
+                </div>
+            </AdminBox>
+        );
+    }
+);
 
 interface Values {
     name: string;
@@ -158,6 +196,8 @@ interface Values {
     startup: string;
     dockerImages: string;
     stopCommand: string;
+    configStartup: string;
+    configFiles: string;
 }
 
 export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
@@ -165,10 +205,13 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const ref = useRef<EggProcessContainerRef>();
+
+    const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('egg');
 
-        // TODO: Send data from code blocks.
+        values.configStartup = await ref.current?.getStartupConfiguration() || '';
+        values.configFiles = await ref.current?.getFilesConfiguration() || '';
 
         updateEgg(egg.id, { ...values, dockerImages: values.dockerImages.split('\n') })
             .catch(error => {
@@ -187,6 +230,8 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
                 startup: egg.startup,
                 dockerImages: egg.dockerImages.join('\n'),
                 stopCommand: egg.configStop || '',
+                configStartup: '',
+                configFiles: '',
             }}
             validationSchema={object().shape({
             })}
@@ -202,10 +247,14 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
 
                     <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6`}>
                         <EggImageContainer/>
-                        <EggStopContainer/>
+                        <EggLifecycleContainer/>
                     </div>
 
-                    <EggProcessContainer egg={egg} css={tw`mb-6`}/>
+                    <EggProcessContainer
+                        ref={ref}
+                        egg={egg}
+                        css={tw`mb-6`}
+                    />
 
                     <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6 mb-16`}>
                         <div css={tw`flex flex-row`}>

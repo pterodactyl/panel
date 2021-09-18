@@ -18,7 +18,7 @@ export default ({ className }: { className?: string }) => {
     const match = useRouteMatch<{ nestId: string }>();
     const { mutate } = getEggs(Number(match.params.nestId));
 
-    let fetchFileContent: null | (() => Promise<string>) = null;
+    let fetchFileContent: (() => Promise<string>) | null = null;
 
     const submit = async () => {
         clearFlashes('egg:import');
