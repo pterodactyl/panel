@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
-import Input from '@/components/elements/Input';
+import Input, { Textarea } from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import InputError from '@/components/elements/InputError';
 import tw from 'twin.macro';
@@ -42,5 +42,34 @@ const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, la
     </FormikField>
 ));
 Field.displayName = 'Field';
+
+type Props2 = OwnProps & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'name'>;
+
+export const TextareaField = forwardRef<HTMLTextAreaElement, Props2>(
+    function TextareaField ({ id, name, light = false, label, description, validate, ...props }, ref) {
+        return (
+            <FormikField innerRef={ref} name={name} validate={validate}>
+                {
+                    ({ field, form: { errors, touched } }: FieldProps) => (
+                        <div>
+                            {label && <Label htmlFor={id} isLight={light}>{label}</Label>}
+                            <Textarea
+                                id={id}
+                                {...field}
+                                {...props}
+                                isLight={light}
+                                hasError={!!(touched[field.name] && errors[field.name])}
+                            />
+                            <InputError errors={errors} touched={touched} name={field.name}>
+                                {description || null}
+                            </InputError>
+                        </div>
+                    )
+                }
+            </FormikField>
+        );
+    }
+);
+TextareaField.displayName = 'TextareaField';
 
 export default Field;

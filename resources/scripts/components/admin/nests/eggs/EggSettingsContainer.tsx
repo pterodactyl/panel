@@ -1,5 +1,8 @@
+import updateEgg from '@/api/admin/eggs/updateEgg';
+import EggDeleteButton from '@/components/admin/nests/eggs/EggDeleteButton';
+import Button from '@/components/elements/Button';
 import Editor from '@/components/elements/Editor';
-import Field from '@/components/elements/Field';
+import Field, { TextareaField } from '@/components/elements/Field';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -9,9 +12,10 @@ import { faEgg, faTerminal } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import { Egg } from '@/api/admin/eggs/getEgg';
+import { useHistory } from 'react-router-dom';
 import tw from 'twin.macro';
 import { object } from 'yup';
-import { Form, Formik, useFormikContext } from 'formik';
+import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 
 function EggInformationContainer () {
     const { isSubmitting } = useFormikContext();
@@ -91,6 +95,13 @@ function EggImageContainer () {
     return (
         <AdminBox icon={undefined} title={'Image'} css={tw`relative`}>
             <SpinnerOverlay visible={isSubmitting}/>
+
+            <TextareaField
+                id={'dockerImages'}
+                name={'dockerImages'}
+                label={'Docker Images'}
+                rows={5}
+            />
         </AdminBox>
     );
 }
@@ -113,11 +124,11 @@ function EggStopContainer () {
     );
 }
 
-function EggProcessContainer ({ egg }: { egg: Egg }) {
+function EggProcessContainer ({ className, egg }: { className?: string, egg: Egg }) {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox title={'Process Configuration'} css={tw`relative mb-16`}>
+        <AdminBox title={'Process Configuration'} css={tw`relative`} className={className}>
             <SpinnerOverlay visible={isSubmitting}/>
 
             <div css={tw`mb-6`}>
@@ -141,11 +152,30 @@ function EggProcessContainer ({ egg }: { egg: Egg }) {
     );
 }
 
-export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
-    const { clearFlashes } = useFlash();
+interface Values {
+    name: string;
+    description: string;
+    startup: string;
+    dockerImages: string;
+    stopCommand: string;
+}
 
-    const submit = () => {
+export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
+    const history = useHistory();
+
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('egg');
+
+        // TODO: Send data from code blocks.
+
+        updateEgg(egg.id, { ...values, dockerImages: values.dockerImages.split('\n') })
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'egg', error });
+            })
+            .then(() => setSubmitting(false));
     };
 
     return (
@@ -154,29 +184,42 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
             initialValues={{
                 name: egg.name,
                 description: egg.description || '',
-
                 startup: egg.startup,
-
-                stopCommand: egg.configStop,
+                dockerImages: egg.dockerImages.join('\n'),
+                stopCommand: egg.configStop || '',
             }}
             validationSchema={object().shape({
             })}
         >
-            <Form>
-                <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6`}>
-                    <EggInformationContainer/>
-                    <EggDetailsContainer egg={egg}/>
-                </div>
+            {({ isSubmitting, isValid }) => (
+                <Form>
+                    <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6`}>
+                        <EggInformationContainer/>
+                        <EggDetailsContainer egg={egg}/>
+                    </div>
 
-                <EggStartupContainer css={tw`mb-6`}/>
+                    <EggStartupContainer css={tw`mb-6`}/>
 
-                <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6`}>
-                    <EggImageContainer/>
-                    <EggStopContainer/>
-                </div>
+                    <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6`}>
+                        <EggImageContainer/>
+                        <EggStopContainer/>
+                    </div>
 
-                <EggProcessContainer egg={egg}/>
-            </Form>
+                    <EggProcessContainer egg={egg} css={tw`mb-6`}/>
+
+                    <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6 mb-16`}>
+                        <div css={tw`flex flex-row`}>
+                            <EggDeleteButton
+                                eggId={egg.id}
+                                onDeleted={() => history.push('/admin/eggs')}
+                            />
+                            <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
+                                Save Changes
+                            </Button>
+                        </div>
+                    </div>
+                </Form>
+            )}
         </Formik>
     );
 }
