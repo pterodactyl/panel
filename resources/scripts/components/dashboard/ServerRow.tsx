@@ -108,7 +108,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     isSuspended ?
                         <div css={tw`flex-1 text-center`}>
                             <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
-                                {server.status === 'suspended' ? 'Suspended' : 'Connection Error'}
+                                {server.status === 'suspended' ? 'Приостановлен' : 'Ошибка сети'}
                             </span>
                         </div>
                         :
@@ -116,13 +116,13 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             <div css={tw`flex-1 text-center`}>
                                 <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
                                     {server.isTransferring ?
-                                        'Transferring'
+                                        'Перенос'
                                         :
                                         server.status === 'installing' ? 'Installing' : (
                                             server.status === 'restoring_backup' ?
-                                                'Restoring Backup'
+                                                'Откат до бэкапа'
                                                 :
-                                                'Unavailable'
+                                                'Недоступно'
                                         )
                                     }
                                 </span>
