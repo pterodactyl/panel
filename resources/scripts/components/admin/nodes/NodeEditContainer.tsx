@@ -19,8 +19,8 @@ interface Values {
     databaseHostId: number | null;
     fqdn: string;
     scheme: string;
-    behindProxy: boolean;
-    public: boolean;
+    behindProxy: string; // Yes, this is technically a boolean.
+    public: string; // Yes, this is technically a boolean.
     daemonBase: string; // This value cannot be updated once a node has been created.
 
     memory: number;
@@ -51,8 +51,10 @@ export default () => {
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('node');
 
-        updateNode(node.id, values)
-            .then(() => setNode({ ...node, ...values }))
+        const v = { ...values, behindProxy: values.behindProxy === 'true', public: values.public === 'true' };
+
+        updateNode(node.id, v)
+            .then(() => setNode({ ...node, ...v }))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'node', error });
@@ -69,8 +71,8 @@ export default () => {
                 databaseHostId: node.databaseHostId,
                 fqdn: node.fqdn,
                 scheme: node.scheme,
-                behindProxy: node.behindProxy,
-                public: node.public,
+                behindProxy: node.behindProxy ? 'true' : 'false',
+                public: node.public ? 'true' : 'false',
                 daemonBase: node.daemonBase,
 
                 listenPortHTTP: node.listenPortHTTP,
