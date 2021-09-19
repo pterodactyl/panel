@@ -15,25 +15,25 @@ import { Compartment, Extension, EditorState } from '@codemirror/state';
 import { StreamLanguage, StreamParser } from '@codemirror/stream-parser';
 import { keymap, highlightSpecialChars, drawSelection, highlightActiveLine, EditorView } from '@codemirror/view';
 import { clike } from '@codemirror/legacy-modes/mode/clike';
-import { cppLanguage } from '@codemirror/lang-cpp';
-import { cssLanguage } from '@codemirror/lang-css';
+import { cpp } from '@codemirror/lang-cpp';
+import { css } from '@codemirror/lang-css';
 import { Cassandra, MariaSQL, MSSQL, MySQL, PostgreSQL, sql, SQLite, StandardSQL } from '@codemirror/lang-sql';
 import { diff } from '@codemirror/legacy-modes/mode/diff';
 import { dockerFile } from '@codemirror/legacy-modes/mode/dockerfile';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { go } from '@codemirror/legacy-modes/mode/go';
-import { htmlLanguage } from '@codemirror/lang-html';
+import { html } from '@codemirror/lang-html';
 import { http } from '@codemirror/legacy-modes/mode/http';
-import { javascriptLanguage, typescriptLanguage } from '@codemirror/lang-javascript';
-import { jsonLanguage } from '@codemirror/lang-json';
+import { javascript, typescriptLanguage } from '@codemirror/lang-javascript';
+import { json } from '@codemirror/lang-json';
 import { lua } from '@codemirror/legacy-modes/mode/lua';
 import { properties } from '@codemirror/legacy-modes/mode/properties';
 import { python } from '@codemirror/legacy-modes/mode/python';
 import { ruby } from '@codemirror/legacy-modes/mode/ruby';
-import { rustLanguage } from '@codemirror/lang-rust';
+import { rust } from '@codemirror/lang-rust';
 import { shell } from '@codemirror/legacy-modes/mode/shell';
 import { toml } from '@codemirror/legacy-modes/mode/toml';
-import { xmlLanguage } from '@codemirror/lang-xml';
+import { xml } from '@codemirror/lang-xml';
 import { yaml } from '@codemirror/legacy-modes/mode/yaml';
 import React, { useCallback, useEffect, useState } from 'react';
 import tw, { styled, TwStyle } from 'twin.macro';
@@ -42,29 +42,29 @@ import { ayuMirage } from '@/components/elements/EditorTheme';
 type EditorMode = LanguageSupport | LRLanguage | StreamParser<unknown>;
 
 export interface Mode {
-    name: string,
-    mime: string,
-    mimes?: string[],
-    mode?: EditorMode,
-    ext?: string[],
-    alias?: string[],
-    file?: RegExp,
+    name: string;
+    mime: string;
+    mimes?: string[];
+    mode?: EditorMode;
+    ext?: string[];
+    alias?: string[];
+    file?: RegExp;
 }
 
 export const modes: Mode[] = [
     { name: 'C', mime: 'text/x-csrc', mode: clike({}), ext: [ 'c', 'h', 'ino' ] },
-    { name: 'C++', mime: 'text/x-c++src', mode: cppLanguage, ext: [ 'cpp', 'c++', 'cc', 'cxx', 'hpp', 'h++', 'hh', 'hxx' ], alias: [ 'cpp' ] },
+    { name: 'C++', mime: 'text/x-c++src', mode: cpp(), ext: [ 'cpp', 'c++', 'cc', 'cxx', 'hpp', 'h++', 'hh', 'hxx' ], alias: [ 'cpp' ] },
     { name: 'C#', mime: 'text/x-csharp', mode: clike({}), ext: [ 'cs' ], alias: [ 'csharp', 'cs' ] },
-    { name: 'CSS', mime: 'text/css', mode: cssLanguage, ext: [ 'css' ] },
+    { name: 'CSS', mime: 'text/css', mode: css(), ext: [ 'css' ] },
     { name: 'CQL', mime: 'text/x-cassandra', mode: sql({ dialect: Cassandra }), ext: [ 'cql' ] },
     { name: 'Diff', mime: 'text/x-diff', mode: diff, ext: [ 'diff', 'patch' ] },
     { name: 'Dockerfile', mime: 'text/x-dockerfile', mode: dockerFile, file: /^Dockerfile$/ },
     { name: 'Git Markdown', mime: 'text/x-gfm', mode: markdown({ defaultCodeLanguage: markdownLanguage }), file: /^(readme|contributing|history|license).md$/i },
     { name: 'Golang', mime: 'text/x-go', mode: go, ext: [ 'go' ] },
-    { name: 'HTML', mime: 'text/html', mode: htmlLanguage, ext: [ 'html', 'htm', 'handlebars', 'hbs' ], alias: [ 'xhtml' ] },
+    { name: 'HTML', mime: 'text/html', mode: html(), ext: [ 'html', 'htm', 'handlebars', 'hbs' ], alias: [ 'xhtml' ] },
     { name: 'HTTP', mime: 'message/http', mode: http },
-    { name: 'JavaScript', mime: 'text/javascript', mimes: [ 'text/javascript', 'text/ecmascript', 'application/javascript', 'application/x-javascript', 'application/ecmascript' ], mode: javascriptLanguage, ext: [ 'js' ], alias: [ 'ecmascript', 'js', 'node' ] },
-    { name: 'JSON', mime: 'application/json', mimes: [ 'application/json', 'application/x-json' ], mode: jsonLanguage, ext: [ 'json', 'map' ], alias: [ 'json5' ] },
+    { name: 'JavaScript', mime: 'text/javascript', mimes: [ 'text/javascript', 'text/ecmascript', 'application/javascript', 'application/x-javascript', 'application/ecmascript' ], mode: javascript(), ext: [ 'js' ], alias: [ 'ecmascript', 'js', 'node' ] },
+    { name: 'JSON', mime: 'application/json', mimes: [ 'application/json', 'application/x-json' ], mode: json(), ext: [ 'json', 'json5', 'map' ], alias: [ 'json5' ] },
     { name: 'Lua', mime: 'text/x-lua', mode: lua, ext: [ 'lua' ] },
     { name: 'Markdown', mime: 'text/x-markdown', mode: markdown({ defaultCodeLanguage: markdownLanguage }), ext: [ 'markdown', 'md', 'mkd' ] },
     { name: 'MariaDB', mime: 'text/x-mariadb', mode: sql({ dialect: MariaSQL }) },
@@ -75,15 +75,15 @@ export const modes: Mode[] = [
     { name: 'Properties', mime: 'text/x-properties', mode: properties, ext: [ 'properties', 'ini', 'in' ], alias: [ 'ini', 'properties' ] },
     { name: 'Python', mime: 'text/x-python', mode: python, ext: [ 'BUILD', 'bzl', 'py', 'pyw' ], file: /^(BUCK|BUILD)$/ },
     { name: 'Ruby', mime: 'text/x-ruby', mode: ruby, ext: [ 'rb' ], alias: [ 'jruby', 'macruby', 'rake', 'rb', 'rbx' ] },
-    { name: 'Rust', mime: 'text/x-rustsrc', mode: rustLanguage, ext: [ 'rs' ] },
-    { name: 'Sass', mime: 'text/x-sass', mode: cssLanguage, ext: [ 'sass' ] },
-    { name: 'SCSS', mime: 'text/x-scss', mode: cssLanguage, ext: [ 'scss' ] },
+    { name: 'Rust', mime: 'text/x-rustsrc', mode: rust(), ext: [ 'rs' ] },
+    { name: 'Sass', mime: 'text/x-sass', mode: css(), ext: [ 'sass' ] },
+    { name: 'SCSS', mime: 'text/x-scss', mode: css(), ext: [ 'scss' ] },
     { name: 'Shell', mime: 'text/x-sh', mimes: [ 'text/x-sh', 'application/x-sh' ], mode: shell, ext: [ 'sh', 'ksh', 'bash' ], alias: [ 'bash', 'sh', 'zsh' ], file: /^PKGBUILD$/ },
     { name: 'SQL', mime: 'text/x-sql', mode: sql({ dialect: StandardSQL }), ext: [ 'sql' ] },
     { name: 'SQLite', mime: 'text/x-sqlite', mode: sql({ dialect: SQLite }) },
     { name: 'TOML', mime: 'text/x-toml', mode: toml, ext: [ 'toml' ] },
     { name: 'TypeScript', mime: 'application/typescript', mode: typescriptLanguage, ext: [ 'ts' ], alias: [ 'ts' ] },
-    { name: 'XML', mime: 'application/xml', mimes: [ 'application/xml', 'text/xml' ], mode: xmlLanguage, ext: [ 'xml', 'xsl', 'xsd', 'svg' ], alias: [ 'rss', 'wsdl', 'xsd' ] },
+    { name: 'XML', mime: 'application/xml', mimes: [ 'application/xml', 'text/xml' ], mode: xml(), ext: [ 'xml', 'xsl', 'xsd', 'svg' ], alias: [ 'rss', 'wsdl', 'xsd' ] },
     { name: 'YAML', mime: 'text/x-yaml', mimes: [ 'text/x-yaml', 'text/yaml' ], mode: yaml, ext: [ 'yaml', 'yml' ], alias: [ 'yml' ] },
 ];
 
