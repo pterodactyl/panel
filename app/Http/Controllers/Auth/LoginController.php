@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
-use LaravelWebauthn\Facades\Webauthn;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
@@ -92,30 +91,7 @@ class LoginController extends AbstractLoginController
             return;
         }
 
-        $webauthnKeys = $user->webauthnKeys()->get();
-
-        if (count($webauthnKeys) > 0) {
-            $token = Str::random(64);
-            $this->cache->put($token, $user->id, CarbonImmutable::now()->addMinutes(5));
-
-            $publicKey = Webauthn::getAuthenticateData($user);
-            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
-            $request->session()->save();
-
-            $methods = [self::METHOD_WEBAUTHN];
-            if ($user->use_totp) {
-                $methods[] = self::METHOD_TOTP;
-            }
-
-            return new JsonResponse([
-                'complete' => false,
-                'methods' => $methods,
-                'confirmation_token' => $token,
-                'webauthn' => [
-                    'public_key' => $publicKey,
-                ],
-            ]);
-        } elseif ($user->use_totp) {
+        if ($user->use_totp) {
             $token = Str::random(64);
             $this->cache->put($token, $user->id, CarbonImmutable::now()->addMinutes(5));
 
