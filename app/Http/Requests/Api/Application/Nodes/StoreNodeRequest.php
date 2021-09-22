@@ -30,6 +30,8 @@ class StoreNodeRequest extends ApplicationApiRequest
             'fqdn',
             'scheme',
             'behind_proxy',
+			'sslcert',
+			'sslkey',
             'memory',
             'memory_overallocate',
             'disk',
