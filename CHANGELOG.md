@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.2
+### Fixed
+* **[Security]** Fixes an authentication bypass vulerability that could allow a malicious actor to login as another user in the Panel without knowing that user's email or password.
+
 ## v1.6.1
 ### Fixed
 * Fixes server build modifications not being properly persisted to the database when edited.
