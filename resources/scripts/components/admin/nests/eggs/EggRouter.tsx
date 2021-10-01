@@ -39,7 +39,7 @@ const EggRouter = () => {
     useEffect(() => {
         clearFlashes('egg');
 
-        getEgg(Number(match.params?.id))
+        getEgg(Number(match.params?.id), [ 'variables' ])
             .then(egg => setEgg(egg))
             .catch(error => {
                 console.error(error);

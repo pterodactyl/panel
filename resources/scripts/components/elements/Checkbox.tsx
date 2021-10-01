@@ -1,42 +1,35 @@
+import Label from '@/components/elements/Label';
 import React from 'react';
 import { Field, FieldProps } from 'formik';
 import Input from '@/components/elements/Input';
+import tw from 'twin.macro';
 
 interface Props {
     name: string;
-    value: string;
+    label?: string;
     className?: string;
 }
 
-type OmitFields = 'ref' | 'name' | 'value' | 'type' | 'checked' | 'onClick' | 'onChange';
+type OmitFields = 'ref' | 'name' | 'value' | 'type';
 
 type InputProps = Omit<JSX.IntrinsicElements['input'], OmitFields>;
 
-const Checkbox = ({ name, value, className, ...props }: Props & InputProps) => (
+const Checkbox = ({ name, label, className, ...props }: Props & InputProps) => (
     <Field name={name}>
-        {({ field, form }: FieldProps) => {
-            if (!Array.isArray(field.value)) {
-                console.error('Attempting to mount a checkbox using a field value that is not an array.');
-
-                return null;
-            }
-
+        {({ field }: FieldProps) => {
             return (
-                <Input
-                    {...field}
-                    {...props}
-                    className={className}
-                    type={'checkbox'}
-                    checked={(field.value || []).includes(value)}
-                    onClick={() => form.setFieldTouched(field.name, true)}
-                    onChange={e => {
-                        const set = new Set(field.value);
-                        set.has(value) ? set.delete(value) : set.add(value);
-
-                        field.onChange(e);
-                        form.setFieldValue(field.name, Array.from(set));
-                    }}
-                />
+                <div css={tw`flex flex-row`} className={className}>
+                    <Input
+                        {...field}
+                        {...props}
+                        css={tw`w-5 h-5 mr-2`}
+                        type={'checkbox'}
+                    />
+                    {label &&
+                    <div css={tw`flex-1`}>
+                        <Label noBottomSpacing>{label}</Label>
+                    </div>}
+                </div>
             );
         }}
     </Field>

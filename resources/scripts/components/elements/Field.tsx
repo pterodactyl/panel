@@ -1,9 +1,9 @@
-import React, { forwardRef } from 'react';
 import { Field as FormikField, FieldProps } from 'formik';
+import React, { forwardRef } from 'react';
+import tw, { styled } from 'twin.macro';
 import Input, { Textarea } from '@/components/elements/Input';
-import Label from '@/components/elements/Label';
 import InputError from '@/components/elements/InputError';
-import tw from 'twin.macro';
+import Label from '@/components/elements/Label';
 
 interface OwnProps {
     name: string;
@@ -11,15 +11,17 @@ interface OwnProps {
     label?: string;
     description?: string;
     validate?: (value: any) => undefined | string | Promise<any>;
+
+    className?: string;
 }
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
-const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, label, description, validate, ...props }, ref) => (
+const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, label, description, validate, className, ...props }, ref) => (
     <FormikField innerRef={ref} name={name} validate={validate}>
         {
             ({ field, form: { errors, touched } }: FieldProps) => (
-                <div>
+                <div className={className}>
                     {label &&
                     <div css={tw`flex flex-row`} title={description}>
                         <Label htmlFor={id} isLight={light}>{label}</Label>
@@ -43,15 +45,17 @@ const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, la
 ));
 Field.displayName = 'Field';
 
-type Props2 = OwnProps & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'name'>;
+export default Field;
 
-export const TextareaField = forwardRef<HTMLTextAreaElement, Props2>(
-    function TextareaField ({ id, name, light = false, label, description, validate, ...props }, ref) {
+type TextareaProps = OwnProps & Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'name'>;
+
+export const TextareaField = forwardRef<HTMLTextAreaElement, TextareaProps>(
+    function TextareaField ({ id, name, light = false, label, description, validate, className, ...props }, ref) {
         return (
             <FormikField innerRef={ref} name={name} validate={validate}>
                 {
                     ({ field, form: { errors, touched } }: FieldProps) => (
-                        <div>
+                        <div className={className}>
                             {label && <Label htmlFor={id} isLight={light}>{label}</Label>}
                             <Textarea
                                 id={id}
@@ -72,4 +76,22 @@ export const TextareaField = forwardRef<HTMLTextAreaElement, Props2>(
 );
 TextareaField.displayName = 'TextareaField';
 
-export default Field;
+export const FieldRow = styled.div`
+    ${tw`mb-6 md:w-full md:flex md:flex-row`};
+
+    & > div {
+        ${tw`md:w-full md:flex md:flex-col mb-6 md:mb-0`};
+
+        &:first-of-type {
+            ${tw`md:mr-3`};
+        }
+
+        &:not(:first-of-type):not(:last-of-type) {
+            ${tw`md:mx-3`};
+        }
+
+        &:last-of-type {
+            ${tw`md:ml-3`};
+        }
+    }
+`;
