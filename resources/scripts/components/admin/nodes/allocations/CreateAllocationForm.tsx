@@ -19,7 +19,7 @@ const distinct = (value: any, index: any, self: any) => {
     return self.indexOf(value) === index;
 };
 
-function CreateAllocationForm ({ nodeId }: { nodeId: string | number }) {
+function CreateAllocationForm ({ nodeId }: { nodeId: number }) {
     const [ ips, setIPs ] = useState<Option[]>([]);
     const [ ports ] = useState<Option[]>([]);
 

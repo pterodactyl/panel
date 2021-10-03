@@ -4,7 +4,7 @@ import Spinner from '@/components/elements/Spinner';
 
 interface Props {
     isLoading?: boolean;
-    size?: 'xsmall' | 'small' | 'large' | 'xlarge';
+    size?: 'inline' | 'xsmall' | 'small' | 'large' | 'xlarge';
     color?: 'green' | 'red' | 'primary' | 'grey';
     isSecondary?: boolean;
 }
@@ -60,6 +60,7 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
         `};
     `};
 
+    ${props => props.size === 'inline' && tw`p-1 text-xs`};
     ${props => props.size === 'xsmall' && tw`p-2 text-xs`};
     ${props => (!props.size || props.size === 'small') && tw`p-3`};
     ${props => props.size === 'large' && tw`p-4 text-sm`};

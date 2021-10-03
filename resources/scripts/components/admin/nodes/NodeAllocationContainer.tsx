@@ -13,12 +13,12 @@ export default () => {
         <>
             <div css={tw`w-full grid grid-cols-12 gap-x-8`}>
                 <div css={tw`w-full flex col-span-8`}>
-                    <AllocationTable nodeId={match.params.id}/>
+                    <AllocationTable nodeId={Number(match.params.id)}/>
                 </div>
 
                 <div css={tw`w-full flex col-span-4`}>
                     <AdminBox icon={faNetworkWired} title={'Allocations'} css={tw`h-auto w-full`}>
-                        <CreateAllocationForm nodeId={match.params.id}/>
+                        <CreateAllocationForm nodeId={Number(match.params.id)}/>
                     </AdminBox>
                 </div>
             </div>
