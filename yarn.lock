@@ -2215,6 +2215,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@heroicons/react@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "@heroicons/react@npm:1.0.4"
+  peerDependencies:
+    react: ">= 16"
+  checksum: 08f2853a49e51f274f22e8e1bb4e7d8a49456b7eb770447da66fd06ac05bf821ddf5d93170088d61ec44ae66cfbdc877c287861d5a3d22aad1785659502e3a71
+  languageName: node
+  linkType: hard
+
 "@hot-loader/react-dom@npm:^16.14.0":
   version: 16.14.0
   resolution: "@hot-loader/react-dom@npm:16.14.0"
@@ -9942,6 +9951,7 @@ fsevents@^1.2.7:
     "@fortawesome/free-regular-svg-icons": ^5.15.4
     "@fortawesome/free-solid-svg-icons": ^5.15.4
     "@fortawesome/react-fontawesome": ^0.1.15
+    "@heroicons/react": ^1.0.4
     "@hot-loader/react-dom": ^16.14.0
     "@tailwindcss/forms": ^0.3.3
     "@types/chart.js": ^2.9.34

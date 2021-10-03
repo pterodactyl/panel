@@ -43,6 +43,7 @@
         "@fortawesome/free-regular-svg-icons": "^5.15.4",
         "@fortawesome/free-solid-svg-icons": "^5.15.4",
         "@fortawesome/react-fontawesome": "^0.1.15",
+        "@heroicons/react": "^1.0.4",
         "@hot-loader/react-dom": "^16.14.0",
         "axios": "^0.21.4",
         "chart.js": "^2.9.4",
@@ -169,8 +170,8 @@
         },
         "styledComponents": {
             "pure": true,
-            "displayName": false,
-            "fileName": false
+            "displayName": true,
+            "fileName": true
         }
     },
     "packageManager": "yarn@3.0.2"
