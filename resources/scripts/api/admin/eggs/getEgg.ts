@@ -1,6 +1,7 @@
 import { Nest } from '@/api/admin/nests/getNests';
 import { rawDataToServer, Server } from '@/api/admin/servers/getServers';
 import http, { FractalResponseData, FractalResponseList } from '@/api/http';
+import useSWR from 'swr';
 
 export interface EggVariable {
     id: number;
@@ -88,10 +89,16 @@ export const rawDataToEgg = ({ attributes }: FractalResponseData): Egg => ({
     },
 });
 
-export default (id: number, include: string[] = []): Promise<Egg> => {
-    return new Promise((resolve, reject) => {
-        http.get(`/api/application/eggs/${id}`, { params: { include: include.join(',') } })
-            .then(({ data }) => resolve(rawDataToEgg(data)))
-            .catch(reject);
+export const getEgg = async (id: number): Promise<Egg> => {
+    const { data } = await http.get(`/api/application/eggs/${id}`, { params: { include: [ 'variables' ] } });
+
+    return rawDataToEgg(data);
+};
+
+export default (id: number) => {
+    return useSWR<Egg>(`egg:${id}`, async () => {
+        const { data } = await http.get(`/api/application/eggs/${id}`, { params: { include: [ 'variables' ] } });
+
+        return rawDataToEgg(data);
     });
 };

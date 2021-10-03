@@ -4,7 +4,7 @@ import { EggVariable, rawDataToEggVariable } from '@/api/admin/eggs/getEgg';
 export default (eggId: number, variable: Omit<EggVariable, 'id' | 'eggId' | 'createdAt' | 'updatedAt'>): Promise<EggVariable> => {
     return new Promise((resolve, reject) => {
         http.post(
-            `/api/application/eggs/${eggId}`,
+            `/api/application/eggs/${eggId}/variables`,
             {
                 name: variable.name,
                 description: variable.description,

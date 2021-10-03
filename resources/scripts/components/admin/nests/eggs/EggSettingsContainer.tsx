@@ -162,7 +162,7 @@ const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(
             <AdminBox icon={faMicrochip} title={'Process Configuration'} css={tw`relative`} className={className}>
                 <SpinnerOverlay visible={isSubmitting}/>
 
-                <div css={tw`mb-6`}>
+                <div css={tw`mb-5`}>
                     <Label>Startup Configuration</Label>
                     <Editor
                         mode={jsonLanguage}

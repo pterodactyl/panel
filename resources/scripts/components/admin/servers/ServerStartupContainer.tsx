@@ -1,4 +1,4 @@
-import getEgg, { Egg, EggVariable } from '@/api/admin/eggs/getEgg';
+import { getEgg, Egg, EggVariable } from '@/api/admin/eggs/getEgg';
 import { Server } from '@/api/admin/servers/getServers';
 import updateServerStartup, { Values } from '@/api/admin/servers/updateServerStartup';
 import EggSelect from '@/components/admin/servers/EggSelect';
@@ -187,7 +187,7 @@ export default function ServerStartupContainer ({ server }: { server: Server }) 
     const setServer = Context.useStoreActions(actions => actions.setServer);
 
     useEffect(() => {
-        getEgg(server.eggId, [ 'variables' ])
+        getEgg(server.eggId)
             .then(egg => setEgg(egg))
             .catch(error => console.error(error));
     }, []);
