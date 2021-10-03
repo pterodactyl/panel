@@ -130,7 +130,7 @@ const EditInformationContainer = () => {
 
                                 <div css={tw`flex ml-auto`}>
                                     <Button type={'submit'} disabled={isSubmitting || !isValid}>
-                                        Save
+                                        Save Changes
                                     </Button>
                                 </div>
                             </div>

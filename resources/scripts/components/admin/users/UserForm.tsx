@@ -119,7 +119,7 @@ export default function UserForm ({ title, initialValues, children, onSubmit, ro
                                     {children}
                                     <div css={tw`flex ml-auto`}>
                                         <Button type={'submit'} disabled={isSubmitting || !isValid}>
-                                            Save
+                                            Save Changes
                                         </Button>
                                     </div>
                                 </div>
