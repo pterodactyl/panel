@@ -41,6 +41,7 @@ Route::group(['prefix' => '/eggs'], function () {
     Route::patch('/{egg}/variables', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggVariableController::class, 'update']);
 
     Route::delete('/{egg}', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'delete']);
+    Route::delete('/{egg}/variables/{eggVariable}', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggVariableController::class, 'delete']);
 });
 
 /*

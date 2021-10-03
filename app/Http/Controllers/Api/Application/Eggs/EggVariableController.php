@@ -3,6 +3,9 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Eggs;
 
 use Pterodactyl\Models\Egg;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Pterodactyl\Models\EggVariable;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Eggs\Variables\VariableUpdateService;
 use Pterodactyl\Services\Eggs\Variables\VariableCreationService;
@@ -61,5 +64,18 @@ class EggVariableController extends ApplicationApiController
         return $this->fractal->collection($egg->refresh()->variables)
             ->transformWith(EggVariableTransformer::class)
             ->toArray();
+    }
+
+    /**
+     * Deletes a single egg variable.
+     */
+    public function delete(Request $request, Egg $egg, EggVariable $eggVariable): Response
+    {
+        EggVariable::query()
+            ->where('id', $eggVariable->id)
+            ->where('egg_id', $egg->id)
+            ->delete();
+
+        return $this->returnNoContent();
     }
 }
