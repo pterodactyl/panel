@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Eggs\Variables;
 
 use Illuminate\Support\Str;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Exceptions\DisplayException;
@@ -15,11 +16,6 @@ class VariableUpdateService
     use ValidatesValidationRules;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * @var \Illuminate\Contracts\Validation\Factory
      */
     private $validator;
@@ -27,9 +23,8 @@ class VariableUpdateService
     /**
      * VariableUpdateService constructor.
      */
-    public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
+    public function __construct(Factory $validator)
     {
-        $this->repository = $repository;
         $this->validator = $validator;
     }
 
@@ -45,27 +40,22 @@ class VariableUpdateService
     /**
      * Update a specific egg variable.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
      */
-    public function handle(EggVariable $variable, array $data)
+    public function handle(Egg $egg, array $data)
     {
         if (!is_null(array_get($data, 'env_variable'))) {
             if (in_array(strtoupper(array_get($data, 'env_variable')), explode(',', EggVariable::RESERVED_ENV_NAMES))) {
                 throw new ReservedVariableNameException(trans('exceptions.service.variables.reserved_name', ['name' => array_get($data, 'env_variable')]));
             }
 
-            $search = $this->repository->setColumns('id')->findCountWhere([
-                ['env_variable', '=', $data['env_variable']],
-                ['egg_id', '=', $variable->egg_id],
-                ['id', '!=', $variable->id],
-            ]);
+            $count = $egg->variables()
+                ->where('egg_variables.env_variable',$data['env_variable'])
+                ->where('egg_variables.id', '!=', $data['id'])
+                ->count();
 
-            if ($search > 0) {
+            if ($count > 0) {
                 throw new DisplayException(trans('exceptions.service.variables.env_not_unique', ['name' => array_get($data, 'env_variable')]));
             }
         }
@@ -80,13 +70,13 @@ class VariableUpdateService
 
         $options = array_get($data, 'options') ?? [];
 
-        return $this->repository->withoutFreshModel()->update($variable->id, [
+        $egg->variables()->where('egg_variables.id', $data['id'])->update([
             'name' => $data['name'] ?? '',
             'description' => $data['description'] ?? '',
             'env_variable' => $data['env_variable'] ?? '',
             'default_value' => $data['default_value'] ?? '',
-            'user_viewable' => in_array('user_viewable', $options),
-            'user_editable' => in_array('user_editable', $options),
+            'user_viewable' => $data['user_viewable'],
+            'user_editable' => $data['user_editable'],
             'rules' => $data['rules'] ?? '',
         ]);
     }

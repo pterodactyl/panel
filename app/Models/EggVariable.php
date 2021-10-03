@@ -14,7 +14,6 @@ namespace Pterodactyl\Models;
  * @property string $rules
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
- * @property bool $required
  * @property \Pterodactyl\Models\Egg $egg
  * @property \Pterodactyl\Models\ServerVariable $serverVariable
  *

@@ -1,38 +1,23 @@
-import Label from '@/components/elements/Label';
+import { Field } from 'formik';
 import React from 'react';
-import { Field, FieldProps } from 'formik';
-import Input from '@/components/elements/Input';
 import tw from 'twin.macro';
+import Label from '@/components/elements/Label';
 
 interface Props {
+    id: string;
     name: string;
     label?: string;
     className?: string;
 }
 
-type OmitFields = 'ref' | 'name' | 'value' | 'type';
-
-type InputProps = Omit<JSX.IntrinsicElements['input'], OmitFields>;
-
-const Checkbox = ({ name, label, className, ...props }: Props & InputProps) => (
-    <Field name={name}>
-        {({ field }: FieldProps) => {
-            return (
-                <div css={tw`flex flex-row`} className={className}>
-                    <Input
-                        {...field}
-                        {...props}
-                        css={tw`w-5 h-5 mr-2`}
-                        type={'checkbox'}
-                    />
-                    {label &&
-                    <div css={tw`flex-1`}>
-                        <Label noBottomSpacing>{label}</Label>
-                    </div>}
-                </div>
-            );
-        }}
-    </Field>
+const Checkbox = ({ id, name, label, className }: Props) => (
+    <div css={tw`flex flex-row`} className={className}>
+        <Field type={'checkbox'} id={id} name={name} css={[ label && tw`mr-2` ]}/>
+        {label &&
+        <div css={tw`flex-1`}>
+            <Label noBottomSpacing>{label}</Label>
+        </div>}
+    </div>
 );
 
 export default Checkbox;

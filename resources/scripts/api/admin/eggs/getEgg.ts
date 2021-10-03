@@ -12,12 +12,11 @@ export interface EggVariable {
     userViewable: boolean;
     userEditable: boolean;
     rules: string;
-    required: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
 
-const rawDataToEggVariable = ({ attributes }: FractalResponseData): EggVariable => ({
+export const rawDataToEggVariable = ({ attributes }: FractalResponseData): EggVariable => ({
     id: attributes.id,
     eggId: attributes.egg_id,
     name: attributes.name,
@@ -27,7 +26,6 @@ const rawDataToEggVariable = ({ attributes }: FractalResponseData): EggVariable 
     userViewable: attributes.user_viewable,
     userEditable: attributes.user_editable,
     rules: attributes.rules,
-    required: attributes.required,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
 });
