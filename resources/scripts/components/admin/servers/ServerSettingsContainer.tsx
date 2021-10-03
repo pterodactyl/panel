@@ -17,45 +17,9 @@ import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { Context, ServerIncludes } from '@/components/admin/servers/ServerRouter';
 import { ApplicationStore } from '@/state';
 import { Actions, useStoreActions } from 'easy-peasy';
-import OwnerSelect from '@/components/admin/servers/OwnerSelect';
 import Button from '@/components/elements/Button';
 import FormikSwitch from '@/components/elements/FormikSwitch';
-
-export function ServerSettingsContainer ({ server }: { server?: Server }) {
-    const { isSubmitting } = useFormikContext();
-
-    return (
-        <AdminBox icon={faCogs} title={'Settings'} css={tw`relative w-full`}>
-            <SpinnerOverlay visible={isSubmitting}/>
-
-            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                    <Field
-                        id={'name'}
-                        name={'name'}
-                        label={'Server Name'}
-                        type={'text'}
-                    />
-                </div>
-
-                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                    <Field
-                        id={'externalId'}
-                        name={'externalId'}
-                        label={'External Identifier'}
-                        type={'text'}
-                    />
-                </div>
-            </div>
-
-            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                <div css={tw`mb-6 w-full md:w-1/2 md:flex md:flex-col md:pr-4 md:mb-0`}>
-                    <OwnerSelect selected={server?.relations.user || null}/>
-                </div>
-            </div>
-        </AdminBox>
-    );
-}
+import BaseSettingsBox from '@/components/admin/servers/settings/BaseSettingsBox';
 
 export function ServerFeatureContainer () {
     const { isSubmitting } = useFormikContext();
@@ -295,7 +259,7 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
                     <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 mb-16`}>
                         <div css={tw`flex flex-col`}>
                             <div css={tw`flex mb-6`}>
-                                <ServerSettingsContainer server={server}/>
+                                <BaseSettingsBox server={server}/>
                             </div>
 
                             <div css={tw`flex mb-6`}>

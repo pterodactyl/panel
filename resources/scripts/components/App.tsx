@@ -14,6 +14,7 @@ import tw from 'twin.macro';
 import { history } from '@/components/history';
 import { setupInterceptors } from '@/api/interceptors';
 import GlobalStyles from '@/components/GlobalStyles';
+import Spinner from '@/components/elements/Spinner';
 
 const ChunkedAdminRouter = lazy(() => import(/* webpackChunkName: "admin" */'@/routers/AdminRouter'));
 
@@ -81,7 +82,7 @@ const App = () => {
                 <ProgressBar/>
                 <div css={tw`mx-auto w-auto`}>
                     <Router history={history}>
-                        <Suspense fallback={<div>Loading...</div>}>
+                        <Suspense fallback={<Spinner centered/>}>
                             {SiteConfiguration?.analytics && <Pageview/>}
                             <Switch>
                                 <Route path="/server/:id" component={ServerRouter}/>
