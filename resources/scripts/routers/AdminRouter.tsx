@@ -33,7 +33,7 @@ import { AdminContext } from '@/state/admin';
 import {
     CogIcon,
     DatabaseIcon,
-    FolderAddIcon,
+    FolderIcon,
     GlobeIcon,
     OfficeBuildingIcon,
     ReplyIcon,
@@ -100,7 +100,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <ViewGridIcon/><span>Nests</span>
                     </NavLink>
                     <NavLink to={`${match.url}/mounts`}>
-                        <FolderAddIcon/><span>Mounts</span>
+                        <FolderIcon/><span>Mounts</span>
                     </NavLink>
                 </Sidebar.Wrapper>
                 <NavLink to={'/'} css={tw`mt-auto mb-3`}>
@@ -117,34 +117,36 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                 </Sidebar.User>
             </Sidebar>
             <div css={tw`flex-1 overflow-x-hidden px-6 pt-6 lg:px-10 lg:pt-8 xl:px-16 xl:pt-12`}>
-                <Switch location={location}>
-                    <Route path={`${match.path}`} component={OverviewContainer} exact/>
-                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
-                    <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
-                    <Route path={`${match.path}/databases/new`} component={NewDatabaseContainer} exact/>
-                    <Route path={`${match.path}/databases/:id`} component={DatabaseEditContainer} exact/>
-                    <Route path={`${match.path}/locations`} component={LocationsContainer} exact/>
-                    <Route path={`${match.path}/locations/:id`} component={LocationEditContainer} exact/>
-                    <Route path={`${match.path}/nodes`} component={NodesContainer} exact/>
-                    <Route path={`${match.path}/nodes/new`} component={NewNodeContainer} exact/>
-                    <Route path={`${match.path}/nodes/:id`} component={NodeRouter}/>
-                    <Route path={`${match.path}/servers`} component={ServersContainer} exact/>
-                    <Route path={`${match.path}/servers/new`} component={NewServerContainer} exact/>
-                    <Route path={`${match.path}/servers/:id`} component={ServerRouter}/>
-                    <Route path={`${match.path}/users`} component={UsersContainer} exact/>
-                    <Route path={`${match.path}/users/new`} component={NewUserContainer} exact/>
-                    <Route path={`${match.path}/users/:id`} component={UserRouter}/>
-                    <Route path={`${match.path}/roles`} component={RolesContainer} exact/>
-                    <Route path={`${match.path}/roles/:id`} component={RoleEditContainer} exact/>
-                    <Route path={`${match.path}/nests`} component={NestsContainer} exact/>
-                    <Route path={`${match.path}/nests/:nestId`} component={NestEditContainer} exact/>
-                    <Route path={`${match.path}/nests/:nestId/new`} component={NewEggContainer} exact/>
-                    <Route path={`${match.path}/nests/:nestId/eggs/:id`} component={EggRouter}/>
-                    <Route path={`${match.path}/mounts`} component={MountsContainer} exact/>
-                    <Route path={`${match.path}/mounts/new`} component={NewMountContainer} exact/>
-                    <Route path={`${match.path}/mounts/:id`} component={MountEditContainer} exact/>
-                    <Route path={'*'} component={NotFound}/>
-                </Switch>
+                <div css={tw`w-full flex flex-col mx-auto`} style={{ maxWidth: '86rem' }}>
+                    <Switch location={location}>
+                        <Route path={`${match.path}`} component={OverviewContainer} exact/>
+                        <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                        <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
+                        <Route path={`${match.path}/databases/new`} component={NewDatabaseContainer} exact/>
+                        <Route path={`${match.path}/databases/:id`} component={DatabaseEditContainer} exact/>
+                        <Route path={`${match.path}/locations`} component={LocationsContainer} exact/>
+                        <Route path={`${match.path}/locations/:id`} component={LocationEditContainer} exact/>
+                        <Route path={`${match.path}/nodes`} component={NodesContainer} exact/>
+                        <Route path={`${match.path}/nodes/new`} component={NewNodeContainer} exact/>
+                        <Route path={`${match.path}/nodes/:id`} component={NodeRouter}/>
+                        <Route path={`${match.path}/servers`} component={ServersContainer} exact/>
+                        <Route path={`${match.path}/servers/new`} component={NewServerContainer} exact/>
+                        <Route path={`${match.path}/servers/:id`} component={ServerRouter}/>
+                        <Route path={`${match.path}/users`} component={UsersContainer} exact/>
+                        <Route path={`${match.path}/users/new`} component={NewUserContainer} exact/>
+                        <Route path={`${match.path}/users/:id`} component={UserRouter}/>
+                        <Route path={`${match.path}/roles`} component={RolesContainer} exact/>
+                        <Route path={`${match.path}/roles/:id`} component={RoleEditContainer} exact/>
+                        <Route path={`${match.path}/nests`} component={NestsContainer} exact/>
+                        <Route path={`${match.path}/nests/:nestId`} component={NestEditContainer} exact/>
+                        <Route path={`${match.path}/nests/:nestId/new`} component={NewEggContainer} exact/>
+                        <Route path={`${match.path}/nests/:nestId/eggs/:id`} component={EggRouter}/>
+                        <Route path={`${match.path}/mounts`} component={MountsContainer} exact/>
+                        <Route path={`${match.path}/mounts/new`} component={NewMountContainer} exact/>
+                        <Route path={`${match.path}/mounts/:id`} component={MountEditContainer} exact/>
+                        <Route path={'*'} component={NotFound}/>
+                    </Switch>
+                </div>
             </div>
         </div>
     );

@@ -52,22 +52,26 @@ const Sidebar = styled.div<{ $collapsed?: boolean }>`
       ${tw`font-header font-medium text-lg whitespace-nowrap leading-none ml-3`};
     }
   }
-  
+
   ${props => props.$collapsed && css`
     ${tw`w-20`};
-    
+
     ${Section} {
       ${tw`invisible`};
     }
 
-    ${Wrapper} > a {
-      ${tw`justify-center px-0`};
+    ${Wrapper} {
+        ${tw`px-5`};
+
+        & > a {
+            ${tw`justify-center px-0`};
+        }
     }
 
     & > a {
       ${tw`justify-center px-4`};
     }
-    
+
     & > a > span,
     ${User} > div,
     ${User} > a,
