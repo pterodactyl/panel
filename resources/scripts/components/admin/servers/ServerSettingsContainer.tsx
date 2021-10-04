@@ -20,42 +20,7 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import Button from '@/components/elements/Button';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import BaseSettingsBox from '@/components/admin/servers/settings/BaseSettingsBox';
-
-export function ServerFeatureContainer () {
-    const { isSubmitting } = useFormikContext();
-
-    return (
-        <AdminBox icon={faConciergeBell} title={'Feature Limits'} css={tw`relative w-full`}>
-            <SpinnerOverlay visible={isSubmitting}/>
-
-            <div css={tw`grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-6`}>
-                <Field
-                    id={'featureLimits.allocations'}
-                    name={'featureLimits.allocations'}
-                    label={'Allocation Limit'}
-                    type={'number'}
-                    description={'The total number of allocations a user is allowed to create for this server.'}
-                />
-
-                <Field
-                    id={'featureLimits.backups'}
-                    name={'featureLimits.backups'}
-                    label={'Backup Limit'}
-                    type={'number'}
-                    description={'The total number of backups that can be created for this server.'}
-                />
-
-                <Field
-                    id={'featureLimits.databases'}
-                    name={'featureLimits.databases'}
-                    label={'Database Limit'}
-                    type={'number'}
-                    description={'The total number of databases a user is allowed to create for this server.'}
-                />
-            </div>
-        </AdminBox>
-    );
-}
+import FeatureLimitsBox from '@/components/admin/servers/settings/FeatureLimitsBox';
 
 export function ServerAllocationsContainer ({ server }: { server: Server }) {
     const { isSubmitting } = useFormikContext();
@@ -259,7 +224,7 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
                     <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 mb-16`}>
                         <div css={tw`grid grid-cols-1 gap-y-6`}>
                             <BaseSettingsBox/>
-                            <ServerFeatureContainer/>
+                            <FeatureLimitsBox/>
                             <ServerAllocationsContainer server={server}/>
                         </div>
 
