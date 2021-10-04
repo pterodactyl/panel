@@ -7,13 +7,11 @@ jobs:
   release:
     runs-on: ubuntu-20.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
         with:
-          node-version: '14'
-          cache: 'yarn'
+          node-version: '12'
+
       - name: Create release branch and bump version
         env:
           REF: ${{ github.ref }}
@@ -27,14 +25,17 @@ jobs:
           git add config/app.php
           git commit -m "bump version for release"
           git push
+
       - name: Build assets
         run: |
           yarn install
           yarn run build:production
+
       - name: Create release archive
         run: |
-          rm -rf node_modules/ test/ codecov.yml CODE_OF_CONDUCT.md CONTRIBUTING.md phpunit.dusk.xml phpunit.xml
-          tar -czf panel.tar.gz * .env.example .eslintignore .eslintrc.yml .yarnclean
+          rm -rf node_modules/ test/ codecov.yml CODE_OF_CONDUCT.md CONTRIBUTING.md phpunit.dusk.xml phpunit.xml Vagrantfile
+          tar -czf panel.tar.gz * .env.example .babel-plugin-macrosrc.js
+
       - name: Extract changelog
         id: extract_changelog
         env:
@@ -42,11 +43,13 @@ jobs:
         run: |
           sed -n "/^## ${REF:10}/,/^## /{/^## /b;p}" CHANGELOG.md > ./RELEASE_CHANGELOG
           echo ::set-output name=version_name::`sed -nr "s/^## (${REF:10} .*)$/\1/p" CHANGELOG.md`
+
       - name: Create checksum and add to changelog
         run: |
           SUM=`sha256sum panel.tar.gz`
           echo -e "\n#### SHA256 Checksum\n\n\`\`\`\n$SUM\n\`\`\`\n" >> ./RELEASE_CHANGELOG
           echo $SUM > checksum.txt
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -58,6 +61,7 @@ jobs:
           body_path: ./RELEASE_CHANGELOG
           draft: true
           prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+
       - name: Upload binary
         id: upload-release-archive
         uses: actions/upload-release-asset@v1
@@ -68,6 +72,7 @@ jobs:
           asset_path: panel.tar.gz
           asset_name: panel.tar.gz
           asset_content_type: application/gzip
+
       - name: Upload checksum
         id: upload-release-checksum
         uses: actions/upload-release-asset@v1

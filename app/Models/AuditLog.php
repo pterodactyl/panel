@@ -30,7 +30,6 @@ class AuditLog extends Model
     public const SERVER__FILESYSTEM_RENAME = 'server:filesystem.rename';
     public const SERVER__FILESYSTEM_COMPRESS = 'server:filesystem.compress';
     public const SERVER__FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
-    public const SERVER__FILESYSTEM_CHMOD = 'server:filesystem.chmod';
     public const SERVER__FILESYSTEM_PULL = 'server:filesystem.pull';
     public const SERVER__BACKUP_STARTED = 'server:backup.started';
     public const SERVER__BACKUP_FAILED = 'server:backup.failed';
@@ -46,7 +45,7 @@ class AuditLog extends Model
     /**
      * @var string[]
      */
-    public static array $validationRules = [
+    public static $validationRules = [
         'uuid' => 'required|uuid',
         'action' => 'required|string|max:191',
         'subaction' => 'nullable|string|max:191',
@@ -61,7 +60,10 @@ class AuditLog extends Model
      */
     protected $table = 'audit_logs';
 
-    protected bool $immutableDates = true;
+    /**
+     * @var bool
+     */
+    protected $immutableDates = true;
 
     /**
      * @var string[]

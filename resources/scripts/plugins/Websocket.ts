@@ -25,7 +25,7 @@ export class Websocket extends EventEmitter {
     connect (url: string): this {
         this.url = url;
 
-        this.socket = new Sockette(this.url, {
+        this.socket = new Sockette(`${this.url}`, {
             onmessage: e => {
                 try {
                     const { event, args } = JSON.parse(e.data);

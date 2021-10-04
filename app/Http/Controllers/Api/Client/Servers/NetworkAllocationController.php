@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -19,9 +19,20 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationReq
 
 class NetworkAllocationController extends ClientApiController
 {
-    private AllocationRepository $repository;
-    private ServerRepository $serverRepository;
-    private FindAssignableAllocationService $assignableAllocationService;
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\AllocationRepository
+     */
+    private $repository;
+
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     */
+    private $serverRepository;
+
+    /**
+     * @var \Pterodactyl\Services\Allocations\FindAssignableAllocationService
+     */
+    private $assignableAllocationService;
 
     /**
      * NetworkController constructor.
@@ -39,15 +50,13 @@ class NetworkAllocationController extends ClientApiController
     }
 
     /**
-     * Lists all of the allocations available to a server and whether or
+     * Lists all of the allocations available to a server and wether or
      * not they are currently assigned as the primary for this server.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetNetworkRequest $request, Server $server): array
     {
         return $this->fractal->collection($server->allocations)
-            ->transformWith(AllocationTransformer::class)
+            ->transformWith($this->getTransformer(AllocationTransformer::class))
             ->toArray();
     }
 
@@ -56,7 +65,6 @@ class NetworkAllocationController extends ClientApiController
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function update(UpdateAllocationRequest $request, Server $server, Allocation $allocation): array
     {
@@ -65,7 +73,7 @@ class NetworkAllocationController extends ClientApiController
         ]);
 
         return $this->fractal->item($allocation)
-            ->transformWith(AllocationTransformer::class)
+            ->transformWith($this->getTransformer(AllocationTransformer::class))
             ->toArray();
     }
 
@@ -74,22 +82,21 @@ class NetworkAllocationController extends ClientApiController
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function setPrimary(SetPrimaryAllocationRequest $request, Server $server, Allocation $allocation): array
     {
         $this->serverRepository->update($server->id, ['allocation_id' => $allocation->id]);
 
         return $this->fractal->item($allocation)
-            ->transformWith(AllocationTransformer::class)
+            ->transformWith($this->getTransformer(AllocationTransformer::class))
             ->toArray();
     }
 
     /**
      * Set the notes for the allocation for a server.
+     *s.
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(NewAllocationRequest $request, Server $server): array
     {
@@ -100,16 +107,18 @@ class NetworkAllocationController extends ClientApiController
         $allocation = $this->assignableAllocationService->handle($server);
 
         return $this->fractal->item($allocation)
-            ->transformWith(AllocationTransformer::class)
+            ->transformWith($this->getTransformer(AllocationTransformer::class))
             ->toArray();
     }
 
     /**
      * Delete an allocation from a server.
      *
+     * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(DeleteAllocationRequest $request, Server $server, Allocation $allocation): Response
+    public function delete(DeleteAllocationRequest $request, Server $server, Allocation $allocation)
     {
         if ($allocation->id === $server->allocation_id) {
             throw new DisplayException('You cannot delete the primary allocation for this server.');
@@ -120,6 +129,6 @@ class NetworkAllocationController extends ClientApiController
             'server_id' => null,
         ]);
 
-        return $this->returnNoContent();
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

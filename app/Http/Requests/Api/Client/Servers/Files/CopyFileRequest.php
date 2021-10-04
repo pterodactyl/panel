@@ -3,9 +3,10 @@
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
 use Pterodactyl\Models\Permission;
+use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class CopyFileRequest extends ClientApiRequest
+class CopyFileRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
     public function permission(): string
     {

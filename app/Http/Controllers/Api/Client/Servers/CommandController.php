@@ -14,7 +14,10 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class CommandController extends ClientApiController
 {
-    private DaemonCommandRepository $repository;
+    /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonCommandRepository
+     */
+    private $repository;
 
     /**
      * CommandController constructor.

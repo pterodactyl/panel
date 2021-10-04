@@ -1,13 +1,11 @@
 import React from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
-import TransitionRouter from '@/TransitionRouter';
+import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
-import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
-import SecurityKeyContainer from '@/components/dashboard/SecurityKeyContainer';
-import SSHKeyContainer from '@/components/dashboard/SSHKeyContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
+import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
 
 export default ({ location }: RouteComponentProps) => (
@@ -18,8 +16,6 @@ export default ({ location }: RouteComponentProps) => (
             <div>
                 <NavLink to={'/account'} exact>Settings</NavLink>
                 <NavLink to={'/account/api'}>API Credentials</NavLink>
-                <NavLink to={'/account/keys/security'}>Security Keys</NavLink>
-                <NavLink to={'/account/keys/ssh'}>SSH Keys</NavLink>
             </div>
         </SubNavigation>
         }
@@ -33,12 +29,6 @@ export default ({ location }: RouteComponentProps) => (
                 </Route>
                 <Route path={'/account/api'} exact>
                     <AccountApiContainer/>
-                </Route>
-                <Route path={'/account/keys/security'} exact>
-                    <SecurityKeyContainer/>
-                </Route>
-                <Route path={'/account/keys/ssh'} exact>
-                    <SSHKeyContainer/>
                 </Route>
                 <Route path={'*'}>
                     <NotFound/>

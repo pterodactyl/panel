@@ -167,12 +167,4 @@ class InitiateBackupService
             return $backup;
         });
     }
-
-    public function getNonFailedBackups(Server $server): HasMany
-    {
-        return $server->backups()->where(function ($query) {
-            $query->whereNull('completed_at')
-                ->orWhere('is_successful', true);
-        });
-    }
 }

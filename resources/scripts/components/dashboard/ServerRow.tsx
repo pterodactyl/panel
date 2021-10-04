@@ -5,9 +5,10 @@ import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
 import { bytesToHuman, megabytesToHuman } from '@/helpers';
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
+import styled from 'styled-components/macro';
 import isEqual from 'react-fast-compare';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather

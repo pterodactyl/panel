@@ -52,8 +52,10 @@ class Mount extends Model
 
     /**
      * Rules verifying that the data being stored matches the expectations of the database.
+     *
+     * @var string
      */
-    public static array $validationRules = [
+    public static $validationRules = [
         'name' => 'required|string|min:2|max:64|unique:mounts,name',
         'description' => 'nullable|string|max:191',
         'source' => 'required|string',

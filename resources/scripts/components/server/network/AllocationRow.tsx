@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react';
 import isEqual from 'react-fast-compare';
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import InputSpinner from '@/components/elements/InputSpinner';
@@ -9,6 +9,7 @@ import Can from '@/components/elements/Can';
 import Button from '@/components/elements/Button';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
+import styled from 'styled-components/macro';
 import { debounce } from 'debounce';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
 import useFlash from '@/plugins/useFlash';

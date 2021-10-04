@@ -37,7 +37,10 @@ class Backup extends Model
      */
     protected $table = 'backups';
 
-    protected bool $immutableDates = true;
+    /**
+     * @var bool
+     */
+    protected $immutableDates = true;
 
     /**
      * @var array
@@ -73,7 +76,10 @@ class Backup extends Model
      */
     protected $guarded = ['id', 'created_at', 'updated_at', 'deleted_at'];
 
-    public static array $validationRules = [
+    /**
+     * @var array
+     */
+    public static $validationRules = [
         'server_id' => 'bail|required|numeric|exists:servers,id',
         'uuid' => 'required|uuid',
         'is_successful' => 'boolean',

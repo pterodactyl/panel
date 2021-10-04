@@ -4,6 +4,8 @@ import App from '@/components/App';
 import './i18n';
 import { setConfig } from 'react-hot-loader';
 
+import 'tailwindcss/dist/base.min.css';
+
 // Prevents page reloads while making component changes which
 // also avoids triggering constant loading indicators all over
 // the place in development.

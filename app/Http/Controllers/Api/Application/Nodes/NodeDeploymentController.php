@@ -9,7 +9,10 @@ use Pterodactyl\Http\Requests\Api\Application\Nodes\GetDeployableNodesRequest;
 
 class NodeDeploymentController extends ApplicationApiController
 {
-    private FindViableNodesService $viableNodesService;
+    /**
+     * @var \Pterodactyl\Services\Deployment\FindViableNodesService
+     */
+    private $viableNodesService;
 
     /**
      * NodeDeploymentController constructor.
@@ -26,7 +29,6 @@ class NodeDeploymentController extends ApplicationApiController
      * similarly to the server creation process, but allows you to pass the deployment object
      * to this endpoint and get back a list of all Nodes satisfying the requirements.
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      */
     public function __invoke(GetDeployableNodesRequest $request): array
@@ -38,7 +40,7 @@ class NodeDeploymentController extends ApplicationApiController
             ->handle($request->query('per_page'), $request->query('page'));
 
         return $this->fractal->collection($nodes)
-            ->transformWith(NodeTransformer::class)
+            ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
 }

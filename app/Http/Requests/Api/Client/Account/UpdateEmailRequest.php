@@ -5,16 +5,20 @@ namespace Pterodactyl\Http\Requests\Api\Client\Account;
 use Pterodactyl\Models\User;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Hashing\Hasher;
-use Pterodactyl\Http\Requests\Api\Client\AccountApiRequest;
+use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 
-class UpdateEmailRequest extends AccountApiRequest
+class UpdateEmailRequest extends ClientApiRequest
 {
     /**
      * @throws \Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException
      */
     public function authorize(): bool
     {
+        if (!parent::authorize()) {
+            return false;
+        }
+
         $hasher = Container::getInstance()->make(Hasher::class);
 
         // Verify password matches when changing password or email.

@@ -10,8 +10,15 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EggInstallController extends Controller
 {
-    private EnvironmentService $environment;
-    private ServerRepositoryInterface $repository;
+    /**
+     * @var \Pterodactyl\Services\Servers\EnvironmentService
+     */
+    private $environment;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
+     */
+    private $repository;
 
     /**
      * EggInstallController constructor.

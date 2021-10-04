@@ -42,27 +42,43 @@ class SoftwareVersionService
     }
 
     /**
-     * Gets the current version of the panel that is being used.
-     */
-    public function getVersion(): string
-    {
-        return config()->get('app.version');
-    }
-
-    /**
      * Get the latest version of the panel from the CDN servers.
+     *
+     * @return string
      */
-    public function getLatestPanel(): string
+    public function getPanel()
     {
         return Arr::get(self::$result, 'panel') ?? 'error';
     }
 
     /**
-     * Get the latest version of wings from the CDN servers.
+     * Get the latest version of the daemon from the CDN servers.
+     *
+     * @return string
      */
-    public function getLatestWings(): string
+    public function getDaemon()
     {
         return Arr::get(self::$result, 'wings') ?? 'error';
+    }
+
+    /**
+     * Get the URL to the discord server.
+     *
+     * @return string
+     */
+    public function getDiscord()
+    {
+        return Arr::get(self::$result, 'discord') ?? 'https://pterodactyl.io/discord';
+    }
+
+    /**
+     * Get the URL for donations.
+     *
+     * @return string
+     */
+    public function getDonations()
+    {
+        return Arr::get(self::$result, 'donations') ?? 'https://paypal.me/PterodactylSoftware';
     }
 
     /**
@@ -72,27 +88,27 @@ class SoftwareVersionService
      */
     public function isLatestPanel()
     {
-        $version = $this->getVersion();
-        if ($version === 'canary') {
+        if (config()->get('app.version') === 'canary') {
             return true;
         }
 
-        return version_compare($version, $this->getLatestPanel()) >= 0;
+        return version_compare(config()->get('app.version'), $this->getPanel()) >= 0;
     }
 
     /**
-     * Determine if a passed wings version is the latest.
+     * Determine if a passed daemon version string is the latest.
+     *
+     * @param string $version
      *
      * @return bool
      */
-    public function isLatestWings(string $version)
+    public function isLatestDaemon($version)
     {
-        // If the version is 'canary' or starts with 'dev-', mark it as the latest.
-        if ($version === 'canary' || Str::startsWith($version, 'dev-')) {
+        if ($version === '0.0.0-canary') {
             return true;
         }
 
-        return version_compare($version, $this->getLatestWings()) >= 0;
+        return version_compare($version, $this->getDaemon()) >= 0;
     }
 
     /**
@@ -115,61 +131,5 @@ class SoftwareVersionService
                 return [];
             }
         });
-    }
-
-    /**
-     * Return version information for the footer.
-     */
-    protected function versionData(): array
-    {
-        return $this->cache->remember('git-version', 5, function () {
-            $configVersion = config()->get('app.version');
-
-            if (file_exists(base_path('.git/HEAD'))) {
-                $head = explode(' ', file_get_contents(base_path('.git/HEAD')));
-
-                if (array_key_exists(1, $head)) {
-                    $path = base_path('.git/' . trim($head[1]));
-                }
-            }
-
-            if (isset($path) && file_exists($path)) {
-                return [
-                    'version' => substr(file_get_contents($path), 0, 8),
-                    'is_git' => true,
-                ];
-            }
-
-            return [
-                'version' => $configVersion,
-                'is_git' => false,
-            ];
-        });
-    }
-
-    /**
-     * ?
-     */
-    public function getVersionData(): array
-    {
-        $versionData = $this->versionData();
-        if ($versionData['is_git']) {
-            $git = $versionData['version'];
-        } else {
-            $git = null;
-        }
-
-        return [
-            'panel' => [
-                'current' => $this->getVersion(),
-                'latest' => $this->getLatestPanel(),
-            ],
-
-            'wings' => [
-                'latest' => $this->getLatestWings(),
-            ],
-
-            'git' => $git,
-        ];
     }
 }

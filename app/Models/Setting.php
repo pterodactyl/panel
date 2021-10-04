@@ -21,7 +21,10 @@ class Setting extends Model
      */
     protected $fillable = ['key', 'value'];
 
-    public static array $validationRules = [
+    /**
+     * @var array
+     */
+    public static $validationRules = [
         'key' => 'required|string|between:1,191',
         'value' => 'string',
     ];

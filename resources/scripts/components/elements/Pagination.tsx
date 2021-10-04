@@ -1,6 +1,7 @@
 import React from 'react';
 import { PaginatedResult } from '@/api/http';
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
+import styled from 'styled-components/macro';
 import Button from '@/components/elements/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +22,7 @@ interface Props<T> {
 
 const Block = styled(Button)`
     ${tw`p-0 w-10 h-10`}
-
+    
     &:not(:last-of-type) {
         ${tw`mr-2`};
     }

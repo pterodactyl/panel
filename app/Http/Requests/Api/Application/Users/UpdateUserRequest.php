@@ -6,8 +6,13 @@ use Pterodactyl\Models\User;
 
 class UpdateUserRequest extends StoreUserRequest
 {
+    /**
+     * Return the validation rules for this request.
+     */
     public function rules(array $rules = null): array
     {
-        return parent::rules($rules ?? User::getRulesForUpdate($this->route()->parameter('user')->id));
+        $userId = $this->getModel(User::class)->id;
+
+        return parent::rules(User::getRulesForUpdate($userId));
     }
 }

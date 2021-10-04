@@ -8,8 +8,6 @@ export interface UserData {
     language: string;
     rootAdmin: boolean;
     useTotp: boolean;
-    avatarURL: string;
-    roleName: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -23,7 +21,6 @@ export interface UserStore {
 
 const user: UserStore = {
     data: undefined,
-
     setUserData: action((state, payload) => {
         state.data = payload;
     }),

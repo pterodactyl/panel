@@ -34,9 +34,6 @@ class AssetComposer
                 'siteKey' => config('recaptcha.website_key') ?? '',
             ],
             'analytics' => config('app.analytics') ?? '',
-            'features' => [
-                'pullFiles' => config('features.pull_files'),
-            ],
         ]);
     }
 }

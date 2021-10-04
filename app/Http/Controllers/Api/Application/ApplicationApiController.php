@@ -3,17 +3,25 @@
 namespace Pterodactyl\Http\Controllers\Api\Application;
 
 use Illuminate\Http\Request;
+use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
+use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class ApplicationApiController extends Controller
 {
-    protected Request $request;
+    /**
+     * @var \Illuminate\Http\Request
+     */
+    protected $request;
 
-    protected Fractal $fractal;
+    /**
+     * @var \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal
+     */
+    protected $fractal;
 
     /**
      * ApplicationApiController constructor.
@@ -45,11 +53,19 @@ abstract class ApplicationApiController extends Controller
     }
 
     /**
-     * Return a HTTP/201 response for the API.
+     * Return an instance of an application transformer.
+     *
+     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
      */
-    protected function returnAccepted(): Response
+    public function getTransformer(string $abstract)
     {
-        return new Response('', Response::HTTP_ACCEPTED);
+        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
+        $transformer = Container::getInstance()->make($abstract);
+        $transformer->setKey($this->request->attributes->get('api_key'));
+
+        Assert::isInstanceOf($transformer, BaseTransformer::class);
+
+        return $transformer;
     }
 
     /**

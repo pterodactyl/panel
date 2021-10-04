@@ -10,7 +10,10 @@ use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 
 class DeployServerDatabaseService
 {
-    private DatabaseManagementService $managementService;
+    /**
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     */
+    private $managementService;
 
     /**
      * ServerDatabaseCreationService constructor.
@@ -32,22 +35,21 @@ class DeployServerDatabaseService
         Assert::notEmpty($data['database'] ?? null);
         Assert::notEmpty($data['remote'] ?? null);
 
-        $databaseHostId = $server->node->database_host_id;
-        if (is_null($databaseHostId)) {
-            if (!config('pterodactyl.client_features.databases.allow_random')) {
+        $hosts = DatabaseHost::query()->get()->toBase();
+        if ($hosts->isEmpty()) {
+            throw new NoSuitableDatabaseHostException();
+        } else {
+            $nodeHosts = $hosts->where('node_id', $server->node_id)->toBase();
+
+            if ($nodeHosts->isEmpty() && !config('pterodactyl.client_features.databases.allow_random')) {
                 throw new NoSuitableDatabaseHostException();
             }
-
-            $hosts = DatabaseHost::query()->get()->toBase();
-            if ($hosts->isEmpty()) {
-                throw new NoSuitableDatabaseHostException();
-            }
-
-            $databaseHostId = $hosts->random()->id;
         }
 
         return $this->managementService->create($server, [
-            'database_host_id' => $databaseHostId,
+            'database_host_id' => $nodeHosts->isEmpty()
+                ? $hosts->random()->id
+                : $nodeHosts->random()->id,
             'database' => DatabaseManagementService::generateUniqueDatabaseName($data['database'], $server->id),
             'remote' => $data['remote'],
         ]);

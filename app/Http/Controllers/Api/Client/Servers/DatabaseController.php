@@ -18,10 +18,25 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest
 
 class DatabaseController extends ClientApiController
 {
-    private DeployServerDatabaseService $deployDatabaseService;
-    private DatabaseRepository $repository;
-    private DatabaseManagementService $managementService;
-    private DatabasePasswordService $passwordService;
+    /**
+     * @var \Pterodactyl\Services\Databases\DeployServerDatabaseService
+     */
+    private $deployDatabaseService;
+
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\DatabaseRepository
+     */
+    private $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
+     */
+    private $managementService;
+
+    /**
+     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
+     */
+    private $passwordService;
 
     /**
      * DatabaseController constructor.
@@ -42,13 +57,11 @@ class DatabaseController extends ClientApiController
 
     /**
      * Return all of the databases that belong to the given server.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetDatabasesRequest $request, Server $server): array
     {
         return $this->fractal->collection($server->databases)
-            ->transformWith(DatabaseTransformer::class)
+            ->transformWith($this->getTransformer(DatabaseTransformer::class))
             ->toArray();
     }
 
@@ -65,7 +78,7 @@ class DatabaseController extends ClientApiController
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
-            ->transformWith(DatabaseTransformer::class)
+            ->transformWith($this->getTransformer(DatabaseTransformer::class))
             ->toArray();
     }
 
@@ -73,28 +86,30 @@ class DatabaseController extends ClientApiController
      * Rotates the password for the given server model and returns a fresh instance to
      * the caller.
      *
+     * @return array
+     *
      * @throws \Throwable
      */
-    public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database): array
+    public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database)
     {
         $this->passwordService->handle($database);
         $database->refresh();
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
-            ->transformWith(DatabaseTransformer::class)
+            ->transformWith($this->getTransformer(DatabaseTransformer::class))
             ->toArray();
     }
 
     /**
      * Removes a database from the server.
      *
-     * @throws \Exception
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
     {
         $this->managementService->delete($database);
 
-        return $this->returnNoContent();
+        return Response::create('', Response::HTTP_NO_CONTENT);
     }
 }

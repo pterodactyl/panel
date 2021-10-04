@@ -6,7 +6,10 @@ use Pterodactyl\Models\Permission;
 
 class StoreSubuserRequest extends SubuserRequest
 {
-    public function permission(): string
+    /**
+     * @return string
+     */
+    public function permission()
     {
         return Permission::ACTION_USER_CREATE;
     }

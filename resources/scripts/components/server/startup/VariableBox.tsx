@@ -32,9 +32,9 @@ const VariableBox = ({ variable }: Props) => {
 
         updateStartupVariable(uuid, variable.envVariable, value)
             .then(([ response, invocation ]) => mutate(data => ({
-                ...data!,
+                ...data,
                 invocation,
-                variables: (data!.variables || []).map(v => v.envVariable === response.envVariable ? response : v),
+                variables: (data.variables || []).map(v => v.envVariable === response.envVariable ? response : v),
             }), false))
             .catch(error => {
                 console.error(error);

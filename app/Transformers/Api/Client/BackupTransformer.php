@@ -3,16 +3,18 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Backup;
-use Pterodactyl\Transformers\Api\Transformer;
 
-class BackupTransformer extends Transformer
+class BackupTransformer extends BaseClientTransformer
 {
     public function getResourceName(): string
     {
         return Backup::RESOURCE_NAME;
     }
 
-    public function transform(Backup $backup): array
+    /**
+     * @return array
+     */
+    public function transform(Backup $backup)
     {
         return [
             'uuid' => $backup->uuid,
@@ -22,8 +24,8 @@ class BackupTransformer extends Transformer
             'ignored_files' => $backup->ignored_files,
             'checksum' => $backup->checksum,
             'bytes' => $backup->bytes,
-            'created_at' => self::formatTimestamp($backup->created_at),
-            'completed_at' => self::formatTimestamp($backup->completed_at),
+            'created_at' => $backup->created_at->toIso8601String(),
+            'completed_at' => $backup->completed_at ? $backup->completed_at->toIso8601String() : null,
         ];
     }
 }

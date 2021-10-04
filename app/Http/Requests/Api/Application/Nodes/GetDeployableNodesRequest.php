@@ -4,6 +4,9 @@ namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
 class GetDeployableNodesRequest extends GetNodesRequest
 {
+    /**
+     * @return string[]
+     */
     public function rules(): array
     {
         return [

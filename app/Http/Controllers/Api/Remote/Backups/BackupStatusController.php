@@ -4,10 +4,10 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
+use Illuminate\Http\JsonResponse;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
@@ -17,7 +17,10 @@ use Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 
 class BackupStatusController extends Controller
 {
-    private BackupManager $backupManager;
+    /**
+     * @var \Pterodactyl\Extensions\Backups\BackupManager
+     */
+    private $backupManager;
 
     /**
      * BackupStatusController constructor.
@@ -30,9 +33,11 @@ class BackupStatusController extends Controller
     /**
      * Handles updating the state of a backup.
      *
+     * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Throwable
      */
-    public function index(ReportBackupCompleteRequest $request, string $backup): Response
+    public function index(ReportBackupCompleteRequest $request, string $backup)
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
@@ -55,7 +60,7 @@ class BackupStatusController extends Controller
                 // Change the lock state to unlocked if this was a failed backup so that it can be
                 // deleted easily. Also does not make sense to have a locked backup on the system
                 // that is failed.
-                'is_locked' => $successful && $model->is_locked,
+                'is_locked' => $successful ? $model->is_locked : false,
                 'checksum' => $successful ? ($request->input('checksum_type') . ':' . $request->input('checksum')) : null,
                 'bytes' => $successful ? $request->input('size') : 0,
                 'completed_at' => CarbonImmutable::now(),
@@ -69,7 +74,7 @@ class BackupStatusController extends Controller
             }
         });
 
-        return new Response('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -80,9 +85,11 @@ class BackupStatusController extends Controller
      * The only thing the successful field does is update the entry value for the audit logs
      * table tracking for this restoration.
      *
+     * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Throwable
      */
-    public function restore(Request $request, string $backup): Response
+    public function restore(Request $request, string $backup)
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
@@ -98,7 +105,7 @@ class BackupStatusController extends Controller
             $server->update(['status' => null]);
         });
 
-        return new Response('', Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**

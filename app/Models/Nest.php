@@ -38,8 +38,11 @@ class Nest extends Model
         'description',
     ];
 
-    public static array $validationRules = [
-        'author' => 'sometimes|string|email',
+    /**
+     * @var array
+     */
+    public static $validationRules = [
+        'author' => 'required|string|email',
         'name' => 'required|string|max:191',
         'description' => 'nullable|string',
     ];

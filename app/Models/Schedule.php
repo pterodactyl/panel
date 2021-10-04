@@ -105,7 +105,10 @@ class Schedule extends Model
         'only_when_online' => false,
     ];
 
-    public static array $validationRules = [
+    /**
+     * @var array
+     */
+    public static $validationRules = [
         'server_id' => 'required|exists:servers,id',
         'name' => 'required|string|max:191',
         'cron_day_of_week' => 'required|string',

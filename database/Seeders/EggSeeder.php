@@ -123,7 +123,7 @@ class EggSeeder extends Seeder
 
                 $this->command->info('Updated ' . $decoded->name);
             } catch (RecordNotFoundException $exception) {
-                $this->importerService->handleFile($nest->id, $file);
+                $this->importerService->handle($file, $nest->id);
 
                 $this->command->comment('Created ' . $decoded->name);
             }

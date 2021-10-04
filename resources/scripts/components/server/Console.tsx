@@ -7,8 +7,9 @@ import { WebLinksAddon } from 'xterm-addon-web-links';
 import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
+import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
-import tw, { styled, theme as th } from 'twin.macro';
+import tw, { theme as th } from 'twin.macro';
 import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
@@ -58,8 +59,7 @@ const TerminalDiv = styled.div`
 `;
 
 const CommandInput = styled.input`
-    ${tw`text-sm transition-colors duration-150 px-2 bg-transparent border-0 border-b-2 border-transparent text-neutral-100 p-2 pl-0 w-full focus:ring-0`};
-
+    ${tw`text-sm transition-colors duration-150 px-2 bg-transparent border-0 border-b-2 border-transparent text-neutral-100 p-2 pl-0 w-full focus:ring-0`}
     &:focus {
         ${tw`border-cyan-700`};
     }
@@ -76,7 +76,7 @@ export default () => {
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
-    const serverId = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [ historyIndex, setHistoryIndex ] = useState(-1);

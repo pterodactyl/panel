@@ -15,4 +15,4 @@ export default (uuid: string, initialData?: Response) => useSWR([ uuid, '/startu
     const variables = ((data as FractalResponseList).data || []).map(rawDataToServerEggVariable);
 
     return { invocation: data.meta.startup_command, variables, dockerImages: data.meta.docker_images || [] };
-}, { fallbackData: initialData, errorRetryCount: 3 });
+}, { initialData, errorRetryCount: 3 });

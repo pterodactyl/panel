@@ -30,10 +30,10 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
         if (files.length === 1) {
             if (!useMoveTerminology && len === 1) {
                 // Rename the file within this directory.
-                mutate(data => data!.map(f => f.name === files[0] ? { ...f, name } : f), false);
+                mutate(data => data.map(f => f.name === files[0] ? { ...f, name } : f), false);
             } else if ((useMoveTerminology || len > 1)) {
                 // Remove the file from this directory since they moved it elsewhere.
-                mutate(data => data!.filter(f => f.name !== files[0]), false);
+                mutate(data => data.filter(f => f.name !== files[0]), false);
             }
         }
 
@@ -68,7 +68,7 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                         >
                             <div css={tw`w-full sm:flex-1 sm:mr-4`}>
                                 <Field
-                                    type={'text'}
+                                    type={'string'}
                                     id={'file_name'}
                                     name={'name'}
                                     label={'File Name'}

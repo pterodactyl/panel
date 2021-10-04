@@ -10,7 +10,10 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\SendPowerRequest;
 
 class PowerController extends ClientApiController
 {
-    private DaemonPowerRepository $repository;
+    /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonPowerRepository
+     */
+    private $repository;
 
     /**
      * PowerController constructor.

@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Pterodactyl\Http\Controllers\Api\Client;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
@@ -26,18 +25,9 @@ Route::group(['prefix' => '/account'], function () {
     Route::put('/email', 'AccountController@updateEmail')->name('api:client.account.update-email');
     Route::put('/password', 'AccountController@updatePassword')->name('api:client.account.update-password');
 
-    Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
-    Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
-    Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);
-
-    Route::get('/webauthn', 'WebauthnController@index')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::get('/webauthn/register', 'WebauthnController@register')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::post('/webauthn/register', 'WebauthnController@create')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::delete('/webauthn/{id}', 'WebauthnController@deleteKey')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-
-    Route::get('/ssh', 'SSHKeyController@index');
-    Route::post('/ssh', 'SSHKeyController@store');
-    Route::delete('/ssh/{ssh_key}', 'SSHKeyController@delete');
+    Route::get('/api-keys', 'ApiKeyController@index');
+    Route::post('/api-keys', 'ApiKeyController@store');
+    Route::delete('/api-keys/{identifier}', 'ApiKeyController@delete');
 });
 
 /*
@@ -48,10 +38,7 @@ Route::group(['prefix' => '/account'], function () {
 | Endpoint: /api/client/servers/{server}
 |
 */
-Route::group([
-    'prefix' => '/servers/{server}',
-    'middleware' => [AuthenticateServerAccess::class, ResourceBelongsToServer::class],
-], function () {
+Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class, ResourceBelongsToServer::class]], function () {
     Route::get('/', 'Servers\ServerController@index')->name('api:client:server.view');
     Route::get('/websocket', 'Servers\WebsocketController')->name('api:client:server.ws');
     Route::get('/resources', 'Servers\ResourceUtilizationController')->name('api:client:server.resources');
@@ -67,19 +54,19 @@ Route::group([
     });
 
     Route::group(['prefix' => '/files'], function () {
-        Route::get('/list', [Client\Servers\FileController::class, 'directory']);
-        Route::get('/contents', [Client\Servers\FileController::class, 'contents']);
-        Route::get('/download', [Client\Servers\FileController::class, 'download']);
-        Route::put('/rename', [Client\Servers\FileController::class, 'rename']);
-        Route::post('/copy', [Client\Servers\FileController::class, 'copy']);
-        Route::post('/write', [Client\Servers\FileController::class, 'write']);
-        Route::post('/compress', [Client\Servers\FileController::class, 'compress']);
-        Route::post('/decompress', [Client\Servers\FileController::class, 'decompress']);
-        Route::post('/delete', [Client\Servers\FileController::class, 'delete']);
-        Route::post('/create-folder', [Client\Servers\FileController::class, 'create']);
-        Route::post('/chmod', [Client\Servers\FileController::class, 'chmod']);
-        Route::post('/pull', [Client\Servers\FileController::class, 'pull'])->middleware(['throttle:pull']);
-        Route::get('/upload', [Client\Servers\FileUploadController::class, '__invoke']);
+        Route::get('/list', 'Servers\FileController@directory');
+        Route::get('/contents', 'Servers\FileController@contents');
+        Route::get('/download', 'Servers\FileController@download');
+        Route::put('/rename', 'Servers\FileController@rename');
+        Route::post('/copy', 'Servers\FileController@copy');
+        Route::post('/write', 'Servers\FileController@write');
+        Route::post('/compress', 'Servers\FileController@compress');
+        Route::post('/decompress', 'Servers\FileController@decompress');
+        Route::post('/delete', 'Servers\FileController@delete');
+        Route::post('/create-folder', 'Servers\FileController@create');
+        Route::post('/chmod', 'Servers\FileController@chmod');
+        Route::post('/pull', 'Servers\FileController@pull')->middleware(['throttle:10,5']);
+        Route::get('/upload', 'Servers\FileUploadController');
     });
 
     Route::group(['prefix' => '/schedules'], function () {
@@ -106,9 +93,9 @@ Route::group([
     Route::group(['prefix' => '/users'], function () {
         Route::get('/', 'Servers\SubuserController@index');
         Route::post('/', 'Servers\SubuserController@store');
-        Route::get('/{subuser}', [Client\Servers\SubuserController::class, 'view']);
-        Route::post('/{subuser}', [Client\Servers\SubuserController::class, 'update']);
-        Route::delete('/{subuser}', [Client\Servers\SubuserController::class, 'delete']);
+        Route::get('/{user}', 'Servers\SubuserController@view');
+        Route::post('/{user}', 'Servers\SubuserController@update');
+        Route::delete('/{user}', 'Servers\SubuserController@delete');
     });
 
     Route::group(['prefix' => '/backups'], function () {

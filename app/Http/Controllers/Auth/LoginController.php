@@ -8,23 +8,18 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
-use LaravelWebauthn\Facades\Webauthn;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoginController extends AbstractLoginController
 {
-    private const SESSION_PUBLICKEY_REQUEST = 'webauthn.publicKeyRequest';
-
-    private const METHOD_TOTP = 'totp';
-    private const METHOD_WEBAUTHN = 'webauthn';
-
     private ViewFactory $view;
 
     /**
      * LoginController constructor.
      */
-    public function __construct(ViewFactory $view) {
+    public function __construct(ViewFactory $view)
+    {
         parent::__construct();
 
         $this->view = $view;
@@ -32,8 +27,8 @@ class LoginController extends AbstractLoginController
 
     /**
      * Handle all incoming requests for the authentication routes and render the
-     * base authentication view component. React will take over at this point and
-     * turn the login area into an SPA.
+     * base authentication view component. Vuejs will take over at this point and
+     * turn the login area into a SPA.
      */
     public function index(): View
     {
@@ -48,13 +43,11 @@ class LoginController extends AbstractLoginController
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
             $this->sendLockoutResponse($request);
-
-            return;
         }
 
         try {
@@ -69,51 +62,30 @@ class LoginController extends AbstractLoginController
         // Ensure that the account is using a valid username and password before trying to
         // continue. Previously this was handled in the 2FA checkpoint, however that has
         // a flaw in which you can discover if an account exists simply by seeing if you
-        // can proceed to the next step in the login process.
+        // can proceede to the next step in the login process.
         if (!password_verify($request->input('password'), $user->password)) {
             $this->sendFailedLoginResponse($request, $user);
-
-            return;
         }
 
-        $useTotp = $user->use_totp;
-        $webauthnKeys = $user->webauthnKeys()->get();
+        if ($user->use_totp) {
+            $token = Str::random(64);
 
-        if (!$useTotp && count($webauthnKeys) < 1) {
-            return $this->sendLoginResponse($user, $request);
+            $request->session()->put('auth_confirmation_token', [
+                'user_id' => $user->id,
+                'token_value' => $token,
+                'expires_at' => CarbonImmutable::now()->addMinutes(5),
+            ]);
+
+            return new JsonResponse([
+                'data' => [
+                    'complete' => false,
+                    'confirmation_token' => $token,
+                ],
+            ]);
         }
 
-        $methods = [];
-        if ($useTotp) {
-            $methods[] = self::METHOD_TOTP;
-        }
-        if (count($webauthnKeys) > 0) {
-            $methods[] = self::METHOD_WEBAUTHN;
-        }
+        $this->auth->guard()->login($user, true);
 
-        $token = Str::random(64);
-
-        $request->session()->put('auth_confirmation_token', [
-            'user_id' => $user->id,
-            'token_value' => $token,
-            'expires_at' => CarbonImmutable::now()->addMinutes(5),
-        ]);
-
-        $response = [
-            'complete' => false,
-            'methods' => $methods,
-            'confirmation_token' => $token,
-        ];
-
-        if (count($webauthnKeys) > 0) {
-            $publicKey = Webauthn::getAuthenticateData($user);
-            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
-
-            $response['webauthn'] = [
-                'public_key' => $publicKey,
-            ];
-        }
-
-        return new JsonResponse($response);
+        return $this->sendLoginResponse($user, $request);
     }
 }

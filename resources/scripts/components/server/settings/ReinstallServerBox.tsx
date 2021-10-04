@@ -38,7 +38,7 @@ export default () => {
     };
 
     useEffect(() => {
-        clearFlashes(undefined);
+        clearFlashes();
     }, []);
 
     return (

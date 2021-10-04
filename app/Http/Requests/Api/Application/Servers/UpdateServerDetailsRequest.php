@@ -11,7 +11,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = Server::getRulesForUpdate($this->route()->parameter('server')->id);
+        $rules = Server::getRulesForUpdate($this->getModel(Server::class));
 
         return [
             'external_id' => $rules['external_id'],

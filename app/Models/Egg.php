@@ -108,7 +108,10 @@ class Egg extends Model
         'file_denylist' => 'array',
     ];
 
-    public static array $validationRules = [
+    /**
+     * @var array
+     */
+    public static $validationRules = [
         'nest_id' => 'required|bail|numeric|exists:nests,id',
         'uuid' => 'required|string|size:36',
         'name' => 'required|string|max:191',

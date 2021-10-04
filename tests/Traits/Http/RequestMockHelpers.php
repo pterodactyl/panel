@@ -43,7 +43,6 @@ trait RequestMockHelpers
      */
     public function generateRequestUserModel(array $args = []): User
     {
-        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->make($args);
         $this->setRequestUserModel($user);
 

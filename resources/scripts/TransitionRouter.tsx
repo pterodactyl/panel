@@ -2,11 +2,12 @@ import React from 'react';
 import { Route } from 'react-router';
 import { SwitchTransition } from 'react-transition-group';
 import Fade from '@/components/elements/Fade';
-import tw, { styled } from 'twin.macro';
+import styled from 'styled-components/macro';
+import tw from 'twin.macro';
 
 const StyledSwitchTransition = styled(SwitchTransition)`
     ${tw`relative`};
-
+    
     & section {
         ${tw`absolute w-full top-0 left-0`};
     }

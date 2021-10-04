@@ -3,8 +3,6 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
@@ -48,7 +46,7 @@ class RouteServiceProvider extends ServiceProvider
             ->group(base_path('routes/api-application.php'));
 
         Route::middleware([
-            //sprintf('throttle:%s,%s', config('http.rate_limit.client'), config('http.rate_limit.client_period')),
+            sprintf('throttle:%s,%s', config('http.rate_limit.client'), config('http.rate_limit.client_period')),
             'client-api',
         ])->prefix('/api/client')
             ->namespace($this->namespace . '\Api\Client')
@@ -57,9 +55,5 @@ class RouteServiceProvider extends ServiceProvider
         Route::middleware(['daemon'])->prefix('/api/remote')
             ->namespace($this->namespace . '\Api\Remote')
             ->group(base_path('routes/api-remote.php'));
-
-        RateLimiter::for('pull', function () {
-            return Limit::perMinute(10);
-        });
     }
 }

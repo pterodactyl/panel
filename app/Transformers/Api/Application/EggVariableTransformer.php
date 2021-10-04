@@ -2,17 +2,20 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Transformers\Api\Transformer;
 
-class EggVariableTransformer extends Transformer
+class EggVariableTransformer extends BaseTransformer
 {
+    /**
+     * Return the resource name for the JSONAPI output.
+     */
     public function getResourceName(): string
     {
-        return EggVariable::RESOURCE_NAME;
+        return Egg::RESOURCE_NAME;
     }
 
-    public function transform(EggVariable $model): array
+    public function transform(EggVariable $model)
     {
         return $model->toArray();
     }

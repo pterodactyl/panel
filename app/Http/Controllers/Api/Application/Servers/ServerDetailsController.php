@@ -12,8 +12,15 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerBuildConfigura
 
 class ServerDetailsController extends ApplicationApiController
 {
-    private BuildModificationService $buildModificationService;
-    private DetailsModificationService $detailsModificationService;
+    /**
+     * @var \Pterodactyl\Services\Servers\BuildModificationService
+     */
+    private $buildModificationService;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\DetailsModificationService
+     */
+    private $detailsModificationService;
 
     /**
      * ServerDetailsController constructor.
@@ -31,31 +38,35 @@ class ServerDetailsController extends ApplicationApiController
     /**
      * Update the details for a specific server.
      *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function details(UpdateServerDetailsRequest $request, Server $server): array
+    public function details(UpdateServerDetailsRequest $request): array
     {
         $server = $this->detailsModificationService->returnUpdatedModel()->handle(
-            $server,
+            $request->getModel(Server::class),
             $request->validated()
         );
 
         return $this->fractal->item($server)
-            ->transformWith(ServerTransformer::class)
+            ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }
 
     /**
      * Update the build details for a specific server.
      *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function build(UpdateServerBuildConfigurationRequest $request, Server $server): array
     {
         $server = $this->buildModificationService->handle($server, $request->validated());
 
         return $this->fractal->item($server)
-            ->transformWith(ServerTransformer::class)
+            ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }
 }

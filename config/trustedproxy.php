@@ -50,5 +50,5 @@ return [
      * The following are Symfony defaults, found in
      * \Symfony\Component\HttpFoundation\Request::$trustedHeaders
      */
-    'headers' => \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR | \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST | \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT | \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO,
+    'headers' => \Illuminate\Http\Request::HEADER_X_FORWARDED_ALL,
 ];

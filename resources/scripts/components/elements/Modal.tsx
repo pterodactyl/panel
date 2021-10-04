@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import tw, { css, styled } from 'twin.macro';
+import tw from 'twin.macro';
+import styled, { css } from 'styled-components/macro';
 import { breakpoint } from '@/theme';
 import Fade from '@/components/elements/Fade';
 import { createPortal } from 'react-dom';
@@ -24,7 +25,7 @@ export const ModalMask = styled.div`
     background: rgba(0, 0, 0, 0.70);
 `;
 
-const ModalContainer = styled.div<{ alignTop?: boolean }>`
+const ModalContainer = styled.div<{ alignTop?: boolean }>`    
     max-width: 95%;
     max-height: calc(100vh - 8rem);
     ${breakpoint('md')`max-width: 75%`};
@@ -37,13 +38,13 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     `};
 
     margin-bottom: auto;
-
+    
     & > .close-icon {
         ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
         top: -2.5rem;
-
+        
         &:hover {${tw`transform rotate-90`}}
-
+        
         & > svg {
             ${tw`w-6 h-6`};
         }

@@ -21,7 +21,7 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonStructure([
             'object',
             'attributes' => [
-                'id', 'external_id', 'uuid', 'username', 'email',
+                'id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name',
                 'language', 'root_admin', '2fa', 'created_at', 'updated_at',
             ],
         ]);
@@ -34,6 +34,8 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
                 'uuid' => $user->uuid,
                 'username' => $user->username,
                 'email' => $user->email,
+                'first_name' => $user->name_first,
+                'last_name' => $user->name_last,
                 'language' => $user->language,
                 'root_admin' => (bool) $user->root_admin,
                 '2fa' => (bool) $user->totp_enabled,
@@ -58,7 +60,11 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testErrorReturnedIfNoPermission()
     {
-        $this->markTestSkipped('todo: implement proper admin api key permissions system');
+        $user = User::factory()->create();
+        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
+
+        $response = $this->getJson('/api/application/users/external/' . $user->external_id);
+        $this->assertAccessDeniedJson($response);
     }
 
     /**
@@ -67,6 +73,9 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testResourceIsNotExposedWithoutPermissions()
     {
-        $this->markTestSkipped('todo: implement proper admin api key permissions system');
+        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
+
+        $response = $this->getJson('/api/application/users/external/nil');
+        $this->assertAccessDeniedJson($response);
     }
 }

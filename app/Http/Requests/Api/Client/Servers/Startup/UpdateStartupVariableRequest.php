@@ -7,7 +7,10 @@ use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class UpdateStartupVariableRequest extends ClientApiRequest
 {
-    public function permission(): string
+    /**
+     * @return string
+     */
+    public function permission()
     {
         return Permission::ACTION_STARTUP_UPDATE;
     }

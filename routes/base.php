@@ -1,16 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 
-/*
-|--------------------------------------------------------------------------
-| Base Routes
-|--------------------------------------------------------------------------
-|
-| Endpoint: /
-|
-*/
 Route::get('/', 'IndexController@index')->name('index')->fallback();
 Route::get('/account', 'IndexController@index')
     ->withoutMiddleware(RequireTwoFactorAuthentication::class)

@@ -7,7 +7,6 @@ use Throwable;
 use PDOException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Illuminate\Http\Response;
 use Swift_TransportException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
@@ -58,16 +57,6 @@ class Handler extends ExceptionHandler
         'secret',
         'password',
         'password_confirmation',
-    ];
-
-    /**
-     * Maps specific internal exceptions to a valid HTTP status code.
-     *
-     * @var array
-     */
-    protected static $statusCodeMap = [
-        AuthenticationException::class => Response::HTTP_UNAUTHORIZED,
-        ValidationException::class => Response::HTTP_UNPROCESSABLE_ENTITY,
     ];
 
     /**
@@ -202,7 +191,7 @@ class Handler extends ExceptionHandler
             'code' => class_basename($exception),
             'status' => method_exists($exception, 'getStatusCode')
                 ? strval($exception->getStatusCode())
-                : strval(self::$statusCodeMap[get_class($exception)] ?? 500),
+                : ($exception instanceof ValidationException ? '422' : '500'),
             'detail' => $exception instanceof HttpExceptionInterface
                 ? $exception->getMessage()
                 : 'An unexpected error was encountered while processing this request, please try again.',
@@ -223,7 +212,6 @@ class Handler extends ExceptionHandler
                     'file' => str_replace(Application::getInstance()->basePath(), '', $exception->getFile()),
                 ],
                 'meta' => [
-                    'class' => get_class($exception),
                     'trace' => explode("\n", $exception->getTraceAsString()),
                 ],
             ]);

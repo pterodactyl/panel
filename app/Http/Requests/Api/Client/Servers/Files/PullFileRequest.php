@@ -3,9 +3,10 @@
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
 use Pterodactyl\Models\Permission;
+use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class PullFileRequest extends ClientApiRequest
+class PullFileRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
     public function permission(): string
     {
@@ -18,8 +19,8 @@ class PullFileRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'root' => 'sometimes|nullable|string',
             'url' => 'required|string|url',
+            'directory' => 'sometimes|nullable|string',
         ];
     }
 }

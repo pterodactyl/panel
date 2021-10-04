@@ -9,8 +9,8 @@ const InstallListener = () => {
     const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
     const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
 
-    useWebsocketEvent(SocketEvent.BACKUP_RESTORE_COMPLETED, async () => {
-        await mutate(getDirectorySwrKey(uuid, '/'), undefined);
+    useWebsocketEvent(SocketEvent.BACKUP_RESTORE_COMPLETED, () => {
+        mutate(getDirectorySwrKey(uuid, '/'), undefined);
         setServerFromState(s => ({ ...s, status: null }));
     });
 

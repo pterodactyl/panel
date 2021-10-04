@@ -1,12 +1,13 @@
 import React from 'react';
 import Spinner from '@/components/elements/Spinner';
 import Fade from '@/components/elements/Fade';
-import tw, { css, styled } from 'twin.macro';
+import tw from 'twin.macro';
+import styled, { css } from 'styled-components/macro';
 import Select from '@/components/elements/Select';
 
 const Container = styled.div<{ visible?: boolean }>`
     ${tw`relative`};
-
+    
     ${props => props.visible && css`
         & ${Select} {
             background-image: none;

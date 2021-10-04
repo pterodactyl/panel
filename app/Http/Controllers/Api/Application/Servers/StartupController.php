@@ -11,7 +11,10 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerStartupRequest
 
 class StartupController extends ApplicationApiController
 {
-    private StartupModificationService $modificationService;
+    /**
+     * @var \Pterodactyl\Services\Servers\StartupModificationService
+     */
+    private $modificationService;
 
     /**
      * StartupController constructor.
@@ -26,16 +29,19 @@ class StartupController extends ApplicationApiController
     /**
      * Update the startup and environment settings for a specific server.
      *
-     * @throws \Throwable
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function index(UpdateServerStartupRequest $request, Server $server): array
+    public function index(UpdateServerStartupRequest $request): array
     {
         $server = $this->modificationService
             ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle($server, $request->validated());
+            ->handle($request->getModel(Server::class), $request->validated());
 
         return $this->fractal->item($server)
-            ->transformWith(ServerTransformer::class)
+            ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }
 }

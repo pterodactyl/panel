@@ -3,16 +3,21 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Transformers\Api\Transformer;
 
-class EggTransformer extends Transformer
+class EggTransformer extends BaseClientTransformer
 {
+    /**
+     * Return the resource name for the JSONAPI output.
+     */
     public function getResourceName(): string
     {
         return Egg::RESOURCE_NAME;
     }
 
-    public function transform(Egg $egg): array
+    /**
+     * @return array
+     */
+    public function transform(Egg $egg)
     {
         return [
             'uuid' => $egg->uuid,

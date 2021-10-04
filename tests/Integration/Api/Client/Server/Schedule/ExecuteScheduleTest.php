@@ -52,26 +52,6 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that the schedule is not executed if it is not currently active.
-     */
-    public function testScheduleIsNotExecutedIfNotActive()
-    {
-        [$user, $server] = $this->generateTestAccount();
-
-        /** @var \Pterodactyl\Models\Schedule $schedule */
-        $schedule = Schedule::factory()->create([
-            'server_id' => $server->id,
-            'is_active' => false,
-        ]);
-
-        $response = $this->actingAs($user)->postJson($this->link($schedule, '/execute'));
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        $response->assertJsonPath('errors.0.code', 'BadRequestHttpException');
-        $response->assertJsonPath('errors.0.detail', 'Cannot trigger schedule exception for a schedule that is not currently active.');
-    }
-
-    /**
      * Test that a user without the schedule update permission cannot execute it.
      */
     public function testUserWithoutScheduleUpdatePermissionCannotExecute()

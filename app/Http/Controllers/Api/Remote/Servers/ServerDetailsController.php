@@ -3,13 +3,13 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection;
@@ -17,30 +17,46 @@ use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class ServerDetailsController extends Controller
 {
-    private ServerRepository $repository;
-    private ServerConfigurationStructureService $configurationStructureService;
-    private EggConfigurationService $eggConfigurationService;
+    /**
+     * @var \Pterodactyl\Services\Eggs\EggConfigurationService
+     */
+    private $eggConfigurationService;
 
     /**
-     * ServerDetailsController constructor.
+     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
+     */
+    private $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
+     */
+    private $configurationStructureService;
+
+    /**
+     * ServerConfigurationController constructor.
      */
     public function __construct(
         ServerRepository $repository,
         ServerConfigurationStructureService $configurationStructureService,
-        EggConfigurationService $eggConfigurationService
+        EggConfigurationService $eggConfigurationService,
+        NodeRepository $nodeRepository
     ) {
+        $this->eggConfigurationService = $eggConfigurationService;
         $this->repository = $repository;
         $this->configurationStructureService = $configurationStructureService;
-        $this->eggConfigurationService = $eggConfigurationService;
     }
 
     /**
      * Returns details about the server that allows Wings to self-recover and ensure
      * that the state of the server matches the Panel at all times.
      *
+     * @param string $uuid
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function __invoke(Request $request, string $uuid): JsonResponse
+    public function __invoke(Request $request, $uuid)
     {
         $server = $this->repository->getByUuid($uuid);
 
@@ -52,8 +68,10 @@ class ServerDetailsController extends Controller
 
     /**
      * Lists all servers with their configurations that are assigned to the requesting node.
+     *
+     * @return \Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection
      */
-    public function list(Request $request): ServerConfigurationCollection
+    public function list(Request $request)
     {
         /** @var \Pterodactyl\Models\Node $node */
         $node = $request->attributes->get('node');
@@ -75,9 +93,11 @@ class ServerDetailsController extends Controller
      * do not get incorrectly stuck in installing/restoring from backup states since
      * a Wings reboot would completely stop those processes.
      *
+     * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Throwable
      */
-    public function resetState(Request $request): Response
+    public function resetState(Request $request)
     {
         $node = $request->attributes->get('node');
 
@@ -126,6 +146,6 @@ class ServerDetailsController extends Controller
             ->whereIn('status', [Server::STATUS_INSTALLING, Server::STATUS_RESTORING_BACKUP])
             ->update(['status' => null]);
 
-        return new Response('', JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

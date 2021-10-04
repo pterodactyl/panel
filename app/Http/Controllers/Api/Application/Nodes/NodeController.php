@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Nodes;
 
 use Pterodactyl\Models\Node;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
@@ -11,7 +10,6 @@ use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;
-use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodesRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\StoreNodeRequest;
@@ -21,19 +19,34 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class NodeController extends ApplicationApiController
 {
-    private NodeRepositoryInterface $repository;
-    private NodeCreationService $creationService;
-    private NodeDeletionService $deletionService;
-    private NodeUpdateService $updateService;
+    /**
+     * @var \Pterodactyl\Services\Nodes\NodeCreationService
+     */
+    private $creationService;
+
+    /**
+     * @var \Pterodactyl\Services\Nodes\NodeDeletionService
+     */
+    private $deletionService;
+
+    /**
+     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     */
+    private $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Nodes\NodeUpdateService
+     */
+    private $updateService;
 
     /**
      * NodeController constructor.
      */
     public function __construct(
-        NodeRepositoryInterface $repository,
         NodeCreationService $creationService,
         NodeDeletionService $deletionService,
-        NodeUpdateService $updateService
+        NodeUpdateService $updateService,
+        NodeRepositoryInterface $repository
     ) {
         parent::__construct();
 
@@ -45,35 +58,26 @@ class NodeController extends ApplicationApiController
 
     /**
      * Return all of the nodes currently available on the Panel.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(GetNodesRequest $request): array
     {
-        $perPage = $request->query('per_page', 10);
-        if ($perPage < 1 || $perPage > 100) {
-            throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
-        }
-
         $nodes = QueryBuilder::for(Node::query())
-            ->allowedFilters(['id', 'uuid', 'name', 'fqdn', 'daemon_token_id'])
-            ->allowedSorts(['id', 'uuid', 'name', 'location_id', 'fqdn', 'memory', 'disk'])
-            ->paginate($perPage);
+            ->allowedFilters(['uuid', 'name', 'fqdn', 'daemon_token_id'])
+            ->allowedSorts(['id', 'uuid', 'memory', 'disk'])
+            ->paginate($request->query('per_page') ?? 50);
 
         return $this->fractal->collection($nodes)
-            ->transformWith(NodeTransformer::class)
+            ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
 
     /**
      * Return data for a single instance of a node.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function view(GetNodeRequest $request, Node $node): array
     {
         return $this->fractal->item($node)
-            ->transformWith(NodeTransformer::class)
+            ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
 
@@ -82,14 +86,18 @@ class NodeController extends ApplicationApiController
      * status response on success.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function store(StoreNodeRequest $request): JsonResponse
     {
         $node = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($node)
-            ->transformWith(NodeTransformer::class)
+            ->transformWith($this->getTransformer(NodeTransformer::class))
+            ->addMeta([
+                'resource' => route('api.application.nodes.view', [
+                    'node' => $node->id,
+                ]),
+            ])
             ->respond(201);
     }
 
@@ -103,11 +111,11 @@ class NodeController extends ApplicationApiController
         $node = $this->updateService->handle(
             $node,
             $request->validated(),
-            false,
+            $request->input('reset_secret') === true
         );
 
         return $this->fractal->item($node)
-            ->transformWith(NodeTransformer::class)
+            ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
 
@@ -117,10 +125,10 @@ class NodeController extends ApplicationApiController
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function delete(DeleteNodeRequest $request, Node $node): Response
+    public function delete(DeleteNodeRequest $request, Node $node): JsonResponse
     {
         $this->deletionService->handle($node);
 
-        return $this->returnNoContent();
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

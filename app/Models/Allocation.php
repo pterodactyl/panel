@@ -50,7 +50,10 @@ class Allocation extends Model
         'server_id' => 'integer',
     ];
 
-    public static array $validationRules = [
+    /**
+     * @var array
+     */
+    public static $validationRules = [
         'node_id' => 'required|exists:nodes,id',
         'ip' => 'required|ip',
         'port' => 'required|numeric|between:1024,65535',

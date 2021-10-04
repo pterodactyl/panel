@@ -39,7 +39,8 @@ rules:
   comma-dangle:
     - warn
     - always-multiline
-  spaced-comment: 0
+  spaced-comment:
+    - warn
   array-bracket-spacing:
     - warn
     - always

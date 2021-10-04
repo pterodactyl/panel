@@ -6,7 +6,7 @@ export interface FlashStore {
     items: FlashMessage[];
     addFlash: Action<FlashStore, FlashMessage>;
     addError: Action<FlashStore, { message: string; key?: string }>;
-    clearAndAddHttpError: Action<FlashStore, { error: any; key?: string }>;
+    clearAndAddHttpError: Action<FlashStore, { error: any, key?: string }>;
     clearFlashes: Action<FlashStore, string | void>;
 }
 
@@ -29,10 +29,8 @@ const flashes: FlashStore = {
         state.items.push({ type: 'error', title: 'Error', ...payload });
     }),
 
-    clearAndAddHttpError: action((state, payload) => {
-        console.error(payload.error);
-
-        state.items = [ { type: 'error', title: 'Error', key: payload.key, message: httpErrorToHuman(payload.error) } ];
+    clearAndAddHttpError: action((state, { key, error }) => {
+        state.items = [ { type: 'error', title: 'Error', key, message: httpErrorToHuman(error) } ];
     }),
 
     clearFlashes: action((state, payload) => {

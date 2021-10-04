@@ -12,8 +12,9 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 
 class ResourceUtilizationController extends ClientApiController
 {
-    private Repository $cache;
     private DaemonServerRepository $repository;
+
+    private Repository $cache;
 
     /**
      * ResourceUtilizationController constructor.
@@ -41,7 +42,7 @@ class ResourceUtilizationController extends ClientApiController
         });
 
         return $this->fractal->item($stats)
-            ->transformWith(StatsTransformer::class)
+            ->transformWith($this->getTransformer(StatsTransformer::class))
             ->toArray();
     }
 }

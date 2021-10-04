@@ -1,6 +1,17 @@
 import React, { memo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faCopy, faEllipsisH, faFileArchive, faFileCode, faFileDownload, faLevelUpAlt, faPencilAlt, faTrashAlt, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBoxOpen,
+    faCopy,
+    faEllipsisH,
+    faFileArchive,
+    faFileCode,
+    faFileDownload,
+    faLevelUpAlt,
+    faPencilAlt,
+    faTrashAlt,
+    IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
 import { join } from 'path';
@@ -10,10 +21,11 @@ import copyFile from '@/api/server/files/copyFile';
 import Can from '@/components/elements/Can';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import useFlash from '@/plugins/useFlash';
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import DropdownMenu from '@/components/elements/DropdownMenu';
+import styled from 'styled-components/macro';
 import useEventListener from '@/plugins/useEventListener';
 import compressFiles from '@/api/server/files/compressFiles';
 import decompressFiles from '@/api/server/files/decompressFiles';
@@ -58,15 +70,15 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         }
     });
 
-    const doDeletion = async () => {
+    const doDeletion = () => {
         clearFlashes('files');
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        await mutate(files => files!.filter(f => f.key !== file.key), false);
+        mutate(files => files.filter(f => f.key !== file.key), false);
 
-        deleteFiles(uuid, directory, [ file.name ]).catch(async (error) => {
-            await mutate();
+        deleteFiles(uuid, directory, [ file.name ]).catch(error => {
+            mutate();
             clearAndAddHttpError({ key: 'files', error });
         });
     };
@@ -76,7 +88,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         clearFlashes('files');
 
         copyFile(uuid, join(directory, file.name))
-            .then(async () => await mutate())
+            .then(() => mutate())
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
@@ -99,17 +111,17 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         clearFlashes('files');
 
         compressFiles(uuid, directory, [ file.name ])
-            .then(async () => await mutate())
+            .then(() => mutate())
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
-    const doExtraction = () => {
+    const doUnarchive = () => {
         setShowSpinner(true);
         clearFlashes('files');
 
         decompressFiles(uuid, directory, file.name)
-            .then(async () => await mutate())
+            .then(() => mutate())
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
@@ -128,7 +140,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <DropdownMenu
                 ref={onClickRef}
                 renderToggle={onClick => (
-                    <div css={tw`flex items-center hover:text-white ml-4`} onClick={onClick}>
+                    <div css={tw`p-3 hover:text-white`} onClick={onClick}>
                         <FontAwesomeIcon icon={faEllipsisH}/>
                         {modal ?
                             modal === 'chmod' ?
@@ -164,7 +176,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 }
                 {file.isArchiveType() ?
                     <Can action={'file.create'}>
-                        <Row onClick={doExtraction} icon={faBoxOpen} title={'Extract'}/>
+                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
                     </Can>
                     :
                     <Can action={'file.archive'}>

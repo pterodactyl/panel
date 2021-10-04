@@ -17,18 +17,18 @@ interface Values {
 }
 
 const LoginContainer = ({ history }: RouteComponentProps) => {
-    const ref = useRef<Reaptcha | null>(null);
+    const ref = useRef<Reaptcha>(null);
     const [ token, setToken ] = useState('');
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
 
     useEffect(() => {
-        clearFlashes(undefined);
+        clearFlashes();
     }, []);
 
     const onSubmit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes(undefined);
+        clearFlashes();
 
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
@@ -39,6 +39,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
             });
+
             return;
         }
 
@@ -50,24 +51,13 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     return;
                 }
 
-                if (response.methods?.includes('webauthn')) {
-                    history.replace('/auth/login/key', {
-                        token: response.confirmationToken,
-                        publicKey: response.publicKey,
-                        hasTotp: response.methods?.includes('totp'),
-                    });
-                    return;
-                }
-
-                if (response.methods?.includes('totp')) {
-                    history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
-                }
+                history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
             })
-            .catch(async (error) => {
+            .catch(error => {
                 console.error(error);
 
                 setToken('');
-                if (ref.current) await ref.current?.reset();
+                if (ref.current) ref.current.reset();
 
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
@@ -111,9 +101,9 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         ref={ref}
                         size={'invisible'}
                         sitekey={siteKey || '_invalid_key'}
-                        onVerify={async (response) => {
+                        onVerify={response => {
                             setToken(response);
-                            await submitForm();
+                            submitForm();
                         }}
                         onExpire={() => {
                             setSubmitting(false);

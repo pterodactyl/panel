@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import styled, { keyframes } from 'styled-components/macro';
 import tw from 'twin.macro';
+import styled, { keyframes } from 'styled-components/macro';
 import Fade from '@/components/elements/Fade';
 import { SwitchTransition } from 'react-transition-group';
 
@@ -19,7 +19,7 @@ const Toast = styled.div`
     }
 `;
 
-const CopyOnClick: React.FC<{ text: any, hideTextInToast?: boolean }> = ({ text, hideTextInToast, children }) => {
+const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
     const [ copied, setCopied ] = useState(false);
 
     useEffect(() => {
@@ -45,11 +45,7 @@ const CopyOnClick: React.FC<{ text: any, hideTextInToast?: boolean }> = ({ text,
                     {copied ?
                         <Toast>
                             <div>
-                                {hideTextInToast ?
-                                    <p>Copied text to clipboard.</p>
-                                    :
-                                    <p>Copied &quot;{text}&quot; to clipboard.</p>
-                                }
+                                <p>Copied &quot;{text}&quot; to clipboard.</p>
                             </div>
                         </Toast>
                         :

@@ -32,6 +32,7 @@ class SubuserObserver
         event(new Events\Subuser\Created($subuser));
 
         $subuser->user->notify((new AddedToServer([
+            'user' => $subuser->user->name_first,
             'name' => $subuser->server->name,
             'uuidShort' => $subuser->server->uuidShort,
         ])));
@@ -53,6 +54,7 @@ class SubuserObserver
         event(new Events\Subuser\Deleted($subuser));
 
         $subuser->user->notify((new RemovedFromServer([
+            'user' => $subuser->user->name_first,
             'name' => $subuser->server->name,
         ])));
     }

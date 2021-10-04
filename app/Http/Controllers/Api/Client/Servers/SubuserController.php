@@ -3,9 +3,8 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
 use Illuminate\Support\Facades\Log;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
@@ -21,9 +20,20 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\UpdateSubuserRequest;
 
 class SubuserController extends ClientApiController
 {
-    private SubuserRepository $repository;
-    private SubuserCreationService $creationService;
-    private DaemonServerRepository $serverRepository;
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\SubuserRepository
+     */
+    private $repository;
+
+    /**
+     * @var \Pterodactyl\Services\Subusers\SubuserCreationService
+     */
+    private $creationService;
+
+    /**
+     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     */
+    private $serverRepository;
 
     /**
      * SubuserController constructor.
@@ -43,36 +53,40 @@ class SubuserController extends ClientApiController
     /**
      * Return the users associated with this server instance.
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @return array
      */
-    public function index(GetSubuserRequest $request, Server $server): array
+    public function index(GetSubuserRequest $request, Server $server)
     {
         return $this->fractal->collection($server->subusers)
-            ->transformWith(SubuserTransformer::class)
+            ->transformWith($this->getTransformer(SubuserTransformer::class))
             ->toArray();
     }
 
     /**
      * Returns a single subuser associated with this server instance.
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @return array
      */
-    public function view(GetSubuserRequest $request, Server $server, Subuser $subuser): array
+    public function view(GetSubuserRequest $request)
     {
+        $subuser = $request->attributes->get('subuser');
+
         return $this->fractal->item($subuser)
-            ->transformWith(SubuserTransformer::class)
+            ->transformWith($this->getTransformer(SubuserTransformer::class))
             ->toArray();
     }
 
     /**
      * Create a new subuser for the given server.
      *
+     * @return array
+     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
      * @throws \Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException
      * @throws \Throwable
      */
-    public function store(StoreSubuserRequest $request, Server $server): array
+    public function store(StoreSubuserRequest $request, Server $server)
     {
         $response = $this->creationService->handle(
             $server,
@@ -81,7 +95,7 @@ class SubuserController extends ClientApiController
         );
 
         return $this->fractal->item($response)
-            ->transformWith(SubuserTransformer::class)
+            ->transformWith($this->getTransformer(SubuserTransformer::class))
             ->toArray();
     }
 
@@ -90,10 +104,12 @@ class SubuserController extends ClientApiController
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function update(UpdateSubuserRequest $request, Server $server, Subuser $subuser): array
+    public function update(UpdateSubuserRequest $request, Server $server): array
     {
+        /** @var \Pterodactyl\Models\Subuser $subuser */
+        $subuser = $request->attributes->get('subuser');
+
         $permissions = $this->getDefaultPermissions($request);
         $current = $subuser->permissions;
 
@@ -117,15 +133,20 @@ class SubuserController extends ClientApiController
         }
 
         return $this->fractal->item($subuser->refresh())
-            ->transformWith(SubuserTransformer::class)
+            ->transformWith($this->getTransformer(SubuserTransformer::class))
             ->toArray();
     }
 
     /**
      * Removes a subusers from a server's assignment.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeleteSubuserRequest $request, Server $server, Subuser $subuser): Response
+    public function delete(DeleteSubuserRequest $request, Server $server)
     {
+        /** @var \Pterodactyl\Models\Subuser $subuser */
+        $subuser = $request->attributes->get('subuser');
+
         $this->repository->delete($subuser->id);
 
         try {
@@ -135,7 +156,7 @@ class SubuserController extends ClientApiController
             Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
         }
 
-        return $this->returnNoContent();
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**

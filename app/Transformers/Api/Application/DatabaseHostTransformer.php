@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
+use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Transformers\Api\Transformer;
 
-class DatabaseHostTransformer extends Transformer
+class DatabaseHostTransformer extends BaseTransformer
 {
     /**
      * @var array
@@ -15,12 +15,20 @@ class DatabaseHostTransformer extends Transformer
         'databases',
     ];
 
+    /**
+     * Return the resource name for the JSONAPI output.
+     */
     public function getResourceName(): string
     {
         return DatabaseHost::RESOURCE_NAME;
     }
 
-    public function transform(DatabaseHost $model): array
+    /**
+     * Transform database host into a representation for the application API.
+     *
+     * @return array
+     */
+    public function transform(DatabaseHost $model)
     {
         return [
             'id' => $model->id,
@@ -29,8 +37,8 @@ class DatabaseHostTransformer extends Transformer
             'port' => $model->port,
             'username' => $model->username,
             'node' => $model->node_id,
-            'created_at' => self::formatTimestamp($model->created_at),
-            'updated_at' => self::formatTimestamp($model->updated_at),
+            'created_at' => $model->created_at->toIso8601String(),
+            'updated_at' => $model->updated_at->toIso8601String(),
         ];
     }
 
@@ -38,6 +46,8 @@ class DatabaseHostTransformer extends Transformer
      * Include the databases associated with this host.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeDatabases(DatabaseHost $model)
     {
@@ -45,6 +55,8 @@ class DatabaseHostTransformer extends Transformer
             return $this->null();
         }
 
-        return $this->collection($model->databases, new ServerDatabaseTransformer());
+        $model->loadMissing('databases');
+
+        return $this->collection($model->getRelation('databases'), $this->makeTransformer(ServerDatabaseTransformer::class), Database::RESOURCE_NAME);
     }
 }

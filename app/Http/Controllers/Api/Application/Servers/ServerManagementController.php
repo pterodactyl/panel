@@ -11,8 +11,15 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class ServerManagementController extends ApplicationApiController
 {
-    private ReinstallServerService $reinstallServerService;
-    private SuspensionService $suspensionService;
+    /**
+     * @var \Pterodactyl\Services\Servers\ReinstallServerService
+     */
+    private $reinstallServerService;
+
+    /**
+     * @var \Pterodactyl\Services\Servers\SuspensionService
+     */
+    private $suspensionService;
 
     /**
      * SuspensionController constructor.
@@ -54,7 +61,9 @@ class ServerManagementController extends ApplicationApiController
     /**
      * Mark a server as needing to be reinstalled.
      *
-     * @throws \Throwable
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function reinstall(ServerWriteRequest $request, Server $server): Response
     {

@@ -50,12 +50,12 @@ const MassActionsBar = () => {
         setLoadingMessage('Deleting files...');
 
         deleteFiles(uuid, directory, selectedFiles)
-            .then(async () => {
-                await mutate(files => files!.filter(f => selectedFiles.indexOf(f.name) < 0), false);
+            .then(() => {
+                mutate(files => files.filter(f => selectedFiles.indexOf(f.name) < 0), false);
                 setSelectedFiles([]);
             })
-            .catch(async (error) => {
-                await mutate();
+            .catch(error => {
+                mutate();
                 clearAndAddHttpError({ key: 'files', error });
             })
             .then(() => setLoading(false));

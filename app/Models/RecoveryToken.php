@@ -21,9 +21,15 @@ class RecoveryToken extends Model
      */
     public $timestamps = true;
 
-    protected bool $immutableDates = true;
+    /**
+     * @var bool
+     */
+    protected $immutableDates = true;
 
-    public static array $validationRules = [
+    /**
+     * @var string[]
+     */
+    public static $validationRules = [
         'token' => 'required|string',
     ];
 

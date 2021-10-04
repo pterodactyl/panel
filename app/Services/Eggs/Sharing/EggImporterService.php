@@ -5,17 +5,13 @@ namespace Pterodactyl\Services\Eggs\Sharing;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
 use Pterodactyl\Models\Egg;
-use Symfony\Component\Yaml\Yaml;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Database\ConnectionInterface;
-use Pterodactyl\Exceptions\DisplayException;
-use Symfony\Component\Yaml\Exception\ParseException;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
-use Pterodactyl\Exceptions\Service\Egg\BadYamlFormatException;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggImporterService
@@ -58,80 +54,28 @@ class EggImporterService
     /**
      * Take an uploaded JSON file and parse it into a new egg.
      *
-     * @deprecated Use `handleFile` or `handleContent` instead.
-     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
      * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadYamlFormatException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle(UploadedFile $file, int $nestId): Egg
-    {
-        return $this->handleFile($nestId, $file);
-    }
-
-    /**
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadYamlFormatException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     */
-    public function handleFile(int $nestId, UploadedFile $file): Egg
+    public function handle(UploadedFile $file, int $nest): Egg
     {
         if ($file->getError() !== UPLOAD_ERR_OK || !$file->isFile()) {
             throw new InvalidFileUploadException(sprintf('The selected file ["%s"] was not in a valid format to import. (is_file: %s is_valid: %s err_code: %s err: %s)', $file->getFilename(), $file->isFile() ? 'true' : 'false', $file->isValid() ? 'true' : 'false', $file->getError(), $file->getErrorMessage()));
         }
 
-        return $this->handleContent($nestId, $file->openFile()->fread($file->getSize()), 'application/json');
-    }
-
-    /**
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadYamlFormatException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     */
-    public function handleContent(int $nestId, string $content, string $contentType): Egg
-    {
-        switch (true) {
-            case strpos($contentType, 'application/json') === 0:
-                $parsed = json_decode($content, true);
-                if (json_last_error() !== 0) {
-                    throw new BadJsonFormatException(trans('exceptions.nest.importer.json_error', ['error' => json_last_error_msg()]));
-                }
-
-                return $this->handleArray($nestId, $parsed);
-            case strpos($contentType, 'application/yaml') === 0:
-                try {
-                    $parsed = Yaml::parse($content);
-
-                    return $this->handleArray($nestId, $parsed);
-                } catch (ParseException $exception) {
-                    throw new BadYamlFormatException('There was an error while attempting to parse the YAML: ' . $exception->getMessage() . '.');
-                }
-            default:
-                throw new DisplayException('unknown content type');
+        /** @var array $parsed */
+        $parsed = json_decode($file->openFile()->fread($file->getSize()), true);
+        if (json_last_error() !== 0) {
+            throw new BadJsonFormatException(trans('exceptions.nest.importer.json_error', ['error' => json_last_error_msg()]));
         }
-    }
 
-    /**
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
-     */
-    private function handleArray(int $nestId, array $parsed): Egg
-    {
         if (Arr::get($parsed, 'meta.version') !== 'PTDL_v1') {
             throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_json_provided'));
         }
 
-        $nest = $this->nestRepository->getWithEggs($nestId);
+        $nest = $this->nestRepository->getWithEggs($nest);
         $this->connection->beginTransaction();
 
         /** @var \Pterodactyl\Models\Egg $egg */

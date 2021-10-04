@@ -6,19 +6,23 @@ use Pterodactyl\Models\Task;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
+use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Transformers\Api\Client\TaskTransformer;
+use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Exceptions\Service\ServiceLimitExceededException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreTaskRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\UpdateScheduleRequest;
 
 class ScheduleTaskController extends ClientApiController
 {
-    private TaskRepository $repository;
+    /**
+     * @var \Pterodactyl\Repositories\Eloquent\TaskRepository
+     */
+    private $repository;
 
     /**
      * ScheduleTaskController constructor.
@@ -33,12 +37,13 @@ class ScheduleTaskController extends ClientApiController
     /**
      * Create a new task for a given schedule and store it in the database.
      *
-     * @throws \Pterodactyl\Exceptions\Http\HttpForbiddenException
+     * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Model\HttpForbiddenException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\ServiceLimitExceededException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function store(StoreTaskRequest $request, Server $server, Schedule $schedule): array
+    public function store(StoreTaskRequest $request, Server $server, Schedule $schedule)
     {
         $limit = config('pterodactyl.client_features.schedules.per_schedule_task_limit', 10);
         if ($schedule->tasks()->count() >= $limit) {
@@ -63,19 +68,20 @@ class ScheduleTaskController extends ClientApiController
         ]);
 
         return $this->fractal->item($task)
-            ->transformWith(TaskTransformer::class)
+            ->transformWith($this->getTransformer(TaskTransformer::class))
             ->toArray();
     }
 
     /**
      * Updates a given task for a server.
      *
-     * @throws \Pterodactyl\Exceptions\Http\HttpForbiddenException
+     * @return array
+     *
+     * @throws \Pterodactyl\Exceptions\Model\HttpForbiddenException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function update(StoreTaskRequest $request, Server $server, Schedule $schedule, Task $task): array
+    public function update(StoreTaskRequest $request, Server $server, Schedule $schedule, Task $task)
     {
         if ($schedule->id !== $task->schedule_id || $server->id !== $schedule->server_id) {
             throw new NotFoundHttpException();
@@ -93,7 +99,7 @@ class ScheduleTaskController extends ClientApiController
         ]);
 
         return $this->fractal->item($task->refresh())
-            ->transformWith(TaskTransformer::class)
+            ->transformWith($this->getTransformer(TaskTransformer::class))
             ->toArray();
     }
 
@@ -101,20 +107,26 @@ class ScheduleTaskController extends ClientApiController
      * Delete a given task for a schedule. If there are subsequent tasks stored in the database
      * for this schedule their sequence IDs are decremented properly.
      *
-     * This uses the UpdateScheduleRequest intentionally -- there is no permission specific
-     * to deleting a given task on a schedule, so we'll assume if you have permission to edit
-     * a schedule that you can then remove a task from said schedule.
+     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Exception
      */
-    public function delete(DeleteScheduleRequest $request, Server $server, Schedule $schedule, Task $task): Response
+    public function delete(ClientApiRequest $request, Server $server, Schedule $schedule, Task $task)
     {
+        if ($task->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$request->user()->can(Permission::ACTION_SCHEDULE_UPDATE, $server)) {
+            throw new HttpForbiddenException('You do not have permission to perform this action.');
+        }
+
         $schedule->tasks()->where('sequence_id', '>', $task->sequence_id)->update([
             'sequence_id' => $schedule->tasks()->getConnection()->raw('(sequence_id - 1)'),
         ]);
 
         $task->delete();
 
-        return $this->returnNoContent();
+        return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }
 }

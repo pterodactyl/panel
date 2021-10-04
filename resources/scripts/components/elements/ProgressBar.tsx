@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components/macro';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 import { randomInt } from '@/helpers';
 import { CSSTransition } from 'react-transition-group';
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 
 const BarFill = styled.div`
     ${tw`h-full bg-cyan-400`};
@@ -11,8 +12,8 @@ const BarFill = styled.div`
 `;
 
 export default () => {
-    const interval = useRef<NodeJS.Timer>();
-    const timeout = useRef<NodeJS.Timer>();
+    const interval = useRef<number>(null);
+    const timeout = useRef<number>(null);
     const [ visible, setVisible ] = useState(false);
     const progress = useStoreState(state => state.progress.progress);
     const continuous = useStoreState(state => state.progress.continuous);
@@ -29,6 +30,7 @@ export default () => {
         setVisible((progress || 0) > 0);
 
         if (progress === 100) {
+            // @ts-ignore
             timeout.current = setTimeout(() => setProgress(undefined), 500);
         }
     }, [ progress ]);
@@ -47,17 +49,17 @@ export default () => {
     useEffect(() => {
         if (continuous) {
             interval.current && clearInterval(interval.current);
-            const p = progress || 0;
-            if (p >= 90) {
+            if ((progress || 0) >= 90) {
                 setProgress(90);
             } else {
-                interval.current = setTimeout(() => setProgress(p + randomInt(1, 5)), 500);
+                // @ts-ignore
+                interval.current = setTimeout(() => setProgress(progress + randomInt(1, 5)), 500);
             }
         }
     }, [ progress, continuous ]);
 
     return (
-        <div css={tw`w-full h-[2px] fixed z-10`}>
+        <div css={tw`w-full fixed`} style={{ height: '2px' }}>
             <CSSTransition
                 timeout={150}
                 appear

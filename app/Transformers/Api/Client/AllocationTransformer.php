@@ -3,16 +3,23 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Allocation;
-use Pterodactyl\Transformers\Api\Transformer;
 
-class AllocationTransformer extends Transformer
+class AllocationTransformer extends BaseClientTransformer
 {
+    /**
+     * Return the resource name for the JSONAPI output.
+     */
     public function getResourceName(): string
     {
-        return Allocation::RESOURCE_NAME;
+        return 'allocation';
     }
 
-    public function transform(Allocation $model): array
+    /**
+     * Return basic information about the currently logged in user.
+     *
+     * @return array
+     */
+    public function transform(Allocation $model)
     {
         return [
             'id' => $model->id,

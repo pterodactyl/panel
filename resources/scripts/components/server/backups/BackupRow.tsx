@@ -21,13 +21,13 @@ interface Props {
 export default ({ backup, className }: Props) => {
     const { mutate } = getServerBackups();
 
-    useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${backup.uuid}` as SocketEvent, async (data) => {
+    useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${backup.uuid}` as SocketEvent, data => {
         try {
             const parsed = JSON.parse(data);
 
-            await mutate(data => ({
-                ...data!,
-                items: data!.items.map(b => b.uuid !== backup.uuid ? b : ({
+            mutate(data => ({
+                ...data,
+                items: data.items.map(b => b.uuid !== backup.uuid ? b : ({
                     ...b,
                     isSuccessful: parsed.is_successful || true,
                     checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),

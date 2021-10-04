@@ -4,8 +4,7 @@ namespace Pterodactyl\Tests\Integration\Api\Client;
 
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\PersonalAccessToken;
-use Pterodactyl\Transformers\Api\Client\PersonalAccessTokenTransformer;
+use Pterodactyl\Models\ApiKey;
 
 class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 {
@@ -14,7 +13,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
      */
     protected function tearDown(): void
     {
-        PersonalAccessToken::query()->forceDelete();
+        ApiKey::query()->forceDelete();
 
         parent::tearDown();
     }
@@ -26,8 +25,11 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
-        $token = $user->createToken('test');
-        $token = $token->accessToken;
+        /** @var \Pterodactyl\Models\ApiKey $key */
+        $key = ApiKey::factory()->create([
+            'user_id' => $user->id,
+            'key_type' => ApiKey::TYPE_ACCOUNT,
+        ]);
 
         $response = $this->actingAs($user)->get('/api/client/account/api-keys');
 
@@ -36,14 +38,13 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
             'object' => 'list',
             'data' => [
                 [
-                    'object' => 'personal_access_token',
+                    'object' => 'api_key',
                     'attributes' => [
-                        'token_id' => $token->token_id,
-                        'description' => $token->description,
-                        'abilities' => ['*'],
+                        'identifier' => $key->identifier,
+                        'description' => $key->memo,
+                        'allowed_ips' => $key->allowed_ips,
                         'last_used_at' => null,
-                        'updated_at' => $this->formatTimestamp($token->updated_at),
-                        'created_at' => $this->formatTimestamp($token->created_at),
+                        'created_at' => $key->created_at->toIso8601String(),
                     ],
                 ],
             ],
@@ -63,24 +64,34 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         // Small sub-test to ensure we're always comparing the  number of keys to the
         // specific logged in account, and not just the total number of keys stored in
         // the database.
-        PersonalAccessToken::factory()->times(10)->create([
+        ApiKey::factory()->times(10)->create([
             'user_id' => User::factory()->create()->id,
+            'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
 
         $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
             'description' => 'Test Description',
+            'allowed_ips' => ['127.0.0.1'],
         ]);
 
         $response->assertOk();
 
-        $key = PersonalAccessToken::query()->where('token_id', $response->json('attributes.token_id'))->firstOrFail();
+        /** @var \Pterodactyl\Models\ApiKey $key */
+        $key = ApiKey::query()->where('identifier', $response->json('attributes.identifier'))->firstOrFail();
 
         $response->assertJson([
-            'object' => 'personal_access_token',
-            'attributes' => (new PersonalAccessTokenTransformer())->transform($key),
+            'object' => 'api_key',
+            'attributes' => [
+                'identifier' => $key->identifier,
+                'description' => 'Test Description',
+                'allowed_ips' => ['127.0.0.1'],
+                'last_used_at' => null,
+                'created_at' => $key->created_at->toIso8601String(),
+            ],
+            'meta' => [
+                'secret_token' => decrypt($key->token),
+            ],
         ]);
-
-        $this->assertEquals($key->token, hash('sha256', substr($response->json('meta.secret_token'), 16)));
     }
 
     /**
@@ -93,10 +104,14 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
-        PersonalAccessToken::factory()->times(10)->create(['user_id' => $user->id]);
+        ApiKey::factory()->times(5)->create([
+            'user_id' => $user->id,
+            'key_type' => ApiKey::TYPE_ACCOUNT,
+        ]);
 
         $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
             'description' => 'Test Description',
+            'allowed_ips' => ['127.0.0.1'],
         ]);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
@@ -116,6 +131,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 
         $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
             'description' => '',
+            'allowed_ips' => ['127.0.0.1'],
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -124,6 +140,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 
         $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
             'description' => str_repeat('a', 501),
+            'allowed_ips' => ['127.0.0.1'],
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -138,12 +155,16 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
-        $token = $user->createToken('test');
+        /** @var \Pterodactyl\Models\ApiKey $key */
+        $key = ApiKey::factory()->create([
+            'user_id' => $user->id,
+            'key_type' => ApiKey::TYPE_ACCOUNT,
+        ]);
 
-        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/' . $token->accessToken->token_id);
-        $response->assertNoContent();
+        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/' . $key->identifier);
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseMissing('personal_access_tokens', ['id' => $token->accessToken->id]);
+        $this->assertDatabaseMissing('api_keys', ['id' => $key->id]);
     }
 
     /**
@@ -153,12 +174,16 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
-        $token = $user->createToken('test');
+        /** @var \Pterodactyl\Models\ApiKey $key */
+        $key = ApiKey::factory()->create([
+            'user_id' => $user->id,
+            'key_type' => ApiKey::TYPE_ACCOUNT,
+        ]);
 
-        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/ptdl_1234');
-        $response->assertNoContent();
+        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/1234');
+        $response->assertNotFound();
 
-        $this->assertDatabaseHas('personal_access_tokens', ['id' => $token->accessToken->id]);
+        $this->assertDatabaseHas('api_keys', ['id' => $key->id]);
     }
 
     /**
@@ -171,11 +196,35 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         $user = User::factory()->create();
         /** @var \Pterodactyl\Models\User $user2 */
         $user2 = User::factory()->create();
-        $token = $user2->createToken('test');
+        /** @var \Pterodactyl\Models\ApiKey $key */
+        $key = ApiKey::factory()->create([
+            'user_id' => $user2->id,
+            'key_type' => ApiKey::TYPE_ACCOUNT,
+        ]);
 
-        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/' . $token->accessToken->token_id);
-        $response->assertNoContent();
+        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/' . $key->identifier);
+        $response->assertNotFound();
 
-        $this->assertDatabaseHas('personal_access_tokens', ['id' => $token->accessToken->id]);
+        $this->assertDatabaseHas('api_keys', ['id' => $key->id]);
+    }
+
+    /**
+     * Tests that an application API key also belonging to the logged in user cannot be
+     * deleted through this endpoint if it exists.
+     */
+    public function testApplicationApiKeyCannotBeDeleted()
+    {
+        /** @var \Pterodactyl\Models\User $user */
+        $user = User::factory()->create();
+        /** @var \Pterodactyl\Models\ApiKey $key */
+        $key = ApiKey::factory()->create([
+            'user_id' => $user->id,
+            'key_type' => ApiKey::TYPE_APPLICATION,
+        ]);
+
+        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/' . $key->identifier);
+        $response->assertNotFound();
+
+        $this->assertDatabaseHas('api_keys', ['id' => $key->id]);
     }
 }

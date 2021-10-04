@@ -4,16 +4,18 @@ namespace Pterodactyl\Transformers\Api\Client;
 
 use BadMethodCallException;
 use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Transformers\Api\Transformer;
 
-class EggVariableTransformer extends Transformer
+class EggVariableTransformer extends BaseClientTransformer
 {
     public function getResourceName(): string
     {
         return EggVariable::RESOURCE_NAME;
     }
 
-    public function transform(EggVariable $variable): array
+    /**
+     * @return array
+     */
+    public function transform(EggVariable $variable)
     {
         // This guards against someone incorrectly retrieving variables (haha, me) and then passing
         // them into the transformer and along to the user. Just throw an exception and break the entire

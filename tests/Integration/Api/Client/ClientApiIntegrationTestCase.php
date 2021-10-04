@@ -18,6 +18,7 @@ use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Tests\Integration\TestResponse;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
 abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 {
@@ -59,6 +60,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function link($model, $append = null): string
     {
+        $link = '';
         switch (get_class($model)) {
             case Server::class:
                 $link = "/api/client/servers/{$model->uuid}";
@@ -97,6 +99,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
             return [$user, $this->createServerModel(['user_id' => $user->id])];
         }
 
+        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->createServerModel();
 
         Subuser::query()->create([
@@ -120,6 +123,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
         $transformer = sprintf('\\Pterodactyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
 
         $transformer = new $transformer();
+        $this->assertInstanceOf(BaseClientTransformer::class, $transformer);
 
         $this->assertSame(
             $transformer->transform($model),

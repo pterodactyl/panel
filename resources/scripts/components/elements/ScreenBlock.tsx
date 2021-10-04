@@ -43,7 +43,7 @@ const ActionButton = styled(Button)`
 const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => (
     <PageContentBlock>
         <div css={tw`flex justify-center`}>
-            <div css={tw`w-full sm:w-3/4 md:w-1/2 flex flex-col items-center p-12 md:p-20 bg-neutral-100 rounded-lg shadow-lg text-center relative`}>
+            <div css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-100 rounded-lg shadow-lg text-center relative`}>
                 {(typeof onBack === 'function' || typeof onRetry === 'function') &&
                 <div css={tw`absolute left-0 top-0 ml-4 mt-4`}>
                     <ActionButton

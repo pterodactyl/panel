@@ -3,9 +3,10 @@
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
 use Pterodactyl\Models\Permission;
+use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class WriteFileContentRequest extends ClientApiRequest
+class WriteFileContentRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
     /**
      * Returns the permissions string indicating which permission should be used to

@@ -3,10 +3,14 @@
 namespace Pterodactyl\Tests\Integration\Api\Application;
 
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\PersonalAccessToken;
+use PHPUnit\Framework\Assert;
+use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
+use Pterodactyl\Transformers\Api\Application\BaseTransformer;
+use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
@@ -16,17 +20,14 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     use IntegrationJsonRequestAssertions;
 
     /**
+     * @var \Pterodactyl\Models\ApiKey
+     */
+    private $key;
+
+    /**
      * @var \Pterodactyl\Models\User
      */
     private $user;
-
-    /**
-     * @var string[]
-     */
-    protected $defaultHeaders = [
-        'Accept' => 'application/vnd.pterodactyl.v1+json',
-        'Content-Type' => 'application/json',
-    ];
 
     /**
      * Bootstrap application API tests. Creates a default admin user and associated API key
@@ -36,9 +37,13 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->user = User::factory()->create(['root_admin' => true]);
+        $this->user = $this->createApiUser();
+        $this->key = $this->createApiKey($this->user);
 
-        $this->createNewAccessToken();
+        $this->withHeader('Accept', 'application/vnd.pterodactyl.v1+json');
+        $this->withHeader('Authorization', 'Bearer ' . $this->getApiKey()->identifier . decrypt($this->getApiKey()->token));
+
+        $this->withMiddleware('api..key:' . ApiKey::TYPE_APPLICATION);
     }
 
     public function getApiUser(): User
@@ -46,15 +51,72 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
         return $this->user;
     }
 
+    public function getApiKey(): ApiKey
+    {
+        return $this->key;
+    }
+
     /**
      * Creates a new default API key and refreshes the headers using it.
      */
-    protected function createNewAccessToken(array $abilities = ['*']): PersonalAccessToken
+    protected function createNewDefaultApiKey(User $user, array $permissions = []): ApiKey
     {
-        $token = $this->user->createToken('test', $abilities);
+        $this->key = $this->createApiKey($user, $permissions);
+        $this->refreshHeaders($this->key);
 
-        $this->withHeader('Authorization', 'Bearer ' . $token->plainTextToken);
+        return $this->key;
+    }
 
-        return $token->accessToken;
+    /**
+     * Refresh the authorization header for a request to use a different API key.
+     */
+    protected function refreshHeaders(ApiKey $key)
+    {
+        $this->withHeader('Authorization', 'Bearer ' . $key->identifier . decrypt($key->token));
+    }
+
+    /**
+     * Create an administrative user.
+     */
+    protected function createApiUser(): User
+    {
+        return User::factory()->create([
+            'root_admin' => true,
+        ]);
+    }
+
+    /**
+     * Create a new application API key for a given user model.
+     */
+    protected function createApiKey(User $user, array $permissions = []): ApiKey
+    {
+        return ApiKey::factory()->create(array_merge([
+            'user_id' => $user->id,
+            'key_type' => ApiKey::TYPE_APPLICATION,
+            'r_servers' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_nodes' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_allocations' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_users' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_locations' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_nests' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_eggs' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_database_hosts' => AdminAcl::READ | AdminAcl::WRITE,
+            'r_server_databases' => AdminAcl::READ | AdminAcl::WRITE,
+        ], $permissions));
+    }
+
+    /**
+     * Return a transformer that can be used for testing purposes.
+     */
+    protected function getTransformer(string $abstract): BaseTransformer
+    {
+        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
+        $transformer = $this->app->make($abstract);
+        $transformer->setKey($this->getApiKey());
+
+        Assert::assertInstanceOf(BaseTransformer::class, $transformer);
+        Assert::assertNotInstanceOf(BaseClientTransformer::class, $transformer);
+
+        return $transformer;
     }
 }

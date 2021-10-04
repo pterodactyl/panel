@@ -7,14 +7,15 @@ import { FileObject } from '@/api/server/files/loadDirectory';
 import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
 import { ServerContext } from '@/state/server';
 import { NavLink, useRouteMatch } from 'react-router-dom';
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 import isEqual from 'react-fast-compare';
+import styled from 'styled-components/macro';
 import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
 import { usePermissions } from '@/plugins/usePermissions';
 import { join } from 'path';
 
 const Row = styled.div`
-    ${tw`flex items-center w-full h-10 px-3 rounded-sm cursor-pointer bg-neutral-700 hover:bg-neutral-600 mb-px`};
+    ${tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};
 `;
 
 const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
@@ -25,14 +26,13 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
 
     return (
         (!canReadContents || (file.isFile && !file.isEditable())) ?
-            <div css={tw`flex items-center w-full h-full`}>
+            <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default overflow-hidden truncate`}>
                 {children}
             </div>
             :
             <NavLink
                 to={`${match.url}${file.isFile ? '/edit' : ''}#${encodePathSegments(join(directory, file.name))}`}
-                css={tw`flex items-center w-full h-full`}
-                draggable={false}
+                css={tw`flex flex-1 text-neutral-300 no-underline p-3 overflow-hidden truncate`}
             >
                 {children}
             </NavLink>
@@ -46,37 +46,33 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
             e.preventDefault();
             window.dispatchEvent(new CustomEvent(`pterodactyl:files:ctx:${file.key}`, { detail: e.clientX }));
         }}
-        css={tw`h-10`}
     >
-        <div css={tw`flex mr-4`}>
-            <SelectFileCheckbox name={file.name}/>
-        </div>
+        <SelectFileCheckbox name={file.name}/>
         <Clickable file={file}>
-            <div css={tw`flex flex-row items-center justify-center w-5 text-neutral-400 mr-2`}>
+            <div css={tw`flex-none self-center text-neutral-400 ml-6 mr-4 text-lg pl-3`}>
                 {file.isFile ?
                     <FontAwesomeIcon icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}/>
                     :
                     <FontAwesomeIcon icon={faFolder}/>
                 }
             </div>
-            <div css={tw`block`}>
-                <span css={tw`text-sm font-normal leading-none text-neutral-300`}>{file.name}</span>
+            <div css={tw`flex-1 truncate`}>
+                {file.name}
             </div>
-
-            <div css={tw`hidden w-24 ml-auto sm:flex`}>
-                <span css={tw`ml-auto text-sm font-normal leading-none text-right text-neutral-300`}>
-                    {bytesToHuman(file.size)}
-                </span>
+            {file.isFile &&
+            <div css={tw`w-1/6 text-right mr-4 hidden sm:block`}>
+                {bytesToHuman(file.size)}
             </div>
-
-            <div css={tw`hidden w-48 md:flex`}>
-                <span css={tw`ml-auto text-sm font-normal leading-none text-right text-neutral-300`} title={file.modifiedAt.toString()}>
-                    {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
-                        format(file.modifiedAt, 'MMM do, yyyy h:mma')
-                        :
-                        formatDistanceToNow(file.modifiedAt, { addSuffix: true })
-                    }
-                </span>
+            }
+            <div
+                css={tw`w-1/5 text-right mr-4 hidden md:block`}
+                title={file.modifiedAt.toString()}
+            >
+                {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
+                    format(file.modifiedAt, 'MMM do, yyyy h:mma')
+                    :
+                    formatDistanceToNow(file.modifiedAt, { addSuffix: true })
+                }
             </div>
         </Clickable>
         <FileDropdownMenu file={file}/>

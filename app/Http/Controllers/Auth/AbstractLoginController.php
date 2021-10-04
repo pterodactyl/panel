@@ -62,7 +62,7 @@ abstract class AbstractLoginController extends Controller
             $this->getField($request->input('user')) => $request->input('user'),
         ]);
 
-        if ($request->route()->named('auth.checkpoint') || $request->route()->named('auth.checkpoint.key')) {
+        if ($request->route()->named('auth.login-checkpoint')) {
             throw new DisplayException($message ?? trans('auth.two_factor.checkpoint_failed'));
         }
 
@@ -82,10 +82,11 @@ abstract class AbstractLoginController extends Controller
         $this->auth->guard()->login($user, true);
 
         return new JsonResponse([
-            'complete' => true,
-            'methods' => [],
-            'intended' => $this->redirectPath(),
-            'user' => $user->toReactObject(),
+            'data' => [
+                'complete' => true,
+                'intended' => $this->redirectPath(),
+                'user' => $user->toVueObject(),
+            ],
         ]);
     }
 

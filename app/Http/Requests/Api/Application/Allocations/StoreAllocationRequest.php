@@ -2,10 +2,21 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Allocations;
 
+use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreAllocationRequest extends ApplicationApiRequest
 {
+    /**
+     * @var string
+     */
+    protected $resource = AdminAcl::RESOURCE_ALLOCATIONS;
+
+    /**
+     * @var int
+     */
+    protected $permission = AdminAcl::WRITE;
+
     public function rules(): array
     {
         return [
@@ -16,7 +27,10 @@ class StoreAllocationRequest extends ApplicationApiRequest
         ];
     }
 
-    public function validated(): array
+    /**
+     * @return array
+     */
+    public function validated()
     {
         $data = parent::validated();
 

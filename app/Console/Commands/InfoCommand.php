@@ -70,6 +70,7 @@ class InfoCommand extends Command
             ['Queue Driver', $this->config->get('queue.default')],
             ['Session Driver', $this->config->get('session.driver')],
             ['Filesystem Driver', $this->config->get('filesystems.default')],
+            ['Default Theme', $this->config->get('themes.active')],
             ['Proxies', $this->config->get('trustedproxies.proxies')],
         ], 'compact');
 

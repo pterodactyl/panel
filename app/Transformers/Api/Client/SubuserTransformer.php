@@ -3,19 +3,28 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Transformers\Api\Transformer;
 
-class SubuserTransformer extends Transformer
+class SubuserTransformer extends BaseClientTransformer
 {
+    /**
+     * Return the resource name for the JSONAPI output.
+     */
     public function getResourceName(): string
     {
         return Subuser::RESOURCE_NAME;
     }
 
-    public function transform(Subuser $model): array
+    /**
+     * Transforms a subuser into a model that can be shown to a front-end user.
+     *
+     * @return array|void
+     *
+     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     */
+    public function transform(Subuser $model)
     {
         return array_merge(
-            (new UserTransformer())->transform($model->user),
+            $this->makeTransformer(UserTransformer::class)->transform($model->user),
             ['permissions' => $model->permissions]
         );
     }

@@ -92,7 +92,10 @@ class Task extends Model
         'continue_on_failure' => false,
     ];
 
-    public static array $validationRules = [
+    /**
+     * @var array
+     */
+    public static $validationRules = [
         'schedule_id' => 'required|numeric|exists:schedules,id',
         'sequence_id' => 'required|numeric|min:1',
         'action' => 'required|string',
