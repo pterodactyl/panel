@@ -35,10 +35,8 @@ class Location extends Model
 
     /**
      * Rules ensuring that the raw data stored in the database meets expectations.
-     *
-     * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'short' => 'required|string|between:1,60|unique:locations,short',
         'long' => 'string|nullable|between:1,191',
     ];

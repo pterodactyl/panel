@@ -107,10 +107,7 @@ class Server extends Model
      */
     protected $guarded = ['id', self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'external_id' => 'sometimes|nullable|string|between:1,191|unique:servers',
         'owner_id' => 'required|integer|exists:users,id',
         'name' => 'required|string|min:1|max:191',

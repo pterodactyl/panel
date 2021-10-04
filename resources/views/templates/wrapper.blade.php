@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en-US">
     <head>
         <title>{{ config('app.name', 'Pterodactyl') }}</title>
 
@@ -21,7 +22,7 @@
         @section('user-data')
             @if(!is_null(Auth::user()))
                 <script>
-                    window.PterodactylUser = {!! json_encode(Auth::user()->toVueObject()) !!};
+                    window.PterodactylUser = {!! json_encode(Auth::user()->toReactObject()) !!};
                 </script>
             @endif
             @if(!empty($siteConfiguration))
@@ -32,7 +33,7 @@
         @show
         <style>
             @import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
-            @import url('//fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans:500&display=swap');
+            @import url('//fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
         </style>
 
         @yield('assets')

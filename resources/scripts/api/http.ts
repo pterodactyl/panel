@@ -94,7 +94,7 @@ export interface PaginatedResult<T> {
     pagination: PaginationDataSet;
 }
 
-interface PaginationDataSet {
+export interface PaginationDataSet {
     total: number;
     count: number;
     perPage: number;

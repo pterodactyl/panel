@@ -8,14 +8,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
-use Illuminate\Http\JsonResponse;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
 use Pterodactyl\Transformers\Api\Client\ScheduleTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\ViewScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\StoreScheduleRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\DeleteScheduleRequest;
@@ -24,15 +23,8 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Schedules\TriggerScheduleReques
 
 class ScheduleController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ScheduleRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Schedules\ProcessScheduleService
-     */
-    private $service;
+    private ScheduleRepository $repository;
+    private ProcessScheduleService $service;
 
     /**
      * ScheduleController constructor.
@@ -48,27 +40,26 @@ class ScheduleController extends ClientApiController
     /**
      * Returns all of the schedules belonging to a given server.
      *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function index(ViewScheduleRequest $request, Server $server)
+    public function index(ViewScheduleRequest $request, Server $server): array
     {
         $schedules = $server->schedule;
         $schedules->loadMissing('tasks');
 
         return $this->fractal->collection($schedules)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
     /**
      * Store a new schedule for a server.
      *
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function store(StoreScheduleRequest $request, Server $server)
+    public function store(StoreScheduleRequest $request, Server $server): array
     {
         /** @var \Pterodactyl\Models\Schedule $model */
         $model = $this->repository->create([
@@ -85,38 +76,33 @@ class ScheduleController extends ClientApiController
         ]);
 
         return $this->fractal->item($model)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
     /**
      * Returns a specific schedule for the server.
      *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function view(ViewScheduleRequest $request, Server $server, Schedule $schedule)
+    public function view(ViewScheduleRequest $request, Server $server, Schedule $schedule): array
     {
-        if ($schedule->server_id !== $server->id) {
-            throw new NotFoundHttpException();
-        }
-
         $schedule->loadMissing('tasks');
 
         return $this->fractal->item($schedule)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
     /**
      * Updates a given schedule with the new data provided.
      *
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function update(UpdateScheduleRequest $request, Server $server, Schedule $schedule)
+    public function update(UpdateScheduleRequest $request, Server $server, Schedule $schedule): array
     {
         $active = (bool) $request->input('is_active');
 
@@ -143,7 +129,7 @@ class ScheduleController extends ClientApiController
         $this->repository->update($schedule->id, $data);
 
         return $this->fractal->item($schedule->refresh())
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -151,27 +137,27 @@ class ScheduleController extends ClientApiController
      * Executes a given schedule immediately rather than waiting on it's normally scheduled time
      * to pass. This does not care about the schedule state.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule)
+    public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule): Response
     {
+        if (!$schedule->is_active) {
+            throw new BadRequestHttpException('Cannot trigger schedule exception for a schedule that is not currently active.');
+        }
+
         $this->service->handle($schedule, true);
 
-        return new JsonResponse([], JsonResponse::HTTP_ACCEPTED);
+        return $this->returnAccepted();
     }
 
     /**
      * Deletes a schedule and it's associated tasks.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(DeleteScheduleRequest $request, Server $server, Schedule $schedule)
+    public function delete(DeleteScheduleRequest $request, Server $server, Schedule $schedule): Response
     {
         $this->repository->delete($schedule->id);
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**

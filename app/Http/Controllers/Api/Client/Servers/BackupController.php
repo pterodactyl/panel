@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
@@ -51,6 +52,7 @@ class BackupController extends ClientApiController
      * result set.
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(Request $request, Server $server): array
     {
@@ -61,7 +63,7 @@ class BackupController extends ClientApiController
         $limit = min($request->query('per_page') ?? 20, 50);
 
         return $this->fractal->collection($server->backups()->paginate($limit))
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->addMeta([
                 'backup_count' => $this->repository->getNonFailedBackups($server)->count(),
             ])
@@ -98,7 +100,7 @@ class BackupController extends ClientApiController
         });
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 
@@ -124,7 +126,7 @@ class BackupController extends ClientApiController
         $backup->refresh();
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 
@@ -140,7 +142,7 @@ class BackupController extends ClientApiController
         }
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 
@@ -150,7 +152,7 @@ class BackupController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function delete(Request $request, Server $server, Backup $backup): JsonResponse
+    public function delete(Request $request, Server $server, Backup $backup): Response
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
             throw new AuthorizationException();
@@ -162,7 +164,7 @@ class BackupController extends ClientApiController
             $this->deleteBackupService->handle($backup);
         });
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
@@ -205,7 +207,7 @@ class BackupController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function restore(Request $request, Server $server, Backup $backup): JsonResponse
+    public function restore(Request $request, Server $server, Backup $backup): Response
     {
         if (!$request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
             throw new AuthorizationException();
@@ -237,6 +239,6 @@ class BackupController extends ClientApiController
             $this->daemonRepository->setServer($server)->restore($backup, $url ?? null, $request->input('truncate'));
         });
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

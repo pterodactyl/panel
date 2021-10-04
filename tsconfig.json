@@ -1,44 +1,45 @@
 {
-  "compilerOptions": {
-    "target": "es2015",
-    "module": "es2020",
-    "jsx": "react",
-    "moduleResolution": "node",
-    "lib": [
-      "es2015",
-      "dom"
-    ],
-    "strict": true,
-    "noEmit": true,
-    "sourceMap": true,
-    "noImplicitReturns": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "importsNotUsedAsValues": "preserve",
-    "paths": {
-      "@/*": [
-        "./resources/scripts/*"
-      ],
-      "@feature/*": [
-        "./resources/scripts/components/server/features/*"
-      ]
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "ES2020",
+        "jsx": "react",
+        "moduleResolution": "Node",
+        "lib": [
+            "ES2020",
+            "DOM",
+            "DOM.Iterable"
+        ],
+        "strict": true,
+        "noEmit": true,
+        "sourceMap": true,
+        "noImplicitReturns": true,
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "importsNotUsedAsValues": "preserve",
+        "paths": {
+            "@/*": [
+                "./resources/scripts/*"
+            ],
+            "@feature/*": [
+                "./resources/scripts/components/server/features/*"
+            ]
+        },
+        "plugins": [
+            {
+                "name": "typescript-plugin-tw-template"
+            }
+        ],
+        "typeRoots": [
+            "node_modules/@types"
+        ]
     },
-    "plugins": [
-      {
-        "name": "typescript-plugin-tw-template"
-      }
+    "include": [
+        "./resources/scripts/**/*"
     ],
-    "typeRoots": [
-      "node_modules/@types"
+    "exclude": [
+        "/node_modules/"
     ]
-  },
-  "include": [
-    "./resources/scripts/**/*"
-  ],
-  "exclude": [
-    "/node_modules/"
-  ]
 }

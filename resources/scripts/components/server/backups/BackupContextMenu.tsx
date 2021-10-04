@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-    faBoxOpen,
-    faCloudDownloadAlt,
-    faEllipsisH,
-    faLock,
-    faTrashAlt,
-    faUnlock,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faCloudDownloadAlt, faEllipsisH, faLock, faTrashAlt, faUnlock } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
@@ -55,10 +48,10 @@ export default ({ backup }: Props) => {
         setLoading(true);
         clearFlashes('backups');
         deleteBackup(uuid, backup.uuid)
-            .then(() => mutate(data => ({
-                ...data,
-                items: data.items.filter(b => b.uuid !== backup.uuid),
-                backupCount: data.backupCount - 1,
+            .then(async () => await mutate(data => ({
+                ...data!,
+                items: data!.items.filter(b => b.uuid !== backup.uuid),
+                backupCount: data!.backupCount - 1,
             }), false))
             .catch(error => {
                 console.error(error);
@@ -90,9 +83,9 @@ export default ({ backup }: Props) => {
         }
 
         http.post(`/api/client/servers/${uuid}/backups/${backup.uuid}/lock`)
-            .then(() => mutate(data => ({
-                ...data,
-                items: data.items.map(b => b.uuid !== backup.uuid ? b : {
+            .then(async () => await mutate(data => ({
+                ...data!,
+                items: data!.items.map(b => b.uuid !== backup.uuid ? b : {
                     ...b,
                     isLocked: !b.isLocked,
                 }),
@@ -125,13 +118,13 @@ export default ({ backup }: Props) => {
                     not be able to control the server power state, access the file manager, or create additional backups
                     until it has completed.
                 </p>
-                <p css={tw`text-neutral-300 mt-4`}>
+                <p css={tw`mt-4 text-neutral-300`}>
                     Are you sure you want to continue?
                 </p>
-                <p css={tw`mt-4 -mb-2 bg-neutral-900 p-3 rounded`}>
+                <p css={tw`p-3 mt-4 -mb-2 rounded bg-neutral-900`}>
                     <label
                         htmlFor={'restore_truncate'}
-                        css={tw`text-base text-neutral-200 flex items-center cursor-pointer`}
+                        css={tw`flex items-center text-base cursor-pointer text-neutral-200`}
                     >
                         <Input
                             type={'checkbox'}
@@ -161,7 +154,7 @@ export default ({ backup }: Props) => {
                     renderToggle={onClick => (
                         <button
                             onClick={onClick}
-                            css={tw`text-neutral-200 transition-colors duration-150 hover:text-neutral-100 p-2`}
+                            css={tw`p-2 transition-colors duration-150 text-neutral-200 hover:text-neutral-100`}
                         >
                             <FontAwesomeIcon icon={faEllipsisH}/>
                         </button>
@@ -186,7 +179,7 @@ export default ({ backup }: Props) => {
                                     <FontAwesomeIcon
                                         fixedWidth
                                         icon={backup.isLocked ? faUnlock : faLock}
-                                        css={tw`text-xs mr-2`}
+                                        css={tw`mr-2 text-xs`}
                                     />
                                     {backup.isLocked ? 'Unlock' : 'Lock'}
                                 </DropdownButtonRow>
@@ -203,7 +196,7 @@ export default ({ backup }: Props) => {
                 :
                 <button
                     onClick={() => setModal('delete')}
-                    css={tw`text-neutral-200 transition-colors duration-150 hover:text-neutral-100 p-2`}
+                    css={tw`p-2 transition-colors duration-150 text-neutral-200 hover:text-neutral-100`}
                 >
                     <FontAwesomeIcon icon={faTrashAlt}/>
                 </button>

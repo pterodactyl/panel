@@ -17,15 +17,8 @@ class BackupRemoteUploadController extends Controller
 {
     public const PART_SIZE = 5 * 1024 * 1024 * 1024;
 
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $backupManager;
+    private BackupRepository $repository;
+    private BackupManager $backupManager;
 
     /**
      * BackupRemoteUploadController constructor.
@@ -37,15 +30,13 @@ class BackupRemoteUploadController extends Controller
     }
 
     /**
-     * Returns the required presigned urls to upload a backup to S3 cloud storage.
-     *
-     * @return \Illuminate\Http\JsonResponse
+     * Returns the required pre-signed urls to upload a backup to S3 cloud storage.
      *
      * @throws \Exception
      * @throws \Throwable
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function __invoke(Request $request, string $backup)
+    public function __invoke(Request $request, string $backup): JsonResponse
     {
         // Get the size query parameter.
         $size = (int) $request->query('size');

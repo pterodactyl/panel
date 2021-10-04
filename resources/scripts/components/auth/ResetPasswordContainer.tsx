@@ -30,7 +30,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
     }
 
     const submit = ({ password, passwordConfirmation }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes();
+        clearFlashes(undefined);
         performPasswordReset(email, { token: match.params.token, password, passwordConfirmation })
             .then(() => {
                 // @ts-ignore

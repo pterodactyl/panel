@@ -1,5 +1,5 @@
-import { Allocation } from '@/api/server/getServer';
 import { FractalResponseData } from '@/api/http';
+import { Allocation } from '@/api/server/getServer';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import { ServerBackup, ServerEggVariable } from '@/api/server/types';
 

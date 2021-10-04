@@ -4,8 +4,9 @@ namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class LocationTransformer extends BaseTransformer
+class LocationTransformer extends Transformer
 {
     /**
      * List of resources that can be included.
@@ -14,34 +15,26 @@ class LocationTransformer extends BaseTransformer
      */
     protected $availableIncludes = ['nodes', 'servers'];
 
-    /**
-     * Return the resource name for the JSONAPI output.
-     */
     public function getResourceName(): string
     {
         return Location::RESOURCE_NAME;
     }
 
-    /**
-     * Return a generic transformed location array.
-     */
-    public function transform(Location $location): array
+    public function transform(Location $model): array
     {
         return [
-            'id' => $location->id,
-            'short' => $location->short,
-            'long' => $location->long,
-            $location->getUpdatedAtColumn() => $this->formatTimestamp($location->updated_at),
-            $location->getCreatedAtColumn() => $this->formatTimestamp($location->created_at),
+            'id' => $model->id,
+            'short' => $model->short,
+            'long' => $model->long,
+            $model->getUpdatedAtColumn() => self::formatTimestamp($model->updated_at),
+            $model->getCreatedAtColumn() => self::formatTimestamp($model->created_at),
         ];
     }
 
     /**
-     * Return the nodes associated with this location.
+     * Return the servers associated with this location.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Location $location)
     {
@@ -49,17 +42,13 @@ class LocationTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $location->loadMissing('servers');
-
-        return $this->collection($location->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), 'server');
+        return $this->collection($location->servers, new ServerTransformer());
     }
 
     /**
      * Return the nodes associated with this location.
      *
      * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNodes(Location $location)
     {
@@ -67,8 +56,6 @@ class LocationTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $location->loadMissing('nodes');
-
-        return $this->collection($location->getRelation('nodes'), $this->makeTransformer(NodeTransformer::class), 'node');
+        return $this->collection($location->nodes, new NodeTransformer());
     }
 }

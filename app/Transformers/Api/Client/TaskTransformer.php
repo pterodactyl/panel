@@ -3,23 +3,16 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Task;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class TaskTransformer extends BaseClientTransformer
+class TaskTransformer extends Transformer
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getResourceName(): string
     {
         return Task::RESOURCE_NAME;
     }
 
-    /**
-     * Transforms a schedule's task into a client viewable format.
-     *
-     * @return array
-     */
-    public function transform(Task $model)
+    public function transform(Task $model): array
     {
         return [
             'id' => $model->id,
@@ -29,8 +22,8 @@ class TaskTransformer extends BaseClientTransformer
             'time_offset' => $model->time_offset,
             'is_queued' => $model->is_queued,
             'continue_on_failure' => $model->continue_on_failure,
-            'created_at' => $model->created_at->toIso8601String(),
-            'updated_at' => $model->updated_at->toIso8601String(),
+            'created_at' => self::formatTimestamp($model->created_at),
+            'updated_at' => self::formatTimestamp($model->updated_at),
         ];
     }
 }

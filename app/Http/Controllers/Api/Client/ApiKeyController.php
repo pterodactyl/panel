@@ -2,106 +2,57 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
-use Pterodactyl\Models\ApiKey;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Pterodactyl\Exceptions\DisplayException;
-use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Pterodactyl\Http\Requests\Api\Client\AccountApiRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
+use Pterodactyl\Transformers\Api\Client\PersonalAccessTokenTransformer;
 
 class ApiKeyController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
-     */
-    private $keyCreationService;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ApiKeyRepository
-     */
-    private $repository;
-
-    /**
-     * ApiKeyController constructor.
-     */
-    public function __construct(
-        Encrypter $encrypter,
-        KeyCreationService $keyCreationService,
-        ApiKeyRepository $repository
-    ) {
-        parent::__construct();
-
-        $this->encrypter = $encrypter;
-        $this->keyCreationService = $keyCreationService;
-        $this->repository = $repository;
-    }
-
-    /**
      * Returns all of the API keys that exist for the given client.
      *
-     * @return array
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function index(ClientApiRequest $request)
+    public function index(AccountApiRequest $request): array
     {
-        return $this->fractal->collection($request->user()->apiKeys)
-            ->transformWith($this->getTransformer(ApiKeyTransformer::class))
+        return $this->fractal->collection($request->user()->tokens)
+            ->transformWith(PersonalAccessTokenTransformer::class)
             ->toArray();
     }
 
     /**
      * Store a new API key for a user's account.
      *
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function store(StoreApiKeyRequest $request)
+    public function store(StoreApiKeyRequest $request): array
     {
-        if ($request->user()->apiKeys->count() >= 5) {
+        if ($request->user()->tokens->count() >= 10) {
             throw new DisplayException('You have reached the account limit for number of API keys.');
         }
 
-        $key = $this->keyCreationService->setKeyType(ApiKey::TYPE_ACCOUNT)->handle([
-            'user_id' => $request->user()->id,
-            'memo' => $request->input('description'),
-            'allowed_ips' => $request->input('allowed_ips') ?? [],
-        ]);
+        // TODO: this should accept an array of different scopes to apply as permissions
+        //  for the token. Right now it allows any account level permission.
+        $token = $request->user()->createToken($request->input('description'));
 
-        return $this->fractal->item($key)
-            ->transformWith($this->getTransformer(ApiKeyTransformer::class))
+        return $this->fractal->item($token->accessToken)
+            ->transformWith(PersonalAccessTokenTransformer::class)
             ->addMeta([
-                'secret_token' => $this->encrypter->decrypt($key->token),
+                'secret_token' => $token->plainTextToken,
             ])
             ->toArray();
     }
 
     /**
      * Deletes a given API key.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(ClientApiRequest $request, string $identifier)
+    public function delete(AccountApiRequest $request, string $id): Response
     {
-        $response = $this->repository->deleteWhere([
-            'key_type' => ApiKey::TYPE_ACCOUNT,
-            'user_id' => $request->user()->id,
-            'identifier' => $identifier,
-        ]);
+        $request->user()->tokens()->where('token_id', $id)->delete();
 
-        if (!$response) {
-            throw new NotFoundHttpException();
-        }
-
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

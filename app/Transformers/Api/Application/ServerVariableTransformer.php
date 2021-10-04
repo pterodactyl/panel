@@ -3,9 +3,11 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Models\ServerVariable;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class ServerVariableTransformer extends BaseTransformer
+class ServerVariableTransformer extends Transformer
 {
     /**
      * List of resources that can be included.
@@ -22,22 +24,15 @@ class ServerVariableTransformer extends BaseTransformer
         return ServerVariable::RESOURCE_NAME;
     }
 
-    /**
-     * Return a generic transformed server variable array.
-     *
-     * @return array
-     */
-    public function transform(EggVariable $variable)
+    public function transform(EggVariable $model): array
     {
-        return $variable->toArray();
+        return $model->toArray();
     }
 
     /**
      * Return the parent service variable data.
      *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeParent(EggVariable $variable)
     {
@@ -45,8 +40,6 @@ class ServerVariableTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $variable->loadMissing('variable');
-
-        return $this->item($variable->getRelation('variable'), $this->makeTransformer(EggVariableTransformer::class), 'variable');
+        return $this->item($variable->variable, new EggVariableTransformer());
     }
 }

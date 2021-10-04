@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Auth;
 use Carbon\CarbonInterface;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\User;
-use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -14,13 +13,13 @@ use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class LoginCheckpointController extends AbstractLoginController
 {
-    private const TOKEN_EXPIRED_MESSAGE = 'The authentication token provided has expired, please refresh the page and try again.';
+    public const TOKEN_EXPIRED_MESSAGE = 'The authentication token provided has expired, please refresh the page and try again.';
 
-    private ValidationFactory $validation;
+    private Encrypter $encrypter;
 
     private Google2FA $google2FA;
 
-    private Encrypter $encrypter;
+    private ValidationFactory $validation;
 
     /**
      * LoginCheckpointController constructor.
@@ -29,8 +28,8 @@ class LoginCheckpointController extends AbstractLoginController
     {
         parent::__construct();
 
-        $this->google2FA = $google2FA;
         $this->encrypter = $encrypter;
+        $this->google2FA = $google2FA;
         $this->validation = $validation;
     }
 
@@ -44,22 +43,25 @@ class LoginCheckpointController extends AbstractLoginController
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
-     * @throws \Exception
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function __invoke(LoginCheckpointRequest $request): JsonResponse
+    public function __invoke(LoginCheckpointRequest $request)
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
+            return;
         }
 
         $details = $request->session()->get('auth_confirmation_token');
         if (!$this->hasValidSessionData($details)) {
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
+            return;
         }
 
         if (!hash_equals($request->input('confirmation_token') ?? '', $details['token_value'])) {
             $this->sendFailedLoginResponse($request);
+            return;
         }
 
         try {
@@ -67,6 +69,7 @@ class LoginCheckpointController extends AbstractLoginController
             $user = User::query()->findOrFail($details['user_id']);
         } catch (ModelNotFoundException $exception) {
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
+            return;
         }
 
         // Recovery tokens go through a slightly different pathway for usage.
@@ -90,10 +93,8 @@ class LoginCheckpointController extends AbstractLoginController
      * it will be deleted from the database.
      *
      * @return bool
-     *
-     * @throws \Exception
      */
-    protected function isValidRecoveryToken(User $user, string $value)
+    protected function isValidRecoveryToken(User $user, string $value): bool
     {
         foreach ($user->recoveryTokens as $token) {
             if (password_verify($value, $token->token)) {
@@ -106,6 +107,11 @@ class LoginCheckpointController extends AbstractLoginController
         return false;
     }
 
+    protected function hasValidSessionData(array $data): bool
+    {
+        return static::isValidSessionData($this->validation, $data);
+    }
+
     /**
      * Determines if the data provided from the session is valid or not. This
      * will return false if the data is invalid, or if more time has passed than
@@ -114,9 +120,9 @@ class LoginCheckpointController extends AbstractLoginController
      * @param array $data
      * @return bool
      */
-    protected function hasValidSessionData(array $data): bool
+    public static function isValidSessionData(ValidationFactory $validation, array $data): bool
     {
-        $validator = $this->validation->make($data, [
+        $validator = $validation->make($data, [
             'user_id' => 'required|integer|min:1',
             'token_value' => 'required|string',
             'expires_at' => 'required',

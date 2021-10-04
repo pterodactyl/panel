@@ -3,41 +3,29 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 use Illuminate\Contracts\Encryption\Encrypter;
 
-class ServerDatabaseTransformer extends BaseTransformer
+class ServerDatabaseTransformer extends Transformer
 {
     /**
      * @var array
      */
     protected $availableIncludes = ['password', 'host'];
 
-    /**
-     * @var Encrypter
-     */
-    private $encrypter;
+    protected Encrypter $encrypter;
 
-    /**
-     * Perform dependency injection.
-     */
     public function handle(Encrypter $encrypter)
     {
         $this->encrypter = $encrypter;
     }
 
-    /**
-     * Return the resource name for the JSONAPI output.
-     */
     public function getResourceName(): string
     {
         return Database::RESOURCE_NAME;
     }
 
-    /**
-     * Transform a database model in a representation for the application API.
-     */
     public function transform(Database $model): array
     {
         return [
@@ -48,8 +36,8 @@ class ServerDatabaseTransformer extends BaseTransformer
             'username' => $model->username,
             'remote' => $model->remote,
             'max_connections' => $model->max_connections,
-            'created_at' => $model->created_at->toIso8601String(),
-            'updated_at' => $model->updated_at->toIso8601String(),
+            'created_at' => self::formatTimestamp($model->created_at),
+            'updated_at' => self::formatTimestamp($model->updated_at),
         ];
     }
 
@@ -71,8 +59,6 @@ class ServerDatabaseTransformer extends BaseTransformer
      * Return the database host relationship for this server database.
      *
      * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeHost(Database $model)
     {
@@ -80,12 +66,6 @@ class ServerDatabaseTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $model->loadMissing('host');
-
-        return $this->item(
-            $model->getRelation('host'),
-            $this->makeTransformer(DatabaseHostTransformer::class),
-            DatabaseHost::RESOURCE_NAME
-        );
+        return $this->item($model->host, new DatabaseHostTransformer());
     }
 }

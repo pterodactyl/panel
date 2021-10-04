@@ -21,7 +21,7 @@ const PowerControls = () => {
                     size={'xsmall'}
                     color={'green'}
                     isSecondary
-                    css={tw`mr-2`}
+                    css={tw`uppercase mr-2`}
                     disabled={status !== 'offline'}
                     onClick={e => {
                         e.preventDefault();
@@ -35,7 +35,7 @@ const PowerControls = () => {
                 <Button
                     size={'xsmall'}
                     isSecondary
-                    css={tw`mr-2`}
+                    css={tw`uppercase mr-2`}
                     disabled={!status}
                     onClick={e => {
                         e.preventDefault();

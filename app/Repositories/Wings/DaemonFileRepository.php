@@ -29,7 +29,7 @@ class DaemonFileRepository extends DaemonRepository
                 sprintf('/api/servers/%s/files/contents', $this->server->uuid),
                 [
                     'query' => ['file' => $path],
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -60,7 +60,7 @@ class DaemonFileRepository extends DaemonRepository
                 [
                     'query' => ['file' => $path],
                     'body' => $content,
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -81,7 +81,7 @@ class DaemonFileRepository extends DaemonRepository
                 sprintf('/api/servers/%s/files/list-directory', $this->server->uuid),
                 [
                     'query' => ['directory' => $path],
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -107,7 +107,7 @@ class DaemonFileRepository extends DaemonRepository
                         'name' => $name,
                         'path' => $path,
                     ],
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -131,7 +131,7 @@ class DaemonFileRepository extends DaemonRepository
                         'root' => $root ?? '/',
                         'files' => $files,
                     ],
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -154,7 +154,7 @@ class DaemonFileRepository extends DaemonRepository
                     'json' => [
                         'location' => $location,
                     ],
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -178,7 +178,7 @@ class DaemonFileRepository extends DaemonRepository
                         'root' => $root ?? '/',
                         'files' => $files,
                     ],
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -205,7 +205,7 @@ class DaemonFileRepository extends DaemonRepository
                     // Wait for up to 15 minutes for the archive to be completed when calling this endpoint
                     // since it will likely take quite awhile for large directories.
                     'timeout' => 60 * 15,
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -231,7 +231,7 @@ class DaemonFileRepository extends DaemonRepository
                         'root' => $root ?? '/',
                         'file' => $file,
                     ],
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -255,7 +255,7 @@ class DaemonFileRepository extends DaemonRepository
                         'root' => $root ?? '/',
                         'files' => $files,
                     ],
-                ]
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
@@ -267,7 +267,7 @@ class DaemonFileRepository extends DaemonRepository
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function pull(string $url, ?string $directory): ResponseInterface
+    public function pull(?string $root, string $url): ResponseInterface
     {
         Assert::isInstanceOf($this->server, Server::class);
 
@@ -275,8 +275,11 @@ class DaemonFileRepository extends DaemonRepository
             return $this->getHttpClient()->post(
                 sprintf('/api/servers/%s/files/pull', $this->server->uuid),
                 [
-                    'json' => ['url' => $url, 'directory' => $directory ?? '/'],
-                ]
+                    'json' => [
+                        'root' => $root ?? '/',
+                        'url' => $url,
+                    ],
+                ],
             );
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);

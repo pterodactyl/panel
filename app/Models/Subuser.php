@@ -4,16 +4,6 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Notifications\Notifiable;
 
-/**
- * @property int $id
- * @property int $user_id
- * @property int $server_id
- * @property array $permissions
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\User $user
- * @property \Pterodactyl\Models\Server $server
- */
 class Subuser extends Model
 {
     use Notifiable;
@@ -49,10 +39,7 @@ class Subuser extends Model
         'permissions' => 'array',
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'user_id' => 'required|numeric|exists:users,id',
         'server_id' => 'required|numeric|exists:servers,id',
         'permissions' => 'nullable|array',

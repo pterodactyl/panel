@@ -14,15 +14,8 @@ use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
 
 class ServerInstallController extends Controller
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Illuminate\Contracts\Events\Dispatcher
-     */
-    private $eventDispatcher;
+    private ServerRepository $repository;
+    private EventDispatcher $eventDispatcher;
 
     /**
      * ServerInstallController constructor.
@@ -36,16 +29,14 @@ class ServerInstallController extends Controller
     /**
      * Returns installation information for a server.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function index(Request $request, string $uuid)
+    public function index(Request $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
         $egg = $server->egg;
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'container_image' => $egg->copy_script_container,
             'entrypoint' => $egg->copy_script_entry,
             'script' => $egg->copy_script_install,
@@ -55,12 +46,10 @@ class ServerInstallController extends Controller
     /**
      * Updates the installation state of a server.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function store(InstallationDataRequest $request, string $uuid)
+    public function store(InstallationDataRequest $request, string $uuid): Response
     {
         $server = $this->repository->getByUuid($uuid);
 
@@ -76,6 +65,6 @@ class ServerInstallController extends Controller
             $this->eventDispatcher->dispatch(new ServerInstalled($server));
         }
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }

@@ -20,23 +20,18 @@ class ServerVariable extends Model
      */
     public const RESOURCE_NAME = 'server_variable';
 
-    /** @var bool */
-    protected $immutableDates = true;
-
-    /** @var string */
     protected $table = 'server_variables';
 
-    /** @var string[] */
+    protected bool $immutableDates = true;
+
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    /** @var string[] */
     protected $casts = [
         'server_id' => 'integer',
         'variable_id' => 'integer',
     ];
 
-    /** @var string[] */
-    public static $validationRules = [
+    public static array $validationRules = [
         'server_id' => 'required|int',
         'variable_id' => 'required|int',
         'variable_value' => 'string',

@@ -69,7 +69,7 @@ export default () => {
                             <h2 css={tw`text-2xl mb-6`}>Create new database</h2>
                             <Form css={tw`m-0`}>
                                 <Field
-                                    type={'string'}
+                                    type={'text'}
                                     id={'database_name'}
                                     name={'databaseName'}
                                     label={'Database Name'}
@@ -77,7 +77,7 @@ export default () => {
                                 />
                                 <div css={tw`mt-6`}>
                                     <Field
-                                        type={'string'}
+                                        type={'text'}
                                         id={'connections_from'}
                                         name={'connectionsFrom'}
                                         label={'Connections From'}

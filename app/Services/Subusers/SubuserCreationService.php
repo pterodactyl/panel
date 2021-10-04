@@ -82,8 +82,6 @@ class SubuserCreationService
                 $user = $this->userCreationService->handle([
                     'email' => $email,
                     'username' => $username,
-                    'name_first' => 'Server',
-                    'name_last' => 'Subuser',
                     'root_admin' => false,
                 ]);
             }

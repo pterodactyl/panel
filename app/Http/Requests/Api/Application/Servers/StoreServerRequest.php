@@ -4,26 +4,12 @@ namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Contracts\Validation\Validator;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_SERVERS;
-
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
-
-    /**
-     * Rules to be applied to this request.
-     */
     public function rules(): array
     {
         $rules = Server::getRules();
@@ -71,12 +57,7 @@ class StoreServerRequest extends ApplicationApiRequest
         ];
     }
 
-    /**
-     * Normalize the data into a format that can be consumed by the service.
-     *
-     * @return array
-     */
-    public function validated()
+    public function validated(): array
     {
         $data = parent::validated();
 
@@ -105,15 +86,12 @@ class StoreServerRequest extends ApplicationApiRequest
         ];
     }
 
-    /*
-     * Run validation after the rules above have been applied.
-     *
-     * @param \Illuminate\Contracts\Validation\Validator $validator
-     */
     public function withValidator(Validator $validator)
     {
         $validator->sometimes('allocation.default', [
-            'required', 'integer', 'bail',
+            'required',
+            'integer',
+            'bail',
             Rule::exists('allocations', 'id')->where(function ($query) {
                 $query->whereNull('server_id');
             }),
@@ -139,12 +117,7 @@ class StoreServerRequest extends ApplicationApiRequest
         });
     }
 
-    /**
-     * Return a deployment object that can be passed to the server creation service.
-     *
-     * @return \Pterodactyl\Models\Objects\DeploymentObject|null
-     */
-    public function getDeploymentObject()
+    public function getDeploymentObject(): ?DeploymentObject
     {
         if (is_null($this->input('deploy'))) {
             return null;

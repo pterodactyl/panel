@@ -25,35 +25,43 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     name: "php-${{ matrix.php }} (${{ matrix.database }})"
     steps:
-      - uses: actions/checkout@v2
-      - name: get cache directory
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get cache directory
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v2
+      - name: Cache
+        uses: actions/cache@v2
         with:
           path: |
             ~/.php_cs.cache
             ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-cache-${{ matrix.php }}-${{ hashFiles('**.composer.lock') }}
-      - uses: shivammathur/setup-php@v2
+          restore-keys: |
+            ${{ runner.os }}-cache-${{ matrix.php }}-
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
-      - run: cp .env.ci .env
-      - run: composer install --prefer-dist --no-interaction --no-progress
-      - run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php-cs-fixer.dist.php
+      - name: Configure .env
+        run: cp .env.ci .env
+      - name: composer install
+        run: composer install --prefer-dist --no-interaction --no-progress
+      - name: Run cs-fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php-cs-fixer.dist.php
         continue-on-error: true
-      - name: execute unit tests
-        run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
+      - name: Execute Unit Tests
+        run: php artisan test tests/Unit
         if: ${{ always() }}
         env:
-          DB_CONNECTION: testing
-          TESTING_DB_HOST: UNIT_NO_DB
-      - name: execute integration tests
-        run: vendor/bin/phpunit tests/Integration
+          TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
+          TESTING_DB_USERNAME: root
+      - name: Execute Integration Tests
+        run: php artisan test tests/Integration
         env:
           TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
           TESTING_DB_USERNAME: root

@@ -8,6 +8,9 @@ export interface SiteSettings {
         siteKey: string;
     };
     analytics: string;
+    features: {
+        pullFiles: boolean;
+    };
 }
 
 export interface SettingsStore {

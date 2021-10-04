@@ -41,7 +41,7 @@ export default ({ database, className }: Props) => {
     });
 
     const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
-        clearFlashes();
+        clearFlashes(undefined);
         deleteServerDatabase(uuid, database.id)
             .then(() => {
                 setVisible(false);

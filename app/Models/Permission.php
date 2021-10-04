@@ -93,10 +93,7 @@ class Permission extends Model
         'subuser_id' => 'integer',
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'subuser_id' => 'required|numeric|min:1',
         'permission' => 'required|string',
     ];

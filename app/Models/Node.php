@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +15,12 @@ use Illuminate\Contracts\Encryption\Encrypter;
  * @property string $name
  * @property string|null $description
  * @property int $location_id
+ * @property int|null $database_host_id
  * @property string $fqdn
+ * @property int $listen_port_http
+ * @property int $public_port_http
+ * @property int $listen_port_sftp
+ * @property int $public_port_sftp
  * @property string $scheme
  * @property bool $behind_proxy
  * @property bool $maintenance_mode
@@ -25,15 +31,14 @@ use Illuminate\Contracts\Encryption\Encrypter;
  * @property int $upload_size
  * @property string $daemon_token_id
  * @property string $daemon_token
- * @property int $daemonListen
- * @property int $daemonSFTP
- * @property string $daemonBase
+ * @property string $daemon_base
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Pterodactyl\Models\Location $location
  * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
+ * @property \Pterodactyl\Models\DatabaseHost $databaseHost
  */
 class Node extends Model
 {
@@ -69,10 +74,13 @@ class Node extends Model
      */
     protected $casts = [
         'location_id' => 'integer',
+        'database_host_id' => 'integer',
+        'listen_port_http' => 'integer',
+        'listen_port_sftp' => 'integer',
+        'public_port_http' => 'integer',
+        'public_port_sftp' => 'integer',
         'memory' => 'integer',
         'disk' => 'integer',
-        'daemonListen' => 'integer',
-        'daemonSFTP' => 'integer',
         'behind_proxy' => 'boolean',
         'public' => 'boolean',
         'maintenance_mode' => 'boolean',
@@ -84,32 +92,32 @@ class Node extends Model
      * @var array
      */
     protected $fillable = [
-        'public', 'name', 'location_id',
+        'public', 'name', 'location_id', 'database_host_id',
+        'listen_port_http', 'listen_port_sftp', 'public_port_http', 'public_port_sftp',
         'fqdn', 'scheme', 'behind_proxy',
         'memory', 'memory_overallocate', 'disk',
-        'disk_overallocate', 'upload_size', 'daemonBase',
-        'daemonSFTP', 'daemonListen',
+        'disk_overallocate', 'upload_size', 'daemon_base',
         'description', 'maintenance_mode',
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'name' => 'required|regex:/^([\w .-]{1,100})$/',
         'description' => 'string|nullable',
         'location_id' => 'required|exists:locations,id',
+        'database_host_id' => 'sometimes|nullable|exists:database_hosts,id',
         'public' => 'boolean',
         'fqdn' => 'required|string',
+        'listen_port_http' => 'required|numeric|between:1,65535',
+        'listen_port_sftp' => 'required|numeric|between:1,65535',
+        'public_port_http' => 'required|numeric|between:1,65535',
+        'public_port_sftp' => 'required|numeric|between:1,65535',
         'scheme' => 'required',
         'behind_proxy' => 'boolean',
         'memory' => 'required|numeric|min:1',
         'memory_overallocate' => 'required|numeric|min:-1',
         'disk' => 'required|numeric|min:1',
         'disk_overallocate' => 'required|numeric|min:-1',
-        'daemonBase' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
-        'daemonSFTP' => 'required|numeric|between:1,65535',
-        'daemonListen' => 'required|numeric|between:1,65535',
+        'daemon_base' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
         'maintenance_mode' => 'boolean',
         'upload_size' => 'int|between:1,1024',
     ];
@@ -120,13 +128,15 @@ class Node extends Model
      * @var array
      */
     protected $attributes = [
+        'listen_port_http' => 8080,
+        'listen_port_sftp' => 2022,
+        'public_port_http' => 8080,
+        'public_port_sftp' => 2022,
         'public' => true,
         'behind_proxy' => false,
         'memory_overallocate' => 0,
         'disk_overallocate' => 0,
-        'daemonBase' => '/var/lib/pterodactyl/volumes',
-        'daemonSFTP' => 2022,
-        'daemonListen' => 8080,
+        'daemon_base' => '/var/lib/pterodactyl/volumes',
         'maintenance_mode' => false,
     ];
 
@@ -135,13 +145,15 @@ class Node extends Model
      */
     public function getConnectionAddress(): string
     {
-        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
+        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->public_port_http);
     }
 
     /**
      * Returns the configuration as an array.
      *
      * @return array
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getConfiguration()
     {
@@ -152,18 +164,18 @@ class Node extends Model
             'token' => Container::getInstance()->make(Encrypter::class)->decrypt($this->daemon_token),
             'api' => [
                 'host' => '0.0.0.0',
-                'port' => $this->daemonListen,
+                'port' => $this->listen_port_http,
                 'ssl' => [
                     'enabled' => (!$this->behind_proxy && $this->scheme === 'https'),
-                    'cert' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
-                    'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
+                    'cert' => '/etc/letsencrypt/live/' . Str::lower($this->fqdn) . '/fullchain.pem',
+                    'key' => '/etc/letsencrypt/live/' . Str::lower($this->fqdn) . '/privkey.pem',
                 ],
                 'upload_limit' => $this->upload_size,
             ],
             'system' => [
-                'data' => $this->daemonBase,
+                'data' => $this->daemon_base,
                 'sftp' => [
-                    'bind_port' => $this->daemonSFTP,
+                    'bind_port' => $this->listen_port_sftp,
                 ],
             ],
             'allowed_mounts' => $this->mounts->pluck('source')->toArray(),
@@ -175,6 +187,8 @@ class Node extends Model
      * Returns the configuration in Yaml format.
      *
      * @return string
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getYamlConfiguration()
     {
@@ -185,6 +199,8 @@ class Node extends Model
      * Returns the configuration in JSON format.
      *
      * @return string
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getJsonConfiguration(bool $pretty = false)
     {
@@ -193,6 +209,8 @@ class Node extends Model
 
     /**
      * Helper function to return the decrypted key for a node.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function getDecryptedKey(): string
     {
@@ -237,6 +255,16 @@ class Node extends Model
     public function allocations()
     {
         return $this->hasMany(Allocation::class);
+    }
+
+    /**
+     * Gets the database host associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function databaseHost()
+    {
+        return $this->belongsTo(DatabaseHost::class);
     }
 
     /**

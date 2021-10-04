@@ -4,8 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Auth\AuthManager;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Auth\SessionGuard;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -13,31 +12,29 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 
 class AccountController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
-
-    /**
-     * @var \Illuminate\Auth\SessionGuard
-     */
-    private $sessionGuard;
+    private SessionGuard $sessionGuard;
+    private UserUpdateService $updateService;
 
     /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $sessionGuard, UserUpdateService $updateService)
+    public function __construct(SessionGuard $sessionGuard, UserUpdateService $updateService)
     {
         parent::__construct();
 
-        $this->updateService = $updateService;
         $this->sessionGuard = $sessionGuard;
+        $this->updateService = $updateService;
     }
 
+    /**
+     * Gets information about the currently authenticated user.
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
     public function index(Request $request): array
     {
         return $this->fractal->item($request->user())
-            ->transformWith($this->getTransformer(AccountTransformer::class))
+            ->transformWith(AccountTransformer::class)
             ->toArray();
     }
 
@@ -47,11 +44,11 @@ class AccountController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function updateEmail(UpdateEmailRequest $request): JsonResponse
+    public function updateEmail(UpdateEmailRequest $request): Response
     {
         $this->updateService->handle($request->user(), $request->validated());
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
@@ -60,7 +57,7 @@ class AccountController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function updatePassword(UpdatePasswordRequest $request): JsonResponse
+    public function updatePassword(UpdatePasswordRequest $request): Response
     {
         $user = $this->updateService->handle($request->user(), $request->validated());
 
@@ -72,6 +69,6 @@ class AccountController extends ClientApiController
 
         $this->sessionGuard->logoutOtherDevices($request->input('password'));
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 }

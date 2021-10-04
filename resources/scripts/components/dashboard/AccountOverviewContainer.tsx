@@ -1,14 +1,13 @@
-import * as React from 'react';
+import React from 'react';
 import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import tw from 'twin.macro';
-import { breakpoint } from '@/theme';
-import styled from 'styled-components/macro';
-import MessageBox from '@/components/MessageBox';
 import { useLocation } from 'react-router-dom';
+import tw, { styled } from 'twin.macro';
+import { breakpoint } from '@/theme';
+import MessageBox from '@/components/MessageBox';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -27,7 +26,7 @@ const Container = styled.div`
 `;
 
 export default () => {
-    const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
+    const { state } = useLocation<{ twoFactorRedirect?: boolean } | undefined>();
 
     return (
         <PageContentBlock title={'Account Overview'}>

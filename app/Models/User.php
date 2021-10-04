@@ -4,41 +4,21 @@ namespace Pterodactyl\Models;
 
 use Pterodactyl\Rules\Username;
 use Illuminate\Support\Collection;
-use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
-/**
- * @property int $id
- * @property string|null $external_id
- * @property string $uuid
- * @property string $username
- * @property string $email
- * @property string|null $name_first
- * @property string|null $name_last
- * @property string $password
- * @property string|null $remeber_token
- * @property string $language
- * @property bool $root_admin
- * @property bool $use_totp
- * @property string|null $totp_secret
- * @property \Carbon\Carbon|null $totp_authenticated_at
- * @property bool $gravatar
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $name
- * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
- */
 class User extends Model implements
     AuthenticatableContract,
     AuthorizableContract,
@@ -48,6 +28,8 @@ class User extends Model implements
     use Authorizable;
     use AvailableLanguages;
     use CanResetPassword;
+    use HasAccessTokens;
+    use HasFactory;
     use Notifiable;
 
     public const USER_LEVEL_USER = 0;
@@ -82,14 +64,12 @@ class User extends Model implements
         'external_id',
         'username',
         'email',
-        'name_first',
-        'name_last',
         'password',
         'language',
         'use_totp',
         'totp_secret',
         'totp_authenticated_at',
-        'gravatar',
+        'admin_role_id',
         'root_admin',
     ];
 
@@ -131,17 +111,14 @@ class User extends Model implements
 
     /**
      * Rules verifying that the data being stored matches the expectations of the database.
-     *
-     * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'uuid' => 'required|string|size:36|unique:users,uuid',
         'email' => 'required|email|between:1,191|unique:users,email',
         'external_id' => 'sometimes|nullable|string|max:191|unique:users,external_id',
         'username' => 'required|between:1,191|unique:users,username',
-        'name_first' => 'required|string|between:1,191',
-        'name_last' => 'required|string|between:1,191',
         'password' => 'sometimes|nullable|string',
+        'admin_role_id' => 'sometimes|nullable|exists:admin_roles,id',
         'root_admin' => 'boolean',
         'language' => 'string',
         'use_totp' => 'boolean',
@@ -156,7 +133,7 @@ class User extends Model implements
     {
         $rules = parent::getRules();
 
-        $rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
+        //$rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
         $rules['username'][] = new Username();
 
         return $rules;
@@ -165,9 +142,13 @@ class User extends Model implements
     /**
      * Return the user model in a format that can be passed over to Vue templates.
      */
-    public function toVueObject(): array
+    public function toReactObject(): array
     {
-        return (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
+        $object = (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
+        $object['avatar_url'] = $this->avatarURL();
+        $object['role_name'] = $this->adminRoleName();
+
+        return $object;
     }
 
     /**
@@ -189,49 +170,56 @@ class User extends Model implements
     }
 
     /**
-     * Return a concatenated result for the accounts full name.
-     *
-     * @return string
+     * Gets the avatar url for the user.
      */
-    public function getNameAttribute()
+    public function avatarURL(): string
     {
-        return trim($this->name_first . ' ' . $this->name_last);
+        return 'https://www.gravatar.com/avatar/' . md5($this->email) . '.jpg';
     }
 
     /**
-     * Returns all servers that a user owns.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Gets the name of the role assigned to a user.
      */
-    public function servers()
+    public function adminRoleName(): ?string
+    {
+        $role = $this->adminRole;
+        if (is_null($role)) {
+            return $this->root_admin ? 'None' : null;
+        }
+
+        return $role->name;
+    }
+
+    public function adminRole(): HasOne
+    {
+        return $this->hasOne(AdminRole::class, 'id', 'admin_role_id');
+    }
+
+    public function servers(): HasMany
     {
         return $this->hasMany(Server::class, 'owner_id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function apiKeys()
+    public function sshKeys(): HasMany
     {
-        return $this->hasMany(ApiKey::class)
-            ->where('key_type', ApiKey::TYPE_ACCOUNT);
+        return $this->hasMany(UserSSHKey::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function recoveryTokens()
+    public function recoveryTokens(): HasMany
     {
         return $this->hasMany(RecoveryToken::class);
+    }
+
+    public function webauthnKeys(): HasMany
+    {
+        return $this->hasMany(WebauthnKey::class);
     }
 
     /**
      * Returns all of the servers that a user can access by way of being the owner of the
      * server, or because they are assigned as a subuser for that server.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function accessibleServers()
+    public function accessibleServers(): Builder
     {
         return Server::query()
             ->select('servers.*')
