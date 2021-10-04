@@ -257,18 +257,16 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
             {({ isSubmitting, isValid }) => (
                 <Form>
                     <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8 mb-16`}>
-                        <div css={tw`flex flex-col`}>
-                            <div css={tw`mb-6 lg:mb-10`}>
-                                <BaseSettingsBox/>
-                            </div>
-                            <div css={tw`mb-6 lg:mb-10`}>
-                                <ServerFeatureContainer/>
-                            </div>
+                        <div css={tw`grid grid-cols-1 gap-y-6`}>
+                            <BaseSettingsBox/>
+                            <ServerFeatureContainer/>
                             <ServerAllocationsContainer server={server}/>
                         </div>
+
                         <div css={tw`flex flex-col`}>
-                            <ServerResourceContainer css={tw`mb-6`}/>
-                            <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6`}>
+                            <ServerResourceContainer/>
+
+                            <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6 mt-6`}>
                                 <div css={tw`flex flex-row`}>
                                     <ServerDeleteButton
                                         serverId={server?.id}

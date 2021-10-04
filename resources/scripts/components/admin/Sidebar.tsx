@@ -61,11 +61,11 @@ const Sidebar = styled.div<{ $collapsed?: boolean }>`
     }
 
     ${Wrapper} {
-        ${tw`px-5`};
+      ${tw`px-5`};
 
-        & > a {
-            ${tw`justify-center px-0`};
-        }
+      & > a {
+        ${tw`justify-center px-0`};
+      }
     }
 
     & > a {

@@ -50,7 +50,7 @@ export default function EggInstallContainer ({ egg }: { egg: Egg }) {
             }}
         >
             {({ isSubmitting, isValid }) => (
-                <AdminBox icon={faScroll} title={'Install Script'} padding={false}>
+                <AdminBox icon={faScroll} title={'Install Script'} noPadding>
                     <div css={tw`relative pb-4`}>
                         <SpinnerOverlay visible={isSubmitting}/>
 
