@@ -194,7 +194,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJsonCount(3);
+        $response->assertJsonCount(2);
         $response->assertJsonStructure([
             'object',
             'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'created_at', 'updated_at'],
