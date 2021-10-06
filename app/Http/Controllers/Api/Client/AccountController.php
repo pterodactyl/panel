@@ -12,22 +12,22 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 
 class AccountController extends ClientApiController
 {
+    private UserUpdateService $updateService;
+
     /**
      * @var \Illuminate\Auth\SessionGuard
      */
-    private $authManager;
-
-    private UserUpdateService $updateService;
+    private $sessionGuard;
 
     /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $authManager, UserUpdateService $updateService)
+    public function __construct(UserUpdateService $updateService, AuthManager $sessionGuard)
     {
         parent::__construct();
 
-        $this->authManager = $authManager;
         $this->updateService = $updateService;
+        $this->sessionGuard = $sessionGuard;
     }
 
     /**
@@ -64,9 +64,10 @@ class AccountController extends ClientApiController
         // cached copy of the user that does not include the updated password. Do this
         // to correctly store the new user details in the guard and allow the logout
         // other devices functionality to work.
-        $this->authManager->setUser($user);
+        $this->sessionGuard->setUser($user);
 
-        $this->authManager->logoutOtherDevices($request->input('password'));
+        // TODO: Find another way to do this, function doesn't exist due to API changes.
+        //$this->sessionGuard->logoutOtherDevices($request->input('password'));
 
         return $this->returnNoContent();
     }
