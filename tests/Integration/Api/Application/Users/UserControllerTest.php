@@ -198,7 +198,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonStructure([
             'object',
             'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'created_at', 'updated_at'],
-            'meta' => ['resource'],
         ]);
 
         $this->assertDatabaseHas('users', ['username' => 'testuser', 'email' => 'test@example.com']);
@@ -207,9 +206,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJson([
             'object' => 'user',
             'attributes' => (new UserTransformer())->transform($user),
-            'meta' => [
-                'resource' => route('api.application.users.view', $user->id),
-            ],
         ], true);
     }
 
