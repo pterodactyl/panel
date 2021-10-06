@@ -15,8 +15,10 @@ import Input from '@/components/elements/Input';
 import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
 import InputSpinner from '@/components/elements/InputSpinner';
 import useFlash from '@/plugins/useFlash';
+import { useTranslation } from 'react-i18next';
 
 const StartupContainer = () => {
+    const { t } = useTranslation();
     const [ loading, setLoading ] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
@@ -72,14 +74,14 @@ const StartupContainer = () => {
                 <Spinner centered size={Spinner.Size.LARGE}/>
                 :
                 <ServerError
-                    title={'Oops!'}
+                    title={t('Startup Error Title')}
                     message={httpErrorToHuman(error)}
                     onRetry={() => mutate()}
                 />
             :
-            <ServerContentBlock title={'Startup Settings'} showFlashKey={'startup:image'}>
+            <ServerContentBlock title={t('Startup Title')} showFlashKey={'startup:image'}>
                 <div css={tw`md:flex`}>
-                    <TitledGreyBox title={'Startup Command'} css={tw`flex-1`}>
+                    <TitledGreyBox title={t('Startup Command Title')} css={tw`flex-1`}>
                         <div css={tw`px-1 py-2`}>
                             <p css={tw`font-mono bg-neutral-900 rounded py-2 px-4`}>
                                 {data.invocation}
@@ -101,8 +103,7 @@ const StartupContainer = () => {
                                     </Select>
                                 </InputSpinner>
                                 <p css={tw`text-xs text-neutral-300 mt-2`}>
-                                    This is an advanced feature allowing you to select a Docker image to use when
-                                    running this server instance.
+                                    {t('Startup Docker Title')}
                                 </p>
                             </>
                             :
@@ -110,15 +111,14 @@ const StartupContainer = () => {
                                 <Input disabled readOnly value={variables.dockerImage}/>
                                 {isCustomImage &&
                                 <p css={tw`text-xs text-neutral-300 mt-2`}>
-                                    This {'server\'s'} Docker image has been manually set by an administrator and cannot
-                                    be changed through this UI.
+                                    {t('Startup Docker Change Blocked 1')} {'server\'s'} {t('Startup Docker Change Blocked 2')}
                                 </p>
                                 }
                             </>
                         }
                     </TitledGreyBox>
                 </div>
-                <h3 css={tw`mt-8 mb-2 text-2xl`}>Variables</h3>
+                <h3 css={tw`mt-8 mb-2 text-2xl`}>{t('Startup Variables Title')}</h3>
                 <div css={tw`grid gap-8 md:grid-cols-2`}>
                     {data.variables.map(variable => <VariableBox key={variable.envVariable} variable={variable}/>)}
                 </div>

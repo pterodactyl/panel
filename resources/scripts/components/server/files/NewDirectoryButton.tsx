@@ -13,14 +13,11 @@ import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     directoryName: string;
 }
-
-const schema = object().shape({
-    directoryName: string().required('A valid directory name must be provided.'),
-});
 
 const generateDirectoryData = (name: string): FileObject => ({
     key: `dir_${name.split('/', 1)[0] ?? name}`,
@@ -38,6 +35,7 @@ const generateDirectoryData = (name: string): FileObject => ({
 });
 
 export default ({ className }: WithClassname) => {
+    const { t } = useTranslation();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ visible, setVisible ] = useState(false);
@@ -64,6 +62,10 @@ export default ({ className }: WithClassname) => {
             });
     };
 
+    const schema = object().shape({
+        directoryName: string().required(t('File Manager Create Directory Info')),
+    });
+
     return (
         <>
             <Formik
@@ -87,10 +89,10 @@ export default ({ className }: WithClassname) => {
                                 autoFocus
                                 id={'directoryName'}
                                 name={'directoryName'}
-                                label={'Directory Name'}
+                                label={t('File Manager Create Directory Title')}
                             />
                             <p css={tw`text-xs mt-2 text-neutral-400 break-all`}>
-                                <span css={tw`text-neutral-200`}>This directory will be created as</span>
+                                <span css={tw`text-neutral-200`}>{t('File Manager Create Directory Desc')}</span>
                                 &nbsp;/home/container/
                                 <span css={tw`text-cyan-200`}>
                                     {join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}
@@ -98,7 +100,7 @@ export default ({ className }: WithClassname) => {
                             </p>
                             <div css={tw`flex justify-end`}>
                                 <Button css={tw`mt-8`}>
-                                    Create Directory
+                                    {t('File Manager Create Directory Button')}
                                 </Button>
                             </div>
                         </Form>
@@ -106,7 +108,7 @@ export default ({ className }: WithClassname) => {
                 )}
             </Formik>
             <Button isSecondary onClick={() => setVisible(true)} className={className}>
-                Create Directory
+                {t('File Manager Create Directory Button')}
             </Button>
         </>
     );

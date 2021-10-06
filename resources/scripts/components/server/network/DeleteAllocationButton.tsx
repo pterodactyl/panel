@@ -7,12 +7,14 @@ import { ServerContext } from '@/state/server';
 import deleteServerAllocation from '@/api/server/network/deleteServerAllocation';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import useFlash from '@/plugins/useFlash';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     allocation: number;
 }
 
 const DeleteAllocationButton = ({ allocation }: Props) => {
+    const { t } = useTranslation();
     const [ confirm, setConfirm ] = useState(false);
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -35,12 +37,12 @@ const DeleteAllocationButton = ({ allocation }: Props) => {
         <>
             <ConfirmationModal
                 visible={confirm}
-                title={'Remove this allocation?'}
-                buttonText={'Delete'}
+                title={t('Network Delete Alocation Title')}
+                buttonText={t('Network Delete Alocation Button')}
                 onConfirmed={deleteAllocation}
                 onModalDismissed={() => setConfirm(false)}
             >
-                This allocation will be immediately removed from your server. Are you sure you want to continue?
+                {t('Network Delete Alocation Confirm')}
             </ConfirmationModal>
             <button
                 css={tw`text-neutral-400 px-2 py-1 mr-2 transition-colors duration-150 hover:text-red-400`}

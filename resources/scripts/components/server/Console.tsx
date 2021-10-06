@@ -15,6 +15,7 @@ import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
+import { useTranslation } from 'react-i18next';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -66,6 +67,7 @@ const CommandInput = styled.input`
 `;
 
 export default () => {
+    const { t } = useTranslation();
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
@@ -219,7 +221,7 @@ export default () => {
                     <div css={tw`w-full`}>
                         <CommandInput
                             type={'text'}
-                            placeholder={'Type a command...'}
+                            placeholder={t('Type a command')}
                             aria-label={'Console command input.'}
                             disabled={!instance || !connected}
                             onKeyDown={handleCommandKeyDown}

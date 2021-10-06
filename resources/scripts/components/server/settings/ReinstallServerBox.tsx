@@ -8,8 +8,10 @@ import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
+    const { t } = useTranslation();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [ isSubmitting, setIsSubmitting ] = useState(false);
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -42,25 +44,19 @@ export default () => {
     }, []);
 
     return (
-        <TitledGreyBox title={'Reinstall Server'} css={tw`relative`}>
+        <TitledGreyBox title={t('Settings Reinstall Server Title')} css={tw`relative`}>
             <ConfirmationModal
-                title={'Confirm server reinstallation'}
-                buttonText={'Yes, reinstall server'}
+                title={t('Settings Confirmation Reinstall')}
+                buttonText={t('Settings Confirm Reinstall')}
                 onConfirmed={reinstall}
                 showSpinnerOverlay={isSubmitting}
                 visible={modalVisible}
                 onModalDismissed={() => setModalVisible(false)}
             >
-                Your server will be stopped and some files may be deleted or modified during this process, are you sure
-                you wish to continue?
+                {t('Settings Reinstall Server Desc')}
             </ConfirmationModal>
             <p css={tw`text-sm`}>
-                Reinstalling your server will stop it, and then re-run the installation script that initially
-                set it up.&nbsp;
-                <strong css={tw`font-medium`}>
-                    Some files may be deleted or modified during this process, please back up your data before
-                    continuing.
-                </strong>
+                {t('Settings Reinstall Desc 1')} <strong css={tw`font-medium`}> {t('Settings Reinstall Desc 2')}</strong>
             </p>
             <div css={tw`mt-6 text-right`}>
                 <Button
@@ -69,7 +65,7 @@ export default () => {
                     isSecondary
                     onClick={() => setModalVisible(true)}
                 >
-                    Reinstall Server
+                    {t('Settings Reinstall Button')}
                 </Button>
             </div>
         </TitledGreyBox>

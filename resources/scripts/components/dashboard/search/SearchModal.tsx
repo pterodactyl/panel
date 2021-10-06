@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
+import { useTranslation } from 'react-i18next';
 
 type Props = RequiredModalProps;
 
@@ -45,6 +46,7 @@ const SearchWatcher = () => {
 };
 
 export default ({ ...props }: Props) => {
+    const { t } = useTranslation();
     const ref = useRef<HTMLInputElement>(null);
     const isAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ servers, setServers ] = useState<Server[]>([]);
@@ -86,8 +88,8 @@ export default ({ ...props }: Props) => {
                     <Form>
                         <FormikFieldWrapper
                             name={'term'}
-                            label={'Search term'}
-                            description={'Enter a server name, uuid, or allocation to begin searching.'}
+                            label={t('Search Term')}
+                            description={t('Identify Server')}
                         >
                             <SearchWatcher/>
                             <InputSpinner visible={isSubmitting}>

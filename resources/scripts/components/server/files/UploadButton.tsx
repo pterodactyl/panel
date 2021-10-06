@@ -12,6 +12,7 @@ import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
+import { useTranslation } from 'react-i18next';
 
 const InnerContainer = styled.div`
   max-width: 600px;
@@ -19,6 +20,7 @@ const InnerContainer = styled.div`
 `;
 
 export default ({ className }: WithClassname) => {
+    const { t } = useTranslation();
     const fileUploadInput = useRef<HTMLInputElement>(null);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [ visible, setVisible ] = useState(false);
@@ -94,7 +96,7 @@ export default ({ className }: WithClassname) => {
                     <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
                         <InnerContainer>
                             <p css={tw`text-lg text-neutral-200 text-center`}>
-                                Drag and drop files to upload.
+                                {t('File Manager Drop Files')}
                             </p>
                         </InnerContainer>
                     </div>
@@ -122,7 +124,7 @@ export default ({ className }: WithClassname) => {
                         : setVisible(true);
                 }}
             >
-                Upload
+                {t('File Manager Upload Files Button')}
             </Button>
         </>
     );

@@ -12,6 +12,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     schedule?: Schedule;
@@ -29,6 +30,7 @@ interface Values {
 }
 
 const EditScheduleModal = ({ schedule }: Props) => {
+    const { t } = useTranslation();
     const { addError, clearFlashes } = useFlash();
     const { dismiss } = useContext(ModalContext);
 
@@ -85,41 +87,40 @@ const EditScheduleModal = ({ schedule }: Props) => {
         >
             {({ isSubmitting }) => (
                 <Form>
-                    <h3 css={tw`text-2xl mb-6`}>{schedule ? 'Edit schedule' : 'Create new schedule'}</h3>
+                    <h3 css={tw`text-2xl mb-6`}>{schedule ? t('Schedule Edit Title') : t('Schedule Create Title')}</h3>
                     <FlashMessageRender byKey={'schedule:edit'} css={tw`mb-6`}/>
                     <Field
                         name={'name'}
-                        label={'Schedule name'}
-                        description={'A human readable identifer for this schedule.'}
+                        label={t('Schedule Name')}
+                        description={t('Schedule Desc')}
                     />
                     <div css={tw`grid grid-cols-2 sm:grid-cols-5 gap-4 mt-6`}>
-                        <Field name={'minute'} label={'Minute'}/>
-                        <Field name={'hour'} label={'Hour'}/>
-                        <Field name={'dayOfMonth'} label={'Day of month'}/>
-                        <Field name={'month'} label={'Month'}/>
-                        <Field name={'dayOfWeek'} label={'Day of week'}/>
+                        <Field name={'minute'} label={t('Schedule Minute')}/>
+                        <Field name={'hour'} label={t('Schedule Hour')}/>
+                        <Field name={'dayOfMonth'} label={t('Schedule Day Of Month')}/>
+                        <Field name={'month'} label={t('Schedule Month')}/>
+                        <Field name={'dayOfWeek'} label={t('Schedule Day Of Week')}/>
                     </div>
                     <p css={tw`text-neutral-400 text-xs mt-2`}>
-                        The schedule system supports the use of Cronjob syntax when defining when tasks should begin
-                        running. Use the fields above to specify when these tasks should begin running.
+                        {t('Schedule Description')}
                     </p>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'onlyWhenOnline'}
-                            description={'Only execute this schedule when the server is in a running state.'}
-                            label={'Only When Server Is Online'}
+                            description={t('Schedule Option 1 Desc')}
+                            label={t('Schedule Option 1')}
                         />
                     </div>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'enabled'}
-                            description={'This schedule will be executed automatically if enabled.'}
-                            label={'Schedule Enabled'}
+                            description={t('Schedule Option 2 Desc')}
+                            label={t('Schedule Option 2')}
                         />
                     </div>
                     <div css={tw`mt-6 text-right`}>
                         <Button css={tw`w-full sm:w-auto`} type={'submit'} disabled={isSubmitting}>
-                            {schedule ? 'Save changes' : 'Create schedule'}
+                            {schedule ? t('Schedule Edit Button') : t('Schedule Create Button')}
                         </Button>
                     </div>
                 </Form>

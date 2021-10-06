@@ -31,35 +31,38 @@ import RequireServerPermission from '@/hoc/RequireServerPermission';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
+import { useTranslation } from 'react-i18next';
 
 const ConflictStateRenderer = () => {
+    const { t } = useTranslation();
     const status = ServerContext.useStoreState(state => state.server.data?.status || null);
     const isTransferring = ServerContext.useStoreState(state => state.server.data?.isTransferring || false);
 
     return (
         status === 'installing' || status === 'install_failed' ?
             <ScreenBlock
-                title={'Running Installer'}
+                title={t('Routers Server Installer Title')}
                 image={ServerInstallSvg}
-                message={'Your server should be ready soon, please try again in a few minutes.'}
+                message={t('Routers Server Installer Desc')}
             />
             :
             status === 'suspended' ?
                 <ScreenBlock
-                    title={'Server Suspended'}
+                    title={t('Routers Server Suspended Title')}
                     image={ServerErrorSvg}
-                    message={'This server is suspended and cannot be accessed.'}
+                    message={t('Routers Server Suspended Desc')}
                 />
                 :
                 <ScreenBlock
-                    title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
+                    title={isTransferring ? t('Routers Server Transferring Title') : t('Routers Server Restoring Title')}
                     image={ServerRestoreSvg}
-                    message={isTransferring ? 'Your server is being transfered to a new node, please check back later.' : 'Your server is currently being restored from a backup, please check back in a few minutes.'}
+                    message={isTransferring ? t('Routers Server Transferring Desc') : t('Routers Server Restoring Desc')}
                 />
     );
 };
 
 const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
+    const { t } = useTranslation();
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ error, setError ] = useState('');
 
@@ -101,30 +104,30 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     <CSSTransition timeout={150} classNames={'fade'} appear in>
                         <SubNavigation>
                             <div>
-                                <NavLink to={`${match.url}`} exact>Console</NavLink>
+                                <NavLink to={`${match.url}`} exact>{t('Routers Server Title Console')}</NavLink>
                                 <Can action={'file.*'}>
-                                    <NavLink to={`${match.url}/files`}>File Manager</NavLink>
+                                    <NavLink to={`${match.url}/files`}>{t('Routers Server Title File Manager')}</NavLink>
                                 </Can>
                                 <Can action={'database.*'}>
-                                    <NavLink to={`${match.url}/databases`}>Databases</NavLink>
+                                    <NavLink to={`${match.url}/databases`}>{t('Routers Server Title Databases')}</NavLink>
                                 </Can>
                                 <Can action={'schedule.*'}>
-                                    <NavLink to={`${match.url}/schedules`}>Schedules</NavLink>
+                                    <NavLink to={`${match.url}/schedules`}>{t('Routers Server Title Schedules')}</NavLink>
                                 </Can>
                                 <Can action={'user.*'}>
-                                    <NavLink to={`${match.url}/users`}>Users</NavLink>
+                                    <NavLink to={`${match.url}/users`}>{t('Routers Server Title Users')}</NavLink>
                                 </Can>
                                 <Can action={'backup.*'}>
-                                    <NavLink to={`${match.url}/backups`}>Backups</NavLink>
+                                    <NavLink to={`${match.url}/backups`}>{t('Routers Server Title Backups')}</NavLink>
                                 </Can>
                                 <Can action={'allocation.*'}>
-                                    <NavLink to={`${match.url}/network`}>Network</NavLink>
+                                    <NavLink to={`${match.url}/network`}>{t('Routers Server Title Network')}</NavLink>
                                 </Can>
                                 <Can action={'startup.*'}>
-                                    <NavLink to={`${match.url}/startup`}>Startup</NavLink>
+                                    <NavLink to={`${match.url}/startup`}>{t('Routers Server Title Startup')}</NavLink>
                                 </Can>
                                 <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
-                                    <NavLink to={`${match.url}/settings`}>Settings</NavLink>
+                                    <NavLink to={`${match.url}/settings`}>{t('Routers Server Title Settings')}</NavLink>
                                 </Can>
                                 {rootAdmin &&
                                 <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>

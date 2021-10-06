@@ -19,6 +19,7 @@ import Label from '@/components/elements/Label';
 import Input from '@/components/elements/Input';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     database: ServerDatabase;
@@ -26,6 +27,7 @@ interface Props {
 }
 
 export default ({ database, className }: Props) => {
+    const { t } = useTranslation();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
@@ -36,8 +38,8 @@ export default ({ database, className }: Props) => {
 
     const schema = object().shape({
         confirm: string()
-            .required('The database name must be provided.')
-            .oneOf([ database.name.split('_', 2)[1], database.name ], 'The database name must be provided.'),
+            .required(t('Database Name Provided'))
+            .oneOf([ database.name.split('_', 2)[1], database.name ], t('Database Name Provided')),
     });
 
     const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
@@ -74,18 +76,17 @@ export default ({ database, className }: Props) => {
                             }}
                         >
                             <FlashMessageRender byKey={'database:delete'} css={tw`mb-6`}/>
-                            <h2 css={tw`text-2xl mb-6`}>Confirm database deletion</h2>
+                            <h2 css={tw`text-2xl mb-6`}>{t('Database Deletion Title')}</h2>
                             <p css={tw`text-sm`}>
-                                Deleting a database is a permanent action, it cannot be undone. This will permanetly
-                                delete the <strong>{database.name}</strong> database and remove all associated data.
+                                {t('Database Deletion Desc 1')} <strong>{database.name}</strong> {t('Database Deletion Desc 2')}
                             </p>
                             <Form css={tw`m-0 mt-6`}>
                                 <Field
                                     type={'text'}
                                     id={'confirm_name'}
                                     name={'confirm'}
-                                    label={'Confirm Database Name'}
-                                    description={'Enter the database name to confirm deletion.'}
+                                    label={t('Database Confirm Name')}
+                                    description={t('Database Confirm Name Desc')}
                                 />
                                 <div css={tw`mt-6 text-right`}>
                                     <Button
@@ -94,14 +95,14 @@ export default ({ database, className }: Props) => {
                                         css={tw`mr-2`}
                                         onClick={() => setVisible(false)}
                                     >
-                                        Cancel
+                                        {t('Cancel')}
                                     </Button>
                                     <Button
                                         type={'submit'}
                                         color={'red'}
                                         disabled={!isValid}
                                     >
-                                        Delete Database
+                                        {t('Database Delete Button')}
                                     </Button>
                                 </div>
                             </Form>
@@ -111,27 +112,27 @@ export default ({ database, className }: Props) => {
             </Formik>
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
                 <FlashMessageRender byKey={'database-connection-modal'} css={tw`mb-6`}/>
-                <h3 css={tw`mb-6 text-2xl`}>Database connection details</h3>
+                <h3 css={tw`mb-6 text-2xl`}>{t('Database Info Title')}</h3>
                 <div>
-                    <Label>Endpoint</Label>
+                    <Label>{t('Database IP')}</Label>
                     <CopyOnClick text={database.connectionString}><Input type={'text'} readOnly value={database.connectionString} /></CopyOnClick>
                 </div>
                 <div css={tw`mt-6`}>
-                    <Label>Connections from</Label>
+                    <Label>{t('Database Connections From')}</Label>
                     <Input type={'text'} readOnly value={database.allowConnectionsFrom} />
                 </div>
                 <div css={tw`mt-6`}>
-                    <Label>Username</Label>
+                    <Label>{t('Database Username')}</Label>
                     <CopyOnClick text={database.username}><Input type={'text'} readOnly value={database.username} /></CopyOnClick>
                 </div>
                 <Can action={'database.view_password'}>
                     <div css={tw`mt-6`}>
-                        <Label>Password</Label>
+                        <Label>{t('Database Password')}</Label>
                         <CopyOnClick text={database.password}><Input type={'text'} readOnly value={database.password}/></CopyOnClick>
                     </div>
                 </Can>
                 <div css={tw`mt-6`}>
-                    <Label>JDBC Connection String</Label>
+                    <Label>{t('Database JDBC')}</Label>
                     <CopyOnClick text={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}>
                         <Input
                             type={'text'}
@@ -145,7 +146,7 @@ export default ({ database, className }: Props) => {
                         <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase}/>
                     </Can>
                     <Button isSecondary onClick={() => setConnectionVisible(false)}>
-                        Close
+                        {t('Close')}
                     </Button>
                 </div>
             </Modal>
@@ -158,15 +159,15 @@ export default ({ database, className }: Props) => {
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
                     <CopyOnClick text={database.connectionString}><p css={tw`text-sm`}>{database.connectionString}</p></CopyOnClick>
-                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Endpoint</p>
+                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>{t('Database IP')}</p>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
                     <p css={tw`text-sm`}>{database.allowConnectionsFrom}</p>
-                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Connections from</p>
+                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>{t('Database Connections From')}</p>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
                     <CopyOnClick text={database.username}><p css={tw`text-sm`}>{database.username}</p></CopyOnClick>
-                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Username</p>
+                    <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>{t('Database Username')}</p>
                 </div>
                 <div css={tw`ml-8`}>
                     <Button isSecondary css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>

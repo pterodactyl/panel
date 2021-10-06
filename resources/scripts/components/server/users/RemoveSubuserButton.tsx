@@ -9,8 +9,10 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import tw from 'twin.macro';
+import { useTranslation } from 'react-i18next';
 
 export default ({ subuser }: { subuser: Subuser }) => {
+    const { t } = useTranslation();
     const [ loading, setLoading ] = useState(false);
     const [ showConfirmation, setShowConfirmation ] = useState(false);
 
@@ -36,15 +38,14 @@ export default ({ subuser }: { subuser: Subuser }) => {
     return (
         <>
             <ConfirmationModal
-                title={'Delete this subuser?'}
-                buttonText={'Yes, remove subuser'}
+                title={t('Users Deletion Sub User Title')}
+                buttonText={t('Users Deletion Sub User Button')}
                 visible={showConfirmation}
                 showSpinnerOverlay={loading}
                 onConfirmed={() => doDeletion()}
                 onModalDismissed={() => setShowConfirmation(false)}
             >
-                Are you sure you wish to remove this subuser? They will have all access to this server revoked
-                immediately.
+                {t('Users Deletion Sub User Desc')}
             </ConfirmationModal>
             <button
                 type={'button'}

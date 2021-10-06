@@ -20,6 +20,7 @@ import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import Icon from '@/components/elements/Icon';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     schedule: Schedule;
@@ -27,19 +28,21 @@ interface Props {
 }
 
 const getActionDetails = (action: string): [ string, any ] => {
+    const { t } = useTranslation();
     switch (action) {
         case 'command':
-            return [ 'Send Command', faCode ];
+            return [ t('Schedule Send Command Option'), faCode ];
         case 'power':
-            return [ 'Send Power Action', faToggleOn ];
+            return [ t('Schedule Send Power Option'), faToggleOn ];
         case 'backup':
-            return [ 'Create Backup', faFileArchive ];
+            return [ t('Schedule Create Backup Option'), faFileArchive ];
         default:
             return [ 'Unknown Action', faCode ];
     }
 };
 
 export default ({ schedule, task }: Props) => {
+    const { t } = useTranslation();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, addError } = useFlash();
     const [ visible, setVisible ] = useState(false);
@@ -74,13 +77,13 @@ export default ({ schedule, task }: Props) => {
                 onModalDismissed={() => setIsEditing(false)}
             />
             <ConfirmationModal
-                title={'Confirm task deletion'}
-                buttonText={'Delete Task'}
+                title={t('Schedule Delete Task Title')}
+                buttonText={t('Schedule Delete Task Button')}
                 onConfirmed={onConfirmDeletion}
                 visible={visible}
                 onModalDismissed={() => setVisible(false)}
             >
-                Are you sure you want to delete this task? This action cannot be undone.
+                {t('Schedule Delete Task Desc')}
             </ConfirmationModal>
             <FontAwesomeIcon icon={icon} css={tw`text-lg text-white hidden md:block`}/>
             <div css={tw`flex-none sm:flex-1 w-full sm:w-auto overflow-x-auto`}>
@@ -90,7 +93,7 @@ export default ({ schedule, task }: Props) => {
                 {task.payload &&
                 <div css={tw`md:ml-6 mt-2`}>
                     {task.action === 'backup' &&
-                    <p css={tw`text-xs uppercase text-neutral-400 mb-1`}>Ignoring files & folders:</p>}
+                    <p css={tw`text-xs uppercase text-neutral-400 mb-1`}>{t('Schedule Delete Files And Folders')}</p>}
                     <div css={tw`font-mono bg-neutral-800 rounded py-1 px-2 text-sm w-auto inline-block whitespace-pre-wrap break-all`}>
                         {task.payload}
                     </div>
@@ -102,7 +105,7 @@ export default ({ schedule, task }: Props) => {
                 <div css={tw`mr-6`}>
                     <div css={tw`flex items-center px-2 py-1 bg-yellow-500 text-yellow-800 text-sm rounded-full`}>
                         <Icon icon={faArrowCircleDown} css={tw`w-3 h-3 mr-2`}/>
-                        Continues on Failure
+                        {t('Schedule Create Task Button')}
                     </div>
                 </div>
                 }
@@ -110,7 +113,7 @@ export default ({ schedule, task }: Props) => {
                 <div css={tw`mr-6`}>
                     <div css={tw`flex items-center px-2 py-1 bg-neutral-500 text-sm rounded-full`}>
                         <Icon icon={faClock} css={tw`w-3 h-3 mr-2`}/>
-                        {task.timeOffset}s later
+                        {task.timeOffset}{t('Schedule Seconds Later Message')}
                     </div>
                 </div>
                 }

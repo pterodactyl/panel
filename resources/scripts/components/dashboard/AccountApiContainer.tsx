@@ -15,8 +15,10 @@ import { format } from 'date-fns';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
+    const { t } = useTranslation();
     const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
     const [ keys, setKeys ] = useState<ApiKey[]>([]);
     const [ loading, setLoading ] = useState(true);
@@ -48,31 +50,30 @@ export default () => {
     };
 
     return (
-        <PageContentBlock title={'Account API'}>
+        <PageContentBlock title={t('Account API')}>
             <FlashMessageRender byKey={'account'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={'Create API Key'} css={tw`flex-none w-full md:w-1/2`}>
+                <ContentBox title={t('Create API Key')} css={tw`flex-none w-full md:w-1/2`}>
                     <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
-                <ContentBox title={'API Keys'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
+                <ContentBox title={t('API Keys')} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
                     <SpinnerOverlay visible={loading}/>
                     <ConfirmationModal
                         visible={!!deleteIdentifier}
-                        title={'Confirm key deletion'}
-                        buttonText={'Yes, delete key'}
+                        title={t('Confirm key deletion')}
+                        buttonText={t('Confirm')}
                         onConfirmed={() => {
                             doDeletion(deleteIdentifier);
                             setDeleteIdentifier('');
                         }}
                         onModalDismissed={() => setDeleteIdentifier('')}
                     >
-                        Are you sure you wish to delete this API key? All requests using it will immediately be
-                        invalidated and will fail.
+                        {t('Confirm API key delete')}
                     </ConfirmationModal>
                     {
                         keys.length === 0 ?
                             <p css={tw`text-center text-sm`}>
-                                {loading ? 'Loading...' : 'No API keys exist for this account.'}
+                                {loading ? t('Loading API Keys') : t('No API Keys')}
                             </p>
                             :
                             keys.map((key, index) => (
@@ -84,8 +85,8 @@ export default () => {
                                     <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                         <p css={tw`text-sm break-words`}>{key.description}</p>
                                         <p css={tw`text-2xs text-neutral-300 uppercase`}>
-                                            Last used:&nbsp;
-                                            {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : 'Never'}
+                                            {t('Last used')}&nbsp;
+                                            {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : t('Never')}
                                         </p>
                                     </div>
                                     <p css={tw`text-sm ml-4 hidden md:block`}>

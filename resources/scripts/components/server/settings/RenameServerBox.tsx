@@ -11,27 +11,29 @@ import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     name: string;
 }
 
 const RenameServerBox = () => {
+    const { t } = useTranslation();
     const { isSubmitting } = useFormikContext<Values>();
 
     return (
-        <TitledGreyBox title={'Change Server Name'} css={tw`relative`}>
+        <TitledGreyBox title={t('Settings Rename Server Title')} css={tw`relative`}>
             <SpinnerOverlay visible={isSubmitting}/>
             <Form css={tw`mb-0`}>
                 <Field
                     id={'name'}
                     name={'name'}
-                    label={'Server Name'}
+                    label={t('Settings Rename Server Title 2')}
                     type={'text'}
                 />
                 <div css={tw`mt-6 text-right`}>
                     <Button type={'submit'}>
-                        Save
+                        {t('Settings Rename Server Button')}
                     </Button>
                 </div>
             </Form>

@@ -7,6 +7,7 @@ import { httpErrorToHuman } from '@/api/http';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     scheduleId: number;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default ({ scheduleId, onDeleted }: Props) => {
+    const { t } = useTranslation();
     const [ visible, setVisible ] = useState(false);
     const [ isLoading, setIsLoading ] = useState(false);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -40,17 +42,16 @@ export default ({ scheduleId, onDeleted }: Props) => {
         <>
             <ConfirmationModal
                 visible={visible}
-                title={'Delete schedule?'}
-                buttonText={'Yes, delete schedule'}
+                title={t('Schedule Delete Title')}
+                buttonText={t('Schedule Delete Button')}
                 onConfirmed={onDelete}
                 showSpinnerOverlay={isLoading}
                 onModalDismissed={() => setVisible(false)}
             >
-                Are you sure you want to delete this schedule? All tasks will be removed and any running processes
-                will be terminated.
+                {t('Schedule Delete Confirmation')}
             </ConfirmationModal>
             <Button css={tw`flex-1 sm:flex-none mr-4 border-transparent`} color={'red'} isSecondary onClick={() => setVisible(true)}>
-                Delete
+                {t('Schedule Delete Button 2')}
             </Button>
         </>
     );

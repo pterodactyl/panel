@@ -32,6 +32,7 @@ import decompressFiles from '@/api/server/files/decompressFiles';
 import isEqual from 'react-fast-compare';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import ChmodFileModal from '@/components/server/files/ChmodFileModal';
+import { useTranslation } from 'react-i18next';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
@@ -54,6 +55,7 @@ const Row = ({ icon, title, ...props }: RowProps) => (
 );
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
+    const { t } = useTranslation();
     const onClickRef = useRef<DropdownMenu>(null);
     const [ showSpinner, setShowSpinner ] = useState(false);
     const [ modal, setModal ] = useState<ModalType | null>(null);
@@ -130,12 +132,12 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         <>
             <ConfirmationModal
                 visible={showConfirmation}
-                title={`Delete this ${file.isFile ? 'File' : 'Directory'}?`}
-                buttonText={`Yes, Delete ${file.isFile ? 'File' : 'Directory'}`}
+                title={`${t('Files Deletion Title')} ${file.isFile ? t('Files Deletion Title File') : t('Files Deletion Title Directory')}`}
+                buttonText={`${t('Files Deletion Confirmation Button')} ${file.isFile ? t('Files Deletion Title File') : t('Files Deletion Title Directory')}`}
                 onConfirmed={doDeletion}
                 onModalDismissed={() => setShowConfirmation(false)}
             >
-                Deleting files is a permanent operation, you cannot undo this action.
+                {t('Files Deletion Confirmation Desc')}
             </ConfirmationModal>
             <DropdownMenu
                 ref={onClickRef}
@@ -165,29 +167,29 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 )}
             >
                 <Can action={'file.update'}>
-                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'}/>
-                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'}/>
-                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'Permissions'}/>
+                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={t('Files Menu Dropdown Rename')}/>
+                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={t('Files Menu Dropdown Move')}/>
+                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={t('Files Menu Dropdown Permissions')}/>
                 </Can>
                 {file.isFile &&
                 <Can action={'file.create'}>
-                    <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
+                    <Row onClick={doCopy} icon={faCopy} title={t('Files Menu Dropdown Copy')}/>
                 </Can>
                 }
                 {file.isArchiveType() ?
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                        <Row onClick={doUnarchive} icon={faBoxOpen} title={t('Files Menu Dropdown Unarchive')}/>
                     </Can>
                     :
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+                        <Row onClick={doArchive} icon={faFileArchive} title={t('Files Menu Dropdown Archive')}/>
                     </Can>
                 }
                 {file.isFile &&
-                    <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
+                    <Row onClick={doDownload} icon={faFileDownload} title={t('Download')}/>
                 }
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger/>
+                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={t('Delete')} $danger/>
                 </Can>
             </DropdownMenu>
         </>

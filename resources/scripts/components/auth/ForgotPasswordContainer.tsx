@@ -12,12 +12,14 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
 }
 
 export default () => {
+    const { t } = useTranslation();
     const ref = useRef<Reaptcha>(null);
     const [ token, setToken ] = useState('');
 
@@ -66,19 +68,19 @@ export default () => {
             onSubmit={handleSubmission}
             initialValues={{ email: '' }}
             validationSchema={object().shape({
-                email: string().email('A valid email address must be provided to continue.')
-                    .required('A valid email address must be provided to continue.'),
+                email: string().email(t('Valid Email'))
+                    .required(t('Valid Email')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer
-                    title={'Request Password Reset'}
+                    title={t('Password Reset')}
                     css={tw`w-full flex`}
                 >
                     <Field
                         light
-                        label={'Email'}
-                        description={'Enter your account email address to receive instructions on resetting your password.'}
+                        label={t('Email')}
+                        description={t('Account Email')}
                         name={'email'}
                         type={'email'}
                     />
@@ -89,7 +91,7 @@ export default () => {
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            Send Email
+                            {t('Send Email')}
                         </Button>
                     </div>
                     {recaptchaEnabled &&
@@ -112,7 +114,7 @@ export default () => {
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                         >
-                            Return to Login
+                            {t('Return to Login')}
                         </Link>
                     </div>
                 </LoginFormContainer>

@@ -22,12 +22,14 @@ import { ServerContext } from '@/state/server';
 import Input from '@/components/elements/Input';
 import { restoreServerBackup } from '@/api/server/backups';
 import http, { httpErrorToHuman } from '@/api/http';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     backup: ServerBackup;
 }
 
 export default ({ backup }: Props) => {
+    const { t } = useTranslation();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
     const [ modal, setModal ] = useState('');
@@ -105,28 +107,25 @@ export default ({ backup }: Props) => {
         <>
             <ConfirmationModal
                 visible={modal === 'unlock'}
-                title={'Unlock this backup?'}
+                title={t('Unlock Backup')}
                 onConfirmed={onLockToggle}
                 onModalDismissed={() => setModal('')}
-                buttonText={'Yes, unlock'}
+                buttonText={t('Confirmation Unlock')}
             >
-                Are you sure you want to unlock this backup? It will no longer be protected from automated or
-                accidental deletions.
+                {t('Confirmation Unlock Backup')}
             </ConfirmationModal>
             <ConfirmationModal
                 visible={modal === 'restore'}
-                title={'Restore this backup?'}
-                buttonText={'Restore backup'}
+                title={t('Restore Backup')}
+                buttonText={t('Restore Button')}
                 onConfirmed={() => doRestorationAction()}
                 onModalDismissed={() => setModal('')}
             >
                 <p css={tw`text-neutral-300`}>
-                    This server will be stopped in order to restore the backup. Once the backup has started you will
-                    not be able to control the server power state, access the file manager, or create additional backups
-                    until it has completed.
+                    {t('Stop Server')}
                 </p>
                 <p css={tw`text-neutral-300 mt-4`}>
-                    Are you sure you want to continue?
+                    {t('Confirmation Stop Server')}
                 </p>
                 <p css={tw`mt-4 -mb-2 bg-neutral-900 p-3 rounded`}>
                     <label
@@ -141,19 +140,18 @@ export default ({ backup }: Props) => {
                             checked={truncate}
                             onChange={() => setTruncate(s => !s)}
                         />
-                        Remove all files and folders before restoring this backup.
+                        {t('Remove All Files')}
                     </label>
                 </p>
             </ConfirmationModal>
             <ConfirmationModal
                 visible={modal === 'delete'}
-                title={'Delete this backup?'}
-                buttonText={'Yes, delete backup'}
+                title={t('Delete Backup')}
+                buttonText={t('Confirmation Delete Backup')}
                 onConfirmed={() => doDeletion()}
                 onModalDismissed={() => setModal('')}
             >
-                Are you sure you wish to delete this backup? This is a permanent operation and the backup cannot
-                be recovered once deleted.
+                {t('Delete Backup Confirmation')}
             </ConfirmationModal>
             <SpinnerOverlay visible={loading} fixed/>
             {backup.isSuccessful ?
@@ -171,13 +169,13 @@ export default ({ backup }: Props) => {
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
                                 <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`}/>
-                                <span css={tw`ml-2`}>Download</span>
+                                <span css={tw`ml-2`}>{t('Download')}</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.restore'}>
                             <DropdownButtonRow onClick={() => setModal('restore')}>
                                 <FontAwesomeIcon fixedWidth icon={faBoxOpen} css={tw`text-xs`}/>
-                                <span css={tw`ml-2`}>Restore</span>
+                                <span css={tw`ml-2`}>{t('Restore')}</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.delete'}>
@@ -193,7 +191,7 @@ export default ({ backup }: Props) => {
                                 {!backup.isLocked &&
                                 <DropdownButtonRow danger onClick={() => setModal('delete')}>
                                     <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
-                                    <span css={tw`ml-2`}>Delete</span>
+                                    <span css={tw`ml-2`}>{t('Delete')}</span>
                                 </DropdownButtonRow>
                                 }
                             </>

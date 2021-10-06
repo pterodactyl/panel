@@ -12,6 +12,7 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerBackup } from '@/api/server/types';
 import { SocketEvent } from '@/components/server/events';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     backup: ServerBackup;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default ({ backup, className }: Props) => {
+    const { t } = useTranslation();
     const { mutate } = getServerBackups();
 
     useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${backup.uuid}` as SocketEvent, data => {
@@ -57,7 +59,7 @@ export default ({ backup, className }: Props) => {
                     <div css={tw`flex items-center text-sm mb-1`}>
                         {backup.completedAt !== null && !backup.isSuccessful &&
                         <span css={tw`bg-red-500 py-px px-2 rounded-full text-white text-xs uppercase border border-red-600 mr-2`}>
-                            Failed
+                            {t('Failed')}
                         </span>
                         }
                         <p css={tw`break-words truncate`}>

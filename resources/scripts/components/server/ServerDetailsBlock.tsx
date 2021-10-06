@@ -7,6 +7,7 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
+import { useTranslation } from 'react-i18next';
 
 interface Stats {
     memory: number;
@@ -30,6 +31,7 @@ function statusToColor (status: string|null, installing: boolean): TwStyle {
 }
 
 const ServerDetailsBlock = () => {
+    const { t } = useTranslation();
     const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
@@ -72,9 +74,9 @@ const ServerDetailsBlock = () => {
         allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
     )).toString();
 
-    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
-    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
-    const cpuLimit = limits.cpu ? limits.cpu + '%' : 'Unlimited';
+    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : t('Unlimited');
+    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : t('Unlimited');
+    const cpuLimit = limits.cpu ? limits.cpu + '%' : t('Unlimited');
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
@@ -87,7 +89,7 @@ const ServerDetailsBlock = () => {
                         statusToColor(status, isInstalling || isTransferring),
                     ]}
                 />
-                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
+                &nbsp;{!status ? t('Connecting') : (isInstalling ? t('Installing') : (isTransferring) ? t('Transferring') : status)}
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>

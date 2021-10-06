@@ -5,8 +5,10 @@ import SetupTwoFactorModal from '@/components/dashboard/forms/SetupTwoFactorModa
 import DisableTwoFactorModal from '@/components/dashboard/forms/DisableTwoFactorModal';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
+    const { t } = useTranslation();
     const [ visible, setVisible ] = useState(false);
     const isEnabled = useStoreState((state: ApplicationStore) => state.user.data!.useTotp);
 
@@ -19,15 +21,11 @@ export default () => {
                     <SetupTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)}/>
             )}
             <p css={tw`text-sm`}>
-                {isEnabled ?
-                    'Two-factor authentication is currently enabled on your account.'
-                    :
-                    'You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.'
-                }
+                {isEnabled ? t('Two-factor Desc') : t('Two-factor e Desc')}
             </p>
             <div css={tw`mt-6`}>
                 <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
-                    {isEnabled ? 'Disable' : 'Enable'}
+                    {isEnabled ? t('Disable') : t('Enable')}
                 </Button>
             </div>
         </div>

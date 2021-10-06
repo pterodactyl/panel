@@ -12,12 +12,14 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerStartup from '@/api/swr/getServerStartup';
 import isEqual from 'react-fast-compare';
 import { ServerContext } from '@/state/server';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     variable: ServerEggVariable;
 }
 
 const VariableBox = ({ variable }: Props) => {
+    const { t } = useTranslation();
     const FLASH_KEY = `server:startup:${variable.envVariable}`;
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -48,7 +50,7 @@ const VariableBox = ({ variable }: Props) => {
             title={
                 <p css={tw`text-sm uppercase`}>
                     {!variable.isEditable &&
-                    <span css={tw`bg-neutral-700 text-xs py-1 px-2 rounded-full mr-2 mb-1`}>Read Only</span>
+                    <span css={tw`bg-neutral-700 text-xs py-1 px-2 rounded-full mr-2 mb-1`}>{t('Startup Variable Read')}</span>
                     }
                     {variable.name}
                 </p>

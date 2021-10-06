@@ -10,6 +10,7 @@ import PowerControls from '@/components/server/PowerControls';
 import { EulaModalFeature, JavaVersionModalFeature } from '@feature/index';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import Spinner from '@/components/elements/Spinner';
+import { useTranslation } from 'react-i18next';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -17,20 +18,20 @@ const ChunkedConsole = lazy(() => import(/* webpackChunkName: "console" */'@/com
 const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/components/server/StatGraphs'));
 
 const ServerConsole = () => {
+    const { t } = useTranslation();
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
 
     return (
-        <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
+        <ServerContentBlock title={t('Console')} css={tw`flex flex-wrap`}>
             <div css={tw`w-full lg:w-1/4`}>
                 <ServerDetailsBlock/>
                 {isInstalling ?
                     <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                         <ContentContainer>
                             <p css={tw`text-sm text-yellow-900`}>
-                                This server is currently running its installation process and most actions are
-                                unavailable.
+                                {t('Server Installing')}
                             </p>
                         </ContentContainer>
                     </div>
@@ -39,8 +40,7 @@ const ServerConsole = () => {
                         <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                             <ContentContainer>
                                 <p css={tw`text-sm text-yellow-900`}>
-                                    This server is currently being transferred to another node and all actions
-                                    are unavailable.
+                                    {t('Server Transferring')}
                                 </p>
                             </ContentContainer>
                         </div>

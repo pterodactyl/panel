@@ -10,24 +10,15 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     databaseName: string;
     connectionsFrom: string;
 }
 
-const schema = object().shape({
-    databaseName: string()
-        .required('A database name must be provided.')
-        .min(3, 'Database name must be at least 3 characters.')
-        .max(48, 'Database name must not exceed 48 characters.')
-        .matches(/^[A-Za-z0-9_\-.]{3,48}$/, 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'),
-    connectionsFrom: string()
-        .required('A connection value must be provided.')
-        .matches(/^([0-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, 'A valid connection address must be provided.'),
-});
-
 export default () => {
+    const { t } = useTranslation();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [ visible, setVisible ] = useState(false);
@@ -46,6 +37,17 @@ export default () => {
                 setSubmitting(false);
             });
     };
+
+    const schema = object().shape({
+        databaseName: string()
+            .required(t('Database Name Required'))
+            .min(3, t('Database Name Characters'))
+            .max(48, t('Database Name Characters Max'))
+            .matches(/^[A-Za-z0-9_\-.]{3,48}$/, t('Database Name Rules')),
+        connectionsFrom: string()
+            .required(t('Database Value'))
+            .matches(/^([0-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, t('Database Address')),
+    });
 
     return (
         <>
@@ -66,22 +68,22 @@ export default () => {
                             }}
                         >
                             <FlashMessageRender byKey={'database:create'} css={tw`mb-6`}/>
-                            <h2 css={tw`text-2xl mb-6`}>Create new database</h2>
+                            <h2 css={tw`text-2xl mb-6`}>{t('Create Database Button')}</h2>
                             <Form css={tw`m-0`}>
                                 <Field
                                     type={'string'}
                                     id={'database_name'}
                                     name={'databaseName'}
-                                    label={'Database Name'}
-                                    description={'A descriptive name for your database instance.'}
+                                    label={t('Database Title')}
+                                    description={t('Database Desc')}
                                 />
                                 <div css={tw`mt-6`}>
                                     <Field
                                         type={'string'}
                                         id={'connections_from'}
                                         name={'connectionsFrom'}
-                                        label={'Connections From'}
-                                        description={'Where connections should be allowed from. Use % for wildcards.'}
+                                        label={t('Database Connection Title')}
+                                        description={t('Database Connection Desc')}
                                     />
                                 </div>
                                 <div css={tw`flex flex-wrap justify-end mt-6`}>
@@ -91,10 +93,10 @@ export default () => {
                                         css={tw`w-full sm:w-auto sm:mr-2`}
                                         onClick={() => setVisible(false)}
                                     >
-                                        Cancel
+                                        {t('Cancel')}
                                     </Button>
                                     <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
-                                        Create Database
+                                        {t('Create Database')}
                                     </Button>
                                 </div>
                             </Form>
@@ -103,7 +105,7 @@ export default () => {
                 }
             </Formik>
             <Button onClick={() => setVisible(true)}>
-                New Database
+                {t('New Database Buttton')}
             </Button>
         </>
     );

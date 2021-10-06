@@ -37,7 +37,7 @@
   },
   "include": [
     "./resources/scripts/**/*"
-  ],
+, "resources/lang/index.js"  ],
   "exclude": [
     "/node_modules/"
   ]

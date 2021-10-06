@@ -13,8 +13,10 @@ import { LinkButton } from '@/components/elements/Button';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
+    const { t } = useTranslation();
     const username = useStoreState(state => state.user.data!.username);
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -22,14 +24,14 @@ export default () => {
     const sftp = ServerContext.useStoreState(state => state.server.data!.sftpDetails, isEqual);
 
     return (
-        <ServerContentBlock title={'Settings'}>
+        <ServerContentBlock title={t('Settings Title')}>
             <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
             <div css={tw`md:flex`}>
                 <div css={tw`w-full md:flex-1 md:mr-10`}>
                     <Can action={'file.sftp'}>
-                        <TitledGreyBox title={'SFTP Details'} css={tw`mb-6 md:mb-10`}>
+                        <TitledGreyBox title={t('Settings SFTP Title')} css={tw`mb-6 md:mb-10`}>
                             <div>
-                                <Label>Server Address</Label>
+                                <Label>{t('Settings SFTP Title 2')}</Label>
                                 <CopyOnClick text={`sftp://${sftp.ip}:${sftp.port}`}>
                                     <Input
                                         type={'text'}
@@ -39,7 +41,7 @@ export default () => {
                                 </CopyOnClick>
                             </div>
                             <div css={tw`mt-6`}>
-                                <Label>Username</Label>
+                                <Label>{t('Settings SFTP Username')}</Label>
                                 <CopyOnClick text={`${username}.${id}`}>
                                     <Input
                                         type={'text'}
@@ -52,7 +54,7 @@ export default () => {
                                 <div css={tw`flex-1`}>
                                     <div css={tw`border-l-4 border-cyan-500 p-3`}>
                                         <p css={tw`text-xs text-neutral-200`}>
-                                            Your SFTP password is the same as the password you use to access this panel.
+                                            {t('Settings SFTP Desc')}
                                         </p>
                                     </div>
                                 </div>
@@ -61,20 +63,20 @@ export default () => {
                                         isSecondary
                                         href={`sftp://${username}.${id}@${sftp.ip}:${sftp.port}`}
                                     >
-                                        Launch SFTP
+                                        {t('Settings SFTP Button')}
                                     </LinkButton>
                                 </div>
                             </div>
                         </TitledGreyBox>
                     </Can>
-                    <TitledGreyBox title={'Debug Information'} css={tw`mb-6 md:mb-10`}>
+                    <TitledGreyBox title={t('Settings SFTP Node Title')} css={tw`mb-6 md:mb-10`}>
                         <div css={tw`flex items-center justify-between text-sm`}>
-                            <p>Node</p>
+                            <p>{t('Settings SFTP Node')}</p>
                             <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node}</code>
                         </div>
                         <CopyOnClick text={uuid}>
                             <div css={tw`flex items-center justify-between mt-2 text-sm`}>
-                                <p>Server ID</p>
+                                <p>{t('Settings SFTP ID')}</p>
                                 <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{uuid}</code>
                             </div>
                         </CopyOnClick>

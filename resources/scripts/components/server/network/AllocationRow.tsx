@@ -18,6 +18,7 @@ import CopyOnClick from '@/components/elements/CopyOnClick';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
 import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import getServerAllocations from '@/api/swr/getServerAllocations';
+import { useTranslation } from 'react-i18next';
 
 const Code = styled.code`${tw`font-mono py-1 px-2 bg-neutral-900 rounded text-sm inline-block`}`;
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
@@ -27,6 +28,7 @@ interface Props {
 }
 
 const AllocationRow = ({ allocation }: Props) => {
+    const { t } = useTranslation();
     const [ loading, setLoading ] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -67,18 +69,18 @@ const AllocationRow = ({ allocation }: Props) => {
                     {allocation.alias ?
                         <CopyOnClick text={allocation.alias}><Code css={tw`w-40 truncate`}>{allocation.alias}</Code></CopyOnClick> :
                         <CopyOnClick text={allocation.ip}><Code>{allocation.ip}</Code></CopyOnClick>}
-                    <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
+                    <Label>{allocation.alias ? t('Network Hostname') : t('Network IP Address')}</Label>
                 </div>
                 <div css={tw`w-16 md:w-24 overflow-hidden`}>
                     <Code>{allocation.port}</Code>
-                    <Label>Port</Label>
+                    <Label>{t('Network Port')}</Label>
                 </div>
             </div>
             <div css={tw`mt-4 w-full md:mt-0 md:flex-1 md:w-auto`}>
                 <InputSpinner visible={loading}>
                     <Textarea
                         css={tw`bg-neutral-800 hover:border-neutral-600 border-transparent`}
-                        placeholder={'Notes'}
+                        placeholder={t('Network Notes')}
                         defaultValue={allocation.notes || undefined}
                         onChange={e => setAllocationNotes(e.currentTarget.value)}
                     />
@@ -86,7 +88,7 @@ const AllocationRow = ({ allocation }: Props) => {
             </div>
             <div css={tw`w-full md:flex-none md:w-40 md:text-center mt-4 md:mt-0 ml-4 flex items-center justify-end`}>
                 {allocation.isDefault ?
-                    <span css={tw`bg-green-500 py-1 px-2 rounded text-green-50 text-xs`}>Primary</span>
+                    <span css={tw`bg-green-500 py-1 px-2 rounded text-green-50 text-xs`}>{t('Network Info')}</span>
                     :
                     <>
                         <Can action={'allocation.delete'}>
@@ -99,7 +101,7 @@ const AllocationRow = ({ allocation }: Props) => {
                                 color={'primary'}
                                 onClick={setPrimaryAllocation}
                             >
-                                Make Primary
+                                {t('Network Change Primary Host Button')}
                             </Button>
                         </Can>
                     </>

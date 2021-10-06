@@ -20,6 +20,7 @@ import { useStoreActions } from '@/state/hooks';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath } from '@/helpers';
+import { useTranslation } from 'react-i18next';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     return files.sort((a, b) => a.name.localeCompare(b.name))
@@ -27,6 +28,7 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
+    const { t } = useTranslation();
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
@@ -58,7 +60,7 @@ export default () => {
     }
 
     return (
-        <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
+        <ServerContentBlock title={t('File Manager Title')} showFlashKey={'files'}>
             <div css={tw`flex flex-wrap-reverse md:flex-nowrap justify-center mb-4`}>
                 <ErrorBoundary>
                     <FileManagerBreadcrumbs
@@ -82,7 +84,7 @@ export default () => {
                                 css={tw`flex-1 sm:flex-none sm:mt-0`}
                             >
                                 <Button css={tw`w-full`}>
-                                    New File
+                                    {t('File Manager New File Button')}
                                 </Button>
                             </NavLink>
                         </div>
@@ -96,7 +98,7 @@ export default () => {
                     <>
                         {!files.length ?
                             <p css={tw`text-sm text-neutral-400 text-center`}>
-                                This directory seems to be empty.
+                                {t('File Manager Directory Empty')}
                             </p>
                             :
                             <CSSTransition classNames={'fade'} timeout={150} appear in>
@@ -104,8 +106,7 @@ export default () => {
                                     {files.length > 250 &&
                                     <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
                                         <p css={tw`text-yellow-900 text-sm text-center`}>
-                                            This directory is too large to display in the browser,
-                                            limiting the output to the first 250 files.
+                                            {t('File Manager Directory Large')}
                                         </p>
                                     </div>
                                     }

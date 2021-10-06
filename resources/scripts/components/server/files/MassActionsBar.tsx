@@ -12,8 +12,10 @@ import { ServerContext } from '@/state/server';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
+import { useTranslation } from 'react-i18next';
 
 const MassActionsBar = () => {
+    const { t } = useTranslation();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
     const { mutate } = useFileManagerSwr();
@@ -34,7 +36,7 @@ const MassActionsBar = () => {
     const onClickCompress = () => {
         setLoading(true);
         clearFlashes('files');
-        setLoadingMessage('Archiving files...');
+        setLoadingMessage(t('File Manager Compress File Message'));
 
         compressFiles(uuid, directory, selectedFiles)
             .then(() => mutate())
@@ -47,7 +49,7 @@ const MassActionsBar = () => {
         setLoading(true);
         setShowConfirm(false);
         clearFlashes('files');
-        setLoadingMessage('Deleting files...');
+        setLoadingMessage(t('File Manager Deleting Files Message'));
 
         deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
@@ -69,21 +71,21 @@ const MassActionsBar = () => {
                 </SpinnerOverlay>
                 <ConfirmationModal
                     visible={showConfirm}
-                    title={'Delete these files?'}
-                    buttonText={'Yes, Delete Files'}
+                    title={t('File Manager Delete Files Title')}
+                    buttonText={t('File Manager Delete Files Button')}
                     onConfirmed={onClickConfirmDeletion}
                     onModalDismissed={() => setShowConfirm(false)}
                 >
-                    Are you sure you want to delete {selectedFiles.length} file(s)?
+                    {t('File Manager Confirmation Delete Files 1')} {selectedFiles.length} {t('File Manager Confirmation Delete Files 2')}
                     <br/>
-                    Deleting the file(s) listed below is a permanent operation, you cannot undo this action.
+                    {t('File Manager Confirmation Delete Files Desc')}
                     <br/>
                     <code>
                         { selectedFiles.slice(0, 15).map(file => (
                             <li key={file}>{file}<br/></li>))
                         }
                         { selectedFiles.length > 15 &&
-                                    <li> + {selectedFiles.length - 15} other(s) </li>
+                                    <li> + {selectedFiles.length - 15} {t('File Manager Confirmation Delete Files Desc 2')} </li>
                         }
                     </code>
                 </ConfirmationModal>
@@ -98,13 +100,13 @@ const MassActionsBar = () => {
                 }
                 <div css={tw`pointer-events-auto rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
                     <Button size={'xsmall'} css={tw`mr-4`} onClick={() => setShowMove(true)}>
-                        <FontAwesomeIcon icon={faLevelUpAlt} css={tw`mr-2`}/> Move
+                        <FontAwesomeIcon icon={faLevelUpAlt} css={tw`mr-2`}/> {t('File Manager Bottom Bar Button Move')}
                     </Button>
                     <Button size={'xsmall'} css={tw`mr-4`} onClick={onClickCompress}>
-                        <FontAwesomeIcon icon={faFileArchive} css={tw`mr-2`}/> Archive
+                        <FontAwesomeIcon icon={faFileArchive} css={tw`mr-2`}/> {t('File Manager Bottom Bar Button Archive')}
                     </Button>
                     <Button size={'xsmall'} color={'red'} isSecondary onClick={() => setShowConfirm(true)}>
-                        <FontAwesomeIcon icon={faTrashAlt} css={tw`mr-2`}/> Delete
+                        <FontAwesomeIcon icon={faTrashAlt} css={tw`mr-2`}/> {t('File Manager Bottom Bar Button Delete')}
                     </Button>
                 </div>
             </div>

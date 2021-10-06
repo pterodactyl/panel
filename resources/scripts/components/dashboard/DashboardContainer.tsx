@@ -13,8 +13,10 @@ import useSWR from 'swr';
 import { PaginatedResult } from '@/api/http';
 import Pagination from '@/components/elements/Pagination';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default () => {
+    const { t } = useTranslation();
     const { search } = useLocation();
     const defaultPage = Number(new URLSearchParams(search).get('page') || '1');
 
@@ -49,11 +51,11 @@ export default () => {
     }, [ error ]);
 
     return (
-        <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
+        <PageContentBlock title={t('Dashboard')} showFlashKey={'dashboard'}>
             {rootAdmin &&
             <div css={tw`mb-2 flex justify-end items-center`}>
                 <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
-                    {showOnlyAdmin ? 'Showing others\' servers' : 'Showing your servers'}
+                    {showOnlyAdmin ? t('Display Others Servers') : t('Display your servers')}
                 </p>
                 <Switch
                     name={'show_all_servers'}
@@ -78,9 +80,9 @@ export default () => {
                             :
                             <p css={tw`text-center text-sm text-neutral-400`}>
                                 {showOnlyAdmin ?
-                                    'There are no other servers to display.'
+                                    t('There are no other servers to display')
                                     :
-                                    'There are no servers associated with your account.'
+                                    t('There are no servers associated with your account')
                                 }
                             </p>
                     )}

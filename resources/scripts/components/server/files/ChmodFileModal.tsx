@@ -9,6 +9,7 @@ import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import useFlash from '@/plugins/useFlash';
+import { useTranslation } from 'react-i18next';
 
 interface FormikValues {
     mode: string;
@@ -22,6 +23,7 @@ interface File {
 type OwnProps = RequiredModalProps & { files: File[] };
 
 const ChmodFileModal = ({ files, ...props }: OwnProps) => {
+    const { t } = useTranslation();
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -57,12 +59,12 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
                                     type={'string'}
                                     id={'file_mode'}
                                     name={'mode'}
-                                    label={'File Mode'}
+                                    label={t('Files Permitions Title')}
                                     autoFocus
                                 />
                             </div>
                             <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>Update</Button>
+                                <Button css={tw`w-full`}>{t('Files Permitions Update Button')}</Button>
                             </div>
                         </div>
                     </Form>

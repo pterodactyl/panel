@@ -10,12 +10,14 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
+import { useTranslation } from 'react-i18next';
 
 interface Values {
     password: string;
 }
 
 const DisableTwoFactorModal = () => {
+    const { t } = useTranslation();
     const { dismiss, setPropOverrides } = useContext(ModalContext);
     const { clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
@@ -43,7 +45,7 @@ const DisableTwoFactorModal = () => {
                 password: '',
             }}
             validationSchema={object().shape({
-                password: string().required('You must provide your current password in order to continue.'),
+                password: string().required(t('Provide Current Password')),
             })}
         >
             {({ isValid }) => (
@@ -53,13 +55,13 @@ const DisableTwoFactorModal = () => {
                         id={'password'}
                         name={'password'}
                         type={'password'}
-                        label={'Current Password'}
-                        description={'In order to disable two-factor authentication you will need to provide your account password.'}
+                        label={t('Current Password')}
+                        description={t('Confirm Password TW')}
                         autoFocus
                     />
                     <div css={tw`mt-6 text-right`}>
                         <Button color={'red'} disabled={!isValid}>
-                            Disable Two-Factor
+                            {t('Disable Two-Factor')}
                         </Button>
                     </div>
                 </Form>
