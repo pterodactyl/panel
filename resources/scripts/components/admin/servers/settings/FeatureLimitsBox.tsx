@@ -4,13 +4,9 @@ import AdminBox from '@/components/admin/AdminBox';
 import { faConciergeBell } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
 import Field from '@/components/elements/Field';
-import getServerDetails from '@/api/swr/admin/getServerDetails';
 
 export default () => {
-    const { data: server } = getServerDetails();
     const { isSubmitting } = useFormikContext();
-
-    if (!server) return null;
 
     return (
         <AdminBox icon={faConciergeBell} title={'Feature Limits'} isLoading={isSubmitting}>

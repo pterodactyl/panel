@@ -1,5 +1,30 @@
 import { createContext } from 'react';
 
+export interface Model {
+    relationships: Record<string, unknown>;
+}
+
+export type UUID = string;
+
+/**
+ * Marks the provided relationships keys as present in the given model
+ * rather than being optional to improve typing responses.
+ */
+export type WithRelationships<M extends Model, R extends string> = Omit<M, 'relationships'> & {
+    relationships: Omit<M['relationships'], keyof R> & {
+        [K in R]: NonNullable<M['relationships'][K]>;
+    }
+}
+
+/**
+ * Helper function that just returns the model you pass in, but types the model
+ * such that TypeScript understands the relationships on it. This is just to help
+ * reduce the amount of duplicated type casting all over the codebase.
+ */
+export const withRelationships = <M extends Model, R extends string> (model: M, ..._keys: R[]) => {
+    return model as unknown as WithRelationships<M, R>;
+};
+
 export interface ListContext<T> {
     page: number;
     setPage: (page: ((p: number) => number) | number) => void;

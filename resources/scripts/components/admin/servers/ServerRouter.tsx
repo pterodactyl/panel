@@ -11,8 +11,8 @@ import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
 import ServerSettingsContainer from '@/components/admin/servers/ServerSettingsContainer';
-import getServerDetails from '@/api/swr/admin/getServerDetails';
 import useFlash from '@/plugins/useFlash';
+import { useServerFromRoute } from '@/api/admin/server';
 
 export const ServerIncludes = [ 'allocations', 'user', 'variables' ];
 
@@ -34,7 +34,7 @@ const ServerRouter = () => {
     const match = useRouteMatch<{ id?: string }>();
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data: server, error, isValidating, mutate } = getServerDetails();
+    const { data: server, error, isValidating, mutate } = useServerFromRoute();
 
     useEffect(() => {
         mutate();
