@@ -10,6 +10,18 @@ Route::get('/', 'BaseController@index')->name('admin.index');
 | Location Controller Routes
 |--------------------------------------------------------------------------
 |
+| Endpoint: /admin/logs
+|
+*/
+Route::group(['prefix' => 'logs'], function () {
+    Route::get('/', 'logs@index')->name('admin.logs.index');
+
+});
+/*
+|--------------------------------------------------------------------------
+| Location Controller Routes
+|--------------------------------------------------------------------------
+|
 | Endpoint: /admin/api
 |
 */
@@ -222,4 +234,17 @@ Route::group(['prefix' => 'nests'], function () {
     Route::delete('/view/{nest}', 'Nests\NestController@destroy');
     Route::delete('/egg/{egg}', 'Nests\EggController@destroy');
     Route::delete('/egg/{egg}/variables/{variable}', 'Nests\EggVariableController@destroy');
+});
+
+/*
+|--------------------------------------------------------------------------
+| SubDomain Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /admin/subdomain
+|
+*/
+Route::group(['prefix' => 'logs'], function () {
+    Route::get('/', 'SubDomainController@index')->name('admin.subdomain');
+
 });
