@@ -130,7 +130,7 @@
                             <div class="form-group">
                                 <label for="pConfigStop" class="form-label">Stop Command</label>
                                 <input type="text" id="pConfigStop" name="config_stop" class="form-control" value="{{ $egg->config_stop }}" />
-                                <p class="text-muted small">The command that should be sent to server processes to stop them gracefully. If you need to send a <code>SIGINT</code> you should enter <code>^C</code> here.</p>
+                                <p class="text-muted small">The command that should be sent to server processes to stop them gracefully. If you need to send a <code>SIGINT</code> you should enter <code>^^C</code> here.</p>
                             </div>
                             <div class="form-group">
                                 <label for="pConfigLogs" class="form-label">Log Configuration</label>
