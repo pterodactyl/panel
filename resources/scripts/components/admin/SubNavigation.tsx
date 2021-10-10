@@ -11,7 +11,7 @@ export const SubNavigation = styled.div`
     & > svg {
       ${tw`w-6 h-6 mr-2`};
     }
-    
+
     &:active, &.active {
       ${tw`text-primary-300 border-primary-300`};
     }
@@ -21,13 +21,20 @@ export const SubNavigation = styled.div`
 interface Props {
     to: string;
     name: string;
-    icon: React.ComponentType;
 }
 
-export const SubNavigationLink = ({ to, name, icon: IconComponent }: Props) => {
-    return (
-        <NavLink to={to} exact>
-            <IconComponent css={tw`w-6 h-6 mr-2`}/>{name}
-        </NavLink>
-    );
-};
+interface PropsWithIcon extends Props {
+    icon: React.ComponentType;
+    children?: never;
+}
+
+interface PropsWithoutIcon extends Props {
+    icon?: never;
+    children: React.ReactNode;
+}
+
+export const SubNavigationLink = ({ to, name, icon: IconComponent, children }: PropsWithIcon | PropsWithoutIcon) => (
+    <NavLink to={to} exact>
+        {IconComponent ? <IconComponent/> : children}{name}
+    </NavLink>
+);

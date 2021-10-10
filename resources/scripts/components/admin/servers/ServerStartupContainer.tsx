@@ -1,7 +1,7 @@
-import { Egg, EggVariable } from '@/api/admin/egg';
+import { Egg, EggVariable, getEgg } from '@/api/admin/egg';
 import updateServerStartup, { Values } from '@/api/admin/servers/updateServerStartup';
 import EggSelect from '@/components/admin/servers/EggSelect';
-import NestSelect from '@/components/admin/servers/NestSelect';
+import NestSelector from '@/components/admin/servers/NestSelector';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/elements/Button';
@@ -16,6 +16,7 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import Label from '@/components/elements/Label';
 import { object } from 'yup';
 import { Server, useServerFromRoute } from '@/api/admin/server';
+import { InferModel } from '@/api/admin';
 
 function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server: Server }) {
     const { isSubmitting, setFieldValue } = useFormikContext();
@@ -59,26 +60,18 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
 function ServerServiceContainer ({ egg, setEgg, server }: { egg: Egg | null, setEgg: (value: Egg | null) => void, server: Server }) {
     const { isSubmitting } = useFormikContext();
 
-    const [ nestId, setNestId ] = useState<number | null>(server.nestId);
+    const [ nestId, setNestId ] = useState(server.nestId);
 
     return (
-        <AdminBox title={'Service Configuration'} css={tw`relative w-full`}>
-            <SpinnerOverlay visible={isSubmitting}/>
-
+        <AdminBox title={'Service Configuration'} isLoading={isSubmitting}>
             <div css={tw`mb-6`}>
-                <NestSelect nestId={nestId} setNestId={setNestId}/>
+                <NestSelector selectedNestId={nestId} onNestSelect={setNestId}/>
             </div>
-
             <div css={tw`mb-6`}>
-                <EggSelect nestId={nestId} egg={egg} setEgg={setEgg}/>
+                <EggSelect nestId={nestId} selectedEggId={egg?.id} onEggSelect={setEgg}/>
             </div>
-
             <div css={tw`bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
-                <FormikSwitch
-                    name={'skipScript'}
-                    label={'Skip Egg Install Script'}
-                    description={'SoonTM'}
-                />
+                <FormikSwitch name={'skipScript'} label={'Skip Egg Install Script'} description={'Soon™'}/>
             </div>
         </AdminBox>
     );
@@ -106,7 +99,7 @@ function ServerImageContainer () {
 }
 
 function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVariable, defaultValue: string }) {
-    const key = 'environment.' + variable.envVariable;
+    const key = 'environment.' + variable.environmentVariable;
 
     const { isSubmitting, setFieldValue } = useFormikContext();
 
@@ -157,11 +150,11 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
                 </div>
 
                 <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8`}>
-                    {egg?.relations.variables?.map((v, i) => (
+                    {egg?.relationships.variables?.map((v, i) => (
                         <ServerVariableContainer
                             key={i}
                             variable={v}
-                            defaultValue={server.relations?.variables.find(v2 => v.eggId === v2.eggId && v.envVariable === v2.envVariable)?.serverValue || v.defaultValue}
+                            defaultValue={server.relationships?.variables?.find(v2 => v.eggId === v2.eggId && v.environmentVariable === v2.environmentVariable)?.serverValue || v.defaultValue}
                         />
                     ))}
                 </div>
@@ -179,9 +172,9 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
 }
 
 export default () => {
-    const { data: server, mutate } = useServerFromRoute();
+    const { data: server } = useServerFromRoute();
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const [ egg, setEgg ] = useState<Egg | null>(null);
+    const [ egg, setEgg ] = useState<InferModel<typeof getEgg> | null>(null);
 
     useEffect(() => {
         if (!server) return;
@@ -213,7 +206,7 @@ export default () => {
             initialValues={{
                 startup: server.container.startup,
                 // Don't ask.
-                environment: Object.fromEntries(egg?.relations.variables?.map(v => [ v.envVariable, '' ]) || []),
+                environment: Object.fromEntries(egg?.relationships.variables.map(v => [ v.environmentVariable, '' ]) || []),
                 image: server.container.image,
                 eggId: server.eggId,
                 skipScripts: false,
@@ -223,6 +216,7 @@ export default () => {
         >
             <ServerStartupForm
                 egg={egg}
+                // @ts-ignore
                 setEgg={setEgg}
                 server={server}
             />

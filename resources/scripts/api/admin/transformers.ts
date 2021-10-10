@@ -5,6 +5,7 @@ import { FractalResponseData, FractalResponseList } from '@/api/http';
 import { User, UserRole } from '@/api/admin/user';
 import { Location } from '@/api/admin/location';
 import { Egg, EggVariable } from '@/api/admin/egg';
+import { Nest } from '@/api/admin/nest';
 
 const isList = (data: FractalResponseList | FractalResponseData): data is FractalResponseList => data.object === 'list';
 
@@ -24,7 +25,7 @@ function transform<T> (data: FractalResponseData | FractalResponseList | undefin
 export class AdminTransformers {
     static toServer = ({ attributes }: FractalResponseData): Server => {
         const { oom_disabled, ...limits } = attributes.limits;
-        const { allocations, egg, node, user, variables } = attributes.relationships || {};
+        const { allocations, egg, nest, node, user, variables } = attributes.relationships || {};
 
         return {
             id: attributes.id,
@@ -38,6 +39,7 @@ export class AdminTransformers {
             nodeId: attributes.node_id,
             allocationId: attributes.allocation_id,
             eggId: attributes.egg_id,
+            nestId: attributes.nest_id,
             limits: { ...limits, oomDisabled: oom_disabled },
             featureLimits: attributes.feature_limits,
             container: attributes.container,
@@ -45,6 +47,7 @@ export class AdminTransformers {
             updatedAt: new Date(attributes.updated_at),
             relationships: {
                 allocations: transform(allocations as FractalResponseList | undefined, this.toAllocation),
+                nest: transform(nest as FractalResponseData | undefined, this.toNest),
                 egg: transform(egg as FractalResponseData | undefined, this.toEgg),
                 node: transform(node as FractalResponseData | undefined, this.toNode),
                 user: transform(user as FractalResponseData | undefined, this.toUser),
@@ -132,7 +135,26 @@ export class AdminTransformers {
     static toEgg = ({ attributes }: FractalResponseData): Egg => ({
         id: attributes.id,
         uuid: attributes.uuid,
+        nestId: attributes.nest_id,
+        author: attributes.author,
+        name: attributes.name,
+        description: attributes.description,
+        features: attributes.features,
+        dockerImages: attributes.docker_images,
+        configFiles: attributes.config?.files,
+        configStartup: attributes.config?.startup,
+        configStop: attributes.config?.stop,
+        configFrom: attributes.config?.extends,
+        startup: attributes.startup,
+        copyScriptFrom: attributes.copy_script_from,
+        scriptContainer: attributes.script?.container,
+        scriptEntry: attributes.script?.entry,
+        scriptIsPrivileged: attributes.script?.privileged,
+        scriptInstall: attributes.script?.install,
+        createdAt: new Date(attributes.created_at),
+        updatedAt: new Date(attributes.updated_at),
         relationships: {
+            nest: transform(attributes.relationships?.nest as FractalResponseData, this.toNest),
             variables: transform(attributes.relationships?.variables as FractalResponseList, this.toEggVariable),
         },
     });
@@ -172,6 +194,19 @@ export class AdminTransformers {
             const raw = `${this.ip}:${this.port}`;
 
             return !this.alias ? raw : `${this.alias} (${raw})`;
+        },
+    });
+
+    static toNest = ({ attributes }: FractalResponseData): Nest => ({
+        id: attributes.id,
+        uuid: attributes.uuid,
+        author: attributes.author,
+        name: attributes.name,
+        description: attributes.description,
+        createdAt: new Date(attributes.created_at),
+        updatedAt: new Date(attributes.updated_at),
+        relationships: {
+            eggs: transform(attributes.relationships?.eggs as FractalResponseList, this.toEgg),
         },
     });
 }

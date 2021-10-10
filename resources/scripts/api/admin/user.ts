@@ -1,6 +1,6 @@
 import { Model, UUID } from '@/api/admin/index';
 import { Server } from '@/api/admin/server';
-import http from '@/api/http';
+import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
 import { AdminTransformers } from '@/api/admin/transformers';
 
 export interface User extends Model {
@@ -33,4 +33,12 @@ export const getUser = async (id: string | number): Promise<User> => {
     const { data } = await http.get(`/api/application/users/${id}`);
 
     return AdminTransformers.toUser(data.data);
+};
+
+export const searchUserAccounts = async (params: QueryBuilderParams<'username' | 'email'>): Promise<User[]> => {
+    const { data } = await http.get('/api/application/users', {
+        params: withQueryBuilderParams(params),
+    });
+
+    return data.data.map(AdminTransformers.toUser);
 };

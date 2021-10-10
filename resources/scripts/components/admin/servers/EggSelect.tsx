@@ -1,70 +1,60 @@
 import Label from '@/components/elements/Label';
 import Select from '@/components/elements/Select';
-import { useFormikContext } from 'formik';
+import { useField } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { Egg } from '@/api/admin/eggs/getEgg';
-import searchEggs from '@/api/admin/nests/searchEggs';
+import { Egg, searchEggs } from '@/api/admin/egg';
+import { WithRelationships } from '@/api/admin';
 
-export default ({ nestId, egg, setEgg }: { nestId: number | null; egg: Egg | null, setEgg: (value: Egg | null) => void }) => {
-    const { setFieldValue } = useFormikContext();
+interface Props {
+    nestId?: number;
+    selectedEggId?: number;
+    onEggSelect: (egg: Egg | null) => void;
+}
 
-    const [ eggs, setEggs ] = useState<Egg[]>([]);
-
-    /**
-     * So you may be asking yourself, "what cluster-fuck of code is this?"
-     *
-     * Well, this code makes sure that when the egg changes, that the environment
-     * object has empty string values instead of undefined so React doesn't think
-     * the variable fields are uncontrolled.
-     */
-    const setEgg2 = (newEgg: Egg | null) => {
-        if (newEgg === null) {
-            setEgg(null);
-            return;
-        }
-
-        // Reset all variables to be empty, don't inherit the previous values.
-        const newVariables = newEgg?.relations.variables;
-        newVariables?.forEach(v => setFieldValue('environment.' + v.envVariable, ''));
-        const variables = egg?.relations.variables?.filter(v => newVariables?.find(v2 => v2.envVariable === v.envVariable) === undefined);
-
-        setEgg(newEgg);
-
-        // Clear any variables that don't exist on the new egg.
-        variables?.forEach(v => setFieldValue('environment.' + v.envVariable, undefined));
-    };
+export default ({ nestId, selectedEggId, onEggSelect }: Props) => {
+    const [ , , { setValue, setTouched } ] = useField<Record<string, string | undefined>>('environment');
+    const [ eggs, setEggs ] = useState<WithRelationships<Egg, 'variables'>[] | null>(null);
 
     useEffect(() => {
-        if (nestId === null) {
-            return;
-        }
+        if (!nestId) return setEggs(null);
 
-        searchEggs(nestId, {}, [ 'variables' ])
-            .then(eggs => {
-                setEggs(eggs);
-                if (eggs.length < 1) {
-                    setEgg2(null);
-                    return;
-                }
-                setEgg2(eggs[0]);
-            })
-            .catch(error => console.error(error));
+        searchEggs(nestId, {}).then(eggs => {
+            setEggs(eggs);
+            onEggSelect(eggs[0] || null);
+        }).catch(error => console.error(error));
     }, [ nestId ]);
+
+    const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (!eggs) return;
+
+        const match = eggs.find(egg => String(egg.id) === e.currentTarget.value);
+        if (!match) return onEggSelect(null);
+
+        // Ensure that only new egg variables are present in the record storing all
+        // of the possible variables. This ensures the fields are controlled, rather
+        // than uncontrolled when a user begins typing in them.
+        setValue(match.relationships.variables.reduce((obj, value) => ({
+            ...obj,
+            [value.environmentVariable]: undefined,
+        }), {}));
+        setTouched(true);
+
+        onEggSelect(match);
+    };
 
     return (
         <>
             <Label>Egg</Label>
-            <Select
-                defaultValue={egg?.id || undefined}
-                id={'eggId'}
-                name={'eggId'}
-                onChange={e => setEgg2(eggs.find(egg => egg.id.toString() === e.currentTarget.value) || null)}
-            >
-                {eggs.map(v => (
-                    <option key={v.id} value={v.id.toString()}>
-                        {v.name}
-                    </option>
-                ))}
+            <Select id={'eggId'} name={'eggId'} defaultValue={selectedEggId} onChange={onSelectChange}>
+                {!eggs ?
+                    <option disabled>Loading...</option>
+                    :
+                    eggs.map(v => (
+                        <option key={v.id} value={v.id.toString()}>
+                            {v.name}
+                        </option>
+                    ))
+                }
             </Select>
         </>
     );

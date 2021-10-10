@@ -7,6 +7,7 @@ import { AdminTransformers } from '@/api/admin/transformers';
 import { Allocation, Node } from '@/api/admin/node';
 import { User } from '@/api/admin/user';
 import { Egg, EggVariable } from '@/api/admin/egg';
+import { Nest } from '@/api/admin/nest';
 
 /**
  * Defines the limits for a server that exists on the Panel.
@@ -41,6 +42,7 @@ export interface Server extends Model {
     nodeId: number;
     allocationId: number;
     eggId: number;
+    nestId: number;
     limits: ServerLimits;
     featureLimits: {
         databases: number;
@@ -56,6 +58,7 @@ export interface Server extends Model {
     updatedAt: Date;
     relationships: {
         allocations?: Allocation[];
+        nest?: Nest;
         egg?: Egg;
         node?: Node;
         user?: User;
