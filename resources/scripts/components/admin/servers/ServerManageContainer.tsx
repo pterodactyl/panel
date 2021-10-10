@@ -1,17 +1,13 @@
 import React from 'react';
 import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
-import { Context } from '@/components/admin/servers/ServerRouter';
 import Button from '@/components/elements/Button';
+import { useServerFromRoute } from '@/api/admin/server';
 
-const ServerManageContainer = () => {
-    const server = Context.useStoreState(state => state.server);
+export default () => {
+    const { data: server } = useServerFromRoute();
 
-    if (server === undefined) {
-        return (
-            <></>
-        );
-    }
+    if (!server) return null;
 
     return (
         <div css={tw`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-2 gap-y-2`}>
@@ -50,19 +46,5 @@ const ServerManageContainer = () => {
                 </AdminBox>
             </div>
         </div>
-    );
-};
-
-export default () => {
-    const server = Context.useStoreState(state => state.server);
-
-    if (server === undefined) {
-        return (
-            <></>
-        );
-    }
-
-    return (
-        <ServerManageContainer/>
     );
 };

@@ -168,5 +168,10 @@ export class AdminTransformers {
             node: transform(attributes.relationships?.node as FractalResponseData, this.toNode),
             server: transform(attributes.relationships?.server as FractalResponseData, this.toServer),
         },
+        getDisplayText (): string {
+            const raw = `${this.ip}:${this.port}`;
+
+            return !this.alias ? raw : `${this.alias} (${raw})`;
+        },
     });
 }

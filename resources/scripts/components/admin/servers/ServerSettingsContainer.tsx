@@ -1,118 +1,22 @@
-import { Server } from '@/api/admin/servers/getServers';
+import { useServerFromRoute } from '@/api/admin/server';
 import ServerDeleteButton from '@/components/admin/servers/ServerDeleteButton';
-import { faBalanceScale } from '@fortawesome/free-solid-svg-icons';
 import React from 'react';
-import AdminBox from '@/components/admin/AdminBox';
-import { useHistory } from 'react-router-dom';
 import tw from 'twin.macro';
 import { object } from 'yup';
 import updateServer, { Values } from '@/api/admin/servers/updateServer';
-import Field from '@/components/elements/Field';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
-import { Context, ServerIncludes } from '@/components/admin/servers/ServerRouter';
-import { ApplicationStore } from '@/state';
-import { Actions, useStoreActions } from 'easy-peasy';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { useStoreActions } from 'easy-peasy';
 import Button from '@/components/elements/Button';
-import FormikSwitch from '@/components/elements/FormikSwitch';
 import BaseSettingsBox from '@/components/admin/servers/settings/BaseSettingsBox';
 import FeatureLimitsBox from '@/components/admin/servers/settings/FeatureLimitsBox';
 import NetworkingBox from '@/components/admin/servers/settings/NetworkingBox';
+import ServerResourceBox from '@/components/admin/servers/settings/ServerResourceBox';
 
-export function ServerResourceContainer () {
-    const { isSubmitting } = useFormikContext();
+export default () => {
+    const { data: server, mutate } = useServerFromRoute();
+    const { clearFlashes, clearAndAddHttpError } = useStoreActions(actions => actions.flashes);
 
-    return (
-        <AdminBox icon={faBalanceScale} title={'Resources'} css={tw`relative w-full`}>
-            <SpinnerOverlay visible={isSubmitting}/>
-
-            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                    <Field
-                        id={'limits.cpu'}
-                        name={'limits.cpu'}
-                        label={'CPU Limit'}
-                        type={'text'}
-                        description={'Each thread on the system is considered to be 100%. Setting this value to 0 will allow the server to use CPU time without restriction.'}
-                    />
-                </div>
-
-                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                    <Field
-                        id={'limits.threads'}
-                        name={'limits.threads'}
-                        label={'CPU Pinning'}
-                        type={'text'}
-                        description={'Advanced: Enter the specific CPU cores that this server can run on, or leave blank to allow all cores. This can be a single number, and or a comma seperated list, and or a dashed range. Example: 0, 0-1,3, or 0,1,3,4.  It is recommended to leave this value blank and let the CPU handle balancing the load.'}
-                    />
-                </div>
-            </div>
-
-            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                    <Field
-                        id={'limits.memory'}
-                        name={'limits.memory'}
-                        label={'Memory Limit'}
-                        type={'number'}
-                        description={'The maximum amount of memory allowed for this container. Setting this to 0 will allow unlimited memory in a container.'}
-                    />
-                </div>
-
-                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                    <Field
-                        id={'limits.swap'}
-                        name={'limits.swap'}
-                        label={'Swap Limit'}
-                        type={'number'}
-                    />
-                </div>
-            </div>
-
-            <div css={tw`mb-6 md:w-full md:flex md:flex-row`}>
-                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:mr-4 md:mb-0`}>
-                    <Field
-                        id={'limits.disk'}
-                        name={'limits.disk'}
-                        label={'Disk Limit'}
-                        type={'number'}
-                        description={'This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Set to 0 to allow unlimited disk usage.'}
-                    />
-                </div>
-
-                <div css={tw`mb-6 md:w-full md:flex md:flex-col md:ml-4 md:mb-0`}>
-                    <Field
-                        id={'limits.io'}
-                        name={'limits.io'}
-                        label={'Block IO Proportion'}
-                        type={'number'}
-                        description={'Advanced: The IO performance of this server relative to other running containers on the system. Value should be between 10 and 1000.'}
-                    />
-                </div>
-            </div>
-
-            <div css={tw`mb-2 md:w-full md:flex md:flex-row`}>
-                <div css={tw`bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
-                    <FormikSwitch
-                        name={'limits.oomDisabled'}
-                        label={'Out of Memory Killer'}
-                        description={'Enabling the Out of Memory Killer may cause server processes to exit unexpectedly.'}
-                    />
-                </div>
-            </div>
-        </AdminBox>
-    );
-}
-
-export default function ServerSettingsContainer2 ({ server }: { server: Server }) {
-    const history = useHistory();
-
-    const {
-        clearFlashes,
-        clearAndAddHttpError,
-    } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-
-    const setServer = Context.useStoreActions(actions => actions.setServer);
+    if (!server) return null;
 
     const submit = (values: Values, { setSubmitting, setFieldValue }: FormikHelpers<Values>) => {
         clearFlashes('server');
@@ -121,9 +25,9 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
         // OOM Killer is enabled, rather than when disabled.
         values.limits.oomDisabled = !values.limits.oomDisabled;
 
-        updateServer(server.id, values, ServerIncludes)
+        updateServer(server.id, values)
             .then(s => {
-                setServer({ ...server, ...s });
+                // setServer({ ...server, ...s });
 
                 // TODO: Figure out how to properly clear react-selects for allocations.
                 setFieldValue('addAllocations', []);
@@ -142,8 +46,7 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
             initialValues={{
                 externalId: server.externalId || '',
                 name: server.name,
-                ownerId: server.ownerId,
-
+                ownerId: server.userId,
                 limits: {
                     memory: server.limits.memory,
                     swap: server.limits.swap,
@@ -155,13 +58,11 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
                     // OOM Killer is enabled, rather than when disabled.
                     oomDisabled: !server.limits.oomDisabled,
                 },
-
                 featureLimits: {
                     allocations: server.featureLimits.allocations,
                     backups: server.featureLimits.backups,
                     databases: server.featureLimits.databases,
                 },
-
                 allocationId: server.allocationId,
                 addAllocations: [] as number[],
                 removeAllocations: [] as number[],
@@ -177,14 +78,10 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
                             <NetworkingBox/>
                         </div>
                         <div css={tw`flex flex-col`}>
-                            <ServerResourceContainer/>
-
-                            <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6 mt-6`}>
+                            <ServerResourceBox/>
+                            <div css={tw`bg-neutral-700 rounded shadow-md px-4 xl:px-5 py-5 mt-6`}>
                                 <div css={tw`flex flex-row`}>
-                                    <ServerDeleteButton
-                                        serverId={server?.id}
-                                        onDeleted={() => history.push('/admin/servers')}
-                                    />
+                                    <ServerDeleteButton/>
                                     <Button
                                         type="submit"
                                         size="small"
@@ -201,4 +98,4 @@ export default function ServerSettingsContainer2 ({ server }: { server: Server }
             )}
         </Formik>
     );
-}
+};

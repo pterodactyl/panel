@@ -25,6 +25,7 @@ export interface Allocation extends Model {
         node?: Node;
         server?: Server | null;
     };
+    getDisplayText(): string;
 }
 
 export interface Node extends Model {

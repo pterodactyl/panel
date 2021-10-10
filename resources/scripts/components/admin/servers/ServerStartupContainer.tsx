@@ -1,9 +1,7 @@
-import { getEgg, Egg, EggVariable } from '@/api/admin/eggs/getEgg';
-import { Server } from '@/api/admin/servers/getServers';
+import { Egg, EggVariable } from '@/api/admin/egg';
 import updateServerStartup, { Values } from '@/api/admin/servers/updateServerStartup';
 import EggSelect from '@/components/admin/servers/EggSelect';
 import NestSelect from '@/components/admin/servers/NestSelect';
-import { Context, ServerIncludes } from '@/components/admin/servers/ServerRouter';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/elements/Button';
@@ -17,6 +15,7 @@ import { ApplicationStore } from '@/state';
 import { Actions, useStoreActions } from 'easy-peasy';
 import Label from '@/components/elements/Label';
 import { object } from 'yup';
+import { Server, useServerFromRoute } from '@/api/admin/server';
 
 function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server: Server }) {
     const { isSubmitting, setFieldValue } = useFormikContext();
@@ -179,26 +178,28 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
     );
 }
 
-export default function ServerStartupContainer ({ server }: { server: Server }) {
+export default () => {
+    const { data: server, mutate } = useServerFromRoute();
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-
     const [ egg, setEgg ] = useState<Egg | null>(null);
 
-    const setServer = Context.useStoreActions(actions => actions.setServer);
-
     useEffect(() => {
+        if (!server) return;
+
         getEgg(server.eggId)
             .then(egg => setEgg(egg))
             .catch(error => console.error(error));
-    }, []);
+    }, [ server?.eggId ]);
+
+    if (!server) return null;
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('server');
 
-        updateServerStartup(server.id, values, ServerIncludes)
-            .then(s => {
-                setServer({ ...server, ...s });
-            })
+        updateServerStartup(server.id, values)
+            // .then(s => {
+            //     mutate(data => { ...data, ...s });
+            // })
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'server', error });
@@ -227,4 +228,4 @@ export default function ServerStartupContainer ({ server }: { server: Server }) 
             />
         </Formik>
     );
-}
+};
