@@ -5,10 +5,10 @@ import AdminBox from '@/components/admin/AdminBox';
 import { faCogs } from '@fortawesome/free-solid-svg-icons';
 import Field from '@/components/elements/Field';
 import OwnerSelect from '@/components/admin/servers/OwnerSelect';
-import getServerDetails from '@/api/swr/admin/getServerDetails';
+import { useServerFromRoute } from '@/api/admin/server';
 
 export default () => {
-    const { data: server } = getServerDetails();
+    const { data: server } = useServerFromRoute();
     const { isSubmitting } = useFormikContext();
 
     if (!server) return null;
@@ -18,7 +18,7 @@ export default () => {
             <div css={tw`grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6`}>
                 <Field id={'name'} name={'name'} label={'Server Name'} type={'text'}/>
                 <Field id={'externalId'} name={'externalId'} label={'External Identifier'} type={'text'}/>
-                <OwnerSelect selected={server.relations.user || null}/>
+                <OwnerSelect selected={server.relationships.user}/>
             </div>
         </AdminBox>
     );

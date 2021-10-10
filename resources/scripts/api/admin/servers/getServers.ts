@@ -23,7 +23,7 @@ export interface ServerVariable {
     updatedAt: Date;
 }
 
-const rawDataToServerVariable = ({ attributes }: FractalResponseData): ServerVariable => ({
+export const rawDataToServerVariable = ({ attributes }: FractalResponseData): ServerVariable => ({
     id: attributes.id,
     eggId: attributes.egg_id,
     name: attributes.name,
