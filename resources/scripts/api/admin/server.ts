@@ -1,14 +1,12 @@
-import { Allocation } from '@/api/admin/nodes/getAllocations';
-import { Egg } from '@/api/admin/eggs/getEgg';
-import { User } from '@/api/admin/users/getUsers';
-import { Node } from '@/api/admin/nodes/getNodes';
-import { rawDataToServer, ServerVariable } from '@/api/admin/servers/getServers';
 import useSWR, { SWRResponse } from 'swr';
 import { AxiosError } from 'axios';
 import { useRouteMatch } from 'react-router-dom';
 import http from '@/api/http';
 import { Model, UUID, withRelationships, WithRelationships } from '@/api/admin/index';
 import { AdminTransformers } from '@/api/admin/transformers';
+import { Allocation, Node } from '@/api/admin/node';
+import { User } from '@/api/admin/user';
+import { Egg, EggVariable } from '@/api/admin/egg';
 
 /**
  * Defines the limits for a server that exists on the Panel.
@@ -21,6 +19,10 @@ interface ServerLimits {
     cpu: number;
     threads: string | null;
     oomDisabled: boolean;
+}
+
+export interface ServerVariable extends EggVariable {
+    serverValue: string;
 }
 
 /**
