@@ -79,7 +79,7 @@ type LoadedServer = WithRelationships<Server, 'allocations' | 'user' | 'node'>;
 export const getServer = async (id: number | string): Promise<LoadedServer> => {
     const { data } = await http.get(`/api/application/servers/${id}`, {
         params: {
-            includes: [ 'allocations', 'user', 'node' ],
+            include: [ 'allocations', 'user', 'node' ],
         },
     });
 

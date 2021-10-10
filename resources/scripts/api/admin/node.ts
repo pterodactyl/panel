@@ -60,7 +60,7 @@ export interface Node extends Model {
 export const getNode = async (id: string | number): Promise<WithRelationships<Node, 'location'>> => {
     const { data } = await http.get(`/api/application/nodes/${id}`, {
         params: {
-            includes: [ 'location' ],
+            include: [ 'location' ],
         },
     });
 

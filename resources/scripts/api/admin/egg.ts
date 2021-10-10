@@ -51,18 +51,18 @@ export interface EggVariable extends Model {
 export const getEgg = async (id: number | string): Promise<WithRelationships<Egg, 'nest' | 'variables'>> => {
     const { data } = await http.get(`/api/application/eggs/${id}`, {
         params: {
-            includes: [ 'nest', 'variables' ],
+            include: [ 'nest', 'variables' ],
         },
     });
 
-    return withRelationships(AdminTransformers.toEgg(data.data), 'nest', 'variables');
+    return withRelationships(AdminTransformers.toEgg(data), 'nest', 'variables');
 };
 
 export const searchEggs = async (nestId: number, params: QueryBuilderParams<'name'>): Promise<WithRelationships<Egg, 'variables'>[]> => {
     const { data } = await http.get(`/api/application/nests/${nestId}/eggs`, {
         params: {
             ...withQueryBuilderParams(params),
-            includes: [ 'variables' ],
+            include: [ 'variables' ],
         },
     });
 

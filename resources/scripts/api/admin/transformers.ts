@@ -88,7 +88,7 @@ export class AdminTransformers {
             createdAt: new Date(attributes.created_at),
             updatedAt: new Date(attributes.updated_at),
             relationships: {
-                location: transform(attributes.relationships!.location as FractalResponseData, this.toLocation),
+                location: transform(attributes.relationships?.location as FractalResponseData, this.toLocation),
             },
         };
     };
