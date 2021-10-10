@@ -175,7 +175,7 @@ class UpgradeCommand extends Command
         });
 
         $this->newLine(2);
-        $this->info('Finished running upgrade. Do not forget to update your Wings too!');
+        $this->info('Panel has been successfully upgraded. Please ensure you also update any Wings instances: https://pterodactyl.io/wings/1.0/upgrading.html');
     }
 
     protected function withProgress(ProgressBar $bar, Closure $callback)
