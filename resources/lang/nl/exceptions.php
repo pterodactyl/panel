@@ -1,59 +1,59 @@
 <?php
 
 return [
-    'daemon_connection_failed' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
+    'daemon_connection_failed' => 'Er was een fout tijdens een poging om met de daemon te communiceren, wat resulteerde in een HTTP/:code response code. Deze fout is gelogt.',
     'node' => [
-        'servers_attached' => 'A node must have no servers linked to it in order to be deleted.',
-        'daemon_off_config_updated' => 'The daemon configuration <strong>has been updated</strong>, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
+        'servers_attached' => 'Er mogen geen servers gelinkt zijn aan de node om deze te kunnen verwijderen',
+        'daemon_off_config_updated' => 'De daemon confiuratie <strong>is geupdate</strong>, er is echter een fout opgetreden tijdens het automatisch updaten van de config.yml. Je dient de configuratie (config.yml) handmatig aan te passen om de instellingen toe te passen.',
     ],
     'allocations' => [
-        'server_using' => 'A server is currently assigned to this allocation. An allocation can only be deleted if no server is currently assigned.',
-        'too_many_ports' => 'Adding more than 1000 ports in a single range at once is not supported.',
-        'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
-        'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
-        'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
+        'server_using' => 'Er is momenteel een server gekoppeld aan deze allocation. Je kunt de allocation enkel verwijderen als er geen servers aan verbonden zijn.',
+        'too_many_ports' => 'Het toevoegen van meer dan 1000 porten in een single rage wordt niet ondersteund.',
+        'invalid_mapping' => 'De opgegeven mapping voor :port was ongeldig en kon niet worden verwerkt.',
+        'cidr_out_of_range' => 'CIDR notation staat alleen masks tussen /25 en /32 toe.',
+        'port_out_of_range' => 'Ports in een allocation dienen groter dan 1024 en lager of gelijk aan 65535 te zijn.',
     ],
     'nest' => [
-        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
+        'delete_has_servers' => 'Een nest met actieve servers kan niet worden verwijderd van het paneel.',
         'egg' => [
-            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
-            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
+            'delete_has_servers' => 'Een Egg met actieve servers kan niet worden verwijderd van het paneel.',
+            'invalid_copy_id' => 'De geselecteerde Egg om het script te kopieren bestaat niet, of kopieert zelf al een script.',
+            'must_be_child' => 'De "Copy Settings From" directive voor deze egg dient een child optie te zijn voor de geselecteerde Nest.',
+            'has_children' => 'Deze Egg is een parent aan een of meer andere Eggs. Gelieve eerst die Eggs te verwijderen, voordat je deze verwijderd.',
         ],
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
-            'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
-            'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
+            'env_not_unique' => 'De environment variable variable :name dient uniek te zijn voor deze Egg.',
+            'reserved_name' => 'De environment variable :name is beschermd en kan niet worden toegewezen aan een variable.',
+            'bad_validation_rule' => 'De validatie regel ":rule" is niet geldig voor deze applicatie.',
         ],
         'importer' => [
-            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
-            'file_error' => 'The JSON file provided was not valid.',
-            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
+            'json_error' => 'Er was een fout tijdens de parse van het JSON bestand: :error.',
+            'file_error' => 'Het opgegeven JSON bestand is ongeldig.',
+            'invalid_json_provided' => 'Het opegeven JSON bestand bestaat uit een niet geldig formaat en kan niet worden herkend.',
         ],
     ],
     'subusers' => [
-        'editing_self' => 'Editing your own subuser account is not permitted.',
-        'user_is_owner' => 'You cannot add the server owner as a subuser for this server.',
-        'subuser_exists' => 'A user with that email address is already assigned as a subuser for this server.',
+        'editing_self' => 'Je eigen mede-gebruiker aanpassen is niet toegestaan.',
+        'user_is_owner' => 'Je kunt de servereigenaar niet toevoegen als mede-gebruiker.',
+        'subuser_exists' => 'De gebruiker met dit e-mailadres is al toegewezen als mede-gebruiker op deze server.',
     ],
     'databases' => [
-        'delete_has_databases' => 'Cannot delete a database host server that has active databases linked to it.',
+        'delete_has_databases' => 'Je kan geen database-hos met actieve databases verwijderen.',
     ],
     'tasks' => [
-        'chain_interval_too_long' => 'The maximum interval time for a chained task is 15 minutes.',
+        'chain_interval_too_long' => 'De maximale interval tijd voor een chained task is 15 minuten.',
     ],
     'locations' => [
-        'has_nodes' => 'Cannot delete a location that has active nodes attached to it.',
+        'has_nodes' => 'Je kunt geen locatie met actieve nodes verwijderen.',
     ],
     'users' => [
-        'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
+        'node_revocation_failed' => 'Kan de keys van <a href=":link">Node #:node</a>. :error niet intrekken',
     ],
     'deployment' => [
-        'no_viable_nodes' => 'No nodes satisfying the requirements specified for automatic deployment could be found.',
-        'no_viable_allocations' => 'No allocations satisfying the requirements for automatic deployment were found.',
+        'no_viable_nodes' => 'Er zijn geen nodes gevonden welke voldoen aan de eisen voor automatische toewijzing.',
+        'no_viable_allocations' => 'Er zijn geen allocations gevonden die voldoen aan de vereisten voor automatische toewijzing.',
     ],
     'api' => [
-        'resource_not_found' => 'The requested resource does not exist on this server.',
+        'resource_not_found' => 'De opgevraagde resource bestaat niet op de server',
     ],
 ];
