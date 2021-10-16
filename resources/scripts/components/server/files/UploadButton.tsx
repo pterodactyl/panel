@@ -12,6 +12,7 @@ import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
+import { bytesToHuman } from "@/helpers";
 
 const InnerContainer = styled.div`
   max-width: 600px;
@@ -21,8 +22,9 @@ const InnerContainer = styled.div`
 export default ({ className }: WithClassname) => {
     const fileUploadInput = useRef<HTMLInputElement>(null);
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const [ visible, setVisible ] = useState(false);
-    const [ loading, setLoading ] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [upload, setUpload] = useState({ size: 0, totalSize: 0, progress: 0 });
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState(state => state.files.directory);
@@ -46,7 +48,7 @@ export default ({ className }: WithClassname) => {
         return () => {
             window.removeEventListener('keydown', hide);
         };
-    }, [ visible ]);
+    }, [visible]);
 
     const onFileSubmission = (files: FileList) => {
         const form = new FormData();
@@ -58,6 +60,12 @@ export default ({ className }: WithClassname) => {
             .then(url => axios.post(`${url}&directory=${directory}`, form, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                },
+                onUploadProgress: (progressEvent: ProgressEvent) => {
+                    const size = progressEvent.loaded;
+                    const totalSize = progressEvent.total;
+                    const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                    setUpload({ size, totalSize, progress });
                 },
             }))
             .then(() => mutate())
@@ -100,7 +108,9 @@ export default ({ className }: WithClassname) => {
                     </div>
                 </ModalMask>
             </Fade>
-            <SpinnerOverlay visible={loading} size={'large'} fixed/>
+            <SpinnerOverlay visible={loading} size={'large'} fixed>
+                <span css={tw`mt-4`}>Uploaded {bytesToHuman(upload.size)} of {bytesToHuman(upload.totalSize)} ({upload.progress}%)</span>
+            </SpinnerOverlay>
             <input
                 type={'file'}
                 ref={fileUploadInput}
