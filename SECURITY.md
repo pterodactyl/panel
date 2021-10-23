@@ -5,14 +5,9 @@ The following versions of Pterodactyl are receiving active support and maintenan
 
 | Panel | Daemon       | Supported          |
 | ----- | ------------ | ------------------ |
-| 1.4.x | wings@1.4.x  | :white_check_mark: |
-| 1.3.x | wings@1.3.x  | :x: |
-| 1.2.x | wings@1.2.x  | :x: |
-| 1.1.x | wings@1.1.x  | :x: |
-| 1.0.x | wings@1.0.x  | :x: |
+| 1.6.x | wings@1.5.x  | :white_check_mark: |
 | 0.7.x | daemon@0.6.x | :x: |
-| 0.6.x | daemon@0.5.x | :x:                |
-| 0.5.x | daemon@0.4.x | :x:                |
+
 
 ## Reporting a Vulnerability
 
