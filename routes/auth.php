@@ -48,4 +48,4 @@ Route::group(['middleware' => 'guest'], function () {
 | Endpoint: /auth
 |
 */
-Route::get('/logout', 'LoginController@logout')->name('auth.logout')->middleware('auth');
+Route::post('/logout', 'LoginController@logout')->name('auth.logout')->middleware('auth', 'csrf');

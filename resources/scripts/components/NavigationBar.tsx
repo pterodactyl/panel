@@ -7,6 +7,9 @@ import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import tw, { theme } from 'twin.macro';
 import styled from 'styled-components/macro';
+import http from '@/api/http';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { useState } from 'react';
 
 const Navigation = styled.div`
     ${tw`w-full bg-neutral-900 shadow-md overflow-x-auto`};
@@ -27,7 +30,7 @@ const Navigation = styled.div`
 const RightNavigation = styled.div`
     ${tw`flex h-full items-center justify-center`};
     
-    & > a, & > .navigation-link {
+    & > a, & > button, & > .navigation-link {
         ${tw`flex items-center h-full no-underline text-neutral-300 px-6 cursor-pointer transition-all duration-150`};
         
         &:active, &:hover {
@@ -43,9 +46,19 @@ const RightNavigation = styled.div`
 export default () => {
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
+    const [ isLoggingOut, setIsLoggingOut ] = useState(false);
+
+    const onTriggerLogout = () => {
+        setIsLoggingOut(true);
+        http.post('/auth/logout').finally(() => {
+            // @ts-ignore
+            window.location = '/';
+        });
+    };
 
     return (
         <Navigation>
+            <SpinnerOverlay visible={isLoggingOut} />
             <div css={tw`mx-auto w-full flex items-center`} style={{ maxWidth: '1200px', height: '3.5rem' }}>
                 <div id={'logo'}>
                     <Link to={'/'}>
@@ -65,9 +78,9 @@ export default () => {
                         <FontAwesomeIcon icon={faCogs}/>
                     </a>
                     }
-                    <a href={'/auth/logout'}>
+                    <button onClick={onTriggerLogout}>
                         <FontAwesomeIcon icon={faSignOutAlt}/>
-                    </a>
+                    </button>
                 </RightNavigation>
             </div>
         </Navigation>
