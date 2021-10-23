@@ -5,13 +5,9 @@ import tw from 'twin.macro';
 import Field from '@/components/elements/Field';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import React from 'react';
-import { useServerFromRoute } from '@/api/admin/server';
 
 export default () => {
     const { isSubmitting } = useFormikContext();
-    const { data: server } = useServerFromRoute();
-
-    if (!server) return null;
 
     return (
         <AdminBox icon={faBalanceScale} title={'Resources'} isLoading={isSubmitting}>

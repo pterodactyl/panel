@@ -3,10 +3,10 @@ import { useFormikContext } from 'formik';
 import SearchableSelect, { Option } from '@/components/elements/SearchableSelect';
 import { User, searchUserAccounts } from '@/api/admin/user';
 
-export default ({ selected }: { selected: User }) => {
+export default ({ selected }: { selected?: User }) => {
     const context = useFormikContext();
 
-    const [ user, setUser ] = useState<User | null>(selected);
+    const [ user, setUser ] = useState<User | null>(selected || null);
     const [ users, setUsers ] = useState<User[] | null>(null);
 
     const onSearch = async (query: string) => {

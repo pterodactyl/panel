@@ -11,14 +11,12 @@ export default () => {
     const { data: server } = useServerFromRoute();
     const { isSubmitting } = useFormikContext();
 
-    if (!server) return null;
-
     return (
         <AdminBox icon={faCogs} title={'Settings'} isLoading={isSubmitting}>
             <div css={tw`grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6`}>
                 <Field id={'name'} name={'name'} label={'Server Name'} type={'text'}/>
                 <Field id={'externalId'} name={'externalId'} label={'External Identifier'} type={'text'}/>
-                <OwnerSelect selected={server.relationships.user}/>
+                <OwnerSelect selected={server?.relationships.user}/>
             </div>
         </AdminBox>
     );

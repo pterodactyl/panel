@@ -13,9 +13,13 @@ export default () => {
     const { isSubmitting } = useFormikContext();
     const { data: server } = useServerFromRoute();
 
-    if (!server) return null;
-
     const loadOptions = async (inputValue: string, callback: (options: Option[]) => void) => {
+        if (!server) {
+            // eslint-disable-next-line node/no-callback-literal
+            callback([] as Option[]);
+            return;
+        }
+
         const allocations = await getAllocations(server.nodeId, { ip: inputValue, server_id: '0' });
 
         callback(allocations.map(a => {
@@ -29,7 +33,7 @@ export default () => {
                 <div>
                     <Label htmlFor={'allocationId'}>Primary Allocation</Label>
                     <Select id={'allocationId'} name={'allocationId'}>
-                        {server.relationships.allocations?.map(a => (
+                        {server?.relationships.allocations?.map(a => (
                             <option key={a.id} value={a.id}>{a.getDisplayText()}</option>
                         ))}
                     </Select>
@@ -45,7 +49,7 @@ export default () => {
                     id={'removeAllocations'}
                     name={'removeAllocations'}
                     label={'Remove Allocations'}
-                    options={server.relationships.allocations?.map(a => {
+                    options={server?.relationships.allocations?.map(a => {
                         return { value: a.id.toString(), label: a.getDisplayText() };
                     }) || []}
                     isMulti

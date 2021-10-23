@@ -57,10 +57,10 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
     );
 }
 
-function ServerServiceContainer ({ egg, setEgg, server }: { egg: Egg | null, setEgg: (value: Egg | null) => void, server: Server }) {
+export function ServerServiceContainer ({ egg, setEgg, nestId: _nestId }: { egg: Egg | null, setEgg: (value: Egg | null) => void, nestId: number }) {
     const { isSubmitting } = useFormikContext();
 
-    const [ nestId, setNestId ] = useState(server.nestId);
+    const [ nestId, setNestId ] = useState(_nestId);
 
     return (
         <AdminBox title={'Service Configuration'} isLoading={isSubmitting} css={tw`w-full`}>
@@ -77,7 +77,7 @@ function ServerServiceContainer ({ egg, setEgg, server }: { egg: Egg | null, set
     );
 }
 
-function ServerImageContainer () {
+export function ServerImageContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
@@ -98,7 +98,7 @@ function ServerImageContainer () {
     );
 }
 
-function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVariable, defaultValue: string }) {
+export function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVariable, defaultValue: string }) {
     const key = 'environment.' + variable.environmentVariable;
 
     const { isSubmitting, setFieldValue } = useFormikContext();
@@ -140,7 +140,7 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
                         <ServerServiceContainer
                             egg={egg}
                             setEgg={setEgg}
-                            server={server}
+                            nestId={server.nestId}
                         />
                     </div>
 
