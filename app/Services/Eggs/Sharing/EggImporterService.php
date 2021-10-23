@@ -151,7 +151,6 @@ class EggImporterService
             'update_url' => Arr::get($parsed, 'meta.update_url'),
             'config_files' => Arr::get($parsed, 'config.files'),
             'config_startup' => Arr::get($parsed, 'config.startup'),
-            'config_logs' => Arr::get($parsed, 'config.logs'),
             'config_stop' => Arr::get($parsed, 'config.stop'),
             'startup' => Arr::get($parsed, 'startup'),
             'script_install' => Arr::get($parsed, 'scripts.installation.script'),

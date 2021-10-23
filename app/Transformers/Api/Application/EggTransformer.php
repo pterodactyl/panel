@@ -41,10 +41,9 @@ class EggTransformer extends Transformer
             'docker_image' => count($model->docker_images) > 0 ? $model->docker_images[0] : '',
             'docker_images' => $model->docker_images,
             'config' => [
-                'files' => json_decode($model->config_files, true),
-                'startup' => json_decode($model->config_startup, true),
+                'files' => json_decode($model->config_files),
+                'startup' => json_decode($model->config_startup),
                 'stop' => $model->config_stop,
-                'logs' => json_decode($model->config_logs, true),
                 'file_denylist' => $model->file_denylist,
                 'extends' => $model->config_from,
             ],
@@ -106,7 +105,6 @@ class EggTransformer extends Transformer
                 'files' => json_decode($model->inherit_config_files),
                 'startup' => json_decode($model->inherit_config_startup),
                 'stop' => $model->inherit_config_stop,
-                'logs' => json_decode($model->inherit_config_logs),
             ];
         });
     }

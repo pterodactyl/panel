@@ -2,10 +2,12 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Eggs;
 
+use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggRequest;
@@ -56,7 +58,16 @@ class EggController extends ApplicationApiController
      */
     public function store(StoreEggRequest $request): JsonResponse
     {
-        $egg = Egg::query()->create($request->validated());
+        $validated = $request->validated();
+        Log::info(json_encode($validated, JSON_PRETTY_PRINT));
+        $merged = array_merge($validated, [
+            'uuid' => Uuid::uuid4()->toString(),
+            // TODO: allow this to be set in the request, and default to config value if null or not present.
+            'author' => config('pterodactyl.service.author'),
+        ]);
+        Log::info(json_encode($merged, JSON_PRETTY_PRINT));
+
+        $egg = Egg::query()->create($merged);
 
         return $this->fractal->item($egg)
             ->transformWith(EggTransformer::class)

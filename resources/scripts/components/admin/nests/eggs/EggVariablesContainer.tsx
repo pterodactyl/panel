@@ -1,4 +1,5 @@
 import deleteEggVariable from '@/api/admin/eggs/deleteEggVariable';
+import { NoItems } from '@/components/admin/AdminTable';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import React, { useState } from 'react';
@@ -160,28 +161,32 @@ export default function EggVariablesContainer ({ egg }: { egg: Egg }) {
             {({ isSubmitting, isValid }) => (
                 <Form>
                     <div css={tw`flex flex-col mb-16`}>
-                        <div css={tw`grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6`}>
-                            {egg.relations?.variables?.map((v, i) => (
-                                <EggVariableBox
-                                    key={i}
-                                    prefix={`[${i}].`}
-                                    variable={v}
-                                    onDeleteClick={(success) => {
-                                        deleteEggVariable(egg.id, v.id)
-                                            .then(async () => {
-                                                await mutate(egg => ({
-                                                    ...egg!,
-                                                    relations: {
-                                                        variables: egg!.relations.variables!.filter(v2 => v.id === v2.id),
-                                                    },
-                                                }));
-                                                success();
-                                            })
-                                            .catch(error => clearAndAddHttpError({ key: 'egg', error }));
-                                    }}
-                                />
-                            ))}
-                        </div>
+                        {egg.relations?.variables?.length === 0 ?
+                            <NoItems css={tw`bg-neutral-700 rounded-md shadow-md`}/>
+                            :
+                            <div css={tw`grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6`}>
+                                {egg.relations?.variables?.map((v, i) => (
+                                    <EggVariableBox
+                                        key={i}
+                                        prefix={`[${i}].`}
+                                        variable={v}
+                                        onDeleteClick={(success) => {
+                                            deleteEggVariable(egg.id, v.id)
+                                                .then(async () => {
+                                                    await mutate(egg => ({
+                                                        ...egg!,
+                                                        relations: {
+                                                            variables: egg!.relations.variables!.filter(v2 => v.id === v2.id),
+                                                        },
+                                                    }));
+                                                    success();
+                                                })
+                                                .catch(error => clearAndAddHttpError({ key: 'egg', error }));
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        }
 
                         <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-4 mt-6`}>
                             <div css={tw`flex flex-row`}>

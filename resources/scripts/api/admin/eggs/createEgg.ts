@@ -1,7 +1,9 @@
 import http from '@/api/http';
 import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 
-export default (egg: Partial<Egg>): Promise<Egg> => {
+type Egg2 = Omit<Omit<Partial<Egg>, 'configFiles'>, 'configStartup'> & { configFiles: string, configStartup: string };
+
+export default (egg: Partial<Egg2>): Promise<Egg> => {
     return new Promise((resolve, reject) => {
         http.post(
             '/api/application/eggs',

@@ -16,7 +16,6 @@ namespace Pterodactyl\Models;
  * @property array|null $file_denylist
  * @property string|null $config_files
  * @property string|null $config_startup
- * @property string|null $config_logs
  * @property string|null $config_stop
  * @property int|null $config_from
  * @property string|null $startup
@@ -32,7 +31,6 @@ namespace Pterodactyl\Models;
  * @property string $copy_script_container
  * @property string|null $inherit_config_files
  * @property string|null $inherit_config_startup
- * @property string|null $inherit_config_logs
  * @property string|null $inherit_config_stop
  * @property string $inherit_file_denylist
  * @property array|null $inherit_features
@@ -75,14 +73,16 @@ class Egg extends Model
      * @var array
      */
     protected $fillable = [
+        'nest_id',
+        'uuid',
         'name',
         'description',
         'features',
+        'author',
         'docker_images',
         'file_denylist',
         'config_files',
         'config_startup',
-        'config_logs',
         'config_stop',
         'config_from',
         'startup',
@@ -123,7 +123,6 @@ class Egg extends Model
         'config_from' => 'sometimes|bail|nullable|numeric|exists:eggs,id',
         'config_stop' => 'required_without:config_from|nullable|string|max:191',
         'config_startup' => 'required_without:config_from|nullable|json',
-        'config_logs' => 'required_without:config_from|nullable|json',
         'config_files' => 'required_without:config_from|nullable|json',
         'update_url' => 'sometimes|nullable|string',
     ];
@@ -136,7 +135,6 @@ class Egg extends Model
         'file_denylist' => null,
         'config_stop' => null,
         'config_startup' => null,
-        'config_logs' => null,
         'config_files' => null,
         'update_url' => null,
     ];
@@ -212,20 +210,6 @@ class Egg extends Model
         }
 
         return $this->configFrom->config_startup;
-    }
-
-    /**
-     * Return the log reading configuration for an egg.
-     *
-     * @return string
-     */
-    public function getInheritConfigLogsAttribute()
-    {
-        if (!is_null($this->config_logs) || is_null($this->config_from)) {
-            return $this->config_logs;
-        }
-
-        return $this->configFrom->config_logs;
     }
 
     /**

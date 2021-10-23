@@ -80,7 +80,7 @@ export default function NewVariableButton ({ eggId }: { eggId: number }) {
             </Formik>
 
             <Button type={'button'} color={'green'} onClick={() => setVisible(true)}>
-                Add a fucking variable
+                New Variable
             </Button>
         </>
     );

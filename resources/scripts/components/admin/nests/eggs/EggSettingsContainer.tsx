@@ -18,7 +18,7 @@ import tw from 'twin.macro';
 import { object } from 'yup';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 
-function EggInformationContainer () {
+export function EggInformationContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
@@ -72,7 +72,7 @@ function EggDetailsContainer ({ egg }: { egg: Egg }) {
     );
 }
 
-function EggStartupContainer ({ className }: { className?: string }) {
+export function EggStartupContainer ({ className }: { className?: string }) {
     const { isSubmitting } = useFormikContext();
 
     return (
@@ -90,7 +90,7 @@ function EggStartupContainer ({ className }: { className?: string }) {
     );
 }
 
-function EggImageContainer () {
+export function EggImageContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
@@ -107,7 +107,7 @@ function EggImageContainer () {
     );
 }
 
-function EggLifecycleContainer () {
+export function EggLifecycleContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
@@ -115,8 +115,8 @@ function EggLifecycleContainer () {
             <SpinnerOverlay visible={isSubmitting}/>
 
             <Field
-                id={'stopCommand'}
-                name={'stopCommand'}
+                id={'configStop'}
+                name={'configStop'}
                 label={'Stop Command'}
                 type={'text'}
                 css={tw`mb-1`}
@@ -127,17 +127,16 @@ function EggLifecycleContainer () {
 
 interface EggProcessContainerProps {
     className?: string;
-    egg: Egg;
 }
 
-interface EggProcessContainerRef {
+export interface EggProcessContainerRef {
     getStartupConfiguration: () => Promise<string | null>;
     getFilesConfiguration: () => Promise<string | null>;
 }
 
-const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(
-    function EggProcessContainer ({ className, egg }, ref) {
-        const { isSubmitting } = useFormikContext();
+export const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(
+    function EggProcessContainer ({ className }, ref) {
+        const { isSubmitting, values } = useFormikContext<Values>();
 
         let fetchStartupConfiguration: (() => Promise<string>) | null = null;
         let fetchFilesConfiguration: (() => Promise<string>) | null = null;
@@ -166,7 +165,7 @@ const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(
                     <Label>Startup Configuration</Label>
                     <Editor
                         mode={jsonLanguage}
-                        initialContent={JSON.stringify(egg.configStartup, null, '\t') || ''}
+                        initialContent={values.configStartup}
                         overrides={tw`h-32 rounded`}
                         fetchContent={value => {
                             fetchStartupConfiguration = value;
@@ -178,7 +177,7 @@ const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(
                     <Label>Configuration Files</Label>
                     <Editor
                         mode={jsonLanguage}
-                        initialContent={JSON.stringify(egg.configFiles, null, '\t') || ''}
+                        initialContent={values.configFiles}
                         overrides={tw`h-48 rounded`}
                         fetchContent={value => {
                             fetchFilesConfiguration = value;
@@ -195,7 +194,7 @@ interface Values {
     description: string;
     startup: string;
     dockerImages: string;
-    stopCommand: string;
+    configStop: string;
     configStartup: string;
     configFiles: string;
 }
@@ -229,9 +228,9 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
                 description: egg.description || '',
                 startup: egg.startup,
                 dockerImages: egg.dockerImages.join('\n'),
-                stopCommand: egg.configStop || '',
-                configStartup: '',
-                configFiles: '',
+                configStop: egg.configStop || '',
+                configStartup: JSON.stringify(egg.configStartup, null, '\t') || '',
+                configFiles: JSON.stringify(egg.configFiles, null, '\t') || '',
             }}
             validationSchema={object().shape({
             })}
@@ -250,17 +249,13 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
                         <EggLifecycleContainer/>
                     </div>
 
-                    <EggProcessContainer
-                        ref={ref}
-                        egg={egg}
-                        css={tw`mb-6`}
-                    />
+                    <EggProcessContainer ref={ref} css={tw`mb-6`}/>
 
                     <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6 mb-16`}>
                         <div css={tw`flex flex-row`}>
                             <EggDeleteButton
                                 eggId={egg.id}
-                                onDeleted={() => history.push('/admin/nests')}
+                                onDeleted={() => history.push(`/admin/nests/${egg.nestId}`)}
                             />
                             <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
                                 Save Changes

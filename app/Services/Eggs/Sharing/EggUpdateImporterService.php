@@ -74,7 +74,6 @@ class EggUpdateImporterService
             'docker_images' => object_get($parsed, 'images') ?? [object_get($parsed, 'image')],
             'config_files' => object_get($parsed, 'config.files'),
             'config_startup' => object_get($parsed, 'config.startup'),
-            'config_logs' => object_get($parsed, 'config.logs'),
             'config_stop' => object_get($parsed, 'config.stop'),
             'startup' => object_get($parsed, 'startup'),
             'script_install' => object_get($parsed, 'scripts.installation.script'),
