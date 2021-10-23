@@ -3,6 +3,15 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.3
+### Fixed
+* **[Security]** Changes logout endpoint to be a POST request with CSRF-token validation to prevent a malicious actor from triggering a user logout.
+* Fixes Wings receiving the wrong server suspension state when syncing servers.
+
+### Added
+* Adds additional throttling to login and password reset endpoints.
+* Adds server uptime display when viewing a server console.
+
 ## v1.6.2
 ### Fixed
 * **[Security]** Fixes an authentication bypass vulerability that could allow a malicious actor to login as another user in the Panel without knowing that user's email or password.
