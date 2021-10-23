@@ -28,18 +28,6 @@ class EggTransformer extends Transformer
 
     public function transform(Egg $model): array
     {
-        // Fixes PHP returning an empty array rather than an empty object.
-        // Removing associative = true would also fix this, but that causes
-        // the tests to fail and may have other undiscovered side effects.
-        $configFiles = json_decode($model->config_files, true);
-        if ($configFiles === []) {
-            $configFiles = new \stdClass();
-        }
-        $configStartup = json_decode($model->config_startup, true);
-        if ($configStartup === []) {
-            $configStartup = new \stdClass();
-        }
-
         return [
             'id' => $model->id,
             'uuid' => $model->uuid,
@@ -53,8 +41,8 @@ class EggTransformer extends Transformer
             'docker_image' => count($model->docker_images) > 0 ? $model->docker_images[0] : '',
             'docker_images' => $model->docker_images,
             'config' => [
-                'files' => $configFiles,
-                'startup' => $configStartup,
+                'files' => json_decode($model->config_files),
+                'startup' => json_decode($model->config_startup),
                 'stop' => $model->config_stop,
                 'file_denylist' => $model->file_denylist,
                 'extends' => $model->config_from,
