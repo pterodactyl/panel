@@ -1,6 +1,7 @@
 import deleteEggVariable from '@/api/admin/eggs/deleteEggVariable';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import tw from 'twin.macro';
 import { array, boolean, object, string } from 'yup';
 import getEgg, { Egg, EggVariable } from '@/api/admin/eggs/getEgg';
@@ -12,6 +13,7 @@ import Checkbox from '@/components/elements/Checkbox';
 import Field, { FieldRow, TextareaField } from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
+import { TrashIcon } from '@heroicons/react/outline';
 
 export const validationSchema = object().shape({
     name: string().required().min(1).max(191),
@@ -84,25 +86,51 @@ export function EggVariableForm ({ prefix }: { prefix: string }) {
     );
 }
 
-function EggVariableBox ({ onDeleteClick, variable, prefix }: { onDeleteClick: () => void, variable: EggVariable, prefix: string }) {
+function EggVariableDeleteButton ({ onClick }: { onClick: (success: () => void) => void }) {
+    const [ visible, setVisible ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
+
+    const onDelete = () => {
+        setLoading(true);
+
+        onClick(() => {
+            setLoading(false);
+        });
+    };
+
+    return (
+        <>
+            <ConfirmationModal
+                visible={visible}
+                title={'Delete variable?'}
+                buttonText={'Yes, delete variable'}
+                onConfirmed={onDelete}
+                showSpinnerOverlay={loading}
+                onModalDismissed={() => setVisible(false)}
+            >
+                Are you sure you want to delete this variable?  Deleting this variable will delete it from every server
+                using this egg.
+            </ConfirmationModal>
+
+            <button
+                type={'button'}
+                css={tw`ml-auto text-neutral-500 hover:text-neutral-300`}
+                onClick={() => setVisible(true)}
+            >
+                <TrashIcon css={tw`h-5 w-5`}/>
+            </button>
+        </>
+    );
+}
+
+function EggVariableBox ({ onDeleteClick, variable, prefix }: { onDeleteClick: (success: () => void) => void, variable: EggVariable, prefix: string }) {
     const { isSubmitting } = useFormikContext();
 
     return (
         <AdminBox
             css={tw`relative w-full`}
             title={<p css={tw`text-sm uppercase`}>{variable.name}</p>}
-            button={
-                <button
-                    type={'button'}
-                    css={tw`ml-auto text-neutral-500 hover:text-neutral-300`}
-                    onClick={onDeleteClick}
-                >
-                    {/* TODO: Change to heroicon 'x' */}
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" css={tw`h-5 w-5`}>
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                </button>
-            }
+            button={<EggVariableDeleteButton onClick={onDeleteClick}/>}
         >
             <SpinnerOverlay visible={isSubmitting}/>
 
@@ -138,14 +166,17 @@ export default function EggVariablesContainer ({ egg }: { egg: Egg }) {
                                     key={i}
                                     prefix={`[${i}].`}
                                     variable={v}
-                                    onDeleteClick={() => {
+                                    onDeleteClick={(success) => {
                                         deleteEggVariable(egg.id, v.id)
-                                            .then(async () => await mutate(egg => ({
-                                                ...egg!,
-                                                relations: {
-                                                    variables: egg!.relations.variables!.filter(v2 => v.id === v2.id),
-                                                },
-                                            })))
+                                            .then(async () => {
+                                                await mutate(egg => ({
+                                                    ...egg!,
+                                                    relations: {
+                                                        variables: egg!.relations.variables!.filter(v2 => v.id === v2.id),
+                                                    },
+                                                }));
+                                                success();
+                                            })
                                             .catch(error => clearAndAddHttpError({ key: 'egg', error }));
                                     }}
                                 />

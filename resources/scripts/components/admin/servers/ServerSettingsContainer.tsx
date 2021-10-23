@@ -13,7 +13,7 @@ import NetworkingBox from '@/components/admin/servers/settings/NetworkingBox';
 import ServerResourceBox from '@/components/admin/servers/settings/ServerResourceBox';
 
 export default () => {
-    const { data: server, mutate } = useServerFromRoute();
+    const { data: server } = useServerFromRoute();
     const { clearFlashes, clearAndAddHttpError } = useStoreActions(actions => actions.flashes);
 
     if (!server) return null;
@@ -26,7 +26,7 @@ export default () => {
         values.limits.oomDisabled = !values.limits.oomDisabled;
 
         updateServer(server.id, values)
-            .then(s => {
+            .then(() => {
                 // setServer({ ...server, ...s });
 
                 // TODO: Figure out how to properly clear react-selects for allocations.
