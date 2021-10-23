@@ -63,7 +63,7 @@ function ServerServiceContainer ({ egg, setEgg, server }: { egg: Egg | null, set
     const [ nestId, setNestId ] = useState(server.nestId);
 
     return (
-        <AdminBox title={'Service Configuration'} isLoading={isSubmitting}>
+        <AdminBox title={'Service Configuration'} isLoading={isSubmitting} css={tw`w-full`}>
             <div css={tw`mb-6`}>
                 <NestSelector selectedNestId={nestId} onNestSelect={setNestId}/>
             </div>
