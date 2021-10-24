@@ -36,6 +36,7 @@ jobs:
         if: "!contains(github.ref, 'develop')"
         with:
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
       - name: Release Development Build
@@ -43,5 +44,6 @@ jobs:
         if: "contains(github.ref, 'develop')"
         with:
           push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
