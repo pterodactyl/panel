@@ -7,17 +7,9 @@ export default ({ uptime }: { uptime: number }) => {
     const minutes = Math.floor(remainder / 60 % 60);
     const seconds = remainder % 60;
 
-    return (
-        <>
-            {days > 0 ? (
-                <>
-                    {days}d {hours}h {minutes}m
-                </>
-            ) : (
-                <>
-                    {hours}h {minutes}m {seconds}s
-                </>
-            )}
-        </>
-    );
+    if (days > 0) {
+        return <>{days}d {hours}h {minutes}m</>;
+    }
+
+    return <>{hours}h {minutes}m {seconds}s</>;
 };
