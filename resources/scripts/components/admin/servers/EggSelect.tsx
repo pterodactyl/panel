@@ -1,9 +1,9 @@
-import Label from '@/components/elements/Label';
-import Select from '@/components/elements/Select';
 import { useField } from 'formik';
 import React, { useEffect, useState } from 'react';
-import { Egg, searchEggs } from '@/api/admin/egg';
 import { WithRelationships } from '@/api/admin';
+import { Egg, searchEggs } from '@/api/admin/egg';
+import Label from '@/components/elements/Label';
+import Select from '@/components/elements/Select';
 
 interface Props {
     nestId?: number;
@@ -15,31 +15,40 @@ export default ({ nestId, selectedEggId, onEggSelect }: Props) => {
     const [ , , { setValue, setTouched } ] = useField<Record<string, string | undefined>>('environment');
     const [ eggs, setEggs ] = useState<WithRelationships<Egg, 'variables'>[] | null>(null);
 
-    useEffect(() => {
-        if (!nestId) return setEggs(null);
+    const selectEgg = (egg: Egg | null) => {
+        if (egg === null) {
+            onEggSelect(null);
+            return;
+        }
 
-        searchEggs(nestId, {}).then(eggs => {
-            setEggs(eggs);
-            onEggSelect(eggs[0] || null);
-        }).catch(error => console.error(error));
+        // Clear values
+        setValue({});
+        setTouched(true);
+
+        onEggSelect(egg);
+
+        const values: Record<string, any> = {};
+        egg.relationships.variables?.forEach(v => { values[v.environmentVariable] = v.defaultValue; });
+        setValue(values);
+        setTouched(true);
+    };
+
+    useEffect(() => {
+        if (!nestId) {
+            setEggs(null);
+            return;
+        }
+
+        searchEggs(nestId, {})
+            .then(eggs => {
+                setEggs(eggs);
+                selectEgg(eggs[0] || null);
+            })
+            .catch(error => console.error(error));
     }, [ nestId ]);
 
     const onSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        if (!eggs) return;
-
-        const match = eggs.find(egg => String(egg.id) === e.currentTarget.value);
-        if (!match) return onEggSelect(null);
-
-        // Ensure that only new egg variables are present in the record storing all
-        // of the possible variables. This ensures the fields are controlled, rather
-        // than uncontrolled when a user begins typing in them.
-        setValue(match.relationships.variables.reduce((obj, value) => ({
-            ...obj,
-            [value.environmentVariable]: undefined,
-        }), {}));
-        setTouched(true);
-
-        onEggSelect(match);
+        selectEgg(eggs?.find(egg => egg.id.toString() === e.currentTarget.value) || null);
     };
 
     return (

@@ -10,7 +10,7 @@ import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
+import { Form, Formik, FormikHelpers, useField, useFormikContext } from 'formik';
 import { ApplicationStore } from '@/state';
 import { Actions, useStoreActions } from 'easy-peasy';
 import Label from '@/components/elements/Label';
@@ -60,7 +60,7 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
 export function ServerServiceContainer ({ egg, setEgg, nestId: _nestId }: { egg: Egg | null, setEgg: (value: Egg | null) => void, nestId: number }) {
     const { isSubmitting } = useFormikContext();
 
-    const [ nestId, setNestId ] = useState(_nestId);
+    const [ nestId, setNestId ] = useState<number>(_nestId);
 
     return (
         <AdminBox title={'Service Configuration'} isLoading={isSubmitting} css={tw`w-full`}>
@@ -71,7 +71,7 @@ export function ServerServiceContainer ({ egg, setEgg, nestId: _nestId }: { egg:
                 <EggSelect nestId={nestId} selectedEggId={egg?.id} onEggSelect={setEgg}/>
             </div>
             <div css={tw`bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
-                <FormikSwitch name={'skipScript'} label={'Skip Egg Install Script'} description={'Soon™'}/>
+                <FormikSwitch name={'skipScripts'} label={'Skip Egg Install Script'} description={'Soon™'}/>
             </div>
         </AdminBox>
     );
@@ -98,14 +98,21 @@ export function ServerImageContainer () {
     );
 }
 
-export function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVariable, defaultValue: string }) {
+export function ServerVariableContainer ({ variable, value }: { variable: EggVariable, value?: string }) {
     const key = 'environment.' + variable.environmentVariable;
 
-    const { isSubmitting, setFieldValue } = useFormikContext();
+    const [ , , { setValue, setTouched } ] = useField<string | undefined>(key);
+
+    const { isSubmitting } = useFormikContext();
 
     useEffect(() => {
-        setFieldValue(key, defaultValue);
-    }, [ variable, defaultValue ]);
+        if (value === undefined) {
+            return;
+        }
+
+        setValue(value);
+        setTouched(true);
+    }, [ value ]);
 
     return (
         <AdminBox css={tw`relative w-full`} title={<p css={tw`text-sm uppercase`}>{variable.name}</p>}>
@@ -123,7 +130,7 @@ export function ServerVariableContainer ({ variable, defaultValue }: { variable:
 }
 
 function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: (value: Egg | null) => void; server: Server }) {
-    const { isSubmitting, isValid } = useFormikContext();
+    const { isSubmitting, isValid, values: { environment } } = useFormikContext<Values>();
 
     return (
         <Form>
@@ -150,11 +157,12 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
                 </div>
 
                 <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8`}>
-                    {egg?.relationships.variables?.map((v, i) => (
+                    {/* This ensures that no variables are rendered unless the environment has a value for the variable. */}
+                    {egg?.relationships.variables?.filter(v => Object.keys(environment).find(e => e === v.environmentVariable) !== undefined).map((v, i) => (
                         <ServerVariableContainer
                             key={i}
                             variable={v}
-                            defaultValue={server.relationships?.variables?.find(v2 => v.eggId === v2.eggId && v.environmentVariable === v2.environmentVariable)?.serverValue || v.defaultValue}
+                            value={server.relationships.variables?.find(v2 => v.eggId === v2.eggId && v.environmentVariable === v2.environmentVariable)?.serverValue}
                         />
                     ))}
                 </div>
@@ -205,14 +213,12 @@ export default () => {
             onSubmit={submit}
             initialValues={{
                 startup: server.container.startup,
-                // Don't ask.
-                environment: Object.fromEntries(egg?.relationships.variables.map(v => [ v.environmentVariable, '' ]) || []),
+                environment: [] as Record<string, any>,
                 image: server.container.image,
                 eggId: server.eggId,
                 skipScripts: false,
             }}
-            validationSchema={object().shape({
-            })}
+            validationSchema={object().shape({})}
         >
             <ServerStartupForm
                 egg={egg}

@@ -1,6 +1,6 @@
 import { Model, UUID, WithRelationships, withRelationships } from '@/api/admin/index';
 import { Location } from '@/api/admin/location';
-import http from '@/api/http';
+import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
 import { AdminTransformers } from '@/api/admin/transformers';
 import { Server } from '@/api/admin/server';
 
@@ -65,4 +65,12 @@ export const getNode = async (id: string | number): Promise<WithRelationships<No
     });
 
     return withRelationships(AdminTransformers.toNode(data.data), 'location');
+};
+
+export const searchNodes = async (params: QueryBuilderParams<'name'>): Promise<Node[]> => {
+    const { data } = await http.get('/api/application/nodes', {
+        params: withQueryBuilderParams(params),
+    });
+
+    return data.data.map(AdminTransformers.toNode);
 };

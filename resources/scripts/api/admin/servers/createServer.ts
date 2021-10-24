@@ -1,57 +1,50 @@
 import http from '@/api/http';
 import { Server, rawDataToServer } from '@/api/admin/servers/getServers';
 
-interface CreateServerRequest {
+export interface CreateServerRequest {
+    externalId: string;
     name: string;
     description: string | null;
-    user: number;
-    egg: number;
-    dockerImage: string;
-    startup: string;
-    skipScripts: boolean;
-    oomDisabled: boolean;
-    startOnCompletion: boolean;
-    environment: string[];
-
-    allocation: {
-        default: number;
-        additional: number[];
-    };
+    ownerId: number;
+    nodeId: number;
 
     limits: {
-        cpu: number;
-        disk: number;
-        io: number;
         memory: number;
         swap: number;
+        disk: number;
+        io: number;
+        cpu: number;
         threads: string;
-    };
+        oomDisabled: boolean;
+    }
 
     featureLimits: {
         allocations: number;
         backups: number;
         databases: number;
     };
+
+    allocation: {
+        default: number;
+        additional: number[];
+    };
+
+    startup: string;
+    environment: Record<string, any>;
+    eggId: number;
+    image: string;
+    skipScripts: boolean;
+    startOnCompletion: boolean;
 }
 
 export default (r: CreateServerRequest, include: string[] = []): Promise<Server> => {
     return new Promise((resolve, reject) => {
         http.post('/api/application/servers', {
+            externalId: r.externalId,
             name: r.name,
             description: r.description,
-            user: r.user,
-            egg: r.egg,
-            docker_image: r.dockerImage,
-            startup: r.startup,
-            skip_scripts: r.skipScripts,
-            oom_disabled: r.oomDisabled,
-            start_on_completion: r.startOnCompletion,
-            environment: r.environment,
-
-            allocation: {
-                default: r.allocation.default,
-                additional: r.allocation.additional,
-            },
+            owner_id: r.ownerId,
+            node_id: r.nodeId,
 
             limits: {
                 cpu: r.limits.cpu,
@@ -67,6 +60,18 @@ export default (r: CreateServerRequest, include: string[] = []): Promise<Server>
                 backups: r.featureLimits.backups,
                 databases: r.featureLimits.databases,
             },
+
+            allocation: {
+                default: r.allocation.default,
+                additional: r.allocation.additional,
+            },
+
+            startup: r.startup,
+            environment: r.environment,
+            egg_id: r.eggId,
+            image: r.image,
+            skip_scripts: r.skipScripts,
+            start_on_completion: r.startOnCompletion,
         }, { params: { include: include.join(',') } })
             .then(({ data }) => resolve(rawDataToServer(data)))
             .catch(reject);

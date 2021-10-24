@@ -79,11 +79,11 @@ type LoadedServer = WithRelationships<Server, 'allocations' | 'user' | 'node'>;
 export const getServer = async (id: number | string): Promise<LoadedServer> => {
     const { data } = await http.get(`/api/application/servers/${id}`, {
         params: {
-            include: [ 'allocations', 'user', 'node' ],
+            include: [ 'allocations', 'user', 'node', 'variables' ],
         },
     });
 
-    return withRelationships(AdminTransformers.toServer(data), 'allocations', 'user', 'node');
+    return withRelationships(AdminTransformers.toServer(data), 'allocations', 'user', 'node', 'variables');
 };
 
 /**
