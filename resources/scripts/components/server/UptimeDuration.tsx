@@ -1,14 +1,15 @@
 import React from 'react';
 
 export default ({ uptime }: { uptime: number }) => {
-    const hours = Math.floor(Math.floor(uptime) / 60 / 60);
+    const days = Math.floor(uptime / (24 * 60 * 60));
+    const hours = Math.floor(Math.floor(uptime) / 60 / 60 % 24);
     const remainder = Math.floor(uptime - (hours * 60 * 60));
-    const minutes = Math.floor(remainder / 60);
+    const minutes = Math.floor(remainder / 60 % 60);
     const seconds = remainder % 60;
 
-    return (
-        <>
-            {hours.toString().padStart(2, '0')}:{minutes.toString().padStart(2, '0')}:{seconds.toString().padStart(2, '0')}
-        </>
-    );
+    if (days > 0) {
+        return <>{days}d {hours}h {minutes}m</>;
+    }
+
+    return <>{hours}h {minutes}m {seconds}s</>;
 };
