@@ -92,7 +92,7 @@ const ServerDetailsBlock = () => {
                 />
                 &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
                 {stats.uptime > 0 &&
-                <span css={tw`ml-2`}>
+                <span css={tw`ml-2 lowercase`}>
                     (<UptimeDuration uptime={stats.uptime / 1000}/>)
                 </span>
                 }
