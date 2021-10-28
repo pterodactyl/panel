@@ -135,7 +135,7 @@
                         </div>
                         <div class="box-body">
                             <div class="form-group">
-                                <label for="pAllocation" class="control-label">Game Port</label>
+                                <label for="pAllocation" class="control-label">Primary Port</label>
                                 <select id="pAllocation" name="allocation_id" class="form-control">
                                     @foreach ($assigned as $assignment)
                                         <option value="{{ $assignment->id }}"
