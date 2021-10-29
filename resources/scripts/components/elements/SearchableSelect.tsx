@@ -178,6 +178,7 @@ export const SearchableSelect = <T extends IdObj>({ id, name, label, placeholder
             }
 
             setSelected(item);
+            onSelect(item);
         }
     };
 
