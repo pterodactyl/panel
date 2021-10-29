@@ -4,7 +4,7 @@ import SearchableSelect, { Option } from '@/components/elements/SearchableSelect
 import { User, searchUserAccounts } from '@/api/admin/user';
 
 export default ({ selected }: { selected?: User }) => {
-    const context = useFormikContext();
+    const { setFieldValue } = useFormikContext();
 
     const [ user, setUser ] = useState<User | null>(selected || null);
     const [ users, setUsers ] = useState<User[] | null>(null);
@@ -17,7 +17,7 @@ export default ({ selected }: { selected?: User }) => {
 
     const onSelect = (user: User | null) => {
         setUser(user);
-        context.setFieldValue('ownerId', user?.id || null);
+        setFieldValue('ownerId', user?.id || null);
     };
 
     const getSelectedText = (user: User | null): string => user?.email || '';

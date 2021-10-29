@@ -74,3 +74,11 @@ export const searchNodes = async (params: QueryBuilderParams<'name'>): Promise<N
 
     return data.data.map(AdminTransformers.toNode);
 };
+
+export const getAllocations = async (id: string | number, params?: QueryBuilderParams<'ip' | 'server_id'>): Promise<Allocation[]> => {
+    const { data } = await http.get(`/api/application/nodes/${id}/allocations`, {
+        params: withQueryBuilderParams(params),
+    });
+
+    return data.data.map(AdminTransformers.toAllocation);
+};

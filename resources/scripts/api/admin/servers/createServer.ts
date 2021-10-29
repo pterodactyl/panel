@@ -53,9 +53,10 @@ export default (r: CreateServerRequest, include: string[] = []): Promise<Server>
                 memory: r.limits.memory,
                 swap: r.limits.swap,
                 threads: r.limits.threads,
+                oom_killer: r.limits.oomDisabled,
             },
 
-            featureLimits: {
+            feature_limits: {
                 allocations: r.featureLimits.allocations,
                 backups: r.featureLimits.backups,
                 databases: r.featureLimits.databases,

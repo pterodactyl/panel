@@ -13,7 +13,12 @@ export default ({ selectedNestId, onNestSelect }: Props) => {
 
     useEffect(() => {
         searchNests({})
-            .then(setNests)
+            .then(nests => {
+                setNests(nests);
+                if (selectedNestId === 0 && nests.length > 0) {
+                    onNestSelect(nests[0].id);
+                }
+            })
             .catch(error => console.error(error));
     }, []);
 

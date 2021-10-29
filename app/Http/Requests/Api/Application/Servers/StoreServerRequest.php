@@ -74,7 +74,7 @@ class StoreServerRequest extends ApplicationApiRequest
 
             'startup' => array_get($data, 'startup'),
             'environment' => array_get($data, 'environment'),
-            'egg_id' => array_get($data, 'egg'),
+            'egg_id' => array_get($data, 'egg_id'),
             'image' => array_get($data, 'image'),
             'skip_scripts' => array_get($data, 'skip_scripts'),
             'start_on_completion' => array_get($data, 'start_on_completion', false),

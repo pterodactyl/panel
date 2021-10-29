@@ -12,25 +12,50 @@ import Label from '@/components/elements/Label';
 import Select from '@/components/elements/Select';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import useFlash from '@/plugins/useFlash';
 import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import tw from 'twin.macro';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import { object } from 'yup';
-import { CreateServerRequest } from '@/api/admin/servers/createServer';
+import createServer, { CreateServerRequest } from '@/api/admin/servers/createServer';
+import { Allocation, Node, getAllocations } from '@/api/admin/node';
 
 function InternalForm () {
-    const { isSubmitting, isValid, values: { environment } } = useFormikContext<CreateServerRequest>();
+    const { isSubmitting, isValid, setFieldValue, values: { environment } } = useFormikContext<CreateServerRequest>();
 
     const [ egg, setEgg ] = useState<Egg | null>(null);
+    const [ node, setNode ] = useState<Node | null>(null);
+    const [ allocations, setAllocations ] = useState<Allocation[] | null>(null);
+
+    useEffect(() => {
+        if (egg === null) {
+            return;
+        }
+
+        setFieldValue('eggId', egg.id);
+        setFieldValue('startup', egg.startup);
+        setFieldValue('image', egg.dockerImages.length > 0 ? egg.dockerImages[0] : '');
+    }, [ egg ]);
+
+    useEffect(() => {
+        if (node === null) {
+            return;
+        }
+
+        // server_id: 0 filters out assigned allocations
+        getAllocations(node.id, { filters: { server_id: '0' } })
+            .then(setAllocations);
+    }, [ node ]);
 
     return (
         <Form>
             <div css={tw`grid grid-cols-2 gap-y-6 gap-x-8 mb-16`}>
                 <div css={tw`grid grid-cols-1 gap-y-6 col-span-2 md:col-span-1`}>
                     <BaseSettingsBox>
-                        <NodeSelect/>
+                        <NodeSelect node={node} setNode={setNode}/>
                         <div css={tw`xl:col-span-2 bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
                             <FormikSwitch
                                 name={'startOnCompletion'}
@@ -43,25 +68,32 @@ function InternalForm () {
                     <ServerServiceContainer
                         egg={egg}
                         setEgg={setEgg}
-                        /* TODO: Get lowest nest_id rather than always defaulting to 1 */
-                        nestId={1}
+                        nestId={0}
                     />
                 </div>
                 <div css={tw`grid grid-cols-1 gap-y-6 col-span-2 md:col-span-1`}>
                     <AdminBox icon={faNetworkWired} title={'Networking'} isLoading={isSubmitting}>
                         <div css={tw`grid grid-cols-1 gap-4 lg:gap-6`}>
                             <div>
-                                <Label htmlFor={'allocationId'}>Primary Allocation</Label>
-                                <Select id={'allocationId'} name={'allocationId'} disabled>
-                                    <option value="">Select a node...</option>
+                                <Label htmlFor={'allocation.default'}>Primary Allocation</Label>
+                                <Select
+                                    id={'allocation.default'}
+                                    name={'allocation.default'}
+                                    disabled={node === null}
+                                    onChange={e => setFieldValue('allocation.default', Number(e.currentTarget.value))}
+                                >
+                                    {node === null ? <option value="">Select a node...</option> : <option value="">Select an allocation...</option>}
+                                    {allocations?.map(a => <option key={a.id} value={a.id.toString()}>{a.getDisplayText()}</option>)}
                                 </Select>
                             </div>
-                            <div>
-                                <Label htmlFor={'additionalAllocations'}>Additional Allocations</Label>
-                                <Select id={'additionalAllocations'} name={'additionalAllocations'} disabled>
-                                    <option value="">Select a node...</option>
-                                </Select>
-                            </div>
+                            {/*<div>*/}
+                            {/*    /!* TODO: Multi-select *!/*/}
+                            {/*    <Label htmlFor={'allocation.additional'}>Additional Allocations</Label>*/}
+                            {/*    <Select id={'allocation.additional'} name={'allocation.additional'} disabled={node === null}>*/}
+                            {/*        {node === null ? <option value="">Select a node...</option> : <option value="">Select additional allocations...</option>}*/}
+                            {/*        {allocations?.map(a => <option key={a.id} value={a.id.toString()}>{a.getDisplayText()}</option>)}*/}
+                            {/*    </Select>*/}
+                            {/*</div>*/}
                         </div>
                     </AdminBox>
                     <ServerResourceBox/>
@@ -109,9 +141,18 @@ function InternalForm () {
 }
 
 export default () => {
+    const history = useHistory();
+
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+
     const submit = (r: CreateServerRequest, { setSubmitting }: FormikHelpers<CreateServerRequest>) => {
         console.log(r);
-        setSubmitting(false);
+        clearFlashes('server:create');
+
+        createServer(r)
+            .then(s => history.push(`/admin/servers/${s.id}`))
+            .catch(error => clearAndAddHttpError({ key: 'server:create', error }))
+            .then(() => setSubmitting(false));
     };
 
     return (
