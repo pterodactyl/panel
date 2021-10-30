@@ -6,7 +6,7 @@ includes:
 parameters:
     paths:
         - app
-        - database/seeders
+        - database/Seeders
     level: 7
     ignoreErrors:
         - '#Unsafe usage of new static#'

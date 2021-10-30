@@ -52,25 +52,21 @@ jobs:
       - name: composer install
         run: composer install --prefer-dist --no-interaction --no-progress
       - name: Run cs-fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php-cs-fixer.dist.php
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --format=udiff --config .php-cs-fixer.dist.php
         continue-on-error: true
       - run: php artisan ide-helper:models -N
         env:
           TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
-          TESTING_DB_USERNAME: root
       - run: ./vendor/bin/phpstan analyse --memory-limit=2G
         env:
           TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
-          TESTING_DB_USERNAME: root
       - name: Execute Unit Tests
         run: php artisan test tests/Unit
         if: ${{ always() }}
         env:
           TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
-          TESTING_DB_USERNAME: root
       - name: Execute Integration Tests
         run: php artisan test tests/Integration
         if: ${{ always() }}
         env:
           TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
-          TESTING_DB_USERNAME: root
