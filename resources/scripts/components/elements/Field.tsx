@@ -77,9 +77,9 @@ export const TextareaField = forwardRef<HTMLTextAreaElement, TextareaProps>(
 TextareaField.displayName = 'TextareaField';
 
 export const FieldRow = styled.div`
-    ${tw`grid grid-cols-1 sm:grid-cols-2 gap-x-6 mb-6`};
+    ${tw`grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 mb-6`};
 
     & > div {
-        ${tw`mb-6 sm:mb-0 sm:w-full sm:flex sm:flex-col`};
+        ${tw`sm:w-full sm:flex sm:flex-col`};
     }
 `;

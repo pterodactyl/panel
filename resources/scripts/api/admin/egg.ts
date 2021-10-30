@@ -68,3 +68,8 @@ export const searchEggs = async (nestId: number, params: QueryBuilderParams<'nam
 
     return data.data.map(AdminTransformers.toEgg);
 };
+
+export const exportEgg = async (eggId: number): Promise<Record<string, any>> => {
+    const { data } = await http.get(`/api/application/eggs/${eggId}/export`);
+    return data;
+};

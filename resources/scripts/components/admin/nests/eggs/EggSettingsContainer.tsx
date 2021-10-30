@@ -1,5 +1,6 @@
 import updateEgg from '@/api/admin/eggs/updateEgg';
 import EggDeleteButton from '@/components/admin/nests/eggs/EggDeleteButton';
+import EggExportButton from '@/components/admin/nests/eggs/EggExportButton';
 import Button from '@/components/elements/Button';
 import Editor from '@/components/elements/Editor';
 import Field, { TextareaField } from '@/components/elements/Field';
@@ -251,13 +252,14 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
 
                     <EggProcessContainer ref={ref} css={tw`mb-6`}/>
 
-                    <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6 mb-16`}>
+                    <div css={tw`bg-neutral-700 rounded shadow-md px-4 xl:px-5 py-4 mb-16`}>
                         <div css={tw`flex flex-row`}>
                             <EggDeleteButton
                                 eggId={egg.id}
                                 onDeleted={() => history.push('/admin/nests')}
                             />
-                            <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
+                            <EggExportButton css={tw`ml-auto mr-4`}/>
+                            <Button type="submit" size="small" disabled={isSubmitting || !isValid}>
                                 Save Changes
                             </Button>
                         </div>
