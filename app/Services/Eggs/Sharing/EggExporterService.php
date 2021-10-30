@@ -27,11 +27,11 @@ class EggExporterService
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle(int $egg): string
+    public function handle(int $egg): array
     {
         $egg = $this->repository->getWithExportAttributes($egg);
 
-        $struct = [
+        return [
             '_comment' => 'DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO',
             'meta' => [
                 'version' => 'PTDL_v1',
@@ -65,7 +65,5 @@ class EggExporterService
                     ->toArray();
             }),
         ];
-
-        return json_encode($struct, JSON_PRETTY_PRINT);
     }
 }

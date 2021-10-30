@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Spatie\QueryBuilder\QueryBuilder;
+use Pterodactyl\Services\Eggs\Sharing\EggExporterService;
 use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggRequest;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
@@ -16,10 +17,20 @@ use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\StoreEggRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\DeleteEggRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\UpdateEggRequest;
+use Pterodactyl\Http\Requests\Api\Application\Eggs\ExportEggRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class EggController extends ApplicationApiController
 {
+    private EggExporterService $eggExporterService;
+
+    public function __construct(EggExporterService $eggExporterService)
+    {
+        parent::__construct();
+
+        $this->eggExporterService = $eggExporterService;
+    }
+
     /**
      * Return an array of all eggs on a given nest.
      */
@@ -71,7 +82,7 @@ class EggController extends ApplicationApiController
 
         return $this->fractal->item($egg)
             ->transformWith(EggTransformer::class)
-            ->respond(JsonResponse::HTTP_CREATED);
+            ->respond(Response::HTTP_CREATED);
     }
 
     /**
@@ -96,5 +107,15 @@ class EggController extends ApplicationApiController
         $egg->delete();
 
         return $this->returnNoContent();
+    }
+
+    /**
+     * Exports an egg.
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function export(ExportEggRequest $request, int $eggId): JsonResponse
+    {
+        return new JsonResponse($this->eggExporterService->handle($eggId));
     }
 }

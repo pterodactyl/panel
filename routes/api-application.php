@@ -33,6 +33,7 @@ Route::group(['prefix' => '/databases'], function () {
 */
 Route::group(['prefix' => '/eggs'], function () {
     Route::get('/{egg}', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'view']);
+    Route::get('/{egg}/export', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'export']);
 
     Route::post('/', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggController::class, 'store']);
     Route::post('/{egg}/variables', [\Pterodactyl\Http\Controllers\Api\Application\Eggs\EggVariableController::class, 'store']);
