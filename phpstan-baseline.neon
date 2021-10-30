@@ -176,11 +176,6 @@ parameters:
 			path: app/Repositories/Repository.php
 
 		-
-			message: "#^Method Pterodactyl\\\\Services\\\\Eggs\\\\Sharing\\\\EggExporterService\\:\\:handle\\(\\) should return string but returns string\\|false\\.$#"
-			count: 1
-			path: app/Services/Eggs/Sharing/EggExporterService.php
-
-		-
 			message: "#^Parameter \\#2 \\$content of method Pterodactyl\\\\Services\\\\Eggs\\\\Sharing\\\\EggImporterService\\:\\:handleContent\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: app/Services/Eggs/Sharing/EggImporterService.php

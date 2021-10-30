@@ -41,8 +41,6 @@ class NodeDeletionService
     /**
      * Delete a node from the panel if no servers are attached to it.
      *
-     * @param \Pterodactyl\Models\Node $node
-     *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
     public function handle(Node $node): void

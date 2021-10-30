@@ -8,7 +8,6 @@ use Pterodactyl\Models\EggVariable;
 use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Traits\Services\ValidatesValidationRules;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableUpdateService
@@ -51,7 +50,7 @@ class VariableUpdateService
             }
 
             $count = $egg->variables()
-                ->where('egg_variables.env_variable',$data['env_variable'])
+                ->where('egg_variables.env_variable', $data['env_variable'])
                 ->where('egg_variables.id', '!=', $data['id'])
                 ->count();
 

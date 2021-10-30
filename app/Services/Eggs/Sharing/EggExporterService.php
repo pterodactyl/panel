@@ -66,6 +66,7 @@ class EggExporterService
             }),
         ];
 
+        // @phpstan-ignore-next-line
         return json_encode($struct, JSON_PRETTY_PRINT);
     }
 }

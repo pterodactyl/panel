@@ -38,8 +38,6 @@ jobs:
             ~/.php_cs.cache
             ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-cache-${{ matrix.php }}-${{ hashFiles('**.composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cache-${{ matrix.php }}-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -52,12 +50,13 @@ jobs:
       - name: composer install
         run: composer install --prefer-dist --no-interaction --no-progress
       - name: Run cs-fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff --format=udiff --config .php-cs-fixer.dist.php
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --format=txt --config .php-cs-fixer.dist.php
         continue-on-error: true
-      - run: php artisan ide-helper:models -N
-        env:
-          TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
-      - run: ./vendor/bin/phpstan analyse --memory-limit=2G
+      - name: Static Analysis
+        if: ${{ matrix.php }} == '8.0'
+        run: |
+          php artisan ide-helper:models -N
+          ./vendor/bin/phpstan analyse --memory-limit=2G
         env:
           TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
       - name: Execute Unit Tests

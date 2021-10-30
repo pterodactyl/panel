@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Carbon\CarbonInterface;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Contracts\Encryption\Encrypter;
@@ -50,17 +50,20 @@ class LoginCheckpointController extends AbstractLoginController
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
+
             return;
         }
 
         $details = $request->session()->get('auth_confirmation_token');
         if (!$this->hasValidSessionData($details)) {
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
+
             return;
         }
 
         if (!hash_equals($request->input('confirmation_token') ?? '', $details['token_value'])) {
             $this->sendFailedLoginResponse($request);
+
             return;
         }
 
@@ -69,6 +72,7 @@ class LoginCheckpointController extends AbstractLoginController
             $user = User::query()->findOrFail($details['user_id']);
         } catch (ModelNotFoundException $exception) {
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
+
             return;
         }
 
@@ -91,8 +95,6 @@ class LoginCheckpointController extends AbstractLoginController
     /**
      * Determines if a given recovery token is valid for the user account. If we find a matching token
      * it will be deleted from the database.
-     *
-     * @return bool
      */
     protected function isValidRecoveryToken(User $user, string $value): bool
     {
@@ -116,9 +118,6 @@ class LoginCheckpointController extends AbstractLoginController
      * Determines if the data provided from the session is valid or not. This
      * will return false if the data is invalid, or if more time has passed than
      * was configured when the session was written.
-     *
-     * @param array $data
-     * @return bool
      */
     public static function isValidSessionData(ValidationFactory $validation, array $data): bool
     {

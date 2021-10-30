@@ -55,7 +55,7 @@ class EggVariableController extends ApplicationApiController
     {
         $validated = $request->validated();
 
-        $this->connection->transaction(function () use($egg, $validated) {
+        $this->connection->transaction(function () use ($egg, $validated) {
             foreach ($validated as $data) {
                 $this->variableUpdateService->handle($egg, $data);
             }
