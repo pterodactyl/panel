@@ -25,7 +25,7 @@ class SubstituteClientApiBindings
     /**
      * Perform substitution of route parameters for the Client API.
      *
-     * @param \Illuminate\Http\Request
+     * @param \Illuminate\Http\Request $request
      *
      * @return mixed
      */
@@ -76,7 +76,7 @@ class SubstituteClientApiBindings
             /* @var \Illuminate\Routing\Route $route */
             $this->router->substituteBindings($route = $request->route());
         } catch (ModelNotFoundException $exception) {
-            if (isset($route) && $route->getMissing()) {
+            if (!empty($route) && $route->getMissing()) {
                 $route->getMissing()($request);
             }
 

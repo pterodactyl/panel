@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Users;
 
@@ -48,23 +41,15 @@ class UserDeletionService
     /**
      * Delete a user from the panel only if they have no servers attached to their account.
      *
-     * @param int|\Pterodactyl\Models\User $user
-     *
-     * @return bool|null
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle($user)
+    public function handle(User $user): void
     {
-        if ($user instanceof User) {
-            $user = $user->id;
-        }
-
-        $servers = $this->serverRepository->setColumns('id')->findCountWhere([['owner_id', '=', $user]]);
+        $servers = $this->serverRepository->setColumns('id')->findCountWhere([['owner_id', '=', $user->id]]);
         if ($servers > 0) {
-            throw new DisplayException($this->translator->trans('admin/user.exceptions.user_has_servers'));
+            throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
         }
 
-        return $this->repository->delete($user);
+        $this->repository->delete($user->id);
     }
 }

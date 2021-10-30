@@ -8,14 +8,14 @@ use Illuminate\Filesystem\Filesystem;
 trait AvailableLanguages
 {
     /**
-     * @var \Illuminate\Filesystem\Filesystem
+     * @var \Illuminate\Filesystem\Filesystem|null;
      */
-    private $filesystem;
+    private $filesystem = null;
 
     /**
-     * @var \Matriphe\ISO639\ISO639
+     * @var \Matriphe\ISO639\ISO639|null
      */
-    private $iso639;
+    private $iso639 = null;
 
     /**
      * Return all of the available languages on the Panel based on those

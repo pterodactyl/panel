@@ -28,15 +28,14 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     /**
      * Return a nest or all nests with their associated eggs and variables.
      *
-     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Nest
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithEggs(int $id = null)
+    public function getWithEggs(int $id = null): Nest
     {
         $instance = $this->getBuilder()->with('eggs', 'eggs.variables');
 
         if (!is_null($id)) {
+            /** @var \Pterodactyl\Models\Nest|null $instance */
             $instance = $instance->find($id, $this->getColumns());
             if (!$instance) {
                 throw new RecordNotFoundException();
@@ -45,45 +44,8 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
             return $instance;
         }
 
+        /* @noinspection PhpIncompatibleReturnTypeInspection */
+        // @phpstan-ignore-next-line
         return $instance->get($this->getColumns());
-    }
-
-    /**
-     * Return a nest or all nests and the count of eggs and servers for that nest.
-     *
-     * @return \Pterodactyl\Models\Nest|\Illuminate\Database\Eloquent\Collection
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithCounts(int $id = null)
-    {
-        $instance = $this->getBuilder()->withCount(['eggs', 'servers']);
-
-        if (!is_null($id)) {
-            $instance = $instance->find($id, $this->getColumns());
-            if (!$instance) {
-                throw new RecordNotFoundException();
-            }
-
-            return $instance;
-        }
-
-        return $instance->get($this->getColumns());
-    }
-
-    /**
-     * Return a nest along with its associated eggs and the servers relation on those eggs.
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function getWithEggServers(int $id): Nest
-    {
-        $instance = $this->getBuilder()->with('eggs.servers')->find($id, $this->getColumns());
-        if (!$instance) {
-            throw new RecordNotFoundException();
-        }
-
-        /* @var Nest $instance */
-        return $instance;
     }
 }

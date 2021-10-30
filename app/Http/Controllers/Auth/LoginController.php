@@ -10,7 +10,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
 use LaravelWebauthn\Facades\Webauthn;
 use Illuminate\Contracts\View\Factory as ViewFactory;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoginController extends AbstractLoginController
 {
@@ -24,7 +23,8 @@ class LoginController extends AbstractLoginController
     /**
      * LoginController constructor.
      */
-    public function __construct(ViewFactory $view) {
+    public function __construct(ViewFactory $view)
+    {
         parent::__construct();
 
         $this->view = $view;
@@ -57,12 +57,11 @@ class LoginController extends AbstractLoginController
             return;
         }
 
-        try {
-            $username = $request->input('user');
+        $username = $request->input('user');
 
-            /** @var \Pterodactyl\Models\User $user */
-            $user = User::query()->where($this->getField($username), $username)->firstOrFail();
-        } catch (ModelNotFoundException $exception) {
+        /** @var \Pterodactyl\Models\User|null $user */
+        $user = User::query()->where($this->getField($username), $username)->first();
+        if (is_null($user)) {
             $this->sendFailedLoginResponse($request);
         }
 

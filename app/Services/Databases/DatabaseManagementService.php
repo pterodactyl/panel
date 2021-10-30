@@ -152,6 +152,7 @@ class DatabaseManagementService
             });
         } catch (Exception $exception) {
             try {
+                // @phpstan-ignore-next-line doesn't understand the pass-by-reference above
                 if ($database instanceof Database) {
                     $this->repository->dropDatabase($database->database);
                     $this->repository->dropUser($database->username, $database->remote);

@@ -27,7 +27,7 @@ class EggVariableTransformer extends Transformer
             'description' => $variable->description,
             'env_variable' => $variable->env_variable,
             'default_value' => $variable->default_value,
-            'server_value' => $variable->server_value,
+            'server_value' => property_exists($variable, 'server_value') ? $variable->server_value : null,
             'is_editable' => $variable->user_editable,
             'rules' => $variable->rules,
         ];

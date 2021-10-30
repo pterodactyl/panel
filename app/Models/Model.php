@@ -23,22 +23,15 @@ abstract class Model extends IlluminateModel
     /**
      * Determines if the model should undergo data validation before it is saved
      * to the database.
-     *
-     * @var bool
      */
-    protected $skipValidation = false;
+    protected bool $skipValidation = false;
 
     /**
      * The validator instance used by this model.
-     *
-     * @var \Illuminate\Validation\Validator
      */
-    protected $validator;
+    protected ?Validator $validator = null;
 
-    /**
-     * @var \Illuminate\Contracts\Validation\Factory
-     */
-    protected static $validatorFactory;
+    protected static Factory $validatorFactory;
 
     public static array $validationRules = [];
 
@@ -82,6 +75,7 @@ abstract class Model extends IlluminateModel
     {
         $rules = $this->getKey() ? static::getRulesForUpdate($this) : static::getRules();
 
+        // @phpstan-ignore-next-line
         return $this->validator ?: $this->validator = static::$validatorFactory->make(
             [],
             $rules,

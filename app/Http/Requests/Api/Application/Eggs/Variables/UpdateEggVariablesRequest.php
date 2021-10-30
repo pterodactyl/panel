@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Requests\Api\Application\Eggs\Variables;
 
 use Pterodactyl\Models\EggVariable;
-use Illuminate\Validation\Validator;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class UpdateEggVariablesRequest extends ApplicationApiRequest

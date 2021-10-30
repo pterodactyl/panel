@@ -54,15 +54,15 @@ class InfoCommand extends Command
         $this->output->title('Version Information');
         $this->table([], [
             ['Panel Version', $this->config->get('app.version')],
-            ['Latest Version', $this->versionService->getPanel()],
+            ['Latest Version', $this->versionService->getLatestPanel()],
             ['Up-to-Date', $this->versionService->isLatestPanel() ? 'Yes' : $this->formatText('No', 'bg=red')],
             ['Unique Identifier', $this->config->get('pterodactyl.service.author')],
         ], 'compact');
 
         $this->output->title('Application Configuration');
         $this->table([], [
-            ['Environment', $this->formatText($this->config->get('app.env'), $this->config->get('app.env') === 'production' ?: 'bg=red')],
-            ['Debug Mode', $this->formatText($this->config->get('app.debug') ? 'Yes' : 'No', !$this->config->get('app.debug') ?: 'bg=red')],
+            ['Environment', $this->formatText($this->config->get('app.env'), $this->config->get('app.env') === 'production' ? '' : 'bg=red')],
+            ['Debug Mode', $this->formatText($this->config->get('app.debug') ? 'Yes' : 'No', !$this->config->get('app.debug') ? '' : 'bg=red')],
             ['Installation URL', $this->config->get('app.url')],
             ['Installation Directory', base_path()],
             ['Timezone', $this->config->get('app.timezone')],

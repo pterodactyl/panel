@@ -59,6 +59,7 @@ class VariableCreationService
             'user_editable' => in_array('user_editable', $options),
             'rules' => $data['rules'] ?? '',
         ]);
+
         return $model;
     }
 }

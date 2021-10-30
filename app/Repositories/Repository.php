@@ -118,7 +118,8 @@ abstract class Repository implements RepositoryInterface
     /**
      * Take the provided model and make it accessible to the rest of the repository.
      *
-     * @param array $model
+     * @param string[] $model
+     * @phpstan-param class-string<\Illuminate\Database\Eloquent\Model> $model
      *
      * @return mixed
      */
@@ -128,6 +129,7 @@ abstract class Repository implements RepositoryInterface
             case 1:
                 return $this->model = $this->app->make($model[0]);
             case 2:
+                // @phpstan-ignore-next-line
                 return $this->model = call_user_func([$this->app->make($model[0]), $model[1]]);
             default:
                 throw new InvalidArgumentException('Model must be a FQDN or an array with a count of two.');

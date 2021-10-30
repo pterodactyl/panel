@@ -4,7 +4,6 @@ namespace Pterodactyl\Tests\Integration\Api\Application\Users;
 
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Transformers\Api\Application\UserTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;

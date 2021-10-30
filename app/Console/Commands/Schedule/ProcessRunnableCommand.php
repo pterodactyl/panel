@@ -24,7 +24,7 @@ class ProcessRunnableCommand extends Command
     /**
      * Handle command execution.
      */
-    public function handle()
+    public function handle(): int
     {
         $schedules = Schedule::query()->with('tasks')
             ->where('is_active', true)
@@ -35,7 +35,7 @@ class ProcessRunnableCommand extends Command
         if ($schedules->count() < 1) {
             $this->line('There are no scheduled tasks for servers that need to be run.');
 
-            return;
+            return 0;
         }
 
         $bar = $this->output->createProgressBar(count($schedules));
@@ -47,6 +47,8 @@ class ProcessRunnableCommand extends Command
         }
 
         $this->line('');
+
+        return 0;
     }
 
     /**
@@ -69,7 +71,7 @@ class ProcessRunnableCommand extends Command
                 'schedule' => $schedule->name,
                 'hash' => $schedule->hashid,
             ]));
-        } catch (Throwable | Exception $exception) {
+        } catch (Throwable|Exception $exception) {
             Log::error($exception, ['schedule_id' => $schedule->id]);
 
             $this->error("An error was encountered while processing Schedule #{$schedule->id}: " . $exception->getMessage());

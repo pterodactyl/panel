@@ -38,17 +38,20 @@ class WebauthnController extends AbstractLoginController
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
+
             return;
         }
 
         $details = $request->session()->get('auth_confirmation_token');
         if (!LoginCheckpointController::isValidSessionData($this->validation, $details)) {
             $this->sendFailedLoginResponse($request, null, LoginCheckpointController::TOKEN_EXPIRED_MESSAGE);
+
             return;
         }
 
         if (!hash_equals($request->input('confirmation_token') ?? '', $details['token_value'])) {
             $this->sendFailedLoginResponse($request);
+
             return;
         }
 
@@ -57,6 +60,7 @@ class WebauthnController extends AbstractLoginController
             $user = User::query()->findOrFail($details['user_id']);
         } catch (ModelNotFoundException $exception) {
             $this->sendFailedLoginResponse($request, null, LoginCheckpointController::TOKEN_EXPIRED_MESSAGE);
+
             return;
         }
 

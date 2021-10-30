@@ -87,11 +87,12 @@ class UpgradeCommand extends Command
 
             if (!$this->confirm('Are you sure you want to run the upgrade process for your Panel?')) {
                 $this->warn('Upgrade process terminated by user.');
+
                 return;
             }
         }
 
-        ini_set('output_buffering', 0);
+        ini_set('output_buffering', '0');
         $bar = $this->output->createProgressBar($skipDownload ? 9 : 10);
         $bar->start();
 

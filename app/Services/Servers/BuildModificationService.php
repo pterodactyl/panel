@@ -33,8 +33,6 @@ class BuildModificationService
      * BuildModificationService constructor.
      *
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $structureService
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      */
     public function __construct(
         ServerConfigurationStructureService $structureService,
@@ -57,7 +55,7 @@ class BuildModificationService
     public function handle(Server $server, array $data)
     {
         /** @var \Pterodactyl\Models\Server $server */
-        $server = $this->connection->transaction(function() use ($server, $data) {
+        $server = $this->connection->transaction(function () use ($server, $data) {
             $this->processAllocations($server, $data);
 
             if (isset($data['allocation_id']) && $data['allocation_id'] != $server->allocation_id) {
@@ -115,11 +113,12 @@ class BuildModificationService
             $query = Allocation::query()
                 ->where('node_id', $server->node_id)
                 ->whereIn('id', $data['add_allocations'])
-                ->whereNull('server_id');
+                ->whereNull('server_id')
+                ->first();
 
             // Keep track of all the allocations we're just now adding so that we can use the first
             // one to reset the default allocation to.
-            $freshlyAllocated = $query->pluck('id')->first();
+            $freshlyAllocated = optional($query)->id;
 
             $query->update(['server_id' => $server->id, 'notes' => null]);
         }

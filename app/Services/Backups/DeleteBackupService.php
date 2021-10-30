@@ -102,6 +102,7 @@ class DeleteBackupService
             /** @var \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter */
             $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
 
+            // @phpstan-ignore-next-line this is defined on the actual S3Client class, just not on the interface.
             $adapter->getClient()->deleteObject([
                 'Bucket' => $adapter->getBucket(),
                 'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),

@@ -13,8 +13,8 @@ use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Transformers\Api\Application\NestTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestRequest;
-use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\ImportEggRequest;
+use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\StoreNestRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\DeleteNestRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nests\UpdateNestRequest;
@@ -51,7 +51,7 @@ class NestController extends ApplicationApiController
      */
     public function index(GetNestsRequest $request): array
     {
-        $perPage = $request->query('per_page', 10);
+        $perPage = (int) $request->query('per_page', '10');
         if ($perPage > 100) {
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }

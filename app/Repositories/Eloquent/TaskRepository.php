@@ -27,6 +27,8 @@ class TaskRepository extends EloquentRepository implements TaskRepositoryInterfa
     public function getTaskForJobProcess(int $id): Task
     {
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->with('server.user', 'schedule')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();

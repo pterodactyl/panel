@@ -24,13 +24,11 @@ class InstallScriptService
     /**
      * Modify the install script for a given Egg.
      *
-     * @param int|\Pterodactyl\Models\Egg $egg
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException
      */
-    public function handle(Egg $egg, array $data)
+    public function handle(Egg $egg, array $data): void
     {
         if (!is_null(array_get($data, 'copy_script_from'))) {
             if (!$this->repository->isCopyableScript(array_get($data, 'copy_script_from'), $egg->nest_id)) {

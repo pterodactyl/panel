@@ -48,6 +48,7 @@ class MultiFieldServerFilter implements Filter
                             }
                         },
                         // Otherwise, just try to search for that specific port in the allocations.
+                        // @phpstan-ignore-next-line
                         function (Builder $builder) use ($value) {
                             $builder->orWhere('allocations.port', 'LIKE', substr($value, 1) . '%');
                         }

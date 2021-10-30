@@ -22,7 +22,7 @@ class Username implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        return preg_match(self::VALIDATION_REGEX, mb_strtolower($value));
+        return preg_match(self::VALIDATION_REGEX, mb_strtolower($value)) === 1;
     }
 
     /**

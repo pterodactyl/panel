@@ -3,9 +3,6 @@
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Pterodactyl\Models\Server;
-use Illuminate\Validation\Rule;
-use Illuminate\Contracts\Validation\Validator;
-use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerRequest extends ApplicationApiRequest

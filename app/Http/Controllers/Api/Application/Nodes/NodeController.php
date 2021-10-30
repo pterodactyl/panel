@@ -50,7 +50,7 @@ class NodeController extends ApplicationApiController
      */
     public function index(GetNodesRequest $request): array
     {
-        $perPage = $request->query('per_page', 10);
+        $perPage = (int) $request->query('per_page', '10');
         if ($perPage < 1 || $perPage > 100) {
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }

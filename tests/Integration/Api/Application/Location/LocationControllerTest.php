@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Application\Location;
 
-use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;

@@ -14,8 +14,8 @@ use Symfony\Component\Yaml\Exception\ParseException;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Egg\BadYamlFormatException;
+use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggImporterService
@@ -58,7 +58,7 @@ class EggImporterService
     /**
      * Take an uploaded JSON file and parse it into a new egg.
      *
-     * @deprecated Use `handleFile` or `handleContent` instead.
+     * @deprecated use `handleFile` or `handleContent` instead
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException

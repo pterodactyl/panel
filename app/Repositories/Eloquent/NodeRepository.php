@@ -59,7 +59,10 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
             $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
         )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
 
-        return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($node) {
+        return collect([
+            'disk' => $stats->sum_disk,
+            'memory' => $stats->sum_memory,
+        ])->mapWithKeys(function ($value, $key) use ($node) {
             $maxUsage = $node->{$key};
             if ($node->{$key . '_overallocate'} > 0) {
                 $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
@@ -85,6 +88,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
         // This is quite ugly and can probably be improved down the road.
         // And by probably, I mean it should.
+        // @phpstan-ignore-next-line
         if (is_null($node->servers_count) || $refresh) {
             $node->load('servers');
             $node->setRelation('servers_count', count($node->getRelation('servers')));
@@ -118,22 +122,28 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
      */
     public function getNodesForServerCreation(): Collection
     {
-        return $this->getBuilder()->with('allocations')->get()->map(function (Node $item) {
+        /** @phpstan-var \Illuminate\Database\Eloquent\Collection<\Pterodactyl\Models\Node> $collection */
+        $collection = $this->getBuilder()->with('allocations')->get();
+
+        return $collection->map(function (Node $item) {
+            /** @phpstan-var \Illuminate\Support\Collection<array{id: string, ip: string, port: string|int}> $filtered */
             $filtered = $item->getRelation('allocations')->where('server_id', null)->map(function ($map) {
                 return collect($map)->only(['id', 'ip', 'port']);
             });
 
-            $item->ports = $filtered->map(function ($map) {
+            $ports = $filtered->map(function ($map) {
                 return [
                     'id' => $map['id'],
                     'text' => sprintf('%s:%s', $map['ip'], $map['port']),
                 ];
             })->values();
 
+            $item->setAttribute('ports', $ports);
+
             return [
                 'id' => $item->id,
                 'text' => $item->name,
-                'allocations' => $item->ports,
+                'allocations' => $ports,
             ];
         })->values();
     }
@@ -144,11 +154,22 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     public function getNodeWithResourceUsage(int $node_id): Node
     {
         $instance = $this->getBuilder()
-            ->select(['nodes.id', 'nodes.fqdn', 'nodes.public_port_http', 'nodes.scheme', 'nodes.daemon_token', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
+            ->select([
+                'nodes.id',
+                'nodes.fqdn',
+                'nodes.public_port_http',
+                'nodes.scheme',
+                'nodes.daemon_token',
+                'nodes.memory',
+                'nodes.disk',
+                'nodes.memory_overallocate',
+                'nodes.disk_overallocate',
+            ])
             ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
             ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
             ->where('nodes.id', $node_id);
 
+        /* @noinspection PhpIncompatibleReturnTypeInspection */
         return $instance->first();
     }
 }
