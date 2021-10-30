@@ -84,6 +84,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function create(array $fields, bool $validate = true, bool $force = false)
     {
+        /** @phpstan-var \Illuminate\Database\Eloquent\Model $instance */
         $instance = $this->getBuilder()->newModelInstance();
         ($force) ? $instance->forceFill($fields) : $instance->fill($fields);
 

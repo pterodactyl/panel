@@ -54,6 +54,11 @@ jobs:
       - name: Run cs-fixer
         run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php-cs-fixer.dist.php
         continue-on-error: true
+      - name: Execute Static Analysis
+        run: |
+          php artisan ide-helper:meta
+          php artisan ide-helper:models -N
+          ./vendor/bin/phpstan analyse --memory-limit=2G
       - name: Execute Unit Tests
         run: php artisan test tests/Unit
         if: ${{ always() }}
