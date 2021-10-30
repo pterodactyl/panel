@@ -66,51 +66,49 @@ function CreateAllocationForm ({ nodeId }: { nodeId: number }) {
                 ports: array(number()).min(1, 'You must select at least one port.'),
             })}
         >
-            {
-                ({ isSubmitting, isValid }) => (
-                    <Form>
-                        <SelectField
-                            id={'ips'}
-                            name={'ips'}
-                            label={'IPs and CIDRs'}
-                            options={ips}
-                            isValidNewOption={isValidIP}
-                            isMulti
-                            isSearchable
-                            isCreatable
-                            css={tw`mb-6`}
+            {({ isSubmitting, isValid }) => (
+                <Form>
+                    <SelectField
+                        id={'ips'}
+                        name={'ips'}
+                        label={'IPs and CIDRs'}
+                        options={ips}
+                        isValidNewOption={isValidIP}
+                        isMulti
+                        isSearchable
+                        isCreatable
+                        css={tw`mb-6`}
+                    />
+
+                    <SelectField
+                        id={'ports'}
+                        name={'ports'}
+                        label={'Ports'}
+                        options={ports}
+                        isValidNewOption={isValidPort}
+                        isMulti
+                        isSearchable
+                        isCreatable
+                    />
+
+                    <div css={tw`mt-6`}>
+                        <Field
+                            id={'alias'}
+                            name={'alias'}
+                            label={'Alias'}
+                            type={'text'}
                         />
+                    </div>
 
-                        <SelectField
-                            id={'ports'}
-                            name={'ports'}
-                            label={'Ports'}
-                            options={ports}
-                            isValidNewOption={isValidPort}
-                            isMulti
-                            isSearchable
-                            isCreatable
-                        />
-
-                        <div css={tw`mt-6`}>
-                            <Field
-                                id={'alias'}
-                                name={'alias'}
-                                label={'Alias'}
-                                type={'text'}
-                            />
+                    <div css={tw`w-full flex flex-row items-center mt-6`}>
+                        <div css={tw`flex ml-auto`}>
+                            <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                Create Allocations
+                            </Button>
                         </div>
-
-                        <div css={tw`w-full flex flex-row items-center mt-6`}>
-                            <div css={tw`flex ml-auto`}>
-                                <Button type={'submit'} disabled={isSubmitting || !isValid}>
-                                    Create Allocations
-                                </Button>
-                            </div>
-                        </div>
-                    </Form>
-                )
-            }
+                    </div>
+                </Form>
+            )}
         </Formik>
     );
 }

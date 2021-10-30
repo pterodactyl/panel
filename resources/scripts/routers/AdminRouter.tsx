@@ -120,7 +120,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                 <div css={tw`w-full flex flex-col mx-auto`} style={{ maxWidth: '86rem' }}>
                     <Switch location={location}>
                         <Route path={`${match.path}`} component={OverviewContainer} exact/>
-                        <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                        <Route path={`${match.path}/settings`} component={SettingsContainer}/>
                         <Route path={`${match.path}/databases`} component={DatabasesContainer} exact/>
                         <Route path={`${match.path}/databases/new`} component={NewDatabaseContainer} exact/>
                         <Route path={`${match.path}/databases/:id`} component={DatabaseEditContainer} exact/>
