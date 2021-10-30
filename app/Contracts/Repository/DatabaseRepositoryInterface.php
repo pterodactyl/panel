@@ -59,8 +59,6 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
 
     /**
      * Drop a given user on a specific connection.
-     *
-     * @return mixed
      */
     public function dropUser(string $username, string $remote): bool;
 }

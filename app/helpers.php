@@ -21,8 +21,8 @@ if (!function_exists('object_get_strict')) {
      * and will not trigger the response of a default value (unlike object_get).
      *
      * @param object $object
-     * @param string $key
-     * @param null $default
+     * @param string|null $key
+     * @param mixed|null $default
      *
      * @return mixed
      */

@@ -118,7 +118,8 @@ abstract class Repository implements RepositoryInterface
     /**
      * Take the provided model and make it accessible to the rest of the repository.
      *
-     * @param array $model
+     * @param string[] $model
+     * @phpstan-param class-string<\Illuminate\Database\Eloquent\Model> $model
      *
      * @return mixed
      */

@@ -15,7 +15,7 @@ class AccountController extends ClientApiController
     private UserUpdateService $updateService;
 
     /**
-     * @var \Illuminate\Auth\SessionGuard
+     * @var \Illuminate\Auth\AuthManager
      */
     private $sessionGuard;
 
@@ -64,7 +64,9 @@ class AccountController extends ClientApiController
         // cached copy of the user that does not include the updated password. Do this
         // to correctly store the new user details in the guard and allow the logout
         // other devices functionality to work.
-        $this->sessionGuard->setUser($user);
+        if (method_exists($this->sessionGuard, 'setUser')) {
+            $this->sessionGuard->setUser($user);
+        }
 
         // TODO: Find another way to do this, function doesn't exist due to API changes.
         //$this->sessionGuard->logoutOtherDevices($request->input('password'));

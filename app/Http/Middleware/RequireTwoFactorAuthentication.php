@@ -41,7 +41,7 @@ class RequireTwoFactorAuthentication
      */
     public function handle(Request $request, Closure $next)
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var \Pterodactyl\Models\User|null $user */
         $user = $request->user();
         $uri = rtrim($request->getRequestUri(), '/') . '/';
         $current = $request->route()->getName();
@@ -66,6 +66,7 @@ class RequireTwoFactorAuthentication
             throw new TwoFactorAuthRequiredException();
         }
 
+        // @phpstan-ignore-next-line
         $this->alert->danger(trans('auth.2fa_must_be_enabled'))->flash();
 
         return redirect()->to($this->redirectRoute);

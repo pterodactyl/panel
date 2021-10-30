@@ -49,8 +49,6 @@ class DatabasePasswordService
     /**
      * Updates a password for a given database.
      *
-     * @param \Pterodactyl\Models\Database|int $database
-     *
      * @throws \Throwable
      */
     public function handle(Database $database): string

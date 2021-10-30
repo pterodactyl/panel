@@ -31,13 +31,13 @@ class MountRepository extends EloquentRepository
     /**
      * Return all of the mounts and their respective relations.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithRelations(string $id): Mount
     {
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->with('eggs', 'nodes')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();

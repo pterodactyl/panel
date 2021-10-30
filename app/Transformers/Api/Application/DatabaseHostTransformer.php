@@ -28,6 +28,7 @@ class DatabaseHostTransformer extends Transformer
             'host' => $model->host,
             'port' => $model->port,
             'username' => $model->username,
+            // @phpstan-ignore-next-line no clue why it can't find this.
             'node' => $model->node_id,
             'created_at' => self::formatTimestamp($model->created_at),
             'updated_at' => self::formatTimestamp($model->updated_at),

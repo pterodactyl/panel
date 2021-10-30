@@ -115,11 +115,12 @@ class BuildModificationService
             $query = Allocation::query()
                 ->where('node_id', $server->node_id)
                 ->whereIn('id', $data['add_allocations'])
-                ->whereNull('server_id');
+                ->whereNull('server_id')
+                ->first();
 
             // Keep track of all the allocations we're just now adding so that we can use the first
             // one to reset the default allocation to.
-            $freshlyAllocated = $query->pluck('id')->first();
+            $freshlyAllocated = optional($query)->id;
 
             $query->update(['server_id' => $server->id, 'notes' => null]);
         }

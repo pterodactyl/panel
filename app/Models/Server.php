@@ -195,6 +195,7 @@ class Server extends Model
      * Gets information for the service variables associated with this server.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @phpstan-return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\EggVariable>
      */
     public function variables()
     {

@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\Client;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
 use Pterodactyl\Exceptions\Service\Helper\CdnVersionFetchingException;
 

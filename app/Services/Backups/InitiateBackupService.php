@@ -9,6 +9,7 @@ use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Extensions\Backups\BackupManager;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException;
@@ -53,8 +54,6 @@ class InitiateBackupService
 
     /**
      * InitiateBackupService constructor.
-     *
-     * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
      */
     public function __construct(
         BackupRepository $repository,
@@ -140,7 +139,7 @@ class InitiateBackupService
             // Get the oldest backup the server has that is not "locked" (indicating a backup that should
             // never be automatically purged). If we find a backup we will delete it and then continue with
             // this process. If no backup is found that can be used an exception is thrown.
-            /** @var \Pterodactyl\Models\Backup $oldest */
+            /** @var \Pterodactyl\Models\Backup|null $oldest */
             $oldest = $successful->where('is_locked', false)->orderBy('created_at')->first();
             if (!$oldest) {
                 throw new TooManyBackupsException($server->backup_limit);

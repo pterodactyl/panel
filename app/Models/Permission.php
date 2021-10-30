@@ -213,7 +213,8 @@ class Permission extends Model
      * Returns all of the permissions available on the system for a user to
      * have when controlling a server.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection
+     * @phpstan-return \Illuminate\Support\Collection<string, array{description: string, keys: array<string, string>}>
      */
     public static function permissions(): Collection
     {

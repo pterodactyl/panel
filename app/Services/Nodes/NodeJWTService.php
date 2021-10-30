@@ -63,8 +63,6 @@ class NodeJWTService
     /**
      * Generate a new JWT for a given node.
      *
-     * @param string|null $identifiedBy
-     *
      * @return \Lcobucci\JWT\Token\Plain
      */
     public function handle(Node $node, string $identifiedBy, string $algo = 'md5')

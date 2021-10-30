@@ -10,6 +10,9 @@ $finder = (new Finder())
         'node_modules',
         'storage',
         'bootstrap/cache',
+        '.phpstorm.meta.php',
+        '_ide_helper.php',
+        '_ide_helper_models.php',
     ])
     ->notName(['_ide_helper*']);
 

@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\User;
 
@@ -47,11 +40,9 @@ class DeleteUserCommand extends Command
     }
 
     /**
-     * @return bool
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle()
+    public function handle(): int
     {
         $search = $this->option('user') ?? $this->ask(trans('command/messages.user.search_users'));
         Assert::notEmpty($search, 'Search term should be an email address, got: %s.');
@@ -68,13 +59,13 @@ class DeleteUserCommand extends Command
                 return $this->handle();
             }
 
-            return false;
+            return 1;
         }
 
         if ($this->input->isInteractive()) {
             $tableValues = [];
             foreach ($results as $user) {
-                $tableValues[] = [$user->id, $user->email, $user->name];
+                $tableValues[] = [$user->id, $user->email, $user->name_first];
             }
 
             $this->table(['User ID', 'Email', 'Name'], $tableValues);
@@ -85,7 +76,7 @@ class DeleteUserCommand extends Command
             if (count($results) > 1) {
                 $this->error(trans('command/messages.user.multiple_found'));
 
-                return false;
+                return 1;
             }
 
             $deleteUser = $results->first();
@@ -95,5 +86,7 @@ class DeleteUserCommand extends Command
             $this->deletionService->handle($deleteUser);
             $this->info(trans('command/messages.user.deleted'));
         }
+
+        return 0;
     }
 }

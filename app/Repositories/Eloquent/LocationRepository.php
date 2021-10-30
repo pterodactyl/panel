@@ -39,13 +39,13 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     /**
      * Return all of the nodes and their respective count of servers for a location.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithNodes(int $id): Location
     {
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->with('nodes.servers')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();
@@ -55,13 +55,13 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     /**
      * Return a location and the count of nodes in that location.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithNodeCount(int $id): Location
     {
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->withCount('nodes')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();

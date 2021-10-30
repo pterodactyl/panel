@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api;
 use Closure;
 use DateTimeInterface;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
@@ -64,7 +65,7 @@ abstract class Transformer extends TransformerAbstract
      *
      * @param mixed $data
      * @param callable|\League\Fractal\TransformerAbstract $transformer
-     * @param null $resourceKey
+     * @param string|null $resourceKey
      *
      * @return \League\Fractal\Resource\Item
      */
@@ -76,7 +77,7 @@ abstract class Transformer extends TransformerAbstract
 
         $item = parent::item($data, $transformer, $resourceKey);
 
-        if (!$item->getResourceKey()) {
+        if (!$item->getResourceKey() && method_exists($transformer, 'getResourceName')) {
             $item->setResourceKey($transformer->getResourceName());
         }
 
@@ -88,7 +89,7 @@ abstract class Transformer extends TransformerAbstract
      *
      * @param mixed $data
      * @param callable|\League\Fractal\TransformerAbstract $transformer
-     * @param null $resourceKey
+     * @param string|null $resourceKey
      *
      * @return \League\Fractal\Resource\Collection
      */
@@ -100,7 +101,7 @@ abstract class Transformer extends TransformerAbstract
 
         $collection = parent::collection($data, $transformer, $resourceKey);
 
-        if (!$collection->getResourceKey()) {
+        if (!$collection->getResourceKey() && method_exists($transformer, 'getResourceName')) {
             $collection->setResourceKey($transformer->getResourceName());
         }
 
@@ -151,7 +152,7 @@ abstract class Transformer extends TransformerAbstract
         if ($timestamp instanceof DateTimeInterface) {
             $value = CarbonImmutable::instance($timestamp);
         } else {
-            $value = CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $timestamp);
+            $value = CarbonImmutable::createFromFormat(CarbonInterface::DEFAULT_TO_STRING_FORMAT, $timestamp);
         }
 
         return $value->setTimezone($tz ?? self::$timezone)->toIso8601String();

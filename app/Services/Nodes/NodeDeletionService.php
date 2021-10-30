@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Nodes;
 
@@ -48,23 +41,17 @@ class NodeDeletionService
     /**
      * Delete a node from the panel if no servers are attached to it.
      *
-     * @param int|\Pterodactyl\Models\Node $node
-     *
-     * @return bool|null
+     * @param \Pterodactyl\Models\Node $node
      *
      * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
      */
-    public function handle($node)
+    public function handle(Node $node): void
     {
-        if ($node instanceof Node) {
-            $node = $node->id;
-        }
-
-        $servers = $this->serverRepository->setColumns('id')->findCountWhere([['node_id', '=', $node]]);
+        $servers = $this->serverRepository->setColumns('id')->findCountWhere([['node_id', '=', $node->id]]);
         if ($servers > 0) {
-            throw new HasActiveServersException($this->translator->trans('exceptions.node.servers_attached'));
+            throw new HasActiveServersException($this->translator->get('exceptions.node.servers_attached'));
         }
 
-        return $this->repository->delete($node);
+        $this->repository->delete($node->id);
     }
 }

@@ -55,6 +55,7 @@
         "nunomaduro/collision": "^5.9",
         "nunomaduro/larastan": "^0.7.15",
         "php-mock/php-mock-phpunit": "^2.6",
+        "phpstan/phpstan-webmozart-assert": "^0.12.16",
         "phpunit/phpunit": "^9.5"
     },
     "autoload": {

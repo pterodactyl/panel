@@ -109,7 +109,5 @@ class Kernel extends HttpKernel
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
         'node.maintenance' => MaintenanceMiddleware::class,
-        // API Specific Middleware
-        'api..key' => AuthenticateKey::class,
     ];
 }

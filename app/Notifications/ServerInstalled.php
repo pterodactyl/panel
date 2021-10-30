@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Notifications;
 
+use Webmozart\Assert\Assert;
 use Illuminate\Bus\Queueable;
 use Pterodactyl\Events\Event;
 use Illuminate\Container\Container;
@@ -33,6 +34,8 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
      */
     public function handle(Event $event): void
     {
+        Assert::propertyExists($event, 'server');
+
         $event->server->loadMissing('user');
 
         $this->server = $event->server;
