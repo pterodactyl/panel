@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\Location;
 
@@ -26,9 +19,9 @@ class DeleteLocationCommand extends Command
     protected $description = 'Deletes a location from the Panel.';
 
     /**
-     * @var \Illuminate\Support\Collection
+     * @var \Illuminate\Support\Collection|null
      */
-    protected $locations;
+    protected $locations = null;
 
     /**
      * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface

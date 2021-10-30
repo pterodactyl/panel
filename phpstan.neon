@@ -1,0 +1,11 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+        - database/seeders
+    level: 5
+    ignoreErrors:
+        - '#Unsafe usage of new static#'
+    checkMissingIterableValueType: false
