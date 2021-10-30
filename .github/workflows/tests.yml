@@ -37,7 +37,7 @@ jobs:
           path: |
             ~/.php_cs.cache
             ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-cache-${{ matrix.php }}-${{ hashFiles('**.composer.lock') }}
+          key: ${{ runner.os }}-cache-${{ matrix.php }}-${{ hashFiles('composer.lock') }}
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
